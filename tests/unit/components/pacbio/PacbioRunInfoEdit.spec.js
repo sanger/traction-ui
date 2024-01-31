@@ -36,6 +36,18 @@ const smrtLinkVersions = {
     default: false,
     active: false,
   },
+  5: {
+    id: '5',
+    name: 'v13_revio',
+    default: false,
+    active: true,
+  },
+  6: {
+    id: '6',
+    name: 'v13_sequel_iie',
+    default: false,
+    active: true,
+  },
 }
 
 /**
@@ -121,12 +133,12 @@ describe('PacbioRunInfoEdit', () => {
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {
       it('returns only the active versions', () => {
-        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(3)
+        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(5)
       })
 
       it('returns smrt link version select options', () => {
         const options = Object.values(runInfo.smrtLinkVersionList)
-          .slice(0, 3)
+          .filter(({ active }) => active)
           .map(({ id, name }) => ({
             value: id,
             text: name,
@@ -214,7 +226,7 @@ describe('PacbioRunInfoEdit old run', () => {
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {
       it('includes an inactive version if the record has that value', () => {
-        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(4)
+        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(6)
       })
     })
   })
