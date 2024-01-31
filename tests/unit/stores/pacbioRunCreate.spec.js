@@ -658,7 +658,7 @@ describe('usePacbioRunCreateStore', () => {
           runType: {},
           defaultWellAttributes: {},
           instrumentTypeList: PacbioInstrumentTypes,
-          instrumentType: PacbioInstrumentTypes.SequelIIe,
+          instrumentType: PacbioInstrumentTypes.Revio,
           plates: {},
           wells: {},
         })

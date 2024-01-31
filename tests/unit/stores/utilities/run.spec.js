@@ -26,8 +26,20 @@ const smrtLinkVersions = {
     active: true,
   },
   3: {
-    id: 2,
+    id: 3,
     name: 'v12_sequel_iie',
+    default: false,
+    active: true,
+  },
+  4: {
+    id: 4,
+    name: 'v13_revio',
+    default: true,
+    active: true,
+  },
+  5: {
+    id: 5,
+    name: 'v13_sequel_iie',
     default: false,
     active: true,
   },
@@ -68,7 +80,7 @@ describe('run.js', () => {
     it('should have the correct attributes', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
-      expect(run.system_name).toBeTypeOf('string')
+      expect(run.system_name).toEqual('Revio')
       // no longer an accepted parameter
       expect(run.sequencing_kit_box_barcode).not.toBeDefined()
       expect(run.dna_control_complex_box_barcode).toEqual(null)

@@ -15,7 +15,7 @@ const smrtLinkVersions = {
   1: {
     id: '1',
     name: 'v1',
-    default: true,
+    default: false,
     active: true,
   },
   2: {
@@ -39,7 +39,7 @@ const smrtLinkVersions = {
   5: {
     id: '5',
     name: 'v13_revio',
-    default: false,
+    default: true,
     active: true,
   },
   6: {
@@ -93,14 +93,14 @@ describe('PacbioRunInfoEdit', () => {
           run: {
             id: 'new',
             name: 'TRACTION-RUN-3',
-            system_name: 'Sequel IIe',
+            system_name: 'Revio',
             dna_control_complex_box_barcode: null,
             comments: null,
           },
-          smrtLinkVersion: smrtLinkVersions[1],
+          smrtLinkVersion: smrtLinkVersions[5],
           resources: { smrtLinkVersions },
           instrumentTypeList: PacbioInstrumentTypes,
-          instrumentType: PacbioInstrumentTypes.SequelIIe,
+          instrumentType: PacbioInstrumentTypes.Revio,
         },
       },
       {
@@ -113,15 +113,15 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('on mount, will set the instrument type', () => {
-    expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
+    expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
   })
 
   it('will update the instrument type', async () => {
-    const input = wrapper.find('[data-attribute=system_name]')
-    await input.setValue(PacbioInstrumentTypes.Revio.key)
     expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
 
+    const input = wrapper.find('[data-attribute=system_name]')
     await input.setValue(PacbioInstrumentTypes.SequelIIe.key)
+
     expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
   })
 
@@ -149,13 +149,13 @@ describe('PacbioRunInfoEdit', () => {
     })
 
     describe('#isRevio', () => {
-      it('returns false when the System Name is not Revio', () => {
+      it('returns false when the System Name is not Revio', async () => {
+        const input = wrapper.find('[data-attribute=system_name]')
+        await input.setValue(PacbioInstrumentTypes.SequelIIe.key)
         expect(runInfo.isRevio).toBe(false)
       })
 
       it('returns true when the System Name is Revio', async () => {
-        const options = wrapper.find('[data-attribute=system_name]').findAll('option')
-        await options[0].setSelected()
         expect(runInfo.isRevio).toBe(true)
       })
     })
@@ -166,32 +166,34 @@ describe('PacbioRunInfoEdit', () => {
       expect(store.run.name).toEqual('TRACTION-RUN-3')
     })
 
-    it('shows dna_control_complex_box_barcode when SMRT Link version is not v12 Sequel IIe', async () => {
-      const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
-      await input.setValue('DCCB1')
+    it('shows dna_control_complex_box_barcode when Instrument type is Sequel IIe', async () => {
+      const system_name_input = wrapper.find('[data-attribute="system_name"]')
+      await system_name_input.setValue(PacbioInstrumentTypes.SequelIIe.key)
+      const dccbb_input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
+      await dccbb_input.setValue('DCCB1')
+
       expect(store.run.dna_control_complex_box_barcode).toEqual('DCCB1')
       expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
     })
-    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Revio', async () => {
-      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-      await options[1].setSelected()
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
-      expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
+
+    it('does not show dna_control_complex_box_barcode when Instrument type is v13 Revio', async () => {
+      const system_name_input = wrapper.find('[data-attribute="system_name"]')
+      await system_name_input.setValue(PacbioInstrumentTypes.Revio.key)
+
+      expect(runInfo.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
+      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
     })
-    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Sequel IIe', async () => {
-      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-      await options[2].setSelected()
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[3].id)
-      expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
-    })
+
     it('system name', async () => {
-      expect(store.run.system_name).toEqual('Sequel IIe')
+      expect(store.run.system_name).toEqual('Revio')
     })
+
     it('smrt_link_version_id', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[1].setSelected()
       expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
     })
+
     it('comments', async () => {
       const input = wrapper.find('[data-attribute=comments]')
       await input.setValue('example comment')
@@ -216,9 +218,6 @@ describe('PacbioRunInfoEdit old run', () => {
           resources: { smrtLinkVersions },
           instrumentTypeList: PacbioInstrumentTypes,
         },
-      },
-      {
-        newRecord: false,
       },
     )
     runInfo = wrapperObj.vm
