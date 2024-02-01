@@ -1,3 +1,10 @@
+/**
+ * Importing `defineStore` function from 'pinia' library.
+ * The `defineStore` function is used to create a store in Pinia,
+ * which is a state management library for Vue.js.
+ *
+ * @see {@link https://pinia.esm.dev/api/defineStore} for more information about `defineStore`.
+ */
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
@@ -5,19 +12,71 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
-    tagSetChoices: [],
-    tagChoices: {},
-    libraries: [],
+    tagSets: {},
+    tags: {},
+    libraries: {},
+    tubes: {},
+    requests: {},
+    libraryTags: {},
   }),
 
   getters: {
-    // Returns a list of tag options by tagSetId
+    /**
+     * Returns an array of tag choices for a given tag set ID.
+     *
+     * @function tagChoicesForId
+     * @param {Object} state - The state object containing tagSets and tags.
+     * @param {string} tagSetId - The ID of the tag set to get choices for.
+     * @returns {Array<{value: string, text: string}>} - An array of tag choices, each represented as an object with a value and text property.
+     */
     tagChoicesForId: (state) => (tagSetId) => {
-      return state.tagChoices[tagSetId] || []
+      const values =
+        state.tagSets[tagSetId].tags
+          .map((tagId) => state.tags[tagId])
+          .map(({ id: value, group_id: text }) => ({ value, text })) || []
+      return values
+    },
+    /**
+     * Returns an array of tag set choices from the state.
+     *
+     * @function tagSetChoices
+     * @param {Object} state - The state object containing tagSets.
+     * @returns {Array<{value: string, text: string}>} - An array of tag set choices, each represented as an object with a value and text property.
+     */
+    tagSetChoices: (state) => {
+      return Object.values(state.tagSets).map(({ id, name }) => ({ value: id, text: name }))
+    },
+
+    /**
+     * Transforms the libraries in the state into an array with additional properties.
+     *
+     * @function librariesArray
+     * @param {Object} state - The state object containing libraries, libraryTags, requests, and tubes.
+     * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
+     */
+    librariesArray: (state) => {
+      return Object.values(state.libraries).map((library) => {
+        const { id, request, tag, tube, ...attributes } = library
+        return {
+          id,
+          ...attributes,
+          tag_group_id: state.libraryTags[tag].group_id,
+          sample_name: state.requests[request].sample_name,
+          barcode: state.tubes[tube].barcode,
+        }
+      })
     },
   },
   actions: {
-    /**Create a new libary */
+    /**
+     * Asynchronously creates a new library in Traction.
+     * @param {Object} library - The library object to be created.
+     * @param {string|number} tagId - The ID of the tag to be associated with the library.
+     * @returns {Promise} A promise that resolves when the library is successfully created.
+     *
+     * @example
+     * await createLibraryInTraction(library, tagId);
+     */
     async createLibraryInTraction(library, tagId) {
       const rootState = useRootStore()
 
@@ -40,7 +99,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           },
         },
       }
-      //TODO_LIBRARY_CHANGE:Needs to be changed to library
       const request = rootState.api.traction.pacbio.libraries
       const promise = request.create({ data: body, include: 'tube,primary_aliquot' })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -49,7 +107,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       return { success, barcode, errors }
     },
 
-    /**Delete all libraries with given library ids */
+    /**
+     * Deletes the specified libraries.
+     *
+     * @param {Array} libraryIds - An array of IDs of the libraries to be deleted.
+     * @returns {Promise} A promise that resolves when all the specified libraries are successfully deleted.
+     *
+     * @example
+     * await deleteLibraries([1, 2, 3]);
+     */
     async deleteLibraries(libraryIds) {
       const rootStore = useRootStore()
       const promises = rootStore.api.traction.pacbio.libraries.destroy(libraryIds)
@@ -58,8 +124,13 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       return responses
     },
 
-    /**Set libraries in store with those fetched using given filter and page  */
-    async setLibraries(filter, page) {
+    /**
+     * Fetch libraries in store with those fetched using given filter and page.
+     * @param {Object} filter - The filter criteria to apply when fetching the libraries.
+     * @param {number} page - The page number to fetch from the server.
+     * @returns {Promise<{success: boolean, errors: Array}>} - A promise that resolves to an object containing a success boolean and an array of errors.
+     */
+    async fetchLibraries(filter, page) {
       const rootStore = useRootStore()
       const pacbioLibraries = rootStore.api.traction.pacbio.libraries
       const promise = pacbioLibraries.get({
@@ -69,52 +140,33 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       })
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
-      const { tubes, tags, requests } = groupIncludedByResource(included)
+      const { success, data: { data, included = [] } = {}, errors = [] } = response
 
-      if (success) {
-        /* 
-      Here we build library objects to include necessary relational data
-      for the pacbio libraries page
-      */
-        const libraries = data.map((library) => {
-          return {
-            /** */
-            id: library.id,
-            ...library.attributes,
-            tag_group_id: tags?.find((tag) => tag.id == library.relationships.tag.data?.id)
-              ?.attributes.group_id,
-            sample_name: requests?.find(
-              (request) => request.id == library.relationships.request.data?.id,
-            )?.attributes.sample_name,
-            barcode: tubes?.find((tube) => tube.id == library.relationships.tube.data?.id)
-              ?.attributes.barcode,
-          }
-        })
-        this.libraries = libraries
+      if (success && data.length > 0) {
+        const { tubes, tags, requests } = groupIncludedByResource(included)
+        this.libraries = dataToObjectById({ data, includeRelationships: true })
+        this.tubes = dataToObjectById({ data: tubes })
+        this.libraryTags = dataToObjectById({ data: tags })
+        this.requests = dataToObjectById({ data: requests })
       }
-      return { success, errors, meta }
+      return { success, errors }
     },
 
-    /**Fetch all tag sets */
+    /**
+     * Fetches Pacbio tag sets from the root store and formats them by ID.
+     * @function fetchPacbioTagSets
+     * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, an array of errors, and the response object.
+     * @throws {Error} - Throws an error if the request fails.
+     */
     async fetchPacbioTagSets() {
       const rootStore = useRootStore()
       const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
+
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
-      if (success) {
-        const tagSets = dataToObjectById({ data, includeRelationships: true })
-        const tags = dataToObjectById({ data: included })
-        const tagSetChoices = []
-        const tagChoices = {}
-        Object.values(tagSets).forEach((tagSet) => {
-          tagSetChoices.push({ value: tagSet.id, text: tagSet.name })
-          tagChoices[tagSet.id] = tagSet.tags
-            .map((tagId) => tags[tagId])
-            .map(({ id: value, group_id: text }) => ({ value, text }))
-        })
-        this.tagSetChoices = tagSetChoices
-        this.tagChoices = tagChoices
+      if (success && data.length > 0) {
+        this.tagSets = dataToObjectById({ data, includeRelationships: true })
+        this.tags = dataToObjectById({ data: included })
       }
       return { success, errors, response }
     },

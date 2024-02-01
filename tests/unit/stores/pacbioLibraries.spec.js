@@ -4,7 +4,7 @@ import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import { beforeEach, describe } from 'vitest'
-
+import { dataToObjectById } from '@/api/JsonApi.js'
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -23,6 +23,96 @@ describe('usePacbioLibrariesStore', () => {
       const store = usePacbioLibrariesStore()
       store.$state = { libraries: libraries }
       expect(store.libraries).toEqual(libraries)
+    })
+  })
+  describe('getters', () => {
+    it('returns libraries array from "state.libraries"', async () => {
+      const store = usePacbioLibrariesStore()
+
+      const libraries = {
+        1: {
+          id: '1',
+          request: '1',
+          tag: '3',
+          tube: '4',
+          state: 'pending',
+          volume: 1.0,
+          concentration: 1,
+          insert_size: 100,
+          source_identifier: 'DN1:A1',
+          template_prep_kit_box_barcode: 'LK12345',
+          created_at: '09/23/2019 11:18',
+          type: 'libraries',
+        },
+      }
+      const tubes = {
+        4: {
+          id: '4',
+          type: 'tubes',
+          barcode: 'TRAC-2-721',
+        },
+      }
+      const libraryTags = {
+        3: {
+          id: '3',
+          type: 'tags',
+          group_id: '1234',
+        },
+      }
+      const requests = {
+        1: {
+          id: '1',
+          type: 'requests',
+          sample_name: '4616STDY7535900',
+        },
+      }
+
+      store.$state = { libraries, libraryTags, requests, tubes }
+      const libraryArray = [
+        {
+          id: '1',
+          state: 'pending',
+          volume: 1.0,
+          concentration: 1,
+          insert_size: 100,
+          source_identifier: 'DN1:A1',
+          template_prep_kit_box_barcode: 'LK12345',
+          created_at: '09/23/2019 11:18',
+          type: 'libraries',
+          tag_group_id: '1234',
+          sample_name: '4616STDY7535900',
+          barcode: 'TRAC-2-721',
+        },
+      ]
+      expect(store.librariesArray).toEqual(libraryArray)
+    })
+    it('returns tagSetChoicesArray and tagChoicesForId from state.tagSetChoices', async () => {
+      const store = usePacbioLibrariesStore()
+      const data = dataToObjectById({
+        data: Data.TractionPacbioTagSets.data.data,
+        includeRelationships: true,
+      })
+      store.$state = {
+        tagSets: { ...data },
+        tags: { ...dataToObjectById({ data: Data.TractionPacbioTagSets.data.included }) },
+      }
+      const expectedTagSetChoices = [
+        {
+          text: 'Sequel_16_barcodes_v3',
+          value: '3',
+        },
+        {
+          text: 'IsoSeq_v1',
+          value: '4',
+        },
+      ]
+      expect(store.tagSetChoices).toEqual(Object.values(expectedTagSetChoices))
+      expect(store.tagChoicesForId('3')).toHaveLength(16)
+      expect(
+        store
+          .tagChoicesForId('3')
+          .some((tag) => tag.text === 'bc1001_BAK8A_OA' && tag.value === '113'),
+      ).toBe(true)
     })
   })
   describe('actions', () => {
@@ -140,7 +230,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(response[0].success).toBeFalsy()
       })
     })
-    describe('#setLibraries', () => {
+    describe('#fetchLibraries', () => {
       let get, failedResponse
 
       beforeEach(() => {
@@ -156,25 +246,40 @@ describe('usePacbioLibrariesStore', () => {
       it('successfully', async () => {
         const libraries = Data.TractionPacbioLibrary
         get.mockResolvedValue(libraries)
-        const { success, errors } = await store.setLibraries()
+        const { success, errors } = await store.fetchLibraries()
         // Because we do some data manipulation in the action the easiest way to build the expected data
         // is to do it manually
-        const expectedLibraries = [
-          {
-            id: '1',
-            state: 'pending',
-            volume: 1.0,
-            concentration: 1,
-            insert_size: 100,
-            source_identifier: 'DN1:A1',
-            template_prep_kit_box_barcode: 'LK12345',
-            created_at: '09/23/2019 11:18',
-            tag_group_id: '1234',
-            sample_name: '4616STDY7535900',
-            barcode: 'TRAC-2-721',
-          },
-        ]
-        expect(store.libraries).toEqual(expectedLibraries)
+        const expectedLibrary = {
+          id: '1',
+          request: '1',
+          tag: '3',
+          tube: '4',
+          state: 'pending',
+          volume: 1.0,
+          concentration: 1,
+          insert_size: 100,
+          source_identifier: 'DN1:A1',
+          template_prep_kit_box_barcode: 'LK12345',
+          created_at: '09/23/2019 11:18',
+          type: 'libraries',
+        }
+
+        expect(store.libraries[1]).toEqual(expectedLibrary)
+        expect(store.tubes[4]).toEqual({
+          id: '4',
+          type: 'tubes',
+          barcode: 'TRAC-2-721',
+        })
+        expect(store.libraryTags[3]).toEqual({
+          id: '3',
+          type: 'tags',
+          group_id: '1234',
+        })
+        expect(store.requests[1]).toEqual({
+          id: '1',
+          type: 'requests',
+          sample_name: '4616STDY7535900',
+        })
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -182,26 +287,23 @@ describe('usePacbioLibrariesStore', () => {
       it('when the library has no request, tube or tag', async () => {
         get.mockResolvedValue(Data.TractionPacbioLibrariesNoRelationships)
 
-        const { success, errors } = await store.setLibraries()
-
-        const expectedLibrary = [
-          {
-            id: '7',
-            state: 'pending',
-            volume: 1,
-            concentration: 1,
-            template_prep_kit_box_barcode: 'LK12345',
-            insert_size: 100,
-            created_at: '2019/10/16 13:52',
-            deactivated_at: null,
-            source_identifier: null,
-            pool: undefined,
-            tag_group_id: undefined,
-            sample_name: undefined,
-            barcode: undefined,
-          },
-        ]
-        expect(store.libraries).toEqual(expectedLibrary)
+        const { success, errors } = await store.fetchLibraries()
+        const expectedLibrary = {
+          type: 'libraries',
+          id: '7',
+          state: 'pending',
+          volume: 1,
+          concentration: 1,
+          template_prep_kit_box_barcode: 'LK12345',
+          insert_size: 100,
+          created_at: '2019/10/16 13:52',
+          deactivated_at: null,
+          source_identifier: null,
+          request: null,
+          tag: null,
+        }
+        expect(store.libraries[7]).toEqual(expectedLibrary)
+        expect(store.tubes).toEqual({})
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -209,7 +311,7 @@ describe('usePacbioLibrariesStore', () => {
       it('unsuccessfully', async () => {
         get.mockRejectedValue({ response: failedResponse })
         const expectedResponse = newResponse({ ...failedResponse, success: false })
-        const { success, errors } = await store.setLibraries()
+        const { success, errors } = await store.fetchLibraries()
         expect(success).toEqual(false)
         expect(errors).toEqual(expectedResponse.errors)
       })
@@ -217,17 +319,6 @@ describe('usePacbioLibrariesStore', () => {
 
     describe('fetchPacbioTagSets', () => {
       it('handles success', async () => {
-        const expectedTagSetChoices = [
-          {
-            text: 'Sequel_16_barcodes_v3',
-            value: '3',
-          },
-          {
-            text: 'IsoSeq_v1',
-            value: '4',
-          },
-        ]
-
         // mock dependencies
         const get = vi.fn()
         rootStore.api.traction.pacbio.tag_sets = { get }
@@ -235,8 +326,11 @@ describe('usePacbioLibrariesStore', () => {
         // apply action
         const { success } = await store.fetchPacbioTagSets()
         // assert result
-        expect(store.tagSetChoices).toEqual(expectedTagSetChoices)
-        expect(Object.keys(store.tagChoices)).toEqual(['3', '4'])
+        const data = dataToObjectById({
+          data: Data.TractionPacbioTagSets.data.data,
+          includeRelationships: true,
+        })
+        expect(store.tagSets).toEqual(data)
         expect(success).toEqual(true)
       })
 
@@ -251,8 +345,8 @@ describe('usePacbioLibrariesStore', () => {
         })
         // apply action
         const { success } = await store.fetchPacbioTagSets()
-        expect(store.tagSetChoices).toEqual([])
-        expect(store.tagChoices).toEqual({})
+        expect(store.tagSets).toEqual({})
+        expect(store.tags).toEqual({})
         expect(success).toEqual(false)
       })
     })
