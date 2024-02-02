@@ -1,5 +1,14 @@
 <template>
-  <ellipse :class="[checkRequest, selected]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" @click="click">
+  <ellipse
+    :style="ellipseStyle"
+    transform="matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112)"
+    :class="[checkRequest, selected]"
+    :cx="cx"
+    :cy="cy"
+    :rx="rx"
+    :ry="ry"
+    @click="click"
+  >
     <title v-if="getRequest" v-text="getRequest.sample_name"></title>
   </ellipse>
 </template>
@@ -91,6 +100,13 @@ export default {
         ? this.$store.getters['traction/pacbio/poolCreate/requestList'](this.requests)[0]
         : ''
     },
+    ellipseStyle() {
+      return {
+        fill: this.checkRequest === 'filled' ? 'green' : 'black',
+        stroke: this.selected == 'selected' ? 'yellow' : 'black',
+        'stroke-width': this.selected == 'selected' ? '2' : '1',
+      }
+    },
   },
   methods: {
     click() {
@@ -99,16 +115,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-ellipse {
-  transform: matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112);
-  stroke: #000000;
-}
-.filled {
-  fill: green;
-}
-.selected {
-  stroke: yellow;
-}
-</style>
