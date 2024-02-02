@@ -11,7 +11,6 @@
           "template_prep_kit_box_barcode": "LK12345",
           "insert_size": 100,
           "created_at": "09/23/2019 11:18",
-          "deactivated_at": null,
           "source_identifier": "DN1:A1"
         },
         "relationships": {
@@ -21,16 +20,16 @@
               "id": "1"
             }
           },
-          "pool": {
-            "data": {
-              "type": "pools",
-              "id": "2"
-            }
-          },
           "tag": {
             "data": {
               "type": "tags",
               "id": "3"
+            }
+          },
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "4"
             }
           }
         }
@@ -45,21 +44,10 @@
         }
       },
       {
-        "id": "2",
-        "type": "pools",
+        "id": "4",
+        "type": "tubes",
         "attributes": {
-          "volume": 1.0,
-          "concentration": 1.0,
-          "template_prep_kit_box_barcode": "LK12345",
-          "insert_size": 100
-        },
-        "relationships": {
-          "tube": {
-            "data": {
-              "type": "tubes",
-              "id": "4"
-            }
-          }
+          "barcode": "TRAC-2-721"
         }
       },
       {
@@ -67,13 +55,6 @@
         "type": "tags",
         "attributes": {
           "group_id": "1234"
-        }
-      },
-      {
-        "id": "4",
-        "type": "tubes",
-        "attributes": {
-          "sample_name": "TRAC-16"
         }
       }
     ]

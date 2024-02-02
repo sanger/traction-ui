@@ -48,6 +48,7 @@ import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
+import TractionPacbioTagSets from './tractionPacbioTagSets.json'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
@@ -98,6 +99,7 @@ export default {
   TractionPacbioLibrary,
   TractionPacbioSamples,
   TractionPacbioSample,
+  TractionPacbioTagSets,
   PacbioRuns,
   PacbioRun,
   PacbioPlates,
