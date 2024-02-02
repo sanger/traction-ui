@@ -1,9 +1,12 @@
 <template>
-  <div class="plate">
+  <div>
     <svg :width="width" :height="height" viewBox="0 0 350 255" preserveAspectRatio="xMidYMin">
       <g id="layer1" transform="translate(-970.03125,-1039.9375)">
         <path
+          fill="#49afcd"
           id="path5203"
+          stroke="#004080"
+          stroke-width="1.77258527"
           d="m 983.44263,1045.0229 323.20507,0 c 3.4232,0 6.1984,2.7801 6.1984,6.2095 l 0,210.2411 c 0,3.4294 -2.7752,6.2096 -6.1984,6.2096 l -323.20507,0 c -3.42332,0 -6.19846,-2.7802 -6.19846,-6.2096 0,0 0,0 0,0 l 0,-210.2411 c 0,-3.4294 2.77514,-6.2095 6.19846,-6.2095 0,0 0,0 0,0 z"
         />
 
@@ -17,7 +20,7 @@
             :key="key"
             :x="row.x"
             :y="row.y"
-            class="plate-heading"
+            class="font-arial font-bold text-xxs"
           >
             {{ key }}
           </tspan>
@@ -28,7 +31,7 @@
           :key="key"
           :x="column.x"
           :y="column.y"
-          class="plate-heading"
+          class="font-arial font-bold text-xxs"
         >
           <tspan>{{ key }}</tspan>
         </text>
@@ -59,19 +62,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-path {
-  fill: #49afcd;
-  stroke: #004080;
-  stroke-width: 1.77258527;
-}
-
-.plate-heading {
-  font: {
-    size: 9px;
-    weight: bold;
-    family: Arial;
-  }
-}
-</style>
