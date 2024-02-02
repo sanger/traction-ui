@@ -33,7 +33,7 @@ describe('Pacbio plates view', () => {
     cy.get('#filterInput').clear().type('1')
     cy.get('#input-per-page').clear().type('1')
     cy.get('#details-btn-1').click()
-    cy.get('.plate').find('ellipse').should('have.length', 96)
+    cy.get('ellipse').should('have.length', 96)
     cy.get('ellipse.filled').should('have.length', 2)
     cy.get('ellipse.empty').should('have.length', 94)
   })
