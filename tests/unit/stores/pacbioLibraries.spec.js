@@ -21,8 +21,8 @@ describe('usePacbioLibrariesStore', () => {
 
     it('"libraries" returns libraries from "state.libraries"', () => {
       const store = usePacbioLibrariesStore()
-      store.$state = { libraries: libraries }
-      expect(store.libraries).toEqual(libraries)
+      store.$state.libraryState = { libraries: libraries }
+      expect(store.libraryState.libraries).toEqual(libraries)
     })
   })
   describe('getters', () => {
@@ -67,7 +67,7 @@ describe('usePacbioLibrariesStore', () => {
         },
       }
 
-      store.$state = { libraries, libraryTags, requests, tubes }
+      store.$state.libraryState = { libraries, libraryTags, requests, tubes }
       const libraryArray = [
         {
           id: '1',
@@ -92,7 +92,7 @@ describe('usePacbioLibrariesStore', () => {
         data: Data.TractionPacbioTagSets.data.data,
         includeRelationships: true,
       })
-      store.$state = {
+      store.$state.tagState = {
         tagSets: { ...data },
         tags: { ...dataToObjectById({ data: Data.TractionPacbioTagSets.data.included }) },
       }
@@ -264,18 +264,18 @@ describe('usePacbioLibrariesStore', () => {
           type: 'libraries',
         }
 
-        expect(store.libraries[1]).toEqual(expectedLibrary)
-        expect(store.tubes[4]).toEqual({
+        expect(store.libraryState.libraries[1]).toEqual(expectedLibrary)
+        expect(store.libraryState.tubes[4]).toEqual({
           id: '4',
           type: 'tubes',
           barcode: 'TRAC-2-721',
         })
-        expect(store.libraryTags[3]).toEqual({
+        expect(store.libraryState.libraryTags[3]).toEqual({
           id: '3',
           type: 'tags',
           group_id: '1234',
         })
-        expect(store.requests[1]).toEqual({
+        expect(store.libraryState.requests[1]).toEqual({
           id: '1',
           type: 'requests',
           sample_name: '4616STDY7535900',
@@ -302,8 +302,8 @@ describe('usePacbioLibrariesStore', () => {
           request: null,
           tag: null,
         }
-        expect(store.libraries[7]).toEqual(expectedLibrary)
-        expect(store.tubes).toEqual({})
+        expect(store.libraryState.libraries[7]).toEqual(expectedLibrary)
+        expect(store.libraryState.tubes).toEqual({})
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -330,7 +330,7 @@ describe('usePacbioLibrariesStore', () => {
           data: Data.TractionPacbioTagSets.data.data,
           includeRelationships: true,
         })
-        expect(store.tagSets).toEqual(data)
+        expect(store.tagState.tagSets).toEqual(data)
         expect(success).toEqual(true)
       })
 
@@ -345,8 +345,8 @@ describe('usePacbioLibrariesStore', () => {
         })
         // apply action
         const { success } = await store.fetchPacbioTagSets()
-        expect(store.tagSets).toEqual({})
-        expect(store.tags).toEqual({})
+        expect(store.tagState.tagSets).toEqual({})
+        expect(store.tagState.tags).toEqual({})
         expect(success).toEqual(false)
       })
     })

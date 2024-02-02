@@ -12,12 +12,40 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
-    tagSets: {},
-    tags: {},
-    libraries: {},
-    tubes: {},
-    requests: {},
-    libraryTags: {},
+    /**
+     * @property {Object} tagState - An object to store and manage all tag-related data.
+     */
+    tagState: {
+      /**
+       * @property {Object} tagSets - An object to store all tag-sets which are indexed by id
+       */
+      tagSets: {},
+      /**
+       * @property {Object} tags - An object to store all tags, each of which belongs to a tag set.
+       */
+      tags: {},
+    },
+    /**
+     * @property {Object} libraryState - An object to store and manage all library-related data.
+     */
+    libraryState: {
+      /**
+       * @property {Object} libraries - An object to store all libraries indexed by id.
+       */
+      libraries: {},
+      /**
+       * @property {Object} tubes - An object to store all tubes from all libraries indexed by id.
+       */
+      tubes: {},
+      /**
+       * @property {Object} requests - An object to store all requests from all libraries indexed by id.
+       */
+      requests: {},
+      /**
+       * @property {Object} libraryTags - An object to store all tags from all libraries indexed by id.
+       */
+      libraryTags: {},
+    },
   }),
 
   getters: {
@@ -31,8 +59,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     tagChoicesForId: (state) => (tagSetId) => {
       const values =
-        state.tagSets[tagSetId].tags
-          .map((tagId) => state.tags[tagId])
+        state.tagState.tagSets[tagSetId].tags
+          .map((tagId) => state.tagState.tags[tagId])
           .map(({ id: value, group_id: text }) => ({ value, text })) || []
       return values
     },
@@ -44,7 +72,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<{value: string, text: string}>} - An array of tag set choices, each represented as an object with a value and text property.
      */
     tagSetChoices: (state) => {
-      return Object.values(state.tagSets).map(({ id, name }) => ({ value: id, text: name }))
+      return Object.values(state.tagState.tagSets).map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }))
     },
 
     /**
@@ -55,14 +86,14 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
-      return Object.values(state.libraries).map((library) => {
+      return Object.values(state.libraryState.libraries).map((library) => {
         const { id, request, tag, tube, ...attributes } = library
         return {
           id,
           ...attributes,
-          tag_group_id: state.libraryTags[tag].group_id,
-          sample_name: state.requests[request].sample_name,
-          barcode: state.tubes[tube].barcode,
+          tag_group_id: state.libraryState.libraryTags[tag].group_id,
+          sample_name: state.libraryState.requests[request].sample_name,
+          barcode: state.libraryState.tubes[tube].barcode,
         }
       })
     },
@@ -144,10 +175,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       if (success && data.length > 0) {
         const { tubes, tags, requests } = groupIncludedByResource(included)
-        this.libraries = dataToObjectById({ data, includeRelationships: true })
-        this.tubes = dataToObjectById({ data: tubes })
-        this.libraryTags = dataToObjectById({ data: tags })
-        this.requests = dataToObjectById({ data: requests })
+        this.libraryState.libraries = dataToObjectById({ data, includeRelationships: true })
+        this.libraryState.tubes = dataToObjectById({ data: tubes })
+        this.libraryState.libraryTags = dataToObjectById({ data: tags })
+        this.libraryState.requests = dataToObjectById({ data: requests })
       }
       return { success, errors }
     },
@@ -165,8 +196,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
       if (success && data.length > 0) {
-        this.tagSets = dataToObjectById({ data, includeRelationships: true })
-        this.tags = dataToObjectById({ data: included })
+        this.tagState.tagSets = dataToObjectById({ data, includeRelationships: true })
+        this.tagState.tags = dataToObjectById({ data: included })
       }
       return { success, errors, response }
     },
