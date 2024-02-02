@@ -1,5 +1,6 @@
 <template>
   <ellipse
+    :data-status="checkRequest"
     :style="ellipseStyle"
     transform="matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112)"
     :class="status"
