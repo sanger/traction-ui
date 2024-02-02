@@ -42,7 +42,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-</style>
