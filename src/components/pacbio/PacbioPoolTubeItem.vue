@@ -20,37 +20,41 @@
           >Edit</traction-button
         >
       </div>
-      <div class="flex flex-col w-3/4">
-        <dl class="row flex">
-          <dt>Barcode</dt>
-          <dd data-attribute="barcode">{{ barcode }}</dd>
+      <div class="flex flex-col w-3/4 text-left text-sm">
+        <dl class="flex">
+          <dt class="w-1/4">Barcode</dt>
+          <dd class="w-3/4" data-attribute="barcode">{{ barcode }}</dd>
         </dl>
         <div v-if="showInfo">
-          <dl class="row flex">
-            <dt>Source</dt>
-            <dd data-attribute="source-identifier">{{ source_identifier }}</dd>
+          <dl class="flex">
+            <dt class="w-1/4">Source</dt>
+            <dd class="w-3/4" data-attribute="source-identifier">{{ source_identifier }}</dd>
           </dl>
-          <dl class="row flex">
-            <dt>Volume</dt>
-            <dd data-attribute="volume">{{ volume || 'Unknown' }}</dd>
+          <dl class="flex">
+            <dt class="w-1/4">Volume</dt>
+            <dd class="w-3/4" data-attribute="volume">{{ volume || 'Unknown' }}</dd>
           </dl>
-          <dl class="row flex">
-            <dt>Concentration</dt>
-            <dd data-attribute="concentration">{{ concentration || 'Unknown' }}</dd>
+          <dl class="flex">
+            <dt class="w-1/4">Concentration</dt>
+            <dd class="w-3/4" data-attribute="concentration">
+              {{ concentration || 'Unknown' }}
+            </dd>
           </dl>
-          <dl class="row flex">
-            <dt>Template prep kit box barcode</dt>
-            <dd data-attribute="template-prep-kit-box-barcode">
+          <dl class="flex">
+            <dt class="w-1/4">Template prep kit box barcode</dt>
+            <dd class="w-3/4" data-attribute="template-prep-kit-box-barcode">
               {{ template_prep_kit_box_barcode || 'Unknown' }}
             </dd>
           </dl>
           <dl class="row flex">
-            <dt>Insert size</dt>
-            <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
+            <dt class="w-1/4">Insert size</dt>
+            <dd class="w-3/4" data-attribute="insert-size">
+              {{ insert_size || 'Unknown' }}
+            </dd>
           </dl>
           <dl class="row flex">
-            <dt>Libraries</dt>
-            <dd>
+            <dt class="w-1/4">Libraries</dt>
+            <dd class="w-3/4">
               <ul>
                 <li v-for="library in libraries" :key="library.id">
                   {{ library.sample_name }} : {{ library.group_id }}
