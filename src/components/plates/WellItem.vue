@@ -1,6 +1,15 @@
 <template>
-  <ellipse :class="status" :cx="cx" :cy="cy" :rx="rx" :ry="ry">
-    <title v-if="hasRequest" v-text="tooltip"></title>
+  <ellipse
+    :data-status="checkRequest"
+    :style="ellipseStyle"
+    transform="matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112)"
+    :class="status"
+    :cx="cx"
+    :cy="cy"
+    :rx="rx"
+    :ry="ry"
+  >
+    <title v-if="getRequest" v-text="tooltip"></title>
   </ellipse>
 </template>
 
@@ -41,25 +50,22 @@ export default {
     },
   },
   computed: {
-    hasRequest() {
+    checkRequest() {
+      return this.getRequest ? 'filled' : 'empty'
+    },
+    getRequest() {
       return this.well_info.requests.some((r) => r.sample_name)
     },
-    status() {
-      return this.hasRequest ? 'filled' : 'empty'
-    },
     tooltip() {
-      return this.hasRequest ? this.well_info.requests.map((r) => r.sample_name).join(', ') : ''
+      return this.getRequest ? this.well_info.requests.map((r) => r.sample_name).join(', ') : ''
+    },
+    ellipseStyle() {
+      return {
+        fill: this.checkRequest === 'filled' ? 'green' : 'black',
+        stroke: this.selected == 'selected' ? 'yellow' : 'black',
+        'stroke-width': this.selected == 'selected' ? '2' : '1',
+      }
     },
   },
 }
 </script>
-
-<style scoped lang="scss">
-ellipse {
-  transform: matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112);
-  stroke: #000000;
-}
-.filled {
-  fill: green;
-}
-</style>

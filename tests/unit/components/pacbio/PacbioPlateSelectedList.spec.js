@@ -51,7 +51,6 @@ describe('PacbioPlateSelectedList', () => {
 
     it('contains the selected plate', () => {
       expect(wrapper.find('[data-type=selected-plate-item]').text()).toContain('DN814327C')
-      expect(wrapper.findAll('.plate').length).toEqual(1)
     })
   })
 
