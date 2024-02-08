@@ -85,8 +85,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     instrumentTypeList: PacbioInstrumentTypes,
 
     //Instrument type: The instrument type selected for the run
-    //Set this to Sequel IIe by default??
-    instrumentType: PacbioInstrumentTypes.SequelIIe,
+    instrumentType: PacbioInstrumentTypes.Revio,
   }),
   getters: {
     /**

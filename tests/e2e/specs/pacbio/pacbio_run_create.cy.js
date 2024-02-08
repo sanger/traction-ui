@@ -30,11 +30,11 @@ describe('Pacbio Run Create view', () => {
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
+    cy.get('[data-attribute="smrt_link_version"]').select('v11')
     cy.get('.pacbioRunInfoEdit')
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
-    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
-    cy.get('[data-attribute="smrt_link_version"]').select('v11')
 
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
@@ -74,11 +74,69 @@ describe('Pacbio Run Create view', () => {
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('.pacbioRunInfoEdit')
-      .get('[data-attribute="dna_control_complex_box_barcode"]')
-      .type('Lxxxxx101717600123199')
     cy.get('[data-attribute="system_name"]').select('Revio')
     cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
+
+    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 1
+    cy.get('[data-attribute=pacbio-run-plate-1]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('#update').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 2
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('#update').click()
+
+    cy.get('button').contains('Create').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully created')
+  })
+
+  it('Creates a Revio run successfully - v13_revio', () => {
+    const dataTransfer = new DataTransfer()
+
+    // Checks the PacbioRunInfoEdit component
+    cy.visit('#/pacbio/runs')
+    cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('[data-attribute="system_name"]').select('Revio')
+    cy.get('[data-attribute="smrt_link_version"]').select('v13_revio')
 
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
@@ -148,8 +206,8 @@ describe('Pacbio Run Create view', () => {
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
     cy.get('[data-attribute="system_name"]').select('Sequel IIe')
+    cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
 
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
@@ -182,11 +240,11 @@ describe('Pacbio Run Create view', () => {
 
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('#system-name').select('Sequel IIe')
+    cy.get('[data-attribute="smrt_link_version"]').select('v11')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
-    cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt_link_version"]').select('v11')
 
     // Set the default values
     cy.get('[data-attribute="default-movie-time"]').select('15.0')
@@ -224,11 +282,11 @@ describe('Pacbio Run Create view', () => {
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
+    cy.get('[data-attribute="smrt_link_version"]').select('v13_sequel_iie')
     cy.get('.pacbioRunInfoEdit')
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
-    cy.get('[data-attribute="system_name"]').select('Revio')
-    cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
 
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
@@ -253,9 +311,10 @@ describe('Pacbio Run Create view', () => {
     cy.contains('[data-type=run-validation-message]', 'Run has been reset')
 
     // After resetting check values are back to default
-    cy.get('[data-attribute="dna_control_complex_box_barcode"]').should('have.value', '')
-    cy.get('[data-attribute="system_name"]').contains('Sequel IIe')
+    cy.get('[data-attribute="system_name"]').contains('Revio')
+    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
     cy.get('[data-attribute="smrt_link_version"]').select('v11')
+    cy.get('[data-attribute="dna_control_complex_box_barcode"]').should('have.value', '')
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').should('have.value', '')
     // bg-gray-100 is the default colour of the well
     cy.get('[data-attribute=pacbio-run-well]').first().should('have.class', 'bg-gray-100')

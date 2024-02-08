@@ -13,12 +13,12 @@ const newPlate = (plateNumber) => {
 /**
  * @returns {Object} the default attributes for a run
  * id 'new' inidcates a new record
- * Currently defaults to one plate, for a Sequel IIe run
+ * Currently defaults to one plate, for a Revio run
  **/
 const runAttributes = () => {
   return {
     id: 'new',
-    system_name: 'Sequel IIe',
+    system_name: 'Revio',
     dna_control_complex_box_barcode: null,
     comments: null,
   }
