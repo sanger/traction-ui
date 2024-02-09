@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
+import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreateNew'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'

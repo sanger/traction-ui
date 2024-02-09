@@ -58,6 +58,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<{value: string, text: string}>} - An array of tag choices, each represented as an object with a value and text property.
      */
     tagChoicesForId: (state) => (tagSetId) => {
+      if (!tagSetId) return []
       const values =
         state.tagState.tagSets[tagSetId].tags
           .map((tagId) => state.tagState.tags[tagId])
@@ -86,16 +87,18 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
-      return Object.values(state.libraryState.libraries).map((library) => {
-        const { id, request, tag, tube, ...attributes } = library
-        return {
-          id,
-          ...attributes,
-          tag_group_id: state.libraryState.libraryTags[tag].group_id,
-          sample_name: state.libraryState.requests[request].sample_name,
-          barcode: state.libraryState.tubes[tube].barcode,
-        }
-      })
+      return Object.values(state.libraryState.libraries)
+        .filter((library) => library.tube)
+        .map((library) => {
+          const { id, request, tag, tube, ...attributes } = library
+          return {
+            id,
+            ...attributes,
+            tag_group_id: tag ? state.libraryState.libraryTags[tag].group_id : '',
+            sample_name: state.libraryState.requests[request].sample_name,
+            barcode: state.libraryState.tubes[tube].barcode,
+          }
+        })
     },
   },
   actions: {
@@ -108,16 +111,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @example
      * await createLibraryInTraction(library, tagId);
      */
-    async createLibraryInTraction(library, tagId) {
+    async createLibraryInTraction(library) {
       const rootState = useRootStore()
-
       const body = {
         data: {
           type: 'libraries',
           attributes: {
             pacbio_request_id: library.sample.id,
             template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-            tag_id: tagId,
+            tag_id: library.tag.id,
             concentration: library.concentration,
             volume: library.volume,
             insert_size: library.insert_size,
@@ -130,6 +132,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           },
         },
       }
+
       const request = rootState.api.traction.pacbio.libraries
       const promise = request.create({ data: body, include: 'tube,primary_aliquot' })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -150,7 +153,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     async deleteLibraries(libraryIds) {
       const rootStore = useRootStore()
       const promises = rootStore.api.traction.pacbio.libraries.destroy(libraryIds)
-      //TODO_LIBRARY_CHANGE: Update all components (which calls deleteLibraries) to use the new response format
       const responses = await Promise.all(promises.map((promise) => handleResponse(promise)))
       return responses
     },
