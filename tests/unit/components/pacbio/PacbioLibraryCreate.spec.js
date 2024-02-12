@@ -1,8 +1,45 @@
-import { mount, store, nextTick } from '@support/testHelper'
-import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
+import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
+import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(PacbioLibraryCreate, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePacbioLibrariesStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('PacbioLibraryCreate.vue', () => {
-  let wrapper, modal, props
+  let wrapper, modal, props, store
 
   beforeEach(() => {
     props = {
@@ -10,12 +47,20 @@ describe('PacbioLibraryCreate.vue', () => {
       isStatic: true,
       selectedSample: { id: 1 },
     }
-
-    wrapper = mount(PacbioLibraryCreate, {
-      store,
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.tag_sets.get = vi.fn().mockReturnValue([])
+        }
+      },
+    ]
+    const { wrapperObj, storeObj } = mountWithStore({
       props,
+      plugins,
     })
-    modal = wrapper.vm
+    wrapper = wrapperObj
+    store = storeObj
+    modal = wrapperObj.vm
   })
 
   it('will have an button component', () => {
@@ -52,22 +97,18 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
   })
 
-  // I have removed the call. Not sure why but when updating vue test utils to 2.4.2
-  // it started failing. The object now includes getters and setters.
-  // I think it is to do with setData.
   describe('#createLibrary', () => {
     let payload
 
     beforeEach(() => {
       modal.createLibraryInTraction = vi.fn()
-      modal.showAlert = vi.fn()
       payload = { tag: { id: 1 }, sample: { id: 1 } }
     })
 
     it('is successful', async () => {
-      wrapper.setData({ library: payload })
+      modal.library.value = payload
       const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
-      modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+      store.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
 
@@ -75,10 +116,9 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('does not error when there is no tag', async () => {
-      const payloadNoTag = { tag: { id: '' }, sample: { id: 1 } }
-      wrapper.setData({ library: payloadNoTag })
+      modal.library.value = { tag: { id: '' }, sample: { id: 1 } }
       const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
-      modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+      store.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
 
@@ -86,14 +126,12 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('shows a error message on failure', async () => {
-      wrapper.setData({ library: { tag: { id: 1 }, sample: { id: 1 } } })
-
+      modal.library.value = payload
       const expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
-      modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+      store.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
-
-      expect(modal.showAlert).toBeCalledWith(
+      expect(mockShowAlert).toBeCalledWith(
         'Failed to create library in Traction: it did not work',
         'danger',
       )

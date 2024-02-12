@@ -5,13 +5,13 @@
     </traction-button>
     <traction-modal
       id="pacbioLibraryModal"
-      ref="modal"
+      ref="modalRef"
       size="lg"
       title="Create Library"
       :static="isStatic"
       :visible="showModal"
       scrollable
-      @cancel="hide"
+      @cancel="hideModal"
     >
       <traction-form id="libraryCreateModal" @submit="createLibrary" @keydown.enter.prevent>
         <fieldset id="selected-sample" class="py-1">
@@ -107,80 +107,101 @@
   </div>
 </template>
 
-<script>
-import ModalHelper from '@/mixins/ModalHelper'
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
+import useAlert from '@/composables/useAlert.js'
+import useModalHelper from '@/composables/useModalHelper.js'
 
-export default {
-  name: 'PacbioLibraryCreate',
-  mixins: [ModalHelper],
-  props: {
-    disabled: Boolean,
-    isStatic: Boolean,
-    selectedSample: {
-      type: Object,
-      default() {
-        return {}
-      },
+// Define props
+const props = defineProps({
+  disabled: Boolean,
+  isStatic: Boolean,
+  selectedSample: {
+    type: Object,
+    default() {
+      return {}
     },
   },
-  emits: ['alert'],
-  data() {
-    return {
-      library: { tag: { id: '' }, sample: {} },
-      selectedTagSetId: '',
-      showModal: false,
-    }
-  },
-  computed: {
-    ...mapGetters(['tagSetChoices', 'tagChoices']),
+})
 
-    // Return options for the first dropdown
-    tagSetOptions() {
-      const placeholder = { value: '', text: 'Please select a tag set' }
-      return [placeholder, ...this.tagSetChoices]
-    },
-    // Return options for the second dropdown
-    tagOptions() {
-      const placeholder = { value: '', text: 'Please select a tag' }
-      return [placeholder, ...this.tagChoices(this.selectedTagSetId)]
-    },
-  },
-  created() {
-    this.provider()
-  },
-  methods: {
-    // Fetch Pacbio tag-sets and tags
-    async provider() {
-      try {
-        await this.fetchPacbioTagSets()
-      } catch (error) {
-        this.showAlert('Failed to find tags in Traction' + error.message, 'danger')
-      }
-    },
-    // Reset the selected tag id if tag-set is changed
-    resetSelectedTagId() {
-      this.library.tag.id = ''
-    },
-    async createLibrary() {
-      const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
-      if (success) {
-        this.hide()
-        this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
-      } else {
-        this.showAlert('Failed to create library in Traction: ' + errors, 'danger')
-      }
-    },
-    show() {
-      this.library = { tag: { id: '' }, sample: this.selectedSample }
-      this.showModal = true
-      this.selectedTagSetId = ''
-    },
-    hide() {
-      this.showModal = false
-    },
-    ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
-  },
+// Define refs
+const library = ref({ tag: { id: '' }, sample: {} })
+const selectedTagSetId = ref('')
+const showModal = ref(false)
+const modalRef = ref(null)
+
+//Composables
+const { showAlert } = useAlert()
+const { hide } = useModalHelper(modalRef.value)
+
+// Define emits
+const emit = defineEmits(['alert'])
+//Emits the 'alert' event
+const emitAlert = (message) => {
+  emit('alert', message)
 }
+
+//Create Pinia store
+const librariesStore = usePacbioLibrariesStore()
+
+// Define computed
+
+const tagSetOptions = computed(() => {
+  const placeholder = { value: '', text: 'Please select a tag set' }
+  return [placeholder, ...librariesStore.tagSetChoices]
+})
+
+const tagOptions = computed(() => {
+  const placeholder = { value: '', text: 'Please select a tag' }
+  return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
+})
+
+// Define methods
+
+// Show a failure message
+const showFailureMessage = (action, errors) => {
+  showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
+}
+
+// Define provider method
+const provider = async () => {
+  try {
+    const { success, errors } = await librariesStore.fetchPacbioTagSets()
+    if (!success) {
+      showFailureMessage('find tags', errors)
+    }
+  } catch (error) {
+    showFailureMessage('find tags', [error.message])
+  }
+}
+
+const resetSelectedTagId = () => {
+  library.value.tag.id = ''
+}
+
+const createLibrary = async () => {
+  const { success, barcode, errors } = await librariesStore.createLibraryInTraction(library.value)
+  if (success) {
+    hideModal()
+    emitAlert('Created library with barcode ' + barcode, 'success')
+  } else {
+    showFailureMessage('create library', errors)
+  }
+}
+
+const show = () => {
+  library.value = { tag: { id: '' }, sample: props.selectedSample }
+  showModal.value = true
+  selectedTagSetId.value = ''
+}
+const hideModal = () => {
+  hide()
+  showModal.value = false
+}
+
+onMounted(() => {
+  // Call the provider function after the component is mounted
+  provider()
+})
 </script>
