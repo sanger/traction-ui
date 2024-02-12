@@ -1,7 +1,7 @@
 describe('Pacbio Libraries view', () => {
   it('Visits the pacbio libraries url', () => {
     cy.intercept(
-      '/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,pool.tube',
+      '/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube',
       {
         fixture: 'tractionPacbioLibraries.json',
       },
