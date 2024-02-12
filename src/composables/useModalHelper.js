@@ -8,7 +8,7 @@ export default function useModalHelper(modalRef) {
    */
   const hide = () => {
     //Hides the modal referenced by modalRef
-    if(modalRef) {
+    if (modalRef) {
       modalRef.hide()
     }
   }

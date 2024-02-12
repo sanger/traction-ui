@@ -32,9 +32,9 @@
             "related": "http://traction/v1/pacbio/libraries/1/tag"
           },
           "data": {
-              "type": "tags",
-              "id": "1"
-            }
+            "type": "tags",
+            "id": "1"
+          }
         },
         "tube": {
           "links": {
@@ -45,7 +45,6 @@
             "type": "tubes",
             "id": "1465"
           }
-
         },
         "pool": {
           "links": {
@@ -105,7 +104,7 @@
         }
       }
     },
-   
+
     {
       "id": "1",
       "type": "tags",
@@ -116,7 +115,6 @@
       "type": "tubes",
       "links": { "self": "v1/pacbio/tubes/1465" },
       "attributes": { "barcode": "TRAC-2-1465" }
-      
     }
   ],
   "meta": {

@@ -1,5 +1,4 @@
 import pacbioRequestsModule from '@/store/traction/pacbio/requests'
-import pacbioLibrariesModule from '@/store/traction/pacbio/libraries'
 import pacbioPoolsModule from '@/store/traction/pacbio/pools'
 import pacbioPlatesModule from '@/store/traction/pacbio/plates'
 import poolCreate from '@/store/traction/pacbio/poolCreate'
@@ -8,7 +7,6 @@ const pacbio = {
   namespaced: true,
   modules: {
     requests: pacbioRequestsModule,
-    libraries: pacbioLibrariesModule,
     pools: pacbioPoolsModule,
     plates: pacbioPlatesModule,
     poolCreate: poolCreate,

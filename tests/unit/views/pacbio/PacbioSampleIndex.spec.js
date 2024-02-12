@@ -21,7 +21,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
 
-function mountWithStore({  props } = {}) {
+function mountWithStore({ props } = {}) {
   const wrapperObj = mount(PacbioSamples, {
     global: {
       plugins: [createTestingPinia({})],
@@ -49,7 +49,7 @@ describe('PacbioSamples.vue', () => {
     const tagGet = vi.spyOn(store.state.api.traction.tags, 'get')
     tagGet.mockReturnValue(Data.TactionTags)
 
-    const {wrapperObj} = mountWithStore()
+    const { wrapperObj } = mountWithStore()
     wrapper = wrapperObj
     samples = wrapper.vm
     await flushPromises()
