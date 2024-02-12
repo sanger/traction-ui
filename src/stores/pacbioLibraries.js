@@ -132,7 +132,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           },
         },
       }
-
       const request = rootState.api.traction.pacbio.libraries
       const promise = request.create({ data: body, include: 'tube,primary_aliquot' })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -173,7 +172,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       })
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
 
       if (success && data.length > 0) {
         const { tubes, tags, requests } = groupIncludedByResource(included)
@@ -182,7 +181,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         this.libraryState.libraryTags = dataToObjectById({ data: tags })
         this.libraryState.requests = dataToObjectById({ data: requests })
       }
-      return { success, errors }
+      return { success, errors, meta }
     },
 
     /**
