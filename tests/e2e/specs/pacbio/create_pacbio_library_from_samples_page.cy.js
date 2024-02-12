@@ -6,8 +6,8 @@ describe('Pacbio library creation from sample', () => {
     cy.intercept('/v1/pacbio/tag_sets?include=tags', {
       fixture: 'tractionPacbioTagSets.json',
     })
-    cy.intercept('/v1/pacbio/pools?include=tube', {
-      fixture: 'tractionPacbioPool.json',
+    cy.intercept('/v1/pacbio/libraries?include=tube,primary_aliquot', {
+      fixture: 'tractionPacbioLibrary.json',
     })
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')

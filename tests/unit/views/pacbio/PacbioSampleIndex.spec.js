@@ -1,6 +1,37 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
+import {
+  mount,
+  store,
+  Data,
+  router,
+  flushPromises,
+  nextTick,
+  createTestingPinia,
+} from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+
+function mountWithStore({  props } = {}) {
+  const wrapperObj = mount(PacbioSamples, {
+    global: {
+      plugins: [createTestingPinia({})],
+    },
+    store,
+    router,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('PacbioSamples.vue', () => {
   let wrapper, samples
@@ -18,11 +49,8 @@ describe('PacbioSamples.vue', () => {
     const tagGet = vi.spyOn(store.state.api.traction.tags, 'get')
     tagGet.mockReturnValue(Data.TactionTags)
 
-    wrapper = mount(PacbioSamples, {
-      store,
-      router,
-    })
-
+    const {wrapperObj} = mountWithStore()
+    wrapper = wrapperObj
     samples = wrapper.vm
     await flushPromises()
   })
