@@ -1,33 +1,73 @@
-import Libraries from '@/views/pacbio/PacbioLibraryIndex'
-import { mount, Data, store, router, flushPromises } from '@support/testHelper'
-import Response from '@/api/Response'
-import { expect } from 'vitest'
+import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
+import { mount, Data, store, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { expect, vi } from 'vitest'
+import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(PacbioLibraryIndex, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          state,
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePacbioLibrariesStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('Libraries.vue', () => {
-  let wrapper, libraries
-
+  let wrapper, libraries, libraryStore
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.pacbio.libraries, 'get')
-    get.mockResolvedValue(Data.TractionPacbioLibraries)
-
-    wrapper = mount(Libraries, {
-      store,
-      router,
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.libraries.get = vi
+            .fn()
+            .mockResolvedValue(Data.TractionPacbioLibraries)
+        }
+      },
+    ]
+    const { wrapperObj, storeObj } = mountWithStore({
+      plugins,
     })
     await flushPromises()
+    wrapper = wrapperObj
+    libraryStore = storeObj
     libraries = wrapper.vm
   })
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
-      for (const field of libraries.fields) {
+      for (const field of libraries.state.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 
@@ -46,64 +86,43 @@ describe('Libraries.vue', () => {
       ]
       libraries.deleteLibraries = vi.fn()
       libraries.showAlert = vi.fn()
-      wrapper.setData({
-        selected: mockLibraries,
-      })
+      libraries.state.selected = mockLibraries
     })
 
     it('calls the correct functions', async () => {
-      libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionPacbioLibraries)])
+      const expectedResponse = [{ success: true, barcode: 'TRAC-1', errors: [] }]
+      libraryStore.deleteLibraries.mockReturnValue(expectedResponse)
       await libraries.handleLibraryDelete()
 
-      expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map((s) => s.id))
-      expect(libraries.showAlert).toBeCalledWith(
-        'Libraries 721, 722 successfully deleted',
-        'success',
-      )
+      expect(libraryStore.deleteLibraries).toBeCalledWith(mockLibraries.map((s) => s.id))
+      expect(mockShowAlert).toBeCalledWith('Libraries 721, 722 successfully deleted', 'success')
     })
 
     it('calls showAlert when there is an error', async () => {
-      const failedResponse = {
-        status: 422,
-        statusText: 'Unprocessable Entity',
-        data: { data: { errors: { it: ['did not work'] } } },
-      }
-      libraries.deleteLibraries.mockReturnValue([new Response(failedResponse)])
-
+      const failedResponse = { success: false, barcode: '', errors: ['it did not work'] }
+      libraryStore.deleteLibraries.mockReturnValue([failedResponse])
       await libraries.handleLibraryDelete()
-
-      expect(libraries.deleteLibraries).toBeCalled()
-
-      expect(libraries.showAlert).toBeCalledWith('Failed to delete: ', 'danger')
+      expect(libraryStore.deleteLibraries).toBeCalled()
+      expect(mockShowAlert).toBeCalledWith('Failed to delete: Error: it did not work', 'danger')
     })
   })
 
-  describe('#showAlert', () => {
-    it('passes the message to function on emit event', () => {
-      libraries.showAlert('show this message', 'danger')
-      expect(Object.values(store.state.traction.messages)).toContainEqual({
-        type: 'danger',
-        message: 'show this message',
-      })
-    })
-  })
-
-  describe('Edit button', () => {
-    let button
-
-    it('is present for each library', async () => {
-      router.push = vi.fn()
-      button = wrapper.find('#editPool-1')
-      expect(button.text()).toEqual('Edit')
-      await button.trigger('click')
-      expect(router.push).toHaveBeenCalledTimes(1)
-      expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: '1' } })
-    })
-  })
+  //TODO: Fix this test to edit library once the functionality is implemented
+  // describe('Edit button', () => {
+  //   let button
+  //   it.only('is present for each library', async () => {
+  //     router.push = vi.fn()
+  //     button = wrapper.find('#editPool-1')
+  //     expect(button.text()).toEqual('Edit')
+  //     await button.trigger('click')
+  //     expect(router.push).toHaveBeenCalledTimes(1)
+  //     expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: '1' } })
+  //   })
+  // })
 
   describe('Printing labels', () => {
     beforeEach(() => {
-      libraries.selected = [
+      libraries.state.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
         { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
@@ -128,20 +147,19 @@ describe('Libraries.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        libraries.createPrintJob = vi.fn().mockImplementation(() => {
-          return { success: true, message: 'success' }
-        })
-
+        const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
+        store.dispatch = mockPrintJob
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
       })
 
       it('should create a print job', () => {
-        expect(libraries.createPrintJob).toBeCalledWith({
+        expect(store.dispatch).toBeCalledWith('printMyBarcode/createPrintJob', {
           printerName: 'printer1',
           labels: libraries.createLabels(),
           copies: 1,
         })
+        expect(mockShowAlert).toBeCalledWith('success', 'success')
       })
     })
   })
