@@ -1,6 +1,6 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import { mount, createTestingPinia } from '@support/testHelper'
-import storePools from '@tests/data/StorePools'
+import storePools from '@tests/data/StoreRunPools'
 import { newPlate } from '@/stores/utilities/run'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { beforeEach } from 'vitest'

@@ -1,7 +1,7 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
 import { mount, router } from '@support/testHelper'
 
-describe('LibraryTubeItem.vue', () => {
+describe('PacbioPoolTubeItem.vue', () => {
   let tube, wrapper, props
 
   const unknownField = 'Unknown'

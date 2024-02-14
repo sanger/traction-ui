@@ -34,7 +34,7 @@ function mountWithStore(props) {
               if (store.$id === 'root') {
                 ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
                   (store.api.traction.pacbio.runs.find = vi.fn(() => Data.PacbioRun)),
-                  (store.api.traction.pacbio.pools.get = vi.fn(() => Data.PacbioPool))
+                  (store.api.traction.pacbio.tubes.get = vi.fn(() => Data.PacbioTubeWithPool))
               }
             },
           ],

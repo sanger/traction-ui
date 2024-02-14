@@ -4,6 +4,7 @@
     :draggable="!!valid"
     data-attribute="selected-library-list"
     @dragstart="drag(barcode, $event)"
+    @click="expanded = !expanded"
   >
     <div class="flex justify-end">
       <button class="w-8 bg-gray-300 text-slate-400" @click="store.removeLibrary(id)">x</button>
@@ -17,7 +18,7 @@
           <dt class="w-1/4">Barcode</dt>
           <dd class="w-3/4" data-attribute="barcode">{{ barcode }}</dd>
         </dl>
-        <div v-if="valid">
+        <div v-if="valid || expanded">
           <dl class="flex">
             <dt class="w-1/4">Source</dt>
             <dd class="w-3/4" data-attribute="source-identifier">{{ source_identifier }}</dd>
@@ -44,11 +45,17 @@
               {{ insert_size || 'Unknown' }}
             </dd>
           </dl>
+          <dl class="row flex">
+            <dt class="w-1/4">Sample and Tag</dt>
+            <dd class="w-3/4" data-attribute="sample-name">
+              {{ sample_name }}{{ group_id ? ' : ' + group_id : '' }}
+            </dd>
+          </dl>
           <dl v-if="!run_suitability.ready_for_run" class="flex">
             <dt>Errors</dt>
             <dd>
               <ul>
-                <li v-for="(error, index) in run_suitability.formattedErrors" :key="index">
+                <li v-for="(error, index) in errors" :key="index">
                   {{ error }}
                 </li>
               </ul>
@@ -63,7 +70,7 @@
 
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 const props = defineProps({
@@ -84,38 +91,46 @@ const props = defineProps({
   },
   volume: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
   },
   concentration: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
   },
   template_prep_kit_box_barcode: {
     type: String,
-    required: true,
+    required: false,
     default: '',
   },
   insert_size: {
     type: Number,
-    required: true,
+    required: false,
     default: 0,
+  },
+  sample_name: {
+    type: String,
+    required: false,
+    default: '',
+  },
+  group_id: {
+    type: String,
+    required: false,
+    default: '',
   },
   run_suitability: {
     type: Object,
     required: true,
-    default: () => {
-      return {
-        ready_for_run: false,
-        errors: [],
-      }
-    },
   },
 })
 
+const expanded = ref(false)
 const store = usePacbioRunCreateStore()
 const valid = computed(() => props.run_suitability.ready_for_run)
+const errors = computed(() => {
+  return props.run_suitability.errors.map((error) => error.detail)
+})
 const classes = computed(
   () =>
     `m-1 border-2 cursor-pointer rounded-md pb-2  ${

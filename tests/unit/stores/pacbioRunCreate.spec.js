@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import useRootStore from '@/stores'
-import storePools from '@tests/data/StorePools'
+import storePools from '@tests/data/StoreRunPools'
 import { Data } from '@support/testHelper'
 import * as jsonapi from '@/api/JsonApi'
 import {
@@ -164,7 +164,7 @@ describe('usePacbioRunCreateStore', () => {
       it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        store.libraries[1] = {
+        store.library_pools[1] = {
           id: '1',
           request: '1',
           tag: '',
@@ -384,7 +384,9 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools).toEqual(
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }))
+        expect(store.tubes).toEqual(
+          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
+        )
         expect(store.library_pools).toEqual(
           jsonapi.dataToObjectById({ data: library_pools, includeRelationships: true }),
         )
@@ -416,7 +418,9 @@ describe('usePacbioRunCreateStore', () => {
 
         expect(store.pools).toEqual({})
         expect(store.library_pools).toEqual({})
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }))
+        expect(store.tubes).toEqual(
+          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
+        )
         expect(store.libraries).toEqual(
           jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
         )

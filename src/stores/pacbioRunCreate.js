@@ -39,7 +39,7 @@ const formatById = (obj, data, includeRelationships = false) => {
  * returns a pool object with the libraries and barcode
  * @param {Object} state the pinia state object
  * @param {Object} pool a pool object
- * @returns 
+ * @returns
  */
 const generatePoolContents = (state, pool) => {
   const libraries = (pool.libraries || []).map((libraryId) => {
@@ -65,7 +65,7 @@ const generatePoolContents = (state, pool) => {
  * Returns a library object with the barcode, sample_name and group_id
  * @param {Object} state the pinia state object
  * @param {Object} library a library object
- * @returns 
+ * @returns
  */
 const generateLibraryContents = (state, library) => {
   const { request, tag } = library
@@ -173,21 +173,22 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Returns a list of all the tubes with their contents (pool or library)
      * @param {Object} state the pinia state object
-     * @returns 
+     * @returns
      */
     tubeContents: (state) => {
-      return Object.values(state.tubes).map((tube) => {
+      return Object.values(state.tubes).reduce((result, tube) => {
         // We should assume a tube only has one pool
         const pool = state.pools[tube.pools?.[0]]
         const library = state.libraries[tube.library]
 
         if (pool) {
-          return generatePoolContents(state, pool)
+          result.push(generatePoolContents(state, pool))
         } else if (library) {
-          return generateLibraryContents(state, library)
+          result.push(generateLibraryContents(state, library))
         }
-      })
-    }, 
+        return result
+      }, [])
+    },
 
     poolByBarcode: (state) => {
       return (barcode) => {
@@ -260,7 +261,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
-        include: 'pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request',
+        include:
+          'pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -272,7 +274,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
-        const { pools, libraries, library_pools, tags, requests } = groupIncludedByResource(included)
+        const { pools, libraries, library_pools, tags, requests } =
+          groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
