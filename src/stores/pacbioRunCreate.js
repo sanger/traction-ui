@@ -35,6 +35,46 @@ const formatById = (obj, data, includeRelationships = false) => {
   }
 }
 
+/**
+ * returns a pool object with the libraries and barcode
+ * @param {Object} state the pinia state object
+ * @param {Object} pool a pool object
+ * @returns 
+ */
+const generatePoolContents = (state, pool) => {
+  const libraries = (pool.libraries || []).map((libraryId) => {
+    const { id, type, request, tag, run_suitability } = state.library_pools[libraryId]
+    const { sample_name } = state.requests[request]
+    const { group_id } = state.tags[tag] || {}
+    return { id, type, sample_name, group_id, run_suitability }
+  })
+  const { barcode } = state.tubes[pool.tube]
+
+  return {
+    ...pool,
+    libraries,
+    barcode,
+    run_suitability: {
+      ...pool.run_suitability,
+      formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
+    },
+  }
+}
+
+/**
+ * Returns a library object with the barcode, sample_name and group_id
+ * @param {Object} state the pinia state object
+ * @param {Object} library a library object
+ * @returns 
+ */
+const generateLibraryContents = (state, library) => {
+  const { request, tag } = library
+  const { sample_name } = state.requests[request]
+  const { group_id } = state.tags[tag] || {}
+  const { barcode } = state.tubes[library.tube]
+  return { ...library, barcode, sample_name, group_id }
+}
+
 export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
   /**
    * Generates an object describing a new library for population `store.libraries`
@@ -93,9 +133,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
   getters: {
     /**
      * Returns a list of all fetched smrt link versions
-     * @param {Object} state The Vuex state object
+     * @param {Object} state the pinia state object
      */
-
     smrtLinkVersionList: (state) => {
       return state.resources.smrtLinkVersions
     },
@@ -103,10 +142,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     defaultSmrtLinkVersion: (state) => {
       return Object.values(state.resources.smrtLinkVersions).find((version) => version.default)
     },
+
     // The smrtLinkVersion of the current run
     currentSmrtLinkVersion: (state) => {
       return state.smrtLinkVersion || {}
     },
+
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
         const libraries = (pool.libraries || []).map((libraryId) => {
@@ -128,20 +169,32 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         }
       })
     },
-    librariesArray: (state) => {
-      return Object.values(state.libraries).map((library) => {
-        const { request, tag } = library
-        const { sample_name } = state.requests[request]
-        const { group_id } = state.tags[tag] || {}
-        const { barcode } = state.tubes[library.tube]
-        return { ...library, barcode, sample_name, group_id }
+
+    /**
+     * Returns a list of all the tubes with their contents (pool or library)
+     * @param {Object} state the pinia state object
+     * @returns 
+     */
+    tubeContents: (state) => {
+      return Object.values(state.tubes).map((tube) => {
+        // We should assume a tube only has one pool
+        const pool = state.pools[tube.pools?.[0]]
+        const library = state.libraries[tube.library]
+
+        if (pool) {
+          return generatePoolContents(state, pool)
+        } else if (library) {
+          return generateLibraryContents(state, library)
+        }
       })
-    },
+    }, 
+
     poolByBarcode: (state) => {
       return (barcode) => {
         return state.poolsArray.find((pool) => pool.barcode === barcode)
       }
     },
+
     runItem: (state) => state.run || {},
 
     runTypeItem: (state) => state.runType || {},
@@ -210,9 +263,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         include: 'pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request',
         fields: {
           requests: 'sample_name',
-          tubes: 'barcode',
           tags: 'group_id',
-          libraries: 'request,tag,tube,run_suitability',
         },
         filter,
       })
@@ -225,7 +276,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
-        this.tubes = formatById(this.tubes, data)
+        this.tubes = formatById(this.tubes, data, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.library_pools = formatById(this.library_pools, library_pools, true)
         this.requests = formatById(this.requests, requests)
@@ -456,6 +507,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     },
     removePool(id) {
       delete this.pools[id]
+    },
+    removeLibrary(id) {
+      delete this.libraries[id]
     },
     clearRunData() {
       const resources = this.resources

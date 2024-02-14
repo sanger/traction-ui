@@ -358,28 +358,65 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
 
-    describe('findPools', () => {
+    describe('findPoolsOrLibraryByTube', () => {
       it('returns the pool when given a valid tube barcode', async () => {
-        const response = Data.PacbioPool
-        const { data: pools, included } = response.data
+        const response = Data.PacbioTubeWithPool
+        const { data, included } = response.data
 
-        const poolsArray = pools.slice(0, 1)
-        const tubes = included.slice(0, 1)
-        const libraries = included.slice(1, 2)
-        const requests = included.slice(2, 3)
-        const tags = included.slice(3, 4)
+        const tubes = data.slice(0, 1)
+        const pools = included.slice(0, 1)
+        const library_pools = included.slice(1, 5)
+        const tags = included.slice(5, 9)
+        const requests = included.slice(9, 13)
+
+        // Mock stores
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(response)
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
 
         const store = usePacbioRunCreateStore()
-        store.poolRequest.get = vi.fn().mockResolvedValue(response)
 
         // apply action
-        const { success } = await store.findPools({ barcode: 'TRAC-2-1' })
+        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
         expect(success).toBeTruthy()
 
         expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: poolsArray, includeRelationships: true }),
+          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes }))
+        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }))
+        expect(store.library_pools).toEqual(
+          jsonapi.dataToObjectById({ data: library_pools, includeRelationships: true }),
+        )
+        expect(store.libraries).toEqual({})
+        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
+        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
+      })
+
+      it('returns the pool when given a valid tube barcode', async () => {
+        const response = Data.PacbioTubeWithLibrary
+        const { data, included } = response.data
+
+        const tubes = data.slice(0, 1)
+        const libraries = included.slice(0, 1)
+        const tags = included.slice(1, 2)
+        const requests = included.slice(2, 3)
+
+        // Mock stores
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(response)
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
+
+        const store = usePacbioRunCreateStore()
+
+        // apply action
+        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
+        expect(success).toBeTruthy()
+
+        expect(store.pools).toEqual({})
+        expect(store.library_pools).toEqual({})
+        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }))
         expect(store.libraries).toEqual(
           jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
         )
@@ -652,6 +689,7 @@ describe('usePacbioRunCreateStore', () => {
           pools: {},
           tubes: {},
           libraries: {},
+          library_pools: {},
           requests: {},
           tags: {},
           smrtLinkVersion: {},
