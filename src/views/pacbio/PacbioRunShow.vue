@@ -31,7 +31,7 @@
     </div>
 
     <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-      <PacbioPoolList ref="pacbioPoolList" />
+      <PacbioRunPoolLibraryList ref="pacbioRunPoolLibraryList" />
       <PacbioPlateList ref="plate" @alert="showAlert" />
     </div>
   </DataFetcher>
@@ -41,7 +41,7 @@
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
-import PacbioPoolList from '@/components/pacbio/PacbioPoolList'
+import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList'
 import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList'
 import DataFetcher from '@/components/DataFetcher'
 import { RunTypeEnum } from '@/stores/utilities/run'
@@ -55,7 +55,7 @@ export default {
     TractionArrowIcon,
     PacbioRunInfoEdit,
     PacbioRunWellDefaultEdit,
-    PacbioPoolList,
+    PacbioRunPoolLibraryList,
     PacbioPlateList,
     DataFetcher,
   },

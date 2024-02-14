@@ -57,7 +57,7 @@
             <dd class="w-3/4">
               <ul>
                 <li v-for="library in libraries" :key="library.id">
-                  {{ library.sample_name }} : {{ library.group_id }}
+                  {{ library.sample_name }}{{ library.group_id ? " : " + library.group_id : ''}}
                 </li>
               </ul>
             </dd>

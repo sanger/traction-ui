@@ -1,5 +1,5 @@
 <template>
-  <traction-section title="Pools">
+  <traction-section title="Pools & Libraries">
     <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
   </traction-section>

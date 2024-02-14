@@ -60,13 +60,16 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     //Pools: The pools that belong to the wells or the pool selected for a new run
     pools: {},
 
+    //Libraries: The libraries that belong to the wells or the library selected for a new run
+    libraries: {},
+
+    // Libraries that belong to a pool
+    library_pools: {},
+
     //Tubes: The tubes for each pool or the tubes selected for a new run
     tubes: {},
 
-    //Libraries: The libraries for the currently selected pools
-    libraries: {},
-
-    //Requests: The requests for the libraries for the currenly selected pools
+    //Requests: The requests for the libraries or pool libraries
     requests: {},
 
     //Tags: The tags for the currently selected libraries
@@ -104,16 +107,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     currentSmrtLinkVersion: (state) => {
       return state.smrtLinkVersion || {}
     },
-    // TODO refactor to reuse the functions
-    // poolsRequest and pools copied over from pools/getters.js
-    poolRequest: () => {
-      const rootStore = useRootStore()
-      return rootStore.api.traction.pacbio.pools
-    },
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
         const libraries = (pool.libraries || []).map((libraryId) => {
-          const { id, type, request, tag, run_suitability } = state.libraries[libraryId]
+          const { id, type, request, tag, run_suitability } = state.library_pools[libraryId]
           const { sample_name } = state.requests[request]
           const { group_id } = state.tags[tag] || {}
           return { id, type, sample_name, group_id, run_suitability }
@@ -131,7 +128,15 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         }
       })
     },
-
+    librariesArray: (state) => {
+      return Object.values(state.libraries).map((library) => {
+        const { request, tag } = library
+        const { sample_name } = state.requests[request]
+        const { group_id } = state.tags[tag] || {}
+        const { barcode } = state.tubes[library.tube]
+        return { ...library, barcode, sample_name, group_id }
+      })
+    },
     poolByBarcode: (state) => {
       return (barcode) => {
         return state.poolsArray.find((pool) => pool.barcode === barcode)
@@ -190,12 +195,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       return { success, errors }
     },
-    /**
-     * Retrieves a list of pools based on a filter
-     * @param filter the barcode(s) to find the pools for
-     * @returns { success, errors }. Was the request successful? were there any errors?
-     */
-    async findPools(filter) {
+    async findPoolsOrLibraryByTube(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {
@@ -204,28 +204,30 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         }
       }
 
-      const request = this.poolRequest
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
-        include: 'tube,libraries.tag,libraries.request',
+        include: 'pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request',
         fields: {
           requests: 'sample_name',
           tubes: 'barcode',
           tags: 'group_id',
-          libraries: 'request,tag,run_suitability',
+          libraries: 'request,tag,tube,run_suitability',
         },
         filter,
       })
       const response = await handleResponse(promise)
-
       const { success, data: { data, included = [] } = {}, errors = [] } = response
+
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
-        const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+        const { pools, libraries, library_pools, tags, requests } = groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
-        this.pools = formatById(this.pools, data, true)
-        this.tubes = formatById(this.tubes, tubes)
+        this.pools = formatById(this.pools, pools, true)
+        this.tubes = formatById(this.tubes, data)
         this.libraries = formatById(this.libraries, libraries, true)
+        this.library_pools = formatById(this.library_pools, library_pools, true)
         this.requests = formatById(this.requests, requests)
         this.tags = formatById(this.tags, tags)
 
@@ -233,7 +235,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       } else {
         return {
           success: false,
-          errors: [`Unable to find pool with barcode: ${filter['barcode']}`],
+          errors: [`Unable to find pool or library with barcode: ${filter['barcode']}`],
         }
       }
     },
