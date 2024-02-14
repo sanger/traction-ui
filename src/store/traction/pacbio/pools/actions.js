@@ -19,10 +19,10 @@ const setPools = async ({ commit, getters }, filter, page) => {
   const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
 
   if (success) {
-    const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+    const { tubes, library_pools, tags, requests } = groupIncludedByResource(included)
     commit('setPools', data)
     commit('setTubes', tubes)
-    commit('setLibraries', libraries)
+    commit('setLibraries', library_pools)
     commit('setTags', tags)
     commit('setRequests', requests)
   }
