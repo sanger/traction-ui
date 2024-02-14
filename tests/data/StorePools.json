@@ -61,7 +61,7 @@
       "id": "1",
       "request": "1",
       "tag": "26",
-      "type": "libraries",
+      "type": "library_pools",
       "run_suitability": {
         "ready_for_run": true,
         "errors": []
@@ -71,7 +71,7 @@
       "id": "2",
       "request": "2",
       "tag": "7",
-      "type": "libraries",
+      "type": "library_pools",
       "run_suitability": {
         "ready_for_run": false,
         "errors": [

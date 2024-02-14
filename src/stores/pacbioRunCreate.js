@@ -320,7 +320,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           wells,
           pools,
           tubes,
-          libraries,
+          library_pools,
           tags,
           requests,
           smrt_link_versions: [smrt_link_version = {}] = [],
@@ -352,7 +352,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         //Populate libraries, tags,tubes and requests
         this.pools = formatById(this.pools, pools, true)
-        this.libraries = formatById(this.libraries, libraries, true)
+        this.libraries = formatById(this.libraries, library_pools, true)
         this.tags = formatById(this.tags, tags)
         this.requests = formatById(this.requests, requests)
         this.tubes = formatById(this.tubes, tubes)

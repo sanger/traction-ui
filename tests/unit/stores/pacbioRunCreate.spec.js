@@ -35,7 +35,7 @@ describe('usePacbioRunCreateStore', () => {
             id: '1',
             sample_name: 'Sample48',
             group_id: 'bc1019',
-            type: 'libraries',
+            type: 'library_pools',
             run_suitability: {
               ready_for_run: true,
               errors: [],
@@ -65,7 +65,7 @@ describe('usePacbioRunCreateStore', () => {
             id: '2',
             sample_name: 'Sample47',
             group_id: 'bc1011_BAK8A_OA',
-            type: 'libraries',
+            type: 'library_pools',
             run_suitability: {
               ready_for_run: false,
               errors: [
@@ -168,7 +168,7 @@ describe('usePacbioRunCreateStore', () => {
           id: '1',
           request: '1',
           tag: '',
-          type: 'libraries',
+          type: 'library_pools',
           run_suitability: { ready_for_run: true, errors: [] },
         }
         expect(store.poolsArray[0].libraries[0].group_id).toEqual(undefined)
