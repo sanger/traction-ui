@@ -220,12 +220,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const { success, data: { data, included = [] } = {}, errors = [] } = response
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
-        const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+        const { tubes, library_pools, tags, requests } = groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, data, true)
         this.tubes = formatById(this.tubes, tubes)
-        this.libraries = formatById(this.libraries, libraries, true)
+        this.libraries = formatById(this.libraries, library_pools, true)
         this.requests = formatById(this.requests, requests)
         this.tags = formatById(this.tags, tags)
 
@@ -267,7 +267,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           wells,
           pools,
           tubes,
-          libraries,
+          library_pools,
           tags,
           requests,
           smrt_link_versions: [smrt_link_version = {}] = [],
@@ -299,7 +299,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         //Populate libraries, tags,tubes and requests
         this.pools = formatById(this.pools, pools, true)
-        this.libraries = formatById(this.libraries, libraries, true)
+        this.libraries = formatById(this.libraries, library_pools, true)
         this.tags = formatById(this.tags, tags)
         this.requests = formatById(this.requests, requests)
         this.tubes = formatById(this.tubes, tubes)

@@ -37,7 +37,7 @@
           },
           "data": [
             {
-              "type": "libraries",
+              "type": "library_pools",
               "id": "1"
             }
           ]
@@ -81,7 +81,7 @@
           },
           "data": [
             {
-              "type": "libraries",
+              "type": "library_pools",
               "id": "2"
             }
           ]
@@ -112,7 +112,7 @@
     },
     {
       "id": "1",
-      "type": "libraries",
+      "type": "library_pools",
       "attributes": {
         "run_suitability": {
           "ready_for_run": true,
@@ -147,7 +147,7 @@
     },
     {
       "id": "2",
-      "type": "libraries",
+      "type": "library_pools",
       "attributes": {
         "run_suitability": {
           "ready_for_run": true,
