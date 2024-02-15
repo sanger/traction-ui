@@ -10,6 +10,22 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
+/**
+ * This method will check each library to ensure that:
+ *  * required fields are present
+ **/
+const validate = (library) => {
+  // tags are optional
+  const requiredAttributes = [
+    'id',
+    'template_prep_kit_box_barcode',
+    'volume',
+    'concentration',
+    'insert_size',
+  ]
+  return requiredAttributes.every((field) => library[field])
+}
+
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
     /**
@@ -113,6 +129,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async createLibraryInTraction(library) {
       const rootState = useRootStore()
+      const request = rootState.api.traction.pacbio.libraries
       const body = {
         data: {
           type: 'libraries',
@@ -132,8 +149,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           },
         },
       }
-      const request = rootState.api.traction.pacbio.libraries
-      const promise = request.create({ data: body, include: 'tube,primary_aliquot' })
+      const promise = request.create({
+        data: body,
+        include: 'tube,primary_aliquot',
+      })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
@@ -201,6 +220,29 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         this.tagState.tags = dataToObjectById({ data: included })
       }
       return { success, errors, response }
+    },
+
+    async updateLibrary(library) {
+      if (!validate(library)) return { success: false, errors: 'The library is invalid' }
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.libraries
+      const body = {
+        data: {
+          type: 'libraries',
+          id: library.id,
+          attributes: {
+            template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+            tag_id: library.tag?.id,
+            concentration: library.concentration,
+            volume: library.volume,
+            insert_size: library.insert_size,
+          },
+        },
+      }
+      const promise = request.update({ data: body })
+      const { success, errors } = await handleResponse(promise)
+      if (success) this.libraryState.libraries[library.id] = library
+      return { success, errors }
     },
   },
 })

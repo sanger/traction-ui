@@ -3,7 +3,7 @@ import useRootStore from '@/stores'
 import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/ResponseHelper.js'
-import { beforeEach, describe } from 'vitest'
+import { beforeEach, describe, expect } from 'vitest'
 import { dataToObjectById } from '@/api/JsonApi.js'
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
@@ -348,6 +348,103 @@ describe('usePacbioLibrariesStore', () => {
         expect(store.tagState.tagSets).toEqual({})
         expect(store.tagState.tags).toEqual({})
         expect(success).toEqual(false)
+      })
+    })
+
+    describe('#updateLibrary', () => {
+      let update, get, libraryBeforeUpdate, mockSuccessResponse, library
+
+      beforeEach(async () => {
+        update = vi.fn()
+        const libraries = Data.TractionPacbioLibrary
+        get = vi.fn().mockResolvedValue(libraries)
+        rootStore = useRootStore()
+        store = usePacbioLibrariesStore()
+
+        rootStore.api.traction.pacbio.libraries.get = get
+        rootStore.api.traction.pacbio.libraries.update = update
+        await store.fetchLibraries()
+        libraryBeforeUpdate = {
+          id: '1',
+          request: '1',
+          tag: '3',
+          tube: '4',
+          state: 'pending',
+          volume: 1.0,
+          concentration: 1,
+          insert_size: 100,
+          source_identifier: 'DN1:A1',
+          template_prep_kit_box_barcode: 'LK12345',
+          created_at: '09/23/2019 11:18',
+          type: 'libraries',
+        }
+        mockSuccessResponse = {
+          status: '201',
+        }
+        library = {
+          ...libraryBeforeUpdate,
+          concentration: 2.0,
+          template_prep_kit_box_barcode: 'LK12348',
+          volume: 4.0,
+        }
+      })
+      it('successfully', async () => {
+        update.mockResolvedValue(mockSuccessResponse)
+        const library = { ...libraryBeforeUpdate }
+        library.concentration = 2.0
+        library.template_prep_kit_box_barcode = 'LK12347'
+        const { success } = await store.updateLibrary(library)
+        expect(update).toBeCalledWith({
+          data: {
+            data: {
+              id: '1',
+              type: 'libraries',
+              attributes: {
+                concentration: 2.0,
+                template_prep_kit_box_barcode: 'LK12347',
+                volume: 1.0,
+                insert_size: 100,
+              },
+            },
+          },
+        })
+        expect(success).toBeTruthy()
+      })
+      it('should update the values in the store', async () => {
+        update.mockResolvedValue(mockSuccessResponse)
+        await store.fetchLibraries()
+        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
+        await store.updateLibrary(library)
+        expect(store.libraryState.libraries[1].concentration).toEqual(2.0)
+        expect(store.libraryState.libraries[1].template_prep_kit_box_barcode).toEqual('LK12348')
+        expect(store.libraryState.libraries[1].volume).toEqual(4.0)
+      })
+      it('should return error if required attributes are empty', async () => {
+        await store.fetchLibraries()
+        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
+        library.volume = ''
+        const { success, errors } = await store.updateLibrary(library)
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The library is invalid')
+      })
+      it('should not return error if optional attributes are empty', async () => {
+        await store.fetchLibraries()
+        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
+        const newLibrary = { ...library, tag: null }
+        const { success, errors } = await store.updateLibrary(newLibrary)
+        expect(success).toBeTruthy()
+        expect(errors).toEqual(undefined)
+      })
+      it('unsuccessfully', async () => {
+        const mockResponse = {
+          status: '422',
+          data: { data: { errors: { error1: ['There was an error'] } } },
+        }
+        update.mockRejectedValue({ response: mockResponse })
+        const expectedResponse = newResponse({ ...mockResponse, success: false })
+        const { success, errors } = await store.updateLibrary(library)
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(expectedResponse.errors)
       })
     })
   })
