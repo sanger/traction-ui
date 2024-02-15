@@ -199,9 +199,5 @@ const hideModal = () => {
   hide()
   showModal.value = false
 }
-
-onMounted(() => {
-  // Call the provider function after the component is mounted
-  provider()
-})
+provider()
 </script>
