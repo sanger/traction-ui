@@ -34,8 +34,6 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 describe('PacbioLibraryTubeItem.vue', () => {
   let tube, wrapper, props
 
-  const unknownField = 'Unknown'
-
   describe('when valid', () => {
     beforeEach(() => {
       props = {

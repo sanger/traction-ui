@@ -96,10 +96,10 @@ export default {
   },
   computed: {
     ...mapState(usePacbioRunCreateStore, [
-      'poolByBarcode',
+      'tubeContentByBarcode',
       'smrtLinkVersion',
       'getWell',
-      'poolsArray',
+      'tubeContents',
       'getOrCreateWell',
     ]),
     smrtLinkWellDefaults() {
@@ -188,7 +188,7 @@ export default {
     async updatePoolBarcode(row, barcode) {
       const index = row.index
       await this.findPools({ barcode })
-      const pool = await this.poolByBarcode(barcode)
+      const pool = await this.tubeContentByBarcode(barcode)
       if (pool) {
         this.localPools[index] = { id: pool.id, barcode }
       } else {
@@ -204,7 +204,7 @@ export default {
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
-        const pool = this.poolsArray.find((pool) => pool.id == id)
+        const pool = this.tubeContents.find((tubeContent) => tubeContent.id == id)
         this.localPools.push({ id, barcode: pool.barcode })
       })
     },

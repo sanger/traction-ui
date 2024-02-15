@@ -42,7 +42,7 @@ function mountWithStore(props) {
       ],
       stubs: {
         PacbioPlateList: true,
-        PacbioPoolList: true,
+        PacbioRunPoolLibraryList: true,
         PacbioRunInfoEdit: true,
         PacbioRunWellDefaultEdit: true,
       },

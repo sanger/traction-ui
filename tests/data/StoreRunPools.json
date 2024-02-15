@@ -56,12 +56,14 @@
     "1": {
       "barcode": "TRAC-2-1",
       "id": "1",
-      "type": "tubes"
+      "type": "tubes",
+      "pools": ["1"]
     },
     "2": {
       "barcode": "TRAC-2-2",
       "id": "2",
-      "type": "tubes"
+      "type": "tubes",
+      "pools": ["2"]
     }
   },
   "libraries": {

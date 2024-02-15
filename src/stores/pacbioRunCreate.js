@@ -27,7 +27,7 @@ const buildRunSuitabilityErrors = ({ pool, libraries }) => [
   }),
 ]
 
-// Helper function for setting pools data
+// Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
   return {
     ...obj,
@@ -148,28 +148,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       return state.smrtLinkVersion || {}
     },
 
-    poolsArray: (state) => {
-      return Object.values(state.pools).map((pool) => {
-        const libraries = (pool.libraries || []).map((libraryId) => {
-          const { id, type, request, tag, run_suitability } = state.library_pools[libraryId]
-          const { sample_name } = state.requests[request]
-          const { group_id } = state.tags[tag] || {}
-          return { id, type, sample_name, group_id, run_suitability }
-        })
-        const { barcode } = state.tubes[pool.tube]
-
-        return {
-          ...pool,
-          libraries,
-          barcode,
-          run_suitability: {
-            ...pool.run_suitability,
-            formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
-          },
-        }
-      })
-    },
-
     /**
      * Returns a list of all the tubes with their contents (pool or library)
      * @param {Object} state the pinia state object
@@ -190,9 +168,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }, [])
     },
 
-    poolByBarcode: (state) => {
+    tubeContentByBarcode: (state) => {
       return (barcode) => {
-        return state.poolsArray.find((pool) => pool.barcode === barcode)
+        return state.tubeContents.find((tubeContent) => tubeContent.barcode === barcode)
       }
     },
 
@@ -355,10 +333,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         //Populate libraries, tags,tubes and requests
         this.pools = formatById(this.pools, pools, true)
-        this.libraries = formatById(this.libraries, library_pools, true)
+        this.library_pools = formatById(this.libraries, library_pools, true)
         this.tags = formatById(this.tags, tags)
         this.requests = formatById(this.requests, requests)
-        this.tubes = formatById(this.tubes, tubes)
+        this.tubes = formatById(this.tubes, tubes, true)
 
         //Populate the smrtLinkVersion
         this.smrtLinkVersion = smrtLinkVersion
@@ -459,7 +437,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async getPool({ barcode }) {
       const { success, errors = [] } = await this.findPools({ barcode })
-      const pool = success ? this.poolByBarcode(barcode) : {}
+      const pool = success ? this.tubeContentByBarcode(barcode) : {}
       return { success, errors, pool }
     },
     /**

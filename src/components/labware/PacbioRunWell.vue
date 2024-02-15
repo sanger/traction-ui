@@ -52,9 +52,9 @@ export default {
   },
   computed: {
     ...mapState(usePacbioRunCreateStore, [
-      'poolByBarcode',
+      'tubeContentByBarcode',
       'getWell',
-      'poolsArray',
+      'tubeContents',
       'smrtLinkVersion',
       'getOrCreateWell',
     ]),
@@ -90,7 +90,7 @@ export default {
     tooltip() {
       return this.storeWell.pools
         .map((p) => {
-          return this.poolsArray.find((pool) => p == pool.id).barcode
+          return this.tubeContents.find((tube) => p == tube.id).barcode
         })
         .join(',')
     },
@@ -133,7 +133,7 @@ export default {
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
-      const { id } = this.poolByBarcode(barcode)
+      const { id } = this.tubeContentByBarcode(barcode)
       well.pools.push(id)
       this.updateWell({ well: well, plateNumber: this.plateNumber })
     },

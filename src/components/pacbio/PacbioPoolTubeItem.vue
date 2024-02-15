@@ -2,7 +2,7 @@
   <div
     :class="classObject"
     :draggable="!!valid"
-    data-attribute="selected-pool-list"
+    data-attribute="selected-pool-library-list"
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >

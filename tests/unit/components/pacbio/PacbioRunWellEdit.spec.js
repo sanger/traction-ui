@@ -276,7 +276,7 @@ describe('PacbioWellEdit', () => {
         const { wrapperObj } = mountWithStore({
           state: {
             pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
-            tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
+            tubes: { 1: { barcode: 'TRAC-1', pools: [1] }, 2: { barcode: 'TRAC-2', pools: [2] } },
             smrtLinkVersion: smrtLinkVersions['1'],
             run: {},
             plates: { 1: { plate_number: 1 } },
