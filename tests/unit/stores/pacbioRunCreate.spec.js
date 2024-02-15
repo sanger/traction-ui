@@ -118,6 +118,30 @@ describe('usePacbioRunCreateStore', () => {
       },
     ]
 
+    const mockLibraries = [
+      {
+        id: '3',
+        type: 'libraries',
+        barcode: 'TRAC-2-3',
+        tube: '3',
+        request: '1',
+        group_id: 'bc1019',
+        tag: '26',
+        sample_name: 'Sample48',
+        volume: 1.0,
+        concentration: 1.0,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        source_identifier: 'DN1:A1',
+        created_at: '2021-07-15T15:26:29.000Z',
+        updated_at: '2021-07-15T15:26:29.000Z',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      },
+    ]
+
     const smrtLinkVersions = {
       1: {
         id: 1,
@@ -151,15 +175,21 @@ describe('usePacbioRunCreateStore', () => {
       it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        expect(store.tubeContents).toEqual(mockPools)
+        expect(store.tubeContents).toEqual(mockPools.concat(mockLibraries))
       })
 
-      it('"tubeContentByBarcode" returns the pool/library data with the specified tube barcode', () => {
+      it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
         const actual = store.tubeContentByBarcode('TRAC-2-1')
-        console.log(actual)
         expect(actual).toEqual(mockPools[0])
+      })
+
+      it('"tubeContentByBarcode" returns the library data with the specified tube barcode', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = { ...storePools }
+        const actual = store.tubeContentByBarcode('TRAC-2-3')
+        expect(actual).toEqual(mockLibraries[0])
       })
 
       it('"tubeContents" returns pools successfully and with an empty library group_id if that library has no tag', () => {
@@ -681,6 +711,20 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools[1]).toEqual({ id: '1', type: 'pools' })
         store.removePool(1)
         expect(store.pools[1]).toBeUndefined()
+      })
+    })
+    describe('removeLibrary', () => {
+      it('"removeLibrary" removes the given library id from state.library', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          libraries: {
+            1: { id: '1', type: 'libraries' },
+            2: { id: '2', type: 'libraries' },
+          },
+        }
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries' })
+        store.removeLibrary(1)
+        expect(store.libraries[1]).toBeUndefined()
       })
     })
     describe('clearRunData', () => {
