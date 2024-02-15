@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
 import useModalHelper from '@/composables/useModalHelper.js'
