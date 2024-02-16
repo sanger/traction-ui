@@ -12,7 +12,7 @@ export default function useModalHelper(modalRef) {
       modalRef.hide()
     }
   }
-
+// Return the hideModal method
   return {
     hideModal,
   }

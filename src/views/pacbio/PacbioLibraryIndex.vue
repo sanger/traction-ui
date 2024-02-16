@@ -58,6 +58,11 @@
 </template>
 
 <script setup>
+/*
+  * PacbioLibraryIndex is a component that displays a table of Pacbio libraries.
+  * script setup is a new Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+  * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryIndex component.
+  */
 import PrinterModal from '@/components/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
@@ -68,7 +73,14 @@ import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import { useStore } from 'vuex'
 
-//Define reactive variables
+/**
+ * reactive is a Vue 3 function that allows you to create a reactive object.
+ * It is a replacement for the data option in Vue 2.
+ * reactive (unlike a ref which wraps the inner value in a special object) makes an object itself reactive
+ */
+/*
+ * state is a reactive variable that contains the fields and filterOptions for the PacbioLibraryIndex component.
+ */
 const state = reactive({
   fields: [
     { key: 'selected', label: '\u2713' },
@@ -104,23 +116,43 @@ const state = reactive({
   selected: [],
 })
 
-//Define refs
+/**
+ * sortBy is a ref that contains the default sorting field for the PacbioLibraryIndex component.
+ * ref is a Vue 3 function that allows you to create a ref. It is a replacement for the data option in Vue 2.
+ */
 const sortBy = ref('created_at')
 
-//Composables
+/**
+ * Composables are a new Vue 3 feature that allows you to create reusable logic.
+ * useAlert is a composable function that provides a way to display alerts.
+ */
 const { showAlert } = useAlert()
+/**
+ * useQueryParams is a composable function that provides a way to fetch data with query parameters.
+ */
 const { fetchWithQueryParams } = useQueryParams()
 
-//Create Pinia store
+/**
+ * usePacbioLibrariesStore is a composable function that is used to access the pacbio libraries store.
+ * This creates a new instance of the pacbio libraries store.
+ * It is used to fetch the tag sets and create a new library.
+ */
 const librariesStore = usePacbioLibrariesStore()
 
-//Create VueX store
+/**
+ * useStore is a composable function that is used to access the Vuex store.
+ */
 const store = useStore()
 
-//computed
+/**
+ * 
+ * It is used to create a computed property for the libraries.
+ */
 const libraries = computed(() => librariesStore.librariesArray)
 
-//methods
+/**
+ * handleLibraryDelete is a method that is used to delete the selected libraries.
+ */
 const handleLibraryDelete = async () => {
   try {
     const selectedIds = state.selected.map((s) => s.id)
@@ -143,6 +175,9 @@ const handleLibraryDelete = async () => {
   }
 }
 
+/**
+ * createLabels is a method that is used to create labels for the selected libraries.
+ */
 const createLabels = () => {
   const date = getCurrentDate()
   return state.selected.map(({ barcode, source_identifier }) => {
@@ -157,6 +192,10 @@ const createLabels = () => {
   })
 }
 
+/**
+ * printLabels is a method that is used to print labels for the selected libraries.
+ * @param {*} printerName name of the printer
+ */
 const printLabels = async (printerName) => {
   const { success, message = {} } = await store.dispatch('printMyBarcode/createPrintJob', {
     printerName,
@@ -166,6 +205,9 @@ const printLabels = async (printerName) => {
   showAlert(message, success ? 'success' : 'danger')
 }
 
+/**
+ * fetchLibraries is an async function that is used to fetch the libraries with query parameters.
+ */
 const fetchLibraries = async () => {
   return await fetchWithQueryParams(librariesStore.fetchLibraries, state.filterOptions)
 }

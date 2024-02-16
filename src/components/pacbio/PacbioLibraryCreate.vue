@@ -108,16 +108,25 @@
 </template>
 
 <script setup>
+/**
+ * PacbioLibraryCreate component is used to create a new library for a selected sample.
+ * script setup is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+ * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryCreate component.
+ */
 import { computed, ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
 import useModalHelper from '@/composables/useModalHelper.js'
 
-// Define props
+/**
+ * defineProps is a Vue 3 function that allows you to define props in the setup function.
+ * It is a replacement for the props option in Vue 2.
+ * It is used to define props for a component.
+ */
 const props = defineProps({
-  disabled: Boolean,
-  isStatic: Boolean,
-  selectedSample: {
+  disabled: Boolean, // Boolean value to disable the button
+  isStatic: Boolean, // Boolean value to set the modal as static
+  selectedSample: { // Object to define the selected sample
     type: Object,
     required: true,
     default() {
@@ -126,24 +135,44 @@ const props = defineProps({
   },
 })
 
-// Define refs
-const library = ref({ tag: { id: '' }, sample: {} })
-const selectedTagSetId = ref('')
-const showModal = ref(false)
-const modalRef = ref(null)
+/**
+ * ref is a Vue 3 function that allows you to create a reactive object.
+ * It is a replacement for the data option in Vue 2.
+ * ref() takes the argument and returns it wrapped within a ref object with a .value property:
+ * ref(0) returns { value: 0 }
+ * To access the value, you use the .value property in setup function, but in the template, you can use the variable directly.
+ */
+const library = ref({ tag: { id: '' }, sample: {} }) //library is a reactive object that contains the library data, which is used to create a new library.
+const selectedTagSetId = ref('') //selectedTagSetId is a reactive object that contains the selected tag set id.
+const showModal = ref(false) //showModal is a reactive object that contains the boolean value to show the modal.
+const modalRef = ref(null) //modalRef is a reactive object that contains the reference to the modal.
 
-//Composables
+/**
+ * Composables are a new Vue 3 feature that allows you to create reusable logic.
+ * useAlert and useModalHelper are composable functions that are used to show alerts and hide modals
+ */
 const { showAlert } = useAlert()
 const { hideModal } = useModalHelper(modalRef.value)
 
-// Define emits
+/**
+ * defineEmits is a new Vue 3 function that allows you to define emits in the setup function.
+ * It is a replacement for the emits option in Vue 2.
+ * Here it is used to define emits for the alert.
+ */
 const emit = defineEmits(['alert'])
 
-//Create Pinia store
+/**
+ * usePacbioLibrariesStore is a composable function that is used to access the pacbio libraries store.
+ * This creates a new instance of the pacbio libraries store.
+ * It is used to fetch the tag sets and create a new library.
+ */
 const librariesStore = usePacbioLibrariesStore()
 
-// Define computed
-
+/**
+ * computed is a new Vue 3 function that allows you to create a computed property.
+ * It is a replacement for the computed option in Vue 2.
+ * It is used to create a computed property for the tag set options and tag options.
+ */
 const tagSetOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag set' }
   return [placeholder, ...librariesStore.tagSetChoices]
@@ -154,14 +183,22 @@ const tagOptions = computed(() => {
   return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
 })
 
-// Define methods
 
-// Show a failure message
+
+/**
+ * showFailureMessage is a function that is used to show a failure message when an action fails.
+ * @param {*} action String value to define the action
+ * @param {*} errors Array of errors
+ */
 const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
 
-// Define provider method
+/**
+ * provider is an async function that is used to fetch the tag sets from the libraries store.
+ * It is used to fetch the tag sets from the libraries store and show a failure message if the action fails.
+ * This function is called when the component is created.
+ */
 const provider = async () => {
   try {
     const { success, errors } = await librariesStore.fetchPacbioTagSets()
@@ -173,10 +210,16 @@ const provider = async () => {
   }
 }
 
+/**
+ * resetSelectedTagId is a function that is used to reset the selected tag id.
+ */
 const resetSelectedTagId = () => {
   library.value.tag.id = ''
 }
 
+/**
+ * createLibrary is an async function that is used to create a new library.
+ */
 const createLibrary = async () => {
   const { success, barcode, errors } = await librariesStore.createLibraryInTraction(library.value)
   if (success) {
@@ -188,6 +231,9 @@ const createLibrary = async () => {
   }
 }
 
+/**
+ * show is a function that is used to show the modal.
+ */
 const show = () => {
   library.value = { tag: { id: '' }, sample: props.selectedSample }
   showModal.value = true
