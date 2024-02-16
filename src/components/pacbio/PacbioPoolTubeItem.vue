@@ -7,7 +7,7 @@
     @click="expanded = !expanded"
   >
     <div class="flex justify-end">
-      <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
+      <button class="w-8 bg-gray-300 text-slate-400" @click="store.removePool(id)">x</button>
     </div>
     <div class="flex flex-row space-x-4 h-full w-full">
       <div class="flex flex-col px-2 w-1/4">
@@ -77,94 +77,76 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from 'pinia'
+<!-- eslint-disable vue/prop-name-casing -->
+<script setup>
+import { ref, computed } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  barcode: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  libraries: {
+    type: Array,
+    required: true,
+  },
+  volume: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+  concentration: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+  template_prep_kit_box_barcode: {
+    type: String,
+    required: false,
+    default: null,
+  },
+  insert_size: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+  source_identifier: {
+    type: String,
+    required: false,
+    default: 'Unknown',
+  },
+  run_suitability: {
+    type: Object,
+    required: true,
+  },
+  closeable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+})
+
+const store = usePacbioRunCreateStore()
 const img = new Image()
 img.src = '/tube.png'
-
-export default {
-  name: 'PacbioPoolTubeItem',
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    barcode: {
-      type: String,
-      required: true,
-    },
-    libraries: {
-      type: Array,
-      required: true,
-    },
-    volume: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    concentration: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    /* eslint-disable vue/prop-name-casing */
-    template_prep_kit_box_barcode: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    insert_size: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    source_identifier: {
-      type: String,
-      required: false,
-      default: 'Unknown',
-    },
-    run_suitability: {
-      type: Object,
-      required: true,
-    },
-    /* eslint-enable vue/prop-name-casing */
-    closeable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      expanded: false,
-    }
-  },
-  computed: {
-    valid() {
-      return this.run_suitability.ready_for_run
-    },
-    showInfo() {
-      return this.valid || this.expanded
-    },
-    errors() {
-      return this.run_suitability.formattedErrors
-    },
-    classObject() {
-      // when the pool is valid we have a gray background
-      // when the pool is invalid we have a red background with red text
-      return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
-        this.valid ? 'hover:bg-gray-200' : 'failure-style'
-      }`
-    },
-  },
-  methods: {
-    drag(barcode, event) {
-      event.dataTransfer.setDragImage(img, 120, 50)
-      event.dataTransfer.setData('barcode', barcode)
-    },
-    ...mapActions(usePacbioRunCreateStore, ['removePool']),
-  },
+const expanded = ref(false)
+const valid = computed(() => props.run_suitability.ready_for_run)
+const showInfo = computed(() => valid.value || expanded.value)
+const errors = computed(() => props.run_suitability.formattedErrors)
+const classObject = computed(() => {
+  return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
+    valid.value ? 'hover:bg-gray-200' : 'failure-style'
+  }`
+})
+const drag = (barcode, event) => {
+  event.dataTransfer.setDragImage(img, 120, 50)
+  event.dataTransfer.setData('barcode', barcode)
 }
 </script>

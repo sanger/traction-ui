@@ -1,5 +1,35 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { mount, router } from '@support/testHelper'
+import { mount, router, createTestingPinia } from '@support/testHelper'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(Tube, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePacbioRunCreateStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('PacbioPoolTubeItem.vue', () => {
   let tube, wrapper, props
@@ -33,11 +63,12 @@ describe('PacbioPoolTubeItem.vue', () => {
         },
       }
 
-      wrapper = mount(Tube, {
+      const { wrapperObj } = mountWithStore({
         props,
         router,
       })
 
+      wrapper = wrapperObj
       tube = wrapper.vm
     })
 
@@ -124,10 +155,12 @@ describe('PacbioPoolTubeItem.vue', () => {
         },
       }
 
-      wrapper = mount(Tube, {
+      const { wrapperObj } = mountWithStore({
         props,
+        router,
       })
 
+      wrapper = wrapperObj
       tube = wrapper.vm
     })
 
