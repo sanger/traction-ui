@@ -103,18 +103,20 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
-      return Object.values(state.libraryState.libraries)
+      const ret = Object.values(state.libraryState.libraries)
         .filter((library) => library.tube)
         .map((library) => {
-          const { id, request, tag, tube, ...attributes } = library
+          const { id, request, tag_id, tube, ...attributes } = library
+          debugger
           return {
             id,
             ...attributes,
-            tag_group_id: tag ? state.libraryState.libraryTags[tag].group_id : '',
+            tag_group_id: tag_id ? state.libraryState.libraryTags[tag_id].group_id : '',
             sample_name: state.libraryState.requests[request].sample_name,
             barcode: state.libraryState.tubes[tube].barcode,
           }
         })
+      return ret
     },
   },
   actions: {
@@ -136,7 +138,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           attributes: {
             pacbio_request_id: library.sample.id,
             template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-            tag_id: library.tag.id,
+            tag_id: library.tag_id,
             concentration: library.concentration,
             volume: library.volume,
             insert_size: library.insert_size,
@@ -222,26 +224,32 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       return { success, errors, response }
     },
 
-    async updateLibrary(library) {
-      if (!validate(library)) return { success: false, errors: 'The library is invalid' }
+    async updateLibrary(libraryFields) {
+      if (!validate(libraryFields)) return { success: false, errors: 'The library is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.libraries
       const body = {
         data: {
           type: 'libraries',
-          id: library.id,
+          id: libraryFields.id,
           attributes: {
-            template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-            tag_id: library.tag?.id,
-            concentration: library.concentration,
-            volume: library.volume,
-            insert_size: library.insert_size,
+            template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
+            tag_id: libraryFields.tag_id,
+            concentration: libraryFields.concentration,
+            volume: libraryFields.volume,
+            insert_size: libraryFields.insert_size,
           },
         },
       }
-      const promise = request.update({ data: body })
+
+      const promise = request.update(body)
       const { success, errors } = await handleResponse(promise)
-      if (success) this.libraryState.libraries[library.id] = library
+      if (success) {
+        this.libraryState.libraries[libraryFields.id] = {
+          ...this.libraryState.libraries[libraryFields.id],
+          ...libraryFields,
+        }
+      }
       return { success, errors }
     },
   },
