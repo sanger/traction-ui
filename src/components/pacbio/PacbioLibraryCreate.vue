@@ -13,12 +13,12 @@
       scrollable
       @cancel="hideModal"
     >
-      <PacbioLibraryForm
-        ref="formRef"
-        :library="library"
-        :sample="selectedSample"
-        @submitLibrary="createLibrary"
-      />
+      <div>
+        <label>The sample selected for this library is:</label>
+        <br />
+        {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
+      </div>
+      <PacbioLibraryForm ref="formRef" :library="library" @submitLibrary="createLibrary" />
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>
 
@@ -49,7 +49,7 @@ const props = defineProps({
 })
 
 // Define refs
-const library = ref({ tag_id:'', sample: {} })
+const library = ref({ tag: '', sample: {} })
 const selectedTagSetId = ref('')
 const showModal = ref(false)
 const modalRef = ref(null)
@@ -98,7 +98,7 @@ const createLibrary = async () => {
 }
 
 const show = () => {
-  library.value = { tag: { id: '' }, sample: props.selectedSample }
+  library.value = { tag: "", sample: props.selectedSample }
   showModal.value = true
   selectedTagSetId.value = ''
 }
