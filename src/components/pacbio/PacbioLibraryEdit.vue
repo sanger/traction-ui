@@ -52,8 +52,6 @@ const { hide } = useModalHelper(modalRef.value)
 
 // Define emits
 const emit = defineEmits(['alert'])
-//Emits the 'alert' event
-const emitAlert = (message) => emit('alert', message)
 
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
@@ -79,7 +77,7 @@ const updateLibrary = async () => {
   const { success, errors } = await librariesStore.updateLibrary(formRef.value.formLibrary)
   if (success) {
     hideModal()
-    emitAlert('Updated library with barcode ' + props.library.tube.barcode, 'success')
+    emit('alert', 'Updated library with barcode ' + props.library.barcode, 'success')
   } else {
     showFailureMessage('update library', errors)
   }
