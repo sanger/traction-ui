@@ -119,6 +119,7 @@ const props = defineProps({
   isStatic: Boolean,
   selectedSample: {
     type: Object,
+    required: true,
     default() {
       return {}
     },
@@ -133,14 +134,10 @@ const modalRef = ref(null)
 
 //Composables
 const { showAlert } = useAlert()
-const { hide } = useModalHelper(modalRef.value)
+const { hideModal } = useModalHelper(modalRef.value)
 
 // Define emits
 const emit = defineEmits(['alert'])
-//Emits the 'alert' event
-const emitAlert = (message) => {
-  emit('alert', message)
-}
 
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
@@ -184,7 +181,8 @@ const createLibrary = async () => {
   const { success, barcode, errors } = await librariesStore.createLibraryInTraction(library.value)
   if (success) {
     hideModal()
-    emitAlert('Created library with barcode ' + barcode, 'success')
+    showModal.value = false
+    emit('alert', 'Created library with barcode ' + barcode, 'success')
   } else {
     showFailureMessage('create library', errors)
   }
@@ -194,10 +192,6 @@ const show = () => {
   library.value = { tag: { id: '' }, sample: props.selectedSample }
   showModal.value = true
   selectedTagSetId.value = ''
-}
-const hideModal = () => {
-  hide()
-  showModal.value = false
 }
 provider()
 </script>

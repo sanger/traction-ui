@@ -43,7 +43,7 @@ import Plate from '@/components/plates/PlateItem'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { createNamespacedHelpers } from 'vuex'
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
 
 export default {

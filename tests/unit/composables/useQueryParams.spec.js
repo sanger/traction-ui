@@ -1,5 +1,5 @@
-import useQueryParams from '@/lib/QueryParamsHelper'
-import { router } from '@support/testHelper'
+import useQueryParams from '@/composables/useQueryParams.js'
+import { router } from '@support/testHelper.js'
 import { flushPromises } from '@vue/test-utils'
 import { describe } from 'vitest'
 import { useRoute } from 'vue-router'
@@ -14,7 +14,7 @@ vi.mock('vue-router', async () => {
   }
 })
 
-describe('QueryParamsHelper', () => {
+describe('useQueryParams', () => {
   beforeEach(() => {
     // Clear query params before each test
     router.push({ query: {} })

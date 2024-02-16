@@ -76,7 +76,7 @@ import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 
 export default {
   name: 'OntPoolIndex',

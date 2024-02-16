@@ -6,7 +6,7 @@ export default function useModalHelper(modalRef) {
   /**
    * Hides the modal.
    */
-  const hide = () => {
+  const hideModal = () => {
     //Hides the modal referenced by modalRef
     if (modalRef) {
       modalRef.hide()
@@ -14,6 +14,6 @@ export default function useModalHelper(modalRef) {
   }
 
   return {
-    hide,
+    hideModal,
   }
 }

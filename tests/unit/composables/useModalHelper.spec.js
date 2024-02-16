@@ -5,7 +5,7 @@ const modalRef = {
 }
 describe('#useModalHelper', () => {
   it('calls hide method on hide function call', () => {
-    useModalHelper(modalRef).hide()
+    useModalHelper(modalRef).hideModal()
     expect(modalRef.hide).toHaveBeenCalled()
   })
 })
