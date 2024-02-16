@@ -107,16 +107,23 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
-      debugger
       return Object.values(state.libraryState.libraries)
         .filter((library) => library.tube)
         .map((library) => {
           const { id, request, tag_id, tube, ...attributes } = library
+          const tagGroupId = tag_id
+            ? state.libraryState.libraryTags[tag_id]
+              ? state.libraryState.libraryTags[tag_id].group_id
+              : state.tagState.tags[tag_id]
+                ? state.tagState.tags[tag_id].group_id
+                : ''
+            : ''
           return {
             id,
             tag_id,
+            tube,
             ...attributes,
-            tag_group_id: tag_id ? state.libraryState.libraryTags[tag_id].group_id : '',
+            tag_group_id: tagGroupId ?? '',
             sample_name: state.libraryState.requests[request].sample_name,
             barcode: state.libraryState.tubes[tube].barcode,
           }
@@ -257,11 +264,11 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       const promise = request.update(body)
       const { success, errors } = await handleResponse(promise)
       if (success) {
-          //Update all fields of the library in the store with matching ID with the given values.
-          (this.libraryState.libraries[libraryFields.id] = {
-            ...this.libraryState.libraries[libraryFields.id],
-            ...libraryFields,
-          })
+        //Update all fields of the library in the store with matching ID with the given values.
+        this.libraryState.libraries[libraryFields.id] = {
+          ...this.libraryState.libraries[libraryFields.id],
+          ...libraryFields,
+        }
       }
       return { success, errors }
     },
