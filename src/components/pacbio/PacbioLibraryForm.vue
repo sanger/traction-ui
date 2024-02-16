@@ -14,7 +14,7 @@
 
         <traction-select
           id="tag-input"
-          v-model="formLibrary.tag"
+          v-model="formLibrary.tag_id"
           :options="tagOptions"
           :disabled="!selectedTagSetId"
           class="mb-3"
@@ -109,36 +109,55 @@ const getTagset = () => {
   const tagSet = props.library.tag ? librariesStore.tagsetForTagId(props.library.tag) : ''
   return tagSet ? tagSet.id : ''
 }
-// Define refs
+
+/*
+selectedTagSetId is a reactive variable, so it will update when the library prop changes
+Initialize  selectedTagSetId with the tagset id of the library prop
+*/
 const selectedTagSetId = ref(getTagset())
 
-//initialize formLibrary with the library prop
-const formLibrary = ref(props.library)
-//Expose formLibrary to parent component
+/*
+formLibrary is a reactive variable, so it will update when the library prop changes
+initialize formLibrary with the library prop
+*/
+const formLibrary = ref(props.library ? { ...props.library } : {})
+
+/*
+Expose formLibrary to parent component as a reactive variable,
+so that the parent component can access the formLibrary and its properties
+*/
 defineExpose({
   formLibrary,
 })
-
-// Define computed
+/*
+tagSetOptions is a computed variable, so it will update when the librariesStore.tagSetChoices changes
+*/
 const tagSetOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag set' }
   return [placeholder, ...librariesStore.tagSetChoices]
 })
-
+/*
+tagOptions is a computed variable, so it will update when the librariesStore.tagChoicesForId(selectedTagSetId.value) changes
+*/
 const tagOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag' }
   return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
 })
-
 const { showAlert } = useAlert()
 
-// Define methods
-// Show a failure message
+
+/**
+ * Show a failure message
+ * @param {string} action - The action that failed
+ * @param {Array} errors - The errors that caused the failure
+ */
 const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
 
-// Define provider method
+/**
+ * Define provider method to fetch tagsets, which is called when the component is created
+ */
 const provider = async () => {
   try {
     const { success, errors } = await librariesStore.fetchPacbioTagSets()
@@ -149,7 +168,9 @@ const provider = async () => {
     showFailureMessage('find tags', [error.message])
   }
 }
-
+/**
+ * Reset the selected tag id
+ */
 const resetSelectedTagId = () => {
   formLibrary.value.tag_id = ''
 }

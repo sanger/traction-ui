@@ -113,7 +113,8 @@ const librariesStore = usePacbioLibrariesStore()
 const store = useStore()
 
 //computed
-const libraries = computed(() =>  [...librariesStore.librariesArray])
+const libraries = computed(() => [...librariesStore.librariesArray])
+
 //methods
 const handleLibraryDelete = async () => {
   try {

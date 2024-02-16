@@ -18,7 +18,7 @@
         <br />
         {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
       </div>
-      <PacbioLibraryForm ref="formRef" :library="library" @submitLibrary="createLibrary" />
+      <PacbioLibraryForm ref="formRef" :library="library" />
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>
 

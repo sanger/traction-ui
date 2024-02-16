@@ -13,12 +13,7 @@
       scrollable
       @cancel="hideModal"
     >
-      <PacbioLibraryForm
-        ref="formRef"
-        :library="library"
-        :sample="selectedSample"
-        @submitLibrary="editLibrary"
-      />
+      <PacbioLibraryForm ref="formRef" :library="library" />
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>
         <traction-button id="update-btn" theme="edit" @click="updateLibrary">
@@ -62,14 +57,12 @@ const emitAlert = (message) => emit('alert', message)
 
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
-
 // Define methods
 
 // Show a failure message
 const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
-
 // Define provider method
 const provider = async () => {
   try {
