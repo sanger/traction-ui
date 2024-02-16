@@ -126,7 +126,8 @@ import useModalHelper from '@/composables/useModalHelper.js'
 const props = defineProps({
   disabled: Boolean, // Boolean value to disable the button
   isStatic: Boolean, // Boolean value to set the modal as static
-  selectedSample: { // Object to define the selected sample
+  selectedSample: {
+    // Object to define the selected sample
     type: Object,
     required: true,
     default() {
@@ -182,8 +183,6 @@ const tagOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag' }
   return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
 })
-
-
 
 /**
  * showFailureMessage is a function that is used to show a failure message when an action fails.

@@ -59,10 +59,10 @@
 
 <script setup>
 /*
-  * PacbioLibraryIndex is a component that displays a table of Pacbio libraries.
-  * script setup is a new Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
-  * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryIndex component.
-  */
+ * PacbioLibraryIndex is a component that displays a table of Pacbio libraries.
+ * script setup is a new Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+ * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryIndex component.
+ */
 import PrinterModal from '@/components/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
@@ -145,7 +145,7 @@ const librariesStore = usePacbioLibrariesStore()
 const store = useStore()
 
 /**
- * 
+ *
  * It is used to create a computed property for the libraries.
  */
 const libraries = computed(() => librariesStore.librariesArray)
