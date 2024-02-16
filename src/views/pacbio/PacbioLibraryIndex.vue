@@ -44,13 +44,7 @@
         </template>
 
         <template #cell(actions)="row">
-          <traction-button
-            :id="`editPool-${row.item.pool?.id}`"
-            size="sm"
-            theme="edit"
-            :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool?.id } }"
-            >Edit</traction-button
-          >
+          <PacbioLibraryEdit :library="row.item" class="float-left" />
         </template>
       </traction-table>
     </div>
@@ -67,6 +61,7 @@ import useAlert from '@/composables/useAlert.js'
 import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import { useStore } from 'vuex'
+import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 
 //Define reactive variables
 const state = reactive({
@@ -118,8 +113,7 @@ const librariesStore = usePacbioLibrariesStore()
 const store = useStore()
 
 //computed
-const libraries = computed(() => librariesStore.librariesArray)
-
+const libraries = computed(() =>  [...librariesStore.librariesArray])
 //methods
 const handleLibraryDelete = async () => {
   try {
