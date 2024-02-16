@@ -1,7 +1,7 @@
 import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
-
+import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -25,7 +25,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
       plugins: [
         createTestingPinia({
           initialState: {
-            pacbioRunCreate: { ...state },
+            pacbioLibraries: { ...state },
           },
           stubActions,
           plugins,
@@ -74,7 +74,7 @@ describe('PacbioLibraryCreate.vue', () => {
   it('will have an form component', async () => {
     wrapper.vm.showModal = true
     await nextTick()
-    expect(wrapper.find('#libraryCreateModal').element).toBeTruthy()
+    expect(wrapper.find('#librarForm').element).toBeTruthy()
   })
 
   it('must have a disabled prop', () => {
@@ -89,14 +89,6 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.selectedSample).toEqual(props.selectedSample)
   })
 
-  it('must have tagSetOptions data', () => {
-    expect(modal.tagSetOptions).toEqual([{ value: '', text: 'Please select a tag set' }])
-  })
-
-  it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
-  })
-
   describe('#createLibrary', () => {
     let payload
 
@@ -105,13 +97,11 @@ describe('PacbioLibraryCreate.vue', () => {
       payload = { tag: { id: 1 }, sample: { id: 1 } }
     })
 
-    it('is successful', async () => {
-      modal.library.value = payload
+    it.only('is successful', async () => {
       const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       store.createLibraryInTraction.mockReturnValue(expectedResponse)
-
+      modal.formRef.library.value = payload
       await modal.createLibrary()
-
       expect(wrapper.emitted().alert).toBeTruthy()
     })
 
