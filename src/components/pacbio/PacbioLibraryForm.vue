@@ -1,33 +1,25 @@
 <template>
   <div>
     <traction-form id="librarForm" @keydown.enter.prevent>
-      <template v-if="sample">
-        <fieldset id="selected-sample" class="py-1">
-          <label>The sample selected for this library is:</label>
-          <br />
-          {{ sample.sample_name }} ({{ sample.source_identifier }})
-        </fieldset>
+      <fieldset id="tag-set-select-input" class="py-2">
+        <label>Tag:</label>
+        <traction-select
+          id="tag-set-input"
+          v-model="selectedTagSetId"
+          data-type="tag-set-list"
+          :options="tagSetOptions"
+          class="mb-3"
+          @update:modelValue="resetSelectedTagId"
+        ></traction-select>
 
-        <fieldset id="tag-set-select-input" class="py-2">
-          <label>Tag:</label>
-          <traction-select
-            id="tag-set-input"
-            v-model="selectedTagSetId"
-            data-type="tag-set-list"
-            :options="tagSetOptions"
-            class="mb-3"
-            @update:modelValue="resetSelectedTagId"
-          ></traction-select>
-
-          <traction-select
-            id="tag-input"
-            v-model="formLibrary.tag_id"
-            :options="tagOptions"
-            :disabled="!selectedTagSetId"
-            class="mb-3"
-          />
-        </fieldset>
-      </template>
+        <traction-select
+          id="tag-input"
+          v-model="formLibrary.tag"
+          :options="tagOptions"
+          :disabled="!selectedTagSetId"
+          class="mb-3"
+        />
+      </fieldset>
       <fieldset id="input-group-volume" class="py-2">
         <label>Volume:</label>
         <traction-input
@@ -87,25 +79,38 @@
 </template>
 
 <script setup>
+/***
+ * PacbioLibraryForm component can be used to create or edit a library.
+ * @param {Object} library - The library to be  edited or created
+ */
 import { computed, ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
 
 // Define props
 const props = defineProps({
+  // The library to be edited or created
   library: {
     type: Object,
+    required: true,
     default() {
-      return { sample: {} }
-    },
-  },
-  sample: {
-    type: Object,
-    default() {
-      return undefined
+      return { tag: '', sample: {} }
     },
   },
 })
+
+//Create Pinia store
+const librariesStore = usePacbioLibrariesStore()
+
+/**
+ * Get the tagset for the given library tag, if any
+ */
+const getTagset = () => {
+  const tagSet = props.library.tag ? librariesStore.tagsetForTagId(props.library.tag) : ''
+  return tagSet ? tagSet.id : ''
+}
+// Define refs
+const selectedTagSetId = ref(getTagset())
 
 //initialize formLibrary with the library prop
 const formLibrary = ref(props.library)
@@ -113,10 +118,6 @@ const formLibrary = ref(props.library)
 defineExpose({
   formLibrary,
 })
-// Define refs
-const selectedTagSetId = ref('')
-//Create Pinia store
-const librariesStore = usePacbioLibrariesStore()
 
 // Define computed
 const tagSetOptions = computed(() => {
