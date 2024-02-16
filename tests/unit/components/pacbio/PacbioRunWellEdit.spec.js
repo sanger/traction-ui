@@ -293,7 +293,7 @@ describe('PacbioWellEdit', () => {
 
         expect(wrapper.vm.poolIds).toEqual([1])
 
-        wrapper.vm.localPools.push({ id: 2, barcode: 'TRAC-2' })
+        wrapper.vm.localPoolsAndLibraries.push({ id: 2, barcode: 'TRAC-2', type: 'pools' })
         expect(wrapper.vm.poolIds).toEqual([1, 2])
         expect(wrapper.vm.wellPayload).toEqual({ ...well, pools: [1, 2] })
       })

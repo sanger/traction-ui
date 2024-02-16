@@ -14,7 +14,7 @@
       <p class="truncate font-light">{{ position }}</p>
     </div>
     <span
-      v-if="hasPools && hover"
+      v-if="hasPoolsOrLibraries && hover"
       class="absolute z-1 bg-black text-white text-xs p-2 rounded"
       data-attribute="tooltip"
     >
@@ -89,14 +89,20 @@ export default {
     },
     tooltip() {
       return this.storeWell.pools
-        .map((p) => {
-          return this.tubeContents.find((tube) => p == tube.id).barcode
+        ?.map((p) => {
+          return this.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
         })
+        .concat(
+          this.storeWell.libraries?.map((l) => {
+            return this.tubeContents.find((tubeContent) => l == tubeContent.id).barcode
+          }),
+        )
+        .filter(Boolean)
         .join(',')
     },
-    hasPools() {
+    hasPoolsOrLibraries() {
       if (this.storeWell === undefined) return false
-      return this.storeWell.pools.length > 0
+      return this.storeWell.pools.length > 0 || this.storeWell.libraries.length > 0
     },
     hasValidMetadata() {
       if (this.storeWell === undefined) return false
@@ -110,10 +116,10 @@ export default {
       return this.getWell(this.plateNumber, this.position)
     },
     status() {
-      if (this.hasPools && this.hasValidMetadata) {
+      if (this.hasPoolsOrLibraries && this.hasValidMetadata) {
         // Complete
         return 'bg-success text-white'
-      } else if (this.hasPools || this.hasSomeMetadata) {
+      } else if (this.hasPoolsOrLibraries || this.hasSomeMetadata) {
         // Incomplete
         return 'bg-failure text-white'
       }
@@ -128,13 +134,13 @@ export default {
     },
     async drop(event) {
       this.hover = false
-      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
+      await this.updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
     },
     // It looks like all actions are async even if they do nothing async
-    async updatePoolBarcode(barcode) {
+    async updatePoolLibraryBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
-      const { id } = this.tubeContentByBarcode(barcode)
-      well.pools.push(id)
+      const { id, type } = this.tubeContentByBarcode(barcode)
+      type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
       this.updateWell({ well: well, plateNumber: this.plateNumber })
     },
   },

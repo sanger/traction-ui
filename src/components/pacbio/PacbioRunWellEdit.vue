@@ -1,6 +1,6 @@
 <template>
   <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide">
-    <template #modal-title>Add Pool to Well: {{ position }}</template>
+    <template #modal-title>Add Pool or Library to Well: {{ position }}</template>
 
     <fieldset>
       <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
@@ -16,18 +16,23 @@
       </traction-form>
     </fieldset>
 
-    <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
+    <traction-table
+      id="wellPools"
+      stacked
+      :items="localPoolsAndLibraries"
+      :fields="wellPoolsLibrariesFields"
+    >
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
         <traction-form classes="flex flex-wrap items-center">
           <traction-input
-            id="poolBarcode"
-            ref="poolBarcode"
+            id="poolLibraryBarcode"
+            ref="poolLibraryBarcode"
             :model-value="`${row.item.barcode}`"
-            placeholder="Pool Barcode"
+            placeholder="Pool or library barcode"
             :debounce="500"
-            @update:modelValue="updatePoolBarcode(row, $event)"
+            @update:modelValue="updatePoolLibraryBarcode(row, $event)"
           ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
@@ -86,8 +91,8 @@ export default {
   data() {
     return {
       well: {},
-      localPools: [],
-      wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
+      localPoolsAndLibraries: [],
+      wellPoolsLibrariesFields: [{ key: 'barcode', label: 'Barcode' }],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
       isShow: false,
       position: '',
@@ -112,7 +117,7 @@ export default {
     // this is needed to update the well. We need to make sure we have the
     // right pools
     wellPayload() {
-      return { ...this.well, pools: this.poolIds }
+      return { ...this.well, pools: this.poolIds, libraries: this.libraryIds }
     },
     action() {
       return this.newWell
@@ -130,19 +135,34 @@ export default {
           }
     },
     poolIds() {
-      return this.localPools.map((pool) => pool.id)
+      return this.localPoolsAndLibraries.reduce((result, item) => {
+        item.type === 'pools' ? result.push(item.id) : null
+        return result
+      }, [])
+    },
+    libraryIds() {
+      return this.localPoolsAndLibraries.reduce((result, item) => {
+        item.type === 'libraries' ? result.push(item.id) : null
+        return result
+      }, [])
     },
   },
   methods: {
-    ...mapActions(usePacbioRunCreateStore, ['updateWell', 'deleteWell', 'findPools']),
+    ...mapActions(usePacbioRunCreateStore, [
+      'updateWell',
+      'deleteWell',
+      'findPoolsOrLibraryByTube',
+    ]),
     addRow() {
-      this.localPools.push({ id: '', barcode: '' })
+      this.localPoolsAndLibraries.push({ id: '', barcode: '' })
     },
     removeRow(row) {
-      this.localPools.splice(row.index, 1)
+      this.localPoolsAndLibraries.splice(row.index, 1)
     },
     removeInvalidPools() {
-      this.localPools = this.localPools.filter((pool) => pool.id && pool.barcode)
+      this.localPoolsAndLibraries = this.localPoolsAndLibraries.filter(
+        (item) => item.id && item.barcode,
+      )
     },
     updateCCSAnalysisOutput() {
       if (this.well.generate_hifi === 'Do Not Generate') {
@@ -185,12 +205,20 @@ export default {
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
-    async updatePoolBarcode(row, barcode) {
+    async updatePoolLibraryBarcode(row, barcode) {
       const index = row.index
-      await this.findPools({ barcode })
-      const pool = await this.tubeContentByBarcode(barcode)
-      if (pool) {
-        this.localPools[index] = { id: pool.id, barcode }
+      await this.findPoolsOrLibraryByTube({ barcode })
+      const tubeContent = await this.tubeContentByBarcode(barcode)
+      if (tubeContent) {
+        tubeContent.type === 'libraries'
+          ? (this.localPoolsAndLibraries[index] = {
+              id: tubeContent.id,
+              barcode,
+              type: 'libraries',
+            })
+          : tubeContent.type === 'pools'
+            ? (this.localPoolsAndLibraries[index] = { id: tubeContent.id, barcode, type: 'pools' })
+            : null
       } else {
         this.showAlert('Pool is not valid', 'danger')
       }
@@ -201,11 +229,16 @@ export default {
     async setupWell() {
       this.well = await this.getOrCreateWell(this.position, this.plateNumber)
       // We need to flush localPools to prevent duplicates
-      this.localPools = []
+      this.localPoolsAndLibraries = []
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
         const pool = this.tubeContents.find((tubeContent) => tubeContent.id == id)
-        this.localPools.push({ id, barcode: pool.barcode })
+        this.localPoolsAndLibraries.push({ id, barcode: pool.barcode, type: 'pools' })
+      })
+      // If the well has libraries we want the barcode and id of each to display
+      this.well.libraries?.forEach((id) => {
+        const library = this.tubeContents.find((tubeContent) => tubeContent.id == id)
+        this.localPoolsAndLibraries.push({ id, barcode: library.barcode, type: 'libraries' })
       })
     },
     handleCustomProps(component) {

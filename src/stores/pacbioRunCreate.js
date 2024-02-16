@@ -157,7 +157,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       return Object.values(state.tubes).reduce((result, tube) => {
         // We should assume a tube only has one pool
         const pool = state.pools[tube.pools?.[0]]
-        const library = state.libraries[tube.library]
+        const library = state.libraries[tube.libraries]
 
         if (pool) {
           result.push(generatePoolContents(state, pool))
@@ -240,7 +240,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
         include:
-          'pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request',
+          'pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -283,12 +283,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         id,
         // This is long but we want to include pool data
         include:
-          'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+          'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
         fields: {
           requests: 'sample_name',
-          tubes: 'barcode',
           tags: 'group_id',
-          libraries: 'request,tag,run_suitability',
         },
       })
       const response = await handleResponse(promise)
@@ -300,6 +298,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           plates,
           wells,
           pools,
+          libraries,
           tubes,
           library_pools,
           tags,
@@ -333,9 +332,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         //Populate libraries, tags,tubes and requests
         this.pools = formatById(this.pools, pools, true)
+        this.libraries = formatById(this.libraries, libraries, true)
         this.library_pools = formatById(this.libraries, library_pools, true)
         this.tags = formatById(this.tags, tags)
         this.requests = formatById(this.requests, requests)
+        console.log(tubes)
         this.tubes = formatById(this.tubes, tubes, true)
 
         //Populate the smrtLinkVersion

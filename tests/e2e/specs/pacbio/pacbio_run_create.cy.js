@@ -9,7 +9,7 @@ describe('Pacbio Run Create view', () => {
 
     // Find the pool being searched for by barcode
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-6&include=pools.tube,pools.libraries.tag,pools.libraries.request,library.tube,library.tag,library.request&fields[requests]=sample_name&fields[tags]=group_id',
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-6&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioTubeWithPool.json',
       },
