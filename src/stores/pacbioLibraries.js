@@ -14,8 +14,8 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
  * This method will check each library to ensure that:
  *  * required fields are present
  **/
-const validate = (library) => {
-  // tags are optional
+const validateFields = (library) => {
+  // tag field is optional
   const requiredAttributes = [
     'id',
     'template_prep_kit_box_barcode',
@@ -81,6 +81,13 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           .map(({ id: value, group_id: text }) => ({ value, text })) || []
       return values
     },
+    tagsetForTagId: (state) => (tagId) => {
+      if (!tagId) return null
+      const tagset = Object.entries(state.tagState.tagSets).find((tagSet) =>
+        tagSet[1].tags.includes(tagId),
+      )
+      return tagset[1]
+    },
     /**
      * Returns an array of tag set choices from the state.
      *
@@ -107,7 +114,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         .filter((library) => library.tube)
         .map((library) => {
           const { id, request, tag_id, tube, ...attributes } = library
-          debugger
           return {
             id,
             ...attributes,
@@ -138,7 +144,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           attributes: {
             pacbio_request_id: library.sample.id,
             template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-            tag_id: library.tag_id,
+            tag_id: library.tag,
             concentration: library.concentration,
             volume: library.volume,
             insert_size: library.insert_size,
@@ -224,8 +230,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       return { success, errors, response }
     },
 
+    /**
+     * Updates the library with matchingid with all given field values.
+     * @param {*} libraryFields
+     * @returns
+     */
     async updateLibrary(libraryFields) {
-      if (!validate(libraryFields)) return { success: false, errors: 'The library is invalid' }
+      //Validate the libraryFields to ensure that all required fields are present
+      if (!validateFields(libraryFields))
+        return { success: false, errors: 'The library is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.libraries
       const body = {
@@ -245,6 +258,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       const promise = request.update(body)
       const { success, errors } = await handleResponse(promise)
       if (success) {
+        //Update all fields of the library in the store with matching ID with the given values.
         this.libraryState.libraries[libraryFields.id] = {
           ...this.libraryState.libraries[libraryFields.id],
           ...libraryFields,
