@@ -7,8 +7,6 @@ import store from '@/store'
  * @param {string} dataType - The data type of the alert.
  */
 export default function useAlert() {
-  //const store = useStore()
-
   const showAlert = (message, type, dataType) => {
     store.commit('traction/addMessage', { type, message: String(message), dataType })
   }
