@@ -7,7 +7,7 @@
       v-model="propValue"
       :placeholder="placeholder"
       :data-attribute="dataAttribute"
-      :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
+      :class="`w-full py-2 px-3 border border-gray-300 bg-white bg-transparent hover:border-sdb-200 rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
     >
       <template v-for="(optionGroupName, index) in optionGroupNames">
         <template v-if="optionGroupName">
