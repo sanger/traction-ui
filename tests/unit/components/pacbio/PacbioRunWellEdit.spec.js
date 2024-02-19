@@ -269,7 +269,7 @@ describe('PacbioWellEdit', () => {
       })
     })
 
-    describe('pools', () => {
+    describe('pools and libraries', () => {
       it('well should have correct pools when updated', async () => {
         const well = newWell({ position: position, ...{ id: 1, pools: [1] } })
 
@@ -296,6 +296,41 @@ describe('PacbioWellEdit', () => {
         wrapper.vm.localPoolsAndLibraries.push({ id: 2, barcode: 'TRAC-2', type: 'pools' })
         expect(wrapper.vm.poolIds).toEqual([1, 2])
         expect(wrapper.vm.wellPayload).toEqual({ ...well, pools: [1, 2] })
+      })
+
+      it('well should have correct libraries when updated', async () => {
+        const well = newWell({ position: position, ...{ id: 1, libraries: [1] } })
+
+        const { wrapperObj } = mountWithStore({
+          state: {
+            libraries: { 1: { id: 1, tube: 1, request: 1 }, 2: { id: 2, tube: 2, request: 2 } },
+            tubes: {
+              1: { barcode: 'TRAC-1', libraries: 1 },
+              2: { barcode: 'TRAC-2', libraries: 2 },
+            },
+            requests: {
+              1: { id: 1, sample_name: 'sample1' },
+              2: { id: 2, sample_name: 'sample2' },
+            },
+            smrtLinkVersion: smrtLinkVersions['1'],
+            run: {},
+            plates: { 1: { plate_number: 1 } },
+            wells: {
+              1: {
+                A1: well,
+              },
+            },
+          },
+        })
+        wrapper = wrapperObj
+        // This method sets the well data for the modal on show
+        await wrapper.vm.showModalForPositionAndPlate('A1', 1)
+
+        expect(wrapper.vm.libraryIds).toEqual([1])
+
+        wrapper.vm.localPoolsAndLibraries.push({ id: 2, barcode: 'TRAC-2', type: 'libraries' })
+        expect(wrapper.vm.libraryIds).toEqual([1, 2])
+        expect(wrapper.vm.wellPayload).toEqual({ ...well, libraries: [1, 2] })
       })
     })
   })

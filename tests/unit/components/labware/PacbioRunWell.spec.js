@@ -252,7 +252,31 @@ describe('PacbioRunWell.vue', () => {
   })
 
   describe('tooltip', () => {
-    it('will only be visible if there are pools or libraries', async () => {
+    it('will be visible if there are pools', async () => {
+      storeWell.pools = ['1', '2']
+      storeWell.libraries = []
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
+
+      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      // Barcodes of the tubes the store pools relate to
+      const expected = 'TRAC-2-1,TRAC-2-2'
+      expect(tooltip.text()).toEqual(expected)
+    })
+
+    it('will be visible if there are libraries', async () => {
+      storeWell.pools = []
+      storeWell.libraries = ['3']
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
+
+      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      // Barcodes of the tubes the store pools relate to
+      const expected = 'TRAC-2-3'
+      expect(tooltip.text()).toEqual(expected)
+    })
+
+    it('will be visible if there are pools and libraries', async () => {
       storeWell.pools = ['1', '2']
       storeWell.libraries = ['3']
       const { wrapperObj } = mountWithStore()

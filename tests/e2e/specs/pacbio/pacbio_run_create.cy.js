@@ -15,6 +15,14 @@ describe('Pacbio Run Create view', () => {
       },
     )
 
+    // Find the library being searched for by barcode
+    cy.intercept(
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-55&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
+      {
+        fixture: 'tractionPacbioTubeWithLibrary.json',
+      },
+    )
+
     // Message on successful creation or edit of the run
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 201,
@@ -139,7 +147,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="smrt_link_version"]').select('v13_revio')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-55')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata

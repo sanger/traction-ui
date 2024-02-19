@@ -17,7 +17,7 @@
     </fieldset>
 
     <traction-table
-      id="wellPools"
+      id="wellPoolsAndLibraries"
       stacked
       :items="localPoolsAndLibraries"
       :fields="wellPoolsLibrariesFields"
@@ -30,7 +30,7 @@
             id="poolLibraryBarcode"
             ref="poolLibraryBarcode"
             :model-value="`${row.item.barcode}`"
-            placeholder="Pool or library barcode"
+            placeholder="Pool/Library barcode"
             :debounce="500"
             @update:modelValue="updatePoolLibraryBarcode(row, $event)"
           ></traction-input>
