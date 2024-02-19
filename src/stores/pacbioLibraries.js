@@ -1,19 +1,16 @@
-/**
- * Importing `defineStore` function from 'pinia' library.
- * The `defineStore` function is used to create a store in Pinia,
- * which is a state management library for Vue.js.
- *
- * @see {@link https://pinia.esm.dev/api/defineStore} for more information about `defineStore`.
- */
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 /**
- * This method will check each library to ensure that:
- *  * required fields are present
- **/
+ * @function validateFields
+ * @param {Object} library - The library object to validate.
+ * @returns {boolean} Returns true if all required fields are present and truthy in the library object, false otherwise.
+ * @description Validates that the required fields are present in the given library object.
+ * The required fields are 'id', 'template_prep_kit_box_barcode', 'volume', 'concentration', and 'insert_size'.
+ * The 'tag' field is optional.
+ */
 const validateFields = (library) => {
   // tag field is optional
   const requiredAttributes = [
@@ -26,6 +23,13 @@ const validateFields = (library) => {
   return requiredAttributes.every((field) => library[field])
 }
 
+/**
+ * Importing `defineStore` function from 'pinia' library.
+ * The `defineStore` function is used to create a store in Pinia,
+ * which is a state management library for Vue.js.
+ *
+ * @see {@link https://pinia.esm.dev/api/defineStore} for more information about `defineStore`.
+ */
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
     /**
@@ -83,7 +87,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     },
     tagsetForTagId: (state) => (tagId) => {
       if (!tagId) return null
-      return Object.values(state.tagState.tagSets).find((tagSet) => tagSet.tags.includes(tagId))
+      return Object.values(state.tagState.tagSets).find((tagSet) =>
+        tagSet.tags.includes(String(tagId)),
+      )
     },
     /**
      * Returns an array of tag set choices from the state.
@@ -110,17 +116,19 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       return Object.values(state.libraryState.libraries)
         .filter((library) => library.tube)
         .map((library) => {
-          const { id, request, tag_id, tube, ...attributes } = library
-          const tagGroupId = tag_id
-            ? state.libraryState.libraryTags[tag_id]
-              ? state.libraryState.libraryTags[tag_id].group_id
-              : state.tagState.tags[tag_id]
-                ? state.tagState.tags[tag_id].group_id
+          const { id, request, tag_id, tag, tube, ...attributes } = library
+          const tagId = tag_id ?? tag
+          // Get the tag group ID from the library's tag ID or the tag's group ID.
+          const tagGroupId = tagId
+            ? state.libraryState.libraryTags[tagId]
+              ? state.libraryState.libraryTags[tagId].group_id
+              : state.tagState.tags[tagId]
+                ? state.tagState.tags[tagId].group_id
                 : ''
             : ''
           return {
             id,
-            tag_id,
+            tag_id: String(tagId),
             tube,
             ...attributes,
             tag_group_id: tagGroupId ?? '',
@@ -219,13 +227,12 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     /**
      * Fetches Pacbio tag sets from the root store and formats them by ID.
      * @function fetchPacbioTagSets
-     * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, an array of errors, and the response object.
+     * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, or an error string.
      * @throws {Error} - Throws an error if the request fails.
      */
     async fetchPacbioTagSets() {
       const rootStore = useRootStore()
       const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
-
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
       if (success && data.length > 0) {
@@ -237,8 +244,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
     /**
      * Updates the library with matchingid with all given field values.
-     * @param {*} libraryFields
-     * @returns
+     * @param {*} libraryFields - The fields to update the library with.
+     * * @returns {Promise<Object>} A promise that resolves to an object.
+     * The object has a 'success' property that is true if the library was updated successfully and false otherwise.
+     * If 'success' is false, the object also has an 'errors' property with a message describing the error.
      */
     async updateLibrary(libraryFields) {
       //Validate the libraryFields to ensure that all required fields are present
@@ -260,7 +269,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           },
         },
       }
-
       const promise = request.update(body)
       const { success, errors } = await handleResponse(promise)
       if (success) {
