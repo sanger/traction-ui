@@ -58,8 +58,3 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss">
-th {
-  font-size: 0.8em;
-}
-</style>

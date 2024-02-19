@@ -61,9 +61,3 @@ export default {
   },
 }
 </script>
-
-<style scoped land="scss">
-a {
-  color: black;
-}
-</style>

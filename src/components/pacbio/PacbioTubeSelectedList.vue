@@ -68,15 +68,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-.wrapper {
-  overflow: auto;
-  display: flex;
-  flex-wrap: wrap;
-}
-.wrapper > div {
-  width: 50%;
-}
-</style>

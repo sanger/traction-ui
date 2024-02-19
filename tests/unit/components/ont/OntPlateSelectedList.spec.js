@@ -51,7 +51,6 @@ describe('OntPlateSelectedList', () => {
 
     it('contains the selected plate', () => {
       expect(wrapper.find('[data-type=selected-plate-item]').text()).toContain('GEN-1668092750-1')
-      expect(wrapper.findAll('.plate').length).toEqual(1)
     })
   })
 

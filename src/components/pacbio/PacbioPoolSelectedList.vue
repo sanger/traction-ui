@@ -1,5 +1,5 @@
 <template>
-  <div class="list-group">
+  <div>
     <tube v-for="pool in poolsArray" :key="pool.id" v-bind="pool"> </tube>
   </div>
 </template>
@@ -19,9 +19,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-.list-group {
-  max-height: 500px;
-  overflow-y: auto;
-}
-</style>

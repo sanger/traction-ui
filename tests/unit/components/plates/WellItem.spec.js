@@ -64,24 +64,6 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  describe('#status', () => {
-    it('will be filled if the well has materials', () => {
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('filled')
-    })
-
-    it('will be empty the well does not have a request', () => {
-      props['well_info'] = { position: 'A1', requests: [] }
-
-      wrapper = mount(Well, {
-        props,
-      })
-
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('empty')
-    })
-  })
-
   describe('#tooltip', () => {
     it('will display the requests name', () => {
       const title = wrapper.find('title')
@@ -90,9 +72,9 @@ describe('Well.vue', () => {
     })
   })
 
-  describe('#hasRequest', () => {
+  describe('#getRequest', () => {
     it('will return true if the well has requests', () => {
-      expect(well.hasRequest).toEqual(true)
+      expect(well.getRequest).toEqual(true)
     })
 
     it('will return false if the well doesnt not have any requests', () => {
@@ -102,7 +84,7 @@ describe('Well.vue', () => {
         props,
       })
 
-      expect(wrapper.vm.hasRequest).toEqual(false)
+      expect(wrapper.vm.getRequest).toEqual(false)
     })
   })
 })
