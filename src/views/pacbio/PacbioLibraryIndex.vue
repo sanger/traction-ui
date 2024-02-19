@@ -43,8 +43,23 @@
           </template>
         </template>
 
-        <template #cell(actions)="row">
+        <!-- <template #cell(actions)="row">
           <PacbioLibraryEdit :library="row.item" class="float-left" />
+        </template> -->
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
+          </traction-button>
+        </template>
+
+        <template #row-details="row">
+          <PacbioLibraryEdit :library="row.item" @alert="row.toggleDetails" />
         </template>
       </traction-table>
     </div>
@@ -63,8 +78,42 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import { useStore } from 'vuex'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 
-//Define reactive variables
+ /**
+ * Following are new Vue 3 features used in this component:
+ * 
+ * script setup : is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+ *
+ * ref:  is a Vue 3 function that allows you to create a reactive object which is a replacement for the data option in Vue 2
+ * ref() takes the argument and returns it wrapped within a ref object with a .value property:
+ * e.g : ref(0) returns { value: 0 }
+ * To access the value, you use the .value property in setup function, but in the template, you can use the variable directly.
+ * {@link} https://v3.vuejs.org/guide/reactivity-fundamentals.html#ref
+ * 
+ * reactive: is a Vue 3 function that allows to define reactive variables which is a replacement for the data option in Vue 2.
+ *  The limitations of this are 
+ *   1) This only works for objects and arrays and not for primitive values. 
+ *   2) Cannot replace entire object or array, but can replace properties of the object or array.
+ * reactive() takes the argument and returns it wrapped within a reactive object.
+ * {@link} https://v3.vuejs.org/guide/reactivity-fundamentals.html#reactive-variables
+ 
+ * Composables: are a new Vue 3 feature that allows you to create reusable logic.
+ * {@link} https://vuejs.org/guide/reusability/composables
+ *
+ * computed: is a Vue 3 function that allows you to create a computed property.
+ * It is a replacement for the computed option in Vue 2.
+ * {@link} https://v3.vuejs.org/guide/reactivity-computed-watchers.html#computed-properties
+ *
+ * defineProps: is a Vue 3 function that allows you to define props in the setup function which is a replacement for the  props option in Vue 2.
+ * {@link} https://v3.vuejs.org/guide/component-props.html#prop-validation
+ */
+
+ /**
+  * PacbioLibraryIndex component is used to display the list of libraries.
+  */
+
+//define reactive variables
 const state = reactive({
+  // Define fields for the table
   fields: [
     { key: 'selected', label: '\u2713' },
     { key: 'id', label: 'Library ID', sortable: true },
@@ -87,8 +136,9 @@ const state = reactive({
     { key: 'insert_size', label: 'Insert Size', sortable: true },
     { key: 'tag_group_id', label: 'Tag', sortable: true },
     { key: 'created_at', label: 'Created at (UTC)', sortable: true },
-    { key: 'actions', label: 'Actions' },
+    { key: 'show_details', label: '' },
   ],
+  // Define filter options
   filterOptions: [
     { value: '', text: '' },
     { value: 'barcode', text: 'Barcode', wildcard: true },
@@ -96,31 +146,43 @@ const state = reactive({
     { value: 'source_identifier', text: 'Source' },
     // Need to specify filters in json api resources if we want more filters
   ],
+  //Define selected libraries
   selected: [],
 })
 
-//Define refs
-const sortBy = ref('created_at')
+const sortBy = ref('created_at')// Create a ref for the sortBy variable
 
-//Composables
+// useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
+
+//useQueryParams is a composable function that is used to fetch the query parameters
 const { fetchWithQueryParams } = useQueryParams()
 
-//Create Pinia store
+/**
+ * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
+ * It is used to create a new library.
+ */
 const librariesStore = usePacbioLibrariesStore()
 
-//Create VueX store
+// Create VueX store using useStore 
 const store = useStore()
 
-//computed
+/**
+ * @name libraries
+ * @type {Array<Object>}
+ * @description A computed property that returns a new array containing all libraries from the 'librariesStore'.
+ */
 const libraries = computed(() => [...librariesStore.librariesArray])
 
-//methods
+/**
+ * @method handleLibraryDelete
+ * @description Deletes the selected libraries by calling the deleteLibraries method from the 'librariesStore'.
+ * If the delete is successful, it shows a success message, otherwise shows a failure message.
+ */
 const handleLibraryDelete = async () => {
   try {
     const selectedIds = state.selected.map((s) => s.id)
     const responses = await librariesStore.deleteLibraries(selectedIds)
-
     if (responses.every((r) => r.success)) {
       const keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
       showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
@@ -137,7 +199,12 @@ const handleLibraryDelete = async () => {
     showAlert('Failed to delete: ' + error, 'danger')
   }
 }
-
+/**
+ * @method createLabels
+ * @description create the labels needed for the print job
+ * each label will be in the format 
+ * { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
+ */
 const createLabels = () => {
   const date = getCurrentDate()
   return state.selected.map(({ barcode, source_identifier }) => {
@@ -152,6 +219,11 @@ const createLabels = () => {
   })
 }
 
+/**
+ * @method printLabels
+ * @description Creates the print job and shows a success or failure alert
+ * @param {@} printerName The name of the printer to send the print job to
+ */
 const printLabels = async (printerName) => {
   const { success, message = {} } = await store.dispatch('printMyBarcode/createPrintJob', {
     printerName,
@@ -161,6 +233,11 @@ const printLabels = async (printerName) => {
   showAlert(message, success ? 'success' : 'danger')
 }
 
+/**
+ * @method fetchLibraries
+ * @description Fetches the libraries from the api
+ * @returns {Object} { success: Boolean, errors: Array }
+ */
 const fetchLibraries = async () => {
   return await fetchWithQueryParams(librariesStore.fetchLibraries, state.filterOptions)
 }
