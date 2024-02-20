@@ -1,13 +1,12 @@
-import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
+import PacbioSamples from '@/views/pacbio/PacbioSampleIndex.vue'
 import {
   mount,
   store,
   Data,
   router,
   flushPromises,
-  nextTick,
   createTestingPinia,
-} from '@support/testHelper'
+} from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 /**
@@ -92,25 +91,6 @@ describe('PacbioSamples.vue', () => {
       // 40 is one of the request id's from Data.PacbioRequestsRequest
       button = wrapper.find('#details-btn-40')
       expect(button.text()).toEqual('Show Details')
-    })
-  })
-
-  describe('Create library button', () => {
-    let button
-    beforeEach(() => {
-      button = wrapper.findComponent({ ref: 'libraryCreateBtn' })
-    })
-
-    it('create library button is disabled when no sample are selected', () => {
-      samples.selected = []
-      expect(button.props('disabled')).toBe(true)
-    })
-
-    it('create library button is disabled when no sample are selected', async () => {
-      samples.selected = [{ id: 1 }]
-      await nextTick()
-
-      expect(button.props('disabled')).toBe(false)
     })
   })
 

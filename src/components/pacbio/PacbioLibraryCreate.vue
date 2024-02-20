@@ -1,7 +1,7 @@
 <template>
-  <div :class="`${displayCreatePanel && 'mt-6'}`">
+  <div :class="`${isDisplayLibraryForm && 'mt-6'}`">
     <traction-button
-      v-if="!displayCreatePanel"
+      v-if="!isDisplayLibraryForm"
       id="pacbioLibraryCreate"
       :disabled="!selectedSample.sample_name"
       theme="create"
@@ -10,8 +10,8 @@
       {{ 'Create Library' }}
     </traction-button>
     <div
-      v-if="displayCreatePanel"
-      class="p-4 ml-4 mb-4 mt-2 rounded-md text-left items-center border-2 border-gray-200"
+      v-if="isDisplayLibraryForm"
+      class="p-4 ml-4 mb-4 mt-2 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
     >
       <traction-heading level="3" show-border shadow-md class="mb-2">
         Create Library
@@ -22,8 +22,10 @@
         {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
       </div>
       <PacbioLibraryForm ref="formRef" :library="library" />
-      <div class="flex flex-row items-center justify-end space-x-2 mt-2">
-        <traction-button @click="toggleDisplayCreatePanel"> Cancel </traction-button>
+      <div class="flex flex-row items-center justify-end space-x-2 mt-3">
+        <traction-button id="cancel-btn" @click="toggleDisplayCreatePanel">
+          Cancel
+        </traction-button>
         <traction-button id="create-btn" theme="create" @click="createLibrary">
           Create
         </traction-button>
@@ -31,7 +33,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { computed, ref } from 'vue'
@@ -66,9 +67,10 @@ import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
  * PacbioLibraryCreate component is used to create a new library for a selected sample.
  */
 
- //define props
+//define props
 const props = defineProps({
-  selectedSample: { //The selected sample for which the library is being created.
+  selectedSample: {
+    //The selected sample for which the library is being created.
     type: Object,
     default() {
       return {}
@@ -80,13 +82,12 @@ const props = defineProps({
 const formRef = ref(null) // Create a ref for the PacbioLibraryForm component
 
 /**
- * Create a ref for the displayCreatePanel variable which is used to toggle the display of the create panel.
- * If displayCreatePanel is true, the create panel is displayed, otherwise displays a 'Create' button.
+ * Create a ref for the isDisplayLibraryForm variable which is used to toggle the display of the create panel.
+ * If isDisplayLibraryForm is true, the library form is displayed, otherwise displays a 'Create' button.
  */
-const displayCreatePanel = ref(false)
+const isDisplayLibraryForm = ref(false)
 
 const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
-
 
 /**
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
@@ -114,10 +115,10 @@ const showFailureMessage = (action, errors) => {
 /**
  * @method toggleDisplayCreatePanel
  * @description Toggles the display of the create panel.
- * If displayCreatePanel is true, the create panel is displayed, otherwise displays a 'Create' button.
+ * If isDisplayLibraryForm is true, the create panel is displayed, otherwise displays a 'Create' button.
  */
 const toggleDisplayCreatePanel = () => {
-  displayCreatePanel.value = !displayCreatePanel.value
+  isDisplayLibraryForm.value = !isDisplayLibraryForm.value
 }
 
 /**
