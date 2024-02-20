@@ -1,7 +1,7 @@
 import { mount, nextTick, createTestingPinia, Data } from '@support/testHelper.js'
 import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
-import { expect } from 'vitest'
+import { beforeEach, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 
 const mockShowAlert = vi.fn()
@@ -47,7 +47,7 @@ describe('PacbioLibraryForm.vue', () => {
     props = {
       disabled: true,
       isStatic: true,
-      selectedSample: { id: 1 },
+      library: { sample: {}, tag_id: '113' },
     }
     const plugins = [
       ({ store }) => {
@@ -68,7 +68,21 @@ describe('PacbioLibraryForm.vue', () => {
   it('will have an form component', async () => {
     wrapper.vm.showModal = true
     await nextTick()
-    expect(wrapper.find('#librarForm').element).toBeTruthy()
+    expect(wrapper.find('#libraryForm').element).toBeTruthy()
+  })
+  it('should display a form with the correct fields', async () => {
+    wrapper.vm.showModal = true
+    await nextTick()
+    expect(wrapper.find('#tag-input').element).toBeTruthy()
+    expect(wrapper.find('#tag-set-input').element).toBeTruthy()
+    expect(wrapper.find('#library-volume').element).toBeTruthy()
+    expect(wrapper.find('#library-concentration').element).toBeTruthy()
+    expect(wrapper.find('#library-templatePrepKitBoxBarcode').element).toBeTruthy()
+    expect(wrapper.find('#library-insertSize').element).toBeTruthy()
+    expect(wrapper.find('#library-volume').element.value).toBe('')
+    expect(wrapper.find('#library-concentration').element.value).toBe('')
+    expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('')
+    expect(wrapper.find('#library-insertSize').element.value).toBe('')
   })
 
   it('must have tagSetOptions data', () => {
@@ -110,5 +124,43 @@ describe('PacbioLibraryForm.vue', () => {
     wrapper = wrapperObj
     await flushPromises()
     expect(mockShowAlert).toHaveBeenCalled()
+  })
+  describe('when a library with all fields is passed as a prop', () => {
+    beforeEach(() => {
+      const plugins = [
+        ({ store }) => {
+          if (store.$id === 'root') {
+            store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+          }
+        },
+      ]
+
+      props = {
+        disabled: true,
+        isStatic: true,
+        library: {
+          tag_id: '113',
+          volume: '1',
+          concentration: '1',
+          template_prep_kit_box_barcode: 'barcode',
+          insert_size: '1',
+        },
+      }
+      const { wrapperObj } = mountWithStore({
+        props,
+        plugins,
+      })
+      wrapper = wrapperObj
+      modal = wrapperObj.vm
+    })
+    it('should display a form with the correct field values', async () => {
+      await flushPromises()
+      expect(wrapper.find('#library-volume').element.value).toBe('1')
+      expect(wrapper.find('#library-concentration').element.value).toBe('1')
+      expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('barcode')
+      expect(wrapper.find('#library-insertSize').element.value).toBe('1')
+      expect(wrapper.find('#tag-set-input').element.value).toBe('3')
+      expect(modal.selectedTagSetId).toBe('3')
+    })
   })
 })

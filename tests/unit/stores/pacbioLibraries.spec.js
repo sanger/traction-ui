@@ -21,7 +21,7 @@ describe('usePacbioLibrariesStore', () => {
 
     it('"libraries" returns libraries from "state.libraries"', () => {
       const store = usePacbioLibrariesStore()
-      store.$state.libraryState = { libraries: libraries }
+      store.$state.libraryState = { libraries }
       expect(store.libraryState.libraries).toEqual(libraries)
     })
   })
@@ -82,6 +82,8 @@ describe('usePacbioLibrariesStore', () => {
           tag_group_id: '1234',
           sample_name: '4616STDY7535900',
           barcode: 'TRAC-2-721',
+          tube: '4',
+          tag_id: '3',
         },
       ]
       expect(store.librariesArray).toEqual(libraryArray)
@@ -113,6 +115,7 @@ describe('usePacbioLibrariesStore', () => {
           .tagChoicesForId('3')
           .some((tag) => tag.text === 'bc1001_BAK8A_OA' && tag.value === '113'),
       ).toBe(true)
+      expect(store.tagsetForTagId('113').name).toEqual('Sequel_16_barcodes_v3')
     })
   })
   describe('actions', () => {
@@ -145,7 +148,7 @@ describe('usePacbioLibrariesStore', () => {
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,
           sample: { id: 1 },
-          tag: { id: 1, group_id: '123abc1' },
+          tag_id: 1,
         }
         body = {
           data: {
@@ -386,6 +389,7 @@ describe('usePacbioLibrariesStore', () => {
           concentration: 2.0,
           template_prep_kit_box_barcode: 'LK12348',
           volume: 4.0,
+          tag_id: '3',
         }
       })
       it('successfully', async () => {
@@ -393,18 +397,18 @@ describe('usePacbioLibrariesStore', () => {
         const library = { ...libraryBeforeUpdate }
         library.concentration = 2.0
         library.template_prep_kit_box_barcode = 'LK12347'
+        library.tag_id = '3'
         const { success } = await store.updateLibrary(library)
         expect(update).toBeCalledWith({
           data: {
-            data: {
-              id: '1',
-              type: 'libraries',
-              attributes: {
-                concentration: 2.0,
-                template_prep_kit_box_barcode: 'LK12347',
-                volume: 1.0,
-                insert_size: 100,
-              },
+            id: '1',
+            type: 'libraries',
+            attributes: {
+              concentration: 2.0,
+              template_prep_kit_box_barcode: 'LK12347',
+              volume: 1.0,
+              insert_size: 100,
+              tag_id: '3',
             },
           },
         })
@@ -429,8 +433,7 @@ describe('usePacbioLibrariesStore', () => {
       })
       it('should not return error if optional attributes are empty', async () => {
         await store.fetchLibraries()
-        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
-        const newLibrary = { ...library, tag: null }
+        const newLibrary = { ...library, tag_id: null }
         const { success, errors } = await store.updateLibrary(newLibrary)
         expect(success).toBeTruthy()
         expect(errors).toEqual(undefined)
