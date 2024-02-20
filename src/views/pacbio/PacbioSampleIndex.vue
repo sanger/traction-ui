@@ -12,10 +12,9 @@
         <PacbioLibraryCreate
           ref="libraryCreateBtn"
           :selected-sample="selected[0]"
-          :disabled="selected.length === 0"
           class="float-left"
         />
-        <traction-pagination class="float-right" aria-controls="samples-table"/>
+        <traction-pagination class="float-right" aria-controls="samples-table" />
       </div>
 
       <traction-table
