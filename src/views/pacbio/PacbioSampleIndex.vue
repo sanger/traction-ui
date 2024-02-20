@@ -77,7 +77,7 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import useQueryParams from '@/lib/QueryParamsHelper.js'
+import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 import { mapActions, mapGetters } from 'vuex'
