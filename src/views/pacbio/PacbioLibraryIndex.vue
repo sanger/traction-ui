@@ -63,11 +63,16 @@
 </template>
 
 <script setup>
+/*
+ * PacbioLibraryIndex is a component that displays a table of Pacbio libraries.
+ * script setup is a new Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+ * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryIndex component.
+ */
 import PrinterModal from '@/components/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import useQueryParams from '@/lib/QueryParamsHelper.js'
+import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
@@ -146,35 +151,23 @@ const state = reactive({
   selected: [],
 })
 
-const sortBy = ref('created_at') // Create a ref for the sortBy variable
+//Define refs
+const sortBy = ref('created_at')
 
-// useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
+//Composables
 const { showAlert } = useAlert()
-
-//useQueryParams is a composable function that is used to fetch the query parameters
 const { fetchWithQueryParams } = useQueryParams()
 
-/**
- * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
- * It is used to create a new library.
- */
+//Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
 
-// Create VueX store using useStore
+//Create VueX store
 const store = useStore()
 
-/**
- * @name libraries
- * @type {Array<Object>}
- * @description A computed property that returns a new array containing all libraries from the 'librariesStore'.
- */
-const libraries = computed(() => [...librariesStore.librariesArray])
+//computed
+const libraries = computed(() => librariesStore.librariesArray)
 
-/**
- * @method handleLibraryDelete
- * @description Deletes the selected libraries by calling the deleteLibraries method from the 'librariesStore'.
- * If the delete is successful, it shows a success message, otherwise shows a failure message.
- */
+//methods
 const handleLibraryDelete = async () => {
   try {
     const selectedIds = state.selected.map((s) => s.id)
@@ -195,12 +188,7 @@ const handleLibraryDelete = async () => {
     showAlert('Failed to delete: ' + error, 'danger')
   }
 }
-/**
- * @method createLabels
- * @description create the labels needed for the print job
- * each label will be in the format
- * { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
- */
+
 const createLabels = () => {
   const date = getCurrentDate()
   return state.selected.map(({ barcode, source_identifier }) => {
@@ -215,11 +203,6 @@ const createLabels = () => {
   })
 }
 
-/**
- * @method printLabels
- * @description Creates the print job and shows a success or failure alert
- * @param {@} printerName The name of the printer to send the print job to
- */
 const printLabels = async (printerName) => {
   const { success, message = {} } = await store.dispatch('printMyBarcode/createPrintJob', {
     printerName,
@@ -229,11 +212,6 @@ const printLabels = async (printerName) => {
   showAlert(message, success ? 'success' : 'danger')
 }
 
-/**
- * @method fetchLibraries
- * @description Fetches the libraries from the api
- * @returns {Object} { success: Boolean, errors: Array }
- */
 const fetchLibraries = async () => {
   return await fetchWithQueryParams(librariesStore.fetchLibraries, state.filterOptions)
 }

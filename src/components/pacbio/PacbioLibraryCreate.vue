@@ -35,6 +35,11 @@
 </template>
 
 <script setup>
+/**
+ * PacbioLibraryCreate component is used to create a new library for a selected sample.
+ * script setup is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
+ * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryCreate component.
+ */
 import { computed, ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
@@ -67,11 +72,13 @@ import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
  * PacbioLibraryCreate component is used to create a new library for a selected sample.
  */
 
-//define props
+// Define props
 const props = defineProps({
+  disabled: Boolean,
+  isStatic: Boolean,
   selectedSample: {
-    //The selected sample for which the library is being created.
     type: Object,
+    required: true,
     default() {
       return {}
     },
@@ -79,61 +86,81 @@ const props = defineProps({
   },
 })
 
-const formRef = ref(null) // Create a ref for the PacbioLibraryForm component
+// Define refs
+const library = ref({ tag: { id: '' }, sample: {} })
+const selectedTagSetId = ref('')
+const showModal = ref(false)
+const modalRef = ref(null)
 
-/**
- * Create a ref for the isDisplayLibraryForm variable which is used to toggle the display of the create panel.
- * If isDisplayLibraryForm is true, the library form is displayed, otherwise displays a 'Create' button.
- */
-const isDisplayLibraryForm = ref(false)
+//Composables
+const { showAlert } = useAlert()
+const { hide } = useModalHelper(modalRef.value)
 
-const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
+// Define emits
+const emit = defineEmits(['alert'])
+//Emits the 'alert' event
+const emitAlert = (message) => {
+  emit('alert', message)
+}
 
-/**
- * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
- * It is used to create a new library.
- */
+//Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
 
-/**
- * library is a computed property that returns the selected sample for which the library is being created.
- * It is used to create a new library and which passed to the PacbioLibraryForm component.
- */
-const library = computed(() => {
-  return { tag: '', sample: { ...props.selectedSample } }
+// Define computed
+
+const tagSetOptions = computed(() => {
+  const placeholder = { value: '', text: 'Please select a tag set' }
+  return [placeholder, ...librariesStore.tagSetChoices]
 })
 
-/**
- * @method createLibrary
- * @description Creates a new library by calling the createLibraryInTraction method from the 'pacbioLibraries' store.
- * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
- */
+const tagOptions = computed(() => {
+  const placeholder = { value: '', text: 'Please select a tag' }
+  return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
+})
+
+// Define methods
+
+// Show a failure message
 const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
 
-/**
- * @method toggleDisplayCreatePanel
- * @description Toggles the display of the create panel.
- * If isDisplayLibraryForm is true, the create panel is displayed, otherwise displays a 'Create' button.
- */
-const toggleDisplayCreatePanel = () => {
-  isDisplayLibraryForm.value = !isDisplayLibraryForm.value
+// Define provider method
+const provider = async () => {
+  try {
+    const { success, errors } = await librariesStore.fetchPacbioTagSets()
+    if (!success) {
+      showFailureMessage('find tags', errors)
+    }
+  } catch (error) {
+    showFailureMessage('find tags', [error.message])
+  }
 }
 
-/**
- * @method createLibrary
- * @description Creates a new library by calling the createLibraryInTraction method from the 'pacbioLibraries' store.
- * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
- */
+const resetSelectedTagId = () => {
+  library.value.tag.id = ''
+}
+
 const createLibrary = async () => {
   const { success, barcode, errors } = await librariesStore.createLibraryInTraction(
     formRef?.value?.formLibrary,
   )
   if (success) {
-    showAlert('Created library with barcode ' + barcode, 'success')
+    hideModal()
+    emitAlert('Created library with barcode ' + barcode, 'success')
   } else {
     showFailureMessage('create library', errors)
   }
 }
+
+const show = () => {
+  library.value = { tag: { id: '' }, sample: props.selectedSample }
+  showModal.value = true
+  selectedTagSetId.value = ''
+}
+const hideModal = () => {
+  hide()
+  showModal.value = false
+}
+provider()
 </script>
