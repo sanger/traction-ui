@@ -42,16 +42,12 @@
             <span class="sr-only">Not selected</span>
           </template>
         </template>
-
-        <!-- <template #cell(actions)="row">
-          <PacbioLibraryEdit :library="row.item" class="float-left" />
-        </template> -->
         <template #cell(show_details)="row">
           <traction-button
             :id="'details-btn-' + row.item.id"
             size="sm"
-            class="mr-2"
-            theme="default"
+            :class="mr - 2"
+            :theme="row.detailsShowing ? 'paginationDefault' : 'default'"
             @click="row.toggleDetails"
           >
             {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
@@ -78,7 +74,7 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import { useStore } from 'vuex'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 
- /**
+/**
  * Following are new Vue 3 features used in this component:
  * 
  * script setup : is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
@@ -107,9 +103,9 @@ import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
  * {@link} https://v3.vuejs.org/guide/component-props.html#prop-validation
  */
 
- /**
-  * PacbioLibraryIndex component is used to display the list of libraries.
-  */
+/**
+ * PacbioLibraryIndex component is used to display the list of libraries.
+ */
 
 //define reactive variables
 const state = reactive({
@@ -150,7 +146,7 @@ const state = reactive({
   selected: [],
 })
 
-const sortBy = ref('created_at')// Create a ref for the sortBy variable
+const sortBy = ref('created_at') // Create a ref for the sortBy variable
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
@@ -164,7 +160,7 @@ const { fetchWithQueryParams } = useQueryParams()
  */
 const librariesStore = usePacbioLibrariesStore()
 
-// Create VueX store using useStore 
+// Create VueX store using useStore
 const store = useStore()
 
 /**
@@ -202,7 +198,7 @@ const handleLibraryDelete = async () => {
 /**
  * @method createLabels
  * @description create the labels needed for the print job
- * each label will be in the format 
+ * each label will be in the format
  * { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
  */
 const createLabels = () => {
