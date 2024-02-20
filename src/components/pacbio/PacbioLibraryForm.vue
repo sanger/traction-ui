@@ -2,7 +2,7 @@
   <div>
     <traction-form
       id="libraryForm"
-      class="flex flex-row justify-between space-x-2 p-2 bg-gray-200"
+      class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
       @keydown.enter.prevent
     >
       <fieldset id="tag-set-select-input">
@@ -120,7 +120,7 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
-const { showAlert } = useAlert() 
+const { showAlert } = useAlert()
 
 /**
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
@@ -159,7 +159,6 @@ selectedTagSetId is a reactive variable, so it will be initialised with an empty
 This will be updated When the component is created with a library having tag_id or when the user selects a tag set
 */
 const selectedTagSetId = ref('')
-
 
 /**
  * @name tagSetOptions
