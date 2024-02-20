@@ -1,6 +1,6 @@
 <template>
-  <div class="p-4 mb-4 rounded-md text-left items-center border-2 border-gray-200">
-    <traction-heading level="3" shadow-md class="mb-2"> Edit Library </traction-heading>
+  <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
+    <traction-heading level="3" class="mb-2"> Edit Library </traction-heading>
     <PacbioLibraryForm ref="formRef" :library="library" />
     <div class="flex flex-row items-center justify-end space-x-2 mt-3">
       <traction-button @click="emit('alert')"> Cancel </traction-button>
@@ -37,11 +37,9 @@
  * {@link} https://v3.vuejs.org/guide/component-custom-events.html#defining-custom-events
  */
 
-
 /**
  * PacbioLibraryEdit component is used to edit a library.
  */
-
 
 import { ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
@@ -50,7 +48,8 @@ import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 
 // Define props
 const props = defineProps({
-  library: { // library to be edited
+  library: {
+    // library to be edited
     type: Object,
     default() {
       return {}
@@ -61,7 +60,7 @@ const props = defineProps({
 const formRef = ref(null) // Create a ref for the PacbioLibraryForm component
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
-const { showAlert } = useAlert() 
+const { showAlert } = useAlert()
 
 const emit = defineEmits(['alert']) // Defines an emit function that emits an 'alert' event.
 
@@ -69,7 +68,7 @@ const emit = defineEmits(['alert']) // Defines an emit function that emits an 'a
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
  * It is used to create a new library.
  */
-const librariesStore = usePacbioLibrariesStore() 
+const librariesStore = usePacbioLibrariesStore()
 
 /**
  * @method showFailureMessage
@@ -81,7 +80,6 @@ const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
 
-
 /**
  * @method updateLibrary
  * Updates a library by calling the updateLibrary method from the 'pacbioLibraries' store.
@@ -90,7 +88,8 @@ const showFailureMessage = (action, errors) => {
 const updateLibrary = async () => {
   const { success, errors } = await librariesStore.updateLibrary(formRef.value.formLibrary)
   if (success) {
-    emit('alert', 'Updated library with barcode ' + props.library.barcode, 'success')
+    emit('alert')
+    showAlert('Updated library with barcode ' + props.library.barcode, 'success')
   } else {
     showFailureMessage('update library', errors)
   }
