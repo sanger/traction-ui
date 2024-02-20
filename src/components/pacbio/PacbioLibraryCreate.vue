@@ -16,17 +16,25 @@
       <traction-heading level="3" show-border shadow-md class="mb-2">
         Create Library
       </traction-heading>
-      <div class="mb-2">
-        <label>The sample selected for this library is:</label>
-        <br />
-        {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
+      <div class="mb-4 text-base italic text-gray-700">
+        <label v-if="selectedSample.sample_name"
+          >The sample selected for this library is: {{ selectedSample.sample_name }} ({{
+            selectedSample.source_identifier
+          }})</label
+        >
+        <label v-else class="text-red-600">No sample selected</label>
       </div>
       <PacbioLibraryForm ref="formRef" :library="library" />
       <div class="flex flex-row items-center justify-end space-x-2 mt-3">
         <traction-button id="cancel-btn" @click="toggleDisplayCreatePanel">
           Cancel
         </traction-button>
-        <traction-button id="create-btn" theme="create" @click="createLibrary">
+        <traction-button
+          id="create-btn"
+          theme="create"
+          :disabled="!selectedSample.sample_name"
+          @click="createLibrary"
+        >
           Create
         </traction-button>
       </div>
@@ -35,11 +43,6 @@
 </template>
 
 <script setup>
-/**
- * PacbioLibraryCreate component is used to create a new library for a selected sample.
- * script setup is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
- * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryCreate component.
- */
 import { computed, ref } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
@@ -72,13 +75,11 @@ import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
  * PacbioLibraryCreate component is used to create a new library for a selected sample.
  */
 
-// Define props
+//define props
 const props = defineProps({
-  disabled: Boolean,
-  isStatic: Boolean,
   selectedSample: {
+    //The selected sample for which the library is being created.
     type: Object,
-    required: true,
     default() {
       return {}
     },
@@ -86,81 +87,61 @@ const props = defineProps({
   },
 })
 
-// Define refs
-const library = ref({ tag: { id: '' }, sample: {} })
-const selectedTagSetId = ref('')
-const showModal = ref(false)
-const modalRef = ref(null)
+const formRef = ref(null) // Create a ref for the PacbioLibraryForm component
 
-//Composables
-const { showAlert } = useAlert()
-const { hide } = useModalHelper(modalRef.value)
+/**
+ * Create a ref for the isDisplayLibraryForm variable which is used to toggle the display of the create panel.
+ * If isDisplayLibraryForm is true, the library form is displayed, otherwise displays a 'Create' button.
+ */
+const isDisplayLibraryForm = ref(false)
 
-// Define emits
-const emit = defineEmits(['alert'])
-//Emits the 'alert' event
-const emitAlert = (message) => {
-  emit('alert', message)
-}
+const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 
-//Create Pinia store
+/**
+ * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
+ * It is used to create a new library.
+ */
 const librariesStore = usePacbioLibrariesStore()
 
-// Define computed
-
-const tagSetOptions = computed(() => {
-  const placeholder = { value: '', text: 'Please select a tag set' }
-  return [placeholder, ...librariesStore.tagSetChoices]
+/**
+ * library is a computed property that returns the selected sample for which the library is being created.
+ * It is used to create a new library and which passed to the PacbioLibraryForm component.
+ */
+const library = computed(() => {
+  return { tag: '', sample: { ...props.selectedSample } }
 })
 
-const tagOptions = computed(() => {
-  const placeholder = { value: '', text: 'Please select a tag' }
-  return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
-})
-
-// Define methods
-
-// Show a failure message
+/**
+ * @method createLibrary
+ * @description Creates a new library by calling the createLibraryInTraction method from the 'pacbioLibraries' store.
+ * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
+ */
 const showFailureMessage = (action, errors) => {
   showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
 }
 
-// Define provider method
-const provider = async () => {
-  try {
-    const { success, errors } = await librariesStore.fetchPacbioTagSets()
-    if (!success) {
-      showFailureMessage('find tags', errors)
-    }
-  } catch (error) {
-    showFailureMessage('find tags', [error.message])
-  }
+/**
+ * @method toggleDisplayCreatePanel
+ * @description Toggles the display of the create panel.
+ * If isDisplayLibraryForm is true, the create panel is displayed, otherwise displays a 'Create' button.
+ */
+const toggleDisplayCreatePanel = () => {
+  isDisplayLibraryForm.value = !isDisplayLibraryForm.value
 }
 
-const resetSelectedTagId = () => {
-  library.value.tag.id = ''
-}
-
+/**
+ * @method createLibrary
+ * @description Creates a new library by calling the createLibraryInTraction method from the 'pacbioLibraries' store.
+ * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
+ */
 const createLibrary = async () => {
   const { success, barcode, errors } = await librariesStore.createLibraryInTraction(
     formRef?.value?.formLibrary,
   )
   if (success) {
-    hideModal()
-    emitAlert('Created library with barcode ' + barcode, 'success')
+    showAlert('Created library with barcode ' + barcode, 'success')
   } else {
     showFailureMessage('create library', errors)
   }
 }
-
-const show = () => {
-  library.value = { tag: { id: '' }, sample: props.selectedSample }
-  showModal.value = true
-  selectedTagSetId.value = ''
-}
-const hideModal = () => {
-  hide()
-  showModal.value = false
-}
-provider()
 </script>
