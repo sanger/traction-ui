@@ -1,7 +1,7 @@
-import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import { mount, nextTick, createTestingPinia, flushPromises, Data } from '@support/testHelper.js'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
-
+import { expect } from 'vitest'
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -25,7 +25,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
       plugins: [
         createTestingPinia({
           initialState: {
-            pacbioRunCreate: { ...state },
+            pacbioLibraries: { ...state },
           },
           stubActions,
           plugins,
@@ -39,102 +39,111 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 }
 
 describe('PacbioLibraryCreate.vue', () => {
-  let wrapper, modal, props, store
-
-  beforeEach(() => {
-    props = {
-      disabled: true,
-      isStatic: true,
-      selectedSample: { id: 1 },
-    }
-    const plugins = [
-      ({ store }) => {
-        if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn().mockReturnValue([])
-        }
-      },
-    ]
-    const { wrapperObj, storeObj } = mountWithStore({
-      props,
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+      }
+    },
+  ]
+  it('disables create library button when sample is empty', async () => {
+    const { wrapperObj } = mountWithStore({
+      props: { selectedSample: {} },
       plugins,
     })
-    wrapper = wrapperObj
-    store = storeObj
-    modal = wrapperObj.vm
-  })
-
-  it('will have an button component', () => {
-    expect(wrapper.find('#pacbioLibraryCreate').element).toBeTruthy()
-  })
-
-  it('will have an modal component', () => {
-    expect(wrapper.find('.modal')).toBeTruthy()
-  })
-
-  it('will have an form component', async () => {
-    wrapper.vm.showModal = true
+    const button = wrapperObj.findComponent('#pacbioLibraryCreate')
     await nextTick()
-    expect(wrapper.find('#libraryCreateModal').element).toBeTruthy()
+    expect(button.element).toBeTruthy()
+    expect(button.element.disabled).toBe(true)
   })
 
-  it('must have a disabled prop', () => {
-    expect(modal.disabled).toEqual(props.disabled)
-  })
+  describe('when a valid sample is given as a prop', () => {
+    let wrapper, modal, props, store
+    beforeEach(async () => {
+      props = {
+        selectedSample: { id: 1, sample_name: 'sample1' },
+      }
 
-  it('must have a isStatic prop', () => {
-    expect(modal.isStatic).toEqual(props.isStatic)
-  })
-
-  it('must have a selectedSample prop', () => {
-    expect(modal.selectedSample).toEqual(props.selectedSample)
-  })
-
-  it('must have tagSetOptions data', () => {
-    expect(modal.tagSetOptions).toEqual([{ value: '', text: 'Please select a tag set' }])
-  })
-
-  it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
-  })
-
-  describe('#createLibrary', () => {
-    let payload
-
-    beforeEach(() => {
-      modal.createLibraryInTraction = vi.fn()
-      payload = { tag: { id: 1 }, sample: { id: 1 } }
+      const { wrapperObj, storeObj } = mountWithStore({
+        props,
+        plugins,
+      })
+      await flushPromises()
+      wrapper = wrapperObj
+      store = storeObj
+      modal = wrapperObj.vm
     })
 
-    it('is successful', async () => {
-      modal.library.value = payload
-      const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
-      store.createLibraryInTraction.mockReturnValue(expectedResponse)
-
-      await modal.createLibrary()
-
-      expect(wrapper.emitted().alert).toBeTruthy()
+    it('will have a Create Library button component', () => {
+      const button = wrapper.findComponent('#pacbioLibraryCreate')
+      expect(button.element).toBeTruthy()
+      expect(button.element.disabled).toBe(false)
     })
 
-    it('does not error when there is no tag', async () => {
-      modal.library.value = { tag: { id: '' }, sample: { id: 1 } }
-      const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
-      store.createLibraryInTraction.mockReturnValue(expectedResponse)
-
-      await modal.createLibrary()
-
-      expect(wrapper.emitted().alert).toBeTruthy()
+    it('will have an modal component', () => {
+      expect(wrapper.find('.modal')).toBeTruthy()
     })
 
-    it('shows a error message on failure', async () => {
-      modal.library.value = payload
-      const expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
-      store.createLibraryInTraction.mockReturnValue(expectedResponse)
+    it('must have a selectedSample prop', () => {
+      expect(modal.selectedSample).toEqual(props.selectedSample)
+    })
 
-      await modal.createLibrary()
-      expect(mockShowAlert).toBeCalledWith(
-        'Failed to create library in Traction: it did not work',
-        'danger',
-      )
+    it('wiil show a library form when the create button is clicked', async () => {
+      wrapper.find('#pacbioLibraryCreate').trigger('click')
+      await nextTick()
+      expect(wrapper.find('#libraryForm').element).toBeTruthy()
+      expect(wrapper.element.querySelector('#pacbioLibraryCreate')).toBeNull()
+    })
+
+    it('should call the createLibrary method when the create button is clicked', async () => {
+      modal.createLibrary = vi.fn()
+      wrapper.find('#pacbioLibraryCreate').trigger('click')
+      await nextTick()
+      wrapper.find('#create-btn').trigger('click')
+      expect(modal.createLibrary).toBeCalled()
+    })
+
+    it('should not display library form when the cancel button is clicked', async () => {
+      wrapper.find('#pacbioLibraryCreate').trigger('click')
+      await nextTick()
+      expect(modal.isDisplayLibraryForm).toBeTruthy()
+      wrapper.find('#cancel-btn').trigger('click')
+      await nextTick()
+      expect(wrapper.element.querySelector('#libraryForm')).toBeNull()
+    })
+
+    describe('#createLibrary', () => {
+      let payload
+
+      beforeEach(() => {
+        modal.createLibraryInTraction = vi.fn()
+      })
+
+      it('is successful', async () => {
+        const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
+        store.createLibraryInTraction.mockReturnValue(expectedResponse)
+        await modal.createLibrary()
+      })
+
+      it('does not error when there is no tag', async () => {
+        modal.library.value = { tag: { id: '' }, sample: { id: 1 } }
+        const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
+        store.createLibraryInTraction.mockReturnValue(expectedResponse)
+        await modal.createLibrary()
+        expect(mockShowAlert).toBeCalledWith('Created library with barcode TRAC-1', 'success')
+      })
+
+      it('shows a error message on failure', async () => {
+        modal.library.value = payload
+        const expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
+        store.createLibraryInTraction.mockReturnValue(expectedResponse)
+
+        await modal.createLibrary()
+        expect(mockShowAlert).toBeCalledWith(
+          'Failed to create library in Traction: it did not work',
+          'danger',
+        )
+      })
     })
   })
 })

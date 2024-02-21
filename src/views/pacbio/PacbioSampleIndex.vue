@@ -2,26 +2,19 @@
   <DataFetcher :fetcher="fetchRequests">
     <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix">
+      <div>
         <PrinterModal
           ref="printerModal"
           class="float-left"
           :disabled="selected.length === 0"
           @selectPrinter="printLabels($event)"
-        >
-        </PrinterModal>
-
+        />
         <PacbioLibraryCreate
           ref="libraryCreateBtn"
           :selected-sample="selected[0]"
-          :disabled="selected.length === 0"
           class="float-left"
-          @alert="showAlert"
-        >
-        </PacbioLibraryCreate>
-
-        <traction-pagination class="float-right" aria-controls="samples-table">
-        </traction-pagination>
+        />
+        <traction-pagination class="float-right" aria-controls="samples-table" />
       </div>
 
       <traction-table
@@ -79,13 +72,13 @@
 </template>
 
 <script>
-import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
-import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
-import PrinterModal from '@/components/PrinterModal'
-import FilterCard from '@/components/FilterCard'
-import DataFetcher from '@/components/DataFetcher'
-import useQueryParams from '@/composables/useQueryParams'
-import { getCurrentDate } from '@/lib/DateHelpers'
+import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
+import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit.vue'
+import PrinterModal from '@/components/PrinterModal.vue'
+import FilterCard from '@/components/FilterCard.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import useQueryParams from '@/composables/useQueryParams.js'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 import { mapActions, mapGetters } from 'vuex'
 
