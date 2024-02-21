@@ -185,15 +185,6 @@ const tagOptions = computed(() => {
 })
 
 /**
- * Show a failure message
- * @param {string} action - The action that failed
- * @param {Array} errors - The errors that caused the failure
- */
-const showFailureMessage = (action, errors) => {
-  showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
-}
-
-/**
  * @method provider
  * Fetches the pacbio tag sets from the 'pacbioLibraries' store.
  * If the fetch is successful, it sets the selected tag set ID to the tag set ID of the library.
@@ -207,10 +198,10 @@ const provider = async () => {
       const tagSet = props.library.tag_id ? librariesStore.tagsetForTagId(props.library.tag_id) : ''
       selectedTagSetId.value = tagSet ? tagSet.id : ''
     } else {
-      showFailureMessage('find tags', errors)
+      showAlert(`Failed to find tags in Traction: ${errors}`, 'danger')
     }
   } catch (error) {
-    showFailureMessage('find tags', [error.message])
+    showAlert(`Failed to find tags in Traction: ${error}`, 'danger')
   }
 }
 

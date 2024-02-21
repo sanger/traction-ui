@@ -409,6 +409,12 @@ describe('usePacbioLibrariesStore', () => {
               volume: 1.0,
               insert_size: 100,
               tag_id: '3',
+              primary_aliquot_attributes: {
+                concentration: 2.0,
+                template_prep_kit_box_barcode: 'LK12347',
+                volume: 1.0,
+                insert_size: 100,
+              },
             },
           },
         })

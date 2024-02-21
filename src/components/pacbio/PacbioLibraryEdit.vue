@@ -3,7 +3,7 @@
     <traction-heading level="3" class="mb-2"> Edit Library </traction-heading>
     <PacbioLibraryForm ref="formRef" :library="library" />
     <div class="flex flex-row items-center justify-end space-x-2 mt-3">
-      <traction-button @click="emit('alert')"> Cancel </traction-button>
+      <traction-button @click="emit('editCompleted')"> Cancel </traction-button>
       <traction-button id="update-btn" theme="edit" @click="updateLibrary">
         Update
       </traction-button>
@@ -62,23 +62,13 @@ const formRef = ref(null) // Create a ref for the PacbioLibraryForm component
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
 
-const emit = defineEmits(['alert']) // Defines an emit function that emits an 'alert' event.
+const emit = defineEmits(['editCompleted']) // Defines an emit function that emits a 'edit-completed' event.
 
 /**
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
  * It is used to create a new library.
  */
 const librariesStore = usePacbioLibrariesStore()
-
-/**
- * @method showFailureMessage
- * Show a failure message using the showAlert function.
- * @param {*} action action that failed
- * @param {*} errors errors that occurred
- */
-const showFailureMessage = (action, errors) => {
-  showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
-}
 
 /**
  * @method updateLibrary
@@ -88,10 +78,10 @@ const showFailureMessage = (action, errors) => {
 const updateLibrary = async () => {
   const { success, errors } = await librariesStore.updateLibrary(formRef.value.formLibrary)
   if (success) {
-    emit('alert')
+    emit('editCompleted') // Emits a 'editCompleted' event which the parent component can listen to.
     showAlert('Updated library with barcode ' + props.library.barcode, 'success')
   } else {
-    showFailureMessage('update library', errors)
+    showAlert(`Failed to update library in Traction: ${errors}`, 'danger')
   }
 }
 </script>

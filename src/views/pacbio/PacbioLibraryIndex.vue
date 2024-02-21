@@ -44,18 +44,17 @@
         </template>
         <template #cell(show_details)="row">
           <traction-button
-            :id="'details-btn-' + row.item.id"
+            :id="'edit-btn-' + row.item.id"
             size="sm"
-            :class="mr - 2"
+            class="mr-2"
             :theme="row.detailsShowing ? 'paginationDefault' : 'default'"
             @click="row.toggleDetails"
           >
             {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
           </traction-button>
         </template>
-
         <template #row-details="row">
-          <PacbioLibraryEdit :library="row.item" @alert="row.toggleDetails" />
+          <PacbioLibraryEdit :library="row.item" @edit-completed="row.toggleDetails" />
         </template>
       </traction-table>
     </div>

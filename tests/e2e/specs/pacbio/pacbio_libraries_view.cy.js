@@ -1,8 +1,13 @@
 describe('Pacbio Libraries view', () => {
-  it('Visits the pacbio libraries url', () => {
+  beforeEach(() => {
     cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
       fixture: 'tractionPacbioLibraries.json',
     })
+    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
+      fixture: 'tractionPacbioTagSets.json',
+    })
+  })
+  it('Visits the pacbio libraries url', () => {
     cy.visit('#/pacbio/libraries')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -21,5 +26,45 @@ describe('Pacbio Libraries view', () => {
     cy.get('#concentration').should('have.length.greaterThan', 0)
     cy.get('#template_prep_kit_box_barcode').should('have.length.greaterThan', 0)
     cy.get('#insert_size').should('have.length.greaterThan', 0)
+    cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
+  })
+  it('allows editng a library and updates the library values', () => {
+    cy.intercept('PATCH', '/v1/pacbio/libraries/1', {
+      statusCode: 200,
+      body: {
+        data: {},
+      },
+    })
+    cy.visit('#/pacbio/libraries')
+    //When clicking on edit again on a librray with no  tag
+    cy.get('#show_details').within(() => {
+      cy.get('#edit-btn-1').click()
+    })
+    //It should show the form to edit the library with the values with an empty tag
+    cy.get('#libraryForm').should('be.visible')
+    cy.get('#library-volume').should('have.value', '1')
+    cy.get('#library-concentration').should('have.value', '1')
+    cy.get('#library-insertSize').should('have.value', '100')
+    cy.get('#library-templatePrepKitBoxBarcode').should('have.value', 'LK12345')
+    cy.get('#tag-set-input').should('have.value', '')
+    cy.get('#tag-input').should('be.disabled')
+
+    //It should update the library values
+    cy.get('#library-volume').clear().type('2')
+    cy.get('#library-concentration').clear().type('2')
+    cy.get('#library-insertSize').clear().type('200')
+    cy.get('#library-templatePrepKitBoxBarcode').clear().type('LK54321')
+    cy.get('#tag-set-input').select('IsoSeq_v1')
+    cy.get('#tag-input').select('bc1001')
+    cy.get('#update-btn').click()
+    cy.contains('Updated library with barcode TRAC-2-1465')
+    cy.get('#libraryForm').should('not.exist')
+
+    //It should display updated values in table
+    cy.get('#volume').first().should('have.text', '2')
+    cy.get('#concentration').first().should('have.text', '2')
+    cy.get('#template_prep_kit_box_barcode').first().should('have.text', 'LK54321')
+    cy.get('#insert_size').first().should('have.text', '200')
+    cy.get('#tag_group_id').first().should('have.text', 'bc1001')
   })
 })

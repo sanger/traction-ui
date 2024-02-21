@@ -118,7 +118,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         .map((library) => {
           const { id, request, tag_id, tag, tube, ...attributes } = library
           const tagId = tag_id ?? tag
-          // Get the tag group ID from the library's tag ID or the tag's group ID.
+          /*Get the tag group ID from the library's tag ID or the tag's group ID. Why this is required?
+          The librariesArray is called in multiple places (in create and edit context) to get the libraries. 
+          Therefore, librariesArray needs to search for the tag first in libraryTags. 
+          If not found, it should then look for it in tagState->tags. 
+          It's important that tagState->tags will only get populated if a fetchPacbioTagSets is called before, 
+          which may not happen in all the places where it's called. 
+          Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
+          associated with all libraries."*/
+
           const tagGroupId = tagId
             ? state.libraryState.libraryTags[tagId]
               ? state.libraryState.libraryTags[tagId].group_id
@@ -266,6 +274,12 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
             concentration: libraryFields.concentration,
             volume: libraryFields.volume,
             insert_size: libraryFields.insert_size,
+            primary_aliquot_attributes: {
+              template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
+              volume: libraryFields.volume,
+              concentration: libraryFields.concentration,
+              insert_size: libraryFields.insert_size,
+            },
           },
         },
       }

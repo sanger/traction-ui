@@ -1,5 +1,5 @@
 <template>
-  <div :class="`${isDisplayLibraryForm && 'mt-6'}`">
+  <div>
     <traction-button
       v-if="!isDisplayLibraryForm"
       id="pacbioLibraryCreate"
@@ -7,11 +7,11 @@
       theme="create"
       @click="toggleDisplayCreatePanel"
     >
-      {{ 'Create Library' }}
+      Create Library
     </traction-button>
     <div
       v-if="isDisplayLibraryForm"
-      class="p-4 ml-4 mb-4 mt-2 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+      class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
     >
       <traction-heading level="3" show-border shadow-md class="mb-2">
         Create Library
@@ -112,15 +112,6 @@ const library = computed(() => {
 })
 
 /**
- * @method createLibrary
- * @description Creates a new library by calling the createLibraryInTraction method from the 'pacbioLibraries' store.
- * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
- */
-const showFailureMessage = (action, errors) => {
-  showAlert(`Failed to ${action} in Traction: ${errors.length > 0 ? errors[0] : ''}`, 'danger')
-}
-
-/**
  * @method toggleDisplayCreatePanel
  * @description Toggles the display of the create panel.
  * If isDisplayLibraryForm is true, the create panel is displayed, otherwise displays a 'Create' button.
@@ -140,8 +131,9 @@ const createLibrary = async () => {
   )
   if (success) {
     showAlert('Created library with barcode ' + barcode, 'success')
+    toggleDisplayCreatePanel()
   } else {
-    showFailureMessage('create library', errors)
+    showAlert(`Failed to create library in Traction: ${errors}`, 'danger')
   }
 }
 </script>

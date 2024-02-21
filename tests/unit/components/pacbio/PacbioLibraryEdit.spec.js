@@ -92,7 +92,7 @@ describe('PacbioLibraryEdit.vue', () => {
       const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       store.updateLibrary.mockReturnValue(expectedResponse)
       await modal.updateLibrary()
-      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().editCompleted).toBeTruthy()
       expect(mockShowAlert).toBeCalledWith('Updated library with barcode TRAC-1', 'success')
     })
 
