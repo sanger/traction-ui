@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="classes"
+    :class="classObject"
     :draggable="!!valid"
     data-attribute="selected-pool-library-list"
     @dragstart="drag(barcode, $event)"
@@ -12,13 +12,19 @@
           <p class="text-xl font-bold w-full px-2 text-left" data-attribute="barcode">
             {{ barcode }}
           </p>
-          <button class="text-xl h-8 w-8 m-0 leading-none" @click="store.removeLibrary(id)">
-            x
-          </button>
+          <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
         </div>
         <div class="flex flex-row text-left text-sm w-full">
-          <div class="flex flex-col justify-center w-1/4">
+          <div class="flex flex-col w-1/4 justify-center">
             <img src="/tube.png" />
+            <traction-button
+              v-if="type == 'pools'"
+              :id="`editPool-${id}`"
+              size="sm"
+              theme="edit"
+              :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
+              >Edit</traction-button
+            >
           </div>
           <div v-if="valid || expanded" class="flex-col w-full border-l">
             <dl class="flex space-x-4 bg-gray-200 p-1 px-4">
@@ -47,15 +53,25 @@
                 {{ insert_size || 'Unknown' }}
               </dd>
             </dl>
-            <dl class="flex space-x-4 p-1 px-4">
+            <dl v-if="type == 'pools'" class="flex space-x-4 p-1 px-4">
+              <dt class="w-1/4 text-gray-500 font-bold">Libraries</dt>
+              <dd class="w-3/4">
+                <ul>
+                  <li v-for="library in libraries" :key="library.id">
+                    {{ library.sample_name }}{{ library.group_id ? ' : ' + library.group_id : '' }}
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+            <dl v-else class="flex space-x-4 p-1 px-4">
               <dt class="w-1/4 text-gray-500 font-bold">Sample and Tag</dt>
               <dd class="w-3/4" data-attribute="sample-name">
                 {{ sample_name }}{{ group_id ? ' : ' + group_id : '' }}
               </dd>
             </dl>
-            <dl v-if="!run_suitability.ready_for_run" class="flex">
-              <dt>Errors</dt>
-              <dd>
+            <dl v-if="!run_suitability.ready_for_run" class="flex space-x-4 p-1 px-4 bg-gray-200">
+              <dt class="w-1/4 text-gray-500 font-bold">Errors</dt>
+              <dd class="w-3/4">
                 <ul>
                   <li v-for="(error, index) in errors" :key="index">
                     {{ error }}
@@ -64,7 +80,15 @@
               </dd>
             </dl>
           </div>
-          <div v-else>Library invalid. Click for more information</div>
+          <div
+            v-else
+            class="flex w-full items-center justify-center text-xl font-bold border-l space-x-2"
+          >
+            <TractionDangerIcon />
+            <p>
+              {{ type == 'libraries' ? 'Library' : 'Pool' }} invalid. Click for more information
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -75,9 +99,15 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
 
 const props = defineProps({
   id: {
+    type: String,
+    required: true,
+    default: '',
+  },
+  type: {
     type: String,
     required: true,
     default: '',
@@ -87,30 +117,39 @@ const props = defineProps({
     required: true,
     default: '',
   },
-  source_identifier: {
-    type: String,
+  libraries: {
+    type: Array,
     required: false,
-    default: '',
+    default: () => [],
   },
   volume: {
     type: Number,
     required: false,
-    default: 0,
+    default: null,
   },
   concentration: {
     type: Number,
     required: false,
-    default: 0,
+    default: null,
   },
   template_prep_kit_box_barcode: {
     type: String,
     required: false,
-    default: '',
+    default: null,
   },
   insert_size: {
     type: Number,
     required: false,
-    default: 0,
+    default: null,
+  },
+  source_identifier: {
+    type: String,
+    required: false,
+    default: 'Unknown',
+  },
+  run_suitability: {
+    type: Object,
+    required: true,
   },
   sample_name: {
     type: String,
@@ -122,27 +161,31 @@ const props = defineProps({
     required: false,
     default: '',
   },
-  run_suitability: {
-    type: Object,
-    required: true,
-  },
 })
 
-const expanded = ref(false)
 const store = usePacbioRunCreateStore()
-const valid = computed(() => props.run_suitability.ready_for_run)
-const errors = computed(() => {
-  return props.run_suitability.errors.map((error) => error.detail)
-})
-const classes = computed(
-  () =>
-    `shadow-md border cursor-pointer rounded-md ${valid.value ? 'hover:border-green-400 transition-all duration-200 ' : 'failure-style'}`,
-)
 const img = new Image()
 img.src = '/tube.png'
-
-function drag(barcode, event) {
+const expanded = ref(false)
+const valid = computed(() => props.run_suitability.ready_for_run)
+const errors = computed(
+  () =>
+    props.run_suitability.formattedErrors ||
+    props.run_suitability.errors.map((error) => error.detail),
+)
+const classObject = computed(
+  () =>
+    `shadow-md border cursor-pointer rounded-md transition-all duration-200 ${valid.value ? 'hover:border-green-400' : 'hover:border-red-400'}`,
+)
+const drag = (barcode, event) => {
   event.dataTransfer.setDragImage(img, 120, 50)
   event.dataTransfer.setData('barcode', barcode)
+}
+const removeTube = () => {
+  if (props.type == 'pools') {
+    store.removePool(props.id)
+  } else {
+    store.removeLibrary(props.id)
+  }
 }
 </script>
