@@ -281,7 +281,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.runs
       const promise = request.find({
         id,
-        // This is long but we want to include pool data
+        // This is long but we want to include pool and library data
         include:
           'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
         fields: {
@@ -330,13 +330,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         })
         this.wells = wellsByPlate
 
-        //Populate libraries, tags,tubes and requests
+        //Populate pools, libraries, library_pools, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.library_pools = formatById(this.libraries, library_pools, true)
         this.tags = formatById(this.tags, tags)
         this.requests = formatById(this.requests, requests)
-        console.log(tubes)
         this.tubes = formatById(this.tubes, tubes, true)
 
         //Populate the smrtLinkVersion
@@ -344,6 +343,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
       return { success, errors }
     },
+
     /**
      * Saves (persists) the existing run. If it is a new run it will be created.
      * If it is an existing run it will be updated.
@@ -429,18 +429,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       this.wells[plateNumber]['_destroy'].push({ _destroy: true, id })
     },
 
-    /**
-     * Gets the pool based on it's barcode.
-     * Finds the pool, commits it to store and then returns it
-     * If it is an existing well it will be retrieved
-     * @param barcode The barcode to find
-     * @returns {Object} {success, errors, pool} success: was the pool returned, errors: any errors from API call, pool: The actual pool
-     */
-    async getPool({ barcode }) {
-      const { success, errors = [] } = await this.findPools({ barcode })
-      const pool = success ? this.tubeContentByBarcode(barcode) : {}
-      return { success, errors, pool }
-    },
     /**
      * Updates the store with the SMRT version selected on the component.
      * @param id the id of smrtLinkVersion object to update the store with.

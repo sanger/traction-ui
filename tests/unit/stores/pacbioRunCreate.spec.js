@@ -612,27 +612,6 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.wells[plateNumber]['A1']).toEqual(well)
       })
     })
-    describe('getPool', () => {
-      it('when finding the pool is successful', async () => {
-        const barcode = 'TRAC-2-1'
-        const store = usePacbioRunCreateStore()
-        store.findPools = vi.fn().mockResolvedValue({ success: true })
-        store.$state = { ...storePools }
-        const { success, pool } = await store.getPool({ barcode })
-        expect(success).toBeTruthy()
-        expect(pool.barcode).toEqual(barcode)
-        expect(pool.id).toEqual('1')
-      })
-
-      it('when finding the pool fails', async () => {
-        const barcode = 'TRAC-2-1'
-        const store = usePacbioRunCreateStore()
-        store.findPools = vi.fn().mockResolvedValue({ success: false, errors: ['it didnt work'] })
-        const { success, errors } = await store.getPool({ barcode })
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(['it didnt work'])
-      })
-    })
     describe('setInstrumentData', () => {
       it('when a key is passed', () => {
         const instrumentTypeKey = PacbioInstrumentTypes.SequelIIe.key

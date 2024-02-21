@@ -291,10 +291,10 @@ describe('PacbioWellEdit', () => {
         // This method sets the well data for the modal on show
         await wrapper.vm.showModalForPositionAndPlate('A1', 1)
 
-        expect(wrapper.vm.poolIds).toEqual([1])
+        expect(wrapper.vm.idsByType('pools')).toEqual([1])
 
         wrapper.vm.localPoolsAndLibraries.push({ id: 2, barcode: 'TRAC-2', type: 'pools' })
-        expect(wrapper.vm.poolIds).toEqual([1, 2])
+        expect(wrapper.vm.idsByType('pools')).toEqual([1, 2])
         expect(wrapper.vm.wellPayload).toEqual({ ...well, pools: [1, 2] })
       })
 
@@ -326,10 +326,10 @@ describe('PacbioWellEdit', () => {
         // This method sets the well data for the modal on show
         await wrapper.vm.showModalForPositionAndPlate('A1', 1)
 
-        expect(wrapper.vm.libraryIds).toEqual([1])
+        expect(wrapper.vm.idsByType('libraries')).toEqual([1])
 
         wrapper.vm.localPoolsAndLibraries.push({ id: 2, barcode: 'TRAC-2', type: 'libraries' })
-        expect(wrapper.vm.libraryIds).toEqual([1, 2])
+        expect(wrapper.vm.idsByType('libraries')).toEqual([1, 2])
         expect(wrapper.vm.wellPayload).toEqual({ ...well, libraries: [1, 2] })
       })
     })

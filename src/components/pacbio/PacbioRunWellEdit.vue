@@ -115,9 +115,13 @@ export default {
       return !this.getWell(this.plateNumber, this.position)
     },
     // this is needed to update the well. We need to make sure we have the
-    // right pools
+    // right pools and libraries
     wellPayload() {
-      return { ...this.well, pools: this.poolIds, libraries: this.libraryIds }
+      return {
+        ...this.well,
+        pools: this.idsByType('pools'),
+        libraries: this.idsByType('libraries'),
+      }
     },
     action() {
       return this.newWell
@@ -134,18 +138,6 @@ export default {
             label: 'Update',
           }
     },
-    poolIds() {
-      return this.localPoolsAndLibraries.reduce((result, item) => {
-        item.type === 'pools' ? result.push(item.id) : null
-        return result
-      }, [])
-    },
-    libraryIds() {
-      return this.localPoolsAndLibraries.reduce((result, item) => {
-        item.type === 'libraries' ? result.push(item.id) : null
-        return result
-      }, [])
-    },
   },
   methods: {
     ...mapActions(usePacbioRunCreateStore, [
@@ -155,6 +147,9 @@ export default {
     ]),
     addRow() {
       this.localPoolsAndLibraries.push({ id: '', barcode: '' })
+    },
+    idsByType(type) {
+      return this.localPoolsAndLibraries.filter((item) => item.type === type).map((item) => item.id)
     },
     removeRow(row) {
       this.localPoolsAndLibraries.splice(row.index, 1)
@@ -233,12 +228,14 @@ export default {
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
         const pool = this.tubeContents.find((tubeContent) => tubeContent.id == id)
-        this.localPoolsAndLibraries.push({ id, barcode: pool.barcode, type: 'pools' })
+        pool ? this.localPoolsAndLibraries.push({ id, barcode: pool.barcode, type: 'pools' }) : null
       })
       // If the well has libraries we want the barcode and id of each to display
       this.well.libraries?.forEach((id) => {
         const library = this.tubeContents.find((tubeContent) => tubeContent.id == id)
-        this.localPoolsAndLibraries.push({ id, barcode: library.barcode, type: 'libraries' })
+        library
+          ? this.localPoolsAndLibraries.push({ id, barcode: library.barcode, type: 'libraries' })
+          : null
       })
     },
     handleCustomProps(component) {

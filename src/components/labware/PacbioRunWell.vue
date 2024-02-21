@@ -136,7 +136,6 @@ export default {
       this.hover = false
       await this.updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
     },
-    // It looks like all actions are async even if they do nothing async
     async updatePoolLibraryBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
       const { id, type } = this.tubeContentByBarcode(barcode)
