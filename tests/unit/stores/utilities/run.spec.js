@@ -66,7 +66,10 @@ const wells = {
     2: { A1: newWell({ position: 'A1' }), _destroy: [] },
   },
   existing: {
-    1: { A1: { ...newWell({ position: 'A1' }), id: 1, pools: [1, 2] }, _destroy: [] },
+    1: {
+      A1: { ...newWell({ position: 'A1' }), id: 1, pools: [1, 2], libraries: [] },
+      _destroy: [],
+    },
     2: { A1: { ...newWell({ position: 'A1' }), id: 2 }, _destroy: [{ id: 3, _destroy: true }] },
   },
   single: {
@@ -96,6 +99,7 @@ describe('run.js', () => {
         row: 'A',
         column: '1',
         pools: [],
+        libraries: [],
       })
     })
 
@@ -112,6 +116,7 @@ describe('run.js', () => {
         row: 'A',
         column: '1',
         pools: [],
+        libraries: [],
       })
     })
   })
@@ -369,7 +374,11 @@ describe('run.js', () => {
 
       // pools attribute is replaced with pool_ids in the payload
       // eslint-disable-next-line no-unused-vars
-      const expected = [A1, B1, C1].map(({ pools, ...rest }) => ({ ...rest, pool_ids: [] }))
+      const expected = [A1, B1, C1].map(({ pools, libraries, ...rest }) => ({
+        ...rest,
+        pool_ids: [],
+        library_ids: [],
+      }))
 
       const payload = createWellsPayload(inputWells)
 
