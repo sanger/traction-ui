@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
 /**
  * @function validateFields
@@ -31,24 +32,11 @@ const validateFields = (library) => {
  * @see {@link https://pinia.esm.dev/api/defineStore} for more information about `defineStore`.
  */
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
-  state: () => ({
-    /**
-     * @property {Object} tagState - An object to store and manage all tag-related data.
-     */
-    tagState: {
-      /**
-       * @property {Object} tagSets - An object to store all tag-sets which are indexed by id
-       */
-      tagSets: {},
-      /**
-       * @property {Object} tags - An object to store all tags, each of which belongs to a tag set.
-       */
-      tags: {},
-    },
+  state: () =>
     /**
      * @property {Object} libraryState - An object to store and manage all library-related data.
      */
-    libraryState: {
+    ({
       /**
        * @property {Object} libraries - An object to store all libraries indexed by id.
        */
@@ -65,46 +53,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
        * @property {Object} libraryTags - An object to store all tags from all libraries indexed by id.
        */
       libraryTags: {},
-    },
-  }),
+    }),
 
   getters: {
-    /**
-     * Returns an array of tag choices for a given tag set ID.
-     *
-     * @function tagChoicesForId
-     * @param {Object} state - The state object containing tagSets and tags.
-     * @param {string} tagSetId - The ID of the tag set to get choices for.
-     * @returns {Array<{value: string, text: string}>} - An array of tag choices, each represented as an object with a value and text property.
-     */
-    tagChoicesForId: (state) => (tagSetId) => {
-      if (!tagSetId) return []
-      const values =
-        state.tagState.tagSets[tagSetId].tags
-          .map((tagId) => state.tagState.tags[tagId])
-          .map(({ id: value, group_id: text }) => ({ value, text })) || []
-      return values
-    },
-    tagsetForTagId: (state) => (tagId) => {
-      if (!tagId) return null
-      return Object.values(state.tagState.tagSets).find((tagSet) =>
-        tagSet.tags.includes(String(tagId)),
-      )
-    },
-    /**
-     * Returns an array of tag set choices from the state.
-     *
-     * @function tagSetChoices
-     * @param {Object} state - The state object containing tagSets.
-     * @returns {Array<{value: string, text: string}>} - An array of tag set choices, each represented as an object with a value and text property.
-     */
-    tagSetChoices: (state) => {
-      return Object.values(state.tagState.tagSets).map(({ id, name }) => ({
-        value: id,
-        text: name,
-      }))
-    },
-
     /**
      * Transforms the libraries in the state into an array with additional properties.
      *
@@ -113,25 +64,26 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
+      const pacbioRootStore = usePacbioRootStore()
       return Object.values(state.libraryState.libraries)
         .filter((library) => library.tube)
         .map((library) => {
           const { id, request, tag_id, tag, tube, ...attributes } = library
           const tagId = tag_id ?? tag
-          /*Get the tag group ID from the library's tag ID or the tag's group ID. Why this is required?
+
+          /*Get the tag group ID from the library's tag ID or from the tag in pacbioRoot store(where all pacbio tags are kept). Why is this required?
           The librariesArray is called in multiple places (in create and edit context) to get the libraries. 
           Therefore, librariesArray needs to search for the tag first in libraryTags. 
-          If not found, it should then look for it in tagState->tags. 
-          It's important that tagState->tags will only get populated if a fetchPacbioTagSets is called before, 
+          If not found, it should then look for it in 'pacbioRoot' store tags. 
+          It's important to note that 'pacbioRoot' store tags will only get populated if a 'pacbioRoot' store action fetchPacbioTagSets is called before, 
           which may not happen in all the places where it's called. 
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
-
           const tagGroupId = tagId
             ? state.libraryState.libraryTags[tagId]
               ? state.libraryState.libraryTags[tagId].group_id
-              : state.tagState.tags[tagId]
-                ? state.tagState.tags[tagId].group_id
+              : pacbioRootStore.tagState.tags[tagId]
+                ? pacbioRootStore.tagState.tags[tagId].group_id
                 : ''
             : ''
           return {
@@ -231,24 +183,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         this.libraryState.requests = dataToObjectById({ data: requests })
       }
       return { success, errors, meta }
-    },
-
-    /**
-     * Fetches Pacbio tag sets from the root store and formats them by ID.
-     * @function fetchPacbioTagSets
-     * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, or an error string.
-     * @throws {Error} - Throws an error if the request fails.
-     */
-    async fetchPacbioTagSets() {
-      const rootStore = useRootStore()
-      const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
-      const response = await handleResponse(promise)
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
-      if (success && data.length > 0) {
-        this.tagState.tagSets = dataToObjectById({ data, includeRelationships: true })
-        this.tagState.tags = dataToObjectById({ data: included })
-      }
-      return { success, errors, response }
     },
 
     /**

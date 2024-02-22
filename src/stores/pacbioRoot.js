@@ -1,0 +1,79 @@
+import { defineStore } from 'pinia'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
+import { useRootStore } from '@/stores'
+
+export const usePacbioRootStore = defineStore('pacbioRoot', {
+  state: () => ({
+    /**
+     * @property {Object} tagState - An object to store and manage all tag-related data.
+     */
+    tagState: {
+      /**
+       * @property {Object} tagSets - An object to store all tag-sets which are indexed by id
+       */
+      tagSets: {},
+      /**
+       * @property {Object} tags - An object to store all tags, each of which belongs to a tag set.
+       */
+      tags: {},
+    },
+  }),
+
+  getters: {
+    /**
+     * Returns an array of tag choices for a given tag set ID.
+     *
+     * @function tagChoicesForId
+     * @param {Object} state - The state object containing tagSets and tags.
+     * @param {string} tagSetId - The ID of the tag set to get choices for.
+     * @returns {Array<{value: string, text: string}>} - An array of tag choices, each represented as an object with a value and text property.
+     */
+    tagChoicesForId: (state) => (tagSetId) => {
+      if (!tagSetId) return []
+      const values =
+        state.tagState.tagSets[tagSetId].tags
+          .map((tagId) => state.tagState.tags[tagId])
+          .map(({ id: value, group_id: text }) => ({ value, text })) || []
+      return values
+    },
+    tagsetForTagId: (state) => (tagId) => {
+      if (!tagId) return null
+      return Object.values(state.tagState.tagSets).find((tagSet) =>
+        tagSet.tags.includes(String(tagId)),
+      )
+    },
+    /**
+     * Returns an array of tag set choices from the state.
+     *
+     * @function tagSetChoices
+     * @param {Object} state - The state object containing tagSets.
+     * @returns {Array<{value: string, text: string}>} - An array of tag set choices, each represented as an object with a value and text property.
+     */
+    tagSetChoices: (state) => {
+      return Object.values(state.tagState.tagSets).map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }))
+    },
+    actions: {
+      /**
+       * Fetches Pacbio tag sets from the root store and formats them by ID.
+       * @function fetchPacbioTagSets
+       * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, or an error string.
+       * @throws {Error} - Throws an error if the request fails.
+       */
+      async fetchPacbioTagSets() {
+        const rootStore = useRootStore()
+        const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
+        const response = await handleResponse(promise)
+        const { success, data: { data, included = [] } = {}, errors = [] } = response
+        if (success && data.length > 0) {
+          this.tagState.tagSets = dataToObjectById({ data, includeRelationships: true })
+          this.tagState.tags = dataToObjectById({ data: included })
+        }
+        return { success, errors, response }
+      },
+    },
+  },
+})
