@@ -1,7 +1,7 @@
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
 import { handleResponse } from '@/api/ResponseHelper'
-import { wellFor, wellToIndex } from './wellHelpers'
+import { wellFor, wellToIndex } from '../../../../stores/utilities/wellHelpers'
 
 const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
