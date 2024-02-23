@@ -3,7 +3,7 @@
     :data-status="checkRequest"
     :style="ellipseStyle"
     transform="matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112)"
-    :class="status"
+    :class="[checkRequest, selected]"
     :cx="cx"
     :cy="cy"
     :rx="rx"
@@ -58,6 +58,13 @@ export default {
     },
     tooltip() {
       return this.getRequest ? this.well_info.requests.map((r) => r.sample_name).join(', ') : ''
+    },
+    selected() {
+      if (this.getRequest) {
+        return this.getRequest.selected ? 'selected' : 'unselected'
+      } else {
+        return 'unselected'
+      }
     },
     ellipseStyle() {
       return {
