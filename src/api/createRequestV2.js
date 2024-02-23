@@ -89,75 +89,64 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   /*
    * @param String type - request type e.g. 'get', 'create'
    * @param String include - query include
-   * @return AxiosPromise
-   * execute a query on an Axios instance
+   * @return fetch
+   * execute a query using fetch
    */
-  const execute = (type, ...params) => {
-    return api[type](...params)
-
-    // below to be completed. Modify to fetch
-    // const response = await fetch(url, {
-    //   method: "POST", // *GET, POST, PUT, DELETE, etc.
-    //   mode: "cors", // no-cors, *cors, same-origin
-    //   cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    //   credentials: "same-origin", // include, *same-origin, omit
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     // 'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   redirect: "follow", // manual, *follow, error
-    //   referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    //   body: JSON.stringify(data), // body data type must match "Content-Type" header
-    // });
-
-    //return fetch(api.)
+  const execute =  (type, url,data) => {
+    const fullURL = `${baseURL}/${url}`
+     return fetch(fullURL, {
+      method: type,
+      headers,
+      body: data? JSON.stringify(data): null
+    })
   }
+  
 
   /*
    * @param {Object} filter - query filters
    * @param String include - query include
-   * @return AxiosPromise
+   * @return Promise
    * Execute a get query
    */
   const get = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
-    return execute('get', `${resource}${buildQuery({ page, filter, include, fields })}`)
+    return execute('GET', `${resource}${buildQuery({ page, filter, include, fields })}`)
   }
 
   /*
    * @param String,Number id - id of the record to find
    * @param String include - query include
-   * @return AxiosPromise
+   * @return Promise
    * Execute a get query with an id
    */
   const find = ({ id = '', include = '' } = {}) => {
-    return execute('get', `${resource}/${id}${buildQuery({ include })}`)
+    return execute('GET', `${resource}/${id}${buildQuery({ include })}`)
   }
 
   /*
    * @param {Object} data - data to send for create
-   * @return AxiosPromise
+   * @return Promise
    * Execute a create
    */
   const create = ({ data, include = '' }) => {
-    return execute('post', `${resource}${buildQuery({ include })}`, data)
+    return execute('POST', `${resource}${buildQuery({ include })}`, data)
   }
 
   /*
    * @param Array or String or Integer ids - ids of records to destroy
-   * @return [AxiosPromise] - array of promises
+   * @return [Promise] - array of promises
    */
   const destroy = (...ids) => {
-    return ids.map((id) => execute('delete', `${resource}/${id}`))
+    return ids.map((id) => execute('DELETE', `${resource}/${id}`))
   }
 
   /*
    * @param {Object} data - data to send for update
-   * @return AxiosPromise
+   * @return Promise
    * Execute a patch
    * TODO: Update should have same signature as create
    */
   const update = (payload) => {
-    return execute('patch', `${resource}/${payload.data.id}`, payload)
+    return execute('PATCH', `${resource}/${payload.data.id}`, payload)
   }
 
   return {
