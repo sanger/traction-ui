@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
-import { newLibrary } from '@/stores/utilities/libraryHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { useRootStore } from '@/stores'
-import { validate, valid,payload } from '@/stores/utilities/pool.js'
+import { validate, valid, payload, newLibrary } from '@/stores/utilities/pool.js'
+import { usePacbioRootStore } from './pacbioRoot'
 
 /**
  * Merge together two representations of the same object.
@@ -61,17 +61,6 @@ const sortRequestByLabware = (resources) => (a, b) => {
 const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
 /**
- * Constructs an error message for a library record.
- *
- * @param {Object} params - An object containing the line number and record number.
- * @param {number} params.lines - The line number where the error occurred.
- * @param {number} params.records - The record number where the error occurred.
- * @param {string} message - The specific error message.
- * @returns {string} The constructed error message.
- */
-const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
-
-/**
  * Generates an error message for a barcode that could not be found.
  * The message includes the format that the barcode should be in for plates and tubes.
  *
@@ -80,7 +69,6 @@ const errorFor = ({ lines, records }, message) => `Library ${records} on line ${
  */
 const barcodeNotFound = (barcode) =>
   `${barcode} could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.`
-
 
 /**
  * Defines a store for managing Pacbio pool creation.
@@ -157,31 +145,13 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       return mergeRepresentations(resources.tubes, selected.tubes)
     },
     /**
-     * Returns a list of all fetched tagSet
-     * @param {Object} state The Pinia state object
-     */
-    tagSetList: (state) => {
-      return Object.values(state.resources.tagSets)
-    },
-    /**
-     * Returns a list of all fetched tagSet
-     * @param {Object} state The Pinia state object
-     */
-    tagList: (state) => (ids) => {
-      const tags = state.resources.tags
-      if (ids) {
-        return ids.map((id) => tags[id])
-      } else {
-        return tags.values
-      }
-    },
-    /**
      * Returns the selected tag set
      * @param {Object} state The Pinia state object
      */
     selectedTagSet: ({ resources, selected }) => {
       if (selected.tagSet.id) {
-        const tagSet = resources.tagSets[selected.tagSet.id]
+        const pacbioRoot = usePacbioRootStore()
+        const tagSet = pacbioRoot.tagState.tagSets[selected.tagSet.id]
         const tags = tagSet.tags.map((tag) => resources.tags[tag])
         return { ...tagSet, tags }
       } else {
@@ -301,13 +271,13 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       ) {
         return
       }
-
+      const pacbioRootStore = usePacbioRootStore()
       //Helper function to get the well for a given pacbio_request_id
       const initialWell = wellFor(this.resources, library.pacbio_request_id)
       //Helper function to get the index of the well
       const initialIndex = wellToIndex(initialWell)
       //Get the tags for the selected tag set
-      const tags = this.resources.tagSets[this.selected.tagSet.id].tags
+      const tags = pacbioRootStore.tagState.tagSets[this.selected.tagSet.id].tags
       //Get the index of the tag for the given library
       const initialTagIndex = tags.indexOf(library.tag_id)
       //Get the plate for the given library
@@ -339,8 +309,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       if (!library || typeof library !== 'object' || !library['tag_id']) {
         return
       }
+      const pacbioRootStore = usePacbioRootStore()
       const initialTube = this.tubeFor(library)
-      const tags = this.resources.tagSets[this.selected.tagSet.id].tags
+      const tags = pacbioRootStore.tagState.tagSets[this.selected.tagSet.id].tags
       const initialTagIndex = tags.indexOf(library.tag_id)
       Object.values(this.selectedRequests)
         .filter((request) => {
@@ -352,27 +323,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
         })
     },
 
-    /**
-     *
-     * Finds the tag id for the tag specified by tag, within the current tag group
-     * @param {Object} options - An options object
-     * @param {Object} options.getters PacbioVueX store getters object
-     * @param {String} options.tag Tag group_id to find
-     * @param {Function} options.error Error function for user feedback
-     * @returns {Object} Object containing the matching tag_id
-     */
-    buildTagAttributes(tag, error) {
-      if (!tag) return {}
-      if (tag) {
-        const matchedTag = this.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
-        if (matchedTag) {
-          return { tag_id: matchedTag.id }
-        } else {
-          error(`Could not find a tag named ${tag} in selected tag group`)
-        }
-      }
-      return {}
-    },
     /**
      * Finds requests for a specific well on a plate based on the provided barcode and well name.
      * If the plate or well cannot be found, returns an object with success set to false and an error message.
@@ -419,11 +369,18 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * If a well name is provided, assumes the source is a plate and calls `requestsForPlate`.
      * If a well name is not provided, assumes the source is a tube and calls `requestsForTube`.
      *
-     * @param {string} barcode - The barcode of the source to find.
-     * @param {string} [wellName] - The name of the well to find, if the source is a plate.
-     * @returns {Object} An object with the success status and either the error message or the IDs of the requests.
+     * @param {Object} payload - The payload object.
+     * @param {string} payload.barcode - The barcode of the source.
+     * @param {string} [payload.wellName] - The name of the well (optional).
+     * @returns {Array} An array of requests for the source.
+     *
+     * @example
+     * // Find requests for a plate
+     * const requests = findRequestsForSource({ barcode: 'barcode123', wellName: 'A1' });
+     * // Find requests for a tube
+     * const requests = findRequestsForSource({ barcode: 'barcode123' });
      */
-    findRequestsForSource(barcode, wellName) {
+    findRequestsForSource({ barcode, wellName }) {
       if (wellName) {
         return this.requestsForPlate(barcode, wellName)
       } else {
@@ -438,7 +395,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * @param {number} well_id - The ID of the well to select or deselect requests for.
      * @example selectWellRequests(1)
      */
-    selectWellRequests: (well_id) => {
+
+    selectWellRequests(well_id) {
       const { requests } = this.resources.wells[well_id]
       const selectedRequests = this.libraries
       for (const id of requests) {
@@ -499,7 +457,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Deselect a tube and its contents
      * deselectTubeAndContents('TRAC-123')
      */
-    deselectTubeAndContents: (tubeBarcode) => {
+    deselectTubeAndContents(tubeBarcode) {
       const tube = Object.values(this.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
       if (!tube) return
       this.selectTube({ id: tube.id, selected: false })
@@ -521,7 +479,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Select a tube and its contents
      * selectTubeAndContents(1)
      */
-    selectTubeAndContents: (tubeId) => {
+
+    selectTubeAndContents(tubeId) {
       this.selectTube({ id: tubeId, selected: true })
       if (!this.resources.tubes[tubeId]) return
 
@@ -531,17 +490,342 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       }
     },
 
-    async createPool  ()  {
-      const {libraries,pools} = this
+    /**
+     * Asynchronously creates a pool with the given libraries and pools.
+     * Validates the libraries before proceeding.
+     * If the libraries are not valid, returns an error response.
+     * Otherwise, sends a request to create the pool and handles the response.
+     * Groups the included resources by type and extracts the barcode from the first tube.
+     *
+     * @async
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status, barcode, and any errors.
+     *
+     * @example
+     * // Create a pool
+     * const result = await createPool();
+     * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
+     */
+    async createPool() {
+      const { libraries, pools } = this
       validate(libraries)
-      if (!valid(libraries )) return { success: false, errors: 'The pool is invalid' }
+      if (!valid(libraries)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
-      const promise = request.create({ data: payload({ libraries, pools}), include: 'tube' })
+      const promise = request.create({ data: payload({ libraries, pools }), include: 'tube' })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
       return { success, barcode, errors }
+    },
+
+    /**
+
+     * Asynchronously creates a pool with the given libraries and pools.
+     * Validates the libraries before proceeding.
+     * If the libraries are not valid, returns an error response.
+     * Otherwise, sends a request to create the pool and handles the response.
+     * Groups the included resources by type and extracts the barcode from the first tube.
+     *
+     * @async
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status, barcode, and any errors.
+     *
+     * @example
+     * // Create a pool
+     * const result = await createPool();
+     * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
+     */
+    async updatePool({ rootState, state: { libraries, pool } }) {
+      validate({ libraries })
+      if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
+      const request = rootState.api.traction.pacbio.pools
+      const promise = request.update(payload({ libraries, pool }))
+      const { success, errors } = await handleResponse(promise)
+      return { success, errors }
+    },
+
+    /**
+     * Asynchronously populates libraries from a pool with the given ID.
+     * Sends a request to find the pool and includes all associated records.
+     * If the request is successful, populates the pool, libraries, requests, wells, plates, and tubes,
+     * selects the tag set, and selects all the tubes and plates.
+     *
+     * @async
+     * @param {number} poolId - The ID of the pool.
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status and any errors.
+     *
+     * @example
+     * // Populate libraries from a pool
+     * const result = await populateLibrariesFromPool(1);
+     * console.log(result); // { success: true, errors: [] }
+     */
+    async populateLibrariesFromPool(poolId) {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.pools
+      const promise = request.find({
+        id: poolId,
+        // We want to load *all* associated records, as otherwise we might be referencing them
+        // before they are loaded. Furthermore, if we start filtering the plates list at all,
+        // we may *never* load the relevant records.
+        // We load the other wells associated with the plate too, to ensure the remaining plate
+        // doesn't appear empty. This is especially important if the pool request finishes
+        // after the request for all plates, as otherwise the partial record will over-write
+        // the full one.
+        include:
+          'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request.tube,tube',
+      })
+      const response = await handleResponse(promise)
+
+      const { success, data: { data, included = [] } = {}, errors = [] } = response
+
+      if (success) {
+        const {
+          library_pools,
+          requests,
+          wells,
+          plates = [],
+          tag_sets: [tag_set] = [{}],
+          tubes = [],
+        } = groupIncludedByResource(included)
+        // Get the pool tube and remove it from tubes list
+        const poolTube = tubes.splice(
+          tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
+          1,
+        )[0]
+        //Populate pool attributes
+        this.pool = { ...data }
+        //Populate libraries
+        const newLibraries = dataToObjectById({ data: library_pools, includeRelationships: true })
+        Object.values(newLibraries).forEach((library) => {
+          const key = `_${library.request}`
+          this.libraries[key] = newLibrary({
+            ...library,
+            pacbio_request_id: library.request,
+            tag_id: library.tag,
+          })
+        })
+        //Populate requests
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        //Populate wells
+        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+        //Populate plates
+        this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
+        //Populate tubes
+        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        //Select tag set
+        this.selectTagSet(tag_set.id)
+        //Populate tube
+        this.tube = { ...poolTube }
+        //Selects all the tubes and plates
+        tubes.forEach(({ id }) => this.selectTube({ id, selected: true }))
+        plates.forEach(({ id }) => this.selectPlate({ id, selected: true }))
+      }
+
+      return { success, errors }
+    },
+
+    /**
+     * Applies tags to a library.
+     * Always updates the library first.
+     * If autoTag is true, applies tags automatically based on whether the request has a well.
+     * If the request has a well, applies tags to the plate.
+     * Otherwise, applies tags to the tube.
+     *
+     *  Given a tag change to library_a, will automatically apply tags to the remaining wells
+     *  on the plate with the following  rules:
+     * - Only apply additional tags if autoTag is true
+     * - Tags applied in column order based on the source well
+     * - Do not apply tags that appear earlier on the plate
+     * - Do not apply tags to request originating from other plates
+     * - Offset tags based on well position, ignoring occupancy. For example
+     *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
+     *   the state of B1.
+     *
+     * @param {Object} payload - The payload object.
+     * @param {Object} payload.library - The library to which to apply tags.
+     * @param {boolean} payload.autoTag - Whether to apply tags automatically.
+     *
+     * @example
+     * // Apply tags to a library
+     * applyTags({ library: myLibrary, autoTag: true });
+     */
+    applyTags({ library, autoTag }) {
+      // We always apply the first tag
+      this.updateLibrary(library)
+      if (autoTag) {
+        const request = this.resources.requests[library.pacbio_request_id]
+        if (request.well) {
+          this.autoTagPlate(library)
+        } else {
+          this.autoTagTube(library)
+        }
+      }
+    },
+
+    /**
+     * Updates a library from a CSV record.
+     * * Given a record extracted from a csv file, will update the corresponding library
+     * Each library is identified by the key 'source' which consists of a string identifying
+     * the source plate barcode and its well. eg. DN814597W-A10
+     *
+     * If the record has no source, logs a message and returns.
+     * Otherwise, finds requests for the source and updates the library accordingly.
+     * If the record has a tag, finds a matching tag in the selected tag set and updates the library with the tag's ID.
+     * If no matching tag is found, logs a message.
+     *
+     * @param {Object} payload - The payload object.
+     * @param {Object} payload.record - The CSV record.
+     * @param {string} payload.record.source - The source of the record.
+     * @param {string} [payload.record.tag] - The tag of the record (optional).
+     * @param {Object} payload.record.attributes - The other attributes of the record.
+     * @param {string} payload.info - The information for logging messages.
+     *
+     * @example
+     * // Update a library from a CSV record
+     * updateLibraryFromCsvRecord({ record: { source: 'source123', tag: 'tag123', attributes: {} }, info: 'info123' });
+     */
+
+    updateLibraryFromCsvRecord({ record: { source, tag, ...attributes }, info }) {
+      const rootStore = useRootStore()
+      if (!source) {
+        rootStore.addCSVLogMessage(info, 'has no source')
+        return
+      }
+      const match = source.match(sourceRegex)
+      const sourceData = match?.groups || { barcode: source }
+      const { success, errors, requestIds } = this.findRequestsForSource(sourceData)
+
+      if (!success) {
+        rootStore.addCSVLogMessage(info, errors)
+        return
+      }
+      if (requestIds.length === 0) {
+        rootStore.addCSVLogMessage(info, `no requests associated with ${source}`)
+        return
+      }
+
+      let tagAttributes = {}
+      if (tag) {
+        const matchedTag = this.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+        if (matchedTag) {
+          tagAttributes = { tag_id: matchedTag.id }
+        } else {
+          rootStore.addCSVLogMessage(
+            info,
+            `Could not find a tag named ${tag} in selected tag group`,
+          )
+        }
+      }
+      requestIds.forEach((pacbio_request_id) => {
+        if (!this.libraries[`_${pacbio_request_id}`]) {
+          // We're adding a library
+          rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
+        }
+        this.updateLibrary({ pacbio_request_id, ...tagAttributes, ...attributes })
+      })
+    },
+
+    /**
+     * Finds a PacBio plate based on a filter.
+     * If the filter's barcode is empty, returns an error.
+     * Otherwise, sends a GET request to the API to find plates that match the filter.
+     * If no plates are found, returns an error.
+     * If plates are found, selects the first plate, and populates the resources with the plates, wells, and requests.
+     *
+     * @async
+     * @param {Object} filter - The filter to apply.
+     * @param {string} filter.barcode - The barcode to filter by.
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     *
+     * @example
+     * // Find a PacBio plate with a specific barcode
+     * const result = await findPacbioPlate({ barcode: 'barcode123' });
+     */
+    async findPacbioPlate(filter) {
+      // Here we want to make sure the filter exists
+      // If it doesn't exist the request will return all plates
+      if (filter['barcode'].trim() === '') {
+        return {
+          success: false,
+          errors: ['Please provide a plate barcode'],
+        }
+      }
+
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.plates
+      const promise = request.get({ filter: filter, include: 'wells.requests' })
+      const response = await handleResponse(promise)
+      let { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { wells, requests } = groupIncludedByResource(included)
+
+      // We will be return a successful empty list if no plates match the filter
+      // Therefore we want to return an error if we don't have any plates
+      if (!data.length) {
+        success = false
+        errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
+      }
+
+      if (success) {
+        // We want to grab the first (and only) record from the applied filter
+        this.selectPlate({ id: data[0].id, selected: true })
+        //Populate plates
+        this.resources.plates = dataToObjectById({ data, includeRelationships: true })
+        //Populate wells
+        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+        //Populate requests
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+      }
+
+      return { success, errors }
+    },
+
+    /**
+     * Finds a PacBio tube based on a filter.
+     * If the filter's barcode is empty, returns an error.
+     * Otherwise, sends a GET request to the API to find tubes that match the filter.
+     * If no tubes are found, returns an error.
+     * If tubes are found, selects the first tube, and populates the resources with the tubes and requests.
+     *
+     * @async
+     * @param {Object} filter - The filter to apply.
+     * @param {string} filter.barcode - The barcode to filter by.
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     *
+     * @example
+     * // Find a PacBio tube with a specific barcode
+     * const result = await findPacbioTube({ barcode: 'barcode123' });
+     */
+    async findPacbioTube(filter) {
+      // Here we want to make sure the filter exists
+      // If it doesn't exist the request will return all tubes
+      if (filter['barcode'].trim() === '') {
+        return {
+          success: false,
+          errors: ['Please provide a tube barcode'],
+        }
+      }
+
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.tubes
+      const promise = request.get({ filter: filter, include: 'requests' })
+      const response = await handleResponse(promise)
+      let { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { requests } = groupIncludedByResource(included)
+
+      // We will be return a successful empty list if no tubes match the filter
+      // Therefore we want to return an error if we don't have any tubes
+      if (!data.length) {
+        success = false
+        errors = [`Unable to find tube with barcode: ${filter['barcode']}`]
+      }
+
+      if (success) {
+        // We want to grab the first (and only) record from the applied filter
+        this.selectTube({ id: data[0].id, selected: true })
+        this.resources.tubes = dataToObjectById({ data, includeRelationships: true })
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+      }
+
+      return { success, errors }
     },
 
     /**
@@ -555,7 +839,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Removes a plate from selected state
      * selectPlate({ id: 1, selected: false })
      */
-    selectPlate: ({ id, selected = true }) => {
+
+    selectPlate({ id, selected = true }) {
       if (selected) {
         this.selected.plates[`${id}`] = { id, selected }
       } else {
@@ -576,7 +861,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Removes a request from selected state
      * selectRequest({ id: 1, selected: false })
      */
-    selectTube: ({ id, selected = true }) => {
+
+    selectTube({ id, selected = true }) {
       if (selected) {
         this.selected.tubes[`${id}`] = { id, selected }
       } else {
@@ -600,12 +886,40 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Removes a request from selected state
      * selectRequest({ id: 1, selected: false })
      */
-    selectRequest: ({ id, selected = true }) => {
+
+    selectRequest({ id, selected = true }) {
       if (selected) {
         this.libraries[`_${id}`] = newLibrary({ pacbio_request_id: id })
       } else {
         delete this.libraries[`_${id}`]
       }
+    },
+
+    /**
+     * Selects a tag set by setting the `tagSet` property of the `selected` object to an object with the provided ID.
+     *
+     * @param {number} id - The ID of the tag set to select.
+     *
+     * @example
+     * // Select a tag set
+     * selectTagSet(1);
+     */
+    selectTagSet: (id) => {
+      this.selected.tagSet = { id }
+    },
+
+    /**
+     * Clears the pool data while preserving the resources.
+     * Stores the current resources, resets the state, and then restores the resources.
+     *
+     * @example
+     * // Clear the pool data
+     * clearPoolData();
+     */
+    clearPoolData() {
+      const resources = this.resources
+      this.$reset()
+      this.resources = resources
     },
   },
 })
