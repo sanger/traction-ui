@@ -92,15 +92,14 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @return fetch
    * execute a query using fetch
    */
-  const execute =  (type, url,data) => {
+  const execute = (type, url, data) => {
     const fullURL = `${baseURL}/${url}`
-     return fetch(fullURL, {
+    return fetch(fullURL, {
       method: type,
       headers,
-      body: data? JSON.stringify(data): null
+      body: data ? JSON.stringify(data) : null,
     })
   }
-  
 
   /*
    * @param {Object} filter - query filters
