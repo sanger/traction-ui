@@ -22,6 +22,25 @@ export const usePacbioRootStore = defineStore('pacbioRoot', {
 
   getters: {
     /**
+     * Returns a list of all fetched tagSet
+     * @param {Object} state The Pinia state object
+     */
+    tagSetList: (state) => {
+      return Object.values(state.tagState.tagSets)
+    },
+    /**
+     * Returns a list of all fetched tagSet
+     * @param {Object} state The Pinia state object
+     */
+    tagList: (state) => (ids) => {
+      const tags = state.tagState.tags
+      if (ids) {
+        return ids.map((id) => tags[id])
+      } else {
+        return tags.values
+      }
+    },
+    /**
      * Returns an array of tag choices for a given tag set ID.
      *
      * @function tagChoicesForId
