@@ -32,28 +32,24 @@ const validateFields = (library) => {
  * @see {@link https://pinia.esm.dev/api/defineStore} for more information about `defineStore`.
  */
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
-  state: () =>
+  state: () => ({
     /**
-     * @property {Object} libraryState - An object to store and manage all library-related data.
+     * @property {Object} libraries - An object to store all libraries indexed by id.
      */
-    ({
-      /**
-       * @property {Object} libraries - An object to store all libraries indexed by id.
-       */
-      libraries: {},
-      /**
-       * @property {Object} tubes - An object to store all tubes from all libraries indexed by id.
-       */
-      tubes: {},
-      /**
-       * @property {Object} requests - An object to store all requests from all libraries indexed by id.
-       */
-      requests: {},
-      /**
-       * @property {Object} libraryTags - An object to store all tags from all libraries indexed by id.
-       */
-      libraryTags: {},
-    }),
+    libraries: {},
+    /**
+     * @property {Object} tubes - An object to store all tubes from all libraries indexed by id.
+     */
+    tubes: {},
+    /**
+     * @property {Object} requests - An object to store all requests from all libraries indexed by id.
+     */
+    requests: {},
+    /**
+     * @property {Object} libraryTags - An object to store all tags from all libraries indexed by id.
+     */
+    libraryTags: {},
+  }),
 
   getters: {
     /**
@@ -65,7 +61,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     librariesArray: (state) => {
       const pacbioRootStore = usePacbioRootStore()
-      return Object.values(state.libraryState.libraries)
+      return Object.values(state.libraries)
         .filter((library) => library.tube)
         .map((library) => {
           const { id, request, tag_id, tag, tube, ...attributes } = library
@@ -80,8 +76,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
           const tagGroupId = tagId
-            ? state.libraryState.libraryTags[tagId]
-              ? state.libraryState.libraryTags[tagId].group_id
+            ? state.libraryTags[tagId]
+              ? state.libraryTags[tagId].group_id
               : pacbioRootStore.tagState.tags[tagId]
                 ? pacbioRootStore.tagState.tags[tagId].group_id
                 : ''
@@ -92,8 +88,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
             tube,
             ...attributes,
             tag_group_id: tagGroupId ?? '',
-            sample_name: state.libraryState.requests[request].sample_name,
-            barcode: state.libraryState.tubes[tube].barcode,
+            sample_name: state.requests[request].sample_name,
+            barcode: state.tubes[tube].barcode,
           }
         })
     },
@@ -177,10 +173,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       if (success && data.length > 0) {
         const { tubes, tags, requests } = groupIncludedByResource(included)
-        this.libraryState.libraries = dataToObjectById({ data, includeRelationships: true })
-        this.libraryState.tubes = dataToObjectById({ data: tubes })
-        this.libraryState.libraryTags = dataToObjectById({ data: tags })
-        this.libraryState.requests = dataToObjectById({ data: requests })
+        this.libraries = dataToObjectById({ data, includeRelationships: true })
+        this.tubes = dataToObjectById({ data: tubes })
+        this.libraryTags = dataToObjectById({ data: tags })
+        this.requests = dataToObjectById({ data: requests })
       }
       return { success, errors, meta }
     },
@@ -223,8 +219,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       const { success, errors } = await handleResponse(promise)
       if (success) {
         //Update all fields of the library in the store with matching ID with the given values.
-        this.libraryState.libraries[libraryFields.id] = {
-          ...this.libraryState.libraries[libraryFields.id],
+        this.libraries[libraryFields.id] = {
+          ...this.libraries[libraryFields.id],
           ...libraryFields,
         }
       }

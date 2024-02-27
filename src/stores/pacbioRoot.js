@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
-import { useRootStore } from '@/stores'
+import useRootStore from '@/stores'
 
 export const usePacbioRootStore = defineStore('pacbioRoot', {
   state: () => ({
@@ -75,24 +75,24 @@ export const usePacbioRootStore = defineStore('pacbioRoot', {
         text: name,
       }))
     },
-    actions: {
-      /**
-       * Fetches Pacbio tag sets from the root store and formats them by ID.
-       * @function fetchPacbioTagSets
-       * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, or an error string.
-       * @throws {Error} - Throws an error if the request fails.
-       */
-      async fetchPacbioTagSets() {
-        const rootStore = useRootStore()
-        const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
-        const response = await handleResponse(promise)
-        const { success, data: { data, included = [] } = {}, errors = [] } = response
-        if (success && data.length > 0) {
-          this.tagState.tagSets = dataToObjectById({ data, includeRelationships: true })
-          this.tagState.tags = dataToObjectById({ data: included })
-        }
-        return { success, errors, response }
-      },
+  },
+  actions: {
+    /**
+     * Fetches Pacbio tag sets from the root store and formats them by ID.
+     * @function fetchPacbioTagSets
+     * @returns {Promise<{success: boolean, errors: Array, response: Object}>} - A promise that resolves to an object containing a success boolean, or an error string.
+     * @throws {Error} - Throws an error if the request fails.
+     */
+    async fetchPacbioTagSets() {
+      const rootStore = useRootStore()
+      const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
+      const response = await handleResponse(promise)
+      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      if (success && data.length > 0) {
+        this.tagState.tagSets = dataToObjectById({ data, includeRelationships: true })
+        this.tagState.tags = dataToObjectById({ data: included })
+      }
+      return { success, errors, response }
     },
   },
 })

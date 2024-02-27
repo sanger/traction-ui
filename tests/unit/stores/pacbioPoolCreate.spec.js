@@ -7,7 +7,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/store/traction/pacbio/poolCreate/pool.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
-import { before } from 'lodash-es'
 
 describe('usePacbioPoolCreateStore', () => {
   const tagSets = {
@@ -1155,8 +1154,6 @@ describe('usePacbioPoolCreateStore', () => {
     })
     describe('selectRequest', () => {
       it('selects a request by default', () => {
-        store.selectRequest({ id: '1' })
-
         store.libraries = {
           _2: {
             pacbio_request_id: '2',
@@ -1167,6 +1164,8 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           },
         }
+        store.selectRequest({ id: '1' })
+
         /*
         We expect the plate to be recorded in the selected plates it should:
         - Be selected
@@ -1204,22 +1203,21 @@ describe('usePacbioPoolCreateStore', () => {
     describe('selectTagSet', () => {
       it('selects a tag set', () => {
         store.selectTagSet('1')
-        expect(store.selected.tagset).toEqual({ id: '1' })
+        expect(store.selected.tagSet).toEqual({ id: '1' })
       })
     })
 
     describe('clearPoolData', () => {
-        it('clears the pool data', () => {
-            store.li
-            store.clearPoolData()
-            expect(store.resources).toEqual({
-            requests: {},
-            plates: {},
-            wells: {},
-            tubes: {},
-            })
+      it('clears the pool data', () => {
+        store.li
+        store.clearPoolData()
+        expect(store.resources).toEqual({
+          requests: {},
+          plates: {},
+          wells: {},
+          tubes: {},
         })
-
+      })
     })
   })
 })
