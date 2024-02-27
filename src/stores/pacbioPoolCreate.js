@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
-import { useRootStore } from '@/stores'
+import useRootStore from '@/stores'
 import { validate, valid, payload, newLibrary } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from './pacbioRoot'
 
@@ -75,29 +75,48 @@ const barcodeNotFound = (barcode) =>
  *
  * @exports usePacbioLibrariesStore
  */
-export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
+export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
   state: () => ({
     /**
      * Resources returned by the server, each key represents a resource type.
      * resource types are indexed by their id.
      */
     resources: {
-      // The main plate store. Represents the authoritative source of plate information. Plates are indexed by id.
+      /**
+       * An object to store the plates.
+       * Each key-value pair represents a plate, where the key is the plate ID and the value is the plate data.
+       * @type {Object.<string, Object>}
+       * @example
+       * "1": {"id": "1","type": "plates","barcode": "DN2","created_at": "2021/11/30 13:57","wells": ["1","2","3","4","5","6","7","8"]}
+       */
       plates: {},
-      /*
+
+      /**
        * The main tube store. Represents the authoritative source of tube information.
-       * Tubes are indexed by id.
+       * Tubes are indexed by id. Each key-value pair represents a tube, where the key is the tube ID and the value is the tube data.
+       * @type {Object.<string, Object>}
+       * @example  "1": {"id": "1","type": "tubes","barcode": "3980000001795","requests": ["97"]}
        */
       tubes: {},
+
       /**
        * The main source of well information. Wells are indexed by id.
        * Populated by the wells included in the request for plates.
-       * @example {"id":"1","type":"wells","position":"A1","requests":["1"]}
+       * @type {Object.<string, Object>}
+       * @example  "1": { "id": "1", "type": "wells", "position": "A1", "requests": ["1"], "plate": "1" },
+                   "2": { "id": "2", "type": "wells", "position": "A2", "requests": ["2"], "plate": "1" },
        */
       wells: {},
+
       /**
        * The main source of request information. Requests are indexed by id.
+       * Each key-value pair represents a request, where the key is the resuest ID and the value is the request data.
        * Populated by the requests included in the request for plates.
+       * @type {Object.<string, Object>}
+       * @example "1": {"id": "1","type": "requests","library_type": "library_type_1",
+       *                 "estimate_of_gb_required": 100,"number_of_smrt_cells": 3,"cost_code": "PSD1234",
+       *                 "external_study_id": "1","sample_name": "Sample48","barcode": null,"sample_species": "human",
+       *                 "created_at": "2021/11/30 13:57","source_identifier": "DN1:A1","well": "1","plate": "1"}
        */
       requests: {},
     },
@@ -148,11 +167,11 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * Returns the selected tag set
      * @param {Object} state The Pinia state object
      */
-    selectedTagSet: ({ resources, selected }) => {
+    selectedTagSet: ({ selected }) => {
       if (selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
         const tagSet = pacbioRoot.tagState.tagSets[selected.tagSet.id]
-        const tags = tagSet.tags.map((tag) => resources.tags[tag])
+        const tags = tagSet.tags.map((tag) => pacbioRoot.tagState.tags[tag.id])
         return { ...tagSet, tags }
       } else {
         return { id: null, tags: [] }
@@ -189,8 +208,18 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
         .sort(sortRequestByLabware(resources))
     },
     /**
-     * Returns a list of all fetched wells
-     * @param {Object} state The Pinia state object
+     * Returns a list of all fetched wells.
+     * If IDs are provided, returns the wells with those IDs.
+     * Otherwise, returns all wells.
+     *
+     * @param {Object} state - The Pinia state object.
+     * @returns {Function} A function that takes an array of IDs and returns the corresponding wells.
+     *
+     * @example
+     * // Get all wells
+     * const allWells = wellList(state)();
+     * // Get specific wells
+     * const specificWells = wellList(['id1', 'id2']);
      */
     wellList: (state) => (ids) => {
       const wells = state.resources.wells
@@ -201,8 +230,18 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       }
     },
     /**
-     * Returns a list of all fetched requests
-     * @param {Object} state The Pinia state object
+     * Returns a list of requests.
+     * If IDs are provided, returns the requests with those IDs and a selected property indicating if they are in the selected requests.
+     * Otherwise, returns all requests with a selected property indicating if they are in the selected requests.
+     *
+     * @param {Object} state - The Pinia state object.
+     * @returns {Function} A function that takes an array of IDs and returns the corresponding requests with a selected property.
+     *
+     * @example
+     * // Get all requests
+     * const allRequests = requestList(state)();
+     * // Get specific requests
+     * const specificRequests = requestList(state)(['id1', 'id2']);
      */
     requestList: (state) => (ids) => {
       const requests = state.resources.requests
@@ -218,10 +257,14 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
       }
     },
     /**
-     * Returns a function that, when called with an ID, retrieves the library item with that ID.
+     * Returns a specific library item based on its ID.
      *
-     * @param {Object} libraries - An object containing library items, keyed by ID.
-     * @returns {function(string): Object} A function that takes an ID and returns the corresponding library item.
+     * @param {Object} libraries - The libraries object.
+     * @returns {Function} A function that takes an ID and returns the corresponding library item.
+     *
+     * @example
+     * // Get a specific library item
+     * const libraryItem = libraryItem('id1');
      */
     libraryItem:
       ({ libraries }) =>
@@ -245,15 +288,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
     tubeItem: (state) => state.tube || {},
   },
   actions: {
-    /***
-     * Finds the tube associated with a pacbio_request
-     * @param {Object} resources Pinia store resources object
-     * @returns {Object} the matching tube from the store
-     */
-    tubeFor(pacbio_request_id) {
-      return this.resources.tubes[this.resources.requests[pacbio_request_id]?.tube]
-    },
-
     /**
      * Automatically tags a plate based on the provided library.
      * It iterates over all libraries and updates the tag of each library on the same plate and with a higher well index.
@@ -299,18 +333,27 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
     },
     /**
      * Automatically tags a tube based on the provided library.
-     * It iterates over all selected requests and updates the tag of each request with a higher tube ID.
+     * If the library is not valid or does not have a 'tag_id' or 'pacbio_request_id' property, the function returns without doing anything.
+     * Otherwise, it gets the initial tube and tags from the pacbioRootStore and the library.
+     * It then iterates over the selected requests, filters those with a tube id greater than the initial tube id,
+     * and updates the library tag for each of them.
      *
      * @param {Object} library - The library object based on which the tube is tagged. Must have a 'tag_id' property.
      * @example autoTagTube({tag_id: '1'})
      */
     autoTagTube(library) {
       // If the library object is not valid or does not have a 'tag_id' property, return without doing anything.
-      if (!library || typeof library !== 'object' || !library['tag_id']) {
+      if (
+        !library ||
+        typeof library !== 'object' ||
+        !library['tag_id'] ||
+        !library['pacbio_request_id']
+      ) {
         return
       }
       const pacbioRootStore = usePacbioRootStore()
-      const initialTube = this.tubeFor(library)
+      const initialTube =
+        this.resources.tubes[this.resources.requests[library.pacbio_request_id]?.tube]
       const tags = pacbioRootStore.tagState.tagSets[this.selected.tagSet.id].tags
       const initialTagIndex = tags.indexOf(library.tag_id)
       Object.values(this.selectedRequests)
@@ -331,6 +374,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * @param {string} barcode - The barcode of the plate to find.
      * @param {string} wellName - The name of the well to find.
      * @returns {Object} An object with the success status and either the error message or the IDs of the requests.
+     * @example requestsForPlate('DN1', 'A1');
      */
     requestsForPlate(barcode, wellName) {
       const { plates, wells } = this.resources
@@ -468,29 +512,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
     },
 
     /**
-     * Selects a tube and all its contents (requests) based on the provided tube ID.
-     * If the tube cannot be found, the function returns without doing anything.
-     * If the tube can be found, selects the tube and then iterates over all requests of the tube and selects them.
-     *
-     * @param {number} tubeId - The ID of the tube to select.
-     * @returns {void}
-     *
-     * @example
-     * // Select a tube and its contents
-     * selectTubeAndContents(1)
-     */
-
-    selectTubeAndContents(tubeId) {
-      this.selectTube({ id: tubeId, selected: true })
-      if (!this.resources.tubes[tubeId]) return
-
-      const { requests } = this.resources.tubes[tubeId]
-      for (const requestId of requests) {
-        this.selectRequest({ id: requestId, selected: true })
-      }
-    },
-
-    /**
      * Asynchronously creates a pool with the given libraries and pools.
      * Validates the libraries before proceeding.
      * If the libraries are not valid, returns an error response.
@@ -506,12 +527,12 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
      */
     async createPool() {
-      const { libraries, pools } = this
+      const { libraries, pool } = this
       validate(libraries)
       if (!valid(libraries)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
-      const promise = request.create({ data: payload({ libraries, pools }), include: 'tube' })
+      const promise = request.create({ data: payload({ libraries, pool }), include: 'tube' })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
@@ -534,10 +555,12 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * const result = await createPool();
      * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
      */
-    async updatePool({ rootState, state: { libraries, pool } }) {
-      validate({ libraries })
-      if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
-      const request = rootState.api.traction.pacbio.pools
+    async updatePool() {
+      const { libraries, pool } = this
+      validate(libraries)
+      if (!valid(libraries)) return { success: false, errors: 'The pool is invalid' }
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.pools
       const promise = request.update(payload({ libraries, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
@@ -904,7 +927,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioPoolCreate', {
      * // Select a tag set
      * selectTagSet(1);
      */
-    selectTagSet: (id) => {
+    selectTagSet(id) {
       this.selected.tagSet = { id }
     },
 
