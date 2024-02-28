@@ -4,7 +4,7 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { payload } from '@/store/traction/pacbio/poolCreate/pool.js'
+import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 

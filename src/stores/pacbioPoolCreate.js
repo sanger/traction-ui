@@ -3,7 +3,7 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, valid, payload, newLibrary } from '@/stores/utilities/pool.js'
+import { validate, payload, newLibrary } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from './pacbioRoot'
 
 /**
@@ -34,7 +34,7 @@ const sortRequestByWellColumnIndex = (resources) => (a, b) =>
 /**
  * Sort the requests based on their labware. Tubes will be sorted after plates,
  * and then each labware is sorted in id order
- * @param {S} resources  The resources object
+ * @param {*} resources  The resources object
  * @returns  sorted requests
  */
 const sortRequestByLabware = (resources) => (a, b) => {
@@ -528,8 +528,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async createPool() {
       const { libraries, pool } = this
-      validate(libraries)
-      if (!valid(libraries)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate(libraries)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
@@ -560,8 +559,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async updatePool() {
       const { libraries, pool } = this
-      validate(libraries)
-      if (!valid(libraries)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate(libraries)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.update(payload({ libraries, pool }))

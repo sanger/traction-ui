@@ -23,10 +23,22 @@ const newLibrary = (attributes) => {
 }
 
 /**
- * This method will check each library to ensure that:
- *  * required fields are present
- *  * tags are unique
- **/
+ * Validates a set of libraries.
+ * Checks if all required attributes are present in each library and if there are no duplicate tags.
+ * If a library is missing a required attribute or there are duplicate tags, it adds an error message to the library.
+ * These error messages is accessed in components through the 'errors' property of each library.
+ * The function returns true if all libraries are valid and there are no duplicate tags, false otherwise.
+ *
+ * @param {Object} libraries - The libraries to validate. Each key is a library id and each value is a library object.
+ * @returns {boolean} Returns true if all libraries are valid and there are no duplicate tags, false otherwise.
+ *
+ * @example
+ * const libraries = {
+ *   '1': { tag_id: 'tag1', volume: 10, concentration: 5, insert_size: 1000,pacbio_request_id:'1' },
+ *   '2': { tag_id: 'tag2', volume: 10, concentration: 5, insert_size: 1000,pacbio_request_id:'1'},
+ * };
+ * const isValid = validate(libraries); // returns true
+ */
 const validate = (libraries) => {
   const pooled = Object.keys(libraries).length > 1
 
@@ -41,13 +53,14 @@ const validate = (libraries) => {
     }
     library['errors'] = errors
   }
-}
-
-// a library is valid either if it has no errors or the errors are empty
-const valid = ( libraries) => {
   return Object.values(libraries).every((library) => Object.keys(library.errors || {}).length === 0)
 }
 
+/**
+ * Extracts specific attributes from a library object.
+ * @param {Object} library - The library object to extract attributes from.
+ * @returns {Object} An object containing the extracted attributes.
+ */
 const extractLibraryAttributes = ({
   id,
   pacbio_request_id,
@@ -68,6 +81,11 @@ const extractLibraryAttributes = ({
   }
 }
 
+/**
+ * Extracts specific attributes from a pool object.
+ * @param {Object} pool - The pool object to extract attributes from.
+ * @returns {Object} An object containing the extracted attributes.
+ */
 const extractPoolAttributes = ({
   template_prep_kit_box_barcode,
   volume,
@@ -82,17 +100,21 @@ const extractPoolAttributes = ({
   }
 }
 
-/*
-  produce a json api compliant payload
-  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
-*/
+/**
+ * Produce a json api compliant payload 
+ * 
+ * @param {Object}
+ * 
+ * @example
+ * { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
+ */
 const payload = ({ libraries, pool }) => {
   return {
     data: {
       type: 'pools',
       id: pool.id,
       attributes: {
-        library_attributes: Object.values(libraries).map((library) =>
+        used_aliquot_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
         ...extractPoolAttributes(pool),
@@ -101,4 +123,4 @@ const payload = ({ libraries, pool }) => {
   }
 }
 
-export { libraryAttributes, newLibrary, validate, valid, payload }
+export { libraryAttributes, newLibrary, validate, payload }
