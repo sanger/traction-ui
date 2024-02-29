@@ -54,7 +54,7 @@
  *     <FilterCard :fetcher="fetchServiceData" :filter-options=[{ value: '', text: ''}] />
  * </template>
  */
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 export default {
   name: 'FilterCard',
   props: {

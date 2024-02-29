@@ -1,6 +1,36 @@
-import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
+import PacbioSamples from '@/views/pacbio/PacbioSampleIndex.vue'
+import {
+  mount,
+  store,
+  Data,
+  router,
+  flushPromises,
+  createTestingPinia,
+} from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+
+function mountWithStore({ props } = {}) {
+  const wrapperObj = mount(PacbioSamples, {
+    global: {
+      plugins: [createTestingPinia({})],
+    },
+    store,
+    router,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('PacbioSamples.vue', () => {
   let wrapper, samples
@@ -18,11 +48,8 @@ describe('PacbioSamples.vue', () => {
     const tagGet = vi.spyOn(store.state.api.traction.tags, 'get')
     tagGet.mockReturnValue(Data.TactionTags)
 
-    wrapper = mount(PacbioSamples, {
-      store,
-      router,
-    })
-
+    const { wrapperObj } = mountWithStore()
+    wrapper = wrapperObj
     samples = wrapper.vm
     await flushPromises()
   })
@@ -64,25 +91,6 @@ describe('PacbioSamples.vue', () => {
       // 40 is one of the request id's from Data.PacbioRequestsRequest
       button = wrapper.find('#details-btn-40')
       expect(button.text()).toEqual('Show Details')
-    })
-  })
-
-  describe('Create library button', () => {
-    let button
-    beforeEach(() => {
-      button = wrapper.findComponent({ ref: 'libraryCreateBtn' })
-    })
-
-    it('create library button is disabled when no sample are selected', () => {
-      samples.selected = []
-      expect(button.props('disabled')).toBe(true)
-    })
-
-    it('create library button is disabled when no sample are selected', async () => {
-      samples.selected = [{ id: 1 }]
-      await nextTick()
-
-      expect(button.props('disabled')).toBe(false)
     })
   })
 

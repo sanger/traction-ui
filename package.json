@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@sanger/ui-styling": "^4.1.0",
-    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
     "csv-parse": "^5.5.3",
@@ -33,7 +33,7 @@
     "swrv": "^1.0.4",
     "tailwindcss": "3.4.1",
     "vite": "^5.0.12",
-    "vue": "^3.4.15",
+    "vue": "^3.4.19",
     "vue-router": "^4.2.5",
     "vue3-selecto": "^1.12.3",
     "vuex": "^4.1.0"
