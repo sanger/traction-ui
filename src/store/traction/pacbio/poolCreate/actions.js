@@ -228,7 +228,7 @@ export default {
 
     if (success) {
       const {
-        libraries,
+        library_pools,
         requests,
         wells,
         plates = [],
@@ -241,7 +241,7 @@ export default {
         1,
       )[0]
       commit('populatePoolAttributes', data)
-      commit('populateLibraries', libraries)
+      commit('populateLibraries', library_pools)
       commit('populateRequests', requests)
       commit('populateWells', wells)
       commit('populatePlates', plates)

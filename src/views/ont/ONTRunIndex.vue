@@ -41,7 +41,7 @@
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')

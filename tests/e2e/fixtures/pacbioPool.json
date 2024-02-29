@@ -37,7 +37,7 @@
           },
           "data": [
             {
-              "type": "libraries",
+              "type": "library_pools",
               "id": "1"
             }
           ]
@@ -58,7 +58,7 @@
     },
     {
       "id": "1",
-      "type": "libraries",
+      "type": "library_pools",
       "links": {
         "self": "http://localhost:3100/v1/pacbio/libraries/1"
       },

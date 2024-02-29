@@ -76,6 +76,7 @@ const newWell = ({ position, ...attributes }) => {
   return {
     ...defaultWellAttributes(),
     pools: [],
+    libraries: [],
     ...attributes,
     position,
     row,
@@ -195,11 +196,11 @@ const createWellsPayload = (wells) => {
     .sort()
     .reduce((result, key) => ((result[key] = wells[key]), result), {})
 
-  // return the wells with the pools replaced by pool_ids attribute
+  // return the wells with the pools and libraries replaced by pool_ids and library_ids attribute
   return (
     Object.values(rest)
-      .map(({ pools: pool_ids, ...attributes }) => {
-        return { ...attributes, pool_ids }
+      .map(({ pools: pool_ids, libraries: library_ids, ...attributes }) => {
+        return { ...attributes, pool_ids, library_ids }
       })
       // add the _destroy attribute back to the wells
       .concat(_destroy || [])

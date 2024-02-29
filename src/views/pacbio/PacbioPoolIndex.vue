@@ -82,7 +82,7 @@ import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 
 export default {
   name: 'PacbioPoolIndex',

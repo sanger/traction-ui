@@ -51,6 +51,12 @@
               "type": "pools",
               "id": "1"
             }
+          },
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "721"
+            }
           }
         }
       },
@@ -103,6 +109,12 @@
             "data": {
               "type": "pools",
               "id": "2"
+            }
+          },
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "722"
             }
           }
         }

@@ -18,7 +18,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -47,7 +47,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
         fixture: 'tractionPacbioSequelIIeRun.json',
       },
@@ -69,7 +69,7 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
