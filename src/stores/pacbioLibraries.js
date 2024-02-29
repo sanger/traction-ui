@@ -9,18 +9,12 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
  * @param {Object} library - The library object to validate.
  * @returns {boolean} Returns true if all required fields are present and truthy in the library object, false otherwise.
  * @description Validates that the required fields are present in the given library object.
- * The required fields are 'id', 'template_prep_kit_box_barcode', 'volume', 'concentration', and 'insert_size'.
- * The 'tag' field is optional.
+ * The required fields are 'id', 'template_prep_kit_box_barcode', 'volume' and 'concentration'.
+ * The 'tag' and 'insert_size' fields are optional.
  */
 const validateFields = (library) => {
   // tag field is optional
-  const requiredAttributes = [
-    'id',
-    'template_prep_kit_box_barcode',
-    'volume',
-    'concentration',
-    'insert_size',
-  ]
+  const requiredAttributes = ['id', 'template_prep_kit_box_barcode', 'volume', 'concentration']
   return requiredAttributes.every((field) => library[field])
 }
 
