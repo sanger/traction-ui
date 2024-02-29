@@ -1,4 +1,4 @@
-import useRootStore from '@/stores'
+import store from '@/store'
 /**
  * A composable function to commit a mutation to the Vuex store.
  * @returns {Function} .showAlert A method that shows an alert. It commits a mutation to the Vuex store.
@@ -7,9 +7,9 @@ import useRootStore from '@/stores'
  * @param {string} dataType - The data type of the alert.
  */
 export default function useAlert() {
-  const store = useRootStore()
   const showAlert = (message, type, dataType) => {
-    store.addMessage({ type, message:String(message), dataType })
+    //TODO: This need to be refactored to use the Pinia root store once we have converted all components to use useAlert
+    store.commit('traction/addMessage', { type, message, dataType })
   }
   // Return the showAlert method
   return {

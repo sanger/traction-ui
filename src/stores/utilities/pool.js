@@ -7,6 +7,14 @@ const libraryAttributes = {
   insert_size: null,
 }
 
+/**
+ * This function takes a boolean `isPool` and returns an array of required attributes.
+ * The returned array always includes 'pacbio_request_id', 'volume', 'concentration', and 'insert_size'.
+ * If `isPool` is true, the array also includes 'tag_id'.
+ *
+ * @param {boolean} isPool - A boolean indicating whether the attributes are for a pool.
+ * @returns {string[]} The array of required attributes.
+ */
 const requiredAttributes = (isPool) => [
   'pacbio_request_id',
   'volume',
@@ -15,6 +23,13 @@ const requiredAttributes = (isPool) => [
   ...(isPool ? ['tag_id'] : []),
 ]
 
+/**
+ * This function takes an `attributes` object and returns a new library object.
+ * It spreads the `libraryAttributes` and the `attributes` into a new object, with the `attributes` overwriting any matching properties in `libraryAttributes`.
+ *
+ * @param {Object} attributes - The attributes for the new library.
+ * @returns {Object} The new library object with the `libraryAttributes` and the `attributes`.
+ */
 const newLibrary = (attributes) => {
   return {
     ...libraryAttributes,
@@ -101,10 +116,10 @@ const extractPoolAttributes = ({
 }
 
 /**
- * Produce a json api compliant payload 
- * 
+ * Produce a json api compliant payload
+ *
  * @param {Object}
- * 
+ *
  * @example
  * { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
  */

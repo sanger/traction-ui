@@ -23,7 +23,12 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
 }
 
 /**
- * This function sorts all requested based on the column index of the well they are in
+ * This function sorts all requested based on the column index of the well they are in.
+ * This takes a `resources` object and returns a comparator function for sorting requests by well column index.
+ * The comparator function takes two requests `a` and `b`, retrieves their wells from `resources.wells` based on their `well` properties,
+ * converts the wells to indices using the `wellToIndex` function, and returns the difference between the indices.
+ * If a request does not have a well in `resources.wells`, it defaults to a well with a position of 'A1'.
+ *
  * @param {*} resources
  * @returns
  */
@@ -150,25 +155,16 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
   }),
   getters: {
     /**
-     * Returns a list of all fetched plates
-     * @param {Object} state The Pinia state object
-     */
-    plateList: ({ selected, resources }) => {
-      return mergeRepresentations(resources.plates, selected.plates)
-    },
-    /**
-     * Returns a list of all fetched tubes
-     * @param {Object} state The Pinia state object
-     */
-    tubeList: ({ selected, resources }) => {
-      return mergeRepresentations(resources.tubes, selected.tubes)
-    },
-    /**
-     * Returns the selected tag set
-     * @param {Object} state The Pinia state object
+     * This function takes an object with a `selected` property and returns a tag set.
+     * If the `selected` object has a `tagSet` with an `id`, it retrieves the corresponding tag set from the `pacbioRoot` store,
+     * maps over its `tags`, retrieves each tag from the `pacbioRoot` store, and returns a new object with the tag set and its tags.
+     * If the `selected` object does not have a `tagSet` with an `id`, it returns an object with `id` set to `null` and `tags` as an empty array.
+     *
+     * @param {Object} param0 - An object with a `selected` (an object with a `tagSet` property) property.
+     * @returns {Object} The tag set with its tags or an object with `id` set to `null` and `tags` as an empty array.
      */
     selectedTagSet: ({ selected }) => {
-      if (selected.tagSet.id) {
+      if (selected.tagSet && selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
         const tagSet = pacbioRoot.tagState.tagSets[selected.tagSet.id]
         const tags = tagSet.tags.map((tag) => pacbioRoot.tagState.tags[tag.id])
@@ -178,25 +174,33 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
     },
     /**
-     * Returns a list of selected plates
-     * @param {Object} state The Pinia state object
+     * This function takes an object with `selected` and `resources` properties and returns a list of selected plates.
+     * It merges the representations of `selected.plates` and `resources.plates` using the `mergeRepresentations` function.
+     *
+     * @param {Object} param0 - An object with `selected` and `resources` properties.
+     * @returns {Object[]} The merged representations of the selected plates and the resource plates.
      */
     selectedPlates: ({ selected, resources }) =>
       mergeRepresentations(selected.plates, resources.plates),
 
     /**
-     * Returns a list of selected tubes
-     * @param {Object} state The Pinia state object
+     * This function takes an object with `selected` and `resources` properties and returns a list of selected tubes.
+     * It merges the representations of `selected.tubes` and `resources.tubes` using the `mergeRepresentations` function.
+     *
+     * @param {Object} param0 - An object with `selected` and `resources` properties.
+     * @returns {Object[]} The merged representations of the selected tubes and the resource tubes.
      */
     selectedTubes: ({ selected, resources }) =>
       mergeRepresentations(selected.tubes, resources.tubes),
 
     /**
-     * Returns a list of selected requests
+     * This function takes an object with `libraries` and `resources` properties and returns a list of selected requests.
+     * It maps over the values of `libraries`, retrieves each corresponding request from `resources.requests` based on the
+     * `pacbio_request_id`, adds a `selected` property set to `true` to each request, and then sorts the requests by well column
+     *  index and labware using the `sortRequestByWellColumnIndex` and `sortRequestByLabware` functions.
      *
-     * Note: Ordering is grouped by plate (in id order) and sorted in column order
-     * @param {Object} state The Pinia state object
-     * @return {Array} An array of selected requests in the order in which they were selected
+     * @param {Object} param0 - An object with `libraries` and `resources` properties.
+     * @returns {Object[]} The selected requests sorted by well column index and labware.
      */
     selectedRequests: ({ libraries, resources }) => {
       return Object.values(libraries)
@@ -207,6 +211,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         .sort(sortRequestByWellColumnIndex(resources))
         .sort(sortRequestByLabware(resources))
     },
+
     /**
      * Returns a list of all fetched wells.
      * If IDs are provided, returns the wells with those IDs.
@@ -595,7 +600,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // after the request for all plates, as otherwise the partial record will over-write
         // the full one.
         include:
-          'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request.tube,tube',
+          'used_aliquots.tag.tag_set,used_aliquots.source_plate.wells.requests,used_aliquots.request.tube,tube',
       })
       const response = await handleResponse(promise)
 

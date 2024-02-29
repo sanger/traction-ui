@@ -116,7 +116,7 @@
  * @param {Object} library - The library to be  edited or created
  */
 import { computed, ref } from 'vue'
-import { usePacbioRootStore } from '@/stores/pacbioRoot.js';
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
@@ -192,7 +192,9 @@ const provider = async () => {
     const { success, errors } = await pacbioRootStore.fetchPacbioTagSets()
     if (success) {
       // If the library has a tag_id, set the selected tag set ID to the tag set ID of the library
-      const tagSet = props.library.tag_id ? pacbioRootStore.tagsetForTagId(props.library.tag_id) : ''
+      const tagSet = props.library.tag_id
+        ? pacbioRootStore.tagsetForTagId(props.library.tag_id)
+        : ''
       selectedTagSetId.value = tagSet ? tagSet.id : ''
     } else {
       showAlert(`Failed to find tags in Traction: ${errors}`, 'danger')

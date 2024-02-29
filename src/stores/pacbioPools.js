@@ -3,6 +3,13 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
+/**
+ * This function takes an object with `pool` and `libraries` properties and returns an array of run suitability errors.
+ * It maps over the errors of `pool.run_suitability` and `library.run_suitability` for each library, formats the errors with the pool or library details, and returns the formatted errors.
+ *
+ * @param {Object}  - An object with `pool` and `libraries` properties.
+ * @returns {string[]} The formatted run suitability errors.
+ */
 const buildRunSuitabilityErrors = ({ pool, libraries }) => [
   ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
   ...libraries.flatMap((library) => {
@@ -10,6 +17,11 @@ const buildRunSuitabilityErrors = ({ pool, libraries }) => [
     return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
   }),
 ]
+/**
+ * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
+ * It contains the pools, tubes, libraries, requests, and tags state properties, and the fetchPools action.
+ * @exports usePacbioPools
+ */
 export const usePacbioPools = defineStore('pacbioPools', {
   state: () => ({
     pools: {},
@@ -19,6 +31,18 @@ export const usePacbioPools = defineStore('pacbioPools', {
     tags: {},
   }),
   getters: {
+    /**
+     * This function takes a `state` object and returns an array of pools.
+     * It maps over the values of `state.pools`, retrieves the libraries, barcode, and run suitability for each pool, and
+     * returns the pools with the retrieved data.
+     * The libraries for each pool are retrieved by mapping over the `pool.libraries`, retrieving the library data from `state.libraries`
+     * based on the library ID, and returning the library data with the sample name from `state.requests` and the group ID from `state.tags`.
+     * The barcode for each pool is retrieved from `state.tubes` based on the `pool.tube`.
+     * The run suitability for each pool is retrieved from `pool.run_suitability` and formatted with the `buildRunSuitabilityErrors` function.
+     *
+     * @param {Object} state - The state object.
+     * @returns {Object[]} The array of pools with the retrieved data.
+     */
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
         const libraries = pool.libraries.map((libraryId) => {
@@ -42,7 +66,18 @@ export const usePacbioPools = defineStore('pacbioPools', {
     },
   },
   actions: {
-    async setPools(filter, page) {
+    /**
+     * This asynchronous function fetches pools from the API, processes the response, and updates the state with the fetched data.
+     * It takes a `filter` and a `page` as parameters, sends a GET request to the API with the parameters and some additional options, and waits for the response.
+     * The response is then handled with the `handleResponse` function.
+     * If the response is successful, the included data is grouped by resource with the `groupIncludedByResource` function, and the state is updated with the data.
+     *
+     * @async
+     * @param {Object} filter - The filter for the request.
+     * @param {number} page - The page for the request.
+     * @returns {Promise<Object>} A promise that resolves to an object with the success status, errors, and meta data of the response.
+     */
+    async fetchPools(filter, page) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.get({

@@ -58,10 +58,8 @@ const useRootStore = defineStore('root', {
      */
     addMessage(message) {
       //Remove the last message and return its id
-      const messageId = Object.keys(this.messages).pop()
-      if (typeof messageId === 'number') {
-        this.messages[messageId + 1] = message
-      }
+      const messageId = Object.keys(this.messages).pop() ?? 0
+      this.messages[messageId + 1] = message
     },
     /**
      * Removes a message from the store by its index
