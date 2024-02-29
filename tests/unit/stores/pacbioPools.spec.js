@@ -129,7 +129,7 @@ describe('usePacbioPools', () => {
     })
   })
   describe('actions', () => {
-    describe('#setPools', () => {
+    describe('#fetchPools', () => {
       let get, failedResponse, rootStore, store
 
       beforeEach(() => {
@@ -145,7 +145,7 @@ describe('usePacbioPools', () => {
         const { data: pools, included } = response.data
         get.mockResolvedValue(response)
 
-        await store.setPools()
+        await store.fetchPools()
         expect(store.pools).toEqual(
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
@@ -161,7 +161,7 @@ describe('usePacbioPools', () => {
         const response = Data.TractionPacbioPoolsNoRelationships
         const { data: pools } = response.data
         get.mockResolvedValue(response)
-        await store.setPools()
+        await store.fetchPools()
         expect(store.pools).toEqual(
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
@@ -169,7 +169,7 @@ describe('usePacbioPools', () => {
 
       it('unsuccessfully', async () => {
         get.mockRejectedValue(failedResponse)
-        const { success, errors } = await store.setPools()
+        const { success, errors } = await store.fetchPools()
         expect(success).toEqual(false)
         expect(errors).toEqual(failedResponse)
       })

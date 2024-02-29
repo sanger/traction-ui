@@ -1,5 +1,5 @@
 import useAlert from '@/composables/useAlert.js'
-import useRootStore from '@/stores'
+import store from '@/store'
 import { createPinia, setActivePinia } from 'pinia'
 
 describe('#useAlert', () => {
@@ -10,11 +10,11 @@ describe('#useAlert', () => {
     setActivePinia(pinia)
   })
   it('commits addMessage on show Alert call', () => {
-    const store = useRootStore()
-    store.addMessage = vi.fn().mockResolvedValue({})
+    const mockCommit = vi.fn().mockResolvedValue({})
+    store.commit = mockCommit
     const { showAlert } = useAlert()
     showAlert('show this message', 'success')
-    expect(store.addMessage).toHaveBeenCalledWith({
+    expect(mockCommit).toHaveBeenCalledWith('traction/addMessage', {
       type: 'success',
       message: 'show this message',
       dataType: undefined,

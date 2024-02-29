@@ -87,7 +87,6 @@ describe('usePacbioLibrariesStore', () => {
       ]
       expect(store.librariesArray).toEqual(libraryArray)
     })
-    
   })
   describe('actions', () => {
     let rootStore, store
@@ -291,7 +290,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(errors).toEqual(expectedResponse.errors)
       })
     })
-
 
     describe('#updateLibrary', () => {
       let update, get, libraryBeforeUpdate, mockSuccessResponse, library
