@@ -25,7 +25,7 @@
 
 <script>
 import { mapActions, mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 export default {
   name: 'PacbioRunWell',

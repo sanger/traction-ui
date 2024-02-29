@@ -1,6 +1,6 @@
-import Tube from '@/components/pacbio/PacbioRunTubeItem'
-import { mount, router, createTestingPinia } from '@support/testHelper'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import Tube from '@/components/pacbio/PacbioRunTubeItem.vue'
+import { mount, router, createTestingPinia } from '@support/testHelper.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
