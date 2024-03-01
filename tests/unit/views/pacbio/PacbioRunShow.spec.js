@@ -1,8 +1,8 @@
-import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
-import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper'
+import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
+import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
-import { newRunType, existingRunType } from '@/stores/utilities/run'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { newRunType, existingRunType } from '@/stores/utilities/run.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 const smrtLinkVersions = {
   1: {

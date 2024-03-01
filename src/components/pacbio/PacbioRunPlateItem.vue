@@ -45,12 +45,12 @@
 </template>
 
 <script>
-import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
-import PacbioRunWell from '@/components/labware/PacbioRunWell'
+import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
+import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes.js'
 import { mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 export default {
   name: 'PacbioRunPlateItem',

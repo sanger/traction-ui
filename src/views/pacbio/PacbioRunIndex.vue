@@ -96,13 +96,13 @@
 </template>
 
 <script>
-import DataFetcher from '@/components/DataFetcher'
-import FilterCard from '@/components/FilterCard'
+import DataFetcher from '@/components/DataFetcher.vue'
+import FilterCard from '@/components/FilterCard.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
-import useQueryParams from '@/composables/useQueryParams'
-import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import useQueryParams from '@/composables/useQueryParams.js'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
 
 export default {
