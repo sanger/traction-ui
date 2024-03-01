@@ -13,7 +13,7 @@ describe('#setPools', () => {
   })
 
   it('successfully', async () => {
-    const response = Data.TractionPacbioPools
+    const response = Data.TractionPacbioPoolsV1
     const { data: pools, included } = response.data
     get.mockResolvedValue(response)
 

@@ -115,7 +115,7 @@ describe('pool', () => {
           type: 'pools',
           id: '1',
           attributes: {
-            used_aliquot_attributes: [
+            used_aliquots_attributes: [
               {
                 id: '1',
                 volume: 10,
