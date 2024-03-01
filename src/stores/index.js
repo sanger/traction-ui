@@ -4,7 +4,7 @@ import PrinterList from '@/config/PrinterList'
 import PlateMap from '@/config/PlateMap'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
@@ -39,15 +39,10 @@ const useRootStore = defineStore('root', {
     async setTags() {
       const request = this.api.traction.tags
       const promise = request.get()
-      const {
-        success,
-        data: { data, included = [] },
-        errors,
-      } = await handleResponse(promise)
+      const { success, data, errors } = await handleResponse(promise)
 
       if (success && data) {
-        const { tags } = groupIncludedByResource(included)
-        this.tractionTags = dataToObjectById({ data: tags })
+        this.tractionTags = dataToObjectById({ data })
       }
       return { success, errors }
     },
