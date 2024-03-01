@@ -1,8 +1,8 @@
-import { mount, nextTick, createTestingPinia } from '@support/testHelper'
-import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
+import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect } from 'vitest'
-import { newWell } from '@/stores/utilities/run'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { newWell } from '@/stores/utilities/run.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {

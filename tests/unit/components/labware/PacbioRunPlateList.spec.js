@@ -1,9 +1,9 @@
-import { mount, createTestingPinia } from '@support/testHelper'
-import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList'
-import { newWell } from '@/stores/utilities/run'
+import { mount, createTestingPinia } from '@support/testHelper.js'
+import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
+import { newWell } from '@/stores/utilities/run.js'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 const smrtLinkVersions = {
   1: { id: 1, name: 'v11', default: true, active: true },

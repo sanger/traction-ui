@@ -8,9 +8,9 @@
 </template>
 
 <script setup>
-import Tube from '@/components/pacbio/PacbioRunTubeItem'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
-import LabwareFinder from '@/components/LabwareFinder'
+import Tube from '@/components/pacbio/PacbioRunTubeItem.vue'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import LabwareFinder from '@/components/LabwareFinder.vue'
 
 const store = usePacbioRunCreateStore()
 </script>

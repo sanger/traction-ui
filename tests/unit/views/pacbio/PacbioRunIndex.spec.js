@@ -9,8 +9,8 @@ import {
   createTestingPinia,
   router,
 } from '@support/testHelper'
-import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { vi } from 'vitest'
 
 const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
