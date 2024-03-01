@@ -298,7 +298,7 @@ describe('mutations.js', () => {
       // mock state
       const state = defaultState()
       // apply mutation
-      populateLibraries(state, Data.TractionPacbioPool.data.included.slice(0, 1))
+      populateLibraries(state, Data.TractionPacbioPoolV1.data.included.slice(0, 1))
       // We expect the request to be recorded in the selected requests it should:
       // - Prefix the key with an _ to maintain insert order
       // - Not disrupt other requests in the store
@@ -320,7 +320,7 @@ describe('mutations.js', () => {
     it('sets the pool with the correct data', () => {
       const state = defaultState()
       // apply mutation
-      populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
+      populatePoolAttributes(state, Data.TractionPacbioPoolV1.data.data)
       expect(state.pool).toEqual(
         expect.objectContaining({
           id: '242',
@@ -352,7 +352,7 @@ describe('mutations.js', () => {
       // mock state
       const state = defaultState()
       // Prepopulate with some dummy data
-      populateLibraries(state, Data.TractionPacbioPool.data.included.slice(0, 1))
+      populateLibraries(state, Data.TractionPacbioPoolV1.data.included.slice(0, 1))
       // apply mutation
       updateLibrary(state, { pacbio_request_id: '4', insert_size: 4 })
       // We expect the request to be recorded in the selected requests it should:
@@ -376,7 +376,7 @@ describe('mutations.js', () => {
     it('clears existing pool data', () => {
       const state = defaultState()
       // populates an existing pool into state
-      populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
+      populatePoolAttributes(state, Data.TractionPacbioPoolV1.data.data)
       clearPoolData(state)
       expect(state.selected).toEqual({
         tagSet: {},

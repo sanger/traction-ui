@@ -33,7 +33,7 @@ describe('usePacbioRootStore', () => {
     })
     describe('tagSetList', () => {
       it('returns a list of all fetched tagSet', () => {
-        store.tagState.tagSets = tagSets
+        store.tagSets = tagSets
         expect(store.tagSetList).toEqual(Object.values(tagSets))
       })
     })
@@ -47,11 +47,11 @@ describe('usePacbioRootStore', () => {
         5: { id: '5', name: 'tag5' },
       }
       it('returns a list of all fetched tagSet', () => {
-        store.tagState.tags = tags
+        store.tags = tags
         expect(store.tagList()).toEqual(tags.values)
       })
       it('when ids are included', () => {
-        store.tagState.tags = tags
+        store.tags = tags
         const ids = ['1', '2', '3']
         expect(store.tagList(ids).length).toEqual(ids.length)
       })
@@ -61,7 +61,7 @@ describe('usePacbioRootStore', () => {
         data: Data.TractionPacbioTagSets.data.data,
         includeRelationships: true,
       })
-      store.$state.tagState = {
+      store.$state = {
         tagSets: { ...data },
         tags: { ...dataToObjectById({ data: Data.TractionPacbioTagSets.data.included }) },
       }
@@ -104,7 +104,7 @@ describe('usePacbioRootStore', () => {
           data: Data.TractionPacbioTagSets.data.data,
           includeRelationships: true,
         })
-        expect(store.tagState.tagSets).toEqual(data)
+        expect(store.tagSets).toEqual(data)
         expect(success).toEqual(true)
       })
 
@@ -119,8 +119,8 @@ describe('usePacbioRootStore', () => {
         })
         // apply action
         const { success } = await store.fetchPacbioTagSets()
-        expect(store.tagState.tagSets).toEqual({})
-        expect(store.tagState.tags).toEqual({})
+        expect(store.tagSets).toEqual({})
+        expect(store.tags).toEqual({})
         expect(success).toEqual(false)
       })
     })

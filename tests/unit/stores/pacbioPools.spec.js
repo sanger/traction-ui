@@ -1,5 +1,4 @@
 import { createPinia, setActivePinia } from 'pinia'
-import storePools from '@tests/data/StorePools.json'
 import { usePacbioPools } from '@/stores/pacbioPools.js'
 import { Data } from '@support/testHelper.js'
 import useRootStore from '@/stores'
@@ -11,12 +10,12 @@ const pools = [
     id: '1',
     type: 'pools',
     barcode: 'TRAC-2-1',
-    libraries: [
+    used_aliquots: [
       {
         id: '1',
         sample_name: 'Sample48',
         group_id: 'bc1019',
-        type: 'library_pools',
+        type: 'used_aliquots',
         run_suitability: {
           ready_for_run: true,
           errors: [],
@@ -41,12 +40,12 @@ const pools = [
     id: '2',
     type: 'pools',
     barcode: 'TRAC-2-2',
-    libraries: [
+    used_aliquots: [
       {
         id: '2',
         sample_name: 'Sample47',
         group_id: 'bc1011_BAK8A_OA',
-        type: 'library_pools',
+        type: 'used_aliquots',
         run_suitability: {
           ready_for_run: false,
           errors: [
@@ -74,8 +73,8 @@ const pools = [
       ready_for_run: false,
       formattedErrors: [
         "Pool insert_size - can't be blank",
-        'Pool libraries - is invalid',
-        "Library 2 (Sample47) insert_size - can't be blank",
+        'Pool used_aliquots - is invalid',
+        "Used aliquot 2 (Sample47) insert_size - can't be blank",
       ],
       errors: [
         {
@@ -88,10 +87,10 @@ const pools = [
         },
         {
           title: 'is invalid',
-          detail: 'libraries - is invalid',
+          detail: 'used_aliquots - is invalid',
           code: '100',
           source: {
-            pointer: '/data/relationships/libraries',
+            pointer: '/data/relationships/used_aliquots',
           },
         },
       ],
@@ -111,21 +110,21 @@ describe('usePacbioPools', () => {
     let store
     beforeEach(() => {
       store = usePacbioPools()
-      store.$state = storePools
+      store.$state = Data.StorePools
     })
     it('"pools" returns denormalized pools from "state.pools"', () => {
       expect(store.poolsArray).toEqual(pools)
     })
 
     it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
-      store.libraries[1] = {
+      store.used_aliquots[1] = {
         id: '1',
         request: '1',
         tag: '',
-        type: 'library_pools',
+        type: 'used_aliquots',
         run_suitability: { ready_for_run: true, errors: [] },
       }
-      expect(store.poolsArray[0].libraries[0].group_id).toEqual(undefined)
+      expect(store.poolsArray[0].used_aliquots[0].group_id).toEqual(undefined)
     })
   })
   describe('actions', () => {
@@ -150,14 +149,14 @@ describe('usePacbioPools', () => {
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
         expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: included.slice(0, 2) }))
-        // expect(store.libraries).toEqual(
+        // expect(store.used_aliquots).toEqual(
         //   jsonapi.dataToObjectById({ data: included.slice(2, 4), includeRelationships: true }),
         // )
         expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: included.slice(4, 6) }))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: included.slice(6, 8) }))
       })
 
-      it('when the pool has no libraries', async () => {
+      it('when the pool has no used_aliquots', async () => {
         const response = Data.TractionPacbioPoolsNoRelationships
         const { data: pools } = response.data
         get.mockResolvedValue(response)

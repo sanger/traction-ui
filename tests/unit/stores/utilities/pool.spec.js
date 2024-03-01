@@ -1,10 +1,10 @@
-import { newLibrary, validate, payload } from '@/stores/utilities/pool'
+import { createUsedAliquot, validate, payload } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 
 describe('pool', () => {
-  it('newLibrary', () => {
-    expect(newLibrary()).toEqual({
-      pacbio_request_id: null,
+  it('createUsedAliquot', () => {
+    expect(createUsedAliquot()).toEqual({
+      source_id: null,
       template_prep_kit_box_barcode: null,
       tag_id: null,
       volume: null,
@@ -13,81 +13,81 @@ describe('pool', () => {
     })
   })
   describe('validate', () => {
-    it('returns true when all libraries are valid and there are no duplicate tags', () => {
-      const libraries = {
+    it('returns true when all used_aliquots are valid and there are no duplicate tags', () => {
+      const used_aliquots = {
         1: {
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
-          pacbio_request_id: '1',
+          source_id: '1',
         },
         2: {
           tag_id: 'tag2',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
-          pacbio_request_id: '2',
+          source_id: '2',
         },
       }
-      const result = validate(libraries)
+      const result = validate(used_aliquots)
       expect(result).toBe(true)
     })
 
     it('returns false when a library is missing a required attribute', () => {
-      const libraries = {
+      const used_aliquots = {
         1: {
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
-          pacbio_request_id: '1',
+          source_id: '1',
         },
         2: { tag_id: 'tag2', volume: 10, concentration: 5 },
       }
 
-      const result = validate(libraries)
+      const result = validate(used_aliquots)
 
       expect(result).toBe(false)
-      expect(libraries['2'].errors).toEqual({
+      expect(used_aliquots['2'].errors).toEqual({
         insert_size: 'must be present',
-        pacbio_request_id: 'must be present',
+        source_id: 'must be present',
       })
     })
 
     it('returns false when there are duplicate tags', () => {
-      const libraries = {
+      const used_aliquots = {
         1: {
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
-          pacbio_request_id: '1',
+          source_id: '1',
         },
         2: {
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
-          pacbio_request_id: '1',
+          source_id: '1',
         },
       }
-      const result = validate(libraries)
+      const result = validate(used_aliquots)
       expect(result).toBe(false)
-      expect(libraries['2'].errors).toEqual({ tag_id: 'duplicated' })
+      expect(used_aliquots['2'].errors).toEqual({ tag_id: 'duplicated' })
     })
   })
 
   describe('payload', () => {
     it('returns a payload object with the correct structure', () => {
-      const libraries = {
+      const used_aliquots = {
         1: {
           id: '1',
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1,
-          pacbio_request_id: '1',
+          source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
         },
         2: {
@@ -96,9 +96,9 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1,
-          pacbio_request_id: '1',
+          source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
-          otherLibraryAttribute: 'libraryValue',
+          otherUsedAliquotAttribute: 'aliquotValue',
         },
       }
       const pool = {
@@ -121,7 +121,7 @@ describe('pool', () => {
                 volume: 10,
                 concentration: 5,
                 insert_size: 1,
-                pacbio_request_id: '1',
+                source_id: '1',
                 tag_id: 'tag1',
                 template_prep_kit_box_barcode: 'barcode1',
               },
@@ -130,7 +130,7 @@ describe('pool', () => {
                 volume: 10,
                 concentration: 5,
                 insert_size: 1,
-                pacbio_request_id: '1',
+                source_id: '1',
                 tag_id: 'tag2',
                 template_prep_kit_box_barcode: 'barcode1',
               },
@@ -143,7 +143,7 @@ describe('pool', () => {
         },
       }
 
-      const result = payload({ libraries, pool })
+      const result = payload({ used_aliquots, pool })
 
       expect(result).toEqual(expected)
     })

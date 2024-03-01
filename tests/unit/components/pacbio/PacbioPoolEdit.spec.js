@@ -162,7 +162,7 @@ describe('pacbioPoolEdit#edit', () => {
 
   describe('pool type', () => {
     it('says empty when there are no libraries', async () => {
-      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+      const poolCreateStore = Object.assign({}, Data.AutoTagStoreV1, {
         libraries: {},
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
@@ -171,7 +171,7 @@ describe('pacbioPoolEdit#edit', () => {
     })
 
     it('says library when there is one library', async () => {
-      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+      const poolCreateStore = Object.assign({}, Data.AutoTagStoreV1, {
         libraries: { _1: newLibrary({ pacbio_request_id: '1' }) },
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
@@ -180,7 +180,7 @@ describe('pacbioPoolEdit#edit', () => {
     })
 
     it('says pool when there are multiple libraries', async () => {
-      store.state.traction.pacbio.poolCreate = Data.AutoTagStore
+      store.state.traction.pacbio.poolCreate = Data.AutoTagStoreV1
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })

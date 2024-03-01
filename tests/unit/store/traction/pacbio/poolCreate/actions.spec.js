@@ -63,30 +63,30 @@ describe('actions.js', () => {
       // mock dependencies
       const find = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
-      find.mockResolvedValue(Data.TractionPacbioPool)
+      find.mockResolvedValue(Data.TractionPacbioPoolV1)
       // apply action
       const { success } = await populateLibrariesFromPool({ commit, rootState })
 
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith(
         'populatePoolAttributes',
-        Data.TractionPacbioPool.data.data,
+        Data.TractionPacbioPoolV1.data.data,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateLibraries',
-        Data.TractionPacbioPool.data.included.slice(0, 1),
+        Data.TractionPacbioPoolV1.data.included.slice(0, 1),
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionPacbioPool.data.included.slice(100, 148),
+        Data.TractionPacbioPoolV1.data.included.slice(100, 148),
       )
       expect(commit).toHaveBeenCalledWith(
         'populateWells',
-        Data.TractionPacbioPool.data.included.slice(4, 100),
+        Data.TractionPacbioPoolV1.data.included.slice(4, 100),
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePlates',
-        Data.TractionPacbioPool.data.included.slice(3, 4),
+        Data.TractionPacbioPoolV1.data.included.slice(3, 4),
       )
       expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
 
@@ -97,7 +97,7 @@ describe('actions.js', () => {
 
       expect(commit).toHaveBeenCalledWith(
         'populatePoolTube',
-        Data.TractionPacbioPool.data.included.slice(-1)[0],
+        Data.TractionPacbioPoolV1.data.included.slice(-1)[0],
       )
 
       expect(success).toEqual(true)
@@ -431,7 +431,7 @@ describe('actions.js', () => {
   })
 
   describe('applyTags', () => {
-    const state = Data.AutoTagStore
+    const state = Data.AutoTagStoreV1
     // Starting in B1
     const library = { pacbio_request_id: '13', tag_id: '130' }
 
@@ -603,7 +603,7 @@ describe('actions.js', () => {
   })
 
   describe('updateLibraryFromCsvRecord', () => {
-    const state = Data.AutoTagStore
+    const state = Data.AutoTagStoreV1
     const info = {
       lines: 3,
       records: 2,
