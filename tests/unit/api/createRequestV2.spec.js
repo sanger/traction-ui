@@ -1,6 +1,9 @@
 import { defaultHeaders, createRequest } from '@/api/createRequestV2.js'
 
 import axios from 'axios'
+import { expect } from 'vitest'
+
+global.fetch = vi.fn()
 
 describe('createRequest', () => {
   const attributes = {
@@ -130,20 +133,30 @@ describe('createRequest', () => {
   // TODO: modify tests to use fetch rather than axios
   describe.skip('api calls', () => {
     beforeEach(() => {
-      vi.spyOn(axios, 'get')
-      vi.spyOn(axios, 'delete')
-      vi.spyOn(axios, 'patch')
-      vi.spyOn(axios, 'post')
+      // vi.spyOn(axios, 'get')
+      // vi.spyOn(axios, 'delete')
+      // vi.spyOn(axios, 'patch')
+      // vi.spyOn(axios, 'post')
     })
 
     describe('get', () => {
-      it('basic', async () => {
-        vi.spyOn(global, 'fetch').mockReturnValue(Promise.resolve({ json: () => mockResponse }))
-        // axios.get.mockReturnValue(mockResponse)
-        const request = createRequest({ ...attributes })
-        const response = await request.get()
-        expect(axios.get).toBeCalledWith(request.resource)
-        expect(response).toEqual(mockResponse)
+      it.only('basic', async () => {
+        const createRequestFn = createRequest({ ...attributes })
+        await createRequestFn.get()
+
+        expect(fetch).toBeCalledWith('http://traction/v1/requests', {
+          method: 'GET',
+          body: null,
+          headers: {
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json',
+            header1: 'header1',
+            header2: 'header2',
+          },
+        })
+
+        // const jsonData = await response.json()
+        // expect(jsonData).toEqual(mockResponse)
       })
 
       it('with a query', async () => {
