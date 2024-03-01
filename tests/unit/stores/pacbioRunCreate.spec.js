@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import useRootStore from '@/stores'
-import storePools from '@tests/data/StorePools'
+import storePools from '@tests/data/StoreRunPools'
 import { Data } from '@support/testHelper'
 import * as jsonapi from '@/api/JsonApi'
 import {
@@ -35,7 +35,7 @@ describe('usePacbioRunCreateStore', () => {
             id: '1',
             sample_name: 'Sample48',
             group_id: 'bc1019',
-            type: 'libraries',
+            type: 'library_pools',
             run_suitability: {
               ready_for_run: true,
               errors: [],
@@ -65,7 +65,7 @@ describe('usePacbioRunCreateStore', () => {
             id: '2',
             sample_name: 'Sample47',
             group_id: 'bc1011_BAK8A_OA',
-            type: 'libraries',
+            type: 'library_pools',
             run_suitability: {
               ready_for_run: false,
               errors: [
@@ -118,6 +118,30 @@ describe('usePacbioRunCreateStore', () => {
       },
     ]
 
+    const mockLibraries = [
+      {
+        id: '3',
+        type: 'libraries',
+        barcode: 'TRAC-2-3',
+        tube: '3',
+        request: '1',
+        group_id: 'bc1019',
+        tag: '26',
+        sample_name: 'Sample48',
+        volume: 1.0,
+        concentration: 1.0,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        source_identifier: 'DN1:A1',
+        created_at: '2021-07-15T15:26:29.000Z',
+        updated_at: '2021-07-15T15:26:29.000Z',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      },
+    ]
+
     const smrtLinkVersions = {
       1: {
         id: 1,
@@ -147,31 +171,38 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.defaultSmrtLinkVersion).toEqual(smrtLinkVersions[1])
       })
     })
-    describe('poolsArray', () => {
-      it('"poolsArray" returns denormalized pools from "state.pools"', () => {
+    describe('tubeContents', () => {
+      it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        expect(store.poolsArray).toEqual(mockPools)
+        expect(store.tubeContents).toEqual(mockPools.concat(mockLibraries))
       })
 
-      it('"poolByBarcode" returns the pool with the specified barcode from "state.pools"', () => {
+      it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        const actual = store.poolByBarcode('TRAC-2-1')
+        const actual = store.tubeContentByBarcode('TRAC-2-1')
         expect(actual).toEqual(mockPools[0])
       })
 
-      it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
+      it('"tubeContentByBarcode" returns the library data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        store.libraries[1] = {
+        const actual = store.tubeContentByBarcode('TRAC-2-3')
+        expect(actual).toEqual(mockLibraries[0])
+      })
+
+      it('"tubeContents" returns pools successfully and with an empty library group_id if that library has no tag', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = { ...storePools }
+        store.library_pools[1] = {
           id: '1',
           request: '1',
           tag: '',
-          type: 'libraries',
+          type: 'library_pools',
           run_suitability: { ready_for_run: true, errors: [] },
         }
-        expect(store.poolsArray[0].libraries[0].group_id).toEqual(undefined)
+        expect(store.tubeContents[0].libraries[0].group_id).toEqual(undefined)
       })
     })
     describe('getOrCreateWell', () => {
@@ -285,7 +316,7 @@ describe('usePacbioRunCreateStore', () => {
         const wells = Data.PacbioRun.data.included.slice(2, 5)
         const pools = Data.PacbioRun.data.included.slice(5, 6)
         const tubes = Data.PacbioRun.data.included.slice(6, 7)
-        const libraries = Data.PacbioRun.data.included.slice(7, 8)
+        const library_pools = Data.PacbioRun.data.included.slice(7, 8)
         const tags = Data.PacbioRun.data.included.slice(8, 9)
         const requests = Data.PacbioRun.data.included.slice(9, 10)
 
@@ -321,12 +352,14 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools).toEqual(
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
-        expect(store.libraries).toEqual(
-          jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
+        expect(store.library_pools).toEqual(
+          jsonapi.dataToObjectById({ data: library_pools, includeRelationships: true }),
         )
         expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes }))
+        expect(store.tubes).toEqual(
+          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
+        )
         expect(store.smrtLinkVersion).toEqual(smrtLinkVersion)
         expect(success).toBeTruthy()
       })
@@ -347,7 +380,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(mockApiSplitData).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(store.pools).toEqual({})
-        expect(store.libraries).toEqual({})
+        expect(store.library_pools).toEqual({})
         expect(store.tags).toEqual(jsonapi.dataToObjectById({}))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({}))
         expect(store.tubes).toEqual(jsonapi.dataToObjectById({}))
@@ -358,28 +391,69 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
 
-    describe('findPools', () => {
+    describe('findPoolsOrLibraryByTube', () => {
       it('returns the pool when given a valid tube barcode', async () => {
-        const response = Data.PacbioPool
-        const { data: pools, included } = response.data
+        const response = Data.PacbioTubeWithPool
+        const { data, included } = response.data
 
-        const poolsArray = pools.slice(0, 1)
-        const tubes = included.slice(0, 1)
-        const libraries = included.slice(1, 2)
-        const requests = included.slice(2, 3)
-        const tags = included.slice(3, 4)
+        const tubes = data.slice(0, 1)
+        const pools = included.slice(0, 1)
+        const library_pools = included.slice(1, 5)
+        const tags = included.slice(5, 9)
+        const requests = included.slice(9, 13)
+
+        // Mock stores
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(response)
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
 
         const store = usePacbioRunCreateStore()
-        store.poolRequest.get = vi.fn().mockResolvedValue(response)
 
         // apply action
-        const { success } = await store.findPools({ barcode: 'TRAC-2-1' })
+        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
         expect(success).toBeTruthy()
 
         expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: poolsArray, includeRelationships: true }),
+          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes }))
+        expect(store.tubes).toEqual(
+          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
+        )
+        expect(store.library_pools).toEqual(
+          jsonapi.dataToObjectById({ data: library_pools, includeRelationships: true }),
+        )
+        expect(store.libraries).toEqual({})
+        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
+        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
+      })
+
+      it('returns the pool when given a valid tube barcode', async () => {
+        const response = Data.PacbioTubeWithLibrary
+        const { data, included } = response.data
+
+        const tubes = data.slice(0, 1)
+        const libraries = included.slice(0, 1)
+        const tags = included.slice(1, 2)
+        const requests = included.slice(2, 3)
+
+        // Mock stores
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(response)
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
+
+        const store = usePacbioRunCreateStore()
+
+        // apply action
+        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
+        expect(success).toBeTruthy()
+
+        expect(store.pools).toEqual({})
+        expect(store.library_pools).toEqual({})
+        expect(store.tubes).toEqual(
+          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
+        )
         expect(store.libraries).toEqual(
           jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
         )
@@ -538,27 +612,6 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.wells[plateNumber]['A1']).toEqual(well)
       })
     })
-    describe('getPool', () => {
-      it('when finding the pool is successful', async () => {
-        const barcode = 'TRAC-2-1'
-        const store = usePacbioRunCreateStore()
-        store.findPools = vi.fn().mockResolvedValue({ success: true })
-        store.$state = { ...storePools }
-        const { success, pool } = await store.getPool({ barcode })
-        expect(success).toBeTruthy()
-        expect(pool.barcode).toEqual(barcode)
-        expect(pool.id).toEqual('1')
-      })
-
-      it('when finding the pool fails', async () => {
-        const barcode = 'TRAC-2-1'
-        const store = usePacbioRunCreateStore()
-        store.findPools = vi.fn().mockResolvedValue({ success: false, errors: ['it didnt work'] })
-        const { success, errors } = await store.getPool({ barcode })
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(['it didnt work'])
-      })
-    })
     describe('setInstrumentData', () => {
       it('when a key is passed', () => {
         const instrumentTypeKey = PacbioInstrumentTypes.SequelIIe.key
@@ -639,6 +692,20 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools[1]).toBeUndefined()
       })
     })
+    describe('removeLibrary', () => {
+      it('"removeLibrary" removes the given library id from state.library', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          libraries: {
+            1: { id: '1', type: 'libraries' },
+            2: { id: '2', type: 'libraries' },
+          },
+        }
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries' })
+        store.removeLibrary(1)
+        expect(store.libraries[1]).toBeUndefined()
+      })
+    })
     describe('clearRunData', () => {
       it('clears existing pool data', () => {
         const store = usePacbioRunCreateStore()
@@ -652,6 +719,7 @@ describe('usePacbioRunCreateStore', () => {
           pools: {},
           tubes: {},
           libraries: {},
+          library_pools: {},
           requests: {},
           tags: {},
           smrtLinkVersion: {},

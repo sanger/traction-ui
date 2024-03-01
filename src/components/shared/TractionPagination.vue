@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 export default {
   /**
    * # TractionPagination

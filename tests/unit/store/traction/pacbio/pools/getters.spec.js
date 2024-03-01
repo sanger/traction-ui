@@ -13,7 +13,7 @@ const pools = [
         id: '1',
         sample_name: 'Sample48',
         group_id: 'bc1019',
-        type: 'libraries',
+        type: 'library_pools',
         run_suitability: {
           ready_for_run: true,
           errors: [],
@@ -43,7 +43,7 @@ const pools = [
         id: '2',
         sample_name: 'Sample47',
         group_id: 'bc1011_BAK8A_OA',
-        type: 'libraries',
+        type: 'library_pools',
         run_suitability: {
           ready_for_run: false,
           errors: [
@@ -107,7 +107,7 @@ describe('getters', () => {
       id: '1',
       request: '1',
       tag: '',
-      type: 'libraries',
+      type: 'library_pools',
       run_suitability: { ready_for_run: true, errors: [] },
     }
     const pools = getters.pools(state)

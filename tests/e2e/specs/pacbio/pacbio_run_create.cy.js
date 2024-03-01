@@ -9,9 +9,17 @@ describe('Pacbio Run Create view', () => {
 
     // Find the pool being searched for by barcode
     cy.intercept(
-      '/v1/pacbio/pools?filter[barcode]=TRAC-2-2&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-6&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
       {
-        fixture: 'pacbioPool.json',
+        fixture: 'tractionPacbioTubeWithPool.json',
+      },
+    )
+
+    // Find the library being searched for by barcode
+    cy.intercept(
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-55&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
+      {
+        fixture: 'tractionPacbioTubeWithLibrary.json',
       },
     )
 
@@ -36,15 +44,15 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
 
-    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-6')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -77,14 +85,14 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="system_name"]').select('Revio')
     cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
 
-    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-6')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -106,7 +114,7 @@ describe('Pacbio Run Create view', () => {
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -138,14 +146,14 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="system_name"]').select('Revio')
     cy.get('[data-attribute="smrt_link_version"]').select('v13_revio')
 
-    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-55')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -167,7 +175,7 @@ describe('Pacbio Run Create view', () => {
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -209,15 +217,15 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="system_name"]').select('Sequel IIe')
     cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
 
-    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-6')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
@@ -288,14 +296,14 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
 
-    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-6')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
-    cy.get('[data-attribute="selected-pool-list"]')
+    cy.get('[data-attribute="selected-pool-library-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })

@@ -35,7 +35,7 @@
 import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
-import useQueryParams from '@/lib/QueryParamsHelper'
+import useQueryParams from '@/composables/useQueryParams'
 // TODO: Move these actions back to top level store.
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
