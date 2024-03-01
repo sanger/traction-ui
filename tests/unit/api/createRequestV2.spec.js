@@ -1,6 +1,5 @@
 import { defaultHeaders, createRequest } from '@/api/createRequestV2.js'
 
-import axios from 'axios'
 import { expect } from 'vitest'
 
 global.fetch = vi.fn()
@@ -130,15 +129,7 @@ describe('createRequest', () => {
     })
   })
 
-  // TODO: modify tests to use fetch rather than axios
   describe('api calls', () => {
-    beforeEach(() => {
-      // vi.spyOn(axios, 'get')
-      // vi.spyOn(axios, 'delete')
-      // vi.spyOn(axios, 'patch')
-      // vi.spyOn(axios, 'post')
-    })
-
     describe('get', () => {
       it('basic', async () => {
         fetch.mockReturnValue({ json: () => mockResponse })

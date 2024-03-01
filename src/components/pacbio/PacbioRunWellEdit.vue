@@ -212,8 +212,8 @@ export default {
               type: 'libraries',
             })
           : tubeContent.type === 'pools'
-            ? (this.localPoolsAndLibraries[index] = { id: tubeContent.id, barcode, type: 'pools' })
-            : null
+          ? (this.localPoolsAndLibraries[index] = { id: tubeContent.id, barcode, type: 'pools' })
+          : null
       } else {
         this.showAlert('Pool is not valid', 'danger')
       }

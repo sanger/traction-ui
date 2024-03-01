@@ -125,8 +125,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
             ? state.libraryState.libraryTags[tagId]
               ? state.libraryState.libraryTags[tagId].group_id
               : state.tagState.tags[tagId]
-                ? state.tagState.tags[tagId].group_id
-                : ''
+              ? state.tagState.tags[tagId].group_id
+              : ''
             : ''
           return {
             id,
