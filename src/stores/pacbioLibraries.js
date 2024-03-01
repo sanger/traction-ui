@@ -72,8 +72,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           const tagGroupId = tagId
             ? state.libraryTags[tagId]
               ? state.libraryTags[tagId].group_id
-              : pacbioRootStore.tagState.tags[tagId]
-                ? pacbioRootStore.tagState.tags[tagId].group_id
+              : pacbioRootStore.tags[tagId]
+                ? pacbioRootStore.tags[tagId].group_id
                 : ''
             : ''
           return {
