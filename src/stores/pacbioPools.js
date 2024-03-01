@@ -88,7 +88,7 @@ export const usePacbioPools = defineStore('pacbioPools', {
           requests: 'sample_name',
           tubes: 'barcode',
           tags: 'group_id',
-          libraries: 'request,tag,run_suitability',
+          used_aliquots: 'request,tag,run_suitability',
         },
       })
       const response = await handleResponse(promise)
@@ -96,10 +96,10 @@ export const usePacbioPools = defineStore('pacbioPools', {
       const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
 
       if (success) {
-        const { tubes, library_pools, tags, requests } = groupIncludedByResource(included)
+        const { tubes, used_aliquots, tags, requests } = groupIncludedByResource(included)
         this.pools = dataToObjectById({ data, includeRelationships: true })
         this.tubes = dataToObjectById({ data: tubes })
-        this.libraries = dataToObjectById({ data: library_pools, includeRelationships: true })
+        this.libraries = dataToObjectById({ data: used_aliquots, includeRelationships: true })
         this.tags = dataToObjectById({ data: tags })
         this.requests = dataToObjectById({ data: requests })
       }

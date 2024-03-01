@@ -129,7 +129,7 @@ const payload = ({ libraries, pool }) => {
       type: 'pools',
       id: pool.id,
       attributes: {
-        used_aliquot_attributes: Object.values(libraries).map((library) =>
+        used_aliquots_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
         ...extractPoolAttributes(pool),
