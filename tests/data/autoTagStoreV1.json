@@ -2318,69 +2318,69 @@
   "selected": {
     "tagSet": { "id": "3" }
   },
-  "used_aliquots": {
+  "libraries": {
     "_1": {
-      "source_id": "1",
+      "pacbio_request_id": "1",
       "tag_id": "187"
     },
     "_37": {
-      "source_id": "37",
+      "pacbio_request_id": "37",
       "tag_id": null
     },
     "_2": {
-      "source_id": "2",
+      "pacbio_request_id": "2",
       "tag_id": null
     },
     "_14": {
-      "source_id": "14",
+      "pacbio_request_id": "14",
       "tag_id": null
     },
     "_26": {
-      "source_id": "26",
+      "pacbio_request_id": "26",
       "tag_id": null
     },
     "_38": {
-      "source_id": "38",
+      "pacbio_request_id": "38",
       "tag_id": null
     },
     "_13": {
-      "source_id": "13",
+      "pacbio_request_id": "13",
       "tag_id": null
     },
     "_61": {
-      "source_id": "61",
+      "pacbio_request_id": "61",
       "tag_id": null
     },
     "_73": {
-      "source_id": "73",
+      "pacbio_request_id": "73",
       "tag_id": null
     },
     "_85": {
-      "source_id": "85",
+      "pacbio_request_id": "85",
       "tag_id": null
     },
     "_86": {
-      "source_id": "86",
+      "pacbio_request_id": "86",
       "tag_id": null
     },
     "_74": {
-      "source_id": "74",
+      "pacbio_request_id": "74",
       "tag_id": null
     },
     "_62": {
-      "source_id": "62",
+      "pacbio_request_id": "62",
       "tag_id": null
     },
     "_97": {
-      "source_id": "97",
+      "pacbio_request_id": "97",
       "tag_id": null
     },
     "_98": {
-      "source_id": "98",
+      "pacbio_request_id": "98",
       "tag_id": null
     },
     "_99": {
-      "source_id": "99",
+      "pacbio_request_id": "99",
       "tag_id": null
     }
   },
