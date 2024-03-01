@@ -4,39 +4,39 @@ import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 /**
- * This function takes an object with `pool` and `libraries` properties and returns an array of run suitability errors.
- * It maps over the errors of `pool.run_suitability` and `library.run_suitability` for each library, formats the errors with the pool or library details, and returns the formatted errors.
+ * This function takes an object with `pool` and `used_aliquots` properties and returns an array of run suitability errors.
+ * It maps over the errors of `pool.run_suitability` and `used_aliquot.run_suitability` for each used_aliquot, formats the errors with the pool or used_aliquot details, and returns the formatted errors.
  *
- * @param {Object}  - An object with `pool` and `libraries` properties.
+ * @param {Object}  - An object with `pool` and `used_aliquots` properties.
  * @returns {string[]} The formatted run suitability errors.
  */
-const buildRunSuitabilityErrors = ({ pool, libraries }) => [
+const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
   ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
-  ...libraries.flatMap((library) => {
-    const libraryName = `Library ${library.id} (${library.sample_name})`
-    return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
+  ...used_aliquots.flatMap((used_aliquot) => {
+    const used_aliquotName = `Used aliquot ${used_aliquot.id} (${used_aliquot.sample_name})`
+    return used_aliquot.run_suitability.errors.map(({ detail }) => `${used_aliquotName} ${detail}`)
   }),
 ]
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
- * It contains the pools, tubes, libraries, requests, and tags state properties, and the fetchPools action.
+ * It contains the pools, tubes, used_aliquots, requests, and tags state properties, and the fetchPools action.
  * @exports usePacbioPools
  */
 export const usePacbioPools = defineStore('pacbioPools', {
   state: () => ({
     pools: {},
     tubes: {},
-    libraries: {},
+    used_aliquots: {},
     requests: {},
     tags: {},
   }),
   getters: {
     /**
      * This function takes a `state` object and returns an array of pools.
-     * It maps over the values of `state.pools`, retrieves the libraries, barcode, and run suitability for each pool, and
+     * It maps over the values of `state.pools`, retrieves the used_aliquots, barcode, and run suitability for each pool, and
      * returns the pools with the retrieved data.
-     * The libraries for each pool are retrieved by mapping over the `pool.libraries`, retrieving the library data from `state.libraries`
-     * based on the library ID, and returning the library data with the sample name from `state.requests` and the group ID from `state.tags`.
+     * The used_aliquots for each pool are retrieved by mapping over the `pool.used_aliquots`, retrieving the used_aliquot data from `state.used_aliquots`
+     * based on the used_aliquot ID, and returning the used_aliquot data with the sample name from `state.requests` and the group ID from `state.tags`.
      * The barcode for each pool is retrieved from `state.tubes` based on the `pool.tube`.
      * The run suitability for each pool is retrieved from `pool.run_suitability` and formatted with the `buildRunSuitabilityErrors` function.
      *
@@ -45,8 +45,8 @@ export const usePacbioPools = defineStore('pacbioPools', {
      */
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
-        const libraries = pool.libraries.map((libraryId) => {
-          const { id, type, request, tag, run_suitability } = state.libraries[libraryId]
+        const used_aliquots = pool.used_aliquots.map((used_aliquotId) => {
+          const { id, type, request, tag, run_suitability } = state.used_aliquots[used_aliquotId]
           const { sample_name } = state.requests[request]
           const { group_id } = state.tags[tag] || {}
           return { id, type, sample_name, group_id, run_suitability }
@@ -55,11 +55,11 @@ export const usePacbioPools = defineStore('pacbioPools', {
 
         return {
           ...pool,
-          libraries,
+          used_aliquots,
           barcode,
           run_suitability: {
             ...pool.run_suitability,
-            formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
+            formattedErrors: buildRunSuitabilityErrors({ used_aliquots, pool }),
           },
         }
       })
@@ -83,7 +83,7 @@ export const usePacbioPools = defineStore('pacbioPools', {
       const promise = request.get({
         page,
         filter,
-        include: 'tube,used_aliquots.tag, used_aliquots.request',
+        include: 'tube,used_aliquots.tag,used_aliquots.request',
         fields: {
           requests: 'sample_name',
           tubes: 'barcode',
@@ -99,7 +99,7 @@ export const usePacbioPools = defineStore('pacbioPools', {
         const { tubes, used_aliquots, tags, requests } = groupIncludedByResource(included)
         this.pools = dataToObjectById({ data, includeRelationships: true })
         this.tubes = dataToObjectById({ data: tubes })
-        this.libraries = dataToObjectById({ data: used_aliquots, includeRelationships: true })
+        this.used_aliquots = dataToObjectById({ data: used_aliquots, includeRelationships: true })
         this.tags = dataToObjectById({ data: tags })
         this.requests = dataToObjectById({ data: requests })
       }

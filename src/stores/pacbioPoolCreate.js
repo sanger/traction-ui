@@ -3,7 +3,7 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload, newLibrary } from '@/stores/utilities/pool.js'
+import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from './pacbioRoot'
 
 /**
@@ -78,7 +78,7 @@ const barcodeNotFound = (barcode) =>
 /**
  * Defines a store for managing Pacbio pool creation.
  *
- * @exports usePacbioLibrariesStore
+ * @exports usePacbioPoolCreateStore
  */
 export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
   state: () => ({
@@ -118,14 +118,14 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        * Each key-value pair represents a request, where the key is the resuest ID and the value is the request data.
        * Populated by the requests included in the request for plates.
        * @type {Object.<string, Object>}
-       * @example "1": {"id": "1","type": "requests","library_type": "library_type_1",
+       * @example "1": {"id": "1","type": "requests",
        *                 "estimate_of_gb_required": 100,"number_of_smrt_cells": 3,"cost_code": "PSD1234",
        *                 "external_study_id": "1","sample_name": "Sample48","barcode": null,"sample_species": "human",
        *                 "created_at": "2021/11/30 13:57","source_identifier": "DN1:A1","well": "1","plate": "1"}
        */
       requests: {},
     },
-    //Selected collects together user input in the front end, such as selected plates, libraries and tubes.
+    //Selected collects together user input in the front end, such as selected plates, used_aliquots and tubes.
     selected: {
       /**
        * Object reflecting the id of the selected tag set and a selected
@@ -147,7 +147,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       tubes: {},
     },
     // Libraries. Indexed by an internally generated id.
-    libraries: {},
+    used_aliquots: {},
     // Pool: The current pool being edited or created
     pool: {},
     // Tube: The tube for the current pool
@@ -166,8 +166,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     selectedTagSet: ({ selected }) => {
       if (selected.tagSet && selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
-        const tagSet = pacbioRoot.tagState.tagSets[selected.tagSet.id]
-        const tags = tagSet.tags.map((tag) => pacbioRoot.tagState.tags[tag.id])
+        const tagSet = pacbioRoot.tagSets[selected.tagSet.id]
+        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag.id])
         return { ...tagSet, tags }
       } else {
         return { id: null, tags: [] }
@@ -194,18 +194,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       mergeRepresentations(selected.tubes, resources.tubes),
 
     /**
-     * This function takes an object with `libraries` and `resources` properties and returns a list of selected requests.
-     * It maps over the values of `libraries`, retrieves each corresponding request from `resources.requests` based on the
-     * `pacbio_request_id`, adds a `selected` property set to `true` to each request, and then sorts the requests by well column
+     * This function takes an object with `used_aliquots` and `resources` properties and returns a list of selected requests.
+     * It maps over the values of `used_aliquots`, retrieves each corresponding request from `resources.requests` based on the
+     * `source_id`, adds a `selected` property set to `true` to each request, and then sorts the requests by well column
      *  index and labware using the `sortRequestByWellColumnIndex` and `sortRequestByLabware` functions.
      *
-     * @param {Object} param0 - An object with `libraries` and `resources` properties.
+     * @param {Object} param0 - An object with `used_aliquots` and `resources` properties.
      * @returns {Object[]} The selected requests sorted by well column index and labware.
      */
-    selectedRequests: ({ libraries, resources }) => {
-      return Object.values(libraries)
-        .map(({ pacbio_request_id }) => ({
-          ...resources.requests[pacbio_request_id],
+    selectedRequests: ({ used_aliquots, resources }) => {
+      return Object.values(used_aliquots)
+        .map(({ source_id }) => ({
+          ...resources.requests[source_id],
           selected: true,
         }))
         .sort(sortRequestByWellColumnIndex(resources))
@@ -250,7 +250,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     requestList: (state) => (ids) => {
       const requests = state.resources.requests
-      const selectedRequests = state.libraries
+      const selectedRequests = state.used_aliquots
       if (ids) {
         return ids.map((id) => {
           return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
@@ -262,19 +262,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
     },
     /**
-     * Returns a specific library item based on its ID.
+     * Returns a specific used_aliquot item based on its ID.
      *
-     * @param {Object} libraries - The libraries object.
-     * @returns {Function} A function that takes an ID and returns the corresponding library item.
-     *
-     * @example
-     * // Get a specific library item
-     * const libraryItem = libraryItem('id1');
+     * @param {Object} used_aliquots - The used_aliquots object.
+     * @returns {Function} A function that takes an ID and returns the corresponding used_aliquots item.
      */
-    libraryItem:
-      ({ libraries }) =>
-      (id) =>
-        libraries[`_${id}`],
+    usedAliquotItem: (state) => (id) => state.used_aliquots[`_${id}`],
 
     /**
      * Retrieves the pool item from the state. If the pool item does not exist, returns an empty object.
@@ -294,37 +287,37 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
   },
   actions: {
     /**
-     * Automatically tags a plate based on the provided library.
-     * It iterates over all libraries and updates the tag of each library on the same plate and with a higher well index.
+     * Automatically tags a plate based on the provided used_aliquot.
+     * It iterates over all used_aliquots and updates the tag of each used_aliquot on the same plate and with a higher well index.
      *
-     * @param {Object} library - The library object based on which the plate is tagged. Must have a 'pacbio_request_id' and 'tag_id' property.
-     * @example autoTagPlate({pacbio_request_id: '1', tag_id: '1'})
+     * @param {Object} used_aliquot - The used_aliquot object based on which the plate is tagged. Must have a 'source_id' and 'tag_id' property.
+     * @example autoTagPlate({source_id: '1', tag_id: '1'})
      */
-    autoTagPlate(library) {
-      // If the library object is not valid or does not have a 'pacbio_request_id' or 'tag_id' property, return without doing anything.
+    autoTagPlate(used_aliquot) {
+      // If the used_aliquot object is not valid or does not have a 'source_id' or 'tag_id' property, return without doing anything.
       if (
-        !library ||
-        typeof library !== 'object' ||
-        !library['pacbio_request_id'] ||
-        !library['tag_id']
+        !used_aliquot ||
+        typeof used_aliquot !== 'object' ||
+        !used_aliquot['source_id'] ||
+        !used_aliquot['tag_id']
       ) {
         return
       }
       const pacbioRootStore = usePacbioRootStore()
-      //Helper function to get the well for a given pacbio_request_id
-      const initialWell = wellFor(this.resources, library.pacbio_request_id)
+      //Helper function to get the well for a given source_id
+      const initialWell = wellFor(this.resources, used_aliquot.source_id)
       //Helper function to get the index of the well
       const initialIndex = wellToIndex(initialWell)
       //Get the tags for the selected tag set
-      const tags = pacbioRootStore.tagState.tagSets[this.selected.tagSet.id].tags
-      //Get the index of the tag for the given library
-      const initialTagIndex = tags.indexOf(library.tag_id)
-      //Get the plate for the given library
+      const tags = pacbioRootStore.tagSets[this.selected.tagSet.id].tags
+      //Get the index of the tag for the given used_aliquot
+      const initialTagIndex = tags.indexOf(used_aliquot.tag_id)
+      //Get the plate for the given used_aliquot
       const plate = initialWell.plate
 
-      //Iterate over all libraries and update the tag of each library on the same plate and with a higher well index.
-      Object.values(this.libraries).forEach(({ pacbio_request_id }) => {
-        const otherWell = wellFor(this.resources, pacbio_request_id)
+      //Iterate over all used_aliquots and update the tag of each used_aliquot on the same plate and with a higher well index.
+      Object.values(this.used_aliquots).forEach(({ source_id }) => {
+        const otherWell = wellFor(this.resources, source_id)
 
         if (otherWell?.plate !== plate) return
 
@@ -333,41 +326,41 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         if (offset < 1) return
 
         const newTag = (initialTagIndex + offset) % tags.length
-        this.updateLibrary({ pacbio_request_id, tag_id: tags[newTag] })
+        this.updateUsedAliquot({ source_id, tag_id: tags[newTag] })
       })
     },
     /**
-     * Automatically tags a tube based on the provided library.
-     * If the library is not valid or does not have a 'tag_id' or 'pacbio_request_id' property, the function returns without doing anything.
-     * Otherwise, it gets the initial tube and tags from the pacbioRootStore and the library.
+     * Automatically tags a tube based on the provided used_aliquot.
+     * If the used_aliquot is not valid or does not have a 'tag_id' or 'source_id' property, the function returns without doing anything.
+     * Otherwise, it gets the initial tube and tags from the pacbioRootStore and the used_aliquot.
      * It then iterates over the selected requests, filters those with a tube id greater than the initial tube id,
-     * and updates the library tag for each of them.
+     * and updates the used_aliquot tag for each of them.
      *
-     * @param {Object} library - The library object based on which the tube is tagged. Must have a 'tag_id' property.
+     * @param {Object} used_aliquot - The used_aliquot object based on which the tube is tagged. Must have a 'tag_id' property.
      * @example autoTagTube({tag_id: '1'})
      */
-    autoTagTube(library) {
-      // If the library object is not valid or does not have a 'tag_id' property, return without doing anything.
+    autoTagTube(used_aliquot) {
+      // If the used_aliquot object is not valid or does not have a 'tag_id' property, return without doing anything.
       if (
-        !library ||
-        typeof library !== 'object' ||
-        !library['tag_id'] ||
-        !library['pacbio_request_id']
+        !used_aliquot ||
+        typeof used_aliquot !== 'object' ||
+        !used_aliquot['tag_id'] ||
+        !used_aliquot['source_id']
       ) {
         return
       }
       const pacbioRootStore = usePacbioRootStore()
       const initialTube =
-        this.resources.tubes[this.resources.requests[library.pacbio_request_id]?.tube]
-      const tags = pacbioRootStore.tagState.tagSets[this.selected.tagSet.id].tags
-      const initialTagIndex = tags.indexOf(library.tag_id)
+        this.resources.tubes[this.resources.requests[used_aliquot.source_id]?.tube]
+      const tags = pacbioRootStore.tagSets[this.selected.tagSet.id].tags
+      const initialTagIndex = tags.indexOf(used_aliquot.tag_id)
       Object.values(this.selectedRequests)
         .filter((request) => {
           return request.tube && parseInt(request.tube) > parseInt(initialTube.id)
         })
         .forEach((req, offset) => {
           const newTag = (initialTagIndex + offset + 1) % tags.length
-          this.updateLibrary({ pacbio_request_id: req.id, tag_id: tags[newTag] })
+          this.updateUsedAliquot({ source_id: req.id, tag_id: tags[newTag] })
         })
     },
 
@@ -447,7 +440,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     selectWellRequests(well_id) {
       const { requests } = this.resources.wells[well_id]
-      const selectedRequests = this.libraries
+      const selectedRequests = this.used_aliquots
       for (const id of requests) {
         const selected = !!selectedRequests[`_${id}`]
         this.selectRequest({ id, selected: !selected })
@@ -455,21 +448,21 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     },
 
     /**
-     * Updates a library in the state libraries object based on the provided library object.
-     * If the library object is not valid or does not have a 'pacbio_request_id' property, the function returns without doing anything.
+     * Updates a used_aliquot in the state used_aliquot object based on the provided used_aliquot object.
+     * If the used_aliquot object is not valid or does not have a 'source_id' property, the function returns without doing anything.
      *
-     * @param {Object} library - The library object to update. Must have a 'pacbio_request_id' property.
+     * @param {Object} used_aliquot - The used_aliquot object to update. Must have a 'source_id' property.
      * @returns {void}
-     * @example updateLibrary({pacbio_request_id: '1', tag_id: '1'})
+     * @example updateUsedAliquot({source_id: '1', tag_id: '1'})
      */
-    updateLibrary(library) {
-      // If the library object is not valid or does not have a 'pacbio_request_id'property, return without doing anything.
-      if (!library || typeof library !== 'object' || !library['pacbio_request_id']) {
+    updateUsedAliquot(used_aliquot) {
+      // If the used_aliquot object is not valid or does not have a 'source_id'property, return without doing anything.
+      if (!used_aliquot || typeof used_aliquot !== 'object' || !used_aliquot['source_id']) {
         return
       }
-      // Update the library in the state libraries object based on the provided library object.
-      const key = `_${library.pacbio_request_id}`
-      this.libraries[key] = { ...this.libraries[key], ...library }
+      // Update the used_aliquot in the state used_aliquots object based on the provided used_aliquot object.
+      const key = `_${used_aliquot.source_id}`
+      this.used_aliquots[key] = { ...this.used_aliquots[key], ...used_aliquot }
     },
 
     /**
@@ -517,9 +510,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     },
 
     /**
-     * Asynchronously creates a pool with the given libraries and pools.
-     * Validates the libraries before proceeding.
-     * If the libraries are not valid, returns an error response.
+     * Asynchronously creates a pool with the given used_aliquots and pools.
+     * Validates the used_aliquots before proceeding.
+     * If the used_aliquots are not valid, returns an error response.
      * Otherwise, sends a request to create the pool and handles the response.
      * Groups the included resources by type and extracts the barcode from the first tube.
      *
@@ -532,12 +525,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
      */
     async createPool() {
-      const { libraries, pool } = this
-      if (!validate(libraries)) return { success: false, errors: 'The pool is invalid' }
+      const { used_aliquots, pool } = this
+      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
-        data: payload({ libraries, pool }),
+        data: payload({ used_aliquots, pool }),
         include: 'tube',
       })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -548,9 +541,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     /**
 
-     * Asynchronously creates a pool with the given libraries and pools.
-     * Validates the libraries before proceeding.
-     * If the libraries are not valid, returns an error response.
+     * Asynchronously creates a pool with the given used_aliquots and pools.
+     * Validates the used_aliquots before proceeding.
+     * If the used_aliquots are not valid, returns an error response.
      * Otherwise, sends a request to create the pool and handles the response.
      * Groups the included resources by type and extracts the barcode from the first tube.
      *
@@ -563,19 +556,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
      */
     async updatePool() {
-      const { libraries, pool } = this
-      if (!validate(libraries)) return { success: false, errors: 'The pool is invalid' }
+      const { used_aliquots, pool } = this
+      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
-      const promise = request.update(payload({ libraries, pool }))
+      const promise = request.update(payload({ used_aliquots, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
     },
 
     /**
-     * Asynchronously populates libraries from a pool with the given ID.
+     * Asynchronously populates used_aliquots from a pool with the given ID.
      * Sends a request to find the pool and includes all associated records.
-     * If the request is successful, populates the pool, libraries, requests, wells, plates, and tubes,
+     * If the request is successful, populates the pool, used_aliquots, requests, wells, plates, and tubes,
      * selects the tag set, and selects all the tubes and plates.
      *
      * @async
@@ -583,11 +576,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Promise<Object>} A promise that resolves to an object containing the success status and any errors.
      *
      * @example
-     * // Populate libraries from a pool
-     * const result = await populateLibrariesFromPool(1);
+     * // Populate used_aliquots from a pool
+     * const result = await populateUsedAliquotsFromPool(1);
      * console.log(result); // { success: true, errors: [] }
      */
-    async populateLibrariesFromPool(poolId) {
+    async populateUsedAliquotsFromPool(poolId) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.find({
@@ -608,7 +601,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       if (success) {
         const {
-          library_pools,
+          used_aliquots = [],
           requests,
           wells,
           plates = [],
@@ -622,14 +615,17 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         )[0]
         //Populate pool attributes
         this.pool = { ...data }
-        //Populate libraries
-        const newLibraries = dataToObjectById({ data: library_pools, includeRelationships: true })
-        Object.values(newLibraries).forEach((library) => {
-          const key = `_${library.request}`
-          this.libraries[key] = newLibrary({
-            ...library,
-            pacbio_request_id: library.request,
-            tag_id: library.tag,
+        //Populate used_aliquots
+        const usedAliquots = dataToObjectById({
+          data: used_aliquots,
+          includeRelationships: true,
+        })
+        Object.values(usedAliquots).forEach((usedAliquot) => {
+          const key = `_${usedAliquot.request}`
+          this.used_aliquots[key] = createUsedAliquot({
+            ...usedAliquot,
+            source_id: usedAliquot.request,
+            tag_id: usedAliquot.tag,
           })
         })
         //Populate requests
@@ -653,13 +649,13 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     },
 
     /**
-     * Applies tags to a library.
-     * Always updates the library first.
+     * Applies tags to a used_aliquot.
+     * Always updates the used_aliquot first.
      * If autoTag is true, applies tags automatically based on whether the request has a well.
      * If the request has a well, applies tags to the plate.
      * Otherwise, applies tags to the tube.
      *
-     *  Given a tag change to library_a, will automatically apply tags to the remaining wells
+     *  Given a tag change to used_aliquot_a, will automatically apply tags to the remaining wells
      *  on the plate with the following  rules:
      * - Only apply additional tags if autoTag is true
      * - Tags applied in column order based on the source well
@@ -670,35 +666,35 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      *   the state of B1.
      *
      * @param {Object} payload - The payload object.
-     * @param {Object} payload.library - The library to which to apply tags.
+     * @param {Object} payload.used_aliquot - The used_aliquot to which to apply tags.
      * @param {boolean} payload.autoTag - Whether to apply tags automatically.
      *
      * @example
-     * // Apply tags to a library
-     * applyTags({ library: myLibrary, autoTag: true });
+     * // Apply tags to a used_aliquot
+     * applyTags({ used_aliquot: aliquot1, autoTag: true });
      */
-    applyTags({ library, autoTag }) {
+    applyTags({ used_aliquots, autoTag }) {
       // We always apply the first tag
-      this.updateLibrary(library)
+      this.updateUsedAliquot(used_aliquots)
       if (autoTag) {
-        const request = this.resources.requests[library.pacbio_request_id]
+        const request = this.resources.requests[used_aliquots.source_id]
         if (request.well) {
-          this.autoTagPlate(library)
+          this.autoTagPlate(used_aliquots)
         } else {
-          this.autoTagTube(library)
+          this.autoTagTube(used_aliquots)
         }
       }
     },
 
     /**
-     * Updates a library from a CSV record.
-     * * Given a record extracted from a csv file, will update the corresponding library
-     * Each library is identified by the key 'source' which consists of a string identifying
+     * Updates a used_aliquot from a CSV record.
+     * * Given a record extracted from a csv file, will update the corresponding used_aliquot
+     * Each used_aliquot is identified by the key 'source' which consists of a string identifying
      * the source plate barcode and its well. eg. DN814597W-A10
      *
      * If the record has no source, logs a message and returns.
-     * Otherwise, finds requests for the source and updates the library accordingly.
-     * If the record has a tag, finds a matching tag in the selected tag set and updates the library with the tag's ID.
+     * Otherwise, finds requests for the source and updates the used_aliquot accordingly.
+     * If the record has a tag, finds a matching tag in the selected tag set and updates the used_aliquot with the tag's ID.
      * If no matching tag is found, logs a message.
      *
      * @param {Object} payload - The payload object.
@@ -709,11 +705,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @param {string} payload.info - The information for logging messages.
      *
      * @example
-     * // Update a library from a CSV record
-     * updateLibraryFromCsvRecord({ record: { source: 'source123', tag: 'tag123', attributes: {} }, info: 'info123' });
+     * // Update a used_aliquot from a CSV record
+     * updateUsedAliquotFromCsvRecord({ record: { source: 'source123', tag: 'tag123', attributes: {} }, info: 'info123' });
      */
 
-    updateLibraryFromCsvRecord({ record: { source, tag, ...attributes }, info }) {
+    updateUsedAliquotFromCsvRecord({ record: { source, tag, ...attributes }, info }) {
       const rootStore = useRootStore()
       if (!source) {
         rootStore.addCSVLogMessage(info, 'has no source')
@@ -744,12 +740,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           )
         }
       }
-      requestIds.forEach((pacbio_request_id) => {
-        if (!this.libraries[`_${pacbio_request_id}`]) {
-          // We're adding a library
+      requestIds.forEach((source_id) => {
+        if (!this.used_aliquots[`_${source_id}`]) {
+          // We're adding a used_aliquot
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
         }
-        this.updateLibrary({ pacbio_request_id, ...tagAttributes, ...attributes })
+        this.updateUsedAliquot({ source_id, ...tagAttributes, ...attributes })
       })
     },
 
@@ -901,8 +897,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     /**
      * Selects or deselects a request based on the provided id and selected status.
-     * If selected, a new library is created for the request and added to the libraries object.
-     * If not selected, the library for the request is removed from the libraries object.
+     * If selected, a new used_aliquot is created for the request and added to the used_aliquots object.
+     * If not selected, the used_aliquot for the request is removed from the used_aliquots object.
      *
      * @param {Object} request - The request object to select or deselect. Must have an 'id' property.
      * @param {number} request.id - The id of the request.
@@ -918,9 +914,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     selectRequest({ id, selected = true }) {
       if (selected) {
-        this.libraries[`_${id}`] = newLibrary({ pacbio_request_id: id })
+        this.used_aliquots[`_${id}`] = createUsedAliquot({ source_id: id })
       } else {
-        delete this.libraries[`_${id}`]
+        delete this.used_aliquots[`_${id}`]
       }
     },
 

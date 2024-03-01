@@ -1,5 +1,6 @@
-const libraryAttributes = {
-  pacbio_request_id: null,
+import _ from 'lodash'
+const usedAliquotAttributes = {
+  source_id: null,
   template_prep_kit_box_barcode: null,
   tag_id: null,
   volume: null,
@@ -9,14 +10,14 @@ const libraryAttributes = {
 
 /**
  * This function takes a boolean `isPool` and returns an array of required attributes.
- * The returned array always includes 'pacbio_request_id', 'volume', 'concentration', and 'insert_size'.
+ * The returned array always includes 'source_id', 'volume', 'concentration', and 'insert_size'.
  * If `isPool` is true, the array also includes 'tag_id'.
  *
  * @param {boolean} isPool - A boolean indicating whether the attributes are for a pool.
  * @returns {string[]} The array of required attributes.
  */
 const requiredAttributes = (isPool) => [
-  'pacbio_request_id',
+  'source_id',
   'volume',
   'concentration',
   'insert_size',
@@ -24,95 +25,55 @@ const requiredAttributes = (isPool) => [
 ]
 
 /**
- * This function takes an `attributes` object and returns a new library object.
- * It spreads the `libraryAttributes` and the `attributes` into a new object, with the `attributes` overwriting any matching properties in `libraryAttributes`.
+ * This function takes an `attributes` object and returns a new used_aliquot object.
+ * It spreads the `usedAliquotAttributes` and the `attributes` into a new object, with the `attributes` overwriting any matching properties in `used_aliquotAttributes`.
  *
- * @param {Object} attributes - The attributes for the new library.
- * @returns {Object} The new library object with the `libraryAttributes` and the `attributes`.
+ * @param {Object} attributes - The attributes for the new used_aliquot.
+ * @returns {Object} The new used_aliquot object with the `usedAliquotAttributes` and the `attributes`.
  */
-const newLibrary = (attributes) => {
+const createUsedAliquot = (attributes) => {
   return {
-    ...libraryAttributes,
+    ...usedAliquotAttributes,
     ...attributes,
   }
 }
 
 /**
- * Validates a set of libraries.
- * Checks if all required attributes are present in each library and if there are no duplicate tags.
- * If a library is missing a required attribute or there are duplicate tags, it adds an error message to the library.
- * These error messages is accessed in components through the 'errors' property of each library.
- * The function returns true if all libraries are valid and there are no duplicate tags, false otherwise.
+ * Validates a set of used_aliquots.
+ * Checks if all required attributes are present in each used_aliquot and if there are no duplicate tags.
+ * If a used_aliquot is missing a required attribute or there are duplicate tags, it adds an error message to the used_aliquot.
+ * These error messages is accessed in components through the 'errors' property of each used_aliquot.
+ * The function returns true if all used_aliquots are valid and there are no duplicate tags, false otherwise.
  *
- * @param {Object} libraries - The libraries to validate. Each key is a library id and each value is a library object.
- * @returns {boolean} Returns true if all libraries are valid and there are no duplicate tags, false otherwise.
+ * @param {Object} used_aliquots - The used_aliquots to validate. Each key is a used_aliquot id and each value is a used_aliquot object.
+ * @returns {boolean} Returns true if all used_aliquots are valid and there are no duplicate tags, false otherwise.
  *
  * @example
- * const libraries = {
- *   '1': { tag_id: 'tag1', volume: 10, concentration: 5, insert_size: 1000,pacbio_request_id:'1' },
- *   '2': { tag_id: 'tag2', volume: 10, concentration: 5, insert_size: 1000,pacbio_request_id:'1'},
+ * const used_aliquots = {
+ *   '1': { tag_id: 'tag1', volume: 10, concentration: 5, insert_size: 1000,source_id:'1' },
+ *   '2': { tag_id: 'tag2', volume: 10, concentration: 5, insert_size: 1000,source_id:'1'},
  * };
- * const isValid = validate(libraries); // returns true
+ * const isValid = validate(used_aliquots); // returns true
  */
-const validate = (libraries) => {
-  const pooled = Object.keys(libraries).length > 1
+const validate = (used_aliquots) => {
+  const pooled = Object.keys(used_aliquots).length > 1
 
-  for (const [key, library] of Object.entries(libraries)) {
+  for (const [key, used_aliquot] of Object.entries(used_aliquots)) {
     const errors = {}
     requiredAttributes(pooled).forEach((field) => {
-      if (!library[field]) errors[field] = 'must be present'
+      if (!used_aliquot[field]) errors[field] = 'must be present'
     })
 
-    if (Object.entries(libraries).some(([k, e]) => e.tag_id === library.tag_id && k !== key)) {
+    if (
+      Object.entries(used_aliquots).some(([k, e]) => e.tag_id === used_aliquot.tag_id && k !== key)
+    ) {
       errors['tag_id'] = 'duplicated'
     }
-    library['errors'] = errors
+    used_aliquot['errors'] = errors
   }
-  return Object.values(libraries).every((library) => Object.keys(library.errors || {}).length === 0)
-}
-
-/**
- * Extracts specific attributes from a library object.
- * @param {Object} library - The library object to extract attributes from.
- * @returns {Object} An object containing the extracted attributes.
- */
-const extractLibraryAttributes = ({
-  id,
-  pacbio_request_id,
-  template_prep_kit_box_barcode,
-  tag_id,
-  volume,
-  concentration,
-  insert_size,
-}) => {
-  return {
-    id,
-    pacbio_request_id,
-    template_prep_kit_box_barcode,
-    tag_id,
-    volume,
-    concentration,
-    insert_size,
-  }
-}
-
-/**
- * Extracts specific attributes from a pool object.
- * @param {Object} pool - The pool object to extract attributes from.
- * @returns {Object} An object containing the extracted attributes.
- */
-const extractPoolAttributes = ({
-  template_prep_kit_box_barcode,
-  volume,
-  concentration,
-  insert_size,
-}) => {
-  return {
-    template_prep_kit_box_barcode,
-    volume,
-    concentration,
-    insert_size,
-  }
+  return Object.values(used_aliquots).every(
+    (used_aliquot) => Object.keys(used_aliquot.errors || {}).length === 0,
+  )
 }
 
 /**
@@ -121,21 +82,33 @@ const extractPoolAttributes = ({
  * @param {Object}
  *
  * @example
- * { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
+ * { data: { type: 'pools', attributes: { used_aliquot_attributes: [ used_aliquot1, used_aliquot2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
  */
-const payload = ({ libraries, pool }) => {
+const payload = ({ used_aliquots, pool }) => {
+  const { template_prep_kit_box_barcode, volume, concentration, insert_size } = pool
   return {
     data: {
       type: 'pools',
       id: pool.id,
       attributes: {
-        used_aliquots_attributes: Object.values(libraries).map((library) =>
-          extractLibraryAttributes(library),
+        used_aliquots_attributes: Object.values(used_aliquots).map((used_aliquot) =>
+          _.pick(used_aliquot, [
+            'id',
+            'source_id',
+            'template_prep_kit_box_barcode',
+            'tag_id',
+            'volume',
+            'concentration',
+            'insert_size',
+          ]),
         ),
-        ...extractPoolAttributes(pool),
+        template_prep_kit_box_barcode,
+        volume,
+        concentration,
+        insert_size,
       },
     },
   }
 }
 
-export { libraryAttributes, newLibrary, validate, payload }
+export { usedAliquotAttributes, createUsedAliquot, validate, payload }
