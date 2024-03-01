@@ -131,7 +131,7 @@ describe('createRequest', () => {
   })
 
   // TODO: modify tests to use fetch rather than axios
-  describe.skip('api calls', () => {
+  describe('api calls', () => {
     beforeEach(() => {
       // vi.spyOn(axios, 'get')
       // vi.spyOn(axios, 'delete')
@@ -140,23 +140,19 @@ describe('createRequest', () => {
     })
 
     describe('get', () => {
-      it.only('basic', async () => {
+      it('basic', async () => {
+        fetch.mockReturnValue({ json: () => mockResponse })
+
         const createRequestFn = createRequest({ ...attributes })
-        await createRequestFn.get()
+        const response = await createRequestFn.get()
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests', {
           method: 'GET',
-          body: null,
-          headers: {
-            Accept: 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
-            header1: 'header1',
-            header2: 'header2',
-          },
+          headers: attributes.headers,
         })
 
-        // const jsonData = await response.json()
-        // expect(jsonData).toEqual(mockResponse)
+        const jsonData = await response.json()
+        expect(jsonData).toEqual(mockResponse)
       })
 
       it('with a query', async () => {
@@ -165,12 +161,22 @@ describe('createRequest', () => {
           include: 'sample.tube',
           fields: { resource1: 'field1', resource2: 'field2' },
         }
-        const request = createRequest({ ...attributes })
-        const response = await request.get(query)
-        expect(axios.get).toBeCalledWith(
-          'requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
+
+        fetch.mockReturnValue({ json: () => mockResponse })
+
+        const createRequestFn = createRequest({ ...attributes })
+        const response = await createRequestFn.get(query)
+
+        expect(fetch).toBeCalledWith(
+          'http://traction/v1/requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
+          {
+            method: 'GET',
+            headers: attributes.headers,
+          },
         )
-        expect(response).toEqual(mockResponse)
+
+        const jsonData = await response.json()
+        expect(jsonData).toEqual(mockResponse)
       })
     })
 
@@ -178,7 +184,7 @@ describe('createRequest', () => {
       const data = { id: 1 }
       const mockCreate = { data: { status: 201 } }
 
-      it('basic', async () => {
+      it.only('basic', async () => {
         const request = createRequest({ ...attributes })
         const response = await request.create({ data })
         expect(axios.post).toBeCalledWith('requests', data)

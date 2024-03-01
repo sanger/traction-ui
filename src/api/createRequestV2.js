@@ -82,9 +82,8 @@ const buildQuery = ({ page = {}, filter = {}, include = '', fields = {} } = {}) 
  * @returns {Object} instance of request
  */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
-  headers = { ...defaultHeaders, ...headers }
   const baseURL = `${rootURL}/${apiNamespace}`
-  const api = { baseURL, headers }
+  const api = { baseURL, headers: { ...defaultHeaders, ...headers } }
 
   /*
    * @param String type - request type e.g. 'get', 'create'
@@ -97,7 +96,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
     return fetch(fullURL, {
       method: type,
       headers,
-      body: data ? JSON.stringify(data) : null,
+      ...(data && { body: JSON.stringify(data) }),
     })
   }
 
@@ -152,7 +151,6 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
     rootURL,
     apiNamespace,
     resource,
-    headers,
     baseURL,
     api,
     buildQuery,
