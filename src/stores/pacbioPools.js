@@ -22,7 +22,7 @@ const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
  * It contains the pools, tubes, used_aliquots, requests, and tags state properties, and the fetchPools action.
  * @exports usePacbioPools
  */
-export const usePacbioPools = defineStore('pacbioPools', {
+export const usePacbioPoolsStore = defineStore('pacbioPools', {
   state: () => ({
     pools: {},
     tubes: {},

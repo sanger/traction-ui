@@ -1,5 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { usePacbioPools } from '@/stores/pacbioPools.js'
+import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import { Data } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
@@ -109,7 +109,7 @@ describe('usePacbioPools', () => {
   describe('getters', () => {
     let store
     beforeEach(() => {
-      store = usePacbioPools()
+      store = usePacbioPoolsStore()
       store.$state = Data.StorePools
     })
     it('"pools" returns denormalized pools from "state.pools"', () => {
@@ -133,7 +133,7 @@ describe('usePacbioPools', () => {
 
       beforeEach(() => {
         get = vi.fn()
-        store = usePacbioPools()
+        store = usePacbioPoolsStore()
         rootStore = useRootStore()
         rootStore.api.traction.pacbio.pools.get = get
         failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
