@@ -3,7 +3,7 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept(
       'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
-        fixture: 'tractionPacbioPools.json',
+        fixture: 'tractionPacbioPoolsV1.json',
       },
     )
     cy.intercept(
@@ -18,6 +18,12 @@ describe('Pacbio Pool Edit', () => {
 
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
+    })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        multiplexing_phase_2_aliquot: { enabled: false },
+      },
     })
   })
 

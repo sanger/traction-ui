@@ -60,7 +60,7 @@
 
         <template #row-details="row">
           <div>
-            <traction-table :items="row.item.libraries" :fields="field_in_details">
+            <traction-table :items="row.item.used_aliquots" :fields="field_in_details">
             </traction-table>
             <div class="flex mx-auto px-2 text-left">
               <ul v-if="!row.item.run_suitability.valid">
