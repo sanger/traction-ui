@@ -80,7 +80,7 @@
 import PrinterModal from '@/components/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import { usePacbioPools } from '@/stores/pacbioPools.js'
+import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
@@ -165,7 +165,7 @@ const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
 
 //Create Pinia store
-const poolsStore = usePacbioPools()
+const poolsStore = usePacbioPoolsStore()
 const pools = computed(() => poolsStore.poolsArray)
 
 //Create VueX store

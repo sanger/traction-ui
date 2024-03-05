@@ -2,6 +2,9 @@ const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
 
 const flags = {
   flipper_id: 'User',
+  features: {
+    multiplexing_phase_2_aliquot: { enabled: true },
+  },
 }
 
 const libraryTypes = {
