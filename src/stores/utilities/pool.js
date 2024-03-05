@@ -57,23 +57,26 @@ const createUsedAliquot = (attributes) => {
  */
 const validate = (used_aliquots) => {
   const pooled = Object.keys(used_aliquots).length > 1
+  const requiredAttrs = requiredAttributes(pooled)
+  const aliquotEntries = Object.entries(used_aliquots)
+  let isValid = true
 
-  for (const [key, used_aliquot] of Object.entries(used_aliquots)) {
+  aliquotEntries.forEach(([key, used_aliquot]) => {
     const errors = {}
-    requiredAttributes(pooled).forEach((field) => {
-      if (!used_aliquot[field]) errors[field] = 'must be present'
+    requiredAttrs.forEach((field) => {
+      if (!used_aliquot[field]) {
+        errors[field] = 'must be present'
+        isValid = false
+      }
     })
-
-    if (
-      Object.entries(used_aliquots).some(([k, e]) => e.tag_id === used_aliquot.tag_id && k !== key)
-    ) {
+    if (aliquotEntries.some(([k, e]) => e.tag_id === used_aliquot.tag_id && k !== key)) {
       errors['tag_id'] = 'duplicated'
+      isValid = false
     }
     used_aliquot['errors'] = errors
-  }
-  return Object.values(used_aliquots).every(
-    (used_aliquot) => Object.keys(used_aliquot.errors || {}).length === 0,
-  )
+  })
+
+  return isValid
 }
 
 /**
