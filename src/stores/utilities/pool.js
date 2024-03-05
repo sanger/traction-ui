@@ -95,6 +95,7 @@ const payload = ({ used_aliquots, pool }) => {
       id: pool.id,
       attributes: {
         used_aliquots_attributes: Object.values(used_aliquots).map((used_aliquot) =>
+          //pick is a lodash function that returns a copy of the object with only the specified keys
           _.pick(used_aliquot, [
             'id',
             'source_id',
