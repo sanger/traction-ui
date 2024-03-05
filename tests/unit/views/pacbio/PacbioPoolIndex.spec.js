@@ -1,6 +1,6 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import { mount, Data, router, flushPromises, store, createTestingPinia } from '@support/testHelper'
-import { usePacbioPools } from '@/stores/pacbioPools.js'
+import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -32,7 +32,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
     },
     props,
   })
-  const storeObj = usePacbioPools()
+  const storeObj = usePacbioPoolsStore()
   return { wrapperObj, storeObj }
 }
 
@@ -93,7 +93,7 @@ describe('PacbioPoolIndex.vue', () => {
 
   describe('Printing labels', () => {
     beforeEach(() => {
-      pools.selected = [
+      pools.state.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
         { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
