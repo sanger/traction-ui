@@ -69,13 +69,13 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           which may not happen in all the places where it's called. 
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
-          const tagGroupId = tagId
-            ? state.libraryTags[tagId]
-              ? state.libraryTags[tagId].group_id
-              : pacbioRootStore.tags[tagId]
-                ? pacbioRootStore.tags[tagId].group_id
-                : ''
-            : ''
+
+          const tagGroupId = state.libraryTags[tagId]
+            ? state.libraryTags[tagId].group_id
+            : pacbioRootStore.tags[tagId]
+              ? pacbioRootStore.tags[tagId].group_id
+              : ''
+
           return {
             id,
             tag_id: String(tagId),
