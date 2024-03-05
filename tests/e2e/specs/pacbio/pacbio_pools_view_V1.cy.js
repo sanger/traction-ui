@@ -1,15 +1,15 @@
 describe('Pacbio Pools view', () => {
   it('Visits the pacbio pools url', () => {
     cy.intercept(
-      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[used_aliquots]=request,tag,run_suitability',
+      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
-        fixture: 'tractionPacbioPools.json',
+        fixture: 'tractionPacbioPoolsV1.json',
       },
     )
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        multiplexing_phase_2_aliquot: { enabled: true },
+        multiplexing_phase_2_aliquot: { enabled: false },
       },
     })
     cy.visit('#/pacbio/pools')
