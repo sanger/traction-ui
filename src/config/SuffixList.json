@@ -149,6 +149,13 @@
         "text": "HXCL - Excess x-linked?",
         "value": "HXCL",
         "workflow": "HiC"
+      },
+      {
+        "stage": "Excess pre library",
+        "suffix": "HXPL",
+        "text": "Excess pre library",
+        "value": "HXPL",
+        "workflow": "HiC"
       }
     ]
   },
