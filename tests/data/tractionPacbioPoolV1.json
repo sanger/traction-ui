@@ -30,14 +30,14 @@
             "id": "1465"
           }
         },
-        "used_aliquots": {
+        "libraries": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/used_aliquots",
-            "related": "http://localhost:3100/v1/pacbio/pools/242/used_aliquots"
+            "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/libraries",
+            "related": "http://localhost:3100/v1/pacbio/pools/242/libraries"
           },
           "data": [
             {
-              "type": "used_aliquots",
+              "type": "library_pools",
               "id": "242"
             }
           ]
@@ -47,9 +47,9 @@
     "included": [
       {
         "id": "242",
-        "type": "used_aliquots",
+        "type": "library_pools",
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/used_aliquots/242"
+          "self": "http://localhost:3100/v1/pacbio/libraries/242"
         },
         "attributes": {
           "state": "pending",
@@ -68,8 +68,8 @@
         "relationships": {
           "request": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/request",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/request"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/request",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/request"
             },
             "data": {
               "type": "requests",
@@ -78,14 +78,14 @@
           },
           "tube": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/tube"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tube",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/tube"
             }
           },
           "tag": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/tag",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/tag"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tag",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/tag"
             },
             "data": {
               "type": "tags",
@@ -94,8 +94,8 @@
           },
           "pool": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/pool",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/pool"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/pool"
             },
             "data": {
               "type": "pools",
@@ -104,14 +104,14 @@
           },
           "source_well": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/source_well",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/source_well"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/source_well",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/source_well"
             }
           },
           "source_plate": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/242/relationships/source_plate",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/242/source_plate"
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/source_plate",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/source_plate"
             },
             "data": {
               "type": "plates",

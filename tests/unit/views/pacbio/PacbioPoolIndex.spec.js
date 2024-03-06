@@ -6,7 +6,7 @@ describe('PacbioPoolIndex.vue', () => {
 
   beforeEach(async () => {
     const get = vi.spyOn(store.state.api.traction.pacbio.pools, 'get')
-    get.mockResolvedValue(Data.TractionPacbioPools)
+    get.mockResolvedValue(Data.TractionPacbioPoolsV1)
     wrapper = mount(PacbioPoolIndex, {
       store,
       router,
