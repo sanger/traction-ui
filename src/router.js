@@ -14,7 +14,7 @@ import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import PacbioPoolIndexSwitch from '@/views/pacbio/PacbioPoolIndexSwitch.vue'
+import PacbioPoolIndexToggleWithFeatureFlag from '@/views/pacbio/PacbioPoolIndexToggleWithFeatureFlag.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
@@ -130,7 +130,7 @@ const router = createRouter({
         {
           path: 'pools',
           name: 'PacbioPoolIndex',
-          component: PacbioPoolIndexSwitch,
+          component: PacbioPoolIndexToggleWithFeatureFlag,
           meta: { page: 'Pools', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)

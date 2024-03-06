@@ -77,6 +77,11 @@
 </template>
 
 <script>
+/**
+ * This component is used to display the list of Pacbio Pools using the VueX store that uses pools having 'libraries' (instead of 'used_aliquots').
+ * TODO:
+ * Once the feature flag is removed, this component can be removed from the codebase.
+ */
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
