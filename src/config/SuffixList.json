@@ -144,9 +144,9 @@
     "workflow": "HiC",
     "options": [
       {
-        "stage": "Excess x-linked?",
+        "stage": "Excess x-linked",
         "suffix": "HXCL",
-        "text": "HXCL - Excess x-linked?",
+        "text": "HXCL - Excess x-linked",
         "value": "HXCL",
         "workflow": "HiC"
       },
