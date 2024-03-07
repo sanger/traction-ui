@@ -39,15 +39,15 @@
 
 <script>
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
-import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
-import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
-import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList'
-import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList'
-import DataFetcher from '@/components/DataFetcher'
-import { RunTypeEnum } from '@/stores/utilities/run'
+import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit.vue'
+import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit.vue'
+import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList.vue'
+import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import { RunTypeEnum } from '@/stores/utilities/run.js'
 
 import { mapState, mapActions } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
 export default {
   name: 'PacbioRunShow',

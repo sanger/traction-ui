@@ -21,8 +21,11 @@ import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
 import TractionPacbioLibrariesNoRelationships from './tractionPacbioLibrariesNoRelationships'
-import TractionPacbioPool from './tractionPacbioPool'
-import TractionPacbioPools from './tractionPacbioPools'
+import TractionPacbioPoolV1 from './tractionPacbioPoolV1.json'
+import TractionPacbioPool from './tractionPacbioPool.json'
+import TractionPacbioPoolsWithAliquots from './tractionPacbioPools.json'
+import TractionPacbioPoolsV1 from './tractionPacbioPoolsV1.json'
+import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
 import TractionPacbioSamples from './tractionPacbioSamples'
 import TractionPacbioSample from './tractionPacbioSample'
@@ -54,7 +57,8 @@ import TractionPacbioTagSets from './tractionPacbioTagSets.json'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
-import AutoTagStore from './autoTagStore'
+import AutoTagStoreV1 from './autoTagStoreV1.json'
+import AutoTagStore from './autoTagStore.json'
 import OntAutoTagStore from './ontAutoTagStore.json'
 import OntInstruments from './ontInstruments.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
@@ -70,6 +74,8 @@ import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
+import StorePools from './StorePools.json'
+import StorePoolsV1 from './StorePoolsV1.json'
 
 export default {
   CreateChip,
@@ -96,8 +102,11 @@ export default {
   TractionPacbioLibraries,
   TractionPacbioLibrariesNoRelationships,
   TractionPacbioPool,
+  TractionPacbioPoolV1,
+  TractionPacbioPoolsV1,
   TractionPacbioPools,
   TractionPacbioPoolsNoRelationships,
+  TractionPacbioPoolsWithAliquots,
   TractionPacbioLibrary,
   TractionPacbioSamples,
   TractionPacbioSample,
@@ -131,6 +140,7 @@ export default {
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
+  AutoTagStoreV1,
   AutoTagStore,
   OntAutoTagStore,
   OntInstruments,
@@ -144,4 +154,6 @@ export default {
   OntTubesRequest,
   TractionPacbioSmrtLinkVersions,
   PacbioRunWithWellDefaults,
+  StorePools,
+  StorePoolsV1,
 }

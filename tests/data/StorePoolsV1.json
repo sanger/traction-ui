@@ -2,7 +2,7 @@
   "pools": {
     "1": {
       "id": "1",
-      "used_aliquots": ["1"],
+      "libraries": ["1"],
       "tube": "1",
       "type": "pools",
       "volume": 1.0,
@@ -19,7 +19,7 @@
     },
     "2": {
       "id": "2",
-      "used_aliquots": ["2"],
+      "libraries": ["2"],
       "tube": "2",
       "type": "pools",
       "volume": 1.0,
@@ -42,10 +42,10 @@
           },
           {
             "title": "is invalid",
-            "detail": "used_aliquots - is invalid",
+            "detail": "libraries - is invalid",
             "code": "100",
             "source": {
-              "pointer": "/data/relationships/used_aliquots"
+              "pointer": "/data/relationships/libraries"
             }
           }
         ]
@@ -56,12 +56,12 @@
     "1": { "barcode": "TRAC-2-1", "id": "1", "type": "tubes" },
     "2": { "barcode": "TRAC-2-2", "id": "2", "type": "tubes" }
   },
-  "used_aliquots": {
+  "libraries": {
     "1": {
       "id": "1",
       "request": "1",
       "tag": "26",
-      "type": "used_aliquots",
+      "type": "library_pools",
       "run_suitability": {
         "ready_for_run": true,
         "errors": []
@@ -71,7 +71,7 @@
       "id": "2",
       "request": "2",
       "tag": "7",
-      "type": "used_aliquots",
+      "type": "library_pools",
       "run_suitability": {
         "ready_for_run": false,
         "errors": [

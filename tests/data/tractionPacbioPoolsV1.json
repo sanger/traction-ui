@@ -31,14 +31,14 @@
               "id": "1"
             }
           },
-          "used_aliquots": {
+          "libraries": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/pools/1/relationships/used_aliquots",
-              "related": "http://localhost:3100/v1/pacbio/pools/1/used_aliquots"
+              "self": "http://localhost:3100/v1/pacbio/pools/1/relationships/libraries",
+              "related": "http://localhost:3100/v1/pacbio/pools/1/libraries"
             },
             "data": [
               {
-                "type": "used_aliquots",
+                "type": "library_pools",
                 "id": "1"
               }
             ]
@@ -72,10 +72,10 @@
               },
               {
                 "title": "is invalid",
-                "detail": "used_aliquots - is invalid",
+                "detail": "libraries - is invalid",
                 "code": "100",
                 "source": {
-                  "pointer": "/data/relationships/used_aliquots"
+                  "pointer": "/data/relationships/libraries"
                 }
               }
             ]
@@ -92,14 +92,14 @@
               "id": "2"
             }
           },
-          "used_aliquots": {
+          "libraries": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/pools/2/relationships/used_aliquots",
-              "related": "http://localhost:3100/v1/pacbio/pools/2/used_aliquots"
+              "self": "http://localhost:3100/v1/pacbio/pools/2/relationships/libraries",
+              "related": "http://localhost:3100/v1/pacbio/pools/2/libraries"
             },
             "data": [
               {
-                "type": "used_aliquots",
+                "type": "library_pools",
                 "id": "2"
               }
             ]
@@ -130,9 +130,9 @@
       },
       {
         "id": "1",
-        "type": "used_aliquots",
+        "type": "library_pools",
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/used_aliquots/1"
+          "self": "http://localhost:3100/v1/pacbio/libraries/1"
         },
         "attributes": {
           "run_suitability": {
@@ -143,8 +143,8 @@
         "relationships": {
           "request": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/1/relationships/request",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/1/request"
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/request",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/request"
             },
             "data": {
               "type": "requests",
@@ -153,8 +153,8 @@
           },
           "tag": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/1/relationships/tag",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/1/tag"
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/tag",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/tag"
             },
             "data": {
               "type": "tags",
@@ -165,9 +165,9 @@
       },
       {
         "id": "2",
-        "type": "used_aliquots",
+        "type": "library_pools",
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/used_aliquots/2"
+          "self": "http://localhost:3100/v1/pacbio/libraries/2"
         },
         "attributes": {
           "run_suitability": {
@@ -187,8 +187,8 @@
         "relationships": {
           "request": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/2/relationships/request",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/2/request"
+              "self": "http://localhost:3100/v1/pacbio/libraries/2/relationships/request",
+              "related": "http://localhost:3100/v1/pacbio/libraries/2/request"
             },
             "data": {
               "type": "requests",
@@ -197,8 +197,8 @@
           },
           "tag": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/used_aliquots/2/relationships/tag",
-              "related": "http://localhost:3100/v1/pacbio/used_aliquots/2/tag"
+              "self": "http://localhost:3100/v1/pacbio/libraries/2/relationships/tag",
+              "related": "http://localhost:3100/v1/pacbio/libraries/2/tag"
             },
             "data": {
               "type": "tags",

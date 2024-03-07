@@ -1,7 +1,7 @@
 import getters from '@/store/traction/pacbio/pools/getters'
-import storePools from '@tests/data/StorePools'
+import { Data } from '@support/testHelper.js'
 
-const state = storePools
+const state = Data.StorePoolsV1
 
 const pools = [
   {

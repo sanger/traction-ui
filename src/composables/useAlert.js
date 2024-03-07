@@ -8,9 +8,9 @@ import store from '@/store'
  */
 export default function useAlert() {
   const showAlert = (message, type, dataType) => {
-    store.commit('traction/addMessage', { type, message: String(message), dataType })
+    //TODO: This need to be refactored to use the Pinia root store once we have converted all components to use useAlert
+    store.commit('traction/addMessage', { type, message, dataType })
   }
-
   // Return the showAlert method
   return {
     showAlert,

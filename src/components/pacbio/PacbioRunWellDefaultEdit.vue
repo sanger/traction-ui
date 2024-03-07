@@ -21,7 +21,7 @@
 // A lot of it could be moved to the store
 import { mapState } from 'pinia'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 export default {
   name: 'PacbioRunWellDefaultEdit',
   computed: {

@@ -98,7 +98,7 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup>
 import { ref, computed } from 'vue'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
 
 const props = defineProps({

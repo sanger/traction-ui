@@ -1,7 +1,7 @@
-import { groupIncludedByResource } from '@/api/JsonApi'
-import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
-import { handleResponse } from '@/api/ResponseHelper'
-import { wellFor, wellToIndex } from './wellHelpers'
+import { groupIncludedByResource } from '@/api/JsonApi.js'
+import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { wellFor, wellToIndex } from '@/store/traction/pacbio/poolCreate/wellHelpers.js'
 
 const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
