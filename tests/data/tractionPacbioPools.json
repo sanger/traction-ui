@@ -130,7 +130,7 @@
       },
       {
         "id": "1",
-        "type": "used_aliquots",
+        "type": "aliquots",
         "links": {
           "self": "http://localhost:3100/v1/pacbio/used_aliquots/1"
         },
@@ -165,7 +165,7 @@
       },
       {
         "id": "2",
-        "type": "used_aliquots",
+        "type": "aliquots",
         "links": {
           "self": "http://localhost:3100/v1/pacbio/used_aliquots/2"
         },

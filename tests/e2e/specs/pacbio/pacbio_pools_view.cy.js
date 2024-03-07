@@ -1,7 +1,7 @@
 describe('Pacbio Pools view', () => {
   it('Visits the pacbio pools url', () => {
     cy.intercept(
-      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[used_aliquots]=request,tag,run_suitability',
+      'v1/pacbio/pools?page[size]=25&page[number]=1&page[count]=1&include=tube,used_aliquots.tag,used_aliquots.source&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioPools.json',
       },
