@@ -116,17 +116,14 @@
  * @param {Object} library - The library to be  edited or created
  */
 import { computed, ref } from 'vue'
-import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
 
-/**
- * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
- * It is used to create a new library.
- */
-const librariesStore = usePacbioLibrariesStore()
+// usePacbioRootStore is a Pinia composable function that returns the pacbio root store
+const pacbioRootStore = usePacbioRootStore()
 
 // Define props
 const props = defineProps({
@@ -169,7 +166,7 @@ const selectedTagSetId = ref('')
  */
 const tagSetOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag set' }
-  return [placeholder, ...librariesStore.tagSetChoices]
+  return [placeholder, ...pacbioRootStore.tagSetChoices]
 })
 
 /**
@@ -181,7 +178,7 @@ const tagSetOptions = computed(() => {
  */
 const tagOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag' }
-  return [placeholder, ...librariesStore.tagChoicesForId(selectedTagSetId.value)]
+  return [placeholder, ...pacbioRootStore.tagChoicesForId(selectedTagSetId.value)]
 })
 
 /**
@@ -192,10 +189,12 @@ const tagOptions = computed(() => {
  */
 const provider = async () => {
   try {
-    const { success, errors } = await librariesStore.fetchPacbioTagSets()
+    const { success, errors } = await pacbioRootStore.fetchPacbioTagSets()
     if (success) {
       // If the library has a tag_id, set the selected tag set ID to the tag set ID of the library
-      const tagSet = props.library.tag_id ? librariesStore.tagsetForTagId(props.library.tag_id) : ''
+      const tagSet = props.library.tag_id
+        ? pacbioRootStore.tagsetForTagId(props.library.tag_id)
+        : ''
       selectedTagSetId.value = tagSet ? tagSet.id : ''
     } else {
       showAlert(`Failed to find tags in Traction: ${errors}`, 'danger')
