@@ -47,12 +47,11 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
       return Object.values(state.pools).map((pool) => {
         const used_aliquots = pool.used_aliquots.map((used_aliquotId) => {
           const { id, type, source_id, tag, run_suitability } = state.used_aliquots[used_aliquotId]
-          const { sample_name } = state.requests[source_id]
+          const { sample_name } = state.requests[source_id] || {}
           const { group_id } = state.tags[tag] || {}
           return { id, type, sample_name, group_id, run_suitability }
         })
         const { barcode } = state.tubes[pool.tube]
-
         return {
           ...pool,
           used_aliquots,
@@ -78,6 +77,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @returns {Promise<Object>} A promise that resolves to an object with the success status, errors, and meta data of the response.
      */
     async fetchPools(filter, page) {
+      debugger
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.get({
@@ -88,15 +88,12 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
           requests: 'sample_name',
           tubes: 'barcode',
           tags: 'group_id',
-          //aliquots: 'request,tag,run_suitability',
         },
       })
       const response = await handleResponse(promise)
 
       const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
-
       if (success) {
-        debugger
         const { tubes, aliquots, tags, requests } = groupIncludedByResource(included)
         this.pools = dataToObjectById({ data, includeRelationships: true })
         this.tubes = dataToObjectById({ data: tubes })
