@@ -30,7 +30,7 @@
             "id": "1"
           }
         },
-        "aliquots": {
+        "used_aliquots": {
           "links": {
             "self": "/v1/pacbio/pools/1/relationships/aliquots",
             "related": "/v1/pacbio/pools/1/aliquots"
@@ -74,7 +74,7 @@
             "id": "2"
           }
         },
-        "aliquots": {
+        "used_aliquots": {
           "links": {
             "self": "/v1/pacbio/pools/2/relationships/aliquots",
             "related": "/v1/pacbio/pools/2/aliquots"

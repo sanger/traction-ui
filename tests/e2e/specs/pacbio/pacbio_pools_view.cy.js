@@ -6,13 +6,16 @@ describe('Pacbio Pools view', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
+
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
         multiplexing_phase_2_aliquot: { enabled: true },
       },
     })
+
     cy.visit('#/pacbio/pools')
+
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
