@@ -95,6 +95,9 @@ const payload = ({ libraries, pool }) => {
         library_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
+        primary_aliquot_attributes: {
+          ...extractPoolAttributes(pool),
+        },
         ...extractPoolAttributes(pool),
       },
     },

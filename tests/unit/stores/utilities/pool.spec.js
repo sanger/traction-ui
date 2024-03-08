@@ -135,6 +135,12 @@ describe('pool', () => {
                 template_prep_kit_box_barcode: 'barcode1',
               },
             ],
+            primary_aliquot_attributes: {
+              template_prep_kit_box_barcode: 'barcode1',
+              volume: 10,
+              concentration: 5,
+              insert_size: 1,
+            },
             template_prep_kit_box_barcode: 'barcode1',
             volume: 10,
             concentration: 5,
