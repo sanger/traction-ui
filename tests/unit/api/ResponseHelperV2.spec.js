@@ -146,15 +146,16 @@ describe('ResponseHelper', () => {
 
   describe('handleResponse', () => {
     it('successful', async () => {
+      const responseData = { data: { id: 1, type: 'love' } }
       const mockResponse = {
-        data: { data: { id: 1, type: 'love' } },
         status: 200,
         statusText: 'OK',
+        json: () => Promise.resolve(responseData),
       }
       const promise = Promise.resolve(mockResponse)
       const response = await handleResponse(promise)
       expect(response.success).toBeTruthy()
-      expect(response.data).toEqual(mockResponse.data)
+      expect(response.data).toEqual(responseData)
     })
 
     it('failure with response', async () => {
