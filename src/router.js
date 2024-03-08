@@ -14,7 +14,8 @@ import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import PacbioPoolIndexToggleWithFeatureFlag from '@/views/pacbio/PacbioPoolIndexToggleWithFeatureFlag.vue'
+import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
+import PacbioPoolIndexV1 from '@/views/pacbio/PacbioPoolIndexV1.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
@@ -24,6 +25,7 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRun from '@/views/ont/ONTRun.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
+import FlaggedFeatureView from '@/components/shared/FlaggedFeatureView.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -130,7 +132,12 @@ const router = createRouter({
         {
           path: 'pools',
           name: 'PacbioPoolIndex',
-          component: PacbioPoolIndexToggleWithFeatureFlag,
+          component: FlaggedFeatureView,
+          props: {
+            feature: 'multiplexing_phase_2_aliquot',
+            componentOnFeatureEnable: PacbioPoolIndex,
+            componentOnFeatureDisable: PacbioPoolIndexV1,
+          },
           meta: { page: 'Pools', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)

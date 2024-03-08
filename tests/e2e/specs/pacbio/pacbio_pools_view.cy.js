@@ -33,5 +33,9 @@ describe('Pacbio Pools view', () => {
     cy.get('#concentration').invoke('text').should('match', /\d+/)
     cy.get('#template_prep_kit_box_barcode').invoke('text').should('match', /\w+/)
     cy.get('#insert_size').invoke('text').should('match', /\d+/)
+
+    //Show details
+    cy.get('button[id^="details-btn-"]').first().click()
+    cy.get('[id^="details-table-"]').find('tr').its('length').should('be.gt', 1)
   })
 })
