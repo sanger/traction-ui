@@ -53,7 +53,8 @@ const handleResponse = async (promise) => {
   try {
     // yay it worked.
     const rawResponse = await promise
-    return newResponse({ success: true, ...rawResponse })
+    const data = await rawResponse.json()
+    return newResponse({ success: true, data })
   } catch (error) {
     // we only want this to output during development or production
     // eslint has got this wrong as it is always a string
