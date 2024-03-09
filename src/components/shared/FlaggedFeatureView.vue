@@ -18,6 +18,6 @@ import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 defineProps({
   componentOnFeatureEnable: { type: [String, Object], required: true }, // The component to render when the feature is enabled
   componentOnFeatureDisable: { type: [String, Object], required: true }, // The component to render when the feature is disabled
-  feature: { type: String, required: true },
+  feature: { type: String, required: true },// The name of the feature flag on which to flip this
 })
 </script>
