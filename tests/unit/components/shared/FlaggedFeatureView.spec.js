@@ -37,6 +37,7 @@ describe('FlaggedFeatureView.vue', () => {
       componentOnFeatureDisable: componentDisabled,
     })
     expect(wrapper.text()).toContain('Enabled')
+    expect(wrapper.text()).not.toContain('Disabled')
   })
 
   it('displays the conponentOnFeatureDisable when the flag is false', () => {
@@ -46,5 +47,6 @@ describe('FlaggedFeatureView.vue', () => {
       componentOnFeatureDisable: componentDisabled,
     })
     expect(wrapper.text()).toContain('Disabled')
+    expect(wrapper.text()).not.toContain('Enabled')
   })
 })
