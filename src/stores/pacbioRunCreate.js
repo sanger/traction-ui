@@ -129,6 +129,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Instrument type: The instrument type selected for the run
     instrumentType: PacbioInstrumentTypes.Revio,
+
+    //Aliquots: The aliquots for the run
+    aliquots: {},
   }),
   getters: {
     /**
@@ -282,8 +285,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         // This is long but we want to include pool and library data
-        include:
-          'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
+        include: 'plates.wells.used_aliquots.source.tube,smrt_link_version',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -300,9 +302,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           pools,
           libraries,
           tubes,
-          library_pools,
-          tags,
-          requests,
+          aliquots,
           smrt_link_versions: [smrt_link_version = {}] = [],
         } = groupIncludedByResource(included)
 
@@ -333,10 +333,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         //Populate pools, libraries, library_pools, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
-        this.library_pools = formatById(this.libraries, library_pools, true)
-        this.tags = formatById(this.tags, tags)
-        this.requests = formatById(this.requests, requests)
         this.tubes = formatById(this.tubes, tubes, true)
+        this.aliquots = formatById(this.aliquots, aliquots, true)
 
         //Populate the smrtLinkVersion
         this.smrtLinkVersion = smrtLinkVersion

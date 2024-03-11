@@ -29,6 +29,7 @@ import TractionPacbioSample from './tractionPacbioSample'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
+import PacbioRunV1 from './pacbioRunV1'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlateRequest from './pacbioPlateRequest'
 import PacbioPlatesRequest from './pacbioPlatesRequest'
@@ -104,6 +105,7 @@ export default {
   TractionPacbioTagSets,
   PacbioRuns,
   PacbioRun,
+  PacbioRunV1,
   PacbioPlates,
   PacbioPlateRequest,
   PacbioPlatesRequest,

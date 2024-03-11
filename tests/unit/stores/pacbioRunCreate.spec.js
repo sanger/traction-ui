@@ -311,14 +311,12 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         const { success } = await store.fetchRun({ id: 1 })
 
-        const smartLinkVersion = Data.PacbioRun.data.included.slice(10)[0]
+        const smartLinkVersion = Data.PacbioRun.data.included.slice(14)[0]
         const plates = Data.PacbioRun.data.included.slice(0, 2)
         const wells = Data.PacbioRun.data.included.slice(2, 5)
-        const pools = Data.PacbioRun.data.included.slice(5, 6)
-        const tubes = Data.PacbioRun.data.included.slice(6, 7)
-        const library_pools = Data.PacbioRun.data.included.slice(7, 8)
-        const tags = Data.PacbioRun.data.included.slice(8, 9)
-        const requests = Data.PacbioRun.data.included.slice(9, 10)
+        const aliquots = Data.PacbioRun.data.included.slice(5, 8)
+        const pools = Data.PacbioRun.data.included.slice(8, 11)
+        const tubes = Data.PacbioRun.data.included.slice(11, 14)
 
         const smrtLinkVersion = {
           id: smartLinkVersion.id,
@@ -349,14 +347,16 @@ describe('usePacbioRunCreateStore', () => {
           },
         })
 
+        //aliquots
+        expect(store.aliquots).toEqual(
+          jsonapi.dataToObjectById({ data: aliquots, includeRelationships: true }),
+        )
+
+        //pools
         expect(store.pools).toEqual(
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
-        expect(store.library_pools).toEqual(
-          jsonapi.dataToObjectById({ data: library_pools, includeRelationships: true }),
-        )
-        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
-        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
+
         expect(store.tubes).toEqual(
           jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
         )
@@ -729,6 +729,7 @@ describe('usePacbioRunCreateStore', () => {
           instrumentType: PacbioInstrumentTypes.Revio,
           plates: {},
           wells: {},
+          aliquots: {},
         })
       })
     })

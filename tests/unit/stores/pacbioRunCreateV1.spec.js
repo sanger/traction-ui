@@ -301,7 +301,7 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const find = vi.fn()
-        find.mockResolvedValue(Data.PacbioRun)
+        find.mockResolvedValue(Data.PacbioRunV1)
         rootStore.api = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
@@ -311,14 +311,14 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         const { success } = await store.fetchRun({ id: 1 })
 
-        const smartLinkVersion = Data.PacbioRun.data.included.slice(10)[0]
-        const plates = Data.PacbioRun.data.included.slice(0, 2)
-        const wells = Data.PacbioRun.data.included.slice(2, 5)
-        const pools = Data.PacbioRun.data.included.slice(5, 6)
-        const tubes = Data.PacbioRun.data.included.slice(6, 7)
-        const library_pools = Data.PacbioRun.data.included.slice(7, 8)
-        const tags = Data.PacbioRun.data.included.slice(8, 9)
-        const requests = Data.PacbioRun.data.included.slice(9, 10)
+        const smartLinkVersion = Data.PacbioRunV1.data.included.slice(10)[0]
+        const plates = Data.PacbioRunV1.data.included.slice(0, 2)
+        const wells = Data.PacbioRunV1.data.included.slice(2, 5)
+        const pools = Data.PacbioRunV1.data.included.slice(5, 6)
+        const tubes = Data.PacbioRunV1.data.included.slice(6, 7)
+        const library_pools = Data.PacbioRunV1.data.included.slice(7, 8)
+        const tags = Data.PacbioRunV1.data.included.slice(8, 9)
+        const requests = Data.PacbioRunV1.data.included.slice(9, 10)
 
         const smrtLinkVersion = {
           id: smartLinkVersion.id,
@@ -328,8 +328,8 @@ describe('usePacbioRunCreateStore', () => {
 
         //runs
         expect(store.run).toEqual({
-          id: Data.PacbioRun.data.data.id,
-          ...Data.PacbioRun.data.data.attributes,
+          id: Data.PacbioRunV1.data.data.id,
+          ...Data.PacbioRunV1.data.data.attributes,
         })
 
         //plates
