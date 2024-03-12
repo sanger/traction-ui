@@ -243,8 +243,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
         include:
-          // 'pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request',
-          'pools.used_aliquots.source.request,pools.used_aliquots.tag,libraries.used_aliquots.tag,libraries.used_aliquots.source,',
+          'pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -285,12 +284,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.runs
       const promise = request.find({
         id,
-        // This is long but we want to include pool and library data
-        include: 'plates.wells.used_aliquots.source.tube,smrt_link_version',
-        fields: {
-          requests: 'sample_name',
-          tags: 'group_id',
-        },
+        // The used aliquots are needed to get the libraries, pools and tubes
+        include:
+          'plate.wells.used_aliquots.library.tube,plate.wells.used_aliquots.pool.tube,smrt_link_version',
       })
       const response = await handleResponse(promise)
 
@@ -407,6 +403,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         }
         const result = await this.findPoolsOrLibraryByTube({ filter })
         if (result) {
+          // allow the success and errors to be overwritten by the result
           ;({ success, errors } = result)
         }
       }
