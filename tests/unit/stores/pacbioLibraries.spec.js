@@ -4,7 +4,6 @@ import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
-import { dataToObjectById } from '@/api/JsonApi.js'
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -21,8 +20,8 @@ describe('usePacbioLibrariesStore', () => {
 
     it('"libraries" returns libraries from "state.libraries"', () => {
       const store = usePacbioLibrariesStore()
-      store.$state.libraryState = { libraries }
-      expect(store.libraryState.libraries).toEqual(libraries)
+      store.$state = { libraries }
+      expect(store.libraries).toEqual(libraries)
     })
   })
   describe('getters', () => {
@@ -67,7 +66,7 @@ describe('usePacbioLibrariesStore', () => {
         },
       }
 
-      store.$state.libraryState = { libraries, libraryTags, requests, tubes }
+      store.$state = { libraries, libraryTags, requests, tubes }
       const libraryArray = [
         {
           id: '1',
@@ -87,35 +86,6 @@ describe('usePacbioLibrariesStore', () => {
         },
       ]
       expect(store.librariesArray).toEqual(libraryArray)
-    })
-    it('returns tagSetChoicesArray and tagChoicesForId from state.tagSetChoices', async () => {
-      const store = usePacbioLibrariesStore()
-      const data = dataToObjectById({
-        data: Data.TractionPacbioTagSets.data.data,
-        includeRelationships: true,
-      })
-      store.$state.tagState = {
-        tagSets: { ...data },
-        tags: { ...dataToObjectById({ data: Data.TractionPacbioTagSets.data.included }) },
-      }
-      const expectedTagSetChoices = [
-        {
-          text: 'Sequel_16_barcodes_v3',
-          value: '3',
-        },
-        {
-          text: 'IsoSeq_v1',
-          value: '4',
-        },
-      ]
-      expect(store.tagSetChoices).toEqual(Object.values(expectedTagSetChoices))
-      expect(store.tagChoicesForId('3')).toHaveLength(16)
-      expect(
-        store
-          .tagChoicesForId('3')
-          .some((tag) => tag.text === 'bc1001_BAK8A_OA' && tag.value === '113'),
-      ).toBe(true)
-      expect(store.tagsetForTagId('113').name).toEqual('Sequel_16_barcodes_v3')
     })
   })
   describe('actions', () => {
@@ -268,18 +238,18 @@ describe('usePacbioLibrariesStore', () => {
           type: 'libraries',
         }
 
-        expect(store.libraryState.libraries[1]).toEqual(expectedLibrary)
-        expect(store.libraryState.tubes[4]).toEqual({
+        expect(store.libraries[1]).toEqual(expectedLibrary)
+        expect(store.tubes[4]).toEqual({
           id: '4',
           type: 'tubes',
           barcode: 'TRAC-2-721',
         })
-        expect(store.libraryState.libraryTags[3]).toEqual({
+        expect(store.libraryTags[3]).toEqual({
           id: '3',
           type: 'tags',
           group_id: '1234',
         })
-        expect(store.libraryState.requests[1]).toEqual({
+        expect(store.requests[1]).toEqual({
           id: '1',
           type: 'requests',
           sample_name: '4616STDY7535900',
@@ -306,8 +276,8 @@ describe('usePacbioLibrariesStore', () => {
           request: null,
           tag: null,
         }
-        expect(store.libraryState.libraries[7]).toEqual(expectedLibrary)
-        expect(store.libraryState.tubes).toEqual({})
+        expect(store.libraries[7]).toEqual(expectedLibrary)
+        expect(store.tubes).toEqual({})
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -318,40 +288,6 @@ describe('usePacbioLibrariesStore', () => {
         const { success, errors } = await store.fetchLibraries()
         expect(success).toEqual(false)
         expect(errors).toEqual(expectedResponse.errors)
-      })
-    })
-
-    describe('fetchPacbioTagSets', () => {
-      it('handles success', async () => {
-        // mock dependencies
-        const get = vi.fn()
-        rootStore.api.traction.pacbio.tag_sets = { get }
-        get.mockResolvedValue(Data.TractionPacbioTagSets)
-        // apply action
-        const { success } = await store.fetchPacbioTagSets()
-        // assert result
-        const data = dataToObjectById({
-          data: Data.TractionPacbioTagSets.data.data,
-          includeRelationships: true,
-        })
-        expect(store.tagState.tagSets).toEqual(data)
-        expect(success).toEqual(true)
-      })
-
-      it('handles failure', async () => {
-        // mock dependencies
-        const get = vi.fn()
-        rootStore.api.traction.pacbio.tag_sets = { get }
-        get.mockRejectedValue({
-          data: { data: [] },
-          status: 500,
-          statusText: 'Internal Server Error',
-        })
-        // apply action
-        const { success } = await store.fetchPacbioTagSets()
-        expect(store.tagState.tagSets).toEqual({})
-        expect(store.tagState.tags).toEqual({})
-        expect(success).toEqual(false)
       })
     })
 
@@ -425,15 +361,15 @@ describe('usePacbioLibrariesStore', () => {
       it('should update the values in the store', async () => {
         update.mockResolvedValue(mockSuccessResponse)
         await store.fetchLibraries()
-        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
+        expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
         await store.updateLibrary(library)
-        expect(store.libraryState.libraries[1].concentration).toEqual(2.0)
-        expect(store.libraryState.libraries[1].template_prep_kit_box_barcode).toEqual('LK12348')
-        expect(store.libraryState.libraries[1].volume).toEqual(4.0)
+        expect(store.libraries[1].concentration).toEqual(2.0)
+        expect(store.libraries[1].template_prep_kit_box_barcode).toEqual('LK12348')
+        expect(store.libraries[1].volume).toEqual(4.0)
       })
       it('should return error if required attributes are empty', async () => {
         await store.fetchLibraries()
-        expect(store.libraryState.libraries[1]).toEqual(libraryBeforeUpdate)
+        expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
         library.volume = ''
         const { success, errors } = await store.updateLibrary(library)
         expect(success).toBeFalsy()

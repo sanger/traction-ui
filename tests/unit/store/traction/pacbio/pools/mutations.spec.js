@@ -1,10 +1,9 @@
 import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/pacbio/pools/mutations'
-import storePools from '@tests/data/StorePools'
 
 let state
-
-const { data: pools, included } = Data.TractionPacbioPools.data
+const storePools = Data.StorePoolsV1
+const { data: pools, included } = Data.TractionPacbioPoolsV1.data
 const tubes = included.slice(0, 2)
 const libraries = included.slice(2, 4)
 const tags = included.slice(4, 6)

@@ -164,7 +164,11 @@ describe('libraries.js', () => {
       expect(payload({ libraries, pool })).toEqual({
         data: {
           type: 'pools',
-          attributes: { library_attributes: [library1(), library2(), library3()], ...pool },
+          attributes: {
+            library_attributes: [library1(), library2(), library3()],
+            primary_aliquot_attributes: { ...pool },
+            ...pool,
+          },
         },
       })
     })
@@ -189,6 +193,12 @@ describe('libraries.js', () => {
           id: '1',
           attributes: {
             library_attributes: [libraries['_1'], libraries['_2'], library3()],
+            primary_aliquot_attributes: {
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: '10',
+              concentration: '10',
+              insert_size: 100,
+            },
             template_prep_kit_box_barcode: 'ABC1',
             volume: '10',
             concentration: '10',
