@@ -1,64 +1,24 @@
-import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import { mount, Data, router, flushPromises, store, createTestingPinia } from '@support/testHelper'
-import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
+import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndexV1.vue'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper.js'
 
-const mockShowAlert = vi.fn()
-vi.mock('@/composables/useAlert', () => ({
-  default: () => ({
-    showAlert: mockShowAlert,
-  }),
-}))
-
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioPoolIndex, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          state,
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioPoolsStore()
-  return { wrapperObj, storeObj }
-}
-
-describe('PacbioPoolIndex.vue', () => {
+describe('PacbioPoolIndexV1.vue', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    const plugins = [
-      ({ store }) => {
-        if (store.$id === 'root') {
-          store.api.traction.pacbio.pools.get = vi.fn().mockResolvedValue(Data.TractionPacbioPools)
-        }
-      },
-    ]
-    const { wrapperObj } = mountWithStore({
-      plugins,
+    const get = vi.spyOn(store.state.api.traction.pacbio.pools, 'get')
+    get.mockResolvedValue(Data.TractionPacbioPoolsV1)
+    wrapper = mount(PacbioPoolIndex, {
+      store,
+      router,
     })
     await flushPromises()
-    wrapper = wrapperObj
     pools = wrapper.vm
   })
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
-      for (const field of pools.state.fields) {
+      for (const field of pools.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
@@ -71,7 +31,10 @@ describe('PacbioPoolIndex.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       pools.showAlert('show this message', 'danger')
-      expect(mockShowAlert).toBeCalledWith('show this message', 'danger')
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
+      })
     })
   })
 
@@ -93,7 +56,7 @@ describe('PacbioPoolIndex.vue', () => {
 
   describe('Printing labels', () => {
     beforeEach(() => {
-      pools.state.selected = [
+      pools.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
         { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
@@ -118,19 +81,20 @@ describe('PacbioPoolIndex.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
-        store.dispatch = mockPrintJob
+        pools.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: true, message: 'success' }
+        })
+
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
       })
 
       it('should create a print job', () => {
-        expect(store.dispatch).toBeCalledWith('printMyBarcode/createPrintJob', {
+        expect(pools.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: pools.createLabels(),
           copies: 1,
         })
-        expect(mockShowAlert).toBeCalledWith('success', 'success')
       })
     })
   })

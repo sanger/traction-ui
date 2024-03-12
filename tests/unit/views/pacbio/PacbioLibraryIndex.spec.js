@@ -107,18 +107,15 @@ describe('Libraries.vue', () => {
     })
   })
 
-  //TODO: Fix this test to edit library once the functionality is implemented
-  // describe('Edit button', () => {
-  //   let button
-  //   it.only('is present for each library', async () => {
-  //     router.push = vi.fn()
-  //     button = wrapper.find('#editPool-1')
-  //     expect(button.text()).toEqual('Edit')
-  //     await button.trigger('click')
-  //     expect(router.push).toHaveBeenCalledTimes(1)
-  //     expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: '1' } })
-  //   })
-  // })
+  describe('Edit button', () => {
+    let button
+    it('is present for each library', async () => {
+      button = wrapper.find('#edit-btn-721')
+      expect(button.text()).toEqual('Edit')
+      await button.trigger('click')
+      expect(wrapper.find('#libraryForm').element).toBeTruthy()
+    })
+  })
 
   describe('Printing labels', () => {
     beforeEach(() => {

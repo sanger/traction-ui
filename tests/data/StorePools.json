@@ -59,7 +59,7 @@
   "used_aliquots": {
     "1": {
       "id": "1",
-      "request": "1",
+      "source_id": "1",
       "tag": "26",
       "type": "used_aliquots",
       "run_suitability": {
@@ -69,7 +69,7 @@
     },
     "2": {
       "id": "2",
-      "request": "2",
+      "source_id": "2",
       "tag": "7",
       "type": "used_aliquots",
       "run_suitability": {
