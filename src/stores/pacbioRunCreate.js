@@ -243,7 +243,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
         include:
-          'pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request',
+          // 'pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request',
+          'pools.used_aliquots.source.request,pools.used_aliquots.tag,libraries.used_aliquots.tag,libraries.used_aliquots.source,',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -394,7 +395,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
 
       // if it is an existing run, call the fetch run action
-      const { success, errors = [] } = await this.fetchRun({ id })
+      let { success, errors = [] } = await this.fetchRun({ id })
+
+      // we only want to get the library and pool data if the fetchRun was successful
+      if (success) {
+        // extract the tube barcodes
+        const filter = {
+          barcode: Object.values(this.tubes)
+            .map((tube) => tube.barcode)
+            .join(','),
+        }
+        const result = await this.findPoolsOrLibraryByTube({ filter })
+        if (result) {
+          ;({ success, errors } = result)
+        }
+      }
 
       // return the result from the fetchRun
       return { success, errors }
