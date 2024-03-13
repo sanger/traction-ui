@@ -1,3 +1,5 @@
+import { checkFeatureFlag } from '@/api/FeatureFlag'
+
 const libraryAttributes = {
   pacbio_request_id: null,
   template_prep_kit_box_barcode: null,
@@ -86,22 +88,27 @@ const extractPoolAttributes = ({
   produce a json api compliant payload
   e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
 */
-const payload = ({ libraries, pool }) => {
-  return {
-    data: {
-      type: 'pools',
-      id: pool.id,
-      attributes: {
-        library_attributes: Object.values(libraries).map((library) =>
-          extractLibraryAttributes(library),
-        ),
-        primary_aliquot_attributes: {
-          ...extractPoolAttributes(pool),
-        },
-        ...extractPoolAttributes(pool),
-      },
+const payload = async ({ libraries, pool }) => {
+  const data = {
+    type: 'pools',
+    id: pool.id,
+    attributes: {
+      library_attributes: Object.values(libraries).map((library) =>
+        extractLibraryAttributes(library),
+      ),
+      ...extractPoolAttributes(pool),
     },
   }
+
+  // Add primary aliquot to payload if feature flag is enabled
+  const flag = await checkFeatureFlag('dpl_989_ui')
+  if (flag) {
+    data.attributes.primary_aliquot_attributes = {
+      ...extractPoolAttributes(pool),
+    }
+  }
+
+  return { data }
 }
 
 export { libraryAttributes, newLibrary, validate, valid, payload }

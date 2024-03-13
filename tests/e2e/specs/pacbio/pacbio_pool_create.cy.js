@@ -7,6 +7,13 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
       fixture: 'tractionPacbioPlate.json',
     })
+
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_989_ui: { enabled: true },
+      },
+    })
   })
 
   it('Creates a pool successfully', () => {

@@ -4,6 +4,11 @@ import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { newResponse } from '@/api/ResponseHelper'
 import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
+// dpl_989_ui feature flag is used to generate pool payload so we mock it
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(false),
+}))
+
 describe('actions.js', () => {
   const {
     fetchPacbioTagSets,
@@ -311,7 +316,7 @@ describe('actions.js', () => {
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({ rootState, state: { libraries, pool } })
       expect(create).toHaveBeenCalledWith({
-        data: payload({ libraries, pool }),
+        data: await payload({ libraries, pool }),
         include: expect.anything(),
       })
       expect(success).toBeTruthy()
@@ -393,7 +398,7 @@ describe('actions.js', () => {
       const libraries = { _1: library1, _2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { libraries, pool } })
-      expect(update).toHaveBeenCalledWith(payload({ libraries, pool }))
+      expect(update).toHaveBeenCalledWith(await payload({ libraries, pool }))
       expect(success).toBeTruthy()
     })
 
