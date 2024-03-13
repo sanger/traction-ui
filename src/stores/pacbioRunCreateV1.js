@@ -227,7 +227,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       return { success, errors }
     },
-    async findPoolsOrLibraryByTube(filter) {
+    async findPoolsOrLibrariesByTube(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {

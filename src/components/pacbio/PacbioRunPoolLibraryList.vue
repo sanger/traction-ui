@@ -1,6 +1,6 @@
 <template>
   <traction-section title="Pools & Libraries">
-    <LabwareFinder :fetcher="store.findPoolsOrLibraryByTube" filter="barcode" />
+    <LabwareFinder :fetcher="store.findPoolsOrLibrariesByTube" filter="barcode" />
     <div v-for="item in store.tubeContents" :key="item.id" class="pt-2">
       <Tube v-bind="item" />
     </div>

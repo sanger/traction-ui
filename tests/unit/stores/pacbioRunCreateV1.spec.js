@@ -391,7 +391,7 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
 
-    describe('findPoolsOrLibraryByTube', () => {
+    describe('findPoolsOrLibrariesByTube', () => {
       it('returns the pool when given a valid tube barcode', async () => {
         const response = Data.PacbioTubeWithPool
         const { data, included } = response.data
@@ -411,7 +411,7 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
 
         // apply action
-        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
+        const { success } = await store.findPoolsOrLibrariesByTube({ barcode: 'TRAC-2-1' })
         expect(success).toBeTruthy()
 
         expect(store.pools).toEqual(
@@ -446,7 +446,7 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
 
         // apply action
-        const { success } = await store.findPoolsOrLibraryByTube({ barcode: 'TRAC-2-1' })
+        const { success } = await store.findPoolsOrLibrariesByTube({ barcode: 'TRAC-2-1' })
         expect(success).toBeTruthy()
 
         expect(store.pools).toEqual({})

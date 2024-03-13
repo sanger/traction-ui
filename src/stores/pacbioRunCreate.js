@@ -230,7 +230,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       return { success, errors }
     },
-    async findPoolsOrLibraryByTube(filter) {
+    async findPoolsOrLibrariesByTube(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {
@@ -401,7 +401,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             .map((tube) => tube.barcode)
             .join(','),
         }
-        const result = await this.findPoolsOrLibraryByTube({ filter })
+        const result = await this.findPoolsOrLibrariesByTube({ filter })
         if (result) {
           // allow the success and errors to be overwritten by the result
           ;({ success, errors } = result)

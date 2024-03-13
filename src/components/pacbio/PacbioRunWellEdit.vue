@@ -143,7 +143,7 @@ export default {
     ...mapActions(usePacbioRunCreateStore, [
       'updateWell',
       'deleteWell',
-      'findPoolsOrLibraryByTube',
+      'findPoolsOrLibrariesByTube',
     ]),
     addRow() {
       this.localPoolsAndLibraries.push({ id: '', barcode: '' })
@@ -202,7 +202,7 @@ export default {
     },
     async updatePoolLibraryBarcode(row, barcode) {
       const index = row.index
-      await this.findPoolsOrLibraryByTube({ barcode })
+      await this.findPoolsOrLibrariesByTube({ barcode })
       const tubeContent = await this.tubeContentByBarcode(barcode)
       if (tubeContent) {
         tubeContent.type === 'libraries'

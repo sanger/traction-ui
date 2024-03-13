@@ -1,0 +1,383 @@
+{
+  "data": {
+    "data": [
+      {
+        "id": "8",
+        "type": "tubes",
+        "attributes": {
+          "barcode": "TRAC-2-8"
+        },
+        "relationships": {
+          "pools": {
+            "data": [
+              {
+                "type": "pools",
+                "id": "1"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "9",
+        "type": "tubes",
+        "attributes": {
+          "barcode": "TRAC-2-9"
+        },
+        "relationships": {
+          "pools": {
+            "data": [
+              {
+                "type": "pools",
+                "id": "2"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "10",
+        "type": "tubes",
+        "attributes": {
+          "barcode": "TRAC-2-10"
+        },
+        "relationships": {
+          "libraries": {
+            "data": [
+              {
+                "type": "libraries",
+                "id": "5"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "included": [
+      {
+        "id": "1",
+        "type": "pools",
+        "attributes": {
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          },
+          "source_identifier": "GEN-1707899606-1:B1-E1"
+        },
+        "relationships": {
+          "aliquots": [
+            {
+              "data": {
+                "type": "aliquots",
+                "id": "1"
+              }
+            },
+            {
+              "data": {
+                "type": "aliquots",
+                "id": "2"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "2",
+        "type": "pools",
+        "attributes": {
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          },
+          "source_identifier": "GEN-1707899606-2:B1-E1"
+        },
+        "relationships": {
+          "aliquots": [
+            {
+              "data": {
+                "type": "aliquots",
+                "id": "3"
+              }
+            },
+            {
+              "data": {
+                "type": "aliquots",
+                "id": "4"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "1",
+        "type": "libraries",
+        "attributes": {
+          "source_identifier": "GEN-1707899606-3:B1-E1"
+        },
+        "relationships": {
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "1"
+            }
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "libraries",
+        "attributes": {
+          "source_identifier": "GEN-1707899606-4:B1-E1"
+        },
+        "relationships": {
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "2"
+            }
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "libraries",
+        "attributes": {
+          "source_identifier": "GEN-1707899606-5:B1-E1"
+        },
+        "relationships": {
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "3"
+            }
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "libraries",
+        "attributes": {
+          "source_identifier": "GEN-1707899607-6:B1-E1"
+        },
+        "relationships": {
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "4"
+            }
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "libraries",
+        "attributes": {
+          "source_identifier": "GEN-1707899607-7:B1-E1"
+        },
+        "relationships": {
+          "aliquots": {
+            "data": {
+              "type": "aliquots",
+              "id": "5"
+            }
+          }
+        }
+      },
+      {
+        "id": "1",
+        "type": "aliquots",
+        "attributes": {
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "029979102141700063023",
+          "insert_size": 1000
+        },
+        "relationships": {
+          "library": {
+            "data": {
+              "type": "libraries",
+              "id": "2"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "1"
+            }
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "aliquots",
+        "attributes": {
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "029979102141700063023",
+          "insert_size": 1000
+        },
+        "relationships": {
+          "library": {
+            "data": {
+              "type": "libraries",
+              "id": "3"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "2"
+            }
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "aliquots",
+        "attributes": {
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "029979102141700063023",
+          "insert_size": 1000
+        },
+        "relationships": {
+          "library": {
+            "data": {
+              "type": "libraries",
+              "id": "4"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "3"
+            }
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "aliquots",
+        "attributes": {
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "029979102141700063023",
+          "insert_size": 1000
+        },
+        "relationships": {
+          "library": {
+            "data": {
+              "type": "libraries",
+              "id": "5"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "4"
+            }
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "aliquots",
+        "attributes": {
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "029979102141700063023",
+          "insert_size": 1000
+        },
+        "relationships": {
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "5"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "5"
+            }
+          }
+        }
+      },
+      {
+        "id": "1",
+        "type": "tags",
+        "attributes": {
+          "group_id": "bc1001_BAK8A_OA"
+        }
+      },
+      {
+        "id": "2",
+        "type": "tags",
+        "attributes": {
+          "group_id": "bc1002_BAK8A_OA"
+        }
+      },
+      {
+        "id": "3",
+        "type": "tags",
+        "attributes": {
+          "group_id": "bc1003_BAK8A_OA"
+        }
+      },
+      {
+        "id": "4",
+        "type": "tags",
+        "attributes": {
+          "group_id": "bc1008_BAK8A_OA"
+        }
+      },
+      {
+        "id": "5",
+        "type": "tags",
+        "attributes": {
+          "group_id": "bc1009_BAK8A_OA"
+        }
+      },
+      {
+        "id": "2",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "GENSAMPLE-1707899606-2"
+        }
+      },
+      {
+        "id": "3",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "GENSAMPLE-1707899606-3"
+        }
+      },
+      {
+        "id": "4",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "GENSAMPLE-1707899606-4"
+        }
+      },
+      {
+        "id": "5",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "GENSAMPLE-1707899606-5"
+        }
+      },
+      {
+        "id": "6",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "GENSAMPLE-1707899606-6"
+        }
+      }
+    ],
+    "meta": {
+      "page_count": null
+    }
+  },
+  "status": 200,
+  "statusText": "Success"
+}
