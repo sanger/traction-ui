@@ -392,7 +392,7 @@ describe('usePacbioRunCreateStore', () => {
     })
 
     describe('findPoolsOrLibrariesByTube', () => {
-      it.skip('returns the tubes pools, libraries, aliquots, requests and tags when given valid tube barcodes', async () => {
+      it.only('returns the tubes pools, libraries, aliquots, requests and tags when given valid tube barcodes', async () => {
         const response = Data.PacbioTubesWithPoolsAndLibraries
         const { data, included } = response.data
 
