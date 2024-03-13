@@ -191,7 +191,9 @@ export default {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.create({ data: payload({ libraries, pool }), include: 'tube' })
+    // Payload has feature flagged data, so its async to check the flag
+    const payload_data = await payload({ libraries, pool })
+    const promise = request.create({ data: payload_data, include: 'tube' })
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
     const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
     const { attributes: { barcode = '' } = {} } = tube
@@ -204,7 +206,9 @@ export default {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.update(payload({ libraries, pool }))
+    // Payload has feature flagged data, so its async to check the flag
+    const payload_data = await payload({ libraries, pool })
+    const promise = request.update(payload_data)
     const { success, errors } = await handleResponse(promise)
     return { success, errors }
   },
