@@ -207,9 +207,7 @@ describe('libraries.js', () => {
         },
       })
     })
-  })
 
-  describe('payload with primary aliquot attributes', () => {
     it('includes primary aliquot attributes if feature flag is enabled', async () => {
       checkFeatureFlag.mockReturnValue(true)
 
