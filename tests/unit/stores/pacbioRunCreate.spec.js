@@ -392,16 +392,16 @@ describe('usePacbioRunCreateStore', () => {
     })
 
     describe('findPoolsOrLibrariesByTube', () => {
-      it.only('returns the tubes pools, libraries, aliquots, requests and tags when given valid tube barcodes', async () => {
+      it('returns the tubes pools, libraries, aliquots, requests and tags when given valid tube barcodes', async () => {
         const response = Data.PacbioTubesWithPoolsAndLibraries
         const { data, included } = response.data
 
         const tubes = data.slice(0, 3)
         const pools = included.slice(0, 2)
-        const aliquots = included.slice(2, 6)
-        const libraries = included.slice(7, 11)
-        const tags = included.slice(12, 16)
-        const requests = included.slice(17, 21)
+        const libraries = included.slice(2, 7)
+        const aliquots = included.slice(7, 12)
+        const tags = included.slice(12, 17)
+        const requests = included.slice(17, 22)
 
         // Mock stores
         const rootStore = useRootStore()
@@ -431,8 +431,8 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.libraries).toEqual(
           jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
         )
-        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
         expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
+        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
       })
     })
 

@@ -255,14 +255,13 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
-        const { pools, libraries, library_pools, tags, requests } =
-          groupIncludedByResource(included)
+        const { pools, libraries, aliquots, tags, requests } = groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
         this.tubes = formatById(this.tubes, data, true)
         this.libraries = formatById(this.libraries, libraries, true)
-        this.library_pools = formatById(this.library_pools, library_pools, true)
+        this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests)
         this.tags = formatById(this.tags, tags)
 
