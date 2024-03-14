@@ -28,7 +28,7 @@
           <PacbioTagSetList ref="tagSetList" />
           <PacbioTagSetItem />
         </div>
-        <div>
+        <div class="h-screen">
           <PacbioLabwareSelectedList :labware="scannedLabware" @closed="onClosed" />
         </div>
         <div>
@@ -89,6 +89,10 @@ const onClosed = (labware) => {
   scannedLabware.value = scannedLabware.value.filter((item) => item.barcode !== labware.barcode)
 }
 const search = async (value) => {
+  if (scannedLabware.value.find((item) => item.barcode === value)) {
+    showAlert('Labware already scanned', 'danger')
+    return
+  }
   const findPlate = await pacbioPoolCreateStore.findPacbioPlate({ barcode: value })
   if (!findPlate.success) {
     const findTube = await pacbioPoolCreateStore.findPacbioTube({ barcode: value })
