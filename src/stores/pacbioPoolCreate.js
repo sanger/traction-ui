@@ -167,7 +167,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected.tagSet && selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
         const tagSet = pacbioRoot.tagSets[selected.tagSet.id]
-        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag.id])
+        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag])
         return { ...tagSet, tags }
       } else {
         return { id: null, tags: [] }
@@ -182,7 +182,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     selectedPlates: ({ selected, resources }) =>
       mergeRepresentations(selected.plates, resources.plates),
-
     /**
      * This function takes an object with `selected` and `resources` properties and returns a list of selected tubes.
      * It merges the representations of `selected.tubes` and `resources.tubes` using the `mergeRepresentations` function.
@@ -251,15 +250,17 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     requestList: (state) => (ids) => {
       const requests = state.resources.requests
       const selectedRequests = state.used_aliquots
+      let val = []
       if (ids) {
-        return ids.map((id) => {
+        val = ids.map((id) => {
           return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
         })
       } else {
-        return Object.values(requests).map((request) => {
+        val = Object.values(requests).map((request) => {
           return { ...request, selected: !!selectedRequests[`_${request.id}`] }
         })
       }
+      return val
     },
     /**
      * Returns a specific used_aliquot item based on its ID.
@@ -793,11 +794,20 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // We want to grab the first (and only) record from the applied filter
         this.selectPlate({ id: data[0].id, selected: true })
         //Populate plates
-        this.resources.plates = dataToObjectById({ data, includeRelationships: true })
+        this.resources.plates = {
+          ...this.resources.plates,
+          ...dataToObjectById({ data, includeRelationships: true }),
+        }
         //Populate wells
-        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+        this.resources.wells = {
+          ...this.resources.wells,
+          ...dataToObjectById({ data: wells, includeRelationships: true }),
+        }
         //Populate requests
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.requests = {
+          ...this.resources.requests,
+          ...dataToObjectById({ data: requests, includeRelationships: true }),
+        }
       }
 
       return { success, errors }
@@ -831,10 +841,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
-      const promise = request.get({ filter: filter, include: 'requests' })
+      const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
       const { requests } = groupIncludedByResource(included)
+      debugger
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes
@@ -846,8 +857,14 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (success) {
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
-        this.resources.tubes = dataToObjectById({ data, includeRelationships: true })
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.tubes = {
+          ...this.resources.tubes,
+          ...dataToObjectById({ data, includeRelationships: true }),
+        }
+        this.resources.requests = {
+          ...this.resources.requests,
+          ...dataToObjectById({ data: requests, includeRelationships: true }),
+        }
       }
 
       return { success, errors }
