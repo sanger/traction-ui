@@ -127,7 +127,7 @@ const librarySetter = (attr) => {
         fieldsThatRequireValidation.value[attr] = true
         props.notify()
       }
-      store.updateLibrary({ source_id: aliquot.value.source_id, [attr]: newValue })
+      store.updateUsedAliquot({ source_id: aliquot.value.source_id, [attr]: newValue })
     },
   })
 }
@@ -137,7 +137,7 @@ const concentration = librarySetter('concentration')
 const template_prep_kit_box_barcode = librarySetter('template_prep_kit_box_barcode')
 const tag_id = computed({
   get() {
-    return store.libraryItem(props.request.id).tag_id
+    return store.usedAliquotItem(props.request.id).tag_id
   },
   set(tag_id) {
     if (tag_id !== this.tag_id) {
