@@ -15,30 +15,25 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PacbioTagSetList',
-  computed: {
-    isEmpty() {
-      return this.tagSets.length === 0
-    },
-    tagSets() {
-      return this.$store.getters['traction/pacbio/poolCreate/tagSetList'].map(
-        ({ id: value, name: text }) => ({ value, text }),
-      )
-    },
-    options() {
-      return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
-    },
-    selected() {
-      const { id = null } = this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
-      return id
-    },
-  },
-  methods: {
-    updateSelected(id) {
-      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id })
-    },
-  },
+<script setup>
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate';
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+const pacbioPoolCreateStore = usePacbioPoolCreateStore()
+const rootStore = usePacbioRootStore()
+const { tagSetList } = storeToRefs(rootStore)
+const isEmpty = computed(() => tagSetList.length === 0)
+const tagSets = computed(() =>
+  tagSetList.value.map(({ id: value, name: text }) => ({ value, text })),
+)
+const options = computed(() => [{ value: null, text: 'Please select a tag set' }, ...tagSets.value])
+const selected = computed(() => {
+  const { id = null } = tagSetList.value.find(({ selected }) => selected) || {}
+  return id
+})
+const updateSelected = (id) => {
+  pacbioPoolCreateStore.selectTagSet(id)
 }
 </script>

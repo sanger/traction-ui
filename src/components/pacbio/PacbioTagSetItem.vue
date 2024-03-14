@@ -2,9 +2,9 @@
   <div class="px-4">
     <details v-if="selectedTagSet.id" class="pt-2 pb-2 mt-2">
       <summary data-attribute="tag-set-name" class="text-left">
-        {{ tagSetName }}
+        {{ selectedTagSet.name }}
         <traction-tag class="bg-sp rounded-md text-white text-sm ml-2 px-2 py-1"
-          >{{ tagCount }} tags</traction-tag
+          >{{ selectedTagSet.tags.length }} tags</traction-tag
         >
       </summary>
       <div data-type="tag-set-item" class="flex flex-wrap p-4">
@@ -26,22 +26,10 @@
   </div>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
-export default {
-  name: 'PacbioTagSetShow',
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapGetters(['selectedTagSet']),
-    tagSetName() {
-      return this.selectedTagSet.name
-    },
-    tagCount() {
-      return this.selectedTagSet.tags.length
-    },
-  },
-}
+<script setup>
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
+import { computed } from 'vue'
+
+const store = usePacbioPoolCreateStore()
+const selectedTagSet = computed(() => store.selectedTagSet)
 </script>
