@@ -1,21 +1,18 @@
 describe('Pacbio Pools view', () => {
   it('Visits the pacbio pools url', () => {
     cy.intercept(
-      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
+      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
-        fixture: 'tractionPacbioPools.json',
+        fixture: 'tractionPacbioPoolsV1.json',
       },
     )
-
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        multiplexing_phase_2_aliquot: { enabled: true },
+        multiplexing_phase_2_aliquot: { enabled: false },
       },
     })
-
     cy.visit('#/pacbio/pools')
-
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
@@ -33,9 +30,5 @@ describe('Pacbio Pools view', () => {
     cy.get('#concentration').invoke('text').should('match', /\d+/)
     cy.get('#template_prep_kit_box_barcode').invoke('text').should('match', /\w+/)
     cy.get('#insert_size').invoke('text').should('match', /\d+/)
-
-    //Show details
-    cy.get('button[id^="details-btn-"]').first().click()
-    cy.get('[id^="details-table-"]').find('tr').its('length').should('be.gt', 1)
   })
 })

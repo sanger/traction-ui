@@ -149,9 +149,9 @@ describe('usePacbioPools', () => {
           jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
         )
         expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: included.slice(0, 2) }))
-        // expect(store.used_aliquots).toEqual(
-        //   jsonapi.dataToObjectById({ data: included.slice(2, 4), includeRelationships: true }),
-        // )
+        expect(store.used_aliquots).toEqual(
+          jsonapi.dataToObjectById({ data: included.slice(2, 4), includeRelationships: true }),
+        )
         expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: included.slice(4, 6) }))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: included.slice(6, 8) }))
       })

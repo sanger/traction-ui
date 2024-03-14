@@ -1,5 +1,10 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/pool'
+import { checkFeatureFlag } from '@/api/FeatureFlag'
+
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(false),
+}))
 
 const library1 = () => ({
   pacbio_request_id: '1',
@@ -152,7 +157,7 @@ describe('libraries.js', () => {
   })
 
   describe('payload', () => {
-    it('handles unpersisted data', () => {
+    it('handles unpersisted data', async () => {
       const libraries = { _1: library1(), _2: library2(), _3: library3() }
       const pool = {
         template_prep_kit_box_barcode: 'ABC1',
@@ -161,15 +166,19 @@ describe('libraries.js', () => {
         insert_size: 100,
       }
 
-      expect(payload({ libraries, pool })).toEqual({
+      const payload_data = await payload({ libraries, pool })
+      expect(payload_data).toEqual({
         data: {
           type: 'pools',
-          attributes: { library_attributes: [library1(), library2(), library3()], ...pool },
+          attributes: {
+            library_attributes: [library1(), library2(), library3()],
+            ...pool,
+          },
         },
       })
     })
 
-    it('handles persisted data', () => {
+    it('handles persisted data', async () => {
       const libraries = {
         _1: { id: '10', ...library1() },
         _2: { id: '20', ...library2() },
@@ -183,12 +192,51 @@ describe('libraries.js', () => {
         source_identifier: 'Should not post back',
       }
 
-      expect(payload({ libraries, pool: { id: '1', ...pool } })).toEqual({
+      const payload_data = await payload({ libraries, pool: { id: '1', ...pool } })
+      expect(payload_data).toEqual({
         data: {
           type: 'pools',
           id: '1',
           attributes: {
             library_attributes: [libraries['_1'], libraries['_2'], library3()],
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: '10',
+            concentration: '10',
+            insert_size: 100,
+          },
+        },
+      })
+    })
+
+    it('includes primary aliquot attributes if feature flag is enabled', async () => {
+      checkFeatureFlag.mockReturnValue(true)
+
+      const libraries = {
+        _1: { id: '10', ...library1() },
+        _2: { id: '20', ...library2() },
+        _3: library3(),
+      }
+      const pool = {
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: '10',
+        concentration: '10',
+        insert_size: 100,
+        source_identifier: 'Should not post back',
+      }
+
+      const payload_data = await payload({ libraries, pool: { id: '1', ...pool } })
+      expect(payload_data).toEqual({
+        data: {
+          type: 'pools',
+          id: '1',
+          attributes: {
+            library_attributes: [libraries['_1'], libraries['_2'], library3()],
+            primary_aliquot_attributes: {
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: '10',
+              concentration: '10',
+              insert_size: 100,
+            },
             template_prep_kit_box_barcode: 'ABC1',
             volume: '10',
             concentration: '10',

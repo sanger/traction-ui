@@ -106,6 +106,12 @@ const payload = ({ used_aliquots, pool }) => {
             'insert_size',
           ]),
         ),
+        primary_aliquot_attributes: {
+          template_prep_kit_box_barcode,
+          volume,
+          concentration,
+          insert_size,
+        },
         template_prep_kit_box_barcode,
         volume,
         concentration,
