@@ -1,5 +1,5 @@
 <template>
-  <div data-type="selected-plate-list">
+  <div data-type="selected-plate-list" class="h-screen overflow-hidden">
     <!-- eslint-disable vue/attribute-hyphenation-->
     <VueSelecto
       :container="$el"
@@ -11,13 +11,13 @@
     />
     <traction-section number="1b" title="Select samples" :description="sectionTitle">
       <template v-if="selectedLabware.length > 0">
-        <div class="flex space-x-2 py-4 border-gray-100">
+        <div class="flex space-x-2 py-4 border-gray-100 mb-2">
           <label class="text-base">Table view</label>
           <traction-toggle v-model="tableView" data-attribute="check-box" />
         </div>
-        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto space-x-2">
+        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto h-screen justify-between">
           <div v-for="labware in selectedLabware" :key="labware.id" data-type="selected-plate-item">
-            <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-2 mt-2">
+            <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-4 mt-2">
               <div class="flex w-full justify-end">
                 <button
                   :id="'remove-plate-btn-'"
@@ -35,22 +35,28 @@
             </div>
           </div>
         </div>
-        <div v-else>
-          <traction-table
-            :items="selectedRequests"
-            :fields="state.requestFields"
-            :tbodyTrClass="tableRowBackground"
-            @row-clicked="requestClicked"
-            ><template #cell(actions)="row">
-              <div class="flex flex-row justify-center">
-                <input
-                  :id="'add-request' + row.item.id"
-                  :checked="row.item.selected"
-                  type="checkbox"
-                  @change="requestClicked({ id: row.item.id, selected: row.item.selected })"
-                />
-              </div> </template
-          ></traction-table>
+        <div v-else class="flex flex-col">
+          <div class="flex w-full justify-end space-x-2 p-2">
+            <label>Sort by selection</label>
+            <input v-model="sortBySelection" type="checkbox" class="text-base" />
+          </div>
+          <div class="overflow-y-auto h-screen">
+            <traction-table
+              :items="selectedRequests"
+              :fields="state.requestFields"
+              :tbodyTrClass="tableRowBackground"
+              @row-clicked="requestClicked"
+              ><template #cell(actions)="row">
+                <div class="flex flex-row justify-center">
+                  <input
+                    :id="'add-request' + row.item.id"
+                    :checked="row.item.selected"
+                    type="checkbox"
+                    @change="requestClicked({ id: row.item.id, selected: row.item.selected })"
+                  />
+                </div> </template
+            ></traction-table>
+          </div>
         </div>
       </template>
     </traction-section>
@@ -84,6 +90,7 @@ const state = reactive({
   ],
 })
 const tableView = ref(false)
+const sortBySelection = ref(false)
 
 const emit = defineEmits(['closed']) // Defines an emit function that emits a 'closed' event.
 
@@ -91,7 +98,9 @@ const emit = defineEmits(['closed']) // Defines an emit function that emits a 'c
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 
 const selectedRequests = computed(() => {
-  return props.labware.flatMap((labware) => {
+  //get all selected requests first
+
+  const requests = props.labware.flatMap((labware) => {
     if (isPlate(labware)) {
       const plate = pacbioPoolCreateStore.selectedPlates.find(
         (item) => item.barcode === labware.barcode,
@@ -106,6 +115,7 @@ const selectedRequests = computed(() => {
       return pacbioPoolCreateStore.requestList(tube.requests || [])
     }
   })
+  return sortBySelection.value ? requests.sort((a, b) => b.selected - a.selected) : requests
 })
 
 const selectedLabware = computed(() => {
@@ -138,7 +148,7 @@ const onClose = (labware) => {
 }
 
 const tableRowBackground = (row) => {
-  return row.selected ? 'bg-yellow-300' : 'bg-gray-400'
+  return row.selected ? 'bg-yellow-300 cursor-pointer' : 'bg-gray-200 cursor-pointer'
 }
 
 const onSelect = (e) => {
