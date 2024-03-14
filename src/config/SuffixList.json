@@ -156,6 +156,13 @@
         "text": "HXPL - Excess pre library",
         "value": "HXPL",
         "workflow": "HiC"
+      },
+      {
+        "stage": "Excess tissue",
+        "suffix": "HXTI",
+        "text": "HXTI - Excess tissue",
+        "value": "HXTI",
+        "workflow": "HiC"
       }
     ]
   },

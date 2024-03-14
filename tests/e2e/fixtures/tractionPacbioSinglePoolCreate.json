@@ -12,7 +12,8 @@
             "concentration": "10.0",
             "insert_size": "100"
           }
-        ]
+        ],
+        "primary_aliquot_attributes": {}
       }
     }
   }
