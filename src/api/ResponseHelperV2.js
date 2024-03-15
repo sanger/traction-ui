@@ -5,22 +5,15 @@
  * TODO: Still wondering if there is more to do to make this more robust
  * but probably better to find out with a bit of testing
  */
-const parseErrors = ({ data: rawData, error }) => {
+// TODO: we have left this in a broken state as we still need to work out how errors are handled
+const parseErrors = ({ errors, error }) => {
   // if its stand alone return it
   if (error) {
     return error
   }
 
-  const { errors, data = { errors: null } } = rawData
-
   // turn it into something nice i.e. a readable string if it is a 422
-  if (Array.isArray(errors)) {
-    return parseErrorArray(errors)
-  } else if (data.errors) {
-    return parseErrorObject(data.errors)
-  } else {
-    return data
-  }
+  return parseErrorObject(errors)
 }
 
 const parseErrorObject = (errors) =>
@@ -30,19 +23,19 @@ const parseErrorObject = (errors) =>
     })
     .join(', ')
 
-const parseErrorArray = (errors) =>
-  errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
+// const parseErrorArray = (errors) =>
+//   errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
 
 /*
  * @param Boolean success
  * @param {Object} data e.g. { data: { id: 1}}
  * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
  */
-const newResponse = ({ success, data, error, errors }) => ({
+const newResponse = ({ success, data }) => ({
   success,
   data,
   // we need to parse the errors into something viewable
-  errors: !success ? parseErrors({ data, error, errors }) : undefined,
+  errors: !success ? parseErrors(data) : undefined,
 })
 
 /*
@@ -54,7 +47,7 @@ const handleResponse = async (promise) => {
     // yay it worked.
     const rawResponse = await promise
     const data = await rawResponse.json()
-    return newResponse({ success: true, data })
+    return newResponse({ success: rawResponse.ok, data })
   } catch (error) {
     // we only want this to output during development or production
     // eslint has got this wrong as it is always a string
