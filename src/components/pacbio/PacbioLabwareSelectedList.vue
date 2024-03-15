@@ -15,7 +15,7 @@
           <label class="text-base">Table view</label>
           <traction-toggle v-model="tableView" data-attribute="check-box" />
         </div>
-        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto h-screen justify-between">
+        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto h-96 space-x-4">
           <div v-for="labware in selectedLabware" :key="labware.id" data-type="selected-plate-item">
             <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-4 mt-2">
               <div class="flex w-full justify-end">
@@ -99,7 +99,6 @@ const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 
 const selectedRequests = computed(() => {
   //get all selected requests first
-
   const requests = props.labware.flatMap((labware) => {
     if (isPlate(labware)) {
       const plate = pacbioPoolCreateStore.selectedPlates.find(

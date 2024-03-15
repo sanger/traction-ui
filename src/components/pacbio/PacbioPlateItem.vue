@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 import Plate96SVG from '@/components/svg/Plate96SVG.vue'
 import Well from '@/components/pacbio/PacbioWellItem.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'

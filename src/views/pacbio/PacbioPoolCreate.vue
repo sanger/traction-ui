@@ -62,21 +62,29 @@ const scannedLabware = ref([])
 const searchText = ref('')
 const searchRef = ref(null)
 
-const alertOnFail = ({ success, errors }) => {
+const fetchPoolsData = async () => {
+  pacbioPoolCreateStore.clearPoolData()
+  const { success, errors } = await pacbioRootStore.fetchPacbioTagSets()
   if (!success) {
     this.showAlert(errors, 'danger')
   }
-}
-
-const fetchPoolsData = async () => {
-  pacbioPoolCreateStore.clearPoolData()
-  await pacbioRootStore.fetchPacbioTagSets().then(alertOnFail)
 
   // We should come up with a better solution to identify 'new' pools
   // Currently if the route is anything other than 'new' we assume its a pool id
   // However that is not always the case, maybe we could check the type as well.
   if (route.params.id !== 'new') {
-    return await pacbioPoolCreateStore.populateUsedAliquotsFromPool(route.params.id)
+    const { success, errors } = await pacbioPoolCreateStore.populateUsedAliquotsFromPool(
+      route.params.id,
+    )
+    if (success) {
+      pacbioPoolCreateStore.selectedPlates.map((plate) => {
+        scannedLabware.value.push({ barcode: plate.barcode, type: 'plates' })
+      })
+      pacbioPoolCreateStore.selectedTubes.map((tube) => {
+        scannedLabware.value.push({ barcode: tube.barcode, type: 'tubes' })
+      })
+    }
+    return { success, errors }
   } else {
     return { success: true, errors: [] }
   }

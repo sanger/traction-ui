@@ -104,6 +104,7 @@ const payload = ({ used_aliquots, pool }) => {
             'volume',
             'concentration',
             'insert_size',
+            'source_type',
           ]),
         ),
         primary_aliquot_attributes: {

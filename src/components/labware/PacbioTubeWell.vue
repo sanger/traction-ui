@@ -1,7 +1,9 @@
 <template>
   <div>
     <div :class="wellClassNames" data-attribute="traction-well" @click="click">
-      <p v-if="position" class="truncate font-light">{{ position }}</p>
+      <p v-if="position" data-attribute="traction-well-position" class="truncate font-light">
+        {{ position }}
+      </p>
     </div>
   </div>
 </template>
@@ -14,7 +16,7 @@ const props = defineProps({
    * An array of request ids associated with the well
    */
   requests: {
-    type: Array,
+    type: Object,
     default() {
       return []
     },
@@ -24,7 +26,6 @@ const props = defineProps({
     default: '',
   },
 })
-
 const emit = defineEmits(['click'])
 
 const getRequest = computed(() => (props.requests.length ? props.requests[0] : ''))

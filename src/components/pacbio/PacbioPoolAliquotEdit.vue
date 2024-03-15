@@ -127,7 +127,11 @@ const librarySetter = (attr) => {
         fieldsThatRequireValidation.value[attr] = true
         props.notify()
       }
-      store.updateUsedAliquot({ source_id: aliquot.value.source_id, [attr]: newValue })
+      store.updateUsedAliquot({
+        source_id: aliquot.value.source_id,
+        [attr]: newValue,
+        source_type: store.sourceTypeForRequest(props.request),
+      })
     },
   })
 }

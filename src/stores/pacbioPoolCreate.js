@@ -146,7 +146,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        */
       tubes: {},
     },
-    // Libraries. Indexed by an internally generated id.
+    // used_aliquots. Indexed by an internally generated id.
     used_aliquots: {},
     // Pool: The current pool being edited or created
     pool: {},
@@ -285,6 +285,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Object} The tibe item from the state, or an empty object if it does not exist.
      */
     tubeItem: (state) => state.tube || {},
+
+    sourceTypeForRequest: () => (request) =>
+      request.tube || request.well ? 'Pacbio::Request' : 'Pacbio::Library',
   },
   actions: {
     /**
@@ -594,7 +597,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // after the request for all plates, as otherwise the partial record will over-write
         // the full one.
         include:
-          'used_aliquots.tag.tag_set,used_aliquots.source_plate.wells.requests,used_aliquots.request.tube,tube',
+          'used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library',
       })
       const response = await handleResponse(promise)
 
@@ -602,12 +605,13 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       if (success) {
         const {
-          used_aliquots = [],
+          aliquots = [],
           requests,
           wells,
           plates = [],
           tag_sets: [tag_set] = [{}],
           tubes = [],
+          libraries = [],
         } = groupIncludedByResource(included)
         // Get the pool tube and remove it from tubes list
         const poolTube = tubes.splice(
@@ -618,7 +622,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         this.pool = { ...data }
         //Populate used_aliquots
         const usedAliquots = dataToObjectById({
-          data: used_aliquots,
+          data: aliquots,
           includeRelationships: true,
         })
         Object.values(usedAliquots).forEach((usedAliquot) => {
@@ -627,14 +631,20 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             ...usedAliquot,
             source_id: usedAliquot.request,
             tag_id: usedAliquot.tag,
+            source_type: this.sourceTypeForRequest(usedAliquot.request),
           })
         })
+        debugger
         //Populate requests
         this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
         //Populate wells
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
         //Populate plates
+        // if (libraries.length > 0) {
+        //   this.resources.tubes = dataToObjectById({ data: libraries, includeRelationships: true })
+        // } else {
         this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
+
         //Populate tubes
         this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
         //Select tag set
@@ -803,7 +813,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           ...this.resources.wells,
           ...dataToObjectById({ data: wells, includeRelationships: true }),
         }
-        //Populate requests
         this.resources.requests = {
           ...this.resources.requests,
           ...dataToObjectById({ data: requests, includeRelationships: true }),
@@ -844,8 +853,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
-      const { requests } = groupIncludedByResource(included)
-      debugger
+      const { requests, libraries } = groupIncludedByResource(included)
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes
@@ -855,11 +863,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
 
       if (success) {
+        //If this a library, the requests will be associated with library, therefore manually assign it to a tube
+        const tubes = dataToObjectById({ data, includeRelationships: true })
+        if (libraries) {
+          Object.values(tubes).forEach((tube) => {
+            tube.requests = requests.map((request) => request.id)
+          })
+        }
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
         this.resources.tubes = {
           ...this.resources.tubes,
-          ...dataToObjectById({ data, includeRelationships: true }),
+          ...tubes,
         }
         this.resources.requests = {
           ...this.resources.requests,
