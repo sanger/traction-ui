@@ -101,7 +101,7 @@
           "polymerase_kit": null
         },
         "relationships": {
-          "aliquots": {
+          "used_aliquots": {
             "data": [
               {
                 "type": "aliquots",
@@ -138,7 +138,7 @@
           "polymerase_kit": null
         },
         "relationships": {
-          "aliquots": {
+          "used_aliquots": {
             "data": [
               {
                 "type": "aliquots",
@@ -175,7 +175,7 @@
           "polymerase_kit": null
         },
         "relationships": {
-          "aliquots": {
+          "used_aliquots": {
             "data": [
               {
                 "type": "aliquots",

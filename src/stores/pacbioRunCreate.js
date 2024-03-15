@@ -285,7 +285,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         id,
         // The used aliquots are needed to get the libraries, pools and tubes
         include:
-          'plate.wells.used_aliquots.library.tube,plate.wells.used_aliquots.pool.tube,smrt_link_version',
+          'plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       })
       const response = await handleResponse(promise)
 
