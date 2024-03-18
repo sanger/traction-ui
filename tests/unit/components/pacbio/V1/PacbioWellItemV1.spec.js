@@ -1,5 +1,5 @@
-import Well from '@/components/pacbio/PacbioWellItem'
-import { mount, store } from '@support/testHelper'
+import Well from '@/components/pacbio/V1/PacbioWellItemV1.vue'
+import { mount, store } from '@support/testHelper.js'
 
 const requests = {
   1: {

@@ -17,20 +17,18 @@
 
 <script setup>
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate';
-import { storeToRefs } from 'pinia'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import { computed } from 'vue'
 
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const rootStore = usePacbioRootStore()
-const { tagSetList } = storeToRefs(rootStore)
-const isEmpty = computed(() => tagSetList.length === 0)
+const isEmpty = computed(() => rootStore.tagSetList.length === 0)
 const tagSets = computed(() =>
-  tagSetList.value.map(({ id: value, name: text }) => ({ value, text })),
+  rootStore.tagSetList.map(({ id: value, name: text }) => ({ value, text })),
 )
 const options = computed(() => [{ value: null, text: 'Please select a tag set' }, ...tagSets.value])
 const selected = computed(() => {
-  const { id = null } = tagSetList.value.find(({ selected }) => selected) || {}
+  const { id = null } = rootStore.tagSetList.find(({ selected }) => selected) || {}
   return id
 })
 const updateSelected = (id) => {

@@ -13,14 +13,18 @@
       <template v-if="selectedLabware.length > 0">
         <div class="flex space-x-2 py-4 border-gray-100 mb-2">
           <label class="text-base">Table view</label>
-          <traction-toggle v-model="tableView" data-attribute="check-box" />
+          <traction-toggle v-model="tableView" data-attribute="table-check-box" />
         </div>
         <div v-if="!tableView" class="flex flex-wrap overflow-y-auto h-96 space-x-4">
-          <div v-for="labware in selectedLabware" :key="labware.id" data-type="selected-plate-item">
+          <div
+            v-for="labware in selectedLabware"
+            :key="labware.id"
+            data-type="selected-labware-item"
+          >
             <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-4 mt-2">
               <div class="flex w-full justify-end">
                 <button
-                  :id="'remove-plate-btn-'"
+                  :id="'remove-btn-' + labware.id"
                   class="mt-0 bg-blue-100 hover:bg-gray-300"
                   @click="onClose(labware)"
                 >
@@ -35,7 +39,7 @@
             </div>
           </div>
         </div>
-        <div v-else class="flex flex-col">
+        <div v-else class="flex flex-col" data-attribute="table-view">
           <div class="flex w-full justify-end space-x-2 p-2">
             <label>Sort by selection</label>
             <input v-model="sortBySelection" type="checkbox" class="text-base" />
@@ -59,6 +63,11 @@
           </div>
         </div>
       </template>
+      <template v-else>
+        <div class="flex justify-center items-center mx-auto h-96">
+          <label data-attribute="warning-label">Please select labware to view the samples</label>
+        </div>
+      </template>
     </traction-section>
   </div>
 </template>
@@ -72,6 +81,12 @@ import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { ref, reactive } from 'vue'
 
 const props = defineProps({
+  /**
+   * The labware to display
+   * @type {Array}
+   * @default []
+   * @example [{ barcode: 'DN1234', type: 'plates' }, { barcode: 'DN1235', type: 'tubes' }]
+   */
   labware: {
     type: Array,
     required: true,

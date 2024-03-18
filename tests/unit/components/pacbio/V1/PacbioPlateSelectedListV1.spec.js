@@ -1,6 +1,6 @@
-import { mount, store, Data } from '@support/testHelper'
-import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
-import Response from '@/api/Response'
+import { mount, store, Data } from '@support/testHelper.js'
+import PacbioPlateSelectedList from '@/components/pacbio/V1/PacbioPlateSelectedListV1.vue'
+import Response from '@/api/Response.js'
 
 describe('PacbioPlateSelectedList', () => {
   let wrapper, mockPlates

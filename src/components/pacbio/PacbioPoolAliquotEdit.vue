@@ -103,7 +103,6 @@ const props = defineProps({
 })
 const fieldsThatRequireValidation = ref([])
 const store = usePacbioPoolCreateStore()
-
 const tagList = computed(() => {
   return store.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
 })

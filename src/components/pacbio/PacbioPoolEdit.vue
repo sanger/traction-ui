@@ -94,8 +94,8 @@ const poolType = computed(() => {
   switch (selectedRequests.length) {
     case 0:
       return 'Empty'
-    case 1:
-      return 'Library'
+    // case 1:
+    //   return 'Library'
     default:
       return 'Pool'
   }

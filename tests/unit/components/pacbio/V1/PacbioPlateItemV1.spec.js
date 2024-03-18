@@ -1,5 +1,5 @@
-import Plate from '@/components/pacbio/PacbioPlateItem'
-import { mount, store } from '@support/testHelper'
+import Plate from '@/components/pacbio/V1/PacbioPlateItemV1.vue'
+import { mount, store } from '@support/testHelper.js'
 
 const plates = {
   1: {

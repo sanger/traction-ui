@@ -4,7 +4,7 @@ import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
-import { usePacbioRootStore } from './pacbioRoot'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
 /**
  * Merge together two representations of the same object.
@@ -180,8 +180,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @param {Object} param0 - An object with `selected` and `resources` properties.
      * @returns {Object[]} The merged representations of the selected plates and the resource plates.
      */
-    selectedPlates: ({ selected, resources }) =>
-      mergeRepresentations(selected.plates, resources.plates),
+    selectedPlates: ({ selected, resources }) => {
+      return mergeRepresentations(selected.plates, resources.plates)},
     /**
      * This function takes an object with `selected` and `resources` properties and returns a list of selected tubes.
      * It merges the representations of `selected.tubes` and `resources.tubes` using the `mergeRepresentations` function.
@@ -276,7 +276,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @param {Object} state - The state object that contains the pool item.
      * @returns {Object} The pool item from the state, or an empty object if it does not exist.
      */
-    poolItem: (state) => state.pool || {},
+    poolItem: (state) => {
+      return state.pool || {}
+    },
 
     /**
      * Retrieves the tube item from the state. If the tibe item does not exist, returns an empty object.

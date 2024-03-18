@@ -1,8 +1,7 @@
-import { mount, store, nextTick } from '@support/testHelper'
-import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
+import { mount, store, nextTick,Data } from '@support/testHelper.js'
+import PacbioPoolEdit from '@/components/pacbio/V1/PacbioPoolEditV1.vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
-import { Data } from '@support/testHelper'
-import * as pacbio from '@/lib/csv/pacbio'
+import * as pacbio from '@/lib/csv/pacbio.js'
 
 const buildWrapper = () =>
   mount(PacbioPoolEdit, {

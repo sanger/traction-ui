@@ -1,5 +1,5 @@
-import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
-import { mount, store } from '@support/testHelper'
+import PacbioTagSetItem from '@/components/pacbio/V1/PacbioTagSetItemV1.vue'
+import { mount, store } from '@support/testHelper.js'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: ['1', '2', '3', '4', '5', '6'] },

@@ -42,10 +42,11 @@ const store = usePacbioPoolCreateStore()
 const rootStore = useRootStore()
 
 const mappedWells = computed(() => {
-  return Object.entries(rootStore.plateMap.wells).map(([position, mapWell]) => {
+  const value = Object.entries(rootStore.plateMap.wells).map(([position, mapWell]) => {
     const well = wellData.value.find((well) => well.position == position)
     return well ? { ...mapWell, ...well } : mapWell
   })
+  return value;
 })
 
 wellData.value = store.wellList(props.wells)
