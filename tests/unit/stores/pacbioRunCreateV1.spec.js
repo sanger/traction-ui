@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import useRootStore from '@/stores'
-import storePools from '@tests/data/StoreRunPools.json'
+import storePools from '@tests/data/StoreRunPoolsV1.json'
 import { Data } from '@support/testHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 import {

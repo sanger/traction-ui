@@ -1,6 +1,6 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import { mount, createTestingPinia } from '@support/testHelper'
-import storePools from '@tests/data/StoreRunPools.json'
+import storePools from '@tests/data/StoreRunPoolsV1.json'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { beforeEach } from 'vitest'

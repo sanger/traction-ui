@@ -259,6 +259,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
+
         this.tubes = formatById(this.tubes, data, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.aliquots = formatById(this.aliquots, aliquots, true)
