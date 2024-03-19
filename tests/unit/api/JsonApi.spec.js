@@ -365,7 +365,7 @@ describe('JsonApi', () => {
   })
 
   describe('splitDataByParent', () => {
-    it.only('splits the data by parent', () => {
+    it('splits the data by parent', () => {
       const plates = Data.PacbioRun.data.included.slice(0, 2)
       const wells = Data.PacbioRun.data.included.slice(2, 4)
 
