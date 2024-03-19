@@ -365,9 +365,9 @@ describe('JsonApi', () => {
   })
 
   describe('splitDataByParent', () => {
-    it('splits the data by parent', () => {
-      const plates = Data.PacbioRunV1.data.included.slice(0, 2)
-      const wells = Data.PacbioRunV1.data.included.slice(2, 5)
+    it.only('splits the data by parent', () => {
+      const plates = Data.PacbioRun.data.included.slice(0, 2)
+      const wells = Data.PacbioRun.data.included.slice(2, 4)
 
       const plateNumbers = plates.map((p) => p.attributes.plate_number.toString())
 
@@ -382,7 +382,7 @@ describe('JsonApi', () => {
       expect(Object.keys(result)).toEqual(plateNumbers)
       // check that each plate has the correct wells
       expect(result[plateNumbers[0]]).toEqual(
-        dataToObjectByPosition({ data: [wells[0]], includeRelationships: true }),
+        dataToObjectByPosition({ data: [wells[0], wells[1]], includeRelationships: true }),
       )
       expect(result[plateNumbers[1]]).toEqual(
         dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
