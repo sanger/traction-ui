@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { computed } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
 const props = defineProps({

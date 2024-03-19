@@ -1,5 +1,5 @@
 <template>
-  <div data-type="selected-plate-list" class="h-screen overflow-hidden">
+  <div data-type="selected-plate-list">
     <!-- eslint-disable vue/attribute-hyphenation-->
     <VueSelecto
       :container="$el"
@@ -15,17 +15,18 @@
           <label class="text-base">Table view</label>
           <traction-toggle v-model="tableView" data-attribute="table-check-box" />
         </div>
-        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto h-96 space-x-4">
+        <div v-if="!tableView" class="flex flex-wrap overflo-y-auto">
           <div
             v-for="labware in selectedLabware"
             :key="labware.id"
             data-type="selected-labware-item"
+            class="w-1/2"
           >
-            <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-4 mt-2">
+            <div class="border border-sdb bg-blue-100 rounded-lg p-1 mr-3 mt-2">
               <div class="flex w-full justify-end">
                 <button
                   :id="'remove-btn-' + labware.id"
-                  class="mt-0 bg-blue-100 hover:bg-gray-300"
+                  class="p-1 bg-blue-100 hover:bg-gray-800 hover:text-white"
                   @click="onClose(labware)"
                 >
                   <traction-close-icon />
@@ -42,7 +43,7 @@
         <div v-else class="flex flex-col" data-attribute="table-view">
           <div class="flex w-full justify-end space-x-2 p-2">
             <label>Sort by selection</label>
-            <input v-model="sortBySelection" type="checkbox" class="text-base" />
+            <input v-model="sortBySelection" type="checkbox" class="text-base" data-attribute="sort-by-selection" />
           </div>
           <div class="overflow-y-auto h-screen">
             <traction-table
@@ -56,6 +57,7 @@
                     :id="'add-request' + row.item.id"
                     :checked="row.item.selected"
                     type="checkbox"
+                    :data-attribute="'request-checkbox-' + row.item.id"
                     @change="requestClicked({ id: row.item.id, selected: row.item.selected })"
                   />
                 </div> </template
@@ -65,7 +67,7 @@
       </template>
       <template v-else>
         <div class="flex justify-center items-center mx-auto h-96">
-          <label data-attribute="warning-label">Please select labware to view the samples</label>
+          <label data-attribute="warning-label">Please scan labware to view the samples</label>
         </div>
       </template>
     </traction-section>

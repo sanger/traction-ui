@@ -36,7 +36,7 @@ const wellClassNames = computed(() => {
     getRequest.value.selected
       ? 'border-2 border-solid border-yellow-400'
       : 'border-1 border-solid border-black',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none ',
+    'flex flex-col md:w-32 justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none ',
   ]
 })
 const click = () => {

@@ -13,7 +13,7 @@
   </div>
 </template>
 <script setup>
-import { defineProps, reactive } from 'vue'
+import { reactive } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
 

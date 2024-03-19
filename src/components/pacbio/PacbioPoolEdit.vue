@@ -88,14 +88,11 @@ const validated = ref(true)
 const { poolItem, tubeItem, selectedRequests, createPool, updatePool, updateLibraryFromCsvRecord } =
   usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
-
 const persisted = computed(() => !!poolItem.id)
 const poolType = computed(() => {
   switch (selectedRequests.length) {
     case 0:
       return 'Empty'
-    // case 1:
-    //   return 'Library'
     default:
       return 'Pool'
   }

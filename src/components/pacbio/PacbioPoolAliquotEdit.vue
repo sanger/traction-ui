@@ -1,5 +1,5 @@
 <template>
-  <traction-table-row data-type="pool-library-edit">
+  <traction-table-row data-type="pool-aliquot-edit">
     <traction-table-column data-attribute="request-sample-name">
       {{ props.request.sample_name }}
     </traction-table-column>
@@ -71,7 +71,7 @@
   </traction-table-row>
 </template>
 <script setup>
-import { computed, ref, defineProps } from 'vue'
+import { computed, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
 const props = defineProps({
@@ -129,7 +129,7 @@ const librarySetter = (attr) => {
       store.updateUsedAliquot({
         source_id: aliquot.value.source_id,
         [attr]: newValue,
-        source_type: store.sourceTypeForRequest(props.request),
+        source_type: aliquot.value.source_type,
       })
     },
   })
