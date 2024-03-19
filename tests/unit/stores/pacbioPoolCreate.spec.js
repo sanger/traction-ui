@@ -648,13 +648,16 @@ describe('usePacbioPoolCreateStore', () => {
         find.mockResolvedValue(Data.TractionPacbioPool)
         const { success } = await store.populateUsedAliquotsFromPool()
 
-        expect(store.pool).toEqual(Data.TractionPacbioPool.data.data)
-
         const usedAliquotsData = Data.TractionPacbioPool.data.included.slice(0, 1)
         const requests = Data.TractionPacbioPool.data.included.slice(100, 148)
         const plates = Data.TractionPacbioPool.data.included.slice(3, 4)
         const wells = Data.TractionPacbioPool.data.included.slice(4, 100)
         const tubes = Data.TractionPacbioPool.data.included.slice(148, 149)
+
+        expect(store.pool).toEqual({
+          id: Data.TractionPacbioPool.data.data.id,
+          ...Data.TractionPacbioPool.data.data.attributes,
+        })
 
         const used_aliquots = jsonapi.dataToObjectById({
           data: usedAliquotsData,

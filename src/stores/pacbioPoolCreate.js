@@ -167,7 +167,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected.tagSet && selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
         const tagSet = pacbioRoot.tagSets[selected.tagSet.id]
-        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag])
+        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag.id ?? tag])
         return { ...tagSet, tags }
       } else {
         return { id: null, tags: [] }
@@ -180,8 +180,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @param {Object} param0 - An object with `selected` and `resources` properties.
      * @returns {Object[]} The merged representations of the selected plates and the resource plates.
      */
-    selectedPlates: ({ selected, resources }) => {
-      return mergeRepresentations(selected.plates, resources.plates)},
+    selectedPlates: ({ selected, resources }) =>
+      mergeRepresentations(selected.plates, resources.plates),
     /**
      * This function takes an object with `selected` and `resources` properties and returns a list of selected tubes.
      * It merges the representations of `selected.tubes` and `resources.tubes` using the `mergeRepresentations` function.
@@ -613,7 +613,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           plates = [],
           tag_sets: [tag_set] = [{}],
           tubes = [],
-          libraries = [],
+          // libraries = [],
         } = groupIncludedByResource(included)
         // Get the pool tube and remove it from tubes list
         const poolTube = tubes.splice(
@@ -621,7 +621,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           1,
         )[0]
         //Populate pool attributes
-        this.pool = { ...data }
+        this.pool = {
+          id: data.id,
+          ...data.attributes,
+        }
         //Populate used_aliquots
         const usedAliquots = dataToObjectById({
           data: aliquots,
@@ -633,10 +636,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             ...usedAliquot,
             source_id: usedAliquot.request,
             tag_id: usedAliquot.tag,
-            source_type: this.sourceTypeForRequest(usedAliquot.request),
           })
         })
-        debugger
         //Populate requests
         this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
         //Populate wells

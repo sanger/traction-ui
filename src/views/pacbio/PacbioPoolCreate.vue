@@ -6,7 +6,7 @@
           <traction-section
             title="Scan labware"
             number="1a"
-            description="To get started, scan or enter a plate, tube or library barcode"
+            description="To get started, scan or type a plate, tube, or library barcode and press Enter"
           >
             <div class="flex flex-row space-x-2 items-center">
               <BarcodeIcon class="w-8 h-8" />
@@ -15,7 +15,7 @@
                 ref="searchRef"
                 v-model="searchText"
                 type="search"
-                placeholder="Type to Search"
+                placeholder="Type barcode and press enter"
                 label="Search value"
                 class="w-full"
                 @enterKeyPress="search"
@@ -28,7 +28,7 @@
           <PacbioTagSetList ref="tagSetList" />
           <PacbioTagSetItem />
         </div>
-        <div class="h-screen">
+        <div>
           <PacbioLabwareSelectedList :labware="scannedLabware" @closed="onClosed" />
         </div>
         <div>
@@ -66,7 +66,7 @@ const fetchPoolsData = async () => {
   pacbioPoolCreateStore.clearPoolData()
   const { success, errors } = await pacbioRootStore.fetchPacbioTagSets()
   if (!success) {
-    this.showAlert(errors, 'danger')
+    showAlert(errors, 'danger')
   }
 
   // We should come up with a better solution to identify 'new' pools

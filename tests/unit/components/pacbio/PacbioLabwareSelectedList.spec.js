@@ -40,7 +40,6 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 
 describe('PacbioLabwareSelectedList', () => {
   let wrapper, store
-  const data = Data.PacbioPlatesRequest.data.included
   const plates = dataToObjectById({
     data: Data.PacbioPlatesRequest.data.data,
     includeRelationships: true,
@@ -69,7 +68,7 @@ describe('PacbioLabwareSelectedList', () => {
       },
     })
     const label = wrapperObj.find('[data-attribute="warning-label"]')
-    expect(label.text()).toBe('Please select labware to view the samples')
+    expect(label.text()).toBe('Please scan labware to view the samples')
   })
 
   describe('when mounted with Plate', () => {
@@ -180,7 +179,6 @@ describe('PacbioLabwareSelectedList', () => {
       expect(store.selectRequest).toHaveBeenCalledOnce()
     })
     it('should emit closed event when remove button is clicked', async () => {
-      store.deselectPlateAndContents = vi.fn()
       const button = wrapper.find('#remove-btn-1')
       await button.trigger('click')
       expect(wrapper.emitted().closed).toBeTruthy()
@@ -233,6 +231,8 @@ describe('PacbioLabwareSelectedList', () => {
     describe('Table view', () => {
       beforeEach(() => {
         wrapper.find('[data-attribute=table-check-box]').trigger('click')
+        //Select the requests associated with the tube
+        store.selectRequest({ id: '241', selected: true })
       })
       it('should display table view', () => {
         expect(wrapper.find('[data-attribute=table-view]').exists()).toBe(true)
@@ -245,28 +245,51 @@ describe('PacbioLabwareSelectedList', () => {
         }
       })
 
-    //   it.only('contains the correct data', async () => {
-    //     expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
-    //     expect(wrapper.find('tbody').findAll('td').length).toEqual(18)
-    //     let incrementIndex = 0
-    //     Object.values(store.resources.requests).map((request) => {
-    //       expect(wrapper.find('tbody').findAll('td')[incrementIndex].text()).toEqual(
-    //         request.source_identifier ?? '',
-    //       )
-    //       expect(wrapper.find('tbody').findAll('td')[incrementIndex + 1].text()).toEqual(
-    //         request.sample_species ?? '',
-    //       )
-    //       expect(wrapper.find('tbody').findAll('td')[incrementIndex + 2].text()).toEqual(
-    //         request.library_type ?? '',
-    //       )
-    //       expect(wrapper.find('tbody').findAll('td')[incrementIndex + 3].text()).toEqual(
-    //         request.number_of_smrt_cells ?? '',
-    //       )
-    //       expect(wrapper.find('tbody').findAll('td')[incrementIndex + 4].text()).toEqual(
-    //         request.estimate_of_gb_required ?? '',
-    //       )
-    //       incrementIndex += 5
-    //     })
+      it('contains the correct data', async () => {
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
+        expect(wrapper.find('tbody').findAll('td').length).toEqual(18)
+      })
+      it('contains the selected  requests in the same order as it is added', () => {
+        //First plate
+        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('DN814327C:A1')
+        expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('human')
+
+        //Tube at the end
+        expect(wrapper.find('tbody').findAll('td')[12].text()).toEqual('GEN-1680611780-6')
+        expect(wrapper.find('tbody').findAll('td')[13].text()).toEqual('human')
+        expect(wrapper.find('tbody').findAll('td')[14].text()).toEqual('PacBio_Ultra_Low_Input')
+        expect(wrapper.find('tbody').findAll('td')[15].text()).toEqual('3')
+        expect(wrapper.find('tbody').findAll('td')[16].text()).toEqual('100')
+      })
+
+      it('displays the selected requests first when sortBySelection is true', async () => {
+        //Tube requests
+        expect(wrapper.find('[data-attribute=request-checkbox-241]').element.checked).toBe(true)
+        //Plate requests
+        expect(wrapper.find('[data-attribute=request-checkbox-40]').element.checked).toBe(false)
+        expect(wrapper.find('[data-attribute=request-checkbox-41]').element.checked).toBe(false)
+      })
+
+      it('displays the selected requests first when sortBySelection is true', async () => {
+        await wrapper.find('[data-attribute=sort-by-selection]').setChecked(true)
+        await wrapper.vm.$nextTick()
+        expect(wrapper.vm.sortBySelection).toBe(true)
+        //Tube requests displayed first
+        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('GEN-1680611780-6')
+        expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('human')
+        expect(wrapper.find('tbody').findAll('td')[2].text()).toEqual('PacBio_Ultra_Low_Input')
+        expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('3')
+        expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('100')
+      })
+      it('should call selectRequest method on select checkbox click ', async () => {
+        store.selectRequest = vi.fn()
+        await wrapper.find('[data-attribute=request-checkbox-241]').setChecked(false)
+        expect(store.selectRequest).toHaveBeenCalledWith({ id: '241', selected: false })
+      })
+      it('should call selectRequest method on click on a table cell ', async () => {
+        store.selectRequest = vi.fn()
+        wrapper.find('tbody').findAll('td')[0].trigger('click')
+        expect(store.selectRequest).toHaveBeenCalledWith({ id: '40', selected: true })
       })
     })
   })
