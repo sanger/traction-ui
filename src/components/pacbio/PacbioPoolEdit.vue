@@ -85,8 +85,14 @@ const busy = ref(false)
 const autoTag = ref(false)
 const parsedFile = ref(null)
 const validated = ref(true)
-const { poolItem, tubeItem, selectedRequests, createPool, updatePool, updateLibraryFromCsvRecord } =
-  usePacbioPoolCreateStore()
+const {
+  poolItem,
+  tubeItem,
+  selectedRequests,
+  createPool,
+  updatePool,
+  updateUsedAliquotFromCsvRecord,
+} = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const persisted = computed(() => !!poolItem.id)
 const poolType = computed(() => {
@@ -136,7 +142,7 @@ const uploadFile = async (evt) => {
     const file = evt.target.files[0]
     try {
       const csv = await file.text()
-      eachRecord(csv, updateLibraryFromCsvRecord)
+      eachRecord(csv, updateUsedAliquotFromCsvRecord)
       parsedFile.value = true
     } catch (error) {
       console.error(error)

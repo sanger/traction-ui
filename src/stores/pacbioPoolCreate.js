@@ -653,7 +653,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //Select tag set
         this.selectTagSet(tag_set.id)
         //Populate tube
-        this.tube = { ...poolTube }
+        this.tube = { id: poolTube.id, ...poolTube.attributes }
         //Selects all the tubes and plates
         tubes.forEach(({ id }) => this.selectTube({ id, selected: true }))
         plates.forEach(({ id }) => this.selectPlate({ id, selected: true }))
