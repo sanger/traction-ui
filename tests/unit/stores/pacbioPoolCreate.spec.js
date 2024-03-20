@@ -679,7 +679,7 @@ describe('usePacbioPoolCreateStore', () => {
           jsonapi.dataToObjectById({ data: wells, includeRelationships: true }),
         )
         expect(store.resources.tubes).toEqual({})
-        expect(store.tube).toEqual(tubes[0])
+        expect(store.tube).toEqual({ id: tubes[0].id, ...tubes[0].attributes })
 
         expect(success).toEqual(true)
       })

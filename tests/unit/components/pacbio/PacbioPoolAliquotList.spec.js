@@ -97,7 +97,7 @@ describe('PacbioPoolAliquotList.vue', () => {
         notify: () => {},
       },
     })
-    expect(wrapperObj.findAll('[data-type=pool-library-edit]').length).toEqual(
+    expect(wrapperObj.findAll('[data-type=pool-aliquot-edit]').length).toEqual(
       Object.values(used_aliquots).length,
     )
   })
