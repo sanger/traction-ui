@@ -12,7 +12,6 @@ describe('Pacbio Pool Create', () => {
       flipper_id: 'User',
       features: {
         dpl_989_ui: { enabled: true },
-        multiplexing_phase_2_aliquot: { enabled: true },
       },
     })
   })
@@ -20,18 +19,22 @@ describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
-    cy.get('ellipse').first().click()
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 1)
-    // // and samples that have failed qc should not be selectable
-    cy.get('[data-type=pool-aliquot-edit]').within(() => {
+    cy.get('[data-type=selected-plate-list]').within(() => {
+      cy.get('[data-type=plate-item]').first()
+      cy.get('ellipse').first().click()
+    })
+    cy.get('[data-type=pool-library-edit]').should('have.length', 1)
+    // and samples that have failed qc should not be selectable
+    cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('bc1001')
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
@@ -53,7 +56,7 @@ describe('Pacbio Pool Create', () => {
     }).as('postPayload')
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
-    cy.fixture('tractionPacbioSinglePoolCreate').then(({ data }) => {
+    cy.fixture('tractionPacbioSinglePoolCreateV1').then(({ data }) => {
       cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })
   })
@@ -61,16 +64,20 @@ describe('Pacbio Pool Create', () => {
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
-    cy.get('ellipse').first().click()
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 1)
-    cy.get('[data-type=pool-aliquot-edit]').within(() => {
+    cy.get('[data-type=selected-plate-list]').within(() => {
+      cy.get('[data-type=plate-item]').first()
+      cy.get('ellipse').first().click()
+    })
+    cy.get('[data-type=pool-library-edit]').should('have.length', 1)
+    cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('bc1001')
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
@@ -94,26 +101,29 @@ describe('Pacbio Pool Create', () => {
   it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     // Bulk sample addition
-    cy.get('[data-type=selected-labware-item]')
-      .first()
-      .trigger('mousedown', {
-        position: 'topLeft',
-      })
-      .trigger('mousemove', {
-        position: 'bottomRight',
-      })
-      .trigger('mouseup', {
-        position: 'bottomRight',
-      })
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 4)
+    cy.get('[data-type=selected-plate-list]').within(() => {
+      cy.get('[data-type=plate-item]')
+        .first()
+        .trigger('mousedown', {
+          position: 'topLeft',
+        })
+        .trigger('mousemove', {
+          position: 'bottomRight',
+        })
+        .trigger('mouseup', {
+          position: 'bottomRight',
+        })
+    })
+    cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
     const orderedElements = [
       'GEN-1680611780-1:A1',
@@ -124,7 +134,7 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('#qcFileInput').attachFile('pacbio.csv')
     // Validate the order
-    cy.get('[data-type=pool-aliquot-edit]').each((el, index) => {
+    cy.get('[data-type=pool-library-edit]').each((el, index) => {
       cy.wrap(el).within(() => {
         const expectedElement = orderedElements[index]
         cy.get('[data-attribute=request-source-identifier]').contains(expectedElement)
@@ -134,11 +144,11 @@ describe('Pacbio Pool Create', () => {
     // Auto-tagging
     cy.get('[data-attribute=check-box]').click()
 
-    cy.get('[data-type=pool-aliquot-edit]')
+    cy.get('[data-type=pool-library-edit]')
       .filter(':contains("GEN-1680611780-1:A1")')
       .find('[data-type=tag-list]')
       .select('bc1002')
-    cy.get('[data-type=pool-aliquot-edit]')
+    cy.get('[data-type=pool-library-edit]')
       .filter(':contains("GEN-1680611780-1:B1")')
       .find('[data-type=tag-list]')
       .should('have.value', '251')
@@ -163,26 +173,29 @@ describe('Pacbio Pool Create', () => {
   it('can populate tags from csv', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     // Bulk sample addition
-    cy.get('[data-type=selected-labware-item]')
-      .first()
-      .trigger('mousedown', {
-        position: 'topLeft',
-      })
-      .trigger('mousemove', {
-        position: 'bottomRight',
-      })
-      .trigger('mouseup', {
-        position: 'bottomRight',
-      })
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 4)
+    cy.get('[data-type=selected-plate-list]').within(() => {
+      cy.get('[data-type=plate-item]')
+        .first()
+        .trigger('mousedown', {
+          position: 'topLeft',
+        })
+        .trigger('mousemove', {
+          position: 'bottomRight',
+        })
+        .trigger('mouseup', {
+          position: 'bottomRight',
+        })
+    })
+    cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
     const orderedElements = [
       'GEN-1680611780-1:A1',
@@ -193,19 +206,19 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('#qcFileInput').attachFile('pacbioAndTags.csv')
     // Validate the order
-    cy.get('[data-type=pool-aliquot-edit]').each((el, index) => {
+    cy.get('[data-type=pool-library-edit]').each((el, index) => {
       cy.wrap(el).within(() => {
         const expectedElement = orderedElements[index]
         cy.get('[data-attribute=request-source-identifier]').contains(expectedElement)
       })
     })
 
-    cy.get('[data-type=pool-aliquot-edit]')
+    cy.get('[data-type=pool-library-edit]')
       .filter(':contains("GEN-1680611780-1:A1")')
       .find('[data-type=tag-list]')
       .should('have.value', '250')
 
-    cy.get('[data-type=pool-aliquot-edit]')
+    cy.get('[data-type=pool-library-edit]')
       .filter(':contains("GEN-1680611780-1:B1")')
       .find('[data-type=tag-list]')
       .should('have.value', '251')

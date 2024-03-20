@@ -3,9 +3,9 @@
     "data": {
       "type": "pools",
       "attributes": {
-        "used_aliquots_attributes": [
+        "library_attributes": [
           {
-            "source_id": "1",
+            "pacbio_request_id": "1",
             "template_prep_kit_box_barcode": "ABC1",
             "tag_id": "249",
             "volume": "1",
