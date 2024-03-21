@@ -76,7 +76,7 @@ describe('PacbioTagSetList', () => {
     })
   })
 
-  describe.only('when there are no tag sets to show', () => {
+  describe('when there are no tag sets to show', () => {
     beforeEach(() => {
       const plugins = [
         ({ store }) => {
