@@ -48,8 +48,9 @@ const options = computed(() => [{ value: null, text: 'Please select a tag set' }
  * The selected tag set
  */
 const selected = computed(() => {
-  const { id = null } = rootStore.tagSetList.find(({ selected }) => selected) || {}
-  return id
+  const selectedTagSetId = pacbioPoolCreateStore.selected.tagSet?.id
+  const tagSet = rootStore.tagSetList.find((tagSet) => tagSet.id === selectedTagSetId)
+  return tagSet ? tagSet.id : null
 })
 /**
  * Updates the selected tag set

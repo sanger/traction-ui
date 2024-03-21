@@ -117,7 +117,8 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
-        }
+        },
+        "source_type": "Pacbio::Request"
       },
       "links": {
         "self": "/v1/pacbio/aliquots/1"
@@ -152,7 +153,8 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
-        }
+        },
+        "source_type": "Pacbio::Request"
       },
       "links": {
         "self": "/v1/pacbio/aliquots/2"

@@ -615,23 +615,35 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         } = groupIncludedByResource(included)
 
         /****BEGIN WARNING************
-        Following is the clean up to remove the unintended data returned from the service side
+        Following is a temporary fix clean up to remove the unintended data returned from the service side
         This need to be removed once polymorphic relationship issues are fixed on service side
         **/
         let cleanedPlates = plates
         let cleanedWells = wells
         let cleanedTubes = tubes
-        /*This is a temporary fix to remove the unintended 'plates' and 'wells' data returned from the service
+        /* Remove the unintended 'plates' and 'wells' data returned from the service
          side for a pool created using a library*/
         if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Request')) {
           cleanedWells = []
           cleanedPlates = []
         }
-        /*This is a temporary fix to remove the unintended 'tubes' data returned from the service
+        /*Remove the unintended 'tubes' data returned from the service
          side for a pool created using multiple plates*/
         if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Library')) {
-          cleanedTubes = tubes.filter((tube) => !tube.relationships.libraries.data)
+          cleanedTubes = tubes.filter((tube) => !tube.relationships?.libraries?.data)
         }
+        /*Remove all unintended 'tubes' that doesn't have a request matching with given aliquots*/
+        const aliquotResquestIds = aliquots.map((aliquot) => aliquot.relationships.request.data.id)
+        cleanedTubes = cleanedTubes.filter((tube) => {
+          let id = undefined
+          if (tube.relationships?.libraries?.data) {
+            id = tube.relationships.libraries.data.id
+          } else if (tube.relationships?.requests?.data) {
+            id = tube.relationships.requests.data[0].id
+          }
+          return aliquotResquestIds.includes(id)
+        })
+
         /****END WARNING***************/
 
         // Get the pool tube and remove it from tubes list

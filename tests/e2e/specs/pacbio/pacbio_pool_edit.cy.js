@@ -7,7 +7,7 @@ describe('Pacbio Pool Edit', () => {
       },
     )
     cy.intercept(
-      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library',
+      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library.tube,used_aliquots.library.request',
       {
         fixture: 'tractionPacbioPool.json',
       },
@@ -38,12 +38,13 @@ describe('Pacbio Pool Edit', () => {
       cy.get('[data-testid=row]').should('have.length', 2)
     })
 
-    cy.get('[data-attribute^="request-checkbox"]').first().click()
+    cy.get('[data-attribute^="request-checkbox"]').eq(1).click()
     cy.get('[data-type=pool-library-list]').within(() => {
       cy.get('[data-testid=row]').should('have.length', 3)
     })
-    // //Deselect row requests
-    cy.get('[data-attribute^="request-checkbox"]').first().click()
+
+    //Deselect row requests
+    cy.get('[data-attribute^="request-checkbox"]').eq(1).click()
     cy.get('[data-type=pool-library-list]').within(() => {
       cy.get('[data-testid=row]').should('have.length', 2)
     })

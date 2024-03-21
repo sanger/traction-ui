@@ -58,7 +58,10 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
-        }
+        },
+        "tag": "2",
+        "tag_id": "6",
+        "source_type": "Pacbio::Request"
       },
       "relationships": {
         "request": {

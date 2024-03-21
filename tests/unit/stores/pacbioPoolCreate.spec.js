@@ -642,7 +642,7 @@ describe('usePacbioPoolCreateStore', () => {
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = Data.TractionPacbioTagSets.data.data
         pacbioRootStore.tags = Data.TractionPacbioTagSets.data.included
-        store.selected = { tagset: {}, plates: {} }
+        store.selected = { tagset: {}, plates: {}, tubes: {} }
       })
       it('handles success', async () => {
         find.mockResolvedValue(Data.TractionPacbioPool)
