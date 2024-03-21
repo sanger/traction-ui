@@ -32,7 +32,7 @@
     "postcss": "^8.4.37",
     "swrv": "^1.0.4",
     "tailwindcss": "3.4.1",
-    "vite": "^5.1.6",
+    "vite": "^5.2.2",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
     "vue3-selecto": "^1.12.3",
