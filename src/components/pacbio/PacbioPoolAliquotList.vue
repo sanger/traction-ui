@@ -13,6 +13,14 @@
   </div>
 </template>
 <script setup>
+/**
+ * @name PacbioPoolAliquotList
+ * @description Renders a list of pool aliquots
+ * @param {Object} props
+ * @param {Boolean} props.autoTag - Whether to automatically tag the aliquot
+ * @param {Boolean} props.validated - Whether the attributes in child component(s) have been validated
+ * @param {Function} props.notify - Callback function when user changes an attribute in a child component
+ */
 import { reactive } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
@@ -39,6 +47,9 @@ const props = defineProps({
 
 const store = usePacbioPoolCreateStore()
 
+/**
+ * The fields to display in in the table
+ */
 const state = reactive({
   headerFields: [
     'Sample Name',

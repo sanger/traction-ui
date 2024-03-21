@@ -18,8 +18,8 @@ describe('PacbioTubeWell', () => {
     it('should display the well', () => {
       expect(wrapper.find('[data-attribute="traction-well"]')).toBeDefined()
     })
-    it('dhould display the well color empty', () => {
-      expect(wrapper.find('[data-attribute="traction-well"]').classes()).toContain('bg-black')
+    it('should display the well color empty', () => {
+      expect(wrapper.find('[data-attribute="traction-well"]').classes()).toContain('bg-gray-500')
     })
     it('should display the well position', () => {
       expect(wrapper.find('[data-attribute="traction-well-position"]').text()).toEqual('A1')
@@ -45,7 +45,7 @@ describe('PacbioTubeWell', () => {
     })
     it('should display the well color', () => {
       const classes = wrapper.find('[data-attribute="traction-well"]').classes()
-      const expectedClasses = ['bg-green-600', 'border-solid', 'border-black']
+      const expectedClasses = ['bg-green-600', 'border-solid', 'border-gray-500']
       expect(expectedClasses.every((expectedClass) => classes.includes(expectedClass))).toBe(true)
     })
   })
@@ -88,7 +88,7 @@ describe('PacbioTubeWell', () => {
     })
     it('should display the well color and well border as not selected', () => {
       const classes = wrapper.find('[data-attribute="traction-well"]').classes()
-      const expectedClasses = ['bg-green-600', 'border-solid', 'border-1', 'border-black']
+      const expectedClasses = ['bg-green-600', 'border-solid', 'border-1', 'border-gray-500']
       expect(expectedClasses.every((expectedClass) => classes.includes(expectedClass))).toBe(true)
     })
   })

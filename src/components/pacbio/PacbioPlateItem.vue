@@ -46,7 +46,7 @@ const mappedWells = computed(() => {
     const well = wellData.value.find((well) => well.position == position)
     return well ? { ...mapWell, ...well } : mapWell
   })
-  return value;
+  return value
 })
 
 wellData.value = store.wellList(props.wells)

@@ -106,8 +106,8 @@ const selected = computed(() => {
 
 const ellipseStyle = computed(() => {
   return {
-    fill: checkRequest.value === 'filled' ? 'green' : 'black',
-    stroke: selected.value == 'selected' ? 'yellow' : 'black',
+    fill: checkRequest.value === 'filled' ? 'green' : 'grey',
+    stroke: selected.value == 'selected' ? 'yellow' : 'grey',
     'stroke-width': selected.value == 'selected' ? '2' : '1',
   }
 })

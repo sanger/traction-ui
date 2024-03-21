@@ -63,7 +63,8 @@
           "run_suitability": {
             "ready_for_run": true,
             "errors": []
-          }
+          },
+          "source_type": "Pacbio::Request"
         },
         "relationships": {
           "request": {

@@ -74,7 +74,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
           used_aliquots: { _1: usedAliquot },
         },
         props: {
-          id: 1,
           request,
           notify: () => {},
         },
@@ -93,10 +92,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
     it('will have a source identifier', () => {
       expect(wrapper.find('[data-attribute=request-source-identifier]').text()).toEqual('DN1:A1')
-    })
-
-    it('will have an id', () => {
-      expect(wrapper.vm.id).toEqual(1)
     })
 
     it('will have a list of tags', () => {

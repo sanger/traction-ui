@@ -27,6 +27,10 @@
 </template>
 
 <script setup>
+/**
+ * @name PacbioTagSetItem
+ * @description Renders a tag set item
+ */
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import { computed } from 'vue'
 

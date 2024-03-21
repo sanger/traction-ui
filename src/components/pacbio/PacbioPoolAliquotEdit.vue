@@ -71,51 +71,90 @@
   </traction-table-row>
 </template>
 <script setup>
+/**
+ * @name PacbioPoolAliquotEdit
+ * @description Edit form for a pool aliquot
+ * @param {Object} props
+ * @param {Object} props.request - The request object
+ * @param {Boolean} props.autoTag - Whether to automatically tag the aliquot
+ * @param {Boolean} props.validated - Whether the values have been validated
+ * @param {Function} props.notify - Callbcak function when an attribute is changed
+ */
 import { computed, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
 const props = defineProps({
-  id: {
-    type: [String, Number],
-    default: '',
-  },
+  /*
+   * The request object
+   * @type {Object}
+   * @default { id: null }
+   */
   request: {
     type: Object,
     default() {
       return { id: null }
     },
   },
+  /**
+   * Whether to automatically tag the aliquot
+   * @type {Boolean}
+   * @default false
+   */
   autoTag: {
     type: Boolean,
     default: false,
   },
-  // indicates whether the values in this component have been validated
+  /**
+   * Indicates whether the values have been validated
+   * @type {Boolean}
+   * @default false
+   */
   validated: {
     type: Boolean,
     default: false,
   },
-  // function passed from parent indicating what to do when user changes an attribute
+  /**
+   * @type {Function}
+   * Callback function passed from parent indicating what to do when an attribute is changed
+   */
   notify: {
     type: Function,
     required: true,
     default: () => {},
   },
 })
-const fieldsThatRequireValidation = ref([])
+
+const fieldsThatRequireValidation = ref([]) // store the fields that have been altered and require validation
+// store
 const store = usePacbioPoolCreateStore()
+
+/**
+ *The list of tags in the selected tag set ready for use in a select component
+  The format is an array of objects with value and text properties
+ */
 const tagList = computed(() => {
   return store.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
 })
 
+/**
+ * The list of tags with a default option
+ */
 const tagListOptions = computed(() => {
   return [{ value: null, text: 'Please select a tag' }, ...tagList.value]
 })
 
+/**
+ * The aliquot object for the request
+ */
 const aliquot = computed(() => {
   return store.usedAliquotItem(props.request.id)
 })
 
-const librarySetter = (attr) => {
+/**
+ * A function to set the library attributes
+ * @param {String} attr - The attribute to set
+ * */
+const aliquotSetter = (attr) => {
   return computed({
     get() {
       return aliquot.value[attr]
@@ -129,15 +168,21 @@ const librarySetter = (attr) => {
       store.updateUsedAliquot({
         source_id: aliquot.value.source_id,
         [attr]: newValue,
-        source_type: aliquot.value.source_type,
+        source_type: store.sourceTypeForRequest(props.request),
       })
     },
   })
 }
-const volume = librarySetter('volume')
-const insert_size = librarySetter('insert_size')
-const concentration = librarySetter('concentration')
-const template_prep_kit_box_barcode = librarySetter('template_prep_kit_box_barcode')
+
+//The aliquotSetter function for each attribute - volume, insert_size, concentration and template_prep_kit_box_barcode
+const volume = aliquotSetter('volume')
+const insert_size = aliquotSetter('insert_size')
+const concentration = aliquotSetter('concentration')
+const template_prep_kit_box_barcode = aliquotSetter('template_prep_kit_box_barcode')
+
+/**
+ * The tag id for the aliquot
+ */
 const tag_id = computed({
   get() {
     return store.usedAliquotItem(props.request.id).tag_id
@@ -155,6 +200,9 @@ const tag_id = computed({
   },
 })
 
+/**
+ * The errors for an attribute
+ */
 const errorsFor = (attribute) => {
   if (props.validated) {
     fieldsThatRequireValidation.value = []
@@ -162,6 +210,9 @@ const errorsFor = (attribute) => {
   return aliquot.value?.errors?.[attribute]
 }
 
+/**
+ * Whether a validation exists for an attribute
+ */
 const isValidationExists = (attribute) => {
   if (props.validated) {
     return true

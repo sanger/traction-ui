@@ -75,16 +75,22 @@
   </div>
 </template>
 <script setup>
+/**
+ * @name PacbioPoolEdit
+ * @description Edit form for a pool
+ */
 import PacbioPoolAliquotList from '@/components/pacbio/PacbioPoolAliquotList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
 
-const busy = ref(false)
-const autoTag = ref(false)
-const parsedFile = ref(null)
-const validated = ref(true)
+//refs
+const busy = ref(false) // Flag to indicate if the form is busy processing a request
+const autoTag = ref(false) //  Flag to indicate if auto-tagging is enabled
+const parsedFile = ref(null) // Holds the data of the parsed file
+const validated = ref(true) // Flag to indicate if the form data is valid
+
 const {
   poolItem,
   tubeItem,

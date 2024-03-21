@@ -17,25 +17,25 @@
         </div>
         <div v-if="!tableView" class="flex flex-wrap overflo-y-auto">
           <div
-            v-for="labware in selectedLabware"
-            :key="labware.id"
+            v-for="item in selectedLabware"
+            :key="item.id"
             data-type="selected-labware-item"
             class="w-1/2"
           >
             <div class="border border-sdb bg-blue-100 rounded-lg p-1 mr-3 mt-2">
               <div class="flex w-full justify-end">
                 <button
-                  :id="'remove-btn-' + labware.id"
+                  :id="'remove-btn-' + item.id"
                   class="p-1 bg-blue-100 hover:bg-gray-800 hover:text-white"
-                  @click="onClose(labware)"
+                  @click="onClose(item)"
                 >
                   <traction-close-icon />
                 </button>
               </div>
-              <Plate v-if="isPlate(labware)" ref="plate" v-bind="labware"></Plate>
-              <PacbioTubeWell v-else :requests="getTubeRequest(labware)" @click="requestClicked" />
+              <Plate v-if="isPlate(item)" ref="plate" v-bind="item"></Plate>
+              <PacbioTubeWell v-else :requests="getTubeRequest(item)" @click="requestClicked" />
               <span data-attribute="labware-name" class="flex font-medium text-gray-500"
-                >{{ labware.barcode }}
+                >{{ item.barcode }}
               </span>
             </div>
           </div>
@@ -43,7 +43,12 @@
         <div v-else class="flex flex-col" data-attribute="table-view">
           <div class="flex w-full justify-end space-x-2 p-2">
             <label>Sort by selection</label>
-            <input v-model="sortBySelection" type="checkbox" class="text-base" data-attribute="sort-by-selection" />
+            <input
+              v-model="sortBySelection"
+              type="checkbox"
+              class="text-base"
+              data-attribute="sort-by-selection"
+            />
           </div>
           <div class="overflow-y-auto h-screen">
             <traction-table
@@ -75,6 +80,13 @@
 </template>
 
 <script setup>
+/**
+ * @name PacbioLabwareSelectedList
+ * @description Renders a list of selected labware with the ability to select requests
+ * The component can be used to display selected plates, tubes and libraries as well display the requests associated with them in a table view
+ * @param {Array} labware - An array of labware objects
+ * @emits closed - Emits the labware object when the close button is clicked
+ */
 import Plate from '@/components/pacbio/PacbioPlateItem.vue'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
 import { VueSelecto } from 'vue3-selecto'
@@ -96,6 +108,9 @@ const props = defineProps({
   },
 })
 
+/**
+ * @property {Array} requestFields - The fields to display in the table view
+ */
 const state = reactive({
   requestFields: [
     { key: 'source_identifier', label: 'Source Identifier' },
@@ -106,16 +121,22 @@ const state = reactive({
     { key: 'actions', label: '+/-' },
   ],
 })
-const tableView = ref(false)
-const sortBySelection = ref(false)
+//Refs
+const tableView = ref(false) // A ref for table view state which decides whether to display the table view or not
+const sortBySelection = ref(false) // A ref for sort by selection state which decides whether to sort the requests by selection or not
 
 const emit = defineEmits(['closed']) // Defines an emit function that emits a 'closed' event.
 
 //Composables
-const pacbioPoolCreateStore = usePacbioPoolCreateStore()
+const pacbioPoolCreateStore = usePacbioPoolCreateStore() // A composable store for the pacbio pool create store
 
+/**
+ * A computed property that returns all selected requests
+ * If the sortBySelection value is true, the requests are sorted by selection
+ * @returns {Array} - An array of selected requests which can be sorted by selection
+ */
 const selectedRequests = computed(() => {
-  //get all selected requests first
+  //get all selected requests first in the order of the labware scanned
   const requests = props.labware.flatMap((labware) => {
     if (isPlate(labware)) {
       const plate = pacbioPoolCreateStore.selectedPlates.find(
@@ -131,9 +152,14 @@ const selectedRequests = computed(() => {
       return pacbioPoolCreateStore.requestList(tube.requests || [])
     }
   })
+  //sort requests by selection if sortBySelection is true
   return sortBySelection.value ? requests.sort((a, b) => b.selected - a.selected) : requests
 })
 
+/**
+ * A computed property that returns all selected labware
+ * @returns {Array} - An array of selected labware in the order they were scanned
+ */
 const selectedLabware = computed(() => {
   return props.labware.map((labware) => {
     const searchArray = isPlate(labware)
@@ -143,10 +169,12 @@ const selectedLabware = computed(() => {
   })
 })
 
-const isPlate = (labware) => {
-  return labware.type === 'plates'
-}
-
+/*
+ * A computed property that returns the section title
+ * If no labware is selected, the title is an empty string
+ * If the table view is selected, the title is 'Click either on the checkbox or directly on the rows to select samples'
+ * If the table view is not selected, the title is 'Click on wells (in plates) or libraries to select samples'
+ */
 const sectionTitle = computed(() => {
   if (selectedLabware.value.length === 0) {
     return ''
@@ -155,18 +183,47 @@ const sectionTitle = computed(() => {
     ? 'Click either on the checkbox or directly on the rows to select samples'
     : 'Click on wells (in plates) or libraries to select samples'
 })
+
+/**
+ * A method that checks if the labware is a plate
+ * @param {Object} labware - The labware object
+ * @returns {Boolean} - A boolean value indicating if the labware is a plate
+ */
+const isPlate = (labware) => {
+  return labware.type === 'plates'
+}
+
+/**
+ * A method that returns the requests associated with a tube
+ * @param {Object} tube - The tube object
+ * @returns {Array} - An array of requests associated with the tube
+ */
 const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube.requests || [])
 
+/**
+ * A method that handles the request clicked event
+ * @param {Object} request - The request object
+ */
 const requestClicked = ({ id, selected }) =>
   pacbioPoolCreateStore.selectRequest({ id, selected: !selected })
 const onClose = (labware) => {
   emit('closed', labware)
 }
 
+/**
+ * A method that handles the table row background color
+ * @param {Object} row - The row object
+ * @returns {String} - A string representing the background color of the row based on the selection state
+ * The background color is yellow if the row is selected and gray if it is not selected
+ */
 const tableRowBackground = (row) => {
   return row.selected ? 'bg-yellow-300 cursor-pointer' : 'bg-gray-200 cursor-pointer'
 }
 
+/**
+ * A method that handles the select event
+ * @param {Object} e - The event object
+ */
 const onSelect = (e) => {
   e.added.forEach((el) => {
     pacbioPoolCreateStore.selectWellRequests(el.getAttribute('id'))

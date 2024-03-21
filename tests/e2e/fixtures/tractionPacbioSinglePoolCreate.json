@@ -10,7 +10,8 @@
             "tag_id": "249",
             "volume": "1",
             "concentration": "10.0",
-            "insert_size": "100"
+            "insert_size": "100",
+            "source_type": "Pacbio::Request"
           }
         ],
         "primary_aliquot_attributes": {}

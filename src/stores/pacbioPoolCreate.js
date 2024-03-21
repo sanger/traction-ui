@@ -599,12 +599,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // after the request for all plates, as otherwise the partial record will over-write
         // the full one.
         include:
-          'used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library',
+          'used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library.tube,used_aliquots.library.request',
       })
       const response = await handleResponse(promise)
 
       const { success, data: { data, included = [] } = {}, errors = [] } = response
-
       if (success) {
         const {
           aliquots = [],
@@ -613,8 +612,28 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           plates = [],
           tag_sets: [tag_set] = [{}],
           tubes = [],
-          // libraries = [],
         } = groupIncludedByResource(included)
+
+        /****BEGIN WARNING************
+        Following is the clean up to remove the unintended data returned from the service side
+        This need to be removed once polymorphic relationship issues are fixed on service side
+        **/
+        let cleanedPlates = plates
+        let cleanedWells = wells
+        let cleanedTubes = tubes
+        /*This is a temporary fix to remove the unintended 'plates' and 'wells' data returned from the service
+         side for a pool created using a library*/
+        if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Request')) {
+          cleanedWells = []
+          cleanedPlates = []
+        }
+        /*This is a temporary fix to remove the unintended 'tubes' data returned from the service
+         side for a pool created using multiple plates*/
+        if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Library')) {
+          cleanedTubes = tubes.filter((tube) => !tube.relationships.libraries.data)
+        }
+        /****END WARNING***************/
+
         // Get the pool tube and remove it from tubes list
         const poolTube = tubes.splice(
           tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
@@ -638,25 +657,43 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             tag_id: usedAliquot.tag,
           })
         })
-        //Populate requests
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
-        //Populate wells
-        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
-        //Populate plates
-        // if (libraries.length > 0) {
-        //   this.resources.tubes = dataToObjectById({ data: libraries, includeRelationships: true })
-        // } else {
-        this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
 
+        //Populate requests
+        this.resources.requests = dataToObjectById({
+          data: requests,
+          includeRelationships: true,
+        })
         //Populate tubes
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        this.resources.tubes = dataToObjectById({ data: cleanedTubes, includeRelationships: true })
+        Object.values(this.resources.tubes).forEach((tube) => {
+          if (tube.libraries) {
+            const libraryRequest = requests.find((request) => request.id == tube.libraries)
+            if (libraryRequest) {
+              tube.requests = [libraryRequest.id]
+            }
+          }
+        })
+        //Populate plates
+        this.resources.plates = dataToObjectById({
+          data: cleanedPlates,
+          includeRelationships: true,
+        })
+
+        //Populate wells
+        this.resources.wells = dataToObjectById({ data: cleanedWells, includeRelationships: true })
+
+        //Selects all the tubes and plates
+        Object.values(this.resources.tubes).forEach(({ id }) =>
+          this.selectTube({ id, selected: true }),
+        )
+        Object.values(this.resources.plates).forEach(({ id }) =>
+          this.selectPlate({ id, selected: true }),
+        )
+
         //Select tag set
         this.selectTagSet(tag_set.id)
         //Populate tube
         this.tube = { id: poolTube.id, ...poolTube.attributes }
-        //Selects all the tubes and plates
-        tubes.forEach(({ id }) => this.selectTube({ id, selected: true }))
-        plates.forEach(({ id }) => this.selectPlate({ id, selected: true }))
       }
 
       return { success, errors }
@@ -850,7 +887,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           errors: ['Please provide a tube barcode'],
         }
       }
-
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({ filter: filter, include: 'requests,libraries.request' })

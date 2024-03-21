@@ -1,5 +1,5 @@
 import PacbioWellItem from '@/components/pacbio/PacbioWellItem.vue'
-import { mount,  createTestingPinia } from '@support/testHelper.js'
+import { mount, createTestingPinia } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
 const requests = {
@@ -54,16 +54,16 @@ describe('Well.vue', () => {
       requests: ['1'],
     }
 
-     const { wrapperObj } = mountWithStore({
-       state: {
-         resources: {
-           requests,
-         },
-       },
-       props
-     })
-     wrapper = wrapperObj
-     well = wrapper.vm
+    const { wrapperObj } = mountWithStore({
+      state: {
+        resources: {
+          requests,
+        },
+      },
+      props,
+    })
+    wrapper = wrapperObj
+    well = wrapper.vm
   })
 
   describe('props', () => {
@@ -113,16 +113,16 @@ describe('Well.vue', () => {
 
     it('will be empty when the well does not have a request', () => {
       props['requests'] = []
-       const { wrapperObj } = mountWithStore({
-         state: {
-           resources: {
-             requests,
-           },
-         },
-         props,
-       })
-       wrapper = wrapperObj
-       well = wrapper.vm
+      const { wrapperObj } = mountWithStore({
+        state: {
+          resources: {
+            requests,
+          },
+        },
+        props,
+      })
+      wrapper = wrapperObj
+      well = wrapper.vm
 
       const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('empty')
