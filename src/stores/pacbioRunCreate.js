@@ -19,13 +19,13 @@ import {
   newPlate,
 } from '@/stores/utilities/run'
 
-const buildRunSuitabilityErrors = ({ pool, libraries }) => [
-  ...(pool.run_suitability?.errors || []).map(({ detail }) => `Pool ${detail}`),
-  ...libraries.flatMap((library) => {
-    const libraryName = `Library ${library.id} (${library.sample_name})`
-    return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
-  }),
-]
+// TODO: do we still need this?
+// const buildRunSuitabilityErrors = ({ pool, libraries }) => [
+//   ...libraries.flatMap((library) => {
+//     const libraryName = `Library ${library.id} (${library.sample_name})`
+//     return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
+//   }),
+// ]
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -36,43 +36,50 @@ const formatById = (obj, data, includeRelationships = false) => {
 }
 
 /**
+ * combine sample_name and group_id
+ * @param {String} sample_name the sample name
+ * @param {String} group_id the group id
+ * @returns {String} the sample name and group id concatenated
+ */
+const combineSampleNameAndGroupId = (sample_name, group_id) => {
+  return `${sample_name}${group_id ? ':' + group_id : ''}`
+}
+
+/**
  * returns a pool object with the libraries and barcode
  * @param {Object} state the pinia state object
  * @param {Object} pool a pool object
- * @returns
+ * @returns {Array} samples an array of samples. Sample names are concatenated with the group id
  */
-const generatePoolContents = (state, pool) => {
-  const libraries = (pool.libraries || []).map((libraryId) => {
-    const { id, type, request, tag, run_suitability } = state.library_pools[libraryId]
-    const { sample_name } = state.requests[request]
-    const { group_id } = state.tags[tag] || {}
-    return { id, type, sample_name, group_id, run_suitability }
-  })
-  const { barcode } = state.tubes[pool.tube]
+const generateSamplesForPools = (state, pool) => {
+  // retrieve the used aliquots by their id from state
+  const used_aliquots = pool.used_aliquots.map((aliquotId) => state.aliquots[aliquotId])
 
-  return {
-    ...pool,
-    libraries,
-    barcode,
-    run_suitability: {
-      ...pool.run_suitability,
-      formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
-    },
-  }
+  /*
+   * for each used aliquot get the source_id and tag
+   * for each used aliquot get the sample name from the request
+   * for each used aliquot get the group_id from the tag
+   * merge the sample name with the group id
+   */
+  return used_aliquots.map((aliquot) => {
+    const { source_id, tag } = aliquot
+    const { sample_name } = state.requests[source_id]
+    const { group_id = '' } = state.tags[tag] || {}
+    return combineSampleNameAndGroupId(sample_name, group_id)
+  })
 }
 
 /**
  * Returns a library object with the barcode, sample_name and group_id
  * @param {Object} state the pinia state object
  * @param {Object} library a library object
- * @returns
+ * @returns {Array} samples an array of 1 sample. Sample names are concatenated with the group id
  */
-const generateLibraryContents = (state, library) => {
+const generateSamplesForLibraries = (state, library) => {
   const { request, tag } = library
   const { sample_name } = state.requests[request]
-  const { group_id } = state.tags[tag] || {}
-  const { barcode } = state.tubes[library.tube]
-  return { ...library, barcode, sample_name, group_id }
+  const { group_id = '' } = state.tags[tag] || {}
+  return [combineSampleNameAndGroupId(sample_name, group_id)]
 }
 
 export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
@@ -154,19 +161,36 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Returns a list of all the tubes with their contents (pool or library)
      * @param {Object} state the pinia state object
-     * @returns
+     * @returns {Array} an array of pools and libraries
      */
     tubeContents: (state) => {
+      // for each tube
       return Object.values(state.tubes).reduce((result, tube) => {
-        // We should assume a tube only has one pool
-        const pool = state.pools[tube.pools?.[0]]
-        const library = state.libraries[tube.libraries]
+        // retrieve the barcode, id and type - pool or library
+        const { barcode } = tube
+        const { id, type } = tube.pools?.[0]
+          ? { id: tube.pools[0], type: 'pools' }
+          : { id: tube.libraries, type: 'libraries' }
 
-        if (pool) {
-          result.push(generatePoolContents(state, pool))
-        } else if (library) {
-          result.push(generateLibraryContents(state, library))
+        // get the pool or library
+        const record = { barcode, ...state[type][id] }
+
+        let fn = null
+
+        // generate the samples function based on the type
+        if (type === 'pools') {
+          fn = generateSamplesForPools
         }
+        if (type === 'libraries') {
+          fn = generateSamplesForLibraries
+        }
+
+        // if the type is known generate the samples
+        if (fn) {
+          const samples = fn(state, record)
+          result.push({ ...record, samples })
+        }
+
         return result
       }, [])
     },

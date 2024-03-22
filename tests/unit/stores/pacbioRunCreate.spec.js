@@ -25,74 +25,12 @@ describe('usePacbioRunCreateStore', () => {
   })
   describe('getters', () => {
     // TODO: we probably need to sort the way we create the pools for tests
-
+    // prettier-ignore-start
     const mockPoolsAndLibraries = [
       {
-        id: '12',
-        type: 'pools',
-        barcode: 'TRAC-2-22',
-        volume: 1,
-        concentration: 1,
-        template_prep_kit_box_barcode: '029979102141700063023',
-        source: 'GEN-1710774222-1:H4-C5',
-        insert_size: 100,
-        samples: [
-          {
-            name: 'GENSAMPLE-1710774222-32',
-            tag: 'bc1001_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-33',
-            tag: 'bc1002_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-34',
-            tag: 'bc1003_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-35',
-            tag: 'bc1008_BAK8A_OA',
-          },
-        ],
-        run_suitability: {
-          ready_for_run: true,
-          errors: [],
-          formattedErrors: [],
-        },
-      },
-      {
-        id: '14',
-        type: 'pools',
-        barcode: 'TRAC-2-24',
-        run_suitability: { ready_for_run: true, errors: [] },
-        volume: 1,
-        concentration: 1,
-        template_prep_kit_box_barcode: '029979102141700063023',
-        source: 'GEN-1710774222-1:E5-H5',
-        insert_size: 100,
-        samples: [
-          {
-            name: 'GENSAMPLE-1710774222-37',
-            tag: 'bc1001_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-38',
-            tag: 'bc1002_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-39',
-            tag: 'bc1003_BAK8A_OA',
-          },
-          {
-            name: 'GENSAMPLE-1710774222-40',
-            tag: 'bc1008_BAK8A_OA',
-          },
-        ],
-      },
-      {
+        barcode: 'TRAC-2-20',
         id: '30',
         type: 'libraries',
-        barcode: 'TRAC-2-20',
         run_suitability: {
           ready_for_run: false,
           errors: [
@@ -106,18 +44,73 @@ describe('usePacbioRunCreateStore', () => {
             },
           ],
         },
+        state: 'pending',
         volume: 1,
         concentration: 1,
         template_prep_kit_box_barcode: '029979102141700063023',
         insert_size: null,
+        created_at: '2024/03/18 15:03',
+        deactivated_at: null,
         source_identifier: 'GEN-1710774222-1:F4',
+        pacbio_request_id: 30,
+        tag_id: null,
+        request: '30',
+        tag: null,
+        tube: '20',
+        source_well: null,
+        source_plate: null,
+        primary_aliquot: '314',
+        used_aliquots: ['315'],
+        samples: ['GENSAMPLE-1710774222-30'],
+      },
+      {
+        barcode: 'TRAC-2-22',
+        id: '12',
+        type: 'pools',
+        run_suitability: { ready_for_run: true, errors: [] },
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: '029979102141700063023',
+        insert_size: 100,
+        created_at: '2024/03/18 15:03',
+        updated_at: '2024/03/18 15:03',
+        source_identifier: 'GEN-1710774222-1:H4-C5',
+        tube: '22',
+        libraries: null,
+        used_aliquots: ['319', '320', '321', '322'],
+        primary_aliquot: null,
         samples: [
-          {
-            name: 'GENSAMPLE-1710774222-30',
-          },
+          'GENSAMPLE-1710774222-32:bc1001_BAK8A_OA',
+          'GENSAMPLE-1710774222-33:bc1002_BAK8A_OA',
+          'GENSAMPLE-1710774222-34:bc1003_BAK8A_OA',
+          'GENSAMPLE-1710774222-35:bc1008_BAK8A_OA',
+        ],
+      },
+      {
+        barcode: 'TRAC-2-24',
+        id: '14',
+        type: 'pools',
+        run_suitability: { ready_for_run: true, errors: [] },
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: '029979102141700063023',
+        insert_size: 100,
+        created_at: '2024/03/18 15:03',
+        updated_at: '2024/03/18 15:03',
+        source_identifier: 'GEN-1710774222-1:E5-H5',
+        tube: '24',
+        libraries: null,
+        used_aliquots: ['331', '332', '333', '334'],
+        primary_aliquot: null,
+        samples: [
+          'GENSAMPLE-1710774222-37:bc1001_BAK8A_OA',
+          'GENSAMPLE-1710774222-38:bc1002_BAK8A_OA',
+          'GENSAMPLE-1710774222-39:bc1003_BAK8A_OA',
+          'GENSAMPLE-1710774222-40:bc1008_BAK8A_OA',
         ],
       },
     ]
+    // prettier-ignore-end
 
     const smrtLinkVersions = {
       1: {
@@ -148,7 +141,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.defaultSmrtLinkVersion).toEqual(smrtLinkVersions[1])
       })
     })
-    describe.skip('tubeContents', () => {
+    describe('tubeContents', () => {
       it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
@@ -158,14 +151,14 @@ describe('usePacbioRunCreateStore', () => {
       it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        const actual = store.tubeContentByBarcode('TRAC-2-22')
+        const actual = store.tubeContentByBarcode('TRAC-2-20')
         expect(actual).toEqual(mockPoolsAndLibraries[0])
       })
 
       it('"tubeContentByBarcode" returns the library data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = { ...storePools }
-        const actual = store.tubeContentByBarcode('TRAC-2-20')
+        const actual = store.tubeContentByBarcode('TRAC-2-24')
         expect(actual).toEqual(mockPoolsAndLibraries[2])
       })
     })
