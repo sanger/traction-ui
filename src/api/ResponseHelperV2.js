@@ -13,18 +13,25 @@ const parseErrors = ({ errors, error }) => {
   }
 
   // turn it into something nice i.e. a readable string if it is a 422
-  return parseErrorObject(errors)
+  // turn it into something nice i.e. a readable string if it is a 422
+  if (Array.isArray(errors)) {
+    return parseErrorArray(errors)
+  } else  {
+    return parseErrorObject(errors)
+  } 
 }
 
-const parseErrorObject = (errors) =>
-  Object.entries(errors)
+const parseErrorObject = (errors) => {
+  console.log(errors)
+  return Object.entries(errors)
     .map(([key, value]) => {
       return value.map((item) => `${key} ${item}`).join(', ')
     })
     .join(', ')
+  }
 
-// const parseErrorArray = (errors) =>
-//   errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
+const parseErrorArray = (errors) =>
+  errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
 
 /*
  * @param Boolean success
