@@ -9,7 +9,7 @@ const libraryAttributes = {
   insert_size: null,
 }
 
-const requiredAttributes = (isPool) => [
+const requiredLibraryAttributes = (isPool) => [
   'pacbio_request_id',
   'volume',
   'concentration',
@@ -25,29 +25,45 @@ const newLibrary = (attributes) => {
 }
 
 /**
- * This method will check each library to ensure that:
+ * This method will check the pool and each library to ensure that:
  *  * required fields are present
  *  * tags are unique
  **/
-const validate = ({ libraries }) => {
+const validate = ({ libraries, pool }) => {
   const pooled = Object.keys(libraries).length > 1
+  const requiredPoolAttrs = [
+    'insert_size',
+    'concentration',
+    'volume',
+    'template_prep_kit_box_barcode',
+  ]
+  let isValid = true
 
   for (const [key, library] of Object.entries(libraries)) {
     const errors = {}
-    requiredAttributes(pooled).forEach((field) => {
-      if (!library[field]) errors[field] = 'must be present'
+    requiredLibraryAttributes(pooled).forEach((field) => {
+      if (!library[field]) {
+        isValid = false
+        errors[field] = 'must be present'
+      }
     })
 
     if (Object.entries(libraries).some(([k, e]) => e.tag_id === library.tag_id && k !== key)) {
+      isValid = false
       errors['tag_id'] = 'duplicated'
     }
     library['errors'] = errors
   }
-}
 
-// a library is valid either if it has no errors or the errors are empty
-const valid = ({ libraries }) => {
-  return Object.values(libraries).every((library) => Object.keys(library.errors || {}).length === 0)
+  pool.errors = {}
+  requiredPoolAttrs.forEach((field) => {
+    if (!pool[field]) {
+      pool.errors[field] = 'must be present'
+      isValid = false
+    }
+  })
+
+  return isValid
 }
 
 const extractLibraryAttributes = ({
@@ -111,4 +127,4 @@ const payload = async ({ libraries, pool }) => {
   return { data }
 }
 
-export { libraryAttributes, newLibrary, validate, valid, payload }
+export { libraryAttributes, newLibrary, validate, payload }

@@ -4,7 +4,7 @@
   Simple style wrapper for labels
 -->
 <template>
-  <label :class="`w-full font-sans  text-gray-700 ${classes}`"><slot /></label>
+  <label :class="`w-full font-sans text-gray-700 ${classes}`"><slot /></label>
 </template>
 
 <script>
