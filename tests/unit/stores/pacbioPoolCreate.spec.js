@@ -1128,6 +1128,49 @@ describe('usePacbioPoolCreateStore', () => {
         //We expect the tube to be removed in the selected plates
         expect(store.used_aliquots).toEqual({})
       })
+      it('updates template_prep_kit_box_barcode,volume,concentration,insert_size if request is associated with library', () => {
+        store.used_aliquots = {
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        }
+        store.resources.libraries = {
+          1: {
+            id: '1',
+            type: 'libraries',
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            request: '1',
+          },
+        }
+        store.selectRequest({ id: '1' })
+
+        expect(store.used_aliquots).toEqual({
+          _1: {
+            source_id: '1',
+            tag_id: null,
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+          },
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        })
+      })
     })
 
     describe('selectTagSet', () => {
@@ -1146,6 +1189,7 @@ describe('usePacbioPoolCreateStore', () => {
           plates: {},
           wells: {},
           tubes: {},
+          libraries: {},
         })
       })
     })

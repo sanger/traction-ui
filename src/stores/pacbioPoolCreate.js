@@ -5,6 +5,7 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { usedAliquotAttributes } from './utilities/pool'
 
 /**
  * Merge together two representations of the same object.
@@ -124,6 +125,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        *                 "created_at": "2021/11/30 13:57","source_identifier": "DN1:A1","well": "1","plate": "1"}
        */
       requests: {},
+
+      /**
+       * The main source of libraries information. Libraries are indexed by id.
+       * Each key-value pair represents a library, where the key is the library ID and the value is the library data.
+       * Populated by the libraries included in the request for tubes.
+       * @type {Object.<string, Object>}
+       * @example "1": {"id": "1","type": "libraries","requests": "1","tag_id": "1","template_prep_kit_box_barcode":"123213131231321321313","volume": 10,"concentration": 5,"insert_size": 1000}
+       */
+      libraries: {},
     },
     //Selected collects together user input in the front end, such as selected plates, used_aliquots and tubes.
     selected: {
@@ -269,7 +279,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Function} A function that takes an ID and returns the corresponding used_aliquots item.
      */
     usedAliquotItem: (state) => (id) => state.used_aliquots[`_${id}`],
-
     /**
      * Retrieves the pool item from the state. If the pool item does not exist, returns an empty object.
      *
@@ -906,9 +915,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //If this a library, the requests will be associated with library, therefore manually assign it to a tube
         const tubes = dataToObjectById({ data, includeRelationships: true })
         if (libraries) {
-          Object.values(tubes).forEach((tube) => {
-            tube.requests = requests.map((request) => request.id)
+          Object.keys(tubes).forEach((key) => {
+            tubes[key] = {
+              ...tubes[key],
+              requests: requests.map((request) => request.id),
+            }
           })
+          this.resources.libraries = {
+            ...this.resources.libraries,
+            ...dataToObjectById({
+              data: libraries,
+              includeRelationships: true,
+            }),
+          }
         }
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
@@ -985,8 +1004,23 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
 
     selectRequest({ id, selected = true }) {
+      //If the libraries contain the request, fill the used_aliquot values with the library attributes values for template_prep_kit_box_barcode, volume, concentration, and insert_size
+      const library = Object.values(this.resources.libraries).find(
+        (library) => library.request == id,
+      )
+      const libraryAttributes = library
+        ? Object.keys(usedAliquotAttributes)
+            .filter((key) => key !== 'source_id')
+            .reduce((result, key) => {
+              result[key] = library[key] ?? null
+              return result
+            }, {})
+        : {}
       if (selected) {
-        this.used_aliquots[`_${id}`] = createUsedAliquot({ source_id: id })
+        this.used_aliquots[`_${id}`] = {
+          ...createUsedAliquot({ source_id: id }),
+          ...libraryAttributes,
+        }
       } else {
         delete this.used_aliquots[`_${id}`]
       }

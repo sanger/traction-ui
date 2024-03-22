@@ -8,6 +8,13 @@ describe('Pacbio Pool Create', () => {
       fixture: 'tractionPacbioPlate.json',
     })
 
+    cy.intercept(
+      'http://localhost:3100/v1/pacbio/tubes?filter[barcode]=TRAC-2-55&include=requests,libraries.request',
+      {
+        fixture: 'tractionPacbioTubeWithLibrary.json',
+      },
+    )
+
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
@@ -225,5 +232,28 @@ describe('Pacbio Pool Create', () => {
     })
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
+  })
+  it('populate pool request fields if a request from library is selected', () => {
+    cy.visit('#/pacbio/pool/new')
+    cy.contains('Pool')
+    cy.get('#labware-finder-input').type('TRAC-2-55{enter}')
+
+    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+
+    cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
+    cy.get('[data-attribute=tag-set-name]').click()
+    cy.get('[data-attribute=group-id]').should('have.length', 12)
+
+    cy.get('[data-attribute=traction-well]').first().click()
+    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 1)
+    cy.get('[data-type=pool-aliquot-edit]').within(() => {
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+        'have.value',
+        '123213131231321321313',
+      )
+      cy.get('[data-attribute=volume]').should('have.value', '0')
+      cy.get('[data-attribute=concentration]').should('have.value', '1')
+      cy.get('[data-attribute=insert-size]').should('have.value', '500')
+    })
   })
 })

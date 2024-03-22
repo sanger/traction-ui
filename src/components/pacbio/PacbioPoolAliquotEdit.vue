@@ -146,9 +146,7 @@ const tagListOptions = computed(() => {
 /**
  * The aliquot object for the request
  */
-const aliquot = computed(() => {
-  return store.usedAliquotItem(props.request.id)
-})
+const aliquot = computed(() => store.usedAliquotItem(props.request.id))
 
 /**
  * A function to set the library attributes
