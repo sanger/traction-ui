@@ -526,7 +526,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async createPool() {
       const { used_aliquots, pool } = this
-      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate({ used_aliquots, pool }))
+        return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
@@ -557,7 +558,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async updatePool() {
       const { used_aliquots, pool } = this
-      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate({ used_aliquots, pool }))
+        return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.update(payload({ used_aliquots, pool }))
