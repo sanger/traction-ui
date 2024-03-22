@@ -42,7 +42,7 @@ const validate = ({ libraries, pool }) => {
   for (const [key, library] of Object.entries(libraries)) {
     const errors = {}
     requiredLibraryAttributes(pooled).forEach((field) => {
-      if (!library[field]) {
+      if (!library[field] && library[field] !== 0) {
         isValid = false
         errors[field] = 'must be present'
       }
@@ -57,7 +57,8 @@ const validate = ({ libraries, pool }) => {
 
   pool.errors = {}
   requiredPoolAttrs.forEach((field) => {
-    if (!pool[field]) {
+    // We check its not 0 to prevent false errors as 0 is valid but !0 returns true
+    if (!pool[field] && pool[field] !== 0) {
       pool.errors[field] = 'must be present'
       isValid = false
     }

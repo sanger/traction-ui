@@ -111,6 +111,25 @@ describe('pacbioPoolEdit#new', () => {
     })
   })
 
+  describe('when inputs are valid', () => {
+    it('no errors are displayed', async () => {
+      store.state.traction.pacbio.poolCreate.pool = {
+        volume: 0,
+        insert_size: 100,
+        concentration: 2.4,
+        template_prep_kit_box_barcode: '017865101789500022821',
+      }
+      await nextTick()
+
+      expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=insert_size-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').exists()).toBe(
+        false,
+      )
+      expect(wrapper.find('[data-attribute=concentration-error]').exists()).toBe(false)
+    })
+  })
+
   describe('submit button', () => {
     it('says Create pool', () => {
       const button = wrapper.find('[data-action=create-pool]')
