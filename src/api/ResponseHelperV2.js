@@ -16,9 +16,9 @@ const parseErrors = ({ errors, error }) => {
   // turn it into something nice i.e. a readable string if it is a 422
   if (Array.isArray(errors)) {
     return parseErrorArray(errors)
-  } else  {
+  } else {
     return parseErrorObject(errors)
-  } 
+  }
 }
 
 const parseErrorObject = (errors) => {
@@ -28,7 +28,7 @@ const parseErrorObject = (errors) => {
       return value.map((item) => `${key} ${item}`).join(', ')
     })
     .join(', ')
-  }
+}
 
 const parseErrorArray = (errors) =>
   errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
