@@ -614,9 +614,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           tubes = [],
         } = groupIncludedByResource(included)
 
-        /****BEGIN WARNING************
-        Following is a temporary fix clean up to remove the unintended data returned from the service side
-        This need to be removed once polymorphic relationship issues are fixed on service side
+        /*
+        The following is a temporary fix to clean up data returned from the service side. 
+        This removes the unintended data returned from the service side.
+        This needs to be removed once polymorphic relationship issues are fixed on the service side.
         **/
         let cleanedPlates = plates
         let cleanedWells = wells
@@ -632,22 +633,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Library')) {
           cleanedTubes = tubes.filter((tube) => !tube.relationships?.libraries?.data)
         }
-        /*Remove all unintended 'tubes' that doesn't have a request matching with given aliquots*/
-        const aliquotResquestIds = aliquots.map((aliquot) => aliquot.relationships.request.data.id)
-        cleanedTubes = cleanedTubes.filter((tube) => {
-          let id = undefined
-          if (tube.relationships?.libraries?.data) {
-            id = tube.relationships.libraries.data.id
-          } else if (tube.relationships?.requests?.data) {
-            id = tube.relationships.requests.data[0].id
-          }
-          return aliquotResquestIds.includes(id)
-        })
 
-        /****END WARNING***************/
-
+        
         // Get the pool tube and remove it from tubes list
-        const poolTube = tubes.splice(
+        const poolTube = cleanedTubes.splice(
           tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
           1,
         )[0]
@@ -677,6 +666,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         })
         //Populate tubes
         this.resources.tubes = dataToObjectById({ data: cleanedTubes, includeRelationships: true })
+        //Assign library request to tube if the tube has a library
         Object.values(this.resources.tubes).forEach((tube) => {
           if (tube.libraries) {
             const libraryRequest = requests.find((request) => request.id == tube.libraries)
