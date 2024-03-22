@@ -123,7 +123,9 @@ describe('pacbioPoolEdit#new', () => {
 
       expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
       expect(wrapper.find('[data-attribute=insert_size-error]').exists()).toBe(false)
-      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').exists()).toBe(
+        false,
+      )
       expect(wrapper.find('[data-attribute=concentration-error]').exists()).toBe(false)
     })
   })
