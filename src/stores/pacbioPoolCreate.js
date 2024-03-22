@@ -634,7 +634,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           cleanedTubes = tubes.filter((tube) => !tube.relationships?.libraries?.data)
         }
 
-        
         // Get the pool tube and remove it from tubes list
         const poolTube = cleanedTubes.splice(
           tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
