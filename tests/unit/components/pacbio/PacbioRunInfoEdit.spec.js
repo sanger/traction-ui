@@ -2,7 +2,7 @@ import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit.vue'
 import { mount, createTestingPinia } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument

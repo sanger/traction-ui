@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem.vue'
+import PacbioRunPlateItem from '@/components/pacbio/V1/PacbioRunPlateItemV1.vue'
 import { mapState } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 
