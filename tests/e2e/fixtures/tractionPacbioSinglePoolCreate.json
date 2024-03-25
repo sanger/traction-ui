@@ -3,6 +3,10 @@
     "data": {
       "type": "pools",
       "attributes": {
+        "template_prep_kit_box_barcode": "ABC1",
+        "volume": "1",
+        "concentration": "10.0",
+        "insert_size": "100",
         "used_aliquots_attributes": [
           {
             "source_id": "1",

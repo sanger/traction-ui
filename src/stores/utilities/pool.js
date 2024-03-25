@@ -84,7 +84,8 @@ const validate = ({ used_aliquots, pool }) => {
 
   pool.errors = {}
   requiredPoolAttrs.forEach((field) => {
-    if (!pool[field]) {
+    // We check its not 0 to prevent false errors as 0 is valid but !0 returns true
+    if (!pool[field] && pool[field] !== 0) {
       pool.errors[field] = 'must be present'
       isValid = false
     }

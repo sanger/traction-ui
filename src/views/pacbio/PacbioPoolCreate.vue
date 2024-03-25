@@ -117,6 +117,7 @@ const fetchPoolsData = async () => {
  * Called when the labware is closed
  */
 const onClosed = (labware) => {
+  debugger
   labware.type === 'plates'
     ? pacbioPoolCreateStore.deselectPlateAndContents(labware.id)
     : pacbioPoolCreateStore.deselectTubeAndContents(labware.id)

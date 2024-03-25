@@ -153,6 +153,14 @@ export default {
   },
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
+    // Checks if the pool attribute should be displayed with an error
+    poolErrorsFor(attribute) {
+      if (this.poolItem?.[attribute]?.length) {
+        delete this.poolItem?.errors?.[attribute]
+        return ''
+      }
+      return this.poolItem?.errors?.[attribute]
+    },
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {

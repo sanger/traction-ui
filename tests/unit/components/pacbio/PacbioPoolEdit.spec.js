@@ -94,138 +94,82 @@ describe('pacbioPoolEdit#new', () => {
 
   describe('when inputs are invalid', () => {
     it('volume', async () => {
-      store.pool = {
-        ...pool,
-        volume: null,
-        errors: {
-          volume: 'must be present',
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pool: {
+            ...pool,
+            volume: null,
+            errors: {
+              volume: 'must be present',
+            },
+          },
         },
-      }
+      })
       await nextTick()
 
-      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
+      expect(wrapperObj.find('[data-attribute=volume-error]').text()).toEqual('must be present')
     })
 
     it('concentration', async () => {
-      store.pool = {
-        ...pool,
-        concentration: null,
-        errors: {
-          concentration: 'must be present',
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pool: {
+            ...pool,
+            concentration: null,
+            errors: {
+              concentration: 'must be present',
+            },
+          },
         },
-      }
+      })
       await nextTick()
 
-      expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
+      expect(wrapperObj.find('[data-attribute=concentration-error]').text()).toEqual(
+        'must be present',
+      )
     })
 
     it('insert size', async () => {
-      store.pool = {
-        ...pool,
-        insert_size: null,
-        errors: {
-          insert_size: 'must be present',
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pool: {
+            ...pool,
+            insert_size: null,
+            errors: {
+              insert_size: 'must be present',
+            },
+          },
         },
-      }
+      })
       await nextTick()
-
-      expect(wrapper.find('[data-attribute=insert_size-error]').text()).toEqual('must be present')
+      expect(wrapperObj.find('[data-attribute=insert_size-error]').text()).toEqual(
+        'must be present',
+      )
     })
 
     it('template prep kit box barcode', async () => {
-      store.pool = {
-        ...pool,
-        template_prep_kit_box_barcode: null,
-        errors: {
-          template_prep_kit_box_barcode: 'must be present',
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pool: {
+            ...pool,
+            template_prep_kit_box_barcode: null,
+            errors: {
+              template_prep_kit_box_barcode: 'must be present',
+            },
+          },
         },
-      }
+      })
       await nextTick()
 
-      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').text()).toEqual(
-        'must be present',
-      )
+      expect(
+        wrapperObj.find('[data-attribute=template_prep_kit_box_barcode-error]').text(),
+      ).toEqual('must be present')
     })
   })
 
   describe('when inputs are valid', () => {
     it('no errors are displayed', async () => {
       store.pool = {
-        volume: 0,
-        insert_size: 100,
-        concentration: 2.4,
-        template_prep_kit_box_barcode: '017865101789500022821',
-      }
-      await nextTick()
-
-      expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
-      expect(wrapper.find('[data-attribute=insert_size-error]').exists()).toBe(false)
-      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').exists()).toBe(
-        false,
-      )
-      expect(wrapper.find('[data-attribute=concentration-error]').exists()).toBe(false)
-    })
-  })
-
-  describe('when inputs are invalid', () => {
-    it('volume', async () => {
-      store.state.traction.pacbio.poolCreate.pool = {
-        ...pool,
-        volume: null,
-        errors: {
-          volume: 'must be present',
-        },
-      }
-      await nextTick()
-
-      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
-    })
-
-    it('concentration', async () => {
-      store.state.traction.pacbio.poolCreate.pool = {
-        ...pool,
-        concentration: null,
-        errors: {
-          concentration: 'must be present',
-        },
-      }
-      await nextTick()
-
-      expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
-    })
-
-    it('insert size', async () => {
-      store.state.traction.pacbio.poolCreate.pool = {
-        ...pool,
-        insert_size: null,
-        errors: {
-          insert_size: 'must be present',
-        },
-      }
-      await nextTick()
-
-      expect(wrapper.find('[data-attribute=insert_size-error]').text()).toEqual('must be present')
-    })
-
-    it('template prep kit box barcode', async () => {
-      store.state.traction.pacbio.poolCreate.pool = {
-        ...pool,
-        template_prep_kit_box_barcode: null,
-        errors: {
-          template_prep_kit_box_barcode: 'must be present',
-        },
-      }
-      await nextTick()
-
-      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').text()).toEqual(
-        'must be present',
-      )
-    })
-  })
-
-  describe('when inputs are valid', () => {
-    it('no errors are displayed', async () => {
-      store.state.traction.pacbio.poolCreate.pool = {
         volume: 0,
         insert_size: 100,
         concentration: 2.4,

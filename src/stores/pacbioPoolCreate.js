@@ -507,15 +507,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * If the tube cannot be found, the function returns without doing anything.
      * If the tube can be found, deselects the tube and then iterates over all requests of the tube and deselects them.
      *
-     * @param {string} tubeBarcode - The barcode of the tube to deselect.
+     * @param {string} id - The id of the tube to deselect.
      * @returns {void}
      *
      * @example
      * // Deselect a tube and its contents
-     * deselectTubeAndContents('TRAC-123')
+     * deselectTubeAndContents('1')
      */
-    deselectTubeAndContents(tubeBarcode) {
-      const tube = Object.values(this.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
+    deselectTubeAndContents(id) {
+      const tube = Object.values(this.resources.tubes).find((tube) => tube.id == id)
       if (!tube) return
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
@@ -859,7 +859,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       // We will be return a successful empty list if no plates match the filter
       // Therefore we want to return an error if we don't have any plates
-      if (!data.length) {
+      if (!data || !data.length) {
         success = false
         errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
       }

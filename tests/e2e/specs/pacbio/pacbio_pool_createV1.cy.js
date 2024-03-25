@@ -28,11 +28,20 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
+    // Set pool metadata
+    cy.get('[data-type="pool-edit"').within(() => {
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+      cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=insert-size]').type('100')
+    })
+
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
+
     // and samples that have failed qc should not be selectable
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('bc1001')
@@ -72,6 +81,14 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
+    // Set pool metadata
+    cy.get('[data-type="pool-edit"').within(() => {
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+      cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=insert-size]').type('100')
+    })
+
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
@@ -108,6 +125,14 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
+
+    // Set pool metadata
+    cy.get('[data-type="pool-edit"').within(() => {
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+      cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=insert-size]').type('100')
+    })
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
@@ -180,6 +205,14 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
+
+    // Set pool metadata
+    cy.get('[data-type="pool-edit"').within(() => {
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+      cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=insert-size]').type('100')
+    })
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
