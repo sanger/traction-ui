@@ -425,7 +425,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             .map((tube) => tube.barcode)
             .join(','),
         }
-        const result = await this.findPoolsOrLibrariesByTube({ filter })
+        const result = await this.findPoolsOrLibrariesByTube(filter)
         if (result) {
           // allow the success and errors to be overwritten by the result
           ;({ success, errors } = result)

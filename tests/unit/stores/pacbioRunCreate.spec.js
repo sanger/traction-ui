@@ -541,7 +541,7 @@ describe('usePacbioRunCreateStore', () => {
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
         expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          filter: { barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3' },
+          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
         })
         expect(store.runType).toEqual(existingRunType)
         expect(success).toBeTruthy()
@@ -564,7 +564,7 @@ describe('usePacbioRunCreateStore', () => {
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
         expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          filter: { barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3' },
+          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
         })
         expect(store.runType).toEqual(existingRunType)
         expect(success).toBeFalsy()
