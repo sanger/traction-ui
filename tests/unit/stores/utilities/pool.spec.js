@@ -20,6 +20,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
         },
         2: {
@@ -27,6 +28,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
         },
       }
@@ -47,9 +49,15 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
         },
-        2: { tag_id: 'tag2', volume: 10, concentration: 5 },
+        2: {
+          tag_id: 'tag2',
+          volume: 10,
+          concentration: 5,
+          template_prep_kit_box_barcode: 'barcode1',
+        },
       }
 
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
@@ -66,6 +74,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
         },
         2: {
@@ -73,6 +82,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
         },
       }
@@ -103,6 +113,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
         },
         2: {
@@ -110,6 +121,7 @@ describe('pool', () => {
           volume: 10,
           concentration: 5,
           insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
         },
       }
