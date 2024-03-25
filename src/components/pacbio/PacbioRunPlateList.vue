@@ -14,7 +14,7 @@
 <script>
 import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem.vue'
 import { mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 export default {
   name: 'PacbioRunPlateList',
