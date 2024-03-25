@@ -14,6 +14,7 @@ const requiredLibraryAttributes = (isPool) => [
   'volume',
   'concentration',
   'insert_size',
+  'template_prep_kit_box_barcode',
   ...(isPool ? ['tag_id'] : []),
 ]
 
