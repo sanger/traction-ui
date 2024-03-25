@@ -539,6 +539,7 @@ describe('usePacbioPoolCreateStore', () => {
           data: { data: { errors: { error1: ['There was an error'] } } },
         }
         store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = pool
         create.mockRejectedValue({ response: mockResponse })
         const expectedResponse = newResponse({ ...mockResponse, success: false })
         const { success, errors } = await store.createPool()
@@ -549,8 +550,18 @@ describe('usePacbioPoolCreateStore', () => {
       // validate used_aliquots fails
       // request is not sent
       // commit is not called
-      it('when the pool is invalid', async () => {
+      it('when the pool used_aliquots are invalid', async () => {
         store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
+        store.pool = pool
+        const { success, errors } = await store.createPool()
+        expect(create).not.toHaveBeenCalled()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The pool is invalid')
+      })
+
+      it('when the pool is invalid', async () => {
+        store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = { template_prep_kit_box_barcode: '' }
         const { success, errors } = await store.createPool()
         expect(create).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
@@ -625,9 +636,19 @@ describe('usePacbioPoolCreateStore', () => {
       // validate used_aliquots fails
       // request is not sent
       // commit is not called
-      it('when the pool is invalid', async () => {
+      it('when the pool used_aliquots are invalid', async () => {
         store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
-        const { success, errors } = await store.updatePool()
+        store.pool = pool
+        const { success, errors } = await store.createPool()
+        expect(update).not.toHaveBeenCalled()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The pool is invalid')
+      })
+
+      it('when the pool is invalid', async () => {
+        store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = { template_prep_kit_box_barcode: '' }
+        const { success, errors } = await store.createPool()
         expect(update).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(errors).toEqual('The pool is invalid')

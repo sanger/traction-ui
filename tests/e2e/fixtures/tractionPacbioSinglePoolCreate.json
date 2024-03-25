@@ -14,7 +14,12 @@
             "source_type": "Pacbio::Request"
           }
         ],
-        "primary_aliquot_attributes": {}
+        "primary_aliquot_attributes": {
+          "template_prep_kit_box_barcode": "ABC1",
+          "volume": "1",
+          "concentration": "10.0",
+          "insert_size": "100"
+        }
       }
     }
   }
