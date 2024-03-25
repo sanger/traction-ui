@@ -1094,6 +1094,12 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           },
         }
+
+        store.resources.requests = {
+          1: {
+            tube: '2',
+          },
+        }
         store.selectRequest({ id: '1' })
 
         /*
@@ -1109,6 +1115,7 @@ describe('usePacbioPoolCreateStore', () => {
             volume: null,
             concentration: null,
             insert_size: null,
+            source_type: 'Pacbio::Request',
           },
           _2: {
             source_id: '2',
@@ -1139,6 +1146,12 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           },
         }
+
+        store.resources.requests = {
+          1: {
+            tube: '2',
+          },
+        }
         store.resources.libraries = {
           1: {
             id: '1',
@@ -1160,6 +1173,7 @@ describe('usePacbioPoolCreateStore', () => {
             volume: 1,
             concentration: 1,
             insert_size: 100,
+            source_type: 'Pacbio::Request',
           },
           _2: {
             source_id: '2',

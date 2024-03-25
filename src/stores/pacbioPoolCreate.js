@@ -621,6 +621,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           plates = [],
           tag_sets: [tag_set] = [{}],
           tubes = [],
+          libraries = [],
         } = groupIncludedByResource(included)
 
         /*
@@ -631,6 +632,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         let cleanedPlates = plates
         let cleanedWells = wells
         let cleanedTubes = tubes
+        let cleanedLibraries = libraries
         /* Remove the unintended 'plates' and 'wells' data returned from the service
          side for a pool created using a library*/
         if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Request')) {
@@ -641,6 +643,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
          side for a pool created using multiple plates*/
         if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Library')) {
           cleanedTubes = tubes.filter((tube) => !tube.relationships?.libraries?.data)
+          cleanedLibraries = []
         }
 
         // Get the pool tube and remove it from tubes list
@@ -674,10 +677,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         })
         //Populate tubes
         this.resources.tubes = dataToObjectById({ data: cleanedTubes, includeRelationships: true })
+
+        //Populate libraries
+        this.resources.libraries = dataToObjectById({
+          data: cleanedLibraries,
+          includeRelationships: true,
+        })
         //Assign library request to tube if the tube has a library
         Object.values(this.resources.tubes).forEach((tube) => {
           if (tube.libraries) {
-            const libraryRequest = requests.find((request) => request.id == tube.libraries)
+            const library = Object.values(this.resources.libraries).find(
+              (library) => library.id == tube.libraries,
+            )
+            const libraryRequest = requests.find((request) => request.id == library.request)
             if (libraryRequest) {
               tube.requests = [libraryRequest.id]
             }
@@ -1004,22 +1016,24 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
 
     selectRequest({ id, selected = true }) {
-      //If the libraries contain the request, fill the used_aliquot values with the library attributes values for template_prep_kit_box_barcode, volume, concentration, and insert_size
-      const library = Object.values(this.resources.libraries).find(
-        (library) => library.request == id,
-      )
-      const libraryAttributes = library
-        ? Object.keys(usedAliquotAttributes)
-            .filter((key) => key !== 'source_id')
-            .reduce((result, key) => {
-              result[key] = library[key] ?? null
-              return result
-            }, {})
-        : {}
       if (selected) {
+        //If the libraries contain the request, fill the used_aliquot values with the library attributes values for template_prep_kit_box_barcode, volume, concentration, and insert_size
+        const library = Object.values(this.resources.libraries).find(
+          (library) => library.request == id,
+        )
+        const request = this.resources.requests[id]
+        const libraryAttributes = library
+          ? Object.keys(usedAliquotAttributes)
+              .filter((key) => key !== 'source_id')
+              .reduce((result, key) => {
+                result[key] = library[key] ?? null
+                return result
+              }, {})
+          : {}
         this.used_aliquots[`_${id}`] = {
           ...createUsedAliquot({ source_id: id }),
           ...libraryAttributes,
+          source_type: this.sourceTypeForRequest(request),
         }
       } else {
         delete this.used_aliquots[`_${id}`]
