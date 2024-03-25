@@ -8,6 +8,11 @@ import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
+// dpl_989_ui feature flag is used to generate pool payload so we mock it
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
+}))
+
 describe('usePacbioPoolCreateStore', () => {
   const tagSets = {
     1: {
@@ -471,7 +476,7 @@ describe('usePacbioPoolCreateStore', () => {
         store.selectRequest = vi.fn()
       })
       it('deselects the tube and its contents', () => {
-        store.deselectTubeAndContents('TRAC-2-2')
+        store.deselectTubeAndContents('2')
         expect(store.selectTube).toBeCalledWith({ id: '2', selected: false })
         expect(store.selectRequest).toBeCalledWith({ id: '98', selected: false })
       })

@@ -6,6 +6,7 @@ import useRootStore from '@/stores'
 import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { usedAliquotAttributes } from './utilities/pool'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 /**
  * Merge together two representations of the same object.
@@ -917,6 +918,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
       const { requests, libraries } = groupIncludedByResource(included)
+
+      //multiplexing_phase_2_add_libraries_to_pool
+      const featureFlagEnabled = await checkFeatureFlag(
+        'multiplexing_phase_2_add_libraries_to_pool',
+      )
+      if (!featureFlagEnabled && libraries.length > 0) {
+        //If the feature flag is not enabled, we shouldn't allow adding libraries to the pool
+        return {
+          success: false,
+          errors: [`Please provide a tube barcode`],
+        }
+      }
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes

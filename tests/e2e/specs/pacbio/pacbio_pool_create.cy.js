@@ -20,6 +20,7 @@ describe('Pacbio Pool Create', () => {
       features: {
         dpl_989_ui: { enabled: true },
         multiplexing_phase_2_aliquot: { enabled: true },
+        multiplexing_phase_2_add_libraries_to_pool: { enabled: true },
       },
     })
   })
