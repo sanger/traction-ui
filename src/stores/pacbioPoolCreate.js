@@ -280,15 +280,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Function} A function that takes an ID and returns the corresponding used_aliquots item.
      */
     usedAliquotItem: (state) => (id) => state.used_aliquots[`_${id}`],
-    /**
-     * Retrieves the pool item from the state. If the pool item does not exist, returns an empty object.
-     *
-     * @param {Object} state - The state object that contains the pool item.
-     * @returns {Object} The pool item from the state, or an empty object if it does not exist.
-     */
-    poolItem: (state) => {
-      return state.pool || {}
-    },
 
     /**
      * Retrieves the tube item from the state. If the tibe item does not exist, returns an empty object.
@@ -516,7 +507,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * deselectTubeAndContents('1')
      */
     deselectTubeAndContents(id) {
-      const tube = Object.values(this.resources.tubes).find((tube) => tube.id == id)
+      const tube = this.resources.tubes[id]
       if (!tube) return
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
@@ -860,7 +851,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       // We will be return a successful empty list if no plates match the filter
       // Therefore we want to return an error if we don't have any plates
-      if (!data || !data.length) {
+      if (!data?.length) {
         success = false
         errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
       }
@@ -1032,23 +1023,24 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     selectRequest({ id, selected = true }) {
       if (selected) {
-        //If the libraries contain the request, fill the used_aliquot values with the library attributes values for template_prep_kit_box_barcode, volume, concentration, and insert_size
+        /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
+        for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
         const library = Object.values(this.resources.libraries).find(
           (library) => library.request == id,
         )
-        const request = this.resources.requests[id]
         const libraryAttributes = library
           ? Object.keys(usedAliquotAttributes)
-              .filter((key) => key !== 'source_id')
+              .filter((key) => key !== 'source_id' && key !== 'tag_id')
               .reduce((result, key) => {
                 result[key] = library[key] ?? null
                 return result
               }, {})
           : {}
+
         this.used_aliquots[`_${id}`] = {
           ...createUsedAliquot({ source_id: id }),
           ...libraryAttributes,
-          source_type: this.sourceTypeForRequest(request),
+          source_type: this.sourceTypeForRequest(this.resources.requests[id]),
         }
       } else {
         delete this.used_aliquots[`_${id}`]

@@ -1,11 +1,6 @@
 <template>
-  <div>
     <div :class="wellClassNames" data-attribute="traction-well" @click="click">
-      <p v-if="position" data-attribute="traction-well-position" class="truncate font-light">
-        {{ position }}
-      </p>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -25,15 +20,6 @@ const props = defineProps({
   requests: {
     type: Object,
     required: true,
-  },
-  /*
-   * The position of the well
-   * If the position is provided, it will be displayed in the well
-   */
-  position: {
-    type: String,
-    default: '',
-    required: false,
   },
 })
 // Emits the request id and selected status of the well

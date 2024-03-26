@@ -9,7 +9,6 @@ describe('PacbioTubeWell', () => {
     beforeEach(() => {
       const props = {
         requests: [],
-        position: 'A1',
       }
       wrapper = mount(PacbioTubeWell, {
         props,
@@ -21,9 +20,7 @@ describe('PacbioTubeWell', () => {
     it('should display the well color empty', () => {
       expect(wrapper.find('[data-attribute="traction-well"]').classes()).toContain('bg-gray-500')
     })
-    it('should display the well position', () => {
-      expect(wrapper.find('[data-attribute="traction-well-position"]').text()).toEqual('A1')
-    })
+  
   })
   describe('when the component is mounted with requests', () => {
     beforeEach(() => {
@@ -33,7 +30,6 @@ describe('PacbioTubeWell', () => {
             id: 1,
           },
         ],
-        position: 'A1',
       }
       wrapper = mount(PacbioTubeWell, {
         props,
@@ -49,27 +45,6 @@ describe('PacbioTubeWell', () => {
       expect(expectedClasses.every((expectedClass) => classes.includes(expectedClass))).toBe(true)
     })
   })
-  describe('when the component is mounted with no position', () => {
-    beforeEach(() => {
-      const props = {
-        requests: [
-          {
-            id: 1,
-            selected: false,
-          },
-        ],
-      }
-      wrapper = mount(PacbioTubeWell, {
-        props,
-      })
-    })
-    it('should display the well', () => {
-      expect(wrapper.find('[data-attribute="traction-well"]')).toBeDefined()
-    })
-    it('should not display the well position', () => {
-      expect(wrapper.find('[data-attribute="traction-well-position"]').exists()).toBe(false)
-    })
-  })
 
   describe('when the component is mounted with a request that is not selected', () => {
     beforeEach(() => {
@@ -79,8 +54,7 @@ describe('PacbioTubeWell', () => {
             id: 1,
             selected: false,
           },
-        ],
-        position: 'A1',
+        ]
       }
       wrapper = mount(PacbioTubeWell, {
         props,
@@ -101,8 +75,7 @@ describe('PacbioTubeWell', () => {
             id: 1,
             selected: true,
           },
-        ],
-        position: 'A1',
+        ]
       }
       wrapper = mount(PacbioTubeWell, {
         props,
@@ -119,7 +92,6 @@ describe('PacbioTubeWell', () => {
     beforeEach(() => {
       const props = {
         requests: [],
-        position: 'A1',
       }
       wrapper = mount(PacbioTubeWell, {
         props,

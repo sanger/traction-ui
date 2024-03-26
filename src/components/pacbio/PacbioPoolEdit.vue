@@ -42,10 +42,10 @@
                 <traction-field-error
                   data-attribute="template_prep_kit_box_barcode-error"
                   :error="poolErrorsFor('template_prep_kit_box_barcode')"
-                  :with-icon="!!poolItem.errors?.template_prep_kit_box_barcode"
+                  :with-icon="!!pool.errors?.template_prep_kit_box_barcode"
                 >
                   <traction-input
-                    v-model="poolItem.template_prep_kit_box_barcode"
+                    v-model="pool.template_prep_kit_box_barcode"
                     data-attribute="template-prep-kit-box-barcode"
                   />
                 </traction-field-error>
@@ -55,9 +55,9 @@
                 <traction-field-error
                   data-attribute="volume-error"
                   :error="poolErrorsFor('volume')"
-                  :with-icon="!!poolItem.errors?.volume"
+                  :with-icon="!!pool.errors?.volume"
                 >
-                  <traction-input v-model="poolItem.volume" data-attribute="volume" />
+                  <traction-input v-model="pool.volume" data-attribute="volume" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -65,9 +65,9 @@
                 <traction-field-error
                   data-attribute="concentration-error"
                   :error="poolErrorsFor('concentration')"
-                  :with-icon="!!poolItem.errors?.concentration"
+                  :with-icon="!!pool.errors?.concentration"
                 >
-                  <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
+                  <traction-input v-model="pool.concentration" data-attribute="concentration" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -75,9 +75,9 @@
                 <traction-field-error
                   data-attribute="insert_size-error"
                   :error="poolErrorsFor('insert_size')"
-                  :with-icon="!!poolItem.errors?.insert_size"
+                  :with-icon="!!pool.errors?.insert_size"
                 >
-                  <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
+                  <traction-input v-model="pool.insert_size" data-attribute="insert-size" />
                 </traction-field-error>
               </fieldset>
             </div>
@@ -129,7 +129,7 @@ const parsedFile = ref(null) // Holds the data of the parsed file
 const validated = ref(true) // Flag to indicate if the form data is valid
 
 const {
-  poolItem,
+  pool,
   tubeItem,
   selectedRequests,
   createPool,
@@ -137,7 +137,7 @@ const {
   updateUsedAliquotFromCsvRecord,
 } = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
-const persisted = computed(() => !!poolItem.id)
+const persisted = computed(() => !!pool.id)
 const poolType = computed(() => {
   switch (selectedRequests.length) {
     case 0:
@@ -156,11 +156,11 @@ const border = computed(() => {
 })
 // Checks if the pool attribute should be displayed with an error
 const poolErrorsFor = (attribute) => {
-  if (poolItem?.[attribute]?.length) {
-    delete poolItem?.errors?.[attribute]
+  if (pool?.[attribute]?.length) {
+    delete pool?.errors?.[attribute]
     return ''
   }
-  return poolItem?.errors?.[attribute]
+  return pool?.errors?.[attribute]
 }
 
 const create = () => {

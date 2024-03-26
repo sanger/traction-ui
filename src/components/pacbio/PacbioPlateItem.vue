@@ -34,12 +34,12 @@ const props = defineProps({
     default: () => [],
   },
 })
-const wellData = ref([])
-
-const emit = defineEmits(['clickWell'])
-
 const store = usePacbioPoolCreateStore()
 const rootStore = useRootStore()
+
+const wellData = ref(store.wellList(props.wells))
+
+const emit = defineEmits(['clickWell'])
 
 const mappedWells = computed(() => {
   const value = Object.entries(rootStore.plateMap.wells).map(([position, mapWell]) => {
@@ -48,8 +48,6 @@ const mappedWells = computed(() => {
   })
   return value
 })
-
-wellData.value = store.wellList(props.wells)
 
 const clickWell = (id) => {
   emit('clickWell', id)

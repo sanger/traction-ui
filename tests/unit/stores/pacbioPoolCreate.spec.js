@@ -197,26 +197,6 @@ describe('usePacbioPoolCreateStore', () => {
       expect(store.usedAliquotItem('3')).toEqual(used_aliquots['_3'])
     })
 
-    describe('poolItem', () => {
-      const pool = {
-        id: 1,
-        template_prep_kit_box_barcode: 'ABC1',
-        volume: '1',
-        concentration: '1',
-        insert_size: '100',
-      }
-
-      it('returns the correct data', () => {
-        store.pool = pool
-        expect(store.poolItem).toEqual(pool)
-      })
-
-      it('when the pool does not exist', () => {
-        store.pool = undefined
-        expect(store.poolItem).toEqual({})
-      })
-    })
-
     describe('tubeItem', () => {
       const tube = {
         id: 1,

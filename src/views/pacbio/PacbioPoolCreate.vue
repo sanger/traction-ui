@@ -6,7 +6,7 @@
           <traction-section
             title="Scan labware"
             number="1a"
-            description="To get started, scan or type a plate, tube, or library barcode and press Enter"
+            description="To get started, scan or type a plate or tube barcode and press Enter"
           >
             <div class="flex flex-row items-center">
               <BarcodeIcon class="w-8 h-8" />
