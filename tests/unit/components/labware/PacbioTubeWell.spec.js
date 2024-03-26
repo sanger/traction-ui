@@ -20,7 +20,6 @@ describe('PacbioTubeWell', () => {
     it('should display the well color empty', () => {
       expect(wrapper.find('[data-attribute="traction-well"]').classes()).toContain('bg-gray-500')
     })
-  
   })
   describe('when the component is mounted with requests', () => {
     beforeEach(() => {
@@ -54,7 +53,7 @@ describe('PacbioTubeWell', () => {
             id: 1,
             selected: false,
           },
-        ]
+        ],
       }
       wrapper = mount(PacbioTubeWell, {
         props,
@@ -75,7 +74,7 @@ describe('PacbioTubeWell', () => {
             id: 1,
             selected: true,
           },
-        ]
+        ],
       }
       wrapper = mount(PacbioTubeWell, {
         props,

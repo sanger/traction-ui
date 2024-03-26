@@ -1,6 +1,5 @@
 <template>
-    <div :class="wellClassNames" data-attribute="traction-well" @click="click">
-    </div>
+  <div :class="wellClassNames" data-attribute="traction-well" @click="click"></div>
 </template>
 
 <script setup>

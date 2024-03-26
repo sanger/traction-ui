@@ -128,14 +128,8 @@ const autoTag = ref(false) //  Flag to indicate if auto-tagging is enabled
 const parsedFile = ref(null) // Holds the data of the parsed file
 const validated = ref(true) // Flag to indicate if the form data is valid
 
-const {
-  pool,
-  tubeItem,
-  selectedRequests,
-  createPool,
-  updatePool,
-  updateUsedAliquotFromCsvRecord,
-} = usePacbioPoolCreateStore()
+const { pool, tubeItem, selectedRequests, createPool, updatePool, updateUsedAliquotFromCsvRecord } =
+  usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const persisted = computed(() => !!pool.id)
 const poolType = computed(() => {

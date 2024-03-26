@@ -262,5 +262,4 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
   })
-  
 })
