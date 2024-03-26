@@ -53,7 +53,6 @@ const handleResponse = async (promise) => {
   try {
     // yay it worked.
     const rawResponse = await promise
-    console.log(rawResponse)
     return newResponse({ success: true, ...rawResponse })
   } catch (error) {
     // we only want this to output during development or production

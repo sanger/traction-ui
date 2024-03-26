@@ -9,7 +9,7 @@ describe('Pacbio Run Edit view', () => {
   })
 
   it('Updates a Revio run successfully', () => {
-    cy.intercept('PATCH', '/v1/pacbio/runs/12', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 200,
       body: {
         data: {},
@@ -18,23 +18,15 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
-        fixture: 'tractionPacbioRevioRun.json',
-      },
-    )
-
-    // get the tubes
-    cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
-      {
-        fixture: 'tractionPacbioRevioRunTubes.json',
+        fixture: 'tractionPacbioRevioRunV1.json',
       },
     )
 
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
-      cy.get('#editRun-12').click()
+      cy.get('#editRun-7').click()
     })
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
@@ -46,32 +38,24 @@ describe('Pacbio Run Edit view', () => {
   })
 
   it('Updates a Sequel IIe run successfully', () => {
-    cy.intercept('PATCH', '/v1/pacbio/runs/13', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 200,
       body: {
         data: {},
       },
     })
 
-    // Get the existing Sequel IIe run to be edited
+    // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/13?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
-        fixture: 'tractionPacbioSequelIIeRun.json',
-      },
-    )
-
-    // get the tubes
-    cy.intercept(
-      ' v1/pacbio/tubes?filter[barcode]=TRAC-2-21&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
-      {
-        fixture: 'tractionPacbioSequelIIeRunTubes.json',
+        fixture: 'tractionPacbioSequelIIeRunV1.json',
       },
     )
 
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
-      cy.get('#editRun-13').click()
+      cy.get('#editRun-7').click()
     })
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
@@ -87,7 +71,7 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept(
       'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
-        fixture: 'tractionPacbioRevioRun.json',
+        fixture: 'tractionPacbioRevioRunV1.json',
       },
     )
 
