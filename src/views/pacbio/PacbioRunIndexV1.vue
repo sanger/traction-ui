@@ -102,7 +102,7 @@ import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
 
 export default {

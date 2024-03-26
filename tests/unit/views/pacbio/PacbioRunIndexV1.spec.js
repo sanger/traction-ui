@@ -1,4 +1,4 @@
-import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
+import PacbioRunIndex from '@/views/pacbio/PacbioRunIndexV1'
 import Response from '@/api/Response'
 import {
   mount,
@@ -10,7 +10,7 @@ import {
   router,
 } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { vi } from 'vitest'
 
 const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
