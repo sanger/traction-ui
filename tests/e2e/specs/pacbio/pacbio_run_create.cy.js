@@ -45,7 +45,7 @@ describe('Pacbio Run Create view', () => {
       .type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -86,7 +86,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -147,7 +147,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="smrt_link_version"]').select('v13_revio')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-55')
+    cy.get('#labware-finder-input').type('TRAC-2-20')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -218,7 +218,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -297,7 +297,7 @@ describe('Pacbio Run Create view', () => {
       .type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
