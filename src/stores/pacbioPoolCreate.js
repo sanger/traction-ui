@@ -919,11 +919,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       let { success, data: { data, included = [] } = {}, errors = [] } = response
       const { requests, libraries } = groupIncludedByResource(included)
 
-      //multiplexing_phase_2_add_libraries_to_pool
+      //TODO: Remove this check once the feature flag multiplexing_phase_2_add_libraries_to_pool is removed
       const featureFlagEnabled = await checkFeatureFlag(
         'multiplexing_phase_2_add_libraries_to_pool',
       )
-      if (!featureFlagEnabled && libraries.length > 0) {
+      if (!featureFlagEnabled && libraries && libraries.length > 0) {
         //If the feature flag is not enabled, we shouldn't allow adding libraries to the pool
         return {
           success: false,
