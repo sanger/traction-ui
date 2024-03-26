@@ -85,13 +85,13 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
+      'v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
     )
 
-    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/12', {
       statusCode: 422,
       body: {
         data: {
@@ -104,7 +104,7 @@ describe('Pacbio Run Edit view', () => {
 
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
-      cy.get('#editRun-7').click()
+      cy.get('#editRun-12').click()
     })
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
     cy.get('button').contains('Update').click()

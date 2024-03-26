@@ -1,88 +1,37 @@
 {
   "data": [
     {
-      "id": "7",
+      "id": "16",
       "type": "runs",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/7"
+        "self": "http://localhost:3100/v1/pacbio/runs/16"
       },
       "attributes": {
-        "name": "TRACTION-RUN-7",
-        "dna_control_complex_box_barcode": "DCBB1",
+        "name": "TRACTION-RUN-16",
+        "dna_control_complex_box_barcode": null,
         "system_name": "Revio",
-        "created_at": "2023/06/21 13:17",
+        "created_at": "2024/03/26 08:53",
         "state": "pending",
-        "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-1",
-        "pacbio_smrt_link_version_id": 3,
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
-      },
-      "relationships": {
-        "plates": {
-          "data": [
-            {
-              "type": "plates",
-              "id": "7"
-            },
-            {
-              "type": "plates",
-              "id": "8"
-            }
-          ]
-        }
       }
     },
     {
-      "id": "4",
+      "id": "15",
       "type": "runs",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/4"
+        "self": "http://localhost:3100/v1/pacbio/runs/15"
       },
       "attributes": {
-        "name": "Run4",
-        "dna_control_complex_box_barcode": "DCCB4",
-        "system_name": "Sequel IIe",
-        "created_at": "2023/06/21 13:13",
+        "name": "TRACTION-RUN-15",
+        "dna_control_complex_box_barcode": null,
+        "system_name": "Revio",
+        "created_at": "2024/03/25 16:51",
         "state": "pending",
-        "comments": "GENSAMPLE-1687353183-1",
-        "pacbio_smrt_link_version_id": 2,
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
-      },
-      "relationships": {
-        "plates": {
-          "data": [
-            {
-              "type": "plates",
-              "id": "4"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "5",
-      "type": "runs",
-      "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/5"
-      },
-      "attributes": {
-        "name": "Run5",
-        "dna_control_complex_box_barcode": "DCCB5",
-        "system_name": "Sequel IIe",
-        "created_at": "2023/06/21 13:13",
-        "state": "pending",
-        "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-2:GENSAMPLE-1687353183-3:GENSAMPLE-1687353183-4:GENSAMPLE-1687353183-5",
-        "pacbio_smrt_link_version_id": 2,
-        "plates_attributes": null
-      },
-      "relationships": {
-        "plates": {
-          "data": [
-            {
-              "type": "plates",
-              "id": "5"
-            }
-          ]
-        }
       }
     },
     {
@@ -92,90 +41,243 @@
         "self": "http://localhost:3100/v1/pacbio/runs/6"
       },
       "attributes": {
-        "name": "Run6",
-        "dna_control_complex_box_barcode": "DCCB6",
-        "system_name": "Sequel IIe",
-        "created_at": "2023/06/21 13:13",
+        "name": "RUN-v12_revio-tagged-2_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
         "state": "pending",
-        "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-2:GENSAMPLE-1687353183-3:GENSAMPLE-1687353183-4:GENSAMPLE-1687353183-5",
-        "pacbio_smrt_link_version_id": 2,
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40:GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 3,
         "plates_attributes": null
-      },
-      "relationships": {
-        "plates": {
-          "data": [
-            {
-              "type": "plates",
-              "id": "6"
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "included": [
-    {
-      "id": "4",
-      "type": "plates",
-      "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/plates/4"
-      },
-      "attributes": {
-        "pacbio_run_id": 4,
-        "plate_number": 1,
-        "sequencing_kit_box_barcode": "SKB4"
-      }
-    },
-    {
-      "id": "5",
-      "type": "plates",
-      "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/plates/5"
-      },
-      "attributes": {
-        "pacbio_run_id": 5,
-        "plate_number": 1,
-        "sequencing_kit_box_barcode": "SKB5"
-      }
-    },
-    {
-      "id": "6",
-      "type": "plates",
-      "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/plates/6"
-      },
-      "attributes": {
-        "pacbio_run_id": 6,
-        "plate_number": 1,
-        "sequencing_kit_box_barcode": "SKB6"
       }
     },
     {
       "id": "7",
-      "type": "plates",
+      "type": "runs",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/plates/7"
+        "self": "http://localhost:3100/v1/pacbio/runs/7"
       },
       "attributes": {
-        "pacbio_run_id": 7,
-        "plate_number": 1,
-        "sequencing_kit_box_barcode": "12"
+        "name": "RUN-v12_sequel_iie-untagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-31",
+        "pacbio_smrt_link_version_id": 4,
+        "plates_attributes": null
       }
     },
     {
       "id": "8",
-      "type": "plates",
+      "type": "runs",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/runs/plates/8"
+        "self": "http://localhost:3100/v1/pacbio/runs/8"
       },
       "attributes": {
-        "pacbio_run_id": 7,
-        "plate_number": 2,
-        "sequencing_kit_box_barcode": "23"
+        "name": "RUN-v12_sequel_iie-tagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
+        "pacbio_smrt_link_version_id": 4,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "9",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/9"
+      },
+      "attributes": {
+        "name": "RUN-v13_revio-untagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-36",
+        "pacbio_smrt_link_version_id": 5,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "10",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/10"
+      },
+      "attributes": {
+        "name": "RUN-v13_revio-tagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 5,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "11",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/11"
+      },
+      "attributes": {
+        "name": "RUN-v13_revio-untagged-2_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-36:GENSAMPLE-1710774222-36",
+        "pacbio_smrt_link_version_id": 5,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "13",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/13"
+      },
+      "attributes": {
+        "name": "RUN-v13_sequel_iie-untagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-31",
+        "pacbio_smrt_link_version_id": 6,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "14",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/14"
+      },
+      "attributes": {
+        "name": "RUN-v13_sequel_iie-tagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
+        "pacbio_smrt_link_version_id": 6,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "1",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/1"
+      },
+      "attributes": {
+        "name": "RUN-v11-untagged-1_plate",
+        "dna_control_complex_box_barcode": "DCCB_11261650",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-31",
+        "pacbio_smrt_link_version_id": 2,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "2",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/2"
+      },
+      "attributes": {
+        "name": "RUN-v11-tagged-1_plate",
+        "dna_control_complex_box_barcode": "DCCB_68513489",
+        "system_name": "Sequel IIe",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
+        "pacbio_smrt_link_version_id": 2,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "3",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/3"
+      },
+      "attributes": {
+        "name": "RUN-v12_revio-untagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-36",
+        "pacbio_smrt_link_version_id": 3,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "4",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/4"
+      },
+      "attributes": {
+        "name": "RUN-v12_revio-tagged-1_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 3,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "5",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/5"
+      },
+      "attributes": {
+        "name": "RUN-v12_revio-untagged-2_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-36:GENSAMPLE-1710774222-36",
+        "pacbio_smrt_link_version_id": 3,
+        "plates_attributes": null
+      }
+    },
+    {
+      "id": "12",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/12"
+      },
+      "attributes": {
+        "name": "RUN-v13_revio-tagged-2_plate",
+        "dna_control_complex_box_barcode": "Lxxxxx102249600123199",
+        "system_name": "Revio",
+        "created_at": "2024/03/18 15:03",
+        "state": "pending",
+        "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40:GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
+        "pacbio_smrt_link_version_id": 5,
+        "plates_attributes": null
       }
     }
   ],
   "meta": {
     "page_count": 1
+  },
+  "links": {
+    "first": "http://localhost:3100/v1/pacbio/runs?page%5Bnumber%5D=1&page%5Bsize%5D=1000",
+    "last": "http://localhost:3100/v1/pacbio/runs?page%5Bnumber%5D=1&page%5Bsize%5D=1000"
   }
 }
