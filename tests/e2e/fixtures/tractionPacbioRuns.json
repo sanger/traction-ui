@@ -15,6 +15,16 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "20"
+            }
+          ]
+        }
       }
     },
     {
@@ -32,6 +42,16 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "19"
+            }
+          ]
+        }
       }
     },
     {
@@ -49,6 +69,20 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40:GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 3,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "7"
+            },
+            {
+              "type": "plates",
+              "id": "8"
+            }
+          ]
+        }
       }
     },
     {
@@ -66,6 +100,16 @@
         "comments": "GENSAMPLE-1710774222-31",
         "pacbio_smrt_link_version_id": 4,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "9"
+            }
+          ]
+        }
       }
     },
     {
@@ -83,6 +127,16 @@
         "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
         "pacbio_smrt_link_version_id": 4,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "10"
+            }
+          ]
+        }
       }
     },
     {
@@ -100,6 +154,16 @@
         "comments": "GENSAMPLE-1710774222-36",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "11"
+            }
+          ]
+        }
       }
     },
     {
@@ -117,6 +181,16 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "12"
+            }
+          ]
+        }
       }
     },
     {
@@ -134,6 +208,20 @@
         "comments": "GENSAMPLE-1710774222-36:GENSAMPLE-1710774222-36",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "13"
+            },
+            {
+              "type": "plates",
+              "id": "14"
+            }
+          ]
+        }
       }
     },
     {
@@ -151,6 +239,16 @@
         "comments": "GENSAMPLE-1710774222-31",
         "pacbio_smrt_link_version_id": 6,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "17"
+            }
+          ]
+        }
       }
     },
     {
@@ -168,6 +266,16 @@
         "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
         "pacbio_smrt_link_version_id": 6,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "18"
+            }
+          ]
+        }
       }
     },
     {
@@ -185,6 +293,16 @@
         "comments": "GENSAMPLE-1710774222-31",
         "pacbio_smrt_link_version_id": 2,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "1"
+            }
+          ]
+        }
       }
     },
     {
@@ -202,6 +320,16 @@
         "comments": "GENSAMPLE-1710774222-32:GENSAMPLE-1710774222-33:GENSAMPLE-1710774222-34:GENSAMPLE-1710774222-35",
         "pacbio_smrt_link_version_id": 2,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "2"
+            }
+          ]
+        }
       }
     },
     {
@@ -219,6 +347,16 @@
         "comments": "GENSAMPLE-1710774222-36",
         "pacbio_smrt_link_version_id": 3,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "3"
+            }
+          ]
+        }
       }
     },
     {
@@ -236,6 +374,16 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 3,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "4"
+            }
+          ]
+        }
       }
     },
     {
@@ -253,6 +401,20 @@
         "comments": "GENSAMPLE-1710774222-36:GENSAMPLE-1710774222-36",
         "pacbio_smrt_link_version_id": 3,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "5"
+            },
+            {
+              "type": "plates",
+              "id": "6"
+            }
+          ]
+        }
       }
     },
     {
@@ -270,6 +432,262 @@
         "comments": "GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40:GENSAMPLE-1710774222-37:GENSAMPLE-1710774222-38:GENSAMPLE-1710774222-39:GENSAMPLE-1710774222-40",
         "pacbio_smrt_link_version_id": 5,
         "plates_attributes": null
+      },
+      "relationships": {
+        "plates": {
+          "data": [
+            {
+              "type": "plates",
+              "id": "15"
+            },
+            {
+              "type": "plates",
+              "id": "16"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "1",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/1"
+      },
+      "attributes": {
+        "pacbio_run_id": 1,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "SKB_76998347254473350"
+      }
+    },
+    {
+      "id": "2",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/2"
+      },
+      "attributes": {
+        "pacbio_run_id": 2,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "SKB_56329926198617542"
+      }
+    },
+    {
+      "id": "3",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/3"
+      },
+      "attributes": {
+        "pacbio_run_id": 3,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040042020250225"
+      }
+    },
+    {
+      "id": "4",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/4"
+      },
+      "attributes": {
+        "pacbio_run_id": 4,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040065720241103"
+      }
+    },
+    {
+      "id": "5",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/5"
+      },
+      "attributes": {
+        "pacbio_run_id": 5,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040031320240404"
+      }
+    },
+    {
+      "id": "6",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/6"
+      },
+      "attributes": {
+        "pacbio_run_id": 5,
+        "plate_number": 2,
+        "sequencing_kit_box_barcode": "1021188000311040049420240819"
+      }
+    },
+    {
+      "id": "7",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/7"
+      },
+      "attributes": {
+        "pacbio_run_id": 6,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040045120250207"
+      }
+    },
+    {
+      "id": "8",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/8"
+      },
+      "attributes": {
+        "pacbio_run_id": 6,
+        "plate_number": 2,
+        "sequencing_kit_box_barcode": "1021188000311040098420241031"
+      }
+    },
+    {
+      "id": "9",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/9"
+      },
+      "attributes": {
+        "pacbio_run_id": 7,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "130429101826100021624"
+      }
+    },
+    {
+      "id": "10",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/10"
+      },
+      "attributes": {
+        "pacbio_run_id": 8,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "130429101826100021624"
+      }
+    },
+    {
+      "id": "11",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/11"
+      },
+      "attributes": {
+        "pacbio_run_id": 9,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040094520240926"
+      }
+    },
+    {
+      "id": "12",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/12"
+      },
+      "attributes": {
+        "pacbio_run_id": 10,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040068120240715"
+      }
+    },
+    {
+      "id": "13",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/13"
+      },
+      "attributes": {
+        "pacbio_run_id": 11,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040028620240810"
+      }
+    },
+    {
+      "id": "14",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/14"
+      },
+      "attributes": {
+        "pacbio_run_id": 11,
+        "plate_number": 2,
+        "sequencing_kit_box_barcode": "1021188000311040072420250101"
+      }
+    },
+    {
+      "id": "15",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/15"
+      },
+      "attributes": {
+        "pacbio_run_id": 12,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "1021188000311040028520240822"
+      }
+    },
+    {
+      "id": "16",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/16"
+      },
+      "attributes": {
+        "pacbio_run_id": 12,
+        "plate_number": 2,
+        "sequencing_kit_box_barcode": "1021188000311040028220240412"
+      }
+    },
+    {
+      "id": "17",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/17"
+      },
+      "attributes": {
+        "pacbio_run_id": 13,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "130429101826100021624"
+      }
+    },
+    {
+      "id": "18",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/18"
+      },
+      "attributes": {
+        "pacbio_run_id": 14,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "130429101826100021624"
+      }
+    },
+    {
+      "id": "19",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/19"
+      },
+      "attributes": {
+        "pacbio_run_id": 15,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "shjfbewbfwekfbwekfbwekfjbwek"
+      }
+    },
+    {
+      "id": "20",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/20"
+      },
+      "attributes": {
+        "pacbio_run_id": 16,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "abcdefghijklmnopqrstuvwxyzab"
       }
     }
   ],
@@ -277,7 +695,7 @@
     "page_count": 1
   },
   "links": {
-    "first": "http://localhost:3100/v1/pacbio/runs?page%5Bnumber%5D=1&page%5Bsize%5D=1000",
-    "last": "http://localhost:3100/v1/pacbio/runs?page%5Bnumber%5D=1&page%5Bsize%5D=1000"
+    "first": "http://localhost:3100/v1/pacbio/runs?include=plates&page%5Bnumber%5D=1&page%5Bsize%5D=1000",
+    "last": "http://localhost:3100/v1/pacbio/runs?include=plates&page%5Bnumber%5D=1&page%5Bsize%5D=1000"
   }
 }
