@@ -39,10 +39,10 @@
 
 <script>
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
-import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit.vue'
-import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit.vue'
-import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList.vue'
-import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
+import PacbioRunInfoEdit from '@/components/pacbio/V1/PacbioRunInfoEditV1.vue'
+import PacbioRunWellDefaultEdit from '@/components/pacbio/V1/PacbioRunWellDefaultEditV1.vue'
+import PacbioRunPoolLibraryList from '@/components/pacbio/V1/PacbioRunPoolLibraryListV1.vue'
+import PacbioPlateList from '@/components/pacbio/V1/PacbioRunPlateListV1.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { RunTypeEnum } from '@/stores/utilities/run.js'
 

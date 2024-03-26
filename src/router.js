@@ -18,6 +18,7 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import PacbioPoolIndexV1 from '@/views/pacbio/PacbioPoolIndexV1.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
+// import PacbioRunShowV1 from '@/views/pacbio/PacbioRunShowV1.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
@@ -152,6 +153,17 @@ const router = createRouter({
             checkPaginationParams(to)
           },
         },
+        // {
+        //   path: 'run/:id',
+        //   name: 'PacbioRunShow',
+        //   component: FlaggedFeatureView,
+        //   props: {
+        //     feature: 'dpl_1113_run_well_aliquots',
+        //     componentOnFeatureEnable: PacbioRunShow,
+        //     componentOnFeatureDisable: PacbioRunShowV1,
+        //   },
+        //   meta: { page: 'Run' },
+        // },
         {
           path: 'run/:id',
           name: 'PacbioRunShow',
