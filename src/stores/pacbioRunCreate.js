@@ -205,8 +205,34 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     runTypeItem: (state) => state.runType || {},
 
+    /**
+     * Gets the well based on the plate number and position
+     * @param {Object} state the pinia state object
+     * @param {String} plateNumber The plate number of the well
+     * @param {String} position The position of the well
+     * @returns {Object} The well with the pools and libraries
+     */
     getWell: (state) => (plateNumber, position) => {
-      return state.wells[plateNumber][position]
+      // get the well from the state
+      const well = state.wells[plateNumber][position]
+
+      // loop through the used aliquots and get the pools and libraries
+      const poolsAndLibraries = well?.used_aliquots?.reduce((result, aliquotId) => {
+        const aliquot = state.aliquots[aliquotId]
+        const types = { 'Pacbio::Pool': 'pools', 'Pacbio::Library': 'libraries' }
+
+        // for each type get the source and add it to the result
+        for (const type in types) {
+          if (aliquot.source_type === type) {
+            const sourceType = types[type]
+            const source = state[sourceType][aliquot.source_id]
+            // if the source is not in the result add it
+            result[sourceType] = [...(result[sourceType] || []), source.id]
+          }
+        }
+        return result
+      }, {})
+      return { well, ...poolsAndLibraries }
     },
 
     /**

@@ -13,7 +13,7 @@ import {
   existingRunType,
   defaultWellAttributes,
 } from '@/stores/utilities/run'
-import { beforeEach, expect, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 describe('usePacbioRunCreateStore', () => {
@@ -188,6 +188,50 @@ describe('usePacbioRunCreateStore', () => {
         }
         const gottenWell = store.getOrCreateWell(position, plateNumber)
         expect(gottenWell).toEqual(well)
+      })
+    })
+
+    describe('getWell', () => {
+      const plateNumber = 1
+      const position = 'A1'
+
+      it('if it has pools', () => {
+        const well = newWell({ position, used_aliquots: ['1', '2'] })
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          ...store.$state,
+          wells: { 1: { [position]: well } },
+          defaultWellAttributes: { ...defaultWellAttributes() },
+          aliquots: {
+            1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
+            2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
+          },
+          pools: {
+            1: { id: '1', type: 'pools' },
+            2: { id: '2', type: 'pools' },
+          },
+        }
+        const gottenWell = store.getWell(plateNumber, position)
+        expect(gottenWell.pools).toEqual(['1', '2'])
+      })
+
+      it('if it has libraries', () => {
+        const well = newWell({ position, used_aliquots: ['1'] })
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          ...store.$state,
+          wells: { 1: { [position]: well } },
+          defaultWellAttributes: { ...defaultWellAttributes() },
+          aliquots: {
+            1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '1' },
+          },
+          libraries: {
+            1: { id: '1', type: 'libraries' },
+            2: { id: '2', type: 'libraries' },
+          },
+        }
+        const gottenWell = store.getWell(plateNumber, position)
+        expect(gottenWell.libraries).toEqual(['1'])
       })
     })
   })
