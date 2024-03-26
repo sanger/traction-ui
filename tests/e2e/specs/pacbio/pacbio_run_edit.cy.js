@@ -18,7 +18,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -26,7 +26,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },
