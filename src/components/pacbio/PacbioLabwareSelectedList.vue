@@ -173,7 +173,7 @@ const selectedLabware = computed(() => {
  * A computed property that returns the section title
  * If no labware is selected, the title is an empty string
  * If the table view is selected, the title is 'Click either on the checkbox or directly on the rows to select samples'
- * If the table view is not selected, the title is 'Click on wells (in plates) or libraries to select samples'
+ * If the table view is not selected, the title is 'Click on wells (in plates) or tubes to select samples'
  */
 const sectionTitle = computed(() => {
   if (selectedLabware.value.length === 0) {
@@ -181,7 +181,7 @@ const sectionTitle = computed(() => {
   }
   return tableView.value
     ? 'Click either on the checkbox or directly on the rows to select samples'
-    : 'Click on wells (in plates) or libraries to select samples'
+    : 'Click on wells (in plates) or tubes to select samples'
 })
 
 /**
