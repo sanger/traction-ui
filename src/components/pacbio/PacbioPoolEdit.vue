@@ -22,28 +22,64 @@
 
         <div>
           <traction-sub-section title="Pool information" class="mt-2 py-6">
-            <div class="grid gap-5 grid-cols-6 mb-10 text-sm min-h-32" data-type="pool-edit">
-              <label> Auto tagging</label>
-              <label v-if="!!tubeItem.barcode"> Pool Barcode </label>
-              <label v-else></label>
-              <label>Template Prep Kit Box Barcode </label>
-              <label> Volume</label>
-              <label> Concentration</label>
-              <label> Insert Size</label>
-              <div class="w-full flex justify-center">
+            <div class="flex flex-row gap-x-4" data-type="pool-edit">
+              <fieldset class="flex flex-col items-center gap-y-4">
+                <traction-label>Auto tagging</traction-label>
                 <traction-toggle v-model="autoTag" data-attribute="check-box" />
-              </div>
-              <label v-if="!!tubeItem.barcode" data-attribute="barcode" class="font-bold flex-wrap">
-                {{ tubeItem.barcode }}
-              </label>
-              <label v-else></label>
-              <traction-input
-                v-model="poolItem.template_prep_kit_box_barcode"
-                data-attribute="template-prep-kit-box-barcode"
-              />
-              <traction-input v-model="poolItem.volume" data-attribute="volume" />
-              <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
-              <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
+              </fieldset>
+              <fieldset v-if="!!tubeItem.barcode" class="flex flex-col">
+                <traction-label class="h-full">Pool Barcode</traction-label>
+                <traction-label
+                  v-if="!!tubeItem.barcode"
+                  data-attribute="barcode"
+                  class="font-bold text-nowrap"
+                >
+                  {{ tubeItem.barcode }}
+                </traction-label>
+              </fieldset>
+              <fieldset class="flex flex-col">
+                <traction-label class="h-full">Template Prep Kit Box Barcode</traction-label>
+                <traction-field-error
+                  data-attribute="template_prep_kit_box_barcode-error"
+                  :error="poolErrorsFor('template_prep_kit_box_barcode')"
+                  :with-icon="!!poolItem.errors?.template_prep_kit_box_barcode"
+                >
+                  <traction-input
+                    v-model="poolItem.template_prep_kit_box_barcode"
+                    data-attribute="template-prep-kit-box-barcode"
+                  />
+                </traction-field-error>
+              </fieldset>
+              <fieldset class="flex flex-col">
+                <traction-label class="h-full">Volume</traction-label>
+                <traction-field-error
+                  data-attribute="volume-error"
+                  :error="poolErrorsFor('volume')"
+                  :with-icon="!!poolItem.errors?.volume"
+                >
+                  <traction-input v-model="poolItem.volume" data-attribute="volume" />
+                </traction-field-error>
+              </fieldset>
+              <fieldset class="flex flex-col">
+                <traction-label class="h-full">Concentration</traction-label>
+                <traction-field-error
+                  data-attribute="concentration-error"
+                  :error="poolErrorsFor('concentration')"
+                  :with-icon="!!poolItem.errors?.concentration"
+                >
+                  <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
+                </traction-field-error>
+              </fieldset>
+              <fieldset class="flex flex-col">
+                <traction-label class="h-full">Insert Size</traction-label>
+                <traction-field-error
+                  data-attribute="insert_size-error"
+                  :error="poolErrorsFor('insert_size')"
+                  :with-icon="!!poolItem.errors?.insert_size"
+                >
+                  <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
+                </traction-field-error>
+              </fieldset>
             </div>
           </traction-sub-section>
         </div>
@@ -117,6 +153,14 @@ export default {
   },
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
+    // Checks if the pool attribute should be displayed with an error
+    poolErrorsFor(attribute) {
+      if (this.poolItem?.[attribute]?.length) {
+        delete this.poolItem?.errors?.[attribute]
+        return ''
+      }
+      return this.poolItem?.errors?.[attribute]
+    },
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {

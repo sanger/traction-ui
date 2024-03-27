@@ -16,11 +16,12 @@ const usedAliquotAttributes = {
  * @param {boolean} isPool - A boolean indicating whether the attributes are for a pool.
  * @returns {string[]} The array of required attributes.
  */
-const requiredAttributes = (isPool) => [
+const requiredAliquotAttributes = (isPool) => [
   'source_id',
   'volume',
   'concentration',
   'insert_size',
+  'template_prep_kit_box_barcode',
   ...(isPool ? ['tag_id'] : []),
 ]
 
@@ -39,7 +40,7 @@ const createUsedAliquot = (attributes) => {
 }
 
 /**
- * Validates a set of used_aliquots.
+ * Validates a set of used_aliquots and the pool.
  * Checks if all required attributes are present in each used_aliquot and if there are no duplicate tags.
  * If a used_aliquot is missing a required attribute or there are duplicate tags, it adds an error message to the used_aliquot.
  * These error messages is accessed in components through the 'errors' property of each used_aliquot.
@@ -55,15 +56,21 @@ const createUsedAliquot = (attributes) => {
  * };
  * const isValid = validate(used_aliquots); // returns true
  */
-const validate = (used_aliquots) => {
+const validate = ({ used_aliquots, pool }) => {
   const pooled = Object.keys(used_aliquots).length > 1
-  const requiredAttrs = requiredAttributes(pooled)
+  const requiredAliquotAttrs = requiredAliquotAttributes(pooled)
+  const requiredPoolAttrs = [
+    'template_prep_kit_box_barcode',
+    'volume',
+    'concentration',
+    'insert_size',
+  ]
   const aliquotEntries = Object.entries(used_aliquots)
   let isValid = true
 
   aliquotEntries.forEach(([key, used_aliquot]) => {
     const errors = {}
-    requiredAttrs.forEach((field) => {
+    requiredAliquotAttrs.forEach((field) => {
       if (!used_aliquot[field]) {
         errors[field] = 'must be present'
         isValid = false
@@ -74,6 +81,14 @@ const validate = (used_aliquots) => {
       isValid = false
     }
     used_aliquot['errors'] = errors
+  })
+
+  pool.errors = {}
+  requiredPoolAttrs.forEach((field) => {
+    if (!pool[field]) {
+      pool.errors[field] = 'must be present'
+      isValid = false
+    }
   })
 
   return isValid

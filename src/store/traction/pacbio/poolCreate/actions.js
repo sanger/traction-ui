@@ -1,5 +1,5 @@
 import { groupIncludedByResource } from '@/api/JsonApi.js'
-import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool.js'
+import { validate, payload } from '@/store/traction/pacbio/poolCreate/pool.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { wellFor, wellToIndex } from '@/store/traction/pacbio/poolCreate/wellHelpers.js'
 
@@ -188,8 +188,7 @@ export default {
    * Creates a pool from the libraries
    */
   createPool: async ({ rootState, state: { libraries, pool } }) => {
-    validate({ libraries })
-    if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
+    if (!validate({ libraries, pool })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
     // Payload has feature flagged data, so its async to check the flag
     const payload_data = await payload({ libraries, pool })
@@ -203,8 +202,7 @@ export default {
    * Update a pool and libraries
    */
   updatePool: async ({ rootState, state: { libraries, pool } }) => {
-    validate({ libraries })
-    if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
+    if (!validate({ libraries, pool })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
     // Payload has feature flagged data, so its async to check the flag
     const payload_data = await payload({ libraries, pool })

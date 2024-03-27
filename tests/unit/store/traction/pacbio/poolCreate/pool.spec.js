@@ -1,5 +1,5 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/pool'
+import { validate, payload } from '@/store/traction/pacbio/poolCreate/pool'
 import { checkFeatureFlag } from '@/api/FeatureFlag'
 
 vi.mock('@/api/FeatureFlag', () => ({
@@ -59,8 +59,17 @@ describe('libraries.js', () => {
       }
       const state = defaultState()
       state.libraries = { ...libraries }
+      // Setup a valid pool so validation doesnt fail on the pool
+      state.pool = {
+        insert_size: 100,
+        concentration: 10,
+        volume: 10,
+        template_prep_kit_box_barcode: 'ABC1',
+      }
       validate(state)
-      expect(valid({ libraries: state.libraries })).toBeTruthy()
+      expect(state.libraries['_3'].errors).toEqual({
+        template_prep_kit_box_barcode: 'must be present',
+      })
     })
 
     it('when the volume is not present', () => {
@@ -138,21 +147,42 @@ describe('libraries.js', () => {
         Object.values(state.libraries).every((library) => Object.keys(library.errors).length === 0),
       ).toBeTruthy()
     })
-  })
 
-  describe('valid', () => {
-    it('no errors', () => {
-      const libraries = { _1: library1(), _2: library2(), _3: library3() }
-      expect(valid({ libraries })).toBeTruthy()
+    it('when the pool has missing fields', () => {
+      const pool = {
+        insert_size: '',
+        concentration: '',
+        volume: '',
+        template_prep_kit_box_barcode: '',
+      }
+      const state = defaultState()
+      state.pool = { ...pool }
+      validate(state)
+      expect(state.pool.errors).toEqual({
+        insert_size: 'must be present',
+        concentration: 'must be present',
+        volume: 'must be present',
+        template_prep_kit_box_barcode: 'must be present',
+      })
     })
 
-    it('with errors', () => {
-      const libraries = {
-        _1: library1(),
-        _2: library2(),
-        _3: { ...library3(), errors: { a: 'error', b: 'error' } },
+    it('when the pool and libraries are valid', () => {
+      const libraries = { _1: library1(), _2: library2(), _3: library3() }
+      const pool = {
+        insert_size: 100,
+        concentration: 10,
+        volume: 10,
+        template_prep_kit_box_barcode: 'ABC1',
       }
-      expect(valid({ libraries })).toBeFalsy()
+      const state = defaultState()
+      state.libraries = { ...libraries }
+      state.pool = { ...pool }
+      validate(state)
+
+      expect(
+        Object.values(state.libraries).every((library) => Object.keys(library.errors).length === 0),
+      ).toBeTruthy()
+      expect(Object.keys(state.pool.errors).length).toBe(0)
     })
   })
 
