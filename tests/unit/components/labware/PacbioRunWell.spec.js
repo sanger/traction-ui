@@ -7,7 +7,7 @@ import { beforeEach } from 'vitest'
 
 const storeWell = {
   position: 'A1',
-  used_aliquots: ['1', '2', '3', '322'],
+  used_aliquots: ['1', '2', '3'],
   on_plate_loading_concentration: 234,
   movie_time: 15,
   generate_hifi: 'In SMRT Link',
