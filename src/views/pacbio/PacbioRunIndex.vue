@@ -180,29 +180,34 @@ export default {
       this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
       return await this.fetchWithQueryParams(this.fetchPacbioRuns, this.filterOptions)
     },
+    // This could be abstracted to a composable if we need to use it elsewhere in the future
     async downloadCSV({ id, name }) {
-      const response = await fetch(this.generateSampleSheetPath(id), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/csv',
-        },
-      })
-      // The response may be invalid if an unsupported version is requested
-      // Or if an unexpected error occurs. This response will be in json format
-      if (!response.ok) {
-        const json_error = await response.json()
-        this.showAlert(json_error['error'], 'danger')
-        return
+      try {
+        const response = await fetch(this.generateSampleSheetPath(id), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/csv',
+          },
+        })
+        // The response may be invalid if an unsupported version is requested
+        // Or if an unexpected error occurs. This response will be in json format
+        if (!response.ok) {
+          const json_error = await response.json()
+          this.showAlert(json_error['error'], 'danger')
+          return
+        }
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        // Creates a temporary dummy link to download the file
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${name}.csv`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      } catch (err) {
+        this.showAlert(String(err), 'danger')
       }
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      // Creates a temporary dummy link to download the file
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${name}.csv`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
     },
   },
 }

@@ -284,7 +284,7 @@ describe('PacbioRunIndex.vue', () => {
       })
     })
 
-    it('on click generateSampleSheetPath is called and shows an error on failure', async () => {
+    it('on click generateSampleSheetPath is called and shows an error when the version is invalid', async () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: vi
@@ -300,6 +300,16 @@ describe('PacbioRunIndex.vue', () => {
         'SMRTLink sample sheet version (v10) is invalid',
         'danger',
       )
+    })
+
+    it('on click generateSampleSheetPath is called and shows an error when there is a network error', async () => {
+      global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch'))
+      pacbioRunIndex.showAlert = vi.fn()
+      button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
+
+      await flushPromises()
+      expect(pacbioRunIndex.showAlert).toBeCalledWith('Error: Failed to fetch', 'danger')
     })
   })
 
