@@ -27,4 +27,8 @@ describe('TractionSection.vue', () => {
     const wrapper = buildWrapper({ title: 'My title' })
     expect(wrapper.text()).toContain('Section Icon')
   })
+  it('displays the description', () => {
+    const wrapper = buildWrapper({ title: 'My title', description: 'Section Description' })
+    expect(wrapper.text()).toContain('Section Description')
+  })
 })

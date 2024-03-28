@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import Plate from '@/components/pacbio/PacbioPlateItem'
+import Plate from '@/components/pacbio/V1/PacbioPlateItemV1.vue'
 import { createNamespacedHelpers } from 'vuex'
 import { VueSelecto } from 'vue3-selecto'
 

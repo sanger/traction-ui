@@ -1,12 +1,17 @@
 <template>
   <section :class="`flex flex-col gap-y-2 ${classNames}`">
-    <TractionHeading level="4" :show-border="true">
-      <div class="flex flex-row gap-x-2">
-        <div v-if="number">{{ number }}.</div>
-        <slot name="icon"></slot> {{ title }}
-        <TractionTag v-if="tag.length > 0">{{ tag }}</TractionTag>
-      </div>
-    </TractionHeading>
+    <div>
+      <TractionHeading level="4" :show-border="true">
+        <div class="flex flex-row gap-x-2">
+          <div v-if="number">{{ number }}.</div>
+          <slot name="icon"></slot> {{ title }}
+          <TractionTag v-if="tag.length > 0">{{ tag }}</TractionTag>
+        </div>
+      </TractionHeading>
+      <TractionMutedText v-if="description.length > 0" class="text-left text-md px-2">{{
+        description
+      }}</TractionMutedText>
+    </div>
     <div class="sm:px-6 lg:px-8">
       <slot></slot>
     </div>
@@ -47,6 +52,10 @@ export default {
       default: '',
     },
     number: {
+      type: String,
+      default: '',
+    },
+    description: {
       type: String,
       default: '',
     },

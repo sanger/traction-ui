@@ -18,6 +18,7 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import PacbioPoolIndexV1 from '@/views/pacbio/PacbioPoolIndexV1.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
+import PacbioPoolCreateV1 from '@/views/pacbio/PacbioPoolCreateV1'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
@@ -162,8 +163,12 @@ const router = createRouter({
         {
           path: 'pool/:id',
           name: 'PacbioPoolCreate',
-          component: PacbioPoolCreate,
-          props: true,
+          component: FlaggedFeatureView,
+          props: {
+            feature: 'multiplexing_phase_2_pool_with_aliquots',
+            componentOnFeatureEnable: PacbioPoolCreate,
+            componentOnFeatureDisable: PacbioPoolCreateV1,
+          },
           meta: { page: 'Pool' },
         },
       ],

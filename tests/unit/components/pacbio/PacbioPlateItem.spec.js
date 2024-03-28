@@ -1,5 +1,9 @@
-import Plate from '@/components/pacbio/PacbioPlateItem'
-import { mount, store } from '@support/testHelper'
+import PacbioPlateItem from '@/components/pacbio/PacbioPlateItem.vue'
+import { mount, createTestingPinia } from '@support/testHelper.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import useRootStore from '@/stores'
+import { describe } from 'node:test'
+import { expect } from 'chai'
 
 const plates = {
   1: {
@@ -18,47 +22,71 @@ const wells = {
   5: { id: '5', position: 'E1' },
 }
 
-describe('Plate.vue', () => {
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const defaultState = {
+    resources: {
+      plates,
+      wells,
+    },
+  }
+  const wrapperObj = mount(PacbioPlateItem, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioPoolCreate: { ...defaultState, ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+    stubs: {
+      Plate96SVG: true,
+      Well: true,
+    },
+  })
+  const storeObj = usePacbioPoolCreateStore()
+  return { wrapperObj, storeObj }
+}
+
+describe('PacbioPlateItem.vue', () => {
   let wrapper, plate
 
   beforeEach(() => {
-    store.state.traction.pacbio.poolCreate.resources.plates = plates
-    store.state.traction.pacbio.poolCreate.resources.wells = wells
-
-    wrapper = mount(Plate, {
+    const { wrapperObj } = mountWithStore({
       props: { ...plates['1'] },
-      store,
-      stubs: {
-        Plate96SVG: true,
-        Well: true,
-      },
     })
-
+    wrapper = wrapperObj
     plate = wrapper.vm
   })
 
   it('will be passed a plate id as a prop', () => {
     expect(plate.id).toBeDefined()
   })
-
-  it('will have a plate map', () => {
-    expect(plate.plateMap).toBeDefined()
-  })
-
   it('will have some well data', () => {
     expect(plate.wellData).toEqual([wells[1], wells[2], wells[3]])
   })
 
-  describe('methods', () => {
-    describe('#getWellAt', () => {
+  describe('computed', () => {
+    describe('mappedWells', () => {
       it('merges mapWell and well at the given position ', () => {
-        const mapWell = plate.plateMap.wells['A1']
-        expect(plate.getWellAt(mapWell, 'A1').id).toEqual('1')
-      })
-
-      it('returns just the mapWell if no well has the positiion', () => {
-        const mapWell = plate.plateMap.wells['A10']
-        expect(plate.getWellAt(mapWell, 'A10')).toEqual(mapWell)
+        const mappedWell = plate.mappedWells
+        const rootStore = useRootStore()
+        expect(mappedWell[0]).toEqual({ ...wells[1], ...rootStore.plateMap.wells['A1'] })
+        expect(mappedWell[12]).toEqual({ ...wells[2], ...rootStore.plateMap.wells['B1'] })
+        expect(mappedWell[24]).toEqual({ ...wells[3], ...rootStore.plateMap.wells['C1'] })
       })
     })
   })
@@ -75,12 +103,13 @@ describe('Plate.vue', () => {
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
+      const rootStore = useRootStore()
       const ellipses = wrapper.findAllComponents('[data-attribute="well"]')
-      expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
+      expect(ellipses.length).toEqual(Object.keys(rootStore.plateMap.wells).length)
     })
   })
 
-  describe('well@click', () => {
+  describe.only('well@click', () => {
     it('emits a clickWell event with the well id', async () => {
       const well = wrapper.findComponent('[data-attribute="well"]')
       await well.vm.$emit('click')

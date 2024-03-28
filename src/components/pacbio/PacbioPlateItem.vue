@@ -13,63 +13,43 @@
   </div>
 </template>
 
-<script>
-import Plate96SVG from '@/components/svg/Plate96SVG'
-import Well from '@/components/pacbio/PacbioWellItem'
+<script setup>
+import { computed, ref } from 'vue'
+import Plate96SVG from '@/components/svg/Plate96SVG.vue'
+import Well from '@/components/pacbio/PacbioWellItem.vue'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import useRootStore from '@/stores'
 
-export default {
-  name: 'PacbioPlateItem',
-  components: {
-    Plate96SVG,
-    Well,
+const props = defineProps({
+  id: {
+    type: String,
+    default: '',
   },
-  props: {
-    id: {
-      type: String,
-      default() {
-        return ''
-      },
-    },
-    barcode: {
-      type: String,
-      default() {
-        return ''
-      },
-    },
-    wells: {
-      type: Array,
-      default() {
-        return []
-      },
-    },
+  barcode: {
+    type: String,
+    default: '',
   },
-  emits: ['clickWell'],
-  data() {
-    return {
-      wellData: [],
-    }
+  wells: {
+    type: Array,
+    default: () => [],
   },
-  computed: {
-    mappedWells() {
-      return Object.entries(this.plateMap.wells).map(([position, mapWell]) => {
-        return this.getWellAt(mapWell, position)
-      })
-    },
-    plateMap() {
-      return this.$store.getters.plateMap
-    },
-  },
-  mounted() {
-    this.wellData = this.$store.getters['traction/pacbio/poolCreate/wellList'](this.wells)
-  },
-  methods: {
-    getWellAt(mapWell, position) {
-      const well = this.wellData.find((well) => well.position == position)
-      return well ? { ...mapWell, ...well } : mapWell
-    },
-    clickWell(id) {
-      this.$emit('clickWell', id)
-    },
-  },
+})
+const store = usePacbioPoolCreateStore()
+const rootStore = useRootStore()
+
+const wellData = ref(store.wellList(props.wells))
+
+const emit = defineEmits(['clickWell'])
+
+const mappedWells = computed(() => {
+  const value = Object.entries(rootStore.plateMap.wells).map(([position, mapWell]) => {
+    const well = wellData.value.find((well) => well.position == position)
+    return well ? { ...mapWell, ...well } : mapWell
+  })
+  return value
+})
+
+const clickWell = (id) => {
+  emit('clickWell', id)
 }
 </script>
