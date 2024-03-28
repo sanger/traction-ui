@@ -40,7 +40,7 @@
 -->
 
 <template>
-  <div class="flex">
+  <div class="flex overflow-x-auto">
     <div class="flex w-full py-2 align-middle inline-block min-w-full">
       <div class="flex flex-col w-full sm:rounded-lg">
         <table
