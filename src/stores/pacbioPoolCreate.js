@@ -5,7 +5,6 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { usedAliquotAttributes } from './utilities/pool'
 import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 /**
@@ -1025,16 +1024,20 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
+        const autoFillLibraryAttributes = [
+          'template_prep_kit_box_barcode',
+          'volume',
+          'concentration',
+          'insert_size',
+        ]
         const library = Object.values(this.resources.libraries).find(
           (library) => library.request == id,
         )
         const libraryAttributes = library
-          ? Object.keys(usedAliquotAttributes)
-              .filter((key) => key !== 'source_id' && key !== 'tag_id')
-              .reduce((result, key) => {
-                result[key] = library[key] ?? null
-                return result
-              }, {})
+          ? autoFillLibraryAttributes.reduce((result, key) => {
+              result[key] = library[key] ?? null
+              return result
+            }, {})
           : {}
 
         this.used_aliquots[`_${id}`] = {
