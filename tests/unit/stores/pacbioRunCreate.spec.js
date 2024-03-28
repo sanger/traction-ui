@@ -247,6 +247,17 @@ describe('usePacbioRunCreateStore', () => {
         expect(gottenWell.pools).toEqual([])
         expect(gottenWell.libraries).toEqual([])
       })
+
+      it('if the well does not exist', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          ...store.$state,
+          wells: { 1: {} },
+          defaultWellAttributes: { ...defaultWellAttributes() },
+        }
+        const gottenWell = store.getWell(plateNumber, position)
+        expect(gottenWell).toBeUndefined()
+      })
     })
   })
   describe('actions', () => {

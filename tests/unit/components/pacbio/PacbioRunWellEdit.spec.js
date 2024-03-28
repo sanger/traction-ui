@@ -230,7 +230,7 @@ describe('PacbioWellEdit', () => {
     })
 
     describe('well type', () => {
-      it('if it doesnt exist in state (new)', async () => {
+      it.only('if it doesnt exist in state (new)', async () => {
         const { wrapperObj } = mountWithStore({
           state: {
             smrtLinkVersion: smrtLinkVersions['1'],

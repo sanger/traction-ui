@@ -234,7 +234,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }, {})
 
       // we need to make sure pools and libraries are empty arrays if they are not present
-      return { ...well, pools: [], libraries: [], ...poolsAndLibraries }
+      // we shouldn't need to return undefined. This is a typing issue. We should have a method on well
+      return well ? { ...well, pools: [], libraries: [], ...poolsAndLibraries } : undefined
     },
 
     /**
