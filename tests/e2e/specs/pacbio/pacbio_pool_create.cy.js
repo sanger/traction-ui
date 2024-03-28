@@ -18,7 +18,7 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        multiplexing_phase_2_aliquot: { enabled: true },
+        multiplexing_phase_2_pool_with_aliquots: { enabled: true },
       },
     })
   })

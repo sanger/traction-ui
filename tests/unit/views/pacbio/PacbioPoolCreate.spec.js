@@ -162,26 +162,42 @@ describe('PacbioPoolCreate', () => {
       store.findPacbioTube = mockFindPacbioTubeFn
     })
     describe('when a plate barcode is scanned', () => {
-      it('calls findPacbioPlate', async () => {
+      const barcode = 'DN814327C'
+      it('calls findPacbioPlate on enter key press', async () => {
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,
           errors: [],
         })
         mockFindPacbioTubeFn.mockReturnValue({ success: true, errors: [] })
-        await triggerInputEnter(wrapper, 'DN814327C')
+        await triggerInputEnter(wrapper, barcode)
 
         expect(mockFindPacbioPlateFn).toBeCalled()
         expect(mockFindPacbioTubeFn).not.toBeCalled()
       })
+      it('calls findPacbioPlate on search button press', async () => {
+        mockFindPacbioPlateFn.mockReturnValue({
+          success: true,
+          errors: [],
+        })
+        mockFindPacbioTubeFn.mockReturnValue({ success: true, errors: [] })
+        const input = wrapper.find('#labware-finder-input')
+        // Set the value of the input element
+        await input.setValue(barcode)
+        expect(wrapper.find('#labware-finder-button').element.disabled).toBe(false)
+        await wrapper.find('#labware-finder-button').trigger('click')
+        expect(mockFindPacbioPlateFn).toBeCalled()
+        expect(mockFindPacbioTubeFn).not.toBeCalled()
+      })
+
       it('sets scannedLabware', async () => {
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,
           errors: [],
         })
         mockFindPacbioTubeFn.mockReturnValue({ success: true, errors: [] })
-        await triggerInputEnter(wrapper, 'DN814327C')
+        await triggerInputEnter(wrapper, barcode)
 
-        expect(wrapper.vm.scannedLabware).toEqual([{ barcode: 'DN814327C', type: 'plates' }])
+        expect(wrapper.vm.scannedLabware).toEqual([{ barcode, type: 'plates' }])
       })
       it('show alert on error', async () => {
         mockFindPacbioPlateFn.mockReturnValue({
@@ -189,7 +205,7 @@ describe('PacbioPoolCreate', () => {
           errors: ['Error finding plate'],
         })
         mockFindPacbioTubeFn.mockReturnValue({ success: false, errors: ['Error finding tube'] })
-        await triggerInputEnter(wrapper, 'DN814327C')
+        await triggerInputEnter(wrapper, barcode)
 
         expect(mockFindPacbioPlateFn).toBeCalled()
         expect(mockFindPacbioTubeFn).toBeCalled()

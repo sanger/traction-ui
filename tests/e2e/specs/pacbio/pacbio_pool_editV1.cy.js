@@ -22,7 +22,7 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        multiplexing_phase_2_aliquot: { enabled: false },
+        multiplexing_phase_2_pool_with_aliquots: { enabled: false },
       },
     })
   })

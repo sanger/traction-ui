@@ -135,7 +135,7 @@ const router = createRouter({
           name: 'PacbioPoolIndex',
           component: FlaggedFeatureView,
           props: {
-            feature: 'multiplexing_phase_2_aliquot',
+            feature: 'multiplexing_phase_2_pool_with_aliquots',
             componentOnFeatureEnable: PacbioPoolIndex,
             componentOnFeatureDisable: PacbioPoolIndexV1,
           },
@@ -165,7 +165,7 @@ const router = createRouter({
           name: 'PacbioPoolCreate',
           component: FlaggedFeatureView,
           props: {
-            feature: 'multiplexing_phase_2_aliquot',
+            feature: 'multiplexing_phase_2_pool_with_aliquots',
             componentOnFeatureEnable: PacbioPoolCreate,
             componentOnFeatureDisable: PacbioPoolCreateV1,
           },
