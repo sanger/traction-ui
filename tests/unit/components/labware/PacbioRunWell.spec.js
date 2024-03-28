@@ -73,6 +73,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
   return { wrapperObj }
 }
 
+// TODO: There are some quirks in the tests, that might need more investigation
 describe('PacbioRunWell.vue', () => {
   let well, wrapper
 
