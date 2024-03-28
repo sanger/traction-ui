@@ -71,6 +71,8 @@ describe('ONT Pool Edit', () => {
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
   })
 
+  // In some cases we check an element exists instead of being visible as the table may have overflowed
+  // causing it to exist but not be visible directly on the screen
   it('Will not update a pool if there is an error', () => {
     cy.visit('#/ont/pools')
     cy.get('#pool-index').within(() => {
@@ -80,9 +82,9 @@ describe('ONT Pool Edit', () => {
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').each(($pool) => {
       cy.wrap($pool).within(() => {
-        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').should('exist')
         cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-          cy.get('[data-attribute=pass]').should('be.visible')
+          cy.get('[data-attribute=pass]').should('exist')
         })
         cy.get('[data-attribute=insert-size]').clear()
         cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
@@ -91,9 +93,9 @@ describe('ONT Pool Edit', () => {
     cy.get('[data-action=update-pool]').click()
     cy.get('[data-type=pool-library-edit]').each(($pool) => {
       cy.wrap($pool).within(() => {
-        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').should('exist')
         cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-          cy.get('[data-attribute=fail]').should('be.visible')
+          cy.get('[data-attribute=fail]').should('exist')
         })
       })
     })
