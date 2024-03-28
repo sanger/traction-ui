@@ -77,18 +77,13 @@
             Edit
           </traction-button>
 
-          <a
+          <traction-button
             :id="generateId('generate-sample-sheet', row.item.id)"
-            :href="generateSampleSheetPath(row.item.id)"
-            class="text-primary"
+            class="bg-sp-400 hover:bg-sp-300"
+            @click="downloadCSV({ id: row.item.id, name: row.item.name })"
           >
-            <traction-button
-              :id="generateId('generate-sample-sheet', row.item.id)"
-              class="bg-sp-400 hover:bg-sp-300"
-            >
-              Generate Sample Sheet <DownloadIcon class="pl-1" />
-            </traction-button>
-          </a>
+            Generate Sample Sheet <DownloadIcon class="pl-1" />
+          </traction-button>
         </template>
       </traction-table>
     </div>
@@ -184,6 +179,30 @@ export default {
     async fetchRuns() {
       this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
       return await this.fetchWithQueryParams(this.fetchPacbioRuns, this.filterOptions)
+    },
+    async downloadCSV({ id, name }) {
+      const response = await fetch(this.generateSampleSheetPath(id), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/csv',
+        },
+      })
+      // The response may be invalid if an unsupported version is requested
+      // Or if an unexpected error occurs. This response will be in json format
+      if (!response.ok) {
+        const json_error = await response.json()
+        this.showAlert(json_error['error'], 'danger')
+        return
+      }
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      // Creates a temporary dummy link to download the file
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${name}.csv`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
     },
   },
 }
