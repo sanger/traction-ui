@@ -212,6 +212,7 @@ describe('usePacbioRunCreateStore', () => {
           },
         }
         const gottenWell = store.getWell(plateNumber, position)
+        expect(gottenWell.position).toEqual(position)
         expect(gottenWell.pools).toEqual(['1', '2'])
       })
 
@@ -232,6 +233,19 @@ describe('usePacbioRunCreateStore', () => {
         }
         const gottenWell = store.getWell(plateNumber, position)
         expect(gottenWell.libraries).toEqual(['1'])
+      })
+
+      it('if it has neither pools nor libraries', () => {
+        const well = newWell({ position, pools: null, libraries: null, used_aliquots: null })
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          ...store.$state,
+          wells: { 1: { [position]: well } },
+          defaultWellAttributes: { ...defaultWellAttributes() },
+        }
+        const gottenWell = store.getWell(plateNumber, position)
+        expect(gottenWell.pools).toEqual([])
+        expect(gottenWell.libraries).toEqual([])
       })
     })
   })

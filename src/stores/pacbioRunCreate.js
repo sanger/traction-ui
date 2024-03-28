@@ -232,7 +232,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         }
         return result
       }, {})
-      return { well, ...poolsAndLibraries }
+
+      // we need to make sure pools and libraries are empty arrays if they are not present
+      return { ...well, pools: [], libraries: [], ...poolsAndLibraries }
     },
 
     /**

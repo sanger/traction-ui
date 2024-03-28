@@ -7,8 +7,7 @@ import { beforeEach } from 'vitest'
 
 const storeWell = {
   position: 'A1',
-  pools: ['12', '14'],
-  libraries: ['30'],
+  used_aliquots: ['1', '2', '3', '322'],
   on_plate_loading_concentration: 234,
   movie_time: 15,
   generate_hifi: 'In SMRT Link',
@@ -18,6 +17,11 @@ const storeWell = {
   library_concentration: 123,
   polymerase_kit: '123',
   pre_extension_time: 1,
+}
+const usedAliquots = {
+  1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
+  2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '14' },
+  3: { id: '3', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '30' },
 }
 const props = {
   position: 'A1',
@@ -44,6 +48,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     plates: { 1: newPlate(1) },
     wells: { 1: { A1: storeWell } },
     ...storePools,
+    aliquots: { ...usedAliquots },
     smrtLinkVersion: smrtLinkVersions['1'],
     resources: { smrtLinkVersions },
   }
@@ -105,9 +110,10 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, pools: [], libraries: [] } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
           },
         })
+
         const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
@@ -125,8 +131,7 @@ describe('PacbioRunWell.vue', () => {
               1: {
                 A1: {
                   ...storeWell,
-                  pools: [],
-                  libraries: [],
+                  used_aliquots: null,
                   movie_time: '',
                   generate_hifi: '',
                   ccs_analysis_output: '',
@@ -168,7 +173,7 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, pools: [], libraries: [] } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
             smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
@@ -188,8 +193,7 @@ describe('PacbioRunWell.vue', () => {
               1: {
                 A1: {
                   ...storeWell,
-                  pools: [],
-                  libraries: [],
+                  used_aliquots: null,
                   movie_acquisition_time: '',
                   polymerase_kit: '',
                   pre_extension_time: '',
@@ -218,6 +222,16 @@ describe('PacbioRunWell.vue', () => {
       const newBarcode = 'TRAC-2-22'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: null,
+              },
+            },
+          },
+        },
         stubActions: false,
         plugins: [
           ({ store }) => {
@@ -225,7 +239,7 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = storeWell
+      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
       expectedWell.pools.push('12')
       await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
@@ -238,6 +252,16 @@ describe('PacbioRunWell.vue', () => {
       const newBarcode = 'TRAC-2-20'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: null,
+              },
+            },
+          },
+        },
         stubActions: false,
         plugins: [
           ({ store }) => {
@@ -245,7 +269,7 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = storeWell
+      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
       expectedWell.libraries.push('30')
       await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
