@@ -69,7 +69,7 @@
 // A lot of it could be moved to the store
 import { mapState, mapActions } from 'pinia'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 export default {
   name: 'WellModal',
@@ -143,7 +143,7 @@ export default {
     ...mapActions(usePacbioRunCreateStore, [
       'updateWell',
       'deleteWell',
-      'findPoolsOrLibraryByTube',
+      'findPoolsOrLibrariesByTube',
     ]),
     addRow() {
       this.localPoolsAndLibraries.push({ id: '', barcode: '' })
@@ -202,7 +202,7 @@ export default {
     },
     async updatePoolLibraryBarcode(row, barcode) {
       const index = row.index
-      await this.findPoolsOrLibraryByTube({ barcode })
+      await this.findPoolsOrLibrariesByTube({ barcode })
       const tubeContent = await this.tubeContentByBarcode(barcode)
       if (tubeContent) {
         tubeContent.type === 'libraries'

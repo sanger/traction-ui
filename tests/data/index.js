@@ -32,6 +32,7 @@ import TractionPacbioSample from './tractionPacbioSample'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
+import PacbioRunV1 from './pacbioRunV1'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlateRequest from './pacbioPlateRequest'
 import PacbioPlatesRequest from './pacbioPlatesRequest'
@@ -39,6 +40,7 @@ import PacbioTubeRequest from './pacbioTubeRequest'
 import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioTubeWithPool from './pacbioTubeWithPool.json'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
+import PacbioTubesWithPoolsAndLibraries from './pacbioTubesWithPoolsAndLibraries.json'
 import PacbioPool from './pacbioPool'
 import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioTagSets from './pacbioTagSets'
@@ -113,6 +115,7 @@ export default {
   TractionPacbioTagSets,
   PacbioRuns,
   PacbioRun,
+  PacbioRunV1,
   PacbioPlates,
   PacbioPlateRequest,
   PacbioPlatesRequest,
@@ -120,6 +123,7 @@ export default {
   PacbioTubesRequest,
   PacbioTubeWithPool,
   PacbioTubeWithLibrary,
+  PacbioTubesWithPoolsAndLibraries,
   PacbioPool,
   PacbioRequestsRequest,
   PacbioTagSets,

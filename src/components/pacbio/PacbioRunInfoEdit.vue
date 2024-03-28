@@ -70,7 +70,7 @@
 
 <script>
 import { mapState, mapActions } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import {
   InstrumentTypeSelectOptionsType,

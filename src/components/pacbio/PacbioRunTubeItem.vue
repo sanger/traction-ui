@@ -10,7 +10,7 @@
       <div class="flex flex-col h-full w-full">
         <div class="flex flex-row w-full p-2 items-center border-b-2">
           <p class="text-xl font-bold w-full px-2 text-left" data-attribute="barcode">
-            {{ barcode }}
+            {{ barcode }} - {{ type }}
           </p>
           <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
         </div>
@@ -53,20 +53,14 @@
                 {{ insert_size || 'Unknown' }}
               </dd>
             </dl>
-            <dl v-if="type == 'pools'" class="flex space-x-4 p-1 px-4">
-              <dt class="w-1/4 text-gray-500 font-bold">Libraries</dt>
+            <dl class="flex space-x-4 p-1 px-4" data-attribute="samples">
+              <dt class="w-1/4 text-gray-500 font-bold">Samples</dt>
               <dd class="w-3/4">
                 <ul>
-                  <li v-for="library in libraries" :key="library.id">
-                    {{ library.sample_name }}{{ library.group_id ? ' : ' + library.group_id : '' }}
+                  <li v-for="sample in samples" :key="sample">
+                    {{ sample }}
                   </li>
                 </ul>
-              </dd>
-            </dl>
-            <dl v-else class="flex space-x-4 p-1 px-4">
-              <dt class="w-1/4 text-gray-500 font-bold">Sample and Tag</dt>
-              <dd class="w-3/4" data-attribute="sample-name">
-                {{ sample_name }}{{ group_id ? ' : ' + group_id : '' }}
               </dd>
             </dl>
             <dl v-if="!run_suitability.ready_for_run" class="flex space-x-4 p-1 px-4 bg-gray-200">
@@ -98,7 +92,7 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup>
 import { ref, computed } from 'vue'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
 
 const props = defineProps({
@@ -117,7 +111,7 @@ const props = defineProps({
     required: true,
     default: '',
   },
-  libraries: {
+  samples: {
     type: Array,
     required: false,
     default: () => [],
@@ -150,16 +144,6 @@ const props = defineProps({
   run_suitability: {
     type: Object,
     required: true,
-  },
-  sample_name: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  group_id: {
-    type: String,
-    required: false,
-    default: '',
   },
 })
 

@@ -47,7 +47,7 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import { RunTypeEnum } from '@/stores/utilities/run.js'
 
 import { mapState, mapActions } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 export default {
   name: 'PacbioRunShow',

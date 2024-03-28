@@ -10,7 +10,7 @@ import {
   router,
 } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { vi } from 'vitest'
 
 const mockRuns = new Response(Data.PacbioRuns).deserialize.runs

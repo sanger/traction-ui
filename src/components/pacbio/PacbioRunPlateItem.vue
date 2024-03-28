@@ -50,7 +50,7 @@ import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes.js'
 import { mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 export default {
   name: 'PacbioRunPlateItem',

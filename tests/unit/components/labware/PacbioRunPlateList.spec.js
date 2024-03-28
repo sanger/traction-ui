@@ -3,7 +3,7 @@ import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
 import { newWell } from '@/stores/utilities/run.js'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 const smrtLinkVersions = {
   1: { id: 1, name: 'v11', default: true, active: true },

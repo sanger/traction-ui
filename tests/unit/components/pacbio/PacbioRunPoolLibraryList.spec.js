@@ -1,7 +1,7 @@
 import { mount, createTestingPinia } from '@support/testHelper.js'
 import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList.vue'
 import storeRunPools from '@tests/data/StoreRunPools.json'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.

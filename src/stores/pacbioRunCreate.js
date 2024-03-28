@@ -19,13 +19,13 @@ import {
   newPlate,
 } from '@/stores/utilities/run'
 
-const buildRunSuitabilityErrors = ({ pool, libraries }) => [
-  ...(pool.run_suitability?.errors || []).map(({ detail }) => `Pool ${detail}`),
-  ...libraries.flatMap((library) => {
-    const libraryName = `Library ${library.id} (${library.sample_name})`
-    return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
-  }),
-]
+// TODO: do we still need this?
+// const buildRunSuitabilityErrors = ({ pool, libraries }) => [
+//   ...libraries.flatMap((library) => {
+//     const libraryName = `Library ${library.id} (${library.sample_name})`
+//     return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
+//   }),
+// ]
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -36,43 +36,50 @@ const formatById = (obj, data, includeRelationships = false) => {
 }
 
 /**
+ * combine sample_name and group_id
+ * @param {String} sample_name the sample name
+ * @param {String} group_id the group id
+ * @returns {String} the sample name and group id concatenated
+ */
+const combineSampleNameAndGroupId = (sample_name, group_id) => {
+  return `${sample_name}${group_id ? ':' + group_id : ''}`
+}
+
+/**
  * returns a pool object with the libraries and barcode
  * @param {Object} state the pinia state object
  * @param {Object} pool a pool object
- * @returns
+ * @returns {Array} samples an array of samples. Sample names are concatenated with the group id
  */
-const generatePoolContents = (state, pool) => {
-  const libraries = (pool.libraries || []).map((libraryId) => {
-    const { id, type, request, tag, run_suitability } = state.library_pools[libraryId]
-    const { sample_name } = state.requests[request]
-    const { group_id } = state.tags[tag] || {}
-    return { id, type, sample_name, group_id, run_suitability }
-  })
-  const { barcode } = state.tubes[pool.tube]
+const generateSamplesForPools = (state, pool) => {
+  // retrieve the used aliquots by their id from state
+  const used_aliquots = pool.used_aliquots.map((aliquotId) => state.aliquots[aliquotId])
 
-  return {
-    ...pool,
-    libraries,
-    barcode,
-    run_suitability: {
-      ...pool.run_suitability,
-      formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
-    },
-  }
+  /*
+   * for each used aliquot get the source_id and tag
+   * for each used aliquot get the sample name from the request
+   * for each used aliquot get the group_id from the tag
+   * merge the sample name with the group id
+   */
+  return used_aliquots.map((aliquot) => {
+    const { source_id, tag } = aliquot
+    const { sample_name } = state.requests[source_id]
+    const { group_id = '' } = state.tags[tag] || {}
+    return combineSampleNameAndGroupId(sample_name, group_id)
+  })
 }
 
 /**
  * Returns a library object with the barcode, sample_name and group_id
  * @param {Object} state the pinia state object
  * @param {Object} library a library object
- * @returns
+ * @returns {Array} samples an array of 1 sample. Sample names are concatenated with the group id
  */
-const generateLibraryContents = (state, library) => {
+const generateSamplesForLibraries = (state, library) => {
   const { request, tag } = library
   const { sample_name } = state.requests[request]
-  const { group_id } = state.tags[tag] || {}
-  const { barcode } = state.tubes[library.tube]
-  return { ...library, barcode, sample_name, group_id }
+  const { group_id = '' } = state.tags[tag] || {}
+  return [combineSampleNameAndGroupId(sample_name, group_id)]
 }
 
 export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
@@ -129,6 +136,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Instrument type: The instrument type selected for the run
     instrumentType: PacbioInstrumentTypes.Revio,
+
+    //Aliquots: The aliquots for the run
+    aliquots: {},
   }),
   getters: {
     /**
@@ -151,19 +161,36 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Returns a list of all the tubes with their contents (pool or library)
      * @param {Object} state the pinia state object
-     * @returns
+     * @returns {Array} an array of pools and libraries
      */
     tubeContents: (state) => {
+      // for each tube
       return Object.values(state.tubes).reduce((result, tube) => {
-        // We should assume a tube only has one pool
-        const pool = state.pools[tube.pools?.[0]]
-        const library = state.libraries[tube.libraries]
+        // retrieve the barcode, id and type - pool or library
+        const { barcode } = tube
+        const { id, type } = tube.pools?.[0]
+          ? { id: tube.pools[0], type: 'pools' }
+          : { id: tube.libraries, type: 'libraries' }
 
-        if (pool) {
-          result.push(generatePoolContents(state, pool))
-        } else if (library) {
-          result.push(generateLibraryContents(state, library))
+        // get the pool or library
+        const record = { barcode, ...state[type][id] }
+
+        let fn = null
+
+        // generate the samples function based on the type
+        if (type === 'pools') {
+          fn = generateSamplesForPools
         }
+        if (type === 'libraries') {
+          fn = generateSamplesForLibraries
+        }
+
+        // if the type is known generate the samples
+        if (fn) {
+          const samples = fn(state, record)
+          result.push({ ...record, samples })
+        }
+
         return result
       }, [])
     },
@@ -178,8 +205,37 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     runTypeItem: (state) => state.runType || {},
 
+    /**
+     * Gets the well based on the plate number and position
+     * @param {Object} state the pinia state object
+     * @param {String} plateNumber The plate number of the well
+     * @param {String} position The position of the well
+     * @returns {Object} The well with the pools and libraries
+     */
     getWell: (state) => (plateNumber, position) => {
-      return state.wells[plateNumber][position]
+      // get the well from the state
+      const well = state.wells[plateNumber][position]
+
+      // loop through the used aliquots and get the pools and libraries
+      const poolsAndLibraries = well?.used_aliquots?.reduce((result, aliquotId) => {
+        const aliquot = state.aliquots[aliquotId]
+        const types = { 'Pacbio::Pool': 'pools', 'Pacbio::Library': 'libraries' }
+
+        // for each type get the source and add it to the result
+        for (const type in types) {
+          if (aliquot.source_type === type) {
+            const sourceType = types[type]
+            const source = state[sourceType][aliquot.source_id]
+            // if the source is not in the result add it
+            result[sourceType] = [...(result[sourceType] || []), source.id]
+          }
+        }
+        return result
+      }, {})
+
+      // we need to make sure pools and libraries are empty arrays if they are not present
+      // we shouldn't need to return undefined. This is a typing issue. We should have a method on well
+      return well ? { ...well, pools: [], libraries: [], ...poolsAndLibraries } : undefined
     },
 
     /**
@@ -227,7 +283,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       return { success, errors }
     },
-    async findPoolsOrLibraryByTube(filter) {
+    async findPoolsOrLibrariesByTube(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {
@@ -240,7 +296,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({
         include:
-          'pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request',
+          'pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -252,14 +308,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
-        const { pools, libraries, library_pools, tags, requests } =
-          groupIncludedByResource(included)
+        const { pools, libraries, aliquots, tags, requests } = groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
+
         this.tubes = formatById(this.tubes, data, true)
         this.libraries = formatById(this.libraries, libraries, true)
-        this.library_pools = formatById(this.library_pools, library_pools, true)
+        this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests)
         this.tags = formatById(this.tags, tags)
 
@@ -281,13 +337,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const request = rootStore.api.traction.pacbio.runs
       const promise = request.find({
         id,
-        // This is long but we want to include pool and library data
+        // The used aliquots are needed to get the libraries, pools and tubes
         include:
-          'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
-        fields: {
-          requests: 'sample_name',
-          tags: 'group_id',
-        },
+          'plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       })
       const response = await handleResponse(promise)
 
@@ -300,9 +352,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           pools,
           libraries,
           tubes,
-          library_pools,
-          tags,
-          requests,
+          aliquots,
           smrt_link_versions: [smrt_link_version = {}] = [],
         } = groupIncludedByResource(included)
 
@@ -333,10 +383,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         //Populate pools, libraries, library_pools, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
-        this.library_pools = formatById(this.libraries, library_pools, true)
-        this.tags = formatById(this.tags, tags)
-        this.requests = formatById(this.requests, requests)
         this.tubes = formatById(this.tubes, tubes, true)
+        this.aliquots = formatById(this.aliquots, aliquots, true)
 
         //Populate the smrtLinkVersion
         this.smrtLinkVersion = smrtLinkVersion
@@ -396,7 +444,22 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
 
       // if it is an existing run, call the fetch run action
-      const { success, errors = [] } = await this.fetchRun({ id })
+      let { success, errors = [] } = await this.fetchRun({ id })
+
+      // we only want to get the library and pool data if the fetchRun was successful
+      if (success) {
+        // extract the tube barcodes
+        const filter = {
+          barcode: Object.values(this.tubes)
+            .map((tube) => tube.barcode)
+            .join(','),
+        }
+        const result = await this.findPoolsOrLibrariesByTube(filter)
+        if (result) {
+          // allow the success and errors to be overwritten by the result
+          ;({ success, errors } = result)
+        }
+      }
 
       // return the result from the fetchRun
       return { success, errors }
