@@ -88,6 +88,7 @@ export default {
       return []
     },
     tooltip() {
+      console.log(this.storeWell.pools)
       return this.storeWell.pools
         ?.map((p) => {
           return this.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
@@ -139,6 +140,7 @@ export default {
     async updatePoolLibraryBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
       const { id, type } = this.tubeContentByBarcode(barcode)
+      console.log(well)
       type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
       this.updateWell({ well: well, plateNumber: this.plateNumber })
     },

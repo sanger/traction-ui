@@ -48,7 +48,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     plates: { 1: newPlate(1) },
     wells: { 1: { A1: storeWell } },
     ...storePools,
-    aliquots: { ...usedAliquots },
+    aliquots: { ...usedAliquots, ...storePools.aliquots },
     smrtLinkVersion: smrtLinkVersions['1'],
     resources: { smrtLinkVersions },
   }
@@ -228,9 +228,12 @@ describe('PacbioRunWell.vue', () => {
               A1: {
                 ...storeWell,
                 used_aliquots: null,
+                pools: [],
+                libraries: [],
               },
             },
           },
+          ...storePools,
         },
         stubActions: false,
         plugins: [
@@ -258,9 +261,12 @@ describe('PacbioRunWell.vue', () => {
               A1: {
                 ...storeWell,
                 used_aliquots: null,
+                pools: [],
+                libraries: [],
               },
             },
           },
+          ...storePools,
         },
         stubActions: false,
         plugins: [
@@ -281,9 +287,21 @@ describe('PacbioRunWell.vue', () => {
 
   describe('tooltip', () => {
     it('will be visible if there are pools', async () => {
-      storeWell.pools = ['12', '14']
-      storeWell.libraries = []
-      const { wrapperObj } = mountWithStore()
+      const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: ['1', '2'],
+              },
+            },
+          },
+          ...storePools,
+          aliquots: { ...usedAliquots, ...storePools.aliquots },
+        },
+      })
+
       await wrapperObj.setData({ hover: true })
 
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
@@ -293,9 +311,20 @@ describe('PacbioRunWell.vue', () => {
     })
 
     it('will be visible if there are libraries', async () => {
-      storeWell.pools = []
-      storeWell.libraries = ['30']
-      const { wrapperObj } = mountWithStore()
+      const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: ['3'],
+              },
+            },
+          },
+          ...storePools,
+          aliquots: { ...usedAliquots, ...storePools.aliquots },
+        },
+      })
       await wrapperObj.setData({ hover: true })
 
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
@@ -305,12 +334,12 @@ describe('PacbioRunWell.vue', () => {
     })
 
     it('will be visible if there are pools and libraries', async () => {
-      storeWell.pools = ['12', '14']
-      storeWell.libraries = ['30']
-      const { wrapperObj } = mountWithStore()
-      await wrapperObj.setData({ hover: true })
+      // storeWell.pools = ['12', '14']
+      // storeWell.libraries = ['30']
+      // const { wrapperObj } = mountWithStore()
+      await wrapper.setData({ hover: true })
 
-      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      const tooltip = wrapper.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
       const expected = 'TRAC-2-22,TRAC-2-24,TRAC-2-20'
       expect(tooltip.text()).toEqual(expected)
