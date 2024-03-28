@@ -174,6 +174,18 @@ describe('PacbioPoolCreate', () => {
         expect(mockFindPacbioPlateFn).toBeCalled()
         expect(mockFindPacbioTubeFn).not.toBeCalled()
       })
+      it('enables search button on input', async () => {
+        expect(wrapper.find('#labware-finder-button').element.disabled).toBe(true)
+        mockFindPacbioPlateFn.mockReturnValue({
+          success: true,
+          errors: [],
+        })
+        mockFindPacbioTubeFn.mockReturnValue({ success: true, errors: [] })
+        const input = wrapper.find('#labware-finder-input')
+        // Set the value of the input element
+        await input.setValue(barcode)
+        expect(wrapper.find('#labware-finder-button').element.disabled).toBe(false)
+      })
       it('calls findPacbioPlate on search button press', async () => {
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,

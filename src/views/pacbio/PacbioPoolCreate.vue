@@ -6,20 +6,29 @@
           <traction-section
             title="Scan labware"
             number="1a"
-            description="To get started, scan or type a plate or tube barcode and press Enter"
+            description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
           >
             <div class="flex flex-row items-center">
               <BarcodeIcon class="w-8 h-8" />
-              <traction-input
-                id="labware-finder-input"
-                ref="searchRef"
-                v-model="searchText"
-                type="search"
-                placeholder="Type barcode and press enter"
-                label="Search value"
-                class="w-full"
-                @enterKeyPress="search"
-              />
+              <div class="flex flex-row w-full space-x-2">
+                <traction-input
+                  id="labware-finder-input"
+                  ref="searchRef"
+                  v-model="searchText"
+                  type="search"
+                  placeholder="Type to search"
+                  label="Search value"
+                  class="w-full"
+                  @enterKeyPress="search"
+                />
+                <traction-button
+                  id="labware-finder-button"
+                  :disabled="searchText == ''"
+                  @click="search(searchText)"
+                >
+                  Search
+                </traction-button>
+              </div>
             </div>
           </traction-section>
         </div>
