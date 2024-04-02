@@ -75,7 +75,7 @@ const generateLibraryContents = (state, library) => {
   return { ...library, barcode, sample_name, group_id }
 }
 
-export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
+export const usePacbioRunCreateStore = defineStore('pacbioRunCreateV1', {
   /**
    * Generates an object describing a new library for population `store.libraries`
    * @param {Object} attributes any attributes of the object to pre-populate

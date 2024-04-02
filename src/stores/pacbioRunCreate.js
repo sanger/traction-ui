@@ -226,8 +226,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           if (aliquot.source_type === type) {
             const sourceType = types[type]
             const source = state[sourceType][aliquot.source_id]
-            // if the source is not in the result add it
-            result[sourceType] = [...(result[sourceType] || []), source.id]
+            if (source) {
+              // if the source is not in the result add it
+              result[sourceType] = [...(result[sourceType] || []), source.id]
+            }
           }
         }
         return result
@@ -342,7 +344,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           'plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       })
       const response = await handleResponse(promise)
-
       const { success, data: { data, included = [] } = {}, errors = [] } = response
 
       if (success) {
