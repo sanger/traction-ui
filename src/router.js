@@ -163,18 +163,14 @@ const router = createRouter({
           path: 'run/:id',
           name: 'PacbioRunShow',
           component: FlaggedFeatureView,
-          props: {
+          props: (route) => ({
             feature: 'dpl_1113_run_well_aliquots',
             componentOnFeatureEnable: PacbioRunShow,
             componentOnFeatureDisable: PacbioRunShowV1,
-          },
-          meta: { page: 'Run' },
-        },
-        {
-          path: 'run/:id',
-          name: 'PacbioRunShow',
-          component: PacbioRunShow,
-          props: true,
+            props: {
+              id: route.params.id,
+            },
+          }),
           meta: { page: 'Run' },
         },
         {

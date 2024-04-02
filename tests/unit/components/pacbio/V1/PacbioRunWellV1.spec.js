@@ -52,7 +52,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
       plugins: [
         createTestingPinia({
           initialState: {
-            pacbioRunCreate: { ...defaultOptions, ...state },
+            pacbioRunCreateV1: { ...defaultOptions, ...state },
           },
           stubActions,
           plugins,
