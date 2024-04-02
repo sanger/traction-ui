@@ -88,7 +88,6 @@ export default {
       return []
     },
     tooltip() {
-      console.log(this.storeWell.pools)
       return this.storeWell.pools
         ?.map((p) => {
           return this.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
