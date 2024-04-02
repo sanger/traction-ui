@@ -35,12 +35,11 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },
     )
-
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
       cy.get('#editRun-12').click()
@@ -79,13 +78,11 @@ describe('Pacbio Run Edit view', () => {
     )
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
-      cy.get('#editRun-13').click()
-    })
+    cy.get('#editRun-13').click()
     cy.get('[data-attribute=pacbio-run-well]').first().click()
-    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="movie-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
-    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('#update').click()
     cy.get('button').contains('Update').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')
@@ -94,9 +91,17 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots.library.tube,plates.wells.used_aliquots.pool.tube,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
+      },
+    )
+
+    // get the tubes
+    cy.intercept(
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      {
+        fixture: 'tractionPacbioRevioRunTubes.json',
       },
     )
 

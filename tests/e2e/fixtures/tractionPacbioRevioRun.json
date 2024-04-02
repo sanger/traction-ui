@@ -332,7 +332,7 @@
       "type": "aliquots",
       "attributes": {
         "aliquot_type": "derived",
-        "source_id": 12,
+        "source_id": 30,
         "source_type": "Pacbio::Pool",
         "used_by_id": 16,
         "used_by_type": "Pacbio::Well",
@@ -459,14 +459,14 @@
         "created_at": "2024/03/18 15:03",
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:D2",
-        "pacbio_request_id": 12,
+        "pacbio_request_id": 30,
         "tag_id": null
       },
       "relationships": {
         "request": {
           "data": {
             "type": "requests",
-            "id": "12"
+            "id": "30"
           }
         },
         "tag": {

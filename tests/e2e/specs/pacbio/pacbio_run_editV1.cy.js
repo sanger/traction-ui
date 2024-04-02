@@ -1,7 +1,7 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
     cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
-      fixture: 'tractionPacbioRuns.json',
+      fixture: 'tractionPacbioRunsV1.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
@@ -25,9 +25,7 @@ describe('Pacbio Run Edit view', () => {
     )
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
-      cy.get('#editRun-7').click()
-    })
+    cy.get('#editRun-7').click()
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
@@ -47,16 +45,14 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
+      'v1/pacbio/runs/6?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
         fixture: 'tractionPacbioSequelIIeRunV1.json',
       },
     )
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
-      cy.get('#editRun-7').click()
-    })
+    cy.get('#editRun-6').click()
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
@@ -69,7 +65,7 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
+      'v1/pacbio/runs/6?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version,plates.wells.libraries.tube,plates.wells.libraries.tag,plates.wells.libraries.request',
       {
         fixture: 'tractionPacbioRevioRunV1.json',
       },
@@ -87,9 +83,7 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
-      cy.get('#editRun-7').click()
-    })
+    cy.get('#editRun-6').click()
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(
