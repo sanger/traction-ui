@@ -1,6 +1,6 @@
-import { mount, store, Data } from '@support/testHelper'
-import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
-import Response from '@/api/Response'
+import { mount, store, Data } from '@support/testHelper.js'
+import PacbioTubeSelectedList from '@/components/pacbio/V1/PacbioTubeSelectedListV1.vue'
+import Response from '@/api/Response.js'
 import { expect } from 'vitest'
 
 describe('PacbioTubeSelectedList', () => {

@@ -4,7 +4,8 @@ import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
-import { usePacbioRootStore } from './pacbioRoot'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 /**
  * Merge together two representations of the same object.
@@ -124,6 +125,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        *                 "created_at": "2021/11/30 13:57","source_identifier": "DN1:A1","well": "1","plate": "1"}
        */
       requests: {},
+
+      /**
+       * The main source of libraries information. Libraries are indexed by id.
+       * Each key-value pair represents a library, where the key is the library ID and the value is the library data.
+       * Populated by the libraries included in the request for tubes.
+       * @type {Object.<string, Object>}
+       * @example "1": {"id": "1","type": "libraries","requests": "1","tag_id": "1","template_prep_kit_box_barcode":"123213131231321321313","volume": 10,"concentration": 5,"insert_size": 1000}
+       */
+      libraries: {},
     },
     //Selected collects together user input in the front end, such as selected plates, used_aliquots and tubes.
     selected: {
@@ -146,7 +156,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        */
       tubes: {},
     },
-    // Libraries. Indexed by an internally generated id.
+    // used_aliquots. Indexed by an internally generated id.
     used_aliquots: {},
     // Pool: The current pool being edited or created
     pool: {},
@@ -167,7 +177,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected.tagSet && selected.tagSet.id) {
         const pacbioRoot = usePacbioRootStore()
         const tagSet = pacbioRoot.tagSets[selected.tagSet.id]
-        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag.id])
+        const tags = tagSet.tags.map((tag) => pacbioRoot.tags[tag.id ?? tag])
         return { ...tagSet, tags }
       } else {
         return { id: null, tags: [] }
@@ -182,7 +192,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     selectedPlates: ({ selected, resources }) =>
       mergeRepresentations(selected.plates, resources.plates),
-
     /**
      * This function takes an object with `selected` and `resources` properties and returns a list of selected tubes.
      * It merges the representations of `selected.tubes` and `resources.tubes` using the `mergeRepresentations` function.
@@ -251,15 +260,17 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     requestList: (state) => (ids) => {
       const requests = state.resources.requests
       const selectedRequests = state.used_aliquots
+      let val = []
       if (ids) {
-        return ids.map((id) => {
+        val = ids.map((id) => {
           return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
         })
       } else {
-        return Object.values(requests).map((request) => {
+        val = Object.values(requests).map((request) => {
           return { ...request, selected: !!selectedRequests[`_${request.id}`] }
         })
       }
+      return val
     },
     /**
      * Returns a specific used_aliquot item based on its ID.
@@ -270,20 +281,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     usedAliquotItem: (state) => (id) => state.used_aliquots[`_${id}`],
 
     /**
-     * Retrieves the pool item from the state. If the pool item does not exist, returns an empty object.
-     *
-     * @param {Object} state - The state object that contains the pool item.
-     * @returns {Object} The pool item from the state, or an empty object if it does not exist.
-     */
-    poolItem: (state) => state.pool || {},
-
-    /**
      * Retrieves the tube item from the state. If the tibe item does not exist, returns an empty object.
      *
      * @param {Object} state - The state object that contains the tube item.
      * @returns {Object} The tibe item from the state, or an empty object if it does not exist.
      */
     tubeItem: (state) => state.tube || {},
+
+    sourceTypeForRequest: () => (request) =>
+      request.tube || request.well ? 'Pacbio::Request' : 'Pacbio::Library',
   },
   actions: {
     /**
@@ -492,15 +498,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * If the tube cannot be found, the function returns without doing anything.
      * If the tube can be found, deselects the tube and then iterates over all requests of the tube and deselects them.
      *
-     * @param {string} tubeBarcode - The barcode of the tube to deselect.
+     * @param {string} id - The id of the tube to deselect.
      * @returns {void}
      *
      * @example
      * // Deselect a tube and its contents
-     * deselectTubeAndContents('TRAC-123')
+     * deselectTubeAndContents('1')
      */
-    deselectTubeAndContents(tubeBarcode) {
-      const tube = Object.values(this.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
+    deselectTubeAndContents(id) {
+      const tube = this.resources.tubes[id]
       if (!tube) return
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
@@ -526,7 +532,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async createPool() {
       const { used_aliquots, pool } = this
-      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate({ used_aliquots, pool }))
+        return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
@@ -557,7 +564,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async updatePool() {
       const { used_aliquots, pool } = this
-      if (!validate(used_aliquots)) return { success: false, errors: 'The pool is invalid' }
+      if (!validate({ used_aliquots, pool }))
+        return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.update(payload({ used_aliquots, pool }))
@@ -593,31 +601,57 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // after the request for all plates, as otherwise the partial record will over-write
         // the full one.
         include:
-          'used_aliquots.tag.tag_set,used_aliquots.source_plate.wells.requests,used_aliquots.request.tube,tube',
+          'used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library.tube,used_aliquots.library.request',
       })
       const response = await handleResponse(promise)
 
       const { success, data: { data, included = [] } = {}, errors = [] } = response
-
       if (success) {
         const {
-          used_aliquots = [],
+          aliquots = [],
           requests,
           wells,
           plates = [],
           tag_sets: [tag_set] = [{}],
           tubes = [],
+          libraries = [],
         } = groupIncludedByResource(included)
+
+        /*
+        The following is a temporary fix to clean up data returned from the service side. 
+        This removes the unintended data returned from the service side.
+        This needs to be removed once polymorphic relationship issues are fixed on the service side.
+        **/
+        let cleanedPlates = plates
+        let cleanedWells = wells
+        let cleanedTubes = tubes
+        let cleanedLibraries = libraries
+        /* Remove the unintended 'plates' and 'wells' data returned from the service
+         side for a pool created using a library*/
+        if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Request')) {
+          cleanedWells = []
+          cleanedPlates = []
+        }
+        /*Remove the unintended 'tubes' data returned from the service
+         side for a pool created using multiple plates*/
+        if (!aliquots.some((aliquot) => aliquot.attributes.source_type === 'Pacbio::Library')) {
+          cleanedTubes = tubes.filter((tube) => !tube.relationships?.libraries?.data)
+          cleanedLibraries = []
+        }
+
         // Get the pool tube and remove it from tubes list
-        const poolTube = tubes.splice(
+        const poolTube = cleanedTubes.splice(
           tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
           1,
         )[0]
         //Populate pool attributes
-        this.pool = { ...data }
+        this.pool = {
+          id: data.id,
+          ...data.attributes,
+        }
         //Populate used_aliquots
         const usedAliquots = dataToObjectById({
-          data: used_aliquots,
+          data: aliquots,
           includeRelationships: true,
         })
         Object.values(usedAliquots).forEach((usedAliquot) => {
@@ -628,21 +662,53 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             tag_id: usedAliquot.tag,
           })
         })
+
         //Populate requests
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
-        //Populate wells
-        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
-        //Populate plates
-        this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
+        this.resources.requests = dataToObjectById({
+          data: requests,
+          includeRelationships: true,
+        })
         //Populate tubes
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        this.resources.tubes = dataToObjectById({ data: cleanedTubes, includeRelationships: true })
+
+        //Populate libraries
+        this.resources.libraries = dataToObjectById({
+          data: cleanedLibraries,
+          includeRelationships: true,
+        })
+        //Assign library request to tube if the tube has a library
+        Object.values(this.resources.tubes).forEach((tube) => {
+          if (tube.libraries) {
+            const library = Object.values(this.resources.libraries).find(
+              (library) => library.id == tube.libraries,
+            )
+            const libraryRequest = requests.find((request) => request.id == library.request)
+            if (libraryRequest) {
+              tube.requests = [libraryRequest.id]
+            }
+          }
+        })
+        //Populate plates
+        this.resources.plates = dataToObjectById({
+          data: cleanedPlates,
+          includeRelationships: true,
+        })
+
+        //Populate wells
+        this.resources.wells = dataToObjectById({ data: cleanedWells, includeRelationships: true })
+
+        //Selects all the tubes and plates
+        Object.values(this.resources.tubes).forEach(({ id }) =>
+          this.selectTube({ id, selected: true }),
+        )
+        Object.values(this.resources.plates).forEach(({ id }) =>
+          this.selectPlate({ id, selected: true }),
+        )
+
         //Select tag set
         this.selectTagSet(tag_set.id)
         //Populate tube
-        this.tube = { ...poolTube }
-        //Selects all the tubes and plates
-        tubes.forEach(({ id }) => this.selectTube({ id, selected: true }))
-        plates.forEach(({ id }) => this.selectPlate({ id, selected: true }))
+        this.tube = { id: poolTube.id, ...poolTube.attributes }
       }
 
       return { success, errors }
@@ -784,7 +850,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       // We will be return a successful empty list if no plates match the filter
       // Therefore we want to return an error if we don't have any plates
-      if (!data.length) {
+      if (!data?.length) {
         success = false
         errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
       }
@@ -793,11 +859,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // We want to grab the first (and only) record from the applied filter
         this.selectPlate({ id: data[0].id, selected: true })
         //Populate plates
-        this.resources.plates = dataToObjectById({ data, includeRelationships: true })
+        this.resources.plates = {
+          ...this.resources.plates,
+          ...dataToObjectById({ data, includeRelationships: true }),
+        }
         //Populate wells
-        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
-        //Populate requests
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.wells = {
+          ...this.resources.wells,
+          ...dataToObjectById({ data: wells, includeRelationships: true }),
+        }
+        this.resources.requests = {
+          ...this.resources.requests,
+          ...dataToObjectById({ data: requests, includeRelationships: true }),
+        }
       }
 
       return { success, errors }
@@ -828,13 +902,24 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           errors: ['Please provide a tube barcode'],
         }
       }
-
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
-      const promise = request.get({ filter: filter, include: 'requests' })
+      const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
-      const { requests } = groupIncludedByResource(included)
+      const { requests, libraries } = groupIncludedByResource(included)
+
+      //TODO: Remove the followingcheck once the feature flag multiplexing_phase_2_add_libraries_to_pool is removed
+      const featureFlagEnabled = await checkFeatureFlag(
+        'multiplexing_phase_2_add_libraries_to_pool',
+      )
+      if (!featureFlagEnabled && libraries && libraries.length > 0) {
+        //If the feature flag is not enabled, we shouldn't allow adding libraries to the pool
+        return {
+          success: false,
+          errors: [`Please provide a tube barcode`],
+        }
+      }
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes
@@ -844,10 +929,33 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
 
       if (success) {
+        //If this a library, the requests will be associated with library, therefore manually assign it to a tube
+        const tubes = dataToObjectById({ data, includeRelationships: true })
+        if (libraries) {
+          Object.keys(tubes).forEach((key) => {
+            tubes[key] = {
+              ...tubes[key],
+              requests: requests.map((request) => request.id),
+            }
+          })
+          this.resources.libraries = {
+            ...this.resources.libraries,
+            ...dataToObjectById({
+              data: libraries,
+              includeRelationships: true,
+            }),
+          }
+        }
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
-        this.resources.tubes = dataToObjectById({ data, includeRelationships: true })
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.tubes = {
+          ...this.resources.tubes,
+          ...tubes,
+        }
+        this.resources.requests = {
+          ...this.resources.requests,
+          ...dataToObjectById({ data: requests, includeRelationships: true }),
+        }
       }
 
       return { success, errors }
@@ -914,7 +1022,29 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     selectRequest({ id, selected = true }) {
       if (selected) {
-        this.used_aliquots[`_${id}`] = createUsedAliquot({ source_id: id })
+        /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
+        for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
+        const autoFillLibraryAttributes = [
+          'template_prep_kit_box_barcode',
+          'volume',
+          'concentration',
+          'insert_size',
+        ]
+        const library = Object.values(this.resources.libraries).find(
+          (library) => library.request == id,
+        )
+        const libraryAttributes = library
+          ? autoFillLibraryAttributes.reduce((result, key) => {
+              result[key] = library[key] ?? null
+              return result
+            }, {})
+          : {}
+
+        this.used_aliquots[`_${id}`] = {
+          ...createUsedAliquot({ source_id: id }),
+          ...libraryAttributes,
+          source_type: this.sourceTypeForRequest(this.resources.requests[id]),
+        }
       } else {
         delete this.used_aliquots[`_${id}`]
       }

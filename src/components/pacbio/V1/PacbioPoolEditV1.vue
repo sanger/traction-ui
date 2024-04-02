@@ -42,10 +42,10 @@
                 <traction-field-error
                   data-attribute="template_prep_kit_box_barcode-error"
                   :error="poolErrorsFor('template_prep_kit_box_barcode')"
-                  :with-icon="!!pool.errors?.template_prep_kit_box_barcode"
+                  :with-icon="!!poolItem.errors?.template_prep_kit_box_barcode"
                 >
                   <traction-input
-                    v-model="pool.template_prep_kit_box_barcode"
+                    v-model="poolItem.template_prep_kit_box_barcode"
                     data-attribute="template-prep-kit-box-barcode"
                   />
                 </traction-field-error>
@@ -55,9 +55,9 @@
                 <traction-field-error
                   data-attribute="volume-error"
                   :error="poolErrorsFor('volume')"
-                  :with-icon="!!pool.errors?.volume"
+                  :with-icon="!!poolItem.errors?.volume"
                 >
-                  <traction-input v-model="pool.volume" data-attribute="volume" />
+                  <traction-input v-model="poolItem.volume" data-attribute="volume" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -65,9 +65,9 @@
                 <traction-field-error
                   data-attribute="concentration-error"
                   :error="poolErrorsFor('concentration')"
-                  :with-icon="!!pool.errors?.concentration"
+                  :with-icon="!!poolItem.errors?.concentration"
                 >
-                  <traction-input v-model="pool.concentration" data-attribute="concentration" />
+                  <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -75,9 +75,9 @@
                 <traction-field-error
                   data-attribute="insert_size-error"
                   :error="poolErrorsFor('insert_size')"
-                  :with-icon="!!pool.errors?.insert_size"
+                  :with-icon="!!poolItem.errors?.insert_size"
                 >
-                  <traction-input v-model="pool.insert_size" data-attribute="insert-size" />
+                  <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
                 </traction-field-error>
               </fieldset>
             </div>
@@ -85,7 +85,7 @@
         </div>
       </div>
     </traction-section>
-    <PacbioPoolAliquotList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
+    <PacbioPoolLibraryList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -110,100 +110,106 @@
     </div>
   </div>
 </template>
-
-<script setup>
-/**
- * @name PacbioPoolEdit
- * @description Edit form for a pool
- */
-import PacbioPoolAliquotList from '@/components/pacbio/PacbioPoolAliquotList.vue'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import useAlert from '@/composables/useAlert.js'
-import { ref, computed } from 'vue'
-import { eachRecord } from '@/lib/csv/pacbio.js'
-
-//refs
-const busy = ref(false) // Flag to indicate if the form is busy processing a request
-const autoTag = ref(false) //  Flag to indicate if auto-tagging is enabled
-const parsedFile = ref(null) // Holds the data of the parsed file
-const validated = ref(true) // Flag to indicate if the form data is valid
-
-const { pool, tubeItem, selectedRequests, createPool, updatePool, updateUsedAliquotFromCsvRecord } =
-  usePacbioPoolCreateStore()
-const { showAlert } = useAlert()
-const persisted = computed(() => !!pool.id)
-const poolType = computed(() => {
-  switch (selectedRequests.length) {
-    case 0:
-      return 'Empty'
-    default:
-      return 'Pool'
-  }
-})
-
-const border = computed(() => {
-  if (parsedFile.value === null) return 'border-0'
-  else {
-    const borderColour = parsedFile.value ? 'border-success' : 'border-failure'
-    return `rounded border ${borderColour}`
-  }
-})
-// Checks if the pool attribute should be displayed with an error
-const poolErrorsFor = (attribute) => {
-  if (pool?.[attribute]?.length) {
-    delete pool?.errors?.[attribute]
-    return ''
-  }
-  return pool?.errors?.[attribute]
-}
-
-const create = () => {
-  busy.value = true
-  createPool().then(({ success, barcode, errors }) => {
-    success
-      ? showAlert(
-          `Pool successfully created with barcode ${barcode}`,
-          'success',
-          'pool-create-message',
-        )
-      : showAlert(errors, 'danger', 'pool-create-message')
-    busy.value = false
-  })
-}
-
-const update = () => {
-  busy.value = true
-  validated.value = true
-  updatePool().then(({ success, errors }) => {
-    success
-      ? showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
-      : showAlert(errors, 'danger', 'pool-create-message')
-    busy.value = false
-  })
-}
-// Allows users to upload a file to autopopulate the pool's selected libraries
-const uploadFile = async (evt) => {
-  if (evt?.target?.files?.length) {
-    const file = evt.target.files[0]
-    try {
-      const csv = await file.text()
-      eachRecord(csv, updateUsedAliquotFromCsvRecord)
-      parsedFile.value = true
-    } catch (error) {
-      console.error(error)
-      showAlert(error, 'danger', 'pool-create-message')
-      parsedFile.value = false
+<script>
+import PacbioPoolLibraryList from '@/components/pacbio/V1/PacbioPoolLibraryListV1.vue'
+import { createNamespacedHelpers } from 'vuex'
+import { eachRecord } from '@/lib/csv/pacbio'
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+export default {
+  name: 'PoolEdit',
+  components: {
+    PacbioPoolLibraryList,
+  },
+  data() {
+    return {
+      busy: false,
+      autoTag: false,
+      parsedFile: null,
+      validated: true,
     }
-  } else {
-    parsedFile.value = null
-    return
-  }
-}
+  },
+  computed: {
+    ...mapGetters(['poolItem', 'tubeItem', 'selectedRequests']),
+    persisted() {
+      return !!this.poolItem.id
+    },
+    poolType() {
+      switch (this.selectedRequests.length) {
+        case 0:
+          return 'Empty'
+        case 1:
+          return 'Library'
+        default:
+          return 'Pool'
+      }
+    },
+    border() {
+      if (this.parsedFile === null) return 'border-0'
+      else {
+        const borderColour = this.parsedFile ? 'border-success' : 'border-failure'
+        return `rounded border ${borderColour}`
+      }
+    },
+  },
+  methods: {
+    ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
+    // Checks if the pool attribute should be displayed with an error
+    poolErrorsFor(attribute) {
+      if (this.poolItem?.[attribute]?.length) {
+        delete this.poolItem?.errors?.[attribute]
+        return ''
+      }
+      return this.poolItem?.errors?.[attribute]
+    },
+    create() {
+      this.busy = true
+      this.createPool().then(({ success, barcode, errors }) => {
+        success
+          ? this.showAlert(
+              `Pool successfully created with barcode ${barcode}`,
+              'success',
+              'pool-create-message',
+            )
+          : this.showAlert(errors, 'danger', 'pool-create-message')
+        this.busy = false
+      })
+    },
+    update() {
+      this.busy = true
+      this.validated = true
+      this.updatePool().then(({ success, errors }) => {
+        success
+          ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
+          : this.showAlert(errors, 'danger', 'pool-create-message')
+        this.busy = false
+      })
+    },
 
-// Function passed to child components in notify prop, to be used when any attribute
-// in the child component is changed. The validated flag is reset to true when the user
-// clicks the update button and the changed values are checked and saved.
-const onFieldUpdate = () => {
-  validated.value = false
+    // Allows users to upload a file to autopopulate the pool's selected libraries
+    async uploadFile(evt) {
+      if (evt?.target?.files?.length) {
+        const file = evt.target.files[0]
+        try {
+          const csv = await file.text()
+          eachRecord(csv, this.updateLibraryFromCsvRecord)
+          this.parsedFile = true
+        } catch (error) {
+          console.error(error)
+          this.showAlert(error, 'danger', 'pool-create-message')
+          this.parsedFile = false
+        }
+      } else {
+        this.parsedFile = null
+        return
+      }
+    },
+
+    // Function passed to child components in notify prop, to be used when any attribute
+    // in the child component is changed. The validated flag is reset to true when the user
+    // clicks the update button and the changed values are checked and saved.
+    onFieldUpdate() {
+      this.validated = false
+    },
+  },
 }
 </script>

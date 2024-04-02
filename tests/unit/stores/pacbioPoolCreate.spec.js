@@ -8,6 +8,11 @@ import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
+// dpl_989_ui feature flag is used to generate pool payload so we mock it
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
+}))
+
 describe('usePacbioPoolCreateStore', () => {
   const tagSets = {
     1: {
@@ -190,26 +195,6 @@ describe('usePacbioPoolCreateStore', () => {
       }
       store.used_aliquots = used_aliquots
       expect(store.usedAliquotItem('3')).toEqual(used_aliquots['_3'])
-    })
-
-    describe('poolItem', () => {
-      const pool = {
-        id: 1,
-        template_prep_kit_box_barcode: 'ABC1',
-        volume: '1',
-        concentration: '1',
-        insert_size: '100',
-      }
-
-      it('returns the correct data', () => {
-        store.pool = pool
-        expect(store.poolItem).toEqual(pool)
-      })
-
-      it('when the pool does not exist', () => {
-        store.pool = undefined
-        expect(store.poolItem).toEqual({})
-      })
     })
 
     describe('tubeItem', () => {
@@ -471,7 +456,7 @@ describe('usePacbioPoolCreateStore', () => {
         store.selectRequest = vi.fn()
       })
       it('deselects the tube and its contents', () => {
-        store.deselectTubeAndContents('TRAC-2-2')
+        store.deselectTubeAndContents('2')
         expect(store.selectTube).toBeCalledWith({ id: '2', selected: false })
         expect(store.selectRequest).toBeCalledWith({ id: '98', selected: false })
       })
@@ -539,6 +524,7 @@ describe('usePacbioPoolCreateStore', () => {
           data: { data: { errors: { error1: ['There was an error'] } } },
         }
         store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = pool
         create.mockRejectedValue({ response: mockResponse })
         const expectedResponse = newResponse({ ...mockResponse, success: false })
         const { success, errors } = await store.createPool()
@@ -549,8 +535,18 @@ describe('usePacbioPoolCreateStore', () => {
       // validate used_aliquots fails
       // request is not sent
       // commit is not called
-      it('when the pool is invalid', async () => {
+      it('when the pool used_aliquots are invalid', async () => {
         store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
+        store.pool = pool
+        const { success, errors } = await store.createPool()
+        expect(create).not.toHaveBeenCalled()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The pool is invalid')
+      })
+
+      it('when the pool is invalid', async () => {
+        store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = { template_prep_kit_box_barcode: '' }
         const { success, errors } = await store.createPool()
         expect(create).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
@@ -625,9 +621,19 @@ describe('usePacbioPoolCreateStore', () => {
       // validate used_aliquots fails
       // request is not sent
       // commit is not called
-      it('when the pool is invalid', async () => {
+      it('when the pool used_aliquots are invalid', async () => {
         store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
-        const { success, errors } = await store.updatePool()
+        store.pool = pool
+        const { success, errors } = await store.createPool()
+        expect(update).not.toHaveBeenCalled()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The pool is invalid')
+      })
+
+      it('when the pool is invalid', async () => {
+        store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
+        store.pool = { template_prep_kit_box_barcode: '' }
+        const { success, errors } = await store.createPool()
         expect(update).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(errors).toEqual('The pool is invalid')
@@ -642,19 +648,22 @@ describe('usePacbioPoolCreateStore', () => {
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = Data.TractionPacbioTagSets.data.data
         pacbioRootStore.tags = Data.TractionPacbioTagSets.data.included
-        store.selected = { tagset: {}, plates: {} }
+        store.selected = { tagset: {}, plates: {}, tubes: {} }
       })
       it('handles success', async () => {
         find.mockResolvedValue(Data.TractionPacbioPool)
         const { success } = await store.populateUsedAliquotsFromPool()
-
-        expect(store.pool).toEqual(Data.TractionPacbioPool.data.data)
 
         const usedAliquotsData = Data.TractionPacbioPool.data.included.slice(0, 1)
         const requests = Data.TractionPacbioPool.data.included.slice(100, 148)
         const plates = Data.TractionPacbioPool.data.included.slice(3, 4)
         const wells = Data.TractionPacbioPool.data.included.slice(4, 100)
         const tubes = Data.TractionPacbioPool.data.included.slice(148, 149)
+
+        expect(store.pool).toEqual({
+          id: Data.TractionPacbioPool.data.data.id,
+          ...Data.TractionPacbioPool.data.data.attributes,
+        })
 
         const used_aliquots = jsonapi.dataToObjectById({
           data: usedAliquotsData,
@@ -676,7 +685,7 @@ describe('usePacbioPoolCreateStore', () => {
           jsonapi.dataToObjectById({ data: wells, includeRelationships: true }),
         )
         expect(store.resources.tubes).toEqual({})
-        expect(store.tube).toEqual(tubes[0])
+        expect(store.tube).toEqual({ id: tubes[0].id, ...tubes[0].attributes })
 
         expect(success).toEqual(true)
       })
@@ -1091,6 +1100,12 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           },
         }
+
+        store.resources.requests = {
+          1: {
+            tube: '2',
+          },
+        }
         store.selectRequest({ id: '1' })
 
         /*
@@ -1106,6 +1121,7 @@ describe('usePacbioPoolCreateStore', () => {
             volume: null,
             concentration: null,
             insert_size: null,
+            source_type: 'Pacbio::Request',
           },
           _2: {
             source_id: '2',
@@ -1125,6 +1141,56 @@ describe('usePacbioPoolCreateStore', () => {
         //We expect the tube to be removed in the selected plates
         expect(store.used_aliquots).toEqual({})
       })
+      it('updates template_prep_kit_box_barcode,volume,concentration,insert_size if request is associated with library', () => {
+        store.used_aliquots = {
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        }
+
+        store.resources.requests = {
+          1: {
+            tube: '2',
+          },
+        }
+        store.resources.libraries = {
+          1: {
+            id: '1',
+            type: 'libraries',
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            request: '1',
+          },
+        }
+        store.selectRequest({ id: '1' })
+
+        expect(store.used_aliquots).toEqual({
+          _1: {
+            source_id: '1',
+            tag_id: null,
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            source_type: 'Pacbio::Request',
+          },
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        })
+      })
     })
 
     describe('selectTagSet', () => {
@@ -1143,6 +1209,7 @@ describe('usePacbioPoolCreateStore', () => {
           plates: {},
           wells: {},
           tubes: {},
+          libraries: {},
         })
       })
     })

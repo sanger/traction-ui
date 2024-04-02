@@ -1,12 +1,14 @@
-import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem.vue'
-import { mount, createTestingPinia } from '@support/testHelper.js'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import PacbioTagSetItem from '@/components/pacbio/V1/PacbioTagSetItemV1.vue'
+import { mount, store } from '@support/testHelper.js'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: ['1', '2', '3', '4', '5', '6'] },
   2: { id: '2', name: 'TagSet2' },
   3: { id: '3', name: 'TagSet3' },
 }
+
+// is this the best way to do this??
+store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
 
 const tags = {
   1: { id: '1', group_id: 'Tag1' },
@@ -25,52 +27,18 @@ const tags = {
 
 const expectedTagSet = { ...tagSets['1'], tags: Object.values(tags).slice(0, 6) }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioTagSetItem, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRoot: {
-              tagSets,
-              tags,
-            },
-            pacbioPoolCreate: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
+store.state.traction.pacbio.poolCreate.resources.tags = tags
 
 describe('PacbioTagSetItem', () => {
   let wrapper
 
   describe('when there is a selected tag list', () => {
     beforeEach(() => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: { id: '1' },
-          },
-        },
+      store.commit('traction/pacbio/poolCreate/selectTagSet', { id: '1' })
+
+      wrapper = mount(PacbioTagSetItem, {
+        store,
       })
-      wrapper = wrapperObj
     })
 
     it('has the selected tag set', () => {
@@ -96,14 +64,11 @@ describe('PacbioTagSetItem', () => {
 
   describe('when there is no selected tag list', () => {
     beforeEach(() => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: {},
-          },
-        },
+      store.state.traction.pacbio.poolCreate.selected.tagSet = {}
+
+      wrapper = mount(PacbioTagSetItem, {
+        store,
       })
-      wrapper = wrapperObj
     })
 
     it('wont show the the tags', () => {
