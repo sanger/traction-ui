@@ -274,9 +274,42 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('on click generateSampleSheetPath is called', () => {
+      pacbioRunIndex.downloadCSV = vi.fn()
       button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
 
-      expect(button.attributes('href')).toEqual(pacbioRunIndex.generateSampleSheetPath(1))
+      expect(pacbioRunIndex.downloadCSV).toBeCalledWith({
+        id: mockRuns[0].id,
+        name: mockRuns[0].name,
+      })
+    })
+
+    it('on click generateSampleSheetPath is called and shows an error when the version is invalid', async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: vi
+          .fn()
+          .mockResolvedValue({ error: 'SMRTLink sample sheet version (v10) is invalid' }),
+      })
+      pacbioRunIndex.showAlert = vi.fn()
+      button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
+
+      await flushPromises()
+      expect(pacbioRunIndex.showAlert).toBeCalledWith(
+        'SMRTLink sample sheet version (v10) is invalid',
+        'danger',
+      )
+    })
+
+    it('on click generateSampleSheetPath is called and shows an error when there is a network error', async () => {
+      global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch'))
+      pacbioRunIndex.showAlert = vi.fn()
+      button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
+
+      await flushPromises()
+      expect(pacbioRunIndex.showAlert).toBeCalledWith('Error: Failed to fetch', 'danger')
     })
   })
 
@@ -326,25 +359,6 @@ describe('PacbioRunIndex.vue', () => {
       })
       pacbioRunIndex.updateRunState('started', 1)
       expect(pacbioRunIndex.showAlert).toBeCalled()
-    })
-  })
-
-  describe('generate sample sheet link', () => {
-    let link, id
-
-    beforeEach(() => {
-      id = 1
-      link = wrapper.find('#generate-sample-sheet-' + id)
-    })
-
-    it('exists', () => {
-      expect(link).toBeTruthy()
-    })
-
-    it('has the correct href link', () => {
-      expect(link.attributes('href')).toBe(
-        import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
-      )
     })
   })
 
