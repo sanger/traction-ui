@@ -139,7 +139,6 @@ export default {
     async updatePoolLibraryBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
       const { id, type } = this.tubeContentByBarcode(barcode)
-      console.log(well)
       type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
       this.updateWell({ well: well, plateNumber: this.plateNumber })
     },
