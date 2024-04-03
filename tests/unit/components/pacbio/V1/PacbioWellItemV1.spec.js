@@ -1,6 +1,5 @@
-import PacbioWellItem from '@/components/pacbio/PacbioWellItem.vue'
-import { mount, createTestingPinia } from '@support/testHelper.js'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import Well from '@/components/pacbio/V1/PacbioWellItemV1.vue'
+import { mount, store } from '@support/testHelper.js'
 
 const requests = {
   1: {
@@ -9,35 +8,6 @@ const requests = {
     source_identifier: 'DN1:A1',
     external_study_id: '1',
   },
-}
-
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioWellItem, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioPoolCreate: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
 }
 
 describe('Well.vue', () => {
@@ -54,15 +24,13 @@ describe('Well.vue', () => {
       requests: ['1'],
     }
 
-    const { wrapperObj } = mountWithStore({
-      state: {
-        resources: {
-          requests,
-        },
-      },
+    store.state.traction.pacbio.poolCreate.resources.requests = requests
+
+    wrapper = mount(Well, {
       props,
+      store,
     })
-    wrapper = wrapperObj
+
     well = wrapper.vm
   })
 
@@ -113,16 +81,11 @@ describe('Well.vue', () => {
 
     it('will be empty when the well does not have a request', () => {
       props['requests'] = []
-      const { wrapperObj } = mountWithStore({
-        state: {
-          resources: {
-            requests,
-          },
-        },
+
+      wrapper = mount(Well, {
         props,
+        store,
       })
-      wrapper = wrapperObj
-      well = wrapper.vm
 
       const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('empty')
