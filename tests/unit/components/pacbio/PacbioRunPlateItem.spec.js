@@ -87,7 +87,7 @@ describe('PacbioRunPlateItem.vue', () => {
 
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
-        expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
+        expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
       })
     })
 
@@ -146,7 +146,7 @@ describe('PacbioRunPlateItem.vue', () => {
 
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
-        expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
+        expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
       })
     })
 

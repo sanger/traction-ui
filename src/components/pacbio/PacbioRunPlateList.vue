@@ -2,7 +2,7 @@
   <traction-section title="Plates" class="min-w-[500px]">
     <div class="flex flex-row w-full">
       <PacbioRunPlateItem
-        v-for="plateNumber in getPlateList.length"
+        v-for="plateNumber in store.getPlateList.length"
         :key="plateNumber"
         :plate-number="plateNumber"
         class="w-full"
@@ -10,24 +10,15 @@
     </div>
   </traction-section>
 </template>
-
-<script>
+<script setup>
+/**
+ * PacbioRunPlateList component
+ * This component displays a list of PacbioRunPlateItem components for each plate in the store.
+ * It uses the PacbioRunPlateItem component to display the plate.
+ * It uses the usePacbioRunCreateStore store to get the plate list.
+ */
 import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem.vue'
-import { mapState } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
-export default {
-  name: 'PacbioRunPlateList',
-  components: {
-    PacbioRunPlateItem,
-  },
-  data() {
-    return {
-      selectedPlate: 1,
-    }
-  },
-  computed: {
-    ...mapState(usePacbioRunCreateStore, ['getPlateList']),
-  },
-}
+const store = usePacbioRunCreateStore()
 </script>

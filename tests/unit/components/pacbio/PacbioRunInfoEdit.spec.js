@@ -137,7 +137,7 @@ describe('PacbioRunInfoEdit', () => {
       })
 
       it('returns smrt link version select options', () => {
-        const options = Object.values(runInfo.smrtLinkVersionList)
+        const options = Object.values(store.smrtLinkVersionList)
           .filter(({ active }) => active)
           .map(({ id, name }) => ({
             value: id,
@@ -180,7 +180,7 @@ describe('PacbioRunInfoEdit', () => {
       const system_name_input = wrapper.find('[data-attribute="system_name"]')
       await system_name_input.setValue(PacbioInstrumentTypes.Revio.key)
 
-      expect(runInfo.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
+      expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
       expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
     })
 
@@ -191,7 +191,7 @@ describe('PacbioRunInfoEdit', () => {
     it('smrt_link_version_id', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[1].setSelected()
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(store.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
     })
 
     it('comments', async () => {
