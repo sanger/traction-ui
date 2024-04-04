@@ -1,13 +1,14 @@
-import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
-import { mount, createTestingPinia, nextTick } from '@support/testHelper.js'
-import storePools from '@tests/data/StoreRunPools.json'
+import PacbioRunWell from '@/components/labware/PacbioRunWellV1.vue'
+import { mount, createTestingPinia } from '@support/testHelper.js'
+import storePools from '@tests/data/StoreRunPoolsV1.json'
 import { newPlate } from '@/stores/utilities/run.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
 import { beforeEach } from 'vitest'
 
 const storeWell = {
   position: 'A1',
-  used_aliquots: ['1', '2', '3'],
+  pools: ['1', '2'],
+  libraries: ['3', '4'],
   on_plate_loading_concentration: 234,
   movie_time: 15,
   generate_hifi: 'In SMRT Link',
@@ -17,13 +18,6 @@ const storeWell = {
   library_concentration: 123,
   polymerase_kit: '123',
   pre_extension_time: 1,
-  libraries: [],
-  pools: [],
-}
-const usedAliquots = {
-  1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
-  2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '14' },
-  3: { id: '3', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '30' },
 }
 const props = {
   position: 'A1',
@@ -50,7 +44,6 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     plates: { 1: newPlate(1) },
     wells: { 1: { A1: storeWell } },
     ...storePools,
-    aliquots: { ...usedAliquots, ...storePools.aliquots },
     smrtLinkVersion: smrtLinkVersions['1'],
     resources: { smrtLinkVersions },
   }
@@ -59,7 +52,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
       plugins: [
         createTestingPinia({
           initialState: {
-            pacbioRunCreate: { ...defaultOptions, ...state },
+            pacbioRunCreateV1: { ...defaultOptions, ...state },
           },
           stubActions,
           plugins,
@@ -71,10 +64,10 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     },
     props,
   })
+  usePacbioRunCreateStore()
   return { wrapperObj }
 }
 
-// TODO: There are some quirks in the tests, that might need more investigation
 describe('PacbioRunWell.vue', () => {
   let well, wrapper
 
@@ -112,10 +105,9 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
+            wells: { 1: { A1: { ...storeWell, pools: [], libraries: [] } } },
           },
         })
-
         const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
@@ -133,7 +125,8 @@ describe('PacbioRunWell.vue', () => {
               1: {
                 A1: {
                   ...storeWell,
-                  used_aliquots: null,
+                  pools: [],
+                  libraries: [],
                   movie_time: '',
                   generate_hifi: '',
                   ccs_analysis_output: '',
@@ -175,7 +168,7 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
+            wells: { 1: { A1: { ...storeWell, pools: [], libraries: [] } } },
             smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
@@ -195,7 +188,8 @@ describe('PacbioRunWell.vue', () => {
               1: {
                 A1: {
                   ...storeWell,
-                  used_aliquots: null,
+                  pools: [],
+                  libraries: [],
                   movie_acquisition_time: '',
                   polymerase_kit: '',
                   pre_extension_time: '',
@@ -213,30 +207,13 @@ describe('PacbioRunWell.vue', () => {
     })
   })
 
-  // TRAC-2-20 - libraries - 30
-  // TRAC-2-22 - pools - 12
-  // TRAC-2-24 - pools - 14
-
   describe('updatePoolLibraryBarcode', () => {
     let expectedWell
 
     it('adds the pool to the well', async () => {
-      const newBarcode = 'TRAC-2-22'
+      const newBarcode = 'TRAC-2-1'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: null,
-                pools: [],
-                libraries: [],
-              },
-            },
-          },
-          ...storePools,
-        },
         stubActions: false,
         plugins: [
           ({ store }) => {
@@ -244,8 +221,8 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
-      expectedWell.pools.push('12')
+      expectedWell = storeWell
+      expectedWell.pools.push('1')
       await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
         well: expectedWell,
@@ -254,22 +231,9 @@ describe('PacbioRunWell.vue', () => {
     })
 
     it('adds the library to the well', async () => {
-      const newBarcode = 'TRAC-2-20'
+      const newBarcode = 'TRAC-2-3'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: null,
-                pools: [],
-                libraries: [],
-              },
-            },
-          },
-          ...storePools,
-        },
         stubActions: false,
         plugins: [
           ({ store }) => {
@@ -277,8 +241,8 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
-      expectedWell.libraries.push('30')
+      expectedWell = storeWell
+      expectedWell.libraries.push('1')
       await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
         well: expectedWell,
@@ -289,70 +253,47 @@ describe('PacbioRunWell.vue', () => {
 
   describe('tooltip', () => {
     it('will be visible if there are pools', async () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: ['1', '2'],
-              },
-            },
-          },
-          ...storePools,
-          aliquots: { ...usedAliquots, ...storePools.aliquots },
-        },
-      })
-
-      wrapperObj.vm.hover = true
-      await nextTick()
+      storeWell.pools = ['1', '2']
+      storeWell.libraries = []
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
 
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-22,TRAC-2-24'
+      const expected = 'TRAC-2-1,TRAC-2-2'
       expect(tooltip.text()).toEqual(expected)
     })
 
     it('will be visible if there are libraries', async () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: ['3'],
-              },
-            },
-          },
-          ...storePools,
-          aliquots: { ...usedAliquots, ...storePools.aliquots },
-        },
-      })
-      wrapperObj.vm.hover = true
-      await nextTick()
+      storeWell.pools = []
+      storeWell.libraries = ['3']
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
 
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-20'
+      const expected = 'TRAC-2-3'
       expect(tooltip.text()).toEqual(expected)
     })
 
     it('will be visible if there are pools and libraries', async () => {
-      wrapper.vm.hover = true
-      await nextTick()
+      storeWell.pools = ['1', '2']
+      storeWell.libraries = ['3']
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
 
-      const tooltip = wrapper.find('[data-attribute=tooltip]')
+      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-22,TRAC-2-24,TRAC-2-20'
+      const expected = 'TRAC-2-1,TRAC-2-2,TRAC-2-3'
       expect(tooltip.text()).toEqual(expected)
     })
   })
 
   describe('drag and drop', () => {
-    let mockEvent, newBarcode, store
+    let mockEvent, newBarcode
 
     beforeEach(() => {
-      newBarcode = 'TRAC-2-20'
+      newBarcode = 'TRAC-1'
       mockEvent = {
         dataTransfer: {
           getData() {
@@ -361,15 +302,12 @@ describe('PacbioRunWell.vue', () => {
         },
         preventDefault: vi.fn(),
       }
-
-      store = usePacbioRunCreateStore()
-      store.updateWell = vi.fn()
+      well.updatePoolLibraryBarcode = vi.fn()
     })
 
     it('will update the barcode', async () => {
       well.drop(mockEvent)
-      await nextTick()
-      expect(store.updateWell).toBeCalledWith({ well: storeWell, plateNumber: 1 })
+      expect(well.updatePoolLibraryBarcode).toBeCalledWith(newBarcode)
     })
   })
 })
