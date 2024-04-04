@@ -22,126 +22,120 @@
     </span>
   </div>
 </template>
-
-<script>
-import { mapActions, mapState } from 'pinia'
+<script setup>
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { ref, computed } from 'vue'
 
-export default {
-  name: 'PacbioRunWell',
-  props: {
-    position: {
-      type: String,
-      required: true,
-    },
-    plateNumber: {
-      type: Number,
-      required: true,
-    },
-    interactive: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
+const props = defineProps({
+  position: {
+    type: String,
+    required: true,
   },
-  emits: ['click'],
-  data() {
-    return {
-      hover: false,
-    }
+  plateNumber: {
+    type: Number,
+    required: true,
   },
-  computed: {
-    ...mapState(usePacbioRunCreateStore, [
-      'tubeContentByBarcode',
-      'getWell',
-      'tubeContents',
-      'smrtLinkVersion',
-      'getOrCreateWell',
-    ]),
-    wellClassNames() {
-      return [
-        this.status,
-        this.hover && this.interactive
-          ? 'ring ring-pink-600 ring-offset-1'
-          : 'border border-gray-800',
-        this.interactive ? 'cursor-pointer' : '',
-        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
-      ]
-    },
-    required_metadata_fields() {
-      if (this.smrtLinkVersion.name == 'v11') {
-        return [
-          'movie_time',
-          'on_plate_loading_concentration',
-          'binding_kit_box_barcode',
-          'generate_hifi',
-        ]
-      } else if (this.smrtLinkVersion.name == 'v12_revio') {
-        return [
-          'movie_acquisition_time',
-          'include_base_kinetics',
-          'library_concentration',
-          'polymerase_kit',
-          'pre_extension_time',
-        ]
-      }
-      return []
-    },
-    tooltip() {
-      return this.storeWell.pools
-        ?.map((p) => {
-          return this.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
-        })
-        .concat(
-          this.storeWell.libraries?.map((l) => {
-            return this.tubeContents.find((tubeContent) => l == tubeContent.id).barcode
-          }),
-        )
-        .filter(Boolean)
-        .join(',')
-    },
-    hasPoolsOrLibraries() {
-      if (this.storeWell === undefined) return false
-      return this.storeWell.pools.length > 0 || this.storeWell.libraries.length > 0
-    },
-    hasValidMetadata() {
-      if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.every((field) => this.storeWell[field])
-    },
-    hasSomeMetadata() {
-      if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.some((field) => this.storeWell[field])
-    },
-    storeWell() {
-      return this.getWell(this.plateNumber, this.position)
-    },
-    status() {
-      if (this.hasPoolsOrLibraries && this.hasValidMetadata) {
-        // Complete
-        return 'bg-success text-white'
-      } else if (this.hasPoolsOrLibraries || this.hasSomeMetadata) {
-        // Incomplete
-        return 'bg-failure text-white'
-      }
-      // Empty
-      return 'bg-gray-100 text-black'
-    },
+  interactive: {
+    type: Boolean,
+    required: true,
+    default: true,
   },
-  methods: {
-    ...mapActions(usePacbioRunCreateStore, ['updateWell']),
-    onClick() {
-      this.$emit('click', this.position, this.plateNumber)
-    },
-    async drop(event) {
-      this.hover = false
-      await this.updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
-    },
-    async updatePoolLibraryBarcode(barcode) {
-      const well = await this.getOrCreateWell(this.position, this.plateNumber)
-      const { id, type } = this.tubeContentByBarcode(barcode)
-      type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
-      this.updateWell({ well: well, plateNumber: this.plateNumber })
-    },
-  },
+})
+const emit = defineEmits(['click'])
+
+const store = usePacbioRunCreateStore()
+
+const hover = ref(false)
+
+const wellClassNames = computed(() => {
+  return [
+    status.value,
+    hover.value && props.interactive
+      ? 'ring ring-pink-600 ring-offset-1'
+      : 'border border-gray-800',
+    props.interactive ? 'cursor-pointer' : '',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
+  ]
+})
+
+const required_metadata_fields = computed(() => {
+  if (store.smrtLinkVersion.name == 'v11') {
+    return [
+      'movie_time',
+      'on_plate_loading_concentration',
+      'binding_kit_box_barcode',
+      'generate_hifi',
+    ]
+  } else if (store.smrtLinkVersion.name == 'v12_revio') {
+    return [
+      'movie_acquisition_time',
+      'include_base_kinetics',
+      'library_concentration',
+      'polymerase_kit',
+      'pre_extension_time',
+    ]
+  }
+  return []
+})
+const storeWell = computed(() => {
+  const value = store.getWell(props.plateNumber, props.position)
+  return value ? { ...value } : undefined
+})
+
+const tooltip = computed(() => {
+  return storeWell.value.pools
+    ?.map((p) => {
+      return store.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
+    })
+    .concat(
+      storeWell.value.libraries?.map((l) => {
+        return store.tubeContents.find((tubeContent) => l == tubeContent.id).barcode
+      }),
+    )
+    .filter(Boolean)
+    .join(',')
+})
+
+const hasPoolsOrLibraries = computed(() => {
+  if (storeWell.value === undefined) return false
+  return storeWell.value.pools.length > 0 || storeWell.value.libraries.length > 0
+})
+
+const hasValidMetadata = computed(() => {
+  if (storeWell.value === undefined) return false
+  return required_metadata_fields.value.every((field) => storeWell.value[field])
+})
+
+const hasSomeMetadata = computed(() => {
+  if (storeWell.value === undefined) return false
+  return required_metadata_fields.value.some((field) => storeWell.value[field])
+})
+
+const status = computed(() => {
+  if (hasPoolsOrLibraries.value && hasValidMetadata.value) {
+    // Complete
+    return 'bg-success text-white'
+  } else if (hasPoolsOrLibraries.value || hasSomeMetadata.value) {
+    // Incomplete
+    return 'bg-failure text-white'
+  }
+  // Empty
+  return 'bg-gray-100 text-black'
+})
+
+const onClick = () => {
+  emit('click', props.position, props.plateNumber)
+}
+
+const drop = async (event) => {
+  hover.value = false
+  await updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
+}
+
+const updatePoolLibraryBarcode = async (barcode) => {
+  const well = await store.getOrCreateWell(props.position, props.plateNumber)
+  const { id, type } = store.tubeContentByBarcode(barcode)
+  type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
+  store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>

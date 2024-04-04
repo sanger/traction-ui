@@ -46,7 +46,7 @@
 
 <script>
 import PacbioRunWellEdit from '@/components/pacbio/V1/PacbioRunWellEditV1.vue'
-import PacbioRunWell from '@/components/pacbio/V1/PacbioRunWellV1.vue'
+import PacbioRunWell from '@/components/labware/PacbioRunWellV1.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes.js'
 import { mapState } from 'pinia'
