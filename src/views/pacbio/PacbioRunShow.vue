@@ -9,7 +9,7 @@
           >Back to runs</span
         >
       </router-link>
-      <div class="flex flex-row w-full w-1/2 justify-end">
+      <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
         <traction-button v-if="newRecord" id="reset" theme="reset" @click="resetRun()"
           >Reset</traction-button
         >
@@ -24,14 +24,16 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-      <PacbioRunInfoEdit ref="pacbioRunInfoEdit" :new-record="newRecord" />
-      <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
-    </div>
+    <div class="border border-gray-200 p-4 shadow-md">
+      <div class="grid grid-cols-2 w-full space-x-4 mb-6">
+        <PacbioRunInfoEdit ref="pacbioRunInfoEdit" :new-record="newRecord" />
+        <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
+      </div>
 
-    <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-      <PacbioRunPoolLibraryList ref="pacbioRunPoolLibraryList" />
-      <PacbioPlateList ref="plate" @alert="showAlert" />
+      <div class="grid grid-cols-2 w-full space-x-4 mb-6">
+        <PacbioRunPoolLibraryList ref="pacbioRunPoolLibraryList" />
+        <PacbioPlateList ref="plate" @alert="showAlert" />
+      </div>
     </div>
   </DataFetcher>
 </template>
