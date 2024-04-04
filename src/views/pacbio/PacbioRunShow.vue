@@ -5,7 +5,9 @@
     >
       <router-link id="backToRunsButton" :to="{ name: 'PacbioRunIndex' }" class="text-gray-700">
         <TractionArrowIcon class="inline-block h-4 w-4" />
-        <span class="align-middle whitespace-nowrap underline">Back to runs</span>
+        <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
+          >Back to runs</span
+        >
       </router-link>
       <div class="flex flex-row w-full w-1/2 justify-end">
         <traction-button v-if="newRecord" id="reset" theme="reset" @click="resetRun()"
