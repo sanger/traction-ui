@@ -114,8 +114,7 @@ const required_metadata_fields = computed(() => {
  * @returns {Object} - The well from the store.
  */
 const storeWell = computed(() => {
-  const value = store.getWell(props.plateNumber, props.position)
-  return value ? { ...value } : undefined
+  return store.getWell(props.plateNumber, props.position)
 })
 
 /*
@@ -123,15 +122,10 @@ const storeWell = computed(() => {
  * @returns {string} - The tooltip for the well.
  */
 const tooltip = computed(() => {
-  return storeWell.value.pools
-    ?.map((p) => {
-      return store.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
+  return [...storeWell.value.pools, ...storeWell.value.libraries]
+    .map((id) => {
+      return store.tubeContents.find((tubeContent) => id == tubeContent.id).barcode
     })
-    .concat(
-      storeWell.value.libraries?.map((l) => {
-        return store.tubeContents.find((tubeContent) => l == tubeContent.id).barcode
-      }),
-    )
     .filter(Boolean)
     .join(',')
 })
@@ -141,8 +135,7 @@ const tooltip = computed(() => {
  * @returns {boolean} - Whether the well has pools or libraries.
  */
 const hasPoolsOrLibraries = computed(() => {
-  if (storeWell.value === undefined) return false
-  return storeWell.value.pools.length > 0 || storeWell.value.libraries.length > 0
+  return storeWell.value?.pools.length > 0 || storeWell.value?.libraries.length > 0
 })
 
 /*
@@ -150,8 +143,7 @@ const hasPoolsOrLibraries = computed(() => {
  * @returns {boolean} - Whether the well has valid metadata.
  */
 const hasValidMetadata = computed(() => {
-  if (storeWell.value === undefined) return false
-  return required_metadata_fields.value.every((field) => storeWell.value[field])
+  return required_metadata_fields.value.every((field) => storeWell.value?.[field])
 })
 
 /*
@@ -159,8 +151,7 @@ const hasValidMetadata = computed(() => {
  * @returns {boolean} - Whether the well has some metadata.
  */
 const hasSomeMetadata = computed(() => {
-  if (storeWell.value === undefined) return false
-  return required_metadata_fields.value.some((field) => storeWell.value[field])
+  return required_metadata_fields.value.some((field) => storeWell.value?.[field])
 })
 
 /*

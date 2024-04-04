@@ -201,10 +201,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
     },
 
-    runItem: (state) => state.run || {},
-
-    runTypeItem: (state) => state.runType || {},
-
     /**
      * Gets the well based on the plate number and position
      * @param {Object} state the pinia state object

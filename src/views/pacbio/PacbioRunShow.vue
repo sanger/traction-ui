@@ -15,11 +15,11 @@
         >
 
         <traction-button
-          :id="store.runTypeItem.id"
-          :theme="store.runTypeItem.theme"
-          :data-action="store.runTypeItem.id"
+          :id="store.runType.id"
+          :theme="store.runType.theme"
+          :data-action="store.runType.id"
           @click="save"
-          >{{ store.runTypeItem.label }}</traction-button
+          >{{ store.runType.label }}</traction-button
         >
       </div>
     </div>
@@ -82,7 +82,7 @@ const props = defineProps({
  * Computed property that returns true if the run type is 'New'.
  * @returns {Boolean} - True if the run type is 'New'
  */
-const newRecord = computed(() => store.runTypeItem.type === RunTypeEnum.New)
+const newRecord = computed(() => store.runType.type === RunTypeEnum.New)
 
 /**
  * Resets the run data and sets the run, default well attributes, and instrument data.
@@ -111,7 +111,7 @@ const redirectToRuns = () => {
 const save = () => {
   store.saveRun().then(({ success, errors }) => {
     success
-      ? showAlert(`Run successfully ${store.runTypeItem.action}d`, 'success', 'run-create-message')
+      ? showAlert(`Run successfully ${store.runType.action}d`, 'success', 'run-create-message')
       : showAlert('Failed to create run in Traction: ' + errors, 'danger', 'run-create-message')
     if (success) {
       redirectToRuns()

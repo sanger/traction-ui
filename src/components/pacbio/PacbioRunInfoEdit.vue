@@ -8,7 +8,7 @@
       >
         <traction-input
           id="run-name"
-          v-model="store.runItem.name"
+          v-model="store.run.name"
           placeholder="Run name"
           type="text"
           disabled
@@ -22,7 +22,7 @@
       >
         <traction-input
           id="dna-control-complex-box-barcode"
-          v-model="store.runItem.dna_control_complex_box_barcode"
+          v-model="store.run.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
           data-attribute="dna_control_complex_box_barcode"
@@ -58,7 +58,7 @@
       <traction-field-group label="Comments" for="comments">
         <traction-input
           id="comments"
-          v-model="store.runItem.comments"
+          v-model="store.run.comments"
           placeholder="Comments"
           type="text"
           data-attribute="comments"
