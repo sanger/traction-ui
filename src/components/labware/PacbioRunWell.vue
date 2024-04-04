@@ -23,9 +23,20 @@
   </div>
 </template>
 <script setup>
+/**
+ * @name PacbioRunWell
+ * @description A single well in a Pacbio run plate
+ */
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 
+/**
+ * Props for the component.
+ * @type {Object}
+ * @property {string} position - The position of the well. This prop is required.
+ * @property {number} plateNumber - The number of the plate. This prop is required.
+ * @property {boolean} interactive - Whether the well is interactive. This prop is required and defaults to true.
+ */
 const props = defineProps({
   position: {
     type: String,
@@ -41,12 +52,28 @@ const props = defineProps({
     default: true,
   },
 })
+
+/*
+ * Define the emits for the component.
+ * The component emits a 'click' event when the well is clicked.
+ */
 const emit = defineEmits(['click'])
 
+/*
+ * Create a store instance of the pacbioRunCreateStore.
+ */
 const store = usePacbioRunCreateStore()
 
+/*
+ * Define refs for the component.
+ * The `hover` ref is used to determine if the well is being hovered over.
+ */
 const hover = ref(false)
 
+/*
+ * Computed property that returns the class names for the well.
+ * @returns {Array} - An array of class names for the well.
+ */
 const wellClassNames = computed(() => {
   return [
     status.value,
@@ -58,6 +85,10 @@ const wellClassNames = computed(() => {
   ]
 })
 
+/*
+ * Computed property that returns the required metadata fields for the well.
+ * @returns {Array} - An array of required metadata fields for the well.
+ */
 const required_metadata_fields = computed(() => {
   if (store.smrtLinkVersion.name == 'v11') {
     return [
@@ -77,11 +108,20 @@ const required_metadata_fields = computed(() => {
   }
   return []
 })
+
+/*
+ * Computed property that returns the well from the store.
+ * @returns {Object} - The well from the store.
+ */
 const storeWell = computed(() => {
   const value = store.getWell(props.plateNumber, props.position)
   return value ? { ...value } : undefined
 })
 
+/*
+ * Computed property that returns the tooltip for the well.
+ * @returns {string} - The tooltip for the well.
+ */
 const tooltip = computed(() => {
   return storeWell.value.pools
     ?.map((p) => {
@@ -96,21 +136,37 @@ const tooltip = computed(() => {
     .join(',')
 })
 
+/*
+ * Computed property that returns whether the well has pools or libraries.
+ * @returns {boolean} - Whether the well has pools or libraries.
+ */
 const hasPoolsOrLibraries = computed(() => {
   if (storeWell.value === undefined) return false
   return storeWell.value.pools.length > 0 || storeWell.value.libraries.length > 0
 })
 
+/*
+ * Computed property that returns whether the well has valid metadata.
+ * @returns {boolean} - Whether the well has valid metadata.
+ */
 const hasValidMetadata = computed(() => {
   if (storeWell.value === undefined) return false
   return required_metadata_fields.value.every((field) => storeWell.value[field])
 })
 
+/*
+ * Computed property that returns whether the well has some metadata.
+ * @returns {boolean} - Whether the well has some metadata.
+ */
 const hasSomeMetadata = computed(() => {
   if (storeWell.value === undefined) return false
   return required_metadata_fields.value.some((field) => storeWell.value[field])
 })
 
+/*
+ * Computed property that returns the status of the well.
+ * @returns {string} - The status of the well.
+ */
 const status = computed(() => {
   if (hasPoolsOrLibraries.value && hasValidMetadata.value) {
     // Complete
@@ -123,15 +179,29 @@ const status = computed(() => {
   return 'bg-gray-100 text-black'
 })
 
+/*
+ * Method that is called when the well is clicked.
+ * Emits a 'click' event with the position and plate number of the well.
+ */
 const onClick = () => {
   emit('click', props.position, props.plateNumber)
 }
 
+/*
+ * Method that is called when a drag event is dropped on the well.
+ * Sets the hover ref to false and updates the pool or library barcode.
+ * @param {Event} event - The drag event.
+ */
 const drop = async (event) => {
   hover.value = false
   await updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
 }
 
+/*
+ * Method that updates the pool or library barcode for the well.
+ * Fetches the well object from the store and updates the pools or libraries array with the barcode.
+ * @param {string} barcode - The barcode of the pool or library.
+ */
 const updatePoolLibraryBarcode = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
   const { id, type } = store.tubeContentByBarcode(barcode)

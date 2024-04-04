@@ -1,28 +1,25 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <div class="flex flex-row items-center gap-2">
+    <div
+      class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm hover:shadow-lg"
+    >
       <router-link id="backToRunsButton" :to="{ name: 'PacbioRunIndex' }" class="text-gray-700">
         <TractionArrowIcon class="inline-block h-4 w-4" />
-        <span class="align-middle">Back to runs</span>
+        <span class="align-middle whitespace-nowrap underline">Back to runs</span>
       </router-link>
-      <traction-button
-        v-if="newRecord"
-        id="reset"
-        theme="reset"
-        class="float-right"
-        @click="resetRun()"
-        >Reset</traction-button
-      >
+      <div class="flex flex-row w-full w-1/2 justify-end">
+        <traction-button v-if="newRecord" id="reset" theme="reset" @click="resetRun()"
+          >Reset</traction-button
+        >
 
-      <div class="spacer me-auto"></div>
-      <traction-button
-        :id="runTypeItem.id"
-        class="float-right"
-        :theme="runTypeItem.theme"
-        :data-action="runTypeItem.id"
-        @click="save"
-        >{{ runTypeItem.label }}</traction-button
-      >
+        <traction-button
+          :id="store.runTypeItem.id"
+          :theme="store.runTypeItem.theme"
+          :data-action="store.runTypeItem.id"
+          @click="save"
+          >{{ store.runTypeItem.label }}</traction-button
+        >
+      </div>
     </div>
 
     <div class="grid grid-cols-2 w-full space-x-4 mb-6">
@@ -36,8 +33,13 @@
     </div>
   </DataFetcher>
 </template>
-
-<script>
+<script setup>
+/**
+ * @name PacbioRunShow
+ * @description This component is used to display the form for creating a new Pacbio Run or editing an existing one.
+ * @param {Number|String} id - The id of the run to edit page
+ *
+ */
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit.vue'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit.vue'
@@ -45,86 +47,84 @@ import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryLi
 import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { RunTypeEnum } from '@/stores/utilities/run.js'
-
-import { mapState, mapActions } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import useAlert from '@/composables/useAlert.js'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 
-export default {
-  name: 'PacbioRunShow',
-  components: {
-    TractionArrowIcon,
-    PacbioRunInfoEdit,
-    PacbioRunWellDefaultEdit,
-    PacbioRunPoolLibraryList,
-    PacbioPlateList,
-    DataFetcher,
-  },
-  props: {
-    id: {
-      type: [String, Number],
-      default: 0,
-    },
-  },
-  computed: {
-    newRecord() {
-      return this.runTypeItem.type === RunTypeEnum.New
-    },
-    ...mapState(usePacbioRunCreateStore, ['runTypeItem']),
-  },
-  methods: {
-    async resetRun() {
-      this.clearRunData()
-      await this.setRun({ id: this.id })
-      await this.setDefaultWellAttributes()
-      await this.setInstrumentData()
-      this.showAlert('Run has been reset', 'success', 'run-validation-message')
-    },
-    ...mapActions(usePacbioRunCreateStore, [
-      'setRun',
-      'saveRun',
-      'fetchSmrtLinkVersions',
-      'setDefaultWellAttributes',
-      'setInstrumentData',
-      'clearRunData',
-    ]),
+/** Create a store instance of the pacbioRunCreateStore*/
+const store = usePacbioRunCreateStore()
 
-    redirectToRuns() {
-      this.$router.push({ name: 'PacbioRunIndex' })
-    },
-    alertOnFail({ success, errors }) {
-      if (!success) {
-        this.showAlert(errors, 'danger')
-      }
-    },
-    save() {
-      this.saveRun().then(({ success, errors }) => {
-        success
-          ? this.showAlert(
-              `Run successfully ${this.runTypeItem.action}d`,
-              'success',
-              'run-create-message',
-            )
-          : this.showAlert(
-              'Failed to create run in Traction: ' + errors,
-              'danger',
-              'run-create-message',
-            )
-        if (success) {
-          this.redirectToRuns()
-        }
-      })
-    },
-    async provider() {
-      // Seeds required data and loads the page via the DataFetcher
-      // Set smrtLinkVersions first as setRun depends on it
-      await this.fetchSmrtLinkVersions()
-      this.clearRunData()
-      await this.setRun({ id: this.id })
-      // Sets the runCreate/defaultWellAttributes store on loading the view
-      await this.setDefaultWellAttributes()
-      await this.setInstrumentData()
-      return { success: true }
-    },
+/*`showAlert` is a function extracted from the `useAlert` composable.
+It's used to display alert messages in the application*/
+const { showAlert } = useAlert()
+
+/*`router` is an instance of the Vue Router.
+It's used to navigate between different routes in the application.*/
+const router = useRouter()
+
+/*
+ * Define props for the component
+ * `id` is the id of the run to edit page
+ */
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    default: 0,
   },
+})
+
+/**
+ * Computed property that returns true if the run type is 'New'.
+ * @returns {Boolean} - True if the run type is 'New'
+ */
+const newRecord = computed(() => store.runTypeItem.type === RunTypeEnum.New)
+
+/**
+ * Resets the run data and sets the run, default well attributes, and instrument data.
+ * Shows a success alert message after resetting the run.
+ * @async
+ */
+const resetRun = async () => {
+  store.clearRunData()
+  await store.setRun({ id: props.id })
+  await store.setDefaultWellAttributes()
+  await store.setInstrumentData()
+  showAlert('Run has been reset', 'success', 'run-validation-message')
+}
+
+/**
+ * Redirects to the Pacbio Run Index page.
+ */
+const redirectToRuns = () => {
+  router.push({ name: 'PacbioRunIndex' })
+}
+
+/**
+ * Saves the run and shows a success or error alert message based on the result.
+ * If the run is saved successfully, it redirects to the PacbioRunIndex page.
+ */
+const save = () => {
+  store.saveRun().then(({ success, errors }) => {
+    success
+      ? showAlert(`Run successfully ${store.runTypeItem.action}d`, 'success', 'run-create-message')
+      : showAlert('Failed to create run in Traction: ' + errors, 'danger', 'run-create-message')
+    if (success) {
+      redirectToRuns()
+    }
+  })
+}
+
+/**
+ * Fetches the SMRT Link versions, clears the run data, and sets the run, default well attributes, and instrument data.
+ * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
+ */
+const provider = async () => {
+  await store.fetchSmrtLinkVersions()
+  store.clearRunData()
+  await store.setRun({ id: props.id })
+  await store.setDefaultWellAttributes()
+  await store.setInstrumentData()
+  return { success: true }
 }
 </script>
