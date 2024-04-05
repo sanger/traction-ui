@@ -165,7 +165,7 @@ const router = createRouter({
           name: 'PacbioRunShow',
           component: FlaggedFeatureView,
           props: (route) => ({
-            feature: 'dpl_1113_run_well_aliquots',
+            feature: 'dpl_1113_run_edit_well_aliquots',
             componentOnFeatureEnable: PacbioRunShow,
             componentOnFeatureDisable: PacbioRunShowV1,
             props: {
