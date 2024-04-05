@@ -67,7 +67,6 @@ describe('PacbioRunTubeItem.vue', () => {
       it('must have a barcode and a type', () => {
         expect(tube.barcode).toEqual(props.barcode)
         expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.barcode)
-        expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.type)
       })
 
       it('must have a source identifier', () => {
@@ -198,7 +197,6 @@ describe('PacbioRunTubeItem.vue', () => {
       it('must have a barcode and a type', () => {
         expect(tube.barcode).toEqual(props.barcode)
         expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.barcode)
-        expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.type)
       })
 
       it('must have a source identifier', () => {

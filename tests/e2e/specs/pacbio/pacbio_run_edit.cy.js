@@ -36,7 +36,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },
@@ -72,7 +72,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-21&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-21&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioSequelIIeRunTubes.json',
       },
@@ -100,7 +100,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },

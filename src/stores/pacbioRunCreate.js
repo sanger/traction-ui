@@ -299,9 +299,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
+      // used_aliquots could have a library instead of a request in the future but for the time being its just requests
+      // so we only look for request in the includes
       const promise = request.get({
         include:
-          'pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
+          'pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',

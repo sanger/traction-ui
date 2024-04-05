@@ -9,7 +9,7 @@ describe('Pacbio Run Create view', () => {
 
     // Find the pool being searched for by barcode
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-22&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-22&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioTubeWithPool.json',
       },
@@ -17,7 +17,7 @@ describe('Pacbio Run Create view', () => {
 
     // Find the library being searched for by barcode
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=pools.used_aliquots.library.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioTubeWithLibrary.json',
       },
