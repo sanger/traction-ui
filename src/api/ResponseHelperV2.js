@@ -68,7 +68,7 @@ const handleResponse = async (promise) => {
       return newResponse({ success: false, ...error.response })
     }
     // e.g. a network error which will not elicit an Axios response
-    return newResponse({ success: false, data: {error: error.message, errors: []} })
+    return newResponse({ success: false, data: { error: error.message, errors: [] } })
   }
 }
 

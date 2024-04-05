@@ -151,7 +151,6 @@ describe('ResponseHelper', () => {
         expect(response.data.error).toEqual('Network error')
         expect(response.data.errors).toEqual([])
       })
-
     })
   })
 
