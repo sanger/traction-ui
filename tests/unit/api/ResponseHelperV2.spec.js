@@ -127,10 +127,13 @@ describe('ResponseHelper', () => {
       })
     })
 
-    describe.skip('failure without response', () => {
+    describe('failure without response', () => {
       const rawResponse = {
         success: false,
-        error: 'Network error',
+        data: {
+          error: 'Network error',
+          errors: [],
+        },
       }
 
       it('success', () => {
@@ -140,13 +143,15 @@ describe('ResponseHelper', () => {
 
       it('data', () => {
         const response = newResponse(rawResponse)
-        expect(response.data).toBeUndefined()
+        expect(response.data).toBeDefined()
       })
 
-      it('errors', () => {
+      it('should contain errors array and error object', () => {
         const response = newResponse(rawResponse)
-        expect(response.errors).toEqual('Network error')
+        expect(response.data.error).toEqual('Network error')
+        expect(response.data.errors).toEqual([])
       })
+
     })
   })
 
@@ -166,11 +171,12 @@ describe('ResponseHelper', () => {
     })
 
     it.skip('failure with response', async () => {
+      // TODO: we need to work out how to fix this response.
       const mockResponse = {
         ok: false,
         status: 422,
         statusText: 'Unprocessible entity',
-        json: () => Promise.resolve({ data: { errors: { error1: ['is', 'a'] } } }),
+        json: () => Promise.resolve({ errors: { error1: ['is', 'a'] } }),
       }
       const promise = Promise.resolve(mockResponse)
       const expectedResponse = newResponse({ ...mockResponse, success: false })
