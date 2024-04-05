@@ -1,7 +1,7 @@
 <template>
   <DataFetcher :fetcher="provider">
     <div
-      class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm hover:shadow-lg"
+      class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
     >
       <router-link id="backToRunsButton" :to="{ name: 'PacbioRunIndex' }" class="text-gray-700">
         <TractionArrowIcon class="inline-block h-4 w-4" />

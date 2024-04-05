@@ -10,7 +10,7 @@
       <div class="flex flex-col h-full w-full">
         <div class="flex flex-row w-full p-2 items-center border-b-2">
           <p class="text-xl font-bold w-full px-2 text-left" data-attribute="barcode">
-            {{ barcode }} - {{ type }}
+            {{ barcode }}
           </p>
           <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
         </div>
