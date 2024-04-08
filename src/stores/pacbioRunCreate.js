@@ -252,7 +252,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     getOrCreateWell: (state) => (position, plateNumber) => {
       return (
-        state.wells[plateNumber][position] || newWell({ position, ...state.defaultWellAttributes })
+        state.getWell(plateNumber, position) ||
+        newWell({ position, ...state.defaultWellAttributes })
       )
     },
 

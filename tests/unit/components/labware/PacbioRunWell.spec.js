@@ -348,10 +348,11 @@ describe('PacbioRunWell.vue', () => {
   })
 
   describe('drag and drop', () => {
-    let mockEvent, newBarcode, store
+    let mockEvent, newBarcode, store, wrapper
 
     beforeEach(() => {
       newBarcode = 'TRAC-2-20'
+      const updateWellMockFn = vi.fn()
       mockEvent = {
         dataTransfer: {
           getData() {
@@ -361,14 +362,40 @@ describe('PacbioRunWell.vue', () => {
         preventDefault: vi.fn(),
       }
 
+      const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: null,
+                pools: [],
+                libraries: [],
+              },
+            },
+          },
+          ...storePools,
+        },
+        stubActions: false,
+        plugins: [
+          ({ store }) => {
+            store.updateWell = updateWellMockFn
+          },
+        ],
+      })
+      wrapper = wrapperObj
       store = usePacbioRunCreateStore()
-      store.updateWell = vi.fn()
+      store.updateWell = updateWellMockFn
     })
 
     it('will update the barcode', async () => {
-      well.drop(mockEvent)
+      wrapper.vm.drop(mockEvent)
       await nextTick()
-      expect(store.updateWell).toBeCalledWith({ well: storeWell, plateNumber: 1 })
+      expect(store.updateWell).toBeCalledWith({
+        // 30 is the id of the library with the barcode being used
+        well: { ...storeWell, libraries: ['30'], used_aliquots: null },
+        plateNumber: 1,
+      })
     })
   })
 })
