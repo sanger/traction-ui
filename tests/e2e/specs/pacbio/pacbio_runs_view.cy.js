@@ -12,9 +12,9 @@ describe('Pacbio Runs view', () => {
     cy.get('#filterValue').should('be.visible')
     cy.get('#filterValue').children().and('contain', 'Name')
     cy.get('#run-index').contains('tr', '5')
-    cy.get('#startRun-7')
-    cy.get('#editRun-7')
-    cy.get('#generate-sample-sheet-7')
+    cy.get('#startRun-12')
+    cy.get('#editRun-12')
+    cy.get('#generate-sample-sheet-12')
     cy.get('#run-index')
       .first()
       .within(() => {

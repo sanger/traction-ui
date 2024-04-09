@@ -8,7 +8,7 @@
       >
         <traction-input
           id="run-name"
-          v-model="runItem.name"
+          v-model="store.run.name"
           placeholder="Run name"
           type="text"
           disabled
@@ -22,7 +22,7 @@
       >
         <traction-input
           id="dna-control-complex-box-barcode"
-          v-model="runItem.dna_control_complex_box_barcode"
+          v-model="store.run.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
           data-attribute="dna_control_complex_box_barcode"
@@ -34,12 +34,12 @@
         <traction-select
           id="system-name"
           ref="systemName"
-          :model-value="instrumentType.key"
+          :model-value="store.instrumentType.key"
           title="System Name"
           :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
           :disabled="!newRecord"
-          @update:modelValue="setInstrumentData($event)"
+          @update:modelValue="store.setInstrumentData($event)"
         />
       </traction-field-group>
 
@@ -47,18 +47,18 @@
         <traction-select
           id="smrt-link-version"
           ref="smrtLinkVersion"
-          :model-value="smrtLinkVersion.id"
+          :model-value="store.smrtLinkVersion.id"
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @update:modelValue="setSmrtLinkVersion($event)"
+          @update:modelValue="store.setSmrtLinkVersion($event)"
         />
       </traction-field-group>
 
       <traction-field-group label="Comments" for="comments">
         <traction-input
           id="comments"
-          v-model="runItem.comments"
+          v-model="store.run.comments"
           placeholder="Comments"
           type="text"
           data-attribute="comments"
@@ -68,56 +68,40 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+<script setup>
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import {
   InstrumentTypeSelectOptionsType,
   SmrtLinkVersionSelectOptionsType,
 } from '@/lib/SelectOptionsTypes'
+import { computed } from 'vue'
 
-export default {
-  name: 'PacbioRunInfoEdit',
-  props: {
-    newRecord: {
-      type: Boolean,
-    },
+const store = usePacbioRunCreateStore()
+
+defineProps({
+  newRecord: {
+    type: Boolean,
   },
-  computed: {
-    ...mapState(usePacbioRunCreateStore, [
-      'runItem',
-      'smrtLinkVersionList',
-      'smrtLinkVersion',
-      'instrumentType',
-    ]),
-    // Makes an array of objects with value and text properties to make
-    // the options of smrt-link-version select drop-down list.
-    // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
-    smrtLinkVersionSelectOptions() {
-      return SmrtLinkVersionSelectOptionsType(Object.values(this.smrtLinkVersionList)).options(
-        this.smrtLinkVersion,
-      )
-    },
-    // Returns an array of objects with value and text properties to make
-    // the options of instrument-type select drop-down list.
-    // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
-    instrumentTypeSelectOptions() {
-      return InstrumentTypeSelectOptionsType(Object.values(PacbioInstrumentTypes)).options(
-        this.instrumentType,
-      )
-    },
-    isRevio() {
-      return this.instrumentType.key === PacbioInstrumentTypes.Revio.key
-    },
-  },
-  methods: {
-    ...mapActions(usePacbioRunCreateStore, ['setSmrtLinkVersion', 'setInstrumentData']),
-    alertOnFail({ success, errors }) {
-      if (!success) {
-        this.showAlert(errors, 'danger')
-      }
-    },
-  },
-}
+})
+
+// Makes an array of objects with value and text properties to make
+// the options of smrt-link-version select drop-down list.
+// Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
+const smrtLinkVersionSelectOptions = computed(() =>
+  SmrtLinkVersionSelectOptionsType(Object.values(store.smrtLinkVersionList)).options(
+    store.smrtLinkVersion,
+  ),
+)
+
+// Returns an array of objects with value and text properties to make
+// the options of instrument-type select drop-down list.
+// Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
+const instrumentTypeSelectOptions = computed(() =>
+  InstrumentTypeSelectOptionsType(Object.values(PacbioInstrumentTypes)).options(
+    store.instrumentType,
+  ),
+)
+
+const isRevio = computed(() => store.instrumentType.key === PacbioInstrumentTypes.Revio.key)
 </script>

@@ -25,11 +25,11 @@
         >Serial Number: {{ serialNumber }}</traction-label
       >
     </div>
-    <div :class="instrumentType.plateClasses">
+    <div :class="store.instrumentType.plateClasses">
       <LabwareMap
         v-slot="{ position }"
-        :labware-type="instrumentType.labwareType"
-        :name="instrumentType.labwareType.name"
+        :labware-type="store.instrumentType.labwareType"
+        :name="store.instrumentType.labwareType.name"
         :data-attribute="`pacbio-run-plate-${plateNumber}`"
       >
         <PacbioRunWell
@@ -44,58 +44,60 @@
   </div>
 </template>
 
-<script>
+<script setup>
+/**
+ * PacbioRunPlateItem component
+ * This component displays a single plate with its wells and allows the user to interact with the wells.
+ * It also displays the sequencing kit box barcode and serial number of the plate.
+ * It uses the PacbioRunWellEdit component to edit the well.
+ * It uses the LabwareMap component to display the wells.
+ * It uses the PacbioInstrumentTypes and validatePlate functions to validate the plate.
+ * It uses the usePacbioRunCreateStore store to get the plate and instrument type.
+ * It emits an alert event when an alert is triggered.
+ */
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes.js'
-import { mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { ref, computed } from 'vue'
 
-export default {
-  name: 'PacbioRunPlateItem',
-  components: {
-    PacbioRunWellEdit,
-    LabwareMap,
-    PacbioRunWell,
+// Create a new store instance of the pacbioRunCreateStore
+const store = usePacbioRunCreateStore()
+
+// Define the props
+const props = defineProps({
+  // Define the plateNumber prop
+  plateNumber: {
+    type: [String, Number],
+    required: true,
   },
-  props: {
-    plateNumber: {
-      type: [String, Number],
-      required: true,
-    },
-  },
-  emits: ['alert'],
-  data() {
-    return {
-      selectedWellPosition: '',
-    }
-  },
-  computed: {
-    ...mapState(usePacbioRunCreateStore, ['instrumentType', 'getPlate']),
-    isRevio() {
-      // we should be able to use object equality here but it doesn't work
-      // e.g. Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)
-      return this.instrumentType.key === PacbioInstrumentTypes.Revio.key
-    },
-    serialNumber() {
-      return this.storePlate.sequencing_kit_box_barcode.substring(15, 20)
-    },
-    storePlate() {
-      return this.getPlate(this.plateNumber)
-    },
-    validateSequencingKitBoxBarcode() {
-      if (!this.storePlate) return
-      return validatePlate({ plate: this.storePlate, instrumentType: this.instrumentType })
-    },
-  },
-  methods: {
-    alert(message, type) {
-      this.$emit('alert', message, type)
-    },
-    onWellClick(position, plateNumber) {
-      this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
-    },
-  },
-}
+})
+// Define the emits
+const emit = defineEmits(['alert'])
+
+/*
+`modal` is a reference (`ref`) that will be linked to the modal component in the template.
+ This allows us to directly interact with the modal component, such as calling its methods or accessing its data.*/
+const modal = ref(null)
+
+// `isRevio` is a computed property that checks if the current instrument type is Revio.
+const isRevio = computed(() => store.instrumentType.key === PacbioInstrumentTypes.Revio.key)
+
+// `storePlate` is a computed property that gets the plate from the store using the plateNumber prop.
+const storePlate = computed(() => store.getPlate(props.plateNumber))
+
+// `serialNumber` is a computed property that extracts a substring from the sequencing kit box barcode of the plate.
+const serialNumber = computed(() => storePlate.value.sequencing_kit_box_barcode.substring(15, 20))
+
+//`validateSequencingKitBoxBarcode` is a computed property that validates the plate's sequencing kit box barcode.
+const validateSequencingKitBoxBarcode = computed(() => {
+  if (!storePlate.value) return
+  return validatePlate({ plate: storePlate.value, instrumentType: store.instrumentType })
+})
+// Define the alert function that emits an alert event with a message and type.
+const alert = (message, type) => emit('alert', message, type)
+// Define the onWellClick function that shows the modal for the clicked well position and plate number.
+const onWellClick = (position, plateNumber) =>
+  modal.value.showModalForPositionAndPlate(position, plateNumber)
 </script>

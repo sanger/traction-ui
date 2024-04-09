@@ -1,6 +1,6 @@
 import Tube from '@/components/pacbio/PacbioRunTubeItem.vue'
 import { mount, router, createTestingPinia } from '@support/testHelper.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -43,17 +43,7 @@ describe('PacbioRunTubeItem.vue', () => {
           id: '1',
           type: 'pools',
           barcode: 'TRAC-1',
-          libraries: [
-            {
-              id: '1',
-              sample_name: 'Sample1',
-              group_id: 'TAG_1',
-              run_suitability: {
-                ready_for_run: true,
-                errors: [],
-              },
-            },
-          ],
+          samples: ['Sample1:TAG_1', 'Sample1:TAG_2'],
           volume: 10.2,
           concentration: 13.1,
           template_prep_kit_box_barcode: 'BB1',
@@ -74,7 +64,7 @@ describe('PacbioRunTubeItem.vue', () => {
         tube = wrapper.vm
       })
 
-      it('must have a barcode', () => {
+      it('must have a barcode and a type', () => {
         expect(tube.barcode).toEqual(props.barcode)
         expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.barcode)
       })
@@ -101,8 +91,8 @@ describe('PacbioRunTubeItem.vue', () => {
         expect(wrapper.find('[data-attribute=insert-size]').text()).toContain('100')
       })
 
-      it('must have some libraries', () => {
-        expect(tube.libraries).toEqual(props.libraries)
+      it('must have some samples', () => {
+        expect(tube.samples).toEqual(props.samples)
       })
 
       it('must have an edit button', () => {
@@ -116,26 +106,7 @@ describe('PacbioRunTubeItem.vue', () => {
           id: '1',
           type: 'pools',
           barcode: 'TRAC-1',
-          libraries: [
-            {
-              id: '1',
-              sample_name: 'Sample1',
-              group_id: 'TAG_1',
-              run_suitability: {
-                ready_for_run: false,
-                errors: [
-                  {
-                    title: "can't be blank",
-                    detail: "insert_size - can't be blank",
-                    code: '100',
-                    source: {
-                      pointer: '/data/attributes/insert_size',
-                    },
-                  },
-                ],
-              },
-            },
-          ],
+          samples: ['Sample1:TAG_1', 'Sample1:TAG_2'],
           source_identifier: 'DN1S:A1',
           run_suitability: {
             ready_for_run: false,
@@ -202,8 +173,7 @@ describe('PacbioRunTubeItem.vue', () => {
           id: '1',
           type: 'libraries',
           barcode: 'TRAC-1',
-          sample_name: 'Sample1',
-          group_id: 'TAG_1',
+          samples: ['Sample1:TAG_1'],
           volume: 10.2,
           concentration: 13.1,
           template_prep_kit_box_barcode: 'BB1',
@@ -224,7 +194,7 @@ describe('PacbioRunTubeItem.vue', () => {
         tube = wrapper.vm
       })
 
-      it('must have a barcode', () => {
+      it('must have a barcode and a type', () => {
         expect(tube.barcode).toEqual(props.barcode)
         expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.barcode)
       })
@@ -251,8 +221,8 @@ describe('PacbioRunTubeItem.vue', () => {
         expect(wrapper.find('[data-attribute=insert-size]').text()).toContain('100')
       })
 
-      it('must have a sample_name', () => {
-        expect(wrapper.find('[data-attribute=sample-name]').text()).toContain('Sample1')
+      it('must have a sample', () => {
+        expect(wrapper.find('[data-attribute=samples]').text()).toContain('Sample1:TAG_1')
       })
 
       it('does not have an edit button', () => {
@@ -266,8 +236,7 @@ describe('PacbioRunTubeItem.vue', () => {
           id: '1',
           type: 'libraries',
           barcode: 'TRAC-1',
-          sample_name: 'Sample1',
-          group_id: 'TAG_1',
+          samples: ['Sample1:TAG_1'],
           run_suitability: {
             ready_for_run: false,
             errors: [

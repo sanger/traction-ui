@@ -1,0 +1,315 @@
+{
+  "data": {
+    "id": "7",
+    "type": "runs",
+    "links": {
+      "self": "http://localhost:3100/v1/pacbio/runs/7"
+    },
+    "attributes": {
+      "name": "TRACTION-RUN-7",
+      "sequencing_kit_box_barcode": "skbb1",
+      "dna_control_complex_box_barcode": "dccb1",
+      "system_name": "Sequel IIe",
+      "created_at": "2023/04/26 08:23",
+      "state": "pending",
+      "comments": "GENSAMPLE-1682001489-148",
+      "pacbio_smrt_link_version_id": 3,
+      "well_attributes": null
+    },
+    "relationships": {
+      "plate": {
+        "data": {
+          "type": "plates",
+          "id": "8"
+        }
+      },
+      "smrt_link_version": {
+        "data": {
+          "type": "smrt_link_versions",
+          "id": "3"
+        }
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "8",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/plates/8"
+      },
+      "attributes": {
+        "pacbio_run_id": 8,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "skbb1"
+      },
+      "relationships": {
+        "wells": {
+          "data": [
+            {
+              "type": "wells",
+              "id": "8"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "8",
+      "type": "wells",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/wells/8"
+      },
+      "attributes": {
+        "movie_time": null,
+        "insert_size": 123,
+        "on_plate_loading_concentration": null,
+        "row": "A",
+        "column": "1",
+        "pacbio_plate_id": 8,
+        "comment": null,
+        "generate_hifi": "On Instrument",
+        "position": "A1",
+        "pre_extension_time": "",
+        "ccs_analysis_output": "Yes",
+        "binding_kit_box_barcode": null,
+        "loading_target_p1_plus_p2": 0.85,
+        "ccs_analysis_output_include_low_quality_reads": "No",
+        "include_fivemc_calls_in_cpg_motifs": "Yes",
+        "ccs_analysis_output_include_kinetics_information": "Yes",
+        "demultiplex_barcodes": "On Instrument",
+        "movie_acquisition_time": "10.0",
+        "include_base_kinetics": "False",
+        "library_concentration": "123",
+        "polymerase_kit": "123"
+      },
+      "relationships": {
+        "pools": {
+          "data": [
+            {
+              "type": "pools",
+              "id": "7"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "7",
+      "type": "pools",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/pools/7"
+      },
+      "attributes": {
+        "run_suitability": {
+          "ready_for_run": true,
+          "errors": []
+        },
+        "volume": 123,
+        "concentration": 123,
+        "template_prep_kit_box_barcode": "123213131231321321313",
+        "insert_size": 123,
+        "created_at": "2023/04/24 09:20",
+        "updated_at": "2023/04/24 09:20",
+        "source_identifier": "GEN-1682001489-4:D1"
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/pools/7/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/pools/7/tube"
+          },
+          "data": {
+            "type": "tubes",
+            "id": "12"
+          }
+        },
+        "libraries": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/pools/7/relationships/libraries",
+            "related": "http://localhost:3100/v1/pacbio/pools/7/libraries"
+          },
+          "data": [
+            {
+              "type": "library_pools",
+              "id": "19"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "12",
+      "type": "tubes",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/tubes/12"
+      },
+      "attributes": {
+        "barcode": "TRAC-2-12"
+      },
+      "relationships": {
+        "materials": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/12/relationships/materials",
+            "related": "http://localhost:3100/v1/pacbio/tubes/12/materials"
+          }
+        },
+        "pools": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/12/relationships/pools",
+            "related": "http://localhost:3100/v1/pacbio/tubes/12/pools"
+          },
+          "data": [
+            {
+              "type": "pools",
+              "id": "7"
+            }
+          ]
+        },
+        "requests": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/12/relationships/requests",
+            "related": "http://localhost:3100/v1/pacbio/tubes/12/requests"
+          }
+        }
+      }
+    },
+    {
+      "id": "19",
+      "type": "library_pools",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/libraries/19"
+      },
+      "attributes": {
+        "run_suitability": {
+          "ready_for_run": true,
+          "errors": []
+        },
+        "state": "pending",
+        "volume": 123,
+        "concentration": 123,
+        "template_prep_kit_box_barcode": "123213131231321321313",
+        "insert_size": 123,
+        "created_at": "2023/04/24 09:20",
+        "deactivated_at": null,
+        "source_identifier": "GEN-1682001489-4:D1"
+      },
+      "relationships": {
+        "request": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/request",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/request"
+          },
+          "data": {
+            "type": "requests",
+            "id": "148"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/tube"
+          }
+        },
+        "tag": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/tag",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/tag"
+          },
+          "data": {
+            "type": "tags",
+            "id": "1"
+          }
+        },
+        "pool": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/pool",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/pool"
+          },
+          "data": {
+            "type": "pools",
+            "id": "7"
+          }
+        },
+        "source_well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/source_well",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/source_well"
+          }
+        },
+        "source_plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/19/relationships/source_plate",
+            "related": "http://localhost:3100/v1/pacbio/libraries/19/source_plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "tags",
+      "attributes": {
+        "oligo": "CACATATCAGAGTGCGT",
+        "group_id": "bc1001_BAK8A_OA"
+      }
+    },
+    {
+      "id": "148",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/148"
+      },
+      "attributes": {
+        "library_type": "Pacbio_IsoSeq",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "S10147",
+        "external_study_id": "185a29fa-c562-4c4c-8102-97026e62d960",
+        "sample_name": "GENSAMPLE-1682001489-148",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2023/04/20 18:16",
+        "source_identifier": "GEN-1682001489-4:D1"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/148/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/148/well"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/148/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/148/plate"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/148/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/requests/148/tube"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "smrt_link_versions",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/smrt_link_versions/3"
+      },
+      "attributes": {
+        "name": "v12_revio",
+        "default": false
+      },
+      "relationships": {
+        "smrt_link_option_versions": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/smrt_link_versions/3/relationships/smrt_link_option_versions",
+            "related": "http://localhost:3100/v1/pacbio/smrt_link_versions/3/smrt_link_option_versions"
+          }
+        }
+      }
+    }
+  ]
+}

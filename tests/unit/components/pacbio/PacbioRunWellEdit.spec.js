@@ -2,7 +2,7 @@ import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -275,7 +275,10 @@ describe('PacbioWellEdit', () => {
 
         const { wrapperObj } = mountWithStore({
           state: {
-            pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
+            pools: {
+              1: { id: 1, tube: 1, used_aliquots: [] },
+              2: { id: 2, tube: 2, used_aliquots: [] },
+            },
             tubes: { 1: { barcode: 'TRAC-1', pools: [1] }, 2: { barcode: 'TRAC-2', pools: [2] } },
             smrtLinkVersion: smrtLinkVersions['1'],
             run: {},
