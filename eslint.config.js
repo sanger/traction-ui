@@ -35,11 +35,8 @@ export default [
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: {
-        ...globals.browser,
         ...globals.node,
-        ...globals.jasmine,
         ...globals.jest,
-        ...globals.mocha,
         vi: 'readonly',
         cy: 'readonly',
         Cypress: 'readonly',
