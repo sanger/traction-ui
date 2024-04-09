@@ -19,7 +19,7 @@
                   placeholder="Type to search"
                   label="Search value"
                   class="w-full"
-                  @enterKeyPress="search"
+                  @enter-key-press="search"
                 />
                 <traction-button
                   id="labware-finder-button"

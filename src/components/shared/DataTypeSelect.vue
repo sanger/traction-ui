@@ -4,7 +4,7 @@
     :model-value="value"
     data-attribute="data-type-list"
     :options="dataTypes"
-    @update:modelValue="handleInput"
+    @update:model-value="handleInput"
   ></traction-select>
 </template>
 

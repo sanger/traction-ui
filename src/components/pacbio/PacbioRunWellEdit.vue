@@ -32,7 +32,7 @@
             :model-value="`${row.item.barcode}`"
             placeholder="Pool/Library barcode"
             :debounce="500"
-            @update:modelValue="updatePoolLibraryBarcode(row, $event)"
+            @update:model-value="updatePoolLibraryBarcode(row, $event)"
           ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"

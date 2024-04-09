@@ -8,7 +8,7 @@
       placeholder="Type to Search"
       label="Search value"
       class="w-full"
-      @enterKeyPress="search()"
+      @enter-key-press="search()"
     />
     <traction-button data-action="find-labware" :disabled="searchValue == ''" @click="search()">
       Search

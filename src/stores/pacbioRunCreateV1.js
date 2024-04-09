@@ -383,7 +383,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // if it is a new create a new run and commit it
       if (this.runType.type === RunTypeEnum.New) {
         // ensure that the smrt link version id is set to the default
-        // eslint-disable-next-line no-unused-vars
 
         const { id, ...attributes } = newRun()
         this.run = {

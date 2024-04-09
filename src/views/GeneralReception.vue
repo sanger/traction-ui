@@ -17,7 +17,7 @@
             class="inline-block w-full"
             :options="receptions.options"
             data-type="source-list"
-            @update:modelValue="handleSourceChange"
+            @update:model-value="handleSourceChange"
           />
         </traction-field-group>
       </div>
@@ -37,7 +37,7 @@
             :options="pipelineOptions"
             class="inline-block w-full"
             data-type="pipeline-list"
-            @update:modelValue="resetRequestOptions()"
+            @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
       </div>

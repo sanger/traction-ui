@@ -8,7 +8,7 @@
           :model-value="selected"
           data-type="tag-set-list"
           :options="options"
-          @update:modelValue="updateSelected"
+          @update:model-value="updateSelected"
         ></traction-select>
       </div>
     </traction-section>

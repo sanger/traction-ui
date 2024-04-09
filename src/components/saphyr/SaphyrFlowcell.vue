@@ -7,7 +7,7 @@
       :model-value="libraryBarcode"
       placeholder="Library barcode"
       type="text"
-      @update:modelValue="setBarcode"
+      @update:model-value="setBarcode"
     />
   </div>
 </template>
