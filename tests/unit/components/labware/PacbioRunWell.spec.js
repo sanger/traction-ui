@@ -17,8 +17,8 @@ const storeWell = {
   library_concentration: 123,
   polymerase_kit: '123',
   pre_extension_time: 1,
-  libraries: [],
-  pools: [],
+  libraries: ['30'],
+  pools: ['12', '14'],
 }
 const usedAliquots = {
   1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
@@ -111,7 +111,7 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: null, libraries: [], pools: [] } } },
           },
         })
 
@@ -133,6 +133,8 @@ describe('PacbioRunWell.vue', () => {
                 A1: {
                   ...storeWell,
                   used_aliquots: null,
+                  libraries: [],
+                  pools: [],
                   movie_time: '',
                   generate_hifi: '',
                   ccs_analysis_output: '',
@@ -174,7 +176,7 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools or libraries in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: null, pools: [], libraries: [] } } },
             smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
@@ -195,6 +197,8 @@ describe('PacbioRunWell.vue', () => {
                 A1: {
                   ...storeWell,
                   used_aliquots: null,
+                  pools: [],
+                  libraries: [],
                   movie_acquisition_time: '',
                   polymerase_kit: '',
                   pre_extension_time: '',
@@ -295,6 +299,8 @@ describe('PacbioRunWell.vue', () => {
               A1: {
                 ...storeWell,
                 used_aliquots: ['1', '2'],
+                libraries: [],
+                pools: ['12', '14'],
               },
             },
           },
@@ -320,6 +326,8 @@ describe('PacbioRunWell.vue', () => {
               A1: {
                 ...storeWell,
                 used_aliquots: ['3'],
+                libraries: ['30'],
+                pools: [],
               },
             },
           },
@@ -348,11 +356,10 @@ describe('PacbioRunWell.vue', () => {
   })
 
   describe('drag and drop', () => {
-    let mockEvent, newBarcode, store, wrapper
+    let mockEvent, newBarcode, store
 
     beforeEach(() => {
       newBarcode = 'TRAC-2-20'
-      const updateWellMockFn = vi.fn()
       mockEvent = {
         dataTransfer: {
           getData() {
@@ -362,30 +369,8 @@ describe('PacbioRunWell.vue', () => {
         preventDefault: vi.fn(),
       }
 
-      const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: null,
-                pools: [],
-                libraries: [],
-              },
-            },
-          },
-          ...storePools,
-        },
-        stubActions: false,
-        plugins: [
-          ({ store }) => {
-            store.updateWell = updateWellMockFn
-          },
-        ],
-      })
-      wrapper = wrapperObj
       store = usePacbioRunCreateStore()
-      store.updateWell = updateWellMockFn
+      store.updateWell = vi.fn()
     })
 
     it('will update the barcode', async () => {
@@ -393,7 +378,8 @@ describe('PacbioRunWell.vue', () => {
       await nextTick()
       expect(store.updateWell).toBeCalledWith({
         // 30 is the id of the library with the barcode being used
-        well: { ...storeWell, libraries: ['30'], used_aliquots: null },
+        // 30 is seen twice because the library is being added a second time
+        well: { ...storeWell, libraries: ['30', '30'] },
         plateNumber: 1,
       })
     })

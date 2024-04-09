@@ -82,6 +82,51 @@ const generateSamplesForLibraries = (state, library) => {
   return [combineSampleNameAndGroupId(sample_name, group_id)]
 }
 
+/**
+ * Takes a wellsByPlate object and adds the libraries and pools to the wells based on the used_aliquots
+ * @param {*} state the pinia state object
+ * @param {*} plates wellsByPlate object
+ * @returns {Object} plates with the wells formatted
+ */
+const formatWells = (state, plates) => {
+  // loop through the used plates
+  Object.keys(plates).forEach((plate_num) => {
+    // loop through the wells in the plate
+    Object.keys(plates[plate_num]).forEach((position) => {
+      const well = plates[plate_num][position]
+      const poolsAndLibraries = well?.used_aliquots?.reduce((result, aliquotId) => {
+        const aliquot = state.aliquots[aliquotId]
+        const types = { 'Pacbio::Pool': 'pools', 'Pacbio::Library': 'libraries' }
+
+        // for each type get the source and add it to the result
+        for (const type in types) {
+          if (aliquot.source_type === type) {
+            const sourceType = types[type]
+            const source = state[sourceType][aliquot.source_id]
+            if (source) {
+              // if the source is not in the result add it
+              result[sourceType] = [...(result[sourceType] || []), source.id]
+            }
+          }
+        }
+        return result
+      }, {})
+
+      // Plates may have a _destroy key which we dont want to add to change
+      position == '_destroy'
+        ? ''
+        : // Set the well with the pools and libraries
+          (plates[plate_num][position] = {
+            ...well,
+            pools: [],
+            libraries: [],
+            ...poolsAndLibraries,
+          })
+    })
+  })
+  return plates
+}
+
 export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
   /**
    * Generates an object describing a new library for population `store.libraries`
@@ -210,37 +255,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     getWell: (state) => (plateNumber, position) => {
       // get the well from the state
-      const well = state.wells[plateNumber][position]
-
-      // loop through the used aliquots and get the pools and libraries
-      const poolsAndLibraries = well?.used_aliquots?.reduce((result, aliquotId) => {
-        const aliquot = state.aliquots[aliquotId]
-        const types = { 'Pacbio::Pool': 'pools', 'Pacbio::Library': 'libraries' }
-
-        // for each type get the source and add it to the result
-        for (const type in types) {
-          if (aliquot.source_type === type) {
-            const sourceType = types[type]
-            const source = state[sourceType][aliquot.source_id]
-            if (source) {
-              // if the source is not in the result add it
-              result[sourceType] = [...(result[sourceType] || []), source.id]
-            }
-          }
-        }
-        return result
-      }, {})
-
-      // we need to make sure pools and libraries are empty arrays if they are not present
-      // we shouldn't need to return undefined. This is a typing issue. We should have a method on well
-      return well
-        ? {
-            ...well,
-            pools: well.pools ?? [],
-            libraries: well.libraries ?? [],
-            ...poolsAndLibraries,
-          }
-        : undefined
+      return state.wells[plateNumber][position]
     },
 
     /**
@@ -252,8 +267,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     getOrCreateWell: (state) => (position, plateNumber) => {
       return (
-        state.getWell(plateNumber, position) ||
-        newWell({ position, ...state.defaultWellAttributes })
+        state.wells[plateNumber][position] || newWell({ position, ...state.defaultWellAttributes })
       )
     },
 
@@ -372,6 +386,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         // Populate the plates
         this.plates = dataToObjectByPlateNumber({ data: plates, includeRelationships: true })
 
+        //Populate pools, libraries, library_pools, tags, requests and tubes
+        this.pools = formatById(this.pools, pools, true)
+        this.libraries = formatById(this.libraries, libraries, true)
+        this.tubes = formatById(this.tubes, tubes, true)
+        this.aliquots = formatById(this.aliquots, aliquots, true)
+
         // Populate the wells
         // Adds the wells to state by plate number and well position, two dimensional array
         const wellsByPlate = splitDataByParent({
@@ -385,13 +405,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         Object.entries(wellsByPlate).forEach(([_plateNumber, plate]) => {
           plate['_destroy'] = []
         })
-        this.wells = wellsByPlate
 
-        //Populate pools, libraries, library_pools, tags, requests and tubes
-        this.pools = formatById(this.pools, pools, true)
-        this.libraries = formatById(this.libraries, libraries, true)
-        this.tubes = formatById(this.tubes, tubes, true)
-        this.aliquots = formatById(this.aliquots, aliquots, true)
+        // This builds the wells libraries and pools through its used_aliquots
+        // Required for well editing
+        this.wells = formatWells(this, wellsByPlate)
 
         //Populate the smrtLinkVersion
         this.smrtLinkVersion = smrtLinkVersion
