@@ -5,7 +5,7 @@
       :model-value="libraryType"
       :options="libraryTypes"
       data-attribute="library-type-list"
-      @update:modelValue="handleInput"
+      @update:model-value="handleInput"
     ></traction-select>
   </traction-field-group>
 </template>

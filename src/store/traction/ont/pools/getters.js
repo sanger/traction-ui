@@ -160,7 +160,7 @@ export default {
           barcode,
         }
       })
-    } catch (e) {
+    } catch {
       return []
     }
   },

@@ -39,7 +39,7 @@
           :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
           :disabled="!newRecord"
-          @update:modelValue="store.setInstrumentData($event)"
+          @update:model-value="store.setInstrumentData($event)"
         />
       </traction-field-group>
 
@@ -51,7 +51,7 @@
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @update:modelValue="store.setSmrtLinkVersion($event)"
+          @update:model-value="store.setSmrtLinkVersion($event)"
         />
       </traction-field-group>
 

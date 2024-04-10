@@ -71,7 +71,7 @@ const create = async (run, request) => {
       const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
-  } catch (err) {
+  } catch {
     rollback(responses, request)
     return false
   }
@@ -113,7 +113,7 @@ const update = async (run, request) => {
       const flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
-  } catch (err) {
+  } catch {
     rollback(responses, request)
     return false
   }

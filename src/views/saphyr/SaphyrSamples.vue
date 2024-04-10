@@ -28,7 +28,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
+        @select-printer="printLabels($event)"
       >
       </printerModal>
 
@@ -36,7 +36,7 @@
         ref="enzymeModal"
         :disabled="selected.length === 0"
         class="float-left"
-        @selectEnzyme="createLibraries"
+        @select-enzyme="createLibraries"
       >
       </enzymeModal>
     </div>

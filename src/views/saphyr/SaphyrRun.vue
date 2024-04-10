@@ -25,7 +25,7 @@
       class="runInfo"
       placeholder="name"
       type="text"
-      @update:modelValue="setRunName"
+      @update:model-value="setRunName"
     />
 
     <chip :chip="currentRun.chip" @alert="showAlert"></chip>
@@ -69,7 +69,7 @@ export default {
       try {
         await this.createRun()
         this.redirectToRuns()
-      } catch (err) {
+      } catch {
         this.showAlert('Failed to create run', 'danger')
       }
     },
@@ -77,7 +77,7 @@ export default {
       try {
         await this.updateRun()
         this.redirectToRuns()
-      } catch (err) {
+      } catch {
         this.showAlert('Failed to update run', 'danger')
       }
     },
