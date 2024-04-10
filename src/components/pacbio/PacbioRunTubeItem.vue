@@ -13,7 +13,9 @@
             {{ barcode }}
           </p>
           <div class="p-1">
-            <traction-badge  data-attribute="type" :colour="typeColour(type)">{{ type }}</traction-badge>
+            <traction-badge data-attribute="type" :colour="typeColour(type)">{{
+              type
+            }}</traction-badge>
           </div>
           <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
         </div>
