@@ -24,7 +24,6 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRun from '@/views/ont/ONTRun.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import FlaggedFeatureView from '@/components/shared/FlaggedFeatureView.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -151,7 +150,7 @@ const router = createRouter({
           name: 'PacbioRunShow',
           component: PacbioRunShow,
           meta: { page: 'Run' },
-          props: true, 
+          props: true,
         },
         {
           path: 'pool/:id',
