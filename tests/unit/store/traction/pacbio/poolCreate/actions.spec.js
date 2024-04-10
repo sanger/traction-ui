@@ -4,10 +4,6 @@ import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { newResponse } from '@/api/ResponseHelper'
 import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
-// dpl_989_ui feature flag is used to generate pool payload so we mock it
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(false),
-}))
 
 describe('actions.js', () => {
   const {

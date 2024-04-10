@@ -1,15 +1,5 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        dpl_1112: { enabled: true },
-        multiplexing_phase_2_aliquot: { enabled: true },
-        dpl_1113_run_well_aliquots: { enabled: true },
-        dpl_1113_run_edit_well_aliquots: { enabled: true },
-      },
-    })
-
     cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })

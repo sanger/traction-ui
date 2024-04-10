@@ -8,10 +8,6 @@ import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
-// dpl_989_ui feature flag is used to generate pool payload so we mock it
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
 
 describe('usePacbioPoolCreateStore', () => {
   const tagSets = {

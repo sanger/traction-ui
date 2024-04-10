@@ -19,13 +19,6 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
     })
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        multiplexing_phase_2_pool_with_aliquots: { enabled: true },
-        multiplexing_phase_2_aliquot: { enabled: true },
-      },
-    })
   })
 
   it('updates pool information on clicking requests table rows', () => {

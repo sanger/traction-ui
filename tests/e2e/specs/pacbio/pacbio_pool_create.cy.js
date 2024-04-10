@@ -14,13 +14,6 @@ describe('Pacbio Pool Create', () => {
         fixture: 'tractionPacbioTubeWithLibrary.json',
       },
     )
-
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        multiplexing_phase_2_pool_with_aliquots: { enabled: true },
-      },
-    })
   })
 
   it('Creates a pool successfully', () => {
