@@ -223,7 +223,6 @@ export default {
     },
     async setupWell() {
       this.well = await this.getOrCreateWell(this.position, this.plateNumber)
-      console.log(this.well)
       // We need to flush localPools to prevent duplicates
       this.localPoolsAndLibraries = []
       // If the well has pools we want the barcode and id of each to display

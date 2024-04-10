@@ -82,10 +82,14 @@ describe('PacbioPoolCreate', () => {
   })
 
   describe('On Pool/New', () => {
+    afterEach(async () => {
+      // Clear the router so it doesn't affect other tests as router is shared between tests
+      await router.push('/')
+    })
     it('will only call mockFetchPacbioTagSets', async () => {
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      await router.push('pacbio/pool/new')
+      await router.push('/pacbio/pool/new')
       mountWithStore({ plugins })
       await flushPromises()
       expect(mockFetchPacbioTagSets).toBeCalled()
@@ -95,12 +99,13 @@ describe('PacbioPoolCreate', () => {
       const errors = ['Invalid data']
       mockFetchPacbioTagSets.mockReturnValue({ success: false, errors })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      await router.push('pacbio/pool/new')
+      await router.push('/pacbio/pool/new')
       mountWithStore({ plugins })
       await flushPromises()
       expect(mockShowAlert).toBeCalledWith(errors, 'danger')
     })
   })
+
   describe('On Pool/Edit', () => {
     let wrapper, store
     beforeEach(() => {
@@ -123,8 +128,8 @@ describe('PacbioPoolCreate', () => {
         1: { id: '1' },
       }
     })
+
     describe('when a plate or tube is selected', () => {
-      beforeEach(() => {})
       it('calls both mockFetchPacbioTagSets and mockPopulateUsedAliquotsFromPool', async () => {
         await flushPromises()
         expect(mockFetchPacbioTagSets).toBeCalled()
