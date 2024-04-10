@@ -9,7 +9,7 @@ describe('Pacbio Run Create view', () => {
 
     // Find the pool being searched for by barcode
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-6&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-22&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioTubeWithPool.json',
       },
@@ -17,7 +17,7 @@ describe('Pacbio Run Create view', () => {
 
     // Find the library being searched for by barcode
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-55&include=pools.tube,pools.libraries.tag,pools.libraries.request,libraries.tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioTubeWithLibrary.json',
       },
@@ -28,6 +28,15 @@ describe('Pacbio Run Create view', () => {
       statusCode: 201,
       body: {
         data: {},
+      },
+    })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1112: { enabled: true },
+        multiplexing_phase_2_aliquot: { enabled: true },
+        dpl_1113_run_well_aliquots: { enabled: true },
+        dpl_1113_run_edit_well_aliquots: { enabled: true },
       },
     })
   })
@@ -45,7 +54,7 @@ describe('Pacbio Run Create view', () => {
       .type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -86,7 +95,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -147,7 +156,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="smrt_link_version"]').select('v13_revio')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-55')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -218,7 +227,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
@@ -297,7 +306,7 @@ describe('Pacbio Run Create view', () => {
       .type('Lxxxxx101717600123199')
 
     // Type in the barcode of the pool/library being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-6')
+    cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata

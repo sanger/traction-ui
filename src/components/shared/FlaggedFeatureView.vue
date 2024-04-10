@@ -1,9 +1,9 @@
 <template>
   <flagged-feature :name="feature">
     <template #disabled>
-      <component :is="componentOnFeatureDisable"></component>
+      <component :is="componentOnFeatureDisable" v-bind="props"></component>
     </template>
-    <component :is="componentOnFeatureEnable"></component>
+    <component :is="componentOnFeatureEnable" v-bind="props"></component>
   </flagged-feature>
 </template>
 
@@ -19,5 +19,6 @@ defineProps({
   componentOnFeatureEnable: { type: [String, Object], required: true }, // The component to render when the feature is enabled
   componentOnFeatureDisable: { type: [String, Object], required: true }, // The component to render when the feature is disabled
   feature: { type: String, required: true }, // The name of the feature flag on which to flip this
+  props: { type: Object, default: () => ({}) }, // The props to pass to the component
 })
 </script>

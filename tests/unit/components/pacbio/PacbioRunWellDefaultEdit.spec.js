@@ -2,7 +2,7 @@ import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEd
 import { mount, createTestingPinia } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
 import { defaultWellAttributes } from '@/stores/utilities/run.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -67,7 +67,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
 }
 
 describe('PacbioRunWellDefaultEdit', () => {
-  let wrapper, runInfo, store
+  let wrapper, store
   /*["ccs_analysis_output_include_kinetics_information",
     "ccs_analysis_output_include_low_quality_reads",
     "include_fivemc_calls_in_cpg_motifs",
@@ -86,11 +86,10 @@ describe('PacbioRunWellDefaultEdit', () => {
       })
       wrapper = wrapperObj
       store = storeObj
-      runInfo = wrapper.vm
     })
 
     it('will have a selected smrt link version of v11', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
+      expect(store.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
     })
 
     describe('input', () => {
@@ -186,11 +185,10 @@ describe('PacbioRunWellDefaultEdit', () => {
       })
       wrapper = wrapperObj
       store = storeObj
-      runInfo = wrapper.vm
     })
 
     it('will have a selected smrt link version of v12', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(store.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
     })
 
     describe('input', () => {

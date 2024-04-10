@@ -17,8 +17,10 @@ import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import PacbioPoolIndexV1 from '@/views/pacbio/PacbioPoolIndexV1.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
+import PacbioRunIndexV1 from '@/views/pacbio/PacbioRunIndexV1.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
 import PacbioPoolCreateV1 from '@/views/pacbio/PacbioPoolCreateV1'
+import PacbioRunShowV1 from '@/views/pacbio/PacbioRunShowV1.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
@@ -147,7 +149,12 @@ const router = createRouter({
         {
           path: 'runs',
           name: 'PacbioRunIndex',
-          component: PacbioRunIndex,
+          component: FlaggedFeatureView,
+          props: {
+            feature: 'dpl_1113_run_well_aliquots',
+            componentOnFeatureEnable: PacbioRunIndex,
+            componentOnFeatureDisable: PacbioRunIndexV1,
+          },
           meta: { page: 'Runs', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -156,8 +163,15 @@ const router = createRouter({
         {
           path: 'run/:id',
           name: 'PacbioRunShow',
-          component: PacbioRunShow,
-          props: true,
+          component: FlaggedFeatureView,
+          props: (route) => ({
+            feature: 'dpl_1113_run_edit_well_aliquots',
+            componentOnFeatureEnable: PacbioRunShow,
+            componentOnFeatureDisable: PacbioRunShowV1,
+            props: {
+              id: route.params.id,
+            },
+          }),
           meta: { page: 'Run' },
         },
         {

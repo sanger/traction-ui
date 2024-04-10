@@ -9,41 +9,40 @@
         <component
           :is="field.component"
           v-bind="handleCustomProps(field)"
-          v-model="runDefaultWellAttributes[field.value]"
+          v-model="store.runDefaultWellAttributes[field.value]"
         />
       </traction-field-group>
     </div>
   </traction-section>
 </template>
 
-<script>
-// There is a lot of duplication between this component and PacbioRunWellEdit.
-// A lot of it could be moved to the store
-import { mapState } from 'pinia'
+<script setup>
+/**
+ * PacbioRunWellDefaultEdit component
+ * This component displays a list of default well components for the current SMRT Link version.
+ * It uses the PacbioRunWellComponents config to get the default well components.
+ * It uses the usePacbioRunCreateStore store to get the SMRT Link version and default well attributes.
+ */
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
-export default {
-  name: 'PacbioRunWellDefaultEdit',
-  computed: {
-    ...mapState(usePacbioRunCreateStore, [
-      'runDefaultWellAttributes',
-      'runItem',
-      'smrtLinkVersion',
-    ]),
-    smrtLinkWellDefaults() {
-      return PacbioRunWellComponents[this.smrtLinkVersion.name]?.filter(
-        (component) => component.default,
-      )
-    },
-  },
-  methods: {
-    handleCustomProps(component) {
-      return {
-        ...component.props,
-        // We want the data attribute to be unique for default fields
-        dataAttribute: `default-${component.props.dataAttribute}`,
-      }
-    },
-  },
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { computed } from 'vue'
+
+// Create a store instance of the pacbioRunCreateStore
+const store = usePacbioRunCreateStore()
+
+// Get the default well components for the current SMRT Link version
+const smrtLinkWellDefaults = computed(() => {
+  return PacbioRunWellComponents[store.smrtLinkVersion.name]?.filter(
+    (component) => component.default,
+  )
+})
+
+// Handle custom props for the component
+const handleCustomProps = (component) => {
+  return {
+    ...component.props,
+    // We want the data attribute to be unique for default fields
+    dataAttribute: `default-${component.props.dataAttribute}`,
+  }
 }
 </script>

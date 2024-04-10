@@ -1,0 +1,144 @@
+{
+  "data": [
+    {
+      "id": "55",
+      "type": "tubes",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/tubes/55"
+      },
+      "attributes": {
+        "barcode": "TRAC-2-55"
+      },
+      "relationships": {
+        "materials": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/55/relationships/materials",
+            "related": "http://localhost:3100/v1/pacbio/tubes/55/materials"
+          }
+        },
+        "pools": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/55/relationships/pools",
+            "related": "http://localhost:3100/v1/pacbio/tubes/55/pools"
+          },
+          "data": []
+        },
+        "libraries": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/55/relationships/libraries",
+            "related": "http://localhost:3100/v1/pacbio/tubes/55/libraries"
+          },
+          "data": {
+            "type": "libraries",
+            "id": "36"
+          }
+        },
+        "requests": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/55/relationships/requests",
+            "related": "http://localhost:3100/v1/pacbio/tubes/55/requests"
+          }
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "36",
+      "type": "libraries",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/libraries/36"
+      },
+      "attributes": {
+        "run_suitability": {
+          "ready_for_run": true,
+          "errors": []
+        },
+        "state": "pending",
+        "volume": 0,
+        "concentration": 1,
+        "template_prep_kit_box_barcode": "123213131231321321313",
+        "insert_size": 500,
+        "created_at": "2024/02/14 08:36",
+        "deactivated_at": null,
+        "source_identifier": "GEN-1707899606-3:B3",
+        "pacbio_request_id": 114,
+        "tag_id": 1
+      },
+      "relationships": {
+        "request": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/request",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/request"
+          },
+          "data": {
+            "type": "requests",
+            "id": "114"
+          }
+        },
+        "tag": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/tag",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/tag"
+          },
+          "data": {
+            "type": "tags",
+            "id": "1"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/tube"
+          },
+          "data": {
+            "type": "tubes",
+            "id": "55"
+          }
+        },
+        "source_well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/source_well",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/source_well"
+          }
+        },
+        "source_plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/source_plate",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/source_plate"
+          }
+        },
+        "primary_aliquot": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/36/relationships/primary_aliquot",
+            "related": "http://localhost:3100/v1/pacbio/libraries/36/primary_aliquot"
+          },
+          "data": {
+            "type": "aliquots",
+            "id": "246"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "tags",
+      "attributes": {
+        "group_id": "bc1001_BAK8A_OA"
+      }
+    },
+    {
+      "id": "114",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/114"
+      },
+      "attributes": {
+        "sample_name": "GENSAMPLE-1707899606-114"
+      }
+    }
+  ],
+  "meta": {
+    "page_count": null
+  }
+}
