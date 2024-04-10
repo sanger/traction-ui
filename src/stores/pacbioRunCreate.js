@@ -562,9 +562,13 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
     },
     removePool(id) {
+      // Delete the tube associated with the pool
+      delete this.tubes[this.pools[id].tube]
       delete this.pools[id]
     },
     removeLibrary(id) {
+      // Delete the tube associated with the library
+      delete this.tubes[this.libraries[id].tube]
       delete this.libraries[id]
     },
     clearRunData() {
