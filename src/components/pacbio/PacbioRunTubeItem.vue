@@ -12,6 +12,11 @@
           <p class="text-xl font-bold w-full px-2 text-left" data-attribute="barcode">
             {{ barcode }}
           </p>
+          <div class="p-1">
+            <traction-badge data-attribute="type" :colour="typeColour(type)">{{
+              type
+            }}</traction-badge>
+          </div>
           <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
         </div>
         <div class="flex flex-row text-left text-sm w-full">
@@ -94,7 +99,7 @@
 import { ref, computed } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
-
+import TractionBadge from '@/components/shared/TractionBadge.vue'
 const props = defineProps({
   id: {
     type: String,
@@ -171,5 +176,8 @@ const removeTube = () => {
   } else {
     store.removeLibrary(props.id)
   }
+}
+const typeColour = (type) => {
+  return type == 'pools' ? 'sdb' : 'sanger-pink'
 }
 </script>
