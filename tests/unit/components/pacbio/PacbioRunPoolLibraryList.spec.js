@@ -50,4 +50,14 @@ describe('PacbioRunPoolLibraryList', () => {
     // 2 pools and 1 library
     expect(wrapper.findAll('[data-attribute="selected-pool-library-list"')).toHaveLength(3)
   })
+
+  it('should remove the selected pool/library when the remove button is clicked', async () => {
+    expect(wrapper.findAll('[data-attribute="selected-pool-library-list"')).toHaveLength(3)
+
+    // Remove the first tube found
+    const removeButton = wrapper.find('[data-attribute="remove-tube"]')
+    await removeButton.trigger('click')
+
+    expect(wrapper.findAll('[data-attribute="selected-pool-library-list"')).toHaveLength(2)
+  })
 })

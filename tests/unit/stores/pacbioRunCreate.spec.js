@@ -689,31 +689,41 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
     describe('removePool', () => {
-      it('"removePool" removes the given pool id from state.pool', () => {
+      it('"removePool" removes the given pool id from state.pool and its associated tube', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
+          tubes: {
+            3: { id: '3', type: 'tubes' },
+            4: { id: '4', type: 'tubes' },
+          },
           pools: {
-            1: { id: '1', type: 'pools' },
-            2: { id: '2', type: 'pools' },
+            1: { id: '1', type: 'pools', tube: '3' },
+            2: { id: '2', type: 'pools', tube: '4' },
           },
         }
-        expect(store.pools[1]).toEqual({ id: '1', type: 'pools' })
+        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', tube: '3' })
         store.removePool(1)
         expect(store.pools[1]).toBeUndefined()
+        expect(store.tubes[3]).toBeUndefined()
       })
     })
     describe('removeLibrary', () => {
-      it('"removeLibrary" removes the given library id from state.library', () => {
+      it('"removeLibrary" removes the given library id from state.library and its assoicated tube', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
+          tubes: {
+            3: { id: '3', type: 'tubes' },
+            4: { id: '4', type: 'tubes' },
+          },
           libraries: {
-            1: { id: '1', type: 'libraries' },
-            2: { id: '2', type: 'libraries' },
+            1: { id: '1', type: 'libraries', tube: '3' },
+            2: { id: '2', type: 'libraries', tube: '4' },
           },
         }
-        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries' })
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', tube: '3' })
         store.removeLibrary(1)
         expect(store.libraries[1]).toBeUndefined()
+        expect(store.tubes[3]).toBeUndefined()
       })
     })
     describe('clearRunData', () => {

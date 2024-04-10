@@ -17,7 +17,13 @@
               type
             }}</traction-badge>
           </div>
-          <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
+          <button
+            class="text-xl h-8 w-8 m-0 leading-none"
+            data-attribute="remove-tube"
+            @click="removeTube"
+          >
+            x
+          </button>
         </div>
         <div class="flex flex-row text-left text-sm w-full">
           <div class="flex flex-col w-1/4 justify-center">
