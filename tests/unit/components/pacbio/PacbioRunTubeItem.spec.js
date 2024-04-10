@@ -1,6 +1,7 @@
 import Tube from '@/components/pacbio/PacbioRunTubeItem.vue'
 import { mount, router, createTestingPinia } from '@support/testHelper.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { expect } from 'vitest'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -67,6 +68,7 @@ describe('PacbioRunTubeItem.vue', () => {
       it('must have a barcode and a type', () => {
         expect(tube.barcode).toEqual(props.barcode)
         expect(wrapper.find('[data-attribute=barcode]').text()).toContain(props.barcode)
+        expect(wrapper.find('[data-attribute=type]').text()).toContain(props.type)
       })
 
       it('must have a source identifier', () => {
