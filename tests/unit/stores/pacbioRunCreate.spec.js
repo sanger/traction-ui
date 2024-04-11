@@ -577,14 +577,11 @@ describe('usePacbioRunCreateStore', () => {
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
-        expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
-        })
         expect(store.runType).toEqual(existingRunType)
         expect(success).toBeTruthy()
       })
 
-      it('for an existing run when findPoolsOrLibrariesByTube fails', async () => {
+      it('for an existing run when fetchRun fails', async () => {
         const id = 1
         const tubes = {
           1: { barcode: 'TRAC-2-1' },
@@ -595,15 +592,11 @@ describe('usePacbioRunCreateStore', () => {
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
         store.tubes = tubes
 
-        store.fetchRun = vi.fn().mockResolvedValue({ success: true })
+        store.fetchRun = vi.fn().mockResolvedValue({ success: false })
         store.findPoolsOrLibrariesByTube = vi.fn().mockResolvedValue({ success: false })
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
-        expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
-        })
-        expect(store.runType).toEqual(existingRunType)
         expect(success).toBeFalsy()
       })
     })

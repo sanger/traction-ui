@@ -7,7 +7,7 @@ describe('Pacbio Pool Edit', () => {
       },
     )
     cy.intercept(
-      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,used_aliquots.request.plate.wells.requests,used_aliquots.request.tube,tube,used_aliquots.library.tube,used_aliquots.library.request',
+      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,used_aliquots.request,requests.tube,tube,libraries,requests.plate.wells.requests',
       {
         fixture: 'tractionPacbioPool.json',
       },
