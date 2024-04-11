@@ -52,7 +52,6 @@ const combineSampleNameAndGroupId = (sample_name, group_id) => {
  * @returns {Array} samples an array of samples. Sample names are concatenated with the group id
  */
 const generateSamplesForPools = (state, pool) => {
-
   // // retrieve the used aliquots by their id from state
   const used_aliquots = pool.used_aliquots.map((aliquotId) => state.aliquots[aliquotId])
 
