@@ -571,9 +571,7 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
         store.tubes = tubes
-
         store.fetchRun = vi.fn().mockResolvedValue({ success: true })
-        store.findPoolsOrLibrariesByTube = vi.fn().mockResolvedValue({ success: true })
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
@@ -591,9 +589,7 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
         store.tubes = tubes
-
         store.fetchRun = vi.fn().mockResolvedValue({ success: false })
-        store.findPoolsOrLibrariesByTube = vi.fn().mockResolvedValue({ success: false })
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
