@@ -12,7 +12,18 @@
           <p class="text-xl font-bold w-full px-2 text-left" data-attribute="barcode">
             {{ barcode }}
           </p>
-          <button class="text-xl h-8 w-8 m-0 leading-none" @click="removeTube">x</button>
+          <div class="p-1">
+            <traction-badge data-attribute="type" :colour="typeColour(type)">{{
+              type
+            }}</traction-badge>
+          </div>
+          <button
+            class="text-xl h-8 w-8 m-0 leading-none"
+            data-attribute="remove-tube"
+            @click="removeTube"
+          >
+            x
+          </button>
         </div>
         <div class="flex flex-row text-left text-sm w-full">
           <div class="flex flex-col w-1/4 justify-center">
@@ -53,20 +64,14 @@
                 {{ insert_size || 'Unknown' }}
               </dd>
             </dl>
-            <dl v-if="type == 'pools'" class="flex space-x-4 p-1 px-4">
-              <dt class="w-1/4 text-gray-500 font-bold">Libraries</dt>
+            <dl class="flex space-x-4 p-1 px-4" data-attribute="samples">
+              <dt class="w-1/4 text-gray-500 font-bold">Samples</dt>
               <dd class="w-3/4">
                 <ul>
-                  <li v-for="library in libraries" :key="library.id">
-                    {{ library.sample_name }}{{ library.group_id ? ' : ' + library.group_id : '' }}
+                  <li v-for="sample in samples" :key="sample">
+                    {{ sample }}
                   </li>
                 </ul>
-              </dd>
-            </dl>
-            <dl v-else class="flex space-x-4 p-1 px-4">
-              <dt class="w-1/4 text-gray-500 font-bold">Sample and Tag</dt>
-              <dd class="w-3/4" data-attribute="sample-name">
-                {{ sample_name }}{{ group_id ? ' : ' + group_id : '' }}
               </dd>
             </dl>
             <dl v-if="!run_suitability.ready_for_run" class="flex space-x-4 p-1 px-4 bg-gray-200">
@@ -98,9 +103,9 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup>
 import { ref, computed } from 'vue'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
-
+import TractionBadge from '@/components/shared/TractionBadge.vue'
 const props = defineProps({
   id: {
     type: String,
@@ -117,7 +122,7 @@ const props = defineProps({
     required: true,
     default: '',
   },
-  libraries: {
+  samples: {
     type: Array,
     required: false,
     default: () => [],
@@ -151,16 +156,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  sample_name: {
-    type: String,
-    required: false,
-    default: '',
-  },
-  group_id: {
-    type: String,
-    required: false,
-    default: '',
-  },
 })
 
 const store = usePacbioRunCreateStore()
@@ -187,5 +182,8 @@ const removeTube = () => {
   } else {
     store.removeLibrary(props.id)
   }
+}
+const typeColour = (type) => {
+  return type == 'pools' ? 'sdb' : 'sanger-pink'
 }
 </script>

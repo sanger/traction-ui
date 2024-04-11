@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 #app {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-align: center;

@@ -198,7 +198,6 @@ describe('run.js', () => {
       it('will create the correct payload', () => {
         const runType = createRunType({ id: 1 })
         const aRun = newRun()
-        // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
 
         expect(

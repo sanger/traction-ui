@@ -3,7 +3,7 @@ import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
 import { newWell, newPlate } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 const smrtLinkVersions = {
   1: { id: 1, name: 'v11', default: true, active: true },
@@ -87,7 +87,7 @@ describe('PacbioRunPlateItem.vue', () => {
 
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
-        expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
+        expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
       })
     })
 
@@ -146,7 +146,7 @@ describe('PacbioRunPlateItem.vue', () => {
 
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
-        expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
+        expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
       })
     })
 

@@ -12,7 +12,7 @@ export default {
           instrument_name: `${instrument.name} (${instrument.instrument_type})`,
         }
       })
-    } catch (e) {
+    } catch {
       return []
     }
   },
@@ -25,7 +25,7 @@ export default {
           ...instrumentConfig,
         }
       })
-    } catch (e) {
+    } catch {
       return []
     }
   },

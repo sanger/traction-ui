@@ -5,7 +5,7 @@
       :model-value="chip.barcode"
       placeholder="Chip barcode"
       type="text"
-      @update:modelValue="setBarcode"
+      @update:model-value="setBarcode"
     />
     <flowcell
       v-for="(flowcell, index) in chip.flowcells"

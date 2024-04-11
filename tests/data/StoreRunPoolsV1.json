@@ -1,0 +1,169 @@
+{
+  "pools": {
+    "1": {
+      "id": "1",
+      "libraries": ["1"],
+      "tube": "1",
+      "type": "pools",
+      "volume": 1.0,
+      "concentration": 1.0,
+      "template_prep_kit_box_barcode": "LK12345",
+      "insert_size": 100,
+      "source_identifier": "DN1:A1",
+      "created_at": "2021-07-15T15:26:29.000Z",
+      "updated_at": "2021-07-15T15:26:29.000Z",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      }
+    },
+    "2": {
+      "id": "2",
+      "libraries": ["2"],
+      "tube": "2",
+      "type": "pools",
+      "volume": 1.0,
+      "concentration": 1.0,
+      "template_prep_kit_box_barcode": "LK12345",
+      "insert_size": null,
+      "source_identifier": "DN1:B1",
+      "created_at": "2021-07-15T15:26:29.000Z",
+      "updated_at": "2021-07-15T15:26:29.000Z",
+      "run_suitability": {
+        "ready_for_run": false,
+        "errors": [
+          {
+            "title": "can't be blank",
+            "detail": "insert_size - can't be blank",
+            "code": "100",
+            "source": {
+              "pointer": "/data/attributes/insert_size"
+            }
+          },
+          {
+            "title": "is invalid",
+            "detail": "libraries - is invalid",
+            "code": "100",
+            "source": {
+              "pointer": "/data/relationships/libraries"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tubes": {
+    "1": {
+      "barcode": "TRAC-2-1",
+      "id": "1",
+      "type": "tubes",
+      "pools": ["1"]
+    },
+    "2": {
+      "barcode": "TRAC-2-2",
+      "id": "2",
+      "type": "tubes",
+      "pools": ["2"]
+    },
+    "3": {
+      "barcode": "TRAC-2-3",
+      "id": "3",
+      "type": "tubes",
+      "pools": [],
+      "libraries": "3"
+    }
+  },
+  "libraries": {
+    "3": {
+      "id": "3",
+      "request": "1",
+      "tag": "26",
+      "type": "libraries",
+      "tube": "3",
+      "volume": 1.0,
+      "concentration": 1.0,
+      "template_prep_kit_box_barcode": "LK12345",
+      "insert_size": 100,
+      "source_identifier": "DN1:A1",
+      "created_at": "2021-07-15T15:26:29.000Z",
+      "updated_at": "2021-07-15T15:26:29.000Z",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      }
+    },
+    "4": {
+      "id": "4",
+      "request": "1",
+      "tag": "26",
+      "type": "libraries",
+      "tube": "4",
+      "volume": 1.0,
+      "concentration": 1.0,
+      "template_prep_kit_box_barcode": "LK12345",
+      "insert_size": 100,
+      "source_identifier": "DN1:A1",
+      "created_at": "2021-07-15T15:26:29.000Z",
+      "updated_at": "2021-07-15T15:26:29.000Z",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      }
+    }
+  },
+  "tags": {
+    "26": {
+      "group_id": "bc1019",
+      "id": "26",
+      "type": "tags"
+    },
+    "7": {
+      "group_id": "bc1011_BAK8A_OA",
+      "id": "7",
+      "type": "tags"
+    }
+  },
+  "requests": {
+    "1": {
+      "id": "1",
+      "sample_name": "Sample48",
+      "type": "requests"
+    },
+    "2": {
+      "id": "2",
+      "sample_name": "Sample47",
+      "type": "requests"
+    }
+  },
+  "library_pools": {
+    "1": {
+      "id": "1",
+      "request": "1",
+      "tag": "26",
+      "type": "library_pools",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      }
+    },
+    "2": {
+      "id": "2",
+      "request": "2",
+      "tag": "7",
+      "type": "library_pools",
+      "run_suitability": {
+        "ready_for_run": false,
+        "errors": [
+          {
+            "title": "can't be blank",
+            "detail": "insert_size - can't be blank",
+            "code": "100",
+            "source": {
+              "pointer": "/data/attributes/insert_size"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -39,7 +39,7 @@ const useOntRootStore = defineStore('ontRoot', {
             instrument_name: `${instrument.name} (${instrument.instrument_type})`,
           }
         })
-      } catch (e) {
+      } catch {
         return []
       }
     },
@@ -52,7 +52,7 @@ const useOntRootStore = defineStore('ontRoot', {
             ...instrumentConfig,
           }
         })
-      } catch (e) {
+      } catch {
         return []
       }
     },
