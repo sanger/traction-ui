@@ -1,5 +1,5 @@
 import { mount, createTestingPinia } from '@support/testHelper'
-import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
+import PacbioRunPlateItem from '@/components/pacbio/V1/PacbioRunPlateItemV1.vue'
 import { newWell, newPlate } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
@@ -28,7 +28,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
       plugins: [
         createTestingPinia({
           initialState: {
-            pacbioRunCreate: { ...state },
+            pacbioRunCreateV1: { ...state },
           },
           stubActions,
           plugins,

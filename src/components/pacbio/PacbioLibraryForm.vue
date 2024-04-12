@@ -12,7 +12,7 @@
           v-model="selectedTagSetId"
           data-type="tag-set-list"
           :options="tagSetOptions"
-          @update:modelValue="resetSelectedTagId"
+          @update:model-value="resetSelectedTagId"
         ></traction-select>
       </fieldset>
 

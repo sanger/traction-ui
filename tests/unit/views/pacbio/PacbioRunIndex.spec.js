@@ -2,7 +2,6 @@ import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
 import {
   mount,
-  store,
   Data,
   flushPromises,
   nextTick,
@@ -10,8 +9,15 @@ import {
   router,
 } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { vi } from 'vitest'
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
 
 const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
 /**
@@ -65,18 +71,19 @@ function factory(options, dataProps) {
   })
 
   const runCreateStoreObj = usePacbioRunCreateStore()
-  usePacbioRunsStore()
+  const runsStoreObj = usePacbioRunsStore()
 
-  return { wrapperObj, runCreateStoreObj }
+  return { wrapperObj, runCreateStoreObj, runsStoreObj }
 }
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, runCreateStore
+  let wrapper, pacbioRunIndex, runCreateStore, runsStore
 
   beforeEach(async () => {
-    const { wrapperObj, runCreateStoreObj } = factory()
+    const { wrapperObj, runCreateStoreObj, runsStoreObj } = factory()
     wrapper = wrapperObj
     runCreateStore = runCreateStoreObj
+    runsStore = runsStoreObj
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
@@ -126,7 +133,7 @@ describe('PacbioRunIndex.vue', () => {
           const run_id = row.find('#id').text()
           const badge = row.find('.badge').text()
           const version_id = mockRuns.find((run) => run.id == run_id).pacbio_smrt_link_version_id
-          const version = pacbioRunIndex.smrtLinkVersionList[version_id]
+          const version = runCreateStore.smrtLinkVersionList[version_id]
           expect(badge).toEqual(version.name.split('_')[0])
         })
     })
@@ -181,11 +188,11 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('on click updateRun is called', () => {
-      pacbioRunIndex.updateRun = vi.fn()
+      runsStore.updateRun = vi.fn()
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
     })
   })
 
@@ -218,12 +225,12 @@ describe('PacbioRunIndex.vue', () => {
 
     it('on click updateRun is called', () => {
       // run at(2) is in state started
-      pacbioRunIndex.updateRun = vi.fn()
+      runsStore.updateRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
     })
   })
 
@@ -256,12 +263,12 @@ describe('PacbioRunIndex.vue', () => {
 
     it('on click updateRun is called', () => {
       // run at(2) is in state started
-      pacbioRunIndex.updateRun = vi.fn()
+      runsStore.updateRun = vi.fn()
 
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
     })
   })
 
@@ -274,9 +281,41 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('on click generateSampleSheetPath is called', () => {
+      pacbioRunIndex.downloadCSV = vi.fn()
       button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
 
-      expect(button.attributes('href')).toEqual(pacbioRunIndex.generateSampleSheetPath(1))
+      expect(pacbioRunIndex.downloadCSV).toBeCalledWith({
+        id: mockRuns[0].id,
+        name: mockRuns[0].name,
+      })
+    })
+
+    it('on click generateSampleSheetPath is called and shows an error when the version is invalid', async () => {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: vi
+          .fn()
+          .mockResolvedValue({ error: 'SMRTLink sample sheet version (v10) is invalid' }),
+      })
+
+      button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
+
+      await flushPromises()
+      expect(mockShowAlert).toBeCalledWith(
+        'SMRTLink sample sheet version (v10) is invalid',
+        'danger',
+      )
+    })
+
+    it('on click generateSampleSheetPath is called and shows an error when there is a network error', async () => {
+      global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch'))
+      button = wrapper.find('#generate-sample-sheet-1')
+      button.trigger('click')
+
+      await flushPromises()
+      expect(mockShowAlert).toBeCalledWith('Error: Failed to fetch', 'danger')
     })
   })
 
@@ -286,65 +325,34 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
-    it('emits an event with the message', () => {
-      pacbioRunIndex.showAlert('show this message', 'danger')
-
-      expect(Object.values(store.state.traction.messages)).toContainEqual({
-        type: 'danger',
-        message: 'show this message',
-      })
-    })
-  })
-
   describe('#updateRun', () => {
     const id = 1
     beforeEach(() => {
-      pacbioRunIndex.updateRun = vi.fn()
-      pacbioRunIndex.showAlert = vi.fn()
+      runsStore.updateRun = vi.fn()
     })
 
     it('calls startRun successfully', () => {
       pacbioRunIndex.updateRunState('started', id)
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'started' })
+      expect(runsStore.updateRun).toBeCalledWith({ id, state: 'started' })
     })
 
     it('calls completeRun successfully', () => {
       pacbioRunIndex.updateRunState('completed', id)
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'completed' })
+      expect(runsStore.updateRun).toBeCalledWith({ id, state: 'completed' })
     })
 
     it('calls cancelRun successfully', () => {
       const id = 1
       pacbioRunIndex.updateRunState('cancelled', id)
-      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'cancelled' })
+      expect(runsStore.updateRun).toBeCalledWith({ id, state: 'cancelled' })
     })
 
     it('calls setRuns unsuccessfully', () => {
-      pacbioRunIndex.updateRun.mockImplementation(() => {
+      runsStore.updateRun.mockImplementation(() => {
         throw Error('Raise this error')
       })
       pacbioRunIndex.updateRunState('started', 1)
-      expect(pacbioRunIndex.showAlert).toBeCalled()
-    })
-  })
-
-  describe('generate sample sheet link', () => {
-    let link, id
-
-    beforeEach(() => {
-      id = 1
-      link = wrapper.find('#generate-sample-sheet-' + id)
-    })
-
-    it('exists', () => {
-      expect(link).toBeTruthy()
-    })
-
-    it('has the correct href link', () => {
-      expect(link.attributes('href')).toBe(
-        import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
-      )
+      expect(mockShowAlert).toBeCalled()
     })
   })
 

@@ -25,14 +25,14 @@
           "id": "1465"
         }
       },
-      "libraries": {
+      "used_aliquots": {
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/libraries",
-          "related": "http://localhost:3100/v1/pacbio/pools/242/libraries"
+          "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/used_aliquots",
+          "related": "http://localhost:3100/v1/pacbio/pools/242/used_aliquots"
         },
         "data": [
           {
-            "type": "library_pools",
+            "type": "aliquots",
             "id": "242"
           }
         ]
@@ -42,9 +42,9 @@
   "included": [
     {
       "id": "242",
-      "type": "library_pools",
+      "type": "aliquots",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/242"
+        "self": "http://localhost:3100/v1/pacbio/used_aliquots/242"
       },
       "attributes": {
         "state": "pending",
@@ -58,7 +58,10 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
-        }
+        },
+        "tag": "2",
+        "tag_id": "6",
+        "source_type": "Pacbio::Request"
       },
       "relationships": {
         "request": {

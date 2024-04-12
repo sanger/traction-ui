@@ -66,7 +66,10 @@ describe('libraries.js', () => {
         volume: 10,
         template_prep_kit_box_barcode: 'ABC1',
       }
-      expect(validate(state)).toBeTruthy()
+      validate(state)
+      expect(state.libraries['_3'].errors).toEqual({
+        template_prep_kit_box_barcode: 'must be present',
+      })
     })
 
     it('when the volume is not present', () => {

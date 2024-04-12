@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
+import PacbioPoolLibraryEdit from '@/components/pacbio/V1/PacbioPoolLibraryEditV1.vue'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 export default {

@@ -120,7 +120,6 @@ const existingRunType = {
   action: 'update',
   label: 'Update Run',
   payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
-    // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
     return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion, instrumentType })

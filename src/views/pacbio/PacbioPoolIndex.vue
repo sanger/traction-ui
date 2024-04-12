@@ -7,7 +7,7 @@
           ref="printerModal"
           class="float-left"
           :disabled="state.selected.length === 0"
-          @selectPrinter="printLabels($event)"
+          @select-printer="printLabels($event)"
         >
         </printerModal>
 

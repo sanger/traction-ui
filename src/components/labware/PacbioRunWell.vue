@@ -22,126 +22,181 @@
     </span>
   </div>
 </template>
+<script setup>
+/**
+ * @name PacbioRunWell
+ * @description A single well in a Pacbio run plate
+ */
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { ref, computed } from 'vue'
 
-<script>
-import { mapActions, mapState } from 'pinia'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreateV1.js'
+/**
+ * Props for the component.
+ * @type {Object}
+ * @property {string} position - The position of the well. This prop is required.
+ * @property {number} plateNumber - The number of the plate. This prop is required.
+ * @property {boolean} interactive - Whether the well is interactive. This prop is required and defaults to true.
+ */
+const props = defineProps({
+  position: {
+    type: String,
+    required: true,
+  },
+  plateNumber: {
+    type: Number,
+    required: true,
+  },
+  interactive: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+})
 
-export default {
-  name: 'PacbioRunWell',
-  props: {
-    position: {
-      type: String,
-      required: true,
-    },
-    plateNumber: {
-      type: Number,
-      required: true,
-    },
-    interactive: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
-  },
-  emits: ['click'],
-  data() {
-    return {
-      hover: false,
-    }
-  },
-  computed: {
-    ...mapState(usePacbioRunCreateStore, [
-      'tubeContentByBarcode',
-      'getWell',
-      'tubeContents',
-      'smrtLinkVersion',
-      'getOrCreateWell',
-    ]),
-    wellClassNames() {
-      return [
-        this.status,
-        this.hover && this.interactive
-          ? 'ring ring-pink-600 ring-offset-1'
-          : 'border border-gray-800',
-        this.interactive ? 'cursor-pointer' : '',
-        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
-      ]
-    },
-    required_metadata_fields() {
-      if (this.smrtLinkVersion.name == 'v11') {
-        return [
-          'movie_time',
-          'on_plate_loading_concentration',
-          'binding_kit_box_barcode',
-          'generate_hifi',
-        ]
-      } else if (this.smrtLinkVersion.name == 'v12_revio') {
-        return [
-          'movie_acquisition_time',
-          'include_base_kinetics',
-          'library_concentration',
-          'polymerase_kit',
-          'pre_extension_time',
-        ]
-      }
-      return []
-    },
-    tooltip() {
-      return this.storeWell.pools
-        ?.map((p) => {
-          return this.tubeContents.find((tubeContent) => p == tubeContent.id).barcode
-        })
-        .concat(
-          this.storeWell.libraries?.map((l) => {
-            return this.tubeContents.find((tubeContent) => l == tubeContent.id).barcode
-          }),
-        )
-        .filter(Boolean)
-        .join(',')
-    },
-    hasPoolsOrLibraries() {
-      if (this.storeWell === undefined) return false
-      return this.storeWell.pools.length > 0 || this.storeWell.libraries.length > 0
-    },
-    hasValidMetadata() {
-      if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.every((field) => this.storeWell[field])
-    },
-    hasSomeMetadata() {
-      if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.some((field) => this.storeWell[field])
-    },
-    storeWell() {
-      return this.getWell(this.plateNumber, this.position)
-    },
-    status() {
-      if (this.hasPoolsOrLibraries && this.hasValidMetadata) {
-        // Complete
-        return 'bg-success text-white'
-      } else if (this.hasPoolsOrLibraries || this.hasSomeMetadata) {
-        // Incomplete
-        return 'bg-failure text-white'
-      }
-      // Empty
-      return 'bg-gray-100 text-black'
-    },
-  },
-  methods: {
-    ...mapActions(usePacbioRunCreateStore, ['updateWell']),
-    onClick() {
-      this.$emit('click', this.position, this.plateNumber)
-    },
-    async drop(event) {
-      this.hover = false
-      await this.updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
-    },
-    async updatePoolLibraryBarcode(barcode) {
-      const well = await this.getOrCreateWell(this.position, this.plateNumber)
-      const { id, type } = this.tubeContentByBarcode(barcode)
-      type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
-      this.updateWell({ well: well, plateNumber: this.plateNumber })
-    },
-  },
+/*
+ * Define the emits for the component.
+ * The component emits a 'click' event when the well is clicked.
+ */
+const emit = defineEmits(['click'])
+
+/*
+ * Create a store instance of the pacbioRunCreateStore.
+ */
+const store = usePacbioRunCreateStore()
+
+/*
+ * Define refs for the component.
+ * The `hover` ref is used to determine if the well is being hovered over.
+ */
+const hover = ref(false)
+
+/*
+ * Computed property that returns the class names for the well.
+ * @returns {Array} - An array of class names for the well.
+ */
+const wellClassNames = computed(() => {
+  return [
+    status.value,
+    hover.value && props.interactive
+      ? 'ring ring-pink-600 ring-offset-1'
+      : 'border border-gray-800',
+    props.interactive ? 'cursor-pointer' : '',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
+  ]
+})
+
+/*
+ * Computed property that returns the required metadata fields for the well.
+ * @returns {Array} - An array of required metadata fields for the well.
+ */
+const required_metadata_fields = computed(() => {
+  if (store.smrtLinkVersion.name == 'v11') {
+    return [
+      'movie_time',
+      'on_plate_loading_concentration',
+      'binding_kit_box_barcode',
+      'generate_hifi',
+    ]
+  } else if (store.smrtLinkVersion.name == 'v12_revio') {
+    return [
+      'movie_acquisition_time',
+      'include_base_kinetics',
+      'library_concentration',
+      'polymerase_kit',
+      'pre_extension_time',
+    ]
+  }
+  return []
+})
+
+/*
+ * Computed property that returns the well from the store.
+ * @returns {Object} - The well from the store.
+ */
+const storeWell = computed(() => {
+  return store.getWell(props.plateNumber, props.position)
+})
+
+/*
+ * Computed property that returns the tooltip for the well.
+ * @returns {string} - The tooltip for the well.
+ */
+const tooltip = computed(() => {
+  return [...storeWell.value.pools, ...storeWell.value.libraries]
+    .map((id) => {
+      return store.tubeContents.find((tubeContent) => id == tubeContent.id).barcode
+    })
+    .filter(Boolean)
+    .join(',')
+})
+
+/*
+ * Computed property that returns whether the well has pools or libraries.
+ * @returns {boolean} - Whether the well has pools or libraries.
+ */
+const hasPoolsOrLibraries = computed(() => {
+  return storeWell.value?.pools.length > 0 || storeWell.value?.libraries.length > 0
+})
+
+/*
+ * Computed property that returns whether the well has valid metadata.
+ * @returns {boolean} - Whether the well has valid metadata.
+ */
+const hasValidMetadata = computed(() => {
+  return required_metadata_fields.value.every((field) => storeWell.value?.[field])
+})
+
+/*
+ * Computed property that returns whether the well has some metadata.
+ * @returns {boolean} - Whether the well has some metadata.
+ */
+const hasSomeMetadata = computed(() => {
+  return required_metadata_fields.value.some((field) => storeWell.value?.[field])
+})
+
+/*
+ * Computed property that returns the status of the well.
+ * @returns {string} - The status of the well.
+ */
+const status = computed(() => {
+  if (hasPoolsOrLibraries.value && hasValidMetadata.value) {
+    // Complete
+    return 'bg-success text-white'
+  } else if (hasPoolsOrLibraries.value || hasSomeMetadata.value) {
+    // Incomplete
+    return 'bg-failure text-white'
+  }
+  // Empty
+  return 'bg-gray-100 text-black'
+})
+
+/*
+ * Method that is called when the well is clicked.
+ * Emits a 'click' event with the position and plate number of the well.
+ */
+const onClick = () => {
+  emit('click', props.position, props.plateNumber)
+}
+
+/*
+ * Method that is called when a drag event is dropped on the well.
+ * Sets the hover ref to false and updates the pool or library barcode.
+ * @param {Event} event - The drag event.
+ */
+const drop = async (event) => {
+  hover.value = false
+  await updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
+}
+
+/*
+ * Method that updates the pool or library barcode for the well.
+ * Fetches the well object from the store and updates the pools or libraries array with the barcode.
+ * @param {string} barcode - The barcode of the pool or library.
+ */
+const updatePoolLibraryBarcode = async (barcode) => {
+  const well = await store.getOrCreateWell(props.position, props.plateNumber)
+  const { id, type } = store.tubeContentByBarcode(barcode)
+  type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
+  store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>

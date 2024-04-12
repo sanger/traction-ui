@@ -75,7 +75,7 @@ const generateLibraryContents = (state, library) => {
   return { ...library, barcode, sample_name, group_id }
 }
 
-export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
+export const usePacbioRunCreateStore = defineStore('pacbioRunCreateV1', {
   /**
    * Generates an object describing a new library for population `store.libraries`
    * @param {Object} attributes any attributes of the object to pre-populate
@@ -227,7 +227,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       return { success, errors }
     },
-    async findPoolsOrLibraryByTube(filter) {
+    async findPoolsOrLibrariesByTube(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {
@@ -383,7 +383,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // if it is a new create a new run and commit it
       if (this.runType.type === RunTypeEnum.New) {
         // ensure that the smrt link version id is set to the default
-        // eslint-disable-next-line no-unused-vars
 
         const { id, ...attributes } = newRun()
         this.run = {

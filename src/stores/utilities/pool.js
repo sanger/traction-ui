@@ -21,6 +21,7 @@ const requiredAliquotAttributes = (isPool) => [
   'volume',
   'concentration',
   'insert_size',
+  'template_prep_kit_box_barcode',
   ...(isPool ? ['tag_id'] : []),
 ]
 
@@ -84,7 +85,8 @@ const validate = ({ used_aliquots, pool }) => {
 
   pool.errors = {}
   requiredPoolAttrs.forEach((field) => {
-    if (!pool[field]) {
+    // We check its not 0 to prevent false errors as 0 is valid but !0 returns true
+    if (!pool[field] && pool[field] !== 0) {
       pool.errors[field] = 'must be present'
       isValid = false
     }
@@ -118,6 +120,7 @@ const payload = ({ used_aliquots, pool }) => {
             'volume',
             'concentration',
             'insert_size',
+            'source_type',
           ]),
         ),
         primary_aliquot_attributes: {

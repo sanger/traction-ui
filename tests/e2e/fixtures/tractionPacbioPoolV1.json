@@ -1,0 +1,4184 @@
+{
+  "data": {
+    "id": "242",
+    "type": "pools",
+    "links": {
+      "self": "http://localhost:3100/v1/pacbio/pools/242"
+    },
+    "attributes": {
+      "source_identifier": "DN1:A4",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      },
+      "created_at": "2021-07-23T10:15:37.000Z",
+      "updated_at": "2021-07-23T10:15:37.000Z"
+    },
+    "relationships": {
+      "tube": {
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/tube",
+          "related": "http://localhost:3100/v1/pacbio/pools/242/tube"
+        },
+        "data": {
+          "type": "tubes",
+          "id": "1465"
+        }
+      },
+      "libraries": {
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/libraries",
+          "related": "http://localhost:3100/v1/pacbio/pools/242/libraries"
+        },
+        "data": [
+          {
+            "type": "library_pools",
+            "id": "242"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "242",
+      "type": "library_pools",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/libraries/242"
+      },
+      "attributes": {
+        "state": "pending",
+        "volume": 1,
+        "concentration": 1,
+        "template_prep_kit_box_barcode": "2424",
+        "insert_size": 1,
+        "created_at": "2021/07/23 10:15",
+        "deactivated_at": null,
+        "source_identifier": "DN1:A4",
+        "run_suitability": {
+          "ready_for_run": true,
+          "errors": []
+        }
+      },
+      "relationships": {
+        "request": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/request",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/request"
+          },
+          "data": {
+            "type": "requests",
+            "id": "4"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/tube"
+          }
+        },
+        "tag": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tag",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/tag"
+          },
+          "data": {
+            "type": "tags",
+            "id": "251"
+          }
+        },
+        "pool": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/pool",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/pool"
+          },
+          "data": {
+            "type": "pools",
+            "id": "242"
+          }
+        },
+        "source_well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/source_well",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/source_well"
+          }
+        },
+        "source_plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/source_plate",
+            "related": "http://localhost:3100/v1/pacbio/libraries/242/source_plate"
+          },
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "251",
+      "type": "tags",
+      "attributes": {
+        "oligo": "ACACATCTCGTGAGAG",
+        "group_id": "bc1003"
+      },
+      "relationships": {
+        "tag_set": {
+          "data": {
+            "type": "tag_sets",
+            "id": "6"
+          }
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "tag_sets",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/tag_sets/6"
+      },
+      "attributes": {
+        "name": "IsoSeq_v1",
+        "uuid": "0ed94509-779b-4ba8-babc-7240ab6e30fd",
+        "pipeline": "pacbio"
+      },
+      "relationships": {
+        "tags": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tag_sets/6/relationships/tags",
+            "related": "http://localhost:3100/v1/pacbio/tag_sets/6/tags"
+          },
+          "data": [
+            {
+              "type": "tags",
+              "id": "251"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "plates",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/plates/1"
+      },
+      "attributes": {
+        "barcode": "DN1",
+        "created_at": "2021/07/15 15:26"
+      },
+      "relationships": {
+        "wells": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/plates/1/relationships/wells",
+            "related": "http://localhost:3100/v1/pacbio/plates/1/wells"
+          },
+          "data": [
+            {
+              "type": "wells",
+              "id": "1"
+            },
+            {
+              "type": "wells",
+              "id": "2"
+            },
+            {
+              "type": "wells",
+              "id": "3"
+            },
+            {
+              "type": "wells",
+              "id": "4"
+            },
+            {
+              "type": "wells",
+              "id": "5"
+            },
+            {
+              "type": "wells",
+              "id": "6"
+            },
+            {
+              "type": "wells",
+              "id": "7"
+            },
+            {
+              "type": "wells",
+              "id": "8"
+            },
+            {
+              "type": "wells",
+              "id": "9"
+            },
+            {
+              "type": "wells",
+              "id": "10"
+            },
+            {
+              "type": "wells",
+              "id": "11"
+            },
+            {
+              "type": "wells",
+              "id": "12"
+            },
+            {
+              "type": "wells",
+              "id": "13"
+            },
+            {
+              "type": "wells",
+              "id": "14"
+            },
+            {
+              "type": "wells",
+              "id": "15"
+            },
+            {
+              "type": "wells",
+              "id": "16"
+            },
+            {
+              "type": "wells",
+              "id": "17"
+            },
+            {
+              "type": "wells",
+              "id": "18"
+            },
+            {
+              "type": "wells",
+              "id": "19"
+            },
+            {
+              "type": "wells",
+              "id": "20"
+            },
+            {
+              "type": "wells",
+              "id": "21"
+            },
+            {
+              "type": "wells",
+              "id": "22"
+            },
+            {
+              "type": "wells",
+              "id": "23"
+            },
+            {
+              "type": "wells",
+              "id": "24"
+            },
+            {
+              "type": "wells",
+              "id": "25"
+            },
+            {
+              "type": "wells",
+              "id": "26"
+            },
+            {
+              "type": "wells",
+              "id": "27"
+            },
+            {
+              "type": "wells",
+              "id": "28"
+            },
+            {
+              "type": "wells",
+              "id": "29"
+            },
+            {
+              "type": "wells",
+              "id": "30"
+            },
+            {
+              "type": "wells",
+              "id": "31"
+            },
+            {
+              "type": "wells",
+              "id": "32"
+            },
+            {
+              "type": "wells",
+              "id": "33"
+            },
+            {
+              "type": "wells",
+              "id": "34"
+            },
+            {
+              "type": "wells",
+              "id": "35"
+            },
+            {
+              "type": "wells",
+              "id": "36"
+            },
+            {
+              "type": "wells",
+              "id": "37"
+            },
+            {
+              "type": "wells",
+              "id": "38"
+            },
+            {
+              "type": "wells",
+              "id": "39"
+            },
+            {
+              "type": "wells",
+              "id": "40"
+            },
+            {
+              "type": "wells",
+              "id": "41"
+            },
+            {
+              "type": "wells",
+              "id": "42"
+            },
+            {
+              "type": "wells",
+              "id": "43"
+            },
+            {
+              "type": "wells",
+              "id": "44"
+            },
+            {
+              "type": "wells",
+              "id": "45"
+            },
+            {
+              "type": "wells",
+              "id": "46"
+            },
+            {
+              "type": "wells",
+              "id": "47"
+            },
+            {
+              "type": "wells",
+              "id": "48"
+            },
+            {
+              "type": "wells",
+              "id": "49"
+            },
+            {
+              "type": "wells",
+              "id": "50"
+            },
+            {
+              "type": "wells",
+              "id": "51"
+            },
+            {
+              "type": "wells",
+              "id": "52"
+            },
+            {
+              "type": "wells",
+              "id": "53"
+            },
+            {
+              "type": "wells",
+              "id": "54"
+            },
+            {
+              "type": "wells",
+              "id": "55"
+            },
+            {
+              "type": "wells",
+              "id": "56"
+            },
+            {
+              "type": "wells",
+              "id": "57"
+            },
+            {
+              "type": "wells",
+              "id": "58"
+            },
+            {
+              "type": "wells",
+              "id": "59"
+            },
+            {
+              "type": "wells",
+              "id": "60"
+            },
+            {
+              "type": "wells",
+              "id": "61"
+            },
+            {
+              "type": "wells",
+              "id": "62"
+            },
+            {
+              "type": "wells",
+              "id": "63"
+            },
+            {
+              "type": "wells",
+              "id": "64"
+            },
+            {
+              "type": "wells",
+              "id": "65"
+            },
+            {
+              "type": "wells",
+              "id": "66"
+            },
+            {
+              "type": "wells",
+              "id": "67"
+            },
+            {
+              "type": "wells",
+              "id": "68"
+            },
+            {
+              "type": "wells",
+              "id": "69"
+            },
+            {
+              "type": "wells",
+              "id": "70"
+            },
+            {
+              "type": "wells",
+              "id": "71"
+            },
+            {
+              "type": "wells",
+              "id": "72"
+            },
+            {
+              "type": "wells",
+              "id": "73"
+            },
+            {
+              "type": "wells",
+              "id": "74"
+            },
+            {
+              "type": "wells",
+              "id": "75"
+            },
+            {
+              "type": "wells",
+              "id": "76"
+            },
+            {
+              "type": "wells",
+              "id": "77"
+            },
+            {
+              "type": "wells",
+              "id": "78"
+            },
+            {
+              "type": "wells",
+              "id": "79"
+            },
+            {
+              "type": "wells",
+              "id": "80"
+            },
+            {
+              "type": "wells",
+              "id": "81"
+            },
+            {
+              "type": "wells",
+              "id": "82"
+            },
+            {
+              "type": "wells",
+              "id": "83"
+            },
+            {
+              "type": "wells",
+              "id": "84"
+            },
+            {
+              "type": "wells",
+              "id": "85"
+            },
+            {
+              "type": "wells",
+              "id": "86"
+            },
+            {
+              "type": "wells",
+              "id": "87"
+            },
+            {
+              "type": "wells",
+              "id": "88"
+            },
+            {
+              "type": "wells",
+              "id": "89"
+            },
+            {
+              "type": "wells",
+              "id": "90"
+            },
+            {
+              "type": "wells",
+              "id": "91"
+            },
+            {
+              "type": "wells",
+              "id": "92"
+            },
+            {
+              "type": "wells",
+              "id": "93"
+            },
+            {
+              "type": "wells",
+              "id": "94"
+            },
+            {
+              "type": "wells",
+              "id": "95"
+            },
+            {
+              "type": "wells",
+              "id": "96"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "wells",
+      "attributes": {
+        "position": "A1"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "1"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "wells",
+      "attributes": {
+        "position": "A2"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "2"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "wells",
+      "attributes": {
+        "position": "A3"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "3"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "wells",
+      "attributes": {
+        "position": "A4"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "4"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "wells",
+      "attributes": {
+        "position": "A5"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "5"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "wells",
+      "attributes": {
+        "position": "A6"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "6"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "7",
+      "type": "wells",
+      "attributes": {
+        "position": "A7"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "7"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "8",
+      "type": "wells",
+      "attributes": {
+        "position": "A8"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "8"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "9",
+      "type": "wells",
+      "attributes": {
+        "position": "A9"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "9"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "10",
+      "type": "wells",
+      "attributes": {
+        "position": "A10"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "10"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "11",
+      "type": "wells",
+      "attributes": {
+        "position": "A11"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "11"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "12",
+      "type": "wells",
+      "attributes": {
+        "position": "A12"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "12"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "13",
+      "type": "wells",
+      "attributes": {
+        "position": "B1"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "13"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "14",
+      "type": "wells",
+      "attributes": {
+        "position": "B2"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "14"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "15",
+      "type": "wells",
+      "attributes": {
+        "position": "B3"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "15"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "16",
+      "type": "wells",
+      "attributes": {
+        "position": "B4"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "16"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "17",
+      "type": "wells",
+      "attributes": {
+        "position": "B5"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "17"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "18",
+      "type": "wells",
+      "attributes": {
+        "position": "B6"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "18"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "19",
+      "type": "wells",
+      "attributes": {
+        "position": "B7"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "19"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "20",
+      "type": "wells",
+      "attributes": {
+        "position": "B8"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "20"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "21",
+      "type": "wells",
+      "attributes": {
+        "position": "B9"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "21"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "22",
+      "type": "wells",
+      "attributes": {
+        "position": "B10"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "22"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "23",
+      "type": "wells",
+      "attributes": {
+        "position": "B11"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "23"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "24",
+      "type": "wells",
+      "attributes": {
+        "position": "B12"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "24"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "25",
+      "type": "wells",
+      "attributes": {
+        "position": "C1"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "25"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "26",
+      "type": "wells",
+      "attributes": {
+        "position": "C2"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "26"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "27",
+      "type": "wells",
+      "attributes": {
+        "position": "C3"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "27"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "28",
+      "type": "wells",
+      "attributes": {
+        "position": "C4"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "28"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "29",
+      "type": "wells",
+      "attributes": {
+        "position": "C5"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "29"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "30",
+      "type": "wells",
+      "attributes": {
+        "position": "C6"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "30"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "31",
+      "type": "wells",
+      "attributes": {
+        "position": "C7"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "31"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "32",
+      "type": "wells",
+      "attributes": {
+        "position": "C8"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "32"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "33",
+      "type": "wells",
+      "attributes": {
+        "position": "C9"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "33"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "34",
+      "type": "wells",
+      "attributes": {
+        "position": "C10"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "34"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "35",
+      "type": "wells",
+      "attributes": {
+        "position": "C11"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "35"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "36",
+      "type": "wells",
+      "attributes": {
+        "position": "C12"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "36"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "37",
+      "type": "wells",
+      "attributes": {
+        "position": "D1"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "37"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "38",
+      "type": "wells",
+      "attributes": {
+        "position": "D2"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "38"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "39",
+      "type": "wells",
+      "attributes": {
+        "position": "D3"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "39"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "40",
+      "type": "wells",
+      "attributes": {
+        "position": "D4"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "40"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "41",
+      "type": "wells",
+      "attributes": {
+        "position": "D5"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "41"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "42",
+      "type": "wells",
+      "attributes": {
+        "position": "D6"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "42"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "43",
+      "type": "wells",
+      "attributes": {
+        "position": "D7"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "43"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "44",
+      "type": "wells",
+      "attributes": {
+        "position": "D8"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "44"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "45",
+      "type": "wells",
+      "attributes": {
+        "position": "D9"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "45"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "46",
+      "type": "wells",
+      "attributes": {
+        "position": "D10"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "46"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "47",
+      "type": "wells",
+      "attributes": {
+        "position": "D11"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "47"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "48",
+      "type": "wells",
+      "attributes": {
+        "position": "D12"
+      },
+      "relationships": {
+        "requests": {
+          "data": [
+            {
+              "type": "requests",
+              "id": "48"
+            }
+          ]
+        },
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "49",
+      "type": "wells",
+      "attributes": {
+        "position": "E1"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "50",
+      "type": "wells",
+      "attributes": {
+        "position": "E2"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "51",
+      "type": "wells",
+      "attributes": {
+        "position": "E3"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "52",
+      "type": "wells",
+      "attributes": {
+        "position": "E4"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "53",
+      "type": "wells",
+      "attributes": {
+        "position": "E5"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "54",
+      "type": "wells",
+      "attributes": {
+        "position": "E6"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "55",
+      "type": "wells",
+      "attributes": {
+        "position": "E7"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "56",
+      "type": "wells",
+      "attributes": {
+        "position": "E8"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "57",
+      "type": "wells",
+      "attributes": {
+        "position": "E9"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "58",
+      "type": "wells",
+      "attributes": {
+        "position": "E10"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "59",
+      "type": "wells",
+      "attributes": {
+        "position": "E11"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "60",
+      "type": "wells",
+      "attributes": {
+        "position": "E12"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "61",
+      "type": "wells",
+      "attributes": {
+        "position": "F1"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "62",
+      "type": "wells",
+      "attributes": {
+        "position": "F2"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "63",
+      "type": "wells",
+      "attributes": {
+        "position": "F3"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "64",
+      "type": "wells",
+      "attributes": {
+        "position": "F4"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "65",
+      "type": "wells",
+      "attributes": {
+        "position": "F5"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "66",
+      "type": "wells",
+      "attributes": {
+        "position": "F6"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "67",
+      "type": "wells",
+      "attributes": {
+        "position": "F7"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "68",
+      "type": "wells",
+      "attributes": {
+        "position": "F8"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "69",
+      "type": "wells",
+      "attributes": {
+        "position": "F9"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "70",
+      "type": "wells",
+      "attributes": {
+        "position": "F10"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "71",
+      "type": "wells",
+      "attributes": {
+        "position": "F11"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "72",
+      "type": "wells",
+      "attributes": {
+        "position": "F12"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "73",
+      "type": "wells",
+      "attributes": {
+        "position": "G1"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "74",
+      "type": "wells",
+      "attributes": {
+        "position": "G2"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "75",
+      "type": "wells",
+      "attributes": {
+        "position": "G3"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "76",
+      "type": "wells",
+      "attributes": {
+        "position": "G4"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "77",
+      "type": "wells",
+      "attributes": {
+        "position": "G5"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "78",
+      "type": "wells",
+      "attributes": {
+        "position": "G6"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "79",
+      "type": "wells",
+      "attributes": {
+        "position": "G7"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "80",
+      "type": "wells",
+      "attributes": {
+        "position": "G8"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "81",
+      "type": "wells",
+      "attributes": {
+        "position": "G9"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "82",
+      "type": "wells",
+      "attributes": {
+        "position": "G10"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "83",
+      "type": "wells",
+      "attributes": {
+        "position": "G11"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "84",
+      "type": "wells",
+      "attributes": {
+        "position": "G12"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "85",
+      "type": "wells",
+      "attributes": {
+        "position": "H1"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "86",
+      "type": "wells",
+      "attributes": {
+        "position": "H2"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "87",
+      "type": "wells",
+      "attributes": {
+        "position": "H3"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "88",
+      "type": "wells",
+      "attributes": {
+        "position": "H4"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "89",
+      "type": "wells",
+      "attributes": {
+        "position": "H5"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "90",
+      "type": "wells",
+      "attributes": {
+        "position": "H6"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "91",
+      "type": "wells",
+      "attributes": {
+        "position": "H7"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "92",
+      "type": "wells",
+      "attributes": {
+        "position": "H8"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "93",
+      "type": "wells",
+      "attributes": {
+        "position": "H9"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "94",
+      "type": "wells",
+      "attributes": {
+        "position": "H10"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "95",
+      "type": "wells",
+      "attributes": {
+        "position": "H11"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "96",
+      "type": "wells",
+      "attributes": {
+        "position": "H12"
+      },
+      "relationships": {
+        "plate": {
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/1"
+      },
+      "attributes": {
+        "library_type": "library_type_2",
+        "estimate_of_gb_required": 1003,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample48",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A1"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/1/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/1/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "1"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/1/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/1/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/2"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample47",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A2"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/2/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/2/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "2"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/2/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/2/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/3"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample46",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A3"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/3/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/3/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "3"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/3/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/3/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/4"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample45",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A4"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/4/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/4/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "4"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/4/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/4/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/5"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample44",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A5"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/5/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/5/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "5"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/5/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/5/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/6"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample43",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A6"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/6/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/6/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "6"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/6/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/6/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "7",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/7"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample42",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A7"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/7/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/7/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "7"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/7/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/7/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "8",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/8"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample41",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A8"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/8/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/8/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "8"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/8/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/8/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "9",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/9"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample40",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A9"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/9/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/9/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "9"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/9/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/9/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "10",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/10"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample39",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A10"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/10/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/10/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "10"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/10/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/10/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "11",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/11"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample38",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A11"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/11/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/11/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "11"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/11/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/11/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "12",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/12"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample37",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:A12"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/12/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/12/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "12"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/12/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/12/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "13",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/13"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample36",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B1"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/13/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/13/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "13"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/13/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/13/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "14",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/14"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample35",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B2"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/14/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/14/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "14"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/14/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/14/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "15",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/15"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample34",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B3"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/15/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/15/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "15"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/15/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/15/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "16",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/16"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample33",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B4"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/16/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/16/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "16"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/16/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/16/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "17",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/17"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample32",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B5"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/17/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/17/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "17"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/17/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/17/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "18",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/18"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample31",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B6"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/18/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/18/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "18"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/18/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/18/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "19",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/19"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample30",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B7"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/19/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/19/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "19"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/19/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/19/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "20",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/20"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample29",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B8"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/20/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/20/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "20"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/20/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/20/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "21",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/21"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample28",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B9"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/21/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/21/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "21"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/21/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/21/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "22",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/22"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample27",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B10"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/22/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/22/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "22"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/22/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/22/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "23",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/23"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample26",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B11"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/23/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/23/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "23"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/23/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/23/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "24",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/24"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample25",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:B12"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/24/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/24/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "24"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/24/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/24/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "25",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/25"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample24",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C1"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/25/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/25/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "25"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/25/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/25/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "26",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/26"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample23",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C2"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/26/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/26/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "26"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/26/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/26/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "27",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/27"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample22",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C3"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/27/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/27/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "27"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/27/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/27/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "28",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/28"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample21",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C4"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/28/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/28/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "28"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/28/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/28/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "29",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/29"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample20",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C5"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/29/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/29/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "29"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/29/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/29/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "30",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/30"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample19",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C6"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/30/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/30/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "30"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/30/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/30/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "31",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/31"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample18",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C7"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/31/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/31/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "31"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/31/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/31/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "32",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/32"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample17",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C8"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/32/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/32/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "32"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/32/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/32/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "33",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/33"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample16",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C9"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/33/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/33/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "33"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/33/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/33/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "34",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/34"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample15",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C10"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/34/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/34/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "34"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/34/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/34/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "35",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/35"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample14",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C11"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/35/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/35/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "35"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/35/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/35/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "36",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/36"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample13",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:C12"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/36/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/36/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "36"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/36/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/36/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "37",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/37"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample12",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D1"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/37/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/37/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "37"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/37/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/37/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "38",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/38"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample11",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D2"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/38/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/38/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "38"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/38/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/38/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "39",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/39"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample10",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D3"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/39/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/39/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "39"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/39/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/39/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "40",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/40"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample9",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D4"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/40/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/40/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "40"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/40/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/40/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "41",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/41"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample8",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D5"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/41/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/41/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "41"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/41/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/41/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "42",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/42"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample7",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D6"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/42/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/42/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "42"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/42/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/42/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "43",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/43"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample6",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D7"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/43/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/43/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "43"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/43/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/43/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "44",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/44"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample5",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D8"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/44/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/44/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "44"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/44/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/44/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "45",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/45"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample4",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D9"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/45/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/45/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "45"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/45/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/45/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "46",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/46"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample3",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D10"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/46/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/46/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "46"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/46/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/46/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "47",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/47"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample2",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D11"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/47/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/47/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "47"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/47/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/47/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "48",
+      "type": "requests",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/requests/48"
+      },
+      "attributes": {
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample1",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/07/15 15:26",
+        "source_identifier": "DN1:D12"
+      },
+      "relationships": {
+        "well": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/48/relationships/well",
+            "related": "http://localhost:3100/v1/pacbio/requests/48/well"
+          },
+          "data": {
+            "type": "wells",
+            "id": "48"
+          }
+        },
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/requests/48/relationships/plate",
+            "related": "http://localhost:3100/v1/pacbio/requests/48/plate"
+          }
+        }
+      }
+    },
+    {
+      "id": "1465",
+      "type": "tubes",
+      "links": {
+        "self": "/v1/pacbio/tubes/1465"
+      },
+      "attributes": {
+        "barcode": "TRAC-2-1465"
+      },
+      "relationships": {
+        "materials": {
+          "links": {
+            "self": "/v1/pacbio/tubes/1465/relationships/materials",
+            "related": "/v1/pacbio/tubes/1465/materials"
+          }
+        }
+      }
+    }
+  ]
+}

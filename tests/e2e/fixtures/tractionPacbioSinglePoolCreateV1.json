@@ -1,0 +1,29 @@
+{
+  "data": {
+    "data": {
+      "type": "pools",
+      "attributes": {
+        "template_prep_kit_box_barcode": "ABC1",
+        "volume": "1",
+        "concentration": "10.0",
+        "insert_size": "100",
+        "library_attributes": [
+          {
+            "pacbio_request_id": "1",
+            "template_prep_kit_box_barcode": "ABC1",
+            "tag_id": "249",
+            "volume": "1",
+            "concentration": "10.0",
+            "insert_size": "100"
+          }
+        ],
+        "primary_aliquot_attributes": {
+          "template_prep_kit_box_barcode": "ABC1",
+          "volume": "1",
+          "concentration": "10.0",
+          "insert_size": "100"
+        }
+      }
+    }
+  }
+}
