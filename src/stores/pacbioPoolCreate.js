@@ -593,13 +593,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.find({
         id: poolId,
-        // We want to load *all* associated records, as otherwise we might be referencing them
-        // before they are loaded. Furthermore, if we start filtering the plates list at all,
-        // we may *never* load the relevant records.
-        // We load the other wells associated with the plate too, to ensure the remaining plate
-        // doesn't appear empty. This is especially important if the pool request finishes
-        // after the request for all plates, as otherwise the partial record will over-write
-        // the full one.
         include:
           'used_aliquots.tag.tag_set,used_aliquots.request,requests.tube,tube,libraries,requests.plate.wells.requests',
       })

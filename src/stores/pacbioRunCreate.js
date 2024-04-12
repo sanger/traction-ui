@@ -19,14 +19,6 @@ import {
   newPlate,
 } from '@/stores/utilities/run'
 
-// TODO: do we still need this?
-// const buildRunSuitabilityErrors = ({ pool, libraries }) => [
-//   ...libraries.flatMap((library) => {
-//     const libraryName = `Library ${library.id} (${library.sample_name})`
-//     return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
-//   }),
-// ]
-
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
   return {

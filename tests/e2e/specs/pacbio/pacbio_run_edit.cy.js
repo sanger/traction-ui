@@ -18,7 +18,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots,plates.wells.libraries.used_aliquots,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -54,7 +54,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing Sequel IIe run to be edited
     cy.intercept(
-      'v1/pacbio/runs/13?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots,plates.wells.libraries.used_aliquots,smrt_link_version',
+      'v1/pacbio/runs/13?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioSequelIIeRun.json',
       },
@@ -82,7 +82,7 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots,plates.wells.libraries.used_aliquots,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
