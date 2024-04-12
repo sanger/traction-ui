@@ -312,6 +312,7 @@ describe('usePacbioRunCreateStore', () => {
         const libraries = Data.PacbioRun.data.included.slice(10, 13)
         const tubes = Data.PacbioRun.data.included.slice(13, 17)
         const pools = Data.PacbioRun.data.included.slice(17, 19)
+        const tags = Data.PacbioRun.data.included.slice(20, 25)
 
         const smrtLinkVersion = {
           id: smartLinkVersion.id,
@@ -361,6 +362,11 @@ describe('usePacbioRunCreateStore', () => {
         )
 
         expect(store.smrtLinkVersion).toEqual(smrtLinkVersion)
+
+        //tags
+        expect(store.tags).toEqual(
+          jsonapi.dataToObjectById({ data: tags, includeRelationships: true }),
+        )
         expect(success).toBeTruthy()
       })
 

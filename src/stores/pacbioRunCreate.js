@@ -314,7 +314,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots,plates.wells.libraries.used_aliquots,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       })
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -328,6 +328,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           tubes,
           aliquots,
           requests,
+          tags,
           smrt_link_versions: [smrt_link_version = {}] = [],
         } = groupIncludedByResource(included)
 
@@ -346,6 +347,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         this.tubes = formatById(this.tubes, tubes, true)
         this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests, true)
+        this.tags = formatById(this.tags, tags)
 
         // Populate the wells
         // Adds the wells to state by plate number and well position, two dimensional array

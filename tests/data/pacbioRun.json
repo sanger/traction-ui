@@ -236,7 +236,10 @@
         },
         "relationships": {
           "tag": {
-            "data": null
+            "data": {
+              "type": "tags",
+              "id": "18"
+            }
           },
           "pool": {
             "data": {
@@ -274,7 +277,10 @@
         },
         "relationships": {
           "tag": {
-            "data": null
+            "data": {
+              "type": "tags",
+              "id": "18"
+            }
           },
           "pool": {
             "data": {
@@ -312,7 +318,10 @@
         },
         "relationships": {
           "tag": {
-            "data": null
+            "data": {
+              "type": "tags",
+              "id": "17"
+            }
           },
           "pool": {
             "data": {
@@ -350,7 +359,10 @@
         },
         "relationships": {
           "tag": {
-            "data": null
+            "data": {
+              "type": "tags",
+              "id": "18"
+            }
           },
           "pool": {
             "data": {
@@ -388,7 +400,10 @@
         },
         "relationships": {
           "tag": {
-            "data": null
+            "data": {
+              "type": "tags",
+              "id": "18"
+            }
           },
           "pool": {
             "data": null
@@ -662,6 +677,46 @@
               "related": "http://localhost:3100/v1/pacbio/smrt_link_versions/5/smrt_link_option_versions"
             }
           }
+        }
+      },
+      {
+        "id": "15",
+        "type": "tags",
+        "attributes": {
+          "oligo": "TCTGTATCTCTATGTGT",
+          "group_id": "bc1007T"
+        }
+      },
+      {
+        "id": "16",
+        "type": "tags",
+        "attributes": {
+          "oligo": "TCTGTATCTCTATGTGT",
+          "group_id": "bc1008T"
+        }
+      },
+      {
+        "id": "17",
+        "type": "tags",
+        "attributes": {
+          "oligo": "CAGAGAGATATCTCTGT",
+          "group_id": "bc1023T"
+        }
+      },
+      {
+        "id": "18",
+        "type": "tags",
+        "attributes": {
+          "oligo": "TCTGTATCTCTATGTGT",
+          "group_id": "bc1006T"
+        }
+      },
+      {
+        "id": "19",
+        "type": "tags",
+        "attributes": {
+          "oligo": "CAGAGAGATATCTCTGT",
+          "group_id": "bc1005T"
         }
       }
     ]
