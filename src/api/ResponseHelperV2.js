@@ -6,7 +6,7 @@
  * but probably better to find out with a bit of testing
  */
 // TODO: we have left this in a broken state as we still need to work out how errors are handled
-const parseErrors = ({ errors, error }) => {
+const parseErrors = (errors, error) => {
   // if its stand alone return it
   if (error) {
     return error
@@ -22,7 +22,6 @@ const parseErrors = ({ errors, error }) => {
 }
 
 const parseErrorObject = (errors) => {
-  console.log(errors)
   return Object.entries(errors)
     .map(([key, value]) => {
       return value.map((item) => `${key} ${item}`).join(', ')
@@ -38,11 +37,11 @@ const parseErrorArray = (errors) =>
  * @param {Object} data e.g. { data: { id: 1}}
  * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
  */
-const newResponse = ({ success, data }) => ({
+const newResponse = ({ success, data = null, errors = null, error = null }) => ({
   success,
   data,
   // we need to parse the errors into something viewable
-  errors: !success ? parseErrors(data) : undefined,
+  errors: !success ? parseErrors(errors, error) : undefined,
 })
 
 /*
@@ -53,8 +52,15 @@ const handleResponse = async (promise) => {
   try {
     // yay it worked.
     const rawResponse = await promise
-    const data = await rawResponse.json()
-    return newResponse({ success: rawResponse.ok, data })
+    const response = await rawResponse.json()
+
+    // Please check https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
+    // for more information on the ok property
+    if (!rawResponse.ok) {
+      return newResponse({ success: false, ...response })
+    }
+
+    return newResponse({ success: rawResponse.ok, data: response })
   } catch (error) {
     // we only want this to output during development or production
     // eslint has got this wrong as it is always a string
@@ -63,12 +69,8 @@ const handleResponse = async (promise) => {
       console.error(error)
     }
 
-    // 400-500 range will throw an error with a response
-    if (error.response) {
-      return newResponse({ success: false, ...error.response })
-    }
     // e.g. a network error which will not elicit an Axios response
-    return newResponse({ success: false, data: { error: error.message, errors: [] } })
+    return newResponse({ success: false, error })
   }
 }
 

@@ -17,7 +17,7 @@ describe('createRequest', () => {
 
   const mockResponse = {
     status: 200,
-    data: { data: [{ id: 1 }] },
+    data: [{ id: 1 }],
   }
 
   afterEach(() => {
