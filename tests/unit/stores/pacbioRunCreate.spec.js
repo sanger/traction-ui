@@ -312,6 +312,7 @@ describe('usePacbioRunCreateStore', () => {
         const libraries = Data.PacbioRun.data.included.slice(10, 13)
         const tubes = Data.PacbioRun.data.included.slice(13, 17)
         const pools = Data.PacbioRun.data.included.slice(17, 19)
+        const tags = Data.PacbioRun.data.included.slice(20, 25)
 
         const smrtLinkVersion = {
           id: smartLinkVersion.id,
@@ -361,6 +362,11 @@ describe('usePacbioRunCreateStore', () => {
         )
 
         expect(store.smrtLinkVersion).toEqual(smrtLinkVersion)
+
+        //tags
+        expect(store.tags).toEqual(
+          jsonapi.dataToObjectById({ data: tags, includeRelationships: true }),
+        )
         expect(success).toBeTruthy()
       })
 
@@ -571,20 +577,15 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
         store.tubes = tubes
-
         store.fetchRun = vi.fn().mockResolvedValue({ success: true })
-        store.findPoolsOrLibrariesByTube = vi.fn().mockResolvedValue({ success: true })
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
-        expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
-        })
         expect(store.runType).toEqual(existingRunType)
         expect(success).toBeTruthy()
       })
 
-      it('for an existing run when findPoolsOrLibrariesByTube fails', async () => {
+      it('for an existing run when fetchRun fails', async () => {
         const id = 1
         const tubes = {
           1: { barcode: 'TRAC-2-1' },
@@ -594,16 +595,10 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
         store.tubes = tubes
-
-        store.fetchRun = vi.fn().mockResolvedValue({ success: true })
-        store.findPoolsOrLibrariesByTube = vi.fn().mockResolvedValue({ success: false })
+        store.fetchRun = vi.fn().mockResolvedValue({ success: false })
 
         const { success } = await store.setRun({ id })
         expect(store.fetchRun).toHaveBeenCalledWith({ id })
-        expect(store.findPoolsOrLibrariesByTube).toHaveBeenCalledWith({
-          barcode: 'TRAC-2-1,TRAC-2-2,TRAC-2-3',
-        })
-        expect(store.runType).toEqual(existingRunType)
         expect(success).toBeFalsy()
       })
     })

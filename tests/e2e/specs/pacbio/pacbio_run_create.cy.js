@@ -30,15 +30,6 @@ describe('Pacbio Run Create view', () => {
         data: {},
       },
     })
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        dpl_1112: { enabled: true },
-        multiplexing_phase_2_aliquot: { enabled: true },
-        dpl_1113_run_well_aliquots: { enabled: true },
-        dpl_1113_run_edit_well_aliquots: { enabled: true },
-      },
-    })
   })
 
   it('Creates a Sequel IIe run successfully - v11', () => {
