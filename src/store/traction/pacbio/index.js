@@ -1,15 +1,11 @@
 import pacbioRequestsModule from '@/store/traction/pacbio/requests'
-import pacbioPoolsModule from '@/store/traction/pacbio/pools'
 import pacbioPlatesModule from '@/store/traction/pacbio/plates'
-import poolCreate from '@/store/traction/pacbio/poolCreate'
 
 const pacbio = {
   namespaced: true,
   modules: {
     requests: pacbioRequestsModule,
-    pools: pacbioPoolsModule,
     plates: pacbioPlatesModule,
-    poolCreate: poolCreate,
   },
   state: {
     // We may decide to pull this from traction-service

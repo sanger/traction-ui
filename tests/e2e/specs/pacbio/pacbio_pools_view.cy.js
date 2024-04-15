@@ -7,13 +7,6 @@ describe('Pacbio Pools view', () => {
       },
     )
 
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        multiplexing_phase_2_aliquot: { enabled: true },
-      },
-    })
-
     cy.visit('#/pacbio/pools')
 
     // Check filters are visible

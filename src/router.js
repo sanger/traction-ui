@@ -15,12 +15,8 @@ import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import PacbioPoolIndexV1 from '@/views/pacbio/PacbioPoolIndexV1.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
-import PacbioRunIndexV1 from '@/views/pacbio/PacbioRunIndexV1.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
-import PacbioPoolCreateV1 from '@/views/pacbio/PacbioPoolCreateV1'
-import PacbioRunShowV1 from '@/views/pacbio/PacbioRunShowV1.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
@@ -28,7 +24,6 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRun from '@/views/ont/ONTRun.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import FlaggedFeatureView from '@/components/shared/FlaggedFeatureView.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -135,12 +130,7 @@ const router = createRouter({
         {
           path: 'pools',
           name: 'PacbioPoolIndex',
-          component: FlaggedFeatureView,
-          props: {
-            feature: 'multiplexing_phase_2_aliquot',
-            componentOnFeatureEnable: PacbioPoolIndex,
-            componentOnFeatureDisable: PacbioPoolIndexV1,
-          },
+          component: PacbioPoolIndex,
           meta: { page: 'Pools', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -149,12 +139,7 @@ const router = createRouter({
         {
           path: 'runs',
           name: 'PacbioRunIndex',
-          component: FlaggedFeatureView,
-          props: {
-            feature: 'dpl_1113_run_well_aliquots',
-            componentOnFeatureEnable: PacbioRunIndex,
-            componentOnFeatureDisable: PacbioRunIndexV1,
-          },
+          component: PacbioRunIndex,
           meta: { page: 'Runs', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -163,26 +148,14 @@ const router = createRouter({
         {
           path: 'run/:id',
           name: 'PacbioRunShow',
-          component: FlaggedFeatureView,
-          props: (route) => ({
-            feature: 'dpl_1113_run_edit_well_aliquots',
-            componentOnFeatureEnable: PacbioRunShow,
-            componentOnFeatureDisable: PacbioRunShowV1,
-            props: {
-              id: route.params.id,
-            },
-          }),
+          component: PacbioRunShow,
           meta: { page: 'Run' },
+          props: true,
         },
         {
           path: 'pool/:id',
           name: 'PacbioPoolCreate',
-          component: FlaggedFeatureView,
-          props: {
-            feature: 'multiplexing_phase_2_pool_with_aliquots',
-            componentOnFeatureEnable: PacbioPoolCreate,
-            componentOnFeatureDisable: PacbioPoolCreateV1,
-          },
+          component: PacbioPoolCreate,
           meta: { page: 'Pool' },
         },
       ],
