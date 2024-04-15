@@ -7,7 +7,7 @@ describe('Pacbio Pool Edit', () => {
       },
     )
     cy.intercept(
-      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,used_aliquots.request,requests.tube,tube,libraries,requests.plate.wells.requests',
+      'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
       {
         fixture: 'tractionPacbioPool.json',
       },
@@ -29,18 +29,18 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=table-check-box]').click()
     cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]').should('have.length', 2)
+      cy.get('[data-testid=row]').should('have.length', 3)
     })
 
     cy.get('[data-attribute^="request-checkbox"]').eq(1).click()
     cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]').should('have.length', 3)
+      cy.get('[data-testid=row]').should('have.length', 4)
     })
 
     //Deselect row requests
     cy.get('[data-attribute^="request-checkbox"]').eq(1).click()
     cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]').should('have.length', 2)
+      cy.get('[data-testid=row]').should('have.length', 3)
     })
   })
   it('Updates a pool successfully', () => {
@@ -72,21 +72,25 @@ describe('Pacbio Pool Edit', () => {
     })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
-    cy.get('[data-type=pool-aliquot-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=pass]').should('be.visible')
+    cy.get('[data-type=pool-aliquot-edit]')
+      .first()
+      .within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=pass]').should('be.visible')
+        })
+        cy.get('[data-attribute=insert-size]').clear()
+        cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
       })
-      cy.get('[data-attribute=insert-size]').clear()
-      cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
-    })
     cy.get('[data-action=update-pool]').click()
-    cy.get('[data-type=pool-aliquot-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=fail]').should('be.visible')
+    cy.get('[data-type=pool-aliquot-edit]')
+      .first()
+      .within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=fail]').should('be.visible')
+        })
       })
-    })
     cy.contains('[data-type=pool-create-message]', 'The pool is invalid')
   })
 })

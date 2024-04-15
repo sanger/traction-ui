@@ -594,7 +594,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const promise = request.find({
         id: poolId,
         include:
-          'used_aliquots.tag.tag_set,used_aliquots.request,requests.tube,tube,libraries,requests.plate.wells.requests',
+          'used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
       })
       const response = await handleResponse(promise)
 
@@ -610,29 +610,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           libraries = [],
         } = groupIncludedByResource(included)
 
-        // Get the pool tube and remove it from tubes list
-        const poolTube = tubes.splice(
-          tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
-          1,
-        )[0]
         //Populate pool attributes
         this.pool = {
           id: data.id,
           ...data.attributes,
         }
-        //Populate used_aliquots
-        const usedAliquots = dataToObjectById({
-          data: aliquots,
-          includeRelationships: true,
-        })
-        Object.values(usedAliquots).forEach((usedAliquot) => {
-          const key = `_${usedAliquot.request}`
-          this.used_aliquots[key] = createUsedAliquot({
-            ...usedAliquot,
-            source_id: usedAliquot.request,
-            tag_id: usedAliquot.tag,
-          })
-        })
 
         //Populate requests
         this.resources.requests = dataToObjectById({
@@ -642,22 +624,20 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //Populate tubes
         this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
 
+        // Get the pool tube and remove it from tubes list
+        this.tube = this.resources.tubes[data.relationships.tube.data.id]
+        delete this.resources.tubes[data.relationships.tube.data.id]
+
         //Populate libraries
         this.resources.libraries = dataToObjectById({
           data: libraries,
           includeRelationships: true,
         })
+
         //Assign library request to tube if the tube has a library
-        Object.values(this.resources.tubes).forEach((tube) => {
-          if (tube.libraries) {
-            const library = Object.values(this.resources.libraries).find(
-              (library) => library.id == tube.libraries,
-            )
-            const libraryRequest = requests.find((request) => request.id == library.request)
-            if (libraryRequest) {
-              tube.requests = [libraryRequest.id]
-            }
-          }
+        Object.values(this.resources.libraries).forEach((library) => {
+          const request = this.resources.requests[library.request]
+          this.resources.tubes[library.tube].requests = [request.id]
         })
         //Populate plates
         this.resources.plates = dataToObjectById({
@@ -667,6 +647,28 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
         //Populate wells
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+
+        // Set used_aliquots into a variable
+        const usedAliquots = dataToObjectById({
+          data: aliquots,
+          includeRelationships: true,
+        })
+
+        // Set the used_aliquots
+        Object.values(usedAliquots).forEach((usedAliquot) => {
+          // Creates a request association for the used aliquot based on the source type
+          usedAliquot.request =
+            usedAliquot.source_type == 'Pacbio::Request'
+              ? this.resources.requests[usedAliquot.source_id].id
+              : this.resources.libraries[usedAliquot.source_id].request
+
+          const key = `_${usedAliquot.request}`
+          this.used_aliquots[key] = createUsedAliquot({
+            ...usedAliquot,
+            source_id: usedAliquot.request,
+            tag_id: usedAliquot.tag,
+          })
+        })
 
         //Selects all the tubes and plates
         Object.values(this.resources.tubes).forEach(({ id }) =>
@@ -678,8 +680,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
         //Select tag set
         this.selectTagSet(tag_set.id)
-        //Populate tube
-        this.tube = { id: poolTube.id, ...poolTube.attributes }
       }
 
       return { success, errors }
