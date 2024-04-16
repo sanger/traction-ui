@@ -60,6 +60,7 @@
     "1": {
       "id": "1",
       "source_id": "1",
+      "source_type": "Pacbio::Request",
       "tag": "26",
       "type": "used_aliquots",
       "run_suitability": {
@@ -70,6 +71,7 @@
     "2": {
       "id": "2",
       "source_id": "2",
+      "source_type": "Pacbio::Request",
       "tag": "7",
       "type": "used_aliquots",
       "run_suitability": {

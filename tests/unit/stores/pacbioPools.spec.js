@@ -119,6 +119,8 @@ describe('usePacbioPools', () => {
     it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
       store.used_aliquots[1] = {
         id: '1',
+        source_id: '1',
+        source_type: 'Pacbio::Request',
         request: '1',
         tag: '',
         type: 'used_aliquots',

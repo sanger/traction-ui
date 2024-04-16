@@ -76,6 +76,8 @@ describe('usePacbioPoolCreateStore', () => {
       const used_aliquots = {
         _136: {
           source_id: '136',
+          source_type: 'Pacbio::Request',
+          request: '136',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -83,6 +85,8 @@ describe('usePacbioPoolCreateStore', () => {
         }, // A selected request
         _3: {
           source_id: '3',
+          source_type: 'Pacbio::Request',
+          request: '3',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -90,6 +94,8 @@ describe('usePacbioPoolCreateStore', () => {
         }, // A selected request
         _40: {
           source_id: '40',
+          source_type: 'Pacbio::Request',
+          request: '40',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -141,6 +147,8 @@ describe('usePacbioPoolCreateStore', () => {
       const used_aliquots = {
         _3: {
           source_id: '3',
+          source_type: 'Pacbio::Request',
+          request: '3',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -148,6 +156,8 @@ describe('usePacbioPoolCreateStore', () => {
         },
         _4: {
           source_id: '4',
+          source_type: 'Pacbio::Request',
+          request: '4',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -179,6 +189,8 @@ describe('usePacbioPoolCreateStore', () => {
       const used_aliquots = {
         _3: {
           source_id: '3',
+          source_type: 'Pacbio::Request',
+          request: '3',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -186,6 +198,8 @@ describe('usePacbioPoolCreateStore', () => {
         },
         _4: {
           source_id: '4',
+          source_type: 'Pacbio::Request',
+          request: '4',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -234,59 +248,59 @@ describe('usePacbioPoolCreateStore', () => {
       })
       it('updates all used_aliquots of same plate with a new tag ', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
-        store.autoTagPlate({ source_id: '1', tag_id: '130' })
+        store.autoTagPlate({ source_id: '1', request: '1', tag_id: '130' })
         expect(store.used_aliquots).not.toEqual(initialUsedAliquots)
       })
 
       it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
-        const used_aliquot = { source_id: '13', tag_id: '130' }
+        const used_aliquot = { source_id: '13', request: '13', tag_id: '130' }
         store.updateUsedAliquot = vi.fn()
         await store.autoTagPlate(used_aliquot)
         // We update the changed well
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
-          source_id: '37',
+          request: '37',
           tag_id: '132',
         })
 
         // We don't update earlier wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '1',
+            request: '1',
           }),
         )
 
         // We don't update unselected wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '25', // C1
+            request: '25', // C1
           }),
         )
 
         // Including the next column
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
-          source_id: '2', // A2
+          request: '2', // A2
           tag_id: '137',
         })
         // But not another plate
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '61', // B1
+            request: '61', // B1
           }),
         )
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '73', // C1
+            request: '73', // C1
           }),
         )
         // or a tube
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '96',
+            request: '96',
           }),
         )
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '97',
+            request: '97',
           }),
         )
 
@@ -307,7 +321,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
       it('updates all used_aliquots of same tube with a new tag ', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
-        store.autoTagTube({ source_id: '97', tag_id: '130' })
+        store.autoTagTube({ source_id: '97', request: '97', tag_id: '130' })
         expect(store.used_aliquots).not.toEqual(initialUsedAliquots)
         expect(store.used_aliquots['_98'].tag_id).toEqual('131')
         expect(store.used_aliquots['_99'].tag_id).toEqual('132')
@@ -315,31 +329,31 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('applies tags to tubes with a higher index when autoTag is true', async () => {
         store.updateUsedAliquot = vi.fn()
-        const used_aliquot = { source_id: '98', tag_id: '130' }
+        const used_aliquot = { source_id: '98', request: '98', tag_id: '130' }
         await store.autoTagTube(used_aliquot)
         // We don't update earlier wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '1',
+            request: '1',
           }),
         )
 
         // We don't update earlier tubes
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '97',
+            request: '97',
           }),
         )
         // We don't update unselected wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '25', // C1
+            request: '25', // C1
           }),
         )
         // We do update tubes with higher ids
         expect(store.updateUsedAliquot).toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '99', // D1
+            request: '99', // D1
             tag_id: '131',
           }),
         )
@@ -429,7 +443,7 @@ describe('usePacbioPoolCreateStore', () => {
         store.$state = Data.AutoTagStore
       })
       it('updates the used_aliquot with the given values', () => {
-        store.updateUsedAliquot({ source_id: '1', tag_id: '130' })
+        store.updateUsedAliquot({ request: '1', source_id: '1', tag_id: '130' })
         expect(store.used_aliquots['_1'].tag_id).toEqual('130')
       })
       it('will not update the used_aliquot when given no source_id given', () => {
@@ -474,6 +488,8 @@ describe('usePacbioPoolCreateStore', () => {
       })
       const used_aliquot1 = {
         source_id: '1',
+        source_type: 'Pacbio::Request',
+        request: '1',
         tag_id: '1',
         template_prep_kit_box_barcode: 'ABC1',
         volume: 1,
@@ -483,6 +499,8 @@ describe('usePacbioPoolCreateStore', () => {
 
       const used_aliquot2 = {
         source_id: '2',
+        source_type: 'Pacbio::Request',
+        request: '2',
         tag_id: '2',
         template_prep_kit_box_barcode: 'ABC1',
         volume: 1,
@@ -671,7 +689,6 @@ describe('usePacbioPoolCreateStore', () => {
         const value = Object.values(used_aliquots)[0]
         expect(store.used_aliquots[`_${value.request}`]).toEqual({
           ...value,
-          source_id: value.request,
           tag_id: value.tag,
         })
         expect(store.resources.requests).toEqual(
@@ -1094,6 +1111,8 @@ describe('usePacbioPoolCreateStore', () => {
         store.used_aliquots = {
           _2: {
             source_id: '2',
+            source_type: 'Pacbio::Request',
+            request: '2',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,
@@ -1117,6 +1136,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.used_aliquots).toEqual({
           _1: {
             source_id: '1',
+            request: '1',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,
@@ -1126,6 +1146,8 @@ describe('usePacbioPoolCreateStore', () => {
           },
           _2: {
             source_id: '2',
+            request: '2',
+            source_type: 'Pacbio::Request',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,
@@ -1136,7 +1158,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
       it('deselects a tube when selected is false', () => {
         store.used_aliquots = {
-          _1: { source_id: '1', tag_id: '1' },
+          _1: { source_id: '1', request: '1', tag_id: '1' },
         }
         store.selectRequest({ id: '1', tag_id: '1', selected: false })
         //We expect the tube to be removed in the selected plates
@@ -1146,6 +1168,8 @@ describe('usePacbioPoolCreateStore', () => {
         store.used_aliquots = {
           _2: {
             source_id: '2',
+            source_type: 'Pacbio::Request',
+            request: '2',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,
@@ -1160,8 +1184,8 @@ describe('usePacbioPoolCreateStore', () => {
           },
         }
         store.resources.libraries = {
-          1: {
-            id: '1',
+          2: {
+            id: '2',
             type: 'libraries',
             template_prep_kit_box_barcode: 'ABC1',
             volume: 1,
@@ -1174,16 +1198,19 @@ describe('usePacbioPoolCreateStore', () => {
 
         expect(store.used_aliquots).toEqual({
           _1: {
-            source_id: '1',
+            source_id: '2',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 1,
             concentration: 1,
             insert_size: 100,
+            request: '1',
             source_type: 'Pacbio::Request',
           },
           _2: {
             source_id: '2',
+            source_type: 'Pacbio::Request',
+            request: '2',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,

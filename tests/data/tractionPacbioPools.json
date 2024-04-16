@@ -135,6 +135,8 @@
           "self": "http://localhost:3100/v1/pacbio/used_aliquots/1"
         },
         "attributes": {
+          "source_id": "1",
+          "source_type": "Pacbio::Request",
           "run_suitability": {
             "ready_for_run": true,
             "errors": []
@@ -170,6 +172,8 @@
           "self": "http://localhost:3100/v1/pacbio/used_aliquots/2"
         },
         "attributes": {
+          "source_id": "2",
+          "source_type": "Pacbio::Request",
           "run_suitability": {
             "ready_for_run": false,
             "errors": [

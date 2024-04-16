@@ -1,7 +1,7 @@
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
     cy.intercept(
-      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
+      'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioPools.json',
       },
