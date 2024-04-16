@@ -880,8 +880,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
-      const response = await handleResponse(promise)
-      let { success, data: { data, included = [] } = {}, errors = [] } = response
+      let { success, data: { data, included = [] } = {}, errors = [] } = await handleResponse(promise)
       const { requests, libraries } = groupIncludedByResource(included)
 
       //TODO: Remove the followingcheck once the feature flag multiplexing_phase_2_add_libraries_to_pool is removed

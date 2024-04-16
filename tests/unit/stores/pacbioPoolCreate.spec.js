@@ -727,7 +727,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('applies a single tag when autoTag is false', async () => {
-        const used_aliquots = { source_id: '13', tag_id: '130' }
+        const used_aliquots = { request: '13', tag_id: '130' }
         const autoTag = false
         store.updateUsedAliquot = vi.fn()
         store.autoTagPlate = vi.fn()
@@ -736,35 +736,35 @@ describe('usePacbioPoolCreateStore', () => {
         await store.applyTags({ used_aliquots, autoTag })
         // We update the changed well
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
-          source_id: '13',
+          request: '13',
           tag_id: '130',
         })
         expect(store.autoTagPlate).not.toHaveBeenCalled()
         expect(store.autoTagTube).not.toHaveBeenCalled()
       })
       it('calls autoTagPlate when autoTag is true and the used_aliquot given has a request with well', async () => {
-        const used_aliquots = { source_id: '13', tag_id: '130' }
+        const used_aliquots = { request: '13', tag_id: '130' }
         const autoTag = true
         store.updateUsedAliquot = vi.fn()
         store.autoTagPlate = vi.fn()
         store.autoTagTube = vi.fn()
         await store.applyTags({ used_aliquots, autoTag })
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
-          source_id: '13',
+          request: '13',
           tag_id: '130',
         })
         expect(store.autoTagPlate).toHaveBeenCalledWith(used_aliquots)
         expect(store.autoTagTube).not.toHaveBeenCalled()
       })
       it('calls autoTagTube when autoTag is true and the used_aliquot given has a request with no well attribute', async () => {
-        const used_aliquots = { source_id: '97', tag_id: '130' }
+        const used_aliquots = { request: '97', tag_id: '130' }
         const autoTag = true
         store.updateUsedAliquot = vi.fn()
         store.autoTagPlate = vi.fn()
         store.autoTagTube = vi.fn()
         await store.applyTags({ used_aliquots, autoTag })
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
-          source_id: '97',
+          request: '97',
           tag_id: '130',
         })
         expect(store.autoTagTube).toHaveBeenCalledWith(used_aliquots)
