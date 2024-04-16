@@ -15,12 +15,9 @@ describe('Pacbio Pool Create', () => {
         data: {},
       },
     })
-    cy.intercept(
-      'http://localhost:3100/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request',
-      {
-        fixture: 'tractionPacbioTubeWithLibrary.json',
-      },
-    ).as('LibraryTube')
+    cy.intercept('/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request', {
+      fixture: 'tractionPacbioTubeWithLibrary.json',
+    })
 
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
@@ -37,8 +34,6 @@ describe('Pacbio Pool Create', () => {
     cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
     // Add a library tube
     cy.get('#labware-finder-input').type('TRAC-2-20{enter}')
-    // Ensure the library tube has been returned
-    cy.wait('@LibraryTube')
 
     cy.get('[data-type=selected-labware-item]').should('have.length', 2)
 
