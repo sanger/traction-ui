@@ -880,7 +880,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
-      let { success, data: { data, included = [] } = {}, errors = [] } = await handleResponse(promise)
+      let {
+        success,
+        data: { data, included = [] } = {},
+        errors = [],
+      } = await handleResponse(promise)
       const { requests, libraries } = groupIncludedByResource(included)
 
       //TODO: Remove the followingcheck once the feature flag multiplexing_phase_2_add_libraries_to_pool is removed
@@ -897,7 +901,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes
-      if (!data.length) {
+      if (!data?.length) {
         success = false
         errors = [`Unable to find tube with barcode: ${filter['barcode']}`]
       }
