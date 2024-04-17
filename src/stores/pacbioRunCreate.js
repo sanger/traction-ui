@@ -54,8 +54,12 @@ const generateSamplesForPools = (state, pool) => {
    * merge the sample name with the group id
    */
   return used_aliquots.map((aliquot) => {
-    const { source_id, tag } = aliquot
-    const { sample_name } = state.requests[source_id]
+    const { source_id, source_type, tag } = aliquot
+    // Get the sample name based on the source_type
+    const { sample_name } =
+      source_type === 'Pacbio::Request'
+        ? state.requests[source_id]
+        : state.requests[state.libraries[source_id]?.pacbio_request_id]
     const { group_id = '' } = state.tags[tag] || {}
     return combineSampleNameAndGroupId(sample_name, group_id)
   })
@@ -265,7 +269,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // so we only look for request in the includes
       const promise = request.get({
         include:
-          'pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
+          'pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',

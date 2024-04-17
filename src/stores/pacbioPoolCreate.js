@@ -351,7 +351,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         !used_aliquot ||
         typeof used_aliquot !== 'object' ||
         !used_aliquot['tag_id'] ||
-        !used_aliquot['source_id'] ||
         !used_aliquot['request']
       ) {
         return
