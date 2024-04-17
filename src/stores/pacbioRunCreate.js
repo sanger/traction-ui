@@ -106,9 +106,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     //Libraries: The libraries that belong to the wells or the library selected for a new run
     libraries: {},
 
-    // Libraries that belong to a pool
-    library_pools: {},
-
     //Tubes: The tubes for each pool or the tubes selected for a new run
     tubes: {},
 
@@ -310,7 +307,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       })
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -337,7 +334,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         // Populate the plates
         this.plates = dataToObjectByPlateNumber({ data: plates, includeRelationships: true })
 
-        //Populate pools, libraries, library_pools, tags, requests and tubes
+        //Populate pools, libraries, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.tubes = formatById(this.tubes, tubes, true)

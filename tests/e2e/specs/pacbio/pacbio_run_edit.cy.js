@@ -18,7 +18,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -26,7 +26,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },
@@ -54,7 +54,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing Sequel IIe run to be edited
     cy.intercept(
-      'v1/pacbio/runs/13?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      'v1/pacbio/runs/13?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioSequelIIeRun.json',
       },
@@ -62,7 +62,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      'v1/pacbio/tubes?filter[barcode]=TRAC-2-21&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      'v1/pacbio/tubes?filter[barcode]=TRAC-2-21&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioSequelIIeRunTubes.json',
       },
@@ -82,7 +82,7 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -90,7 +90,7 @@ describe('Pacbio Run Edit view', () => {
 
     // get the tubes
     cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-11,TRAC-2-20,TRAC-2-22,TRAC-2-24&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioRevioRunTubes.json',
       },
