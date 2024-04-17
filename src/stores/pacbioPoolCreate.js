@@ -781,7 +781,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
         }
         this.updateUsedAliquot({
-          source_id: request_id,
           request: request_id,
           ...tagAttributes,
           ...attributes,

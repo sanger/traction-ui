@@ -112,11 +112,11 @@ describe('usePacbioPools', () => {
       store = usePacbioPoolsStore()
       store.$state = Data.StorePools
     })
-    it('"pools" returns denormalized pools from "state.pools"', () => {
+    it('"poolsArrays" returns denormalized pools from "state.pools"', () => {
       expect(store.poolsArray).toEqual(pools)
     })
 
-    it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
+    it('"poolsArray" returns pools successfully and with an empty library group_id if that library has no tag', () => {
       store.used_aliquots[1] = {
         id: '1',
         source_id: '1',
@@ -127,6 +127,42 @@ describe('usePacbioPools', () => {
         run_suitability: { ready_for_run: true, errors: [] },
       }
       expect(store.poolsArray[0].used_aliquots[0].group_id).toEqual(undefined)
+    })
+
+    it('"poolsArray" returns pools successfully if a pool has a library', () => {
+      const library = {
+        id: '1',
+        tag: '26',
+        type: 'libraries',
+        volume: 1.0,
+        concentration: 1.0,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        source_identifier: 'DN1:A1',
+        created_at: '2021-07-15T15:26:29.000Z',
+        updated_at: '2021-07-15T15:26:29.000Z',
+        pacbio_request_id: '1',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      }
+      store.libraries = {
+        1: library,
+      }
+      store.used_aliquots[2] = {
+        id: '1',
+        source_id: '1',
+        source_type: 'Pacbio::Library',
+        request: '1',
+        tag: '',
+        type: 'used_aliquots',
+        run_suitability: { ready_for_run: true, errors: [] },
+      }
+      // The sample name is derived from the library's request
+      expect(store.poolsArray[1].used_aliquots[0].sample_name).toEqual(
+        store.requests[library.pacbio_request_id].sample_name,
+      )
     })
   })
   describe('actions', () => {

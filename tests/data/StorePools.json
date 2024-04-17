@@ -87,6 +87,17 @@
           }
         ]
       }
+    },
+    "3": {
+      "id": "3",
+      "source_id": "1",
+      "source_type": "Pacbio::Library",
+      "tag": "26",
+      "type": "used_aliquots",
+      "run_suitability": {
+        "ready_for_run": true,
+        "errors": []
+      }
     }
   },
   "tags": {

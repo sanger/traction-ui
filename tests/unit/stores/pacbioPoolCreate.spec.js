@@ -823,7 +823,7 @@ describe('usePacbioPoolCreateStore', () => {
 
         expect(store.updateUsedAliquot).toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '10',
+            request: '10',
             tag_id: '131',
             insert_size: 15230,
             concentration: 13,
@@ -846,7 +846,7 @@ describe('usePacbioPoolCreateStore', () => {
 
         expect(store.updateUsedAliquot).toHaveBeenCalledWith(
           expect.objectContaining({
-            source_id: '98',
+            request: '98',
             tag_id: '131',
             insert_size: 15230,
             concentration: 13,
@@ -1180,7 +1180,7 @@ describe('usePacbioPoolCreateStore', () => {
 
         store.resources.requests = {
           1: {
-            tube: '2',
+            id: '1',
           },
         }
         store.resources.libraries = {
@@ -1205,7 +1205,7 @@ describe('usePacbioPoolCreateStore', () => {
             concentration: 1,
             insert_size: 100,
             request: '1',
-            source_type: 'Pacbio::Request',
+            source_type: 'Pacbio::Library',
           },
           _2: {
             source_id: '2',

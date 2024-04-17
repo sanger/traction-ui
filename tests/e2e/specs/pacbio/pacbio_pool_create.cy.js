@@ -42,7 +42,7 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     cy.get('ellipse').first().click()
-    cy.get('[data-attribute=traction-well]').last().click()
+    cy.get('[data-attribute=traction-well]').first().click()
 
     cy.get('[data-type=pool-aliquot-edit]').should('have.length', 2)
     // Set pool metadata
