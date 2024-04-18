@@ -8,27 +8,43 @@ describe('Pacbio Pool Create', () => {
       fixture: 'tractionPacbioPlate.json',
     })
 
-    cy.intercept(
-      'http://localhost:3100/v1/pacbio/tubes?filter[barcode]=TRAC-2-55&include=requests,libraries.request',
-      {
-        fixture: 'tractionPacbioTubeWithLibrary.json',
+    // The magic search input will check plates first before checking tubes so we need to intercept it
+    cy.intercept('/v1/pacbio/plates?filter[barcode]=TRAC-2-20&include=wells.requests', {
+      statusCode: 200,
+      body: {
+        data: {},
       },
-    )
+    })
+    cy.intercept('/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request', {
+      fixture: 'tractionPacbioTubeWithLibrary.json',
+    })
+
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        multiplexing_phase_2_add_libraries_to_pool: { enabled: true },
+      },
+    })
   })
 
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
+    // Add a plate
     cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
+    // Add a library tube
+    cy.get('#labware-finder-input').type('TRAC-2-20{enter}')
 
-    cy.get('[data-type=selected-labware-item]').should('have.length', 1)
+    cy.get('[data-type=selected-labware-item]').should('have.length', 2)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     cy.get('ellipse').first().click()
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 1)
+    cy.get('[data-attribute=traction-well]').first().click()
+
+    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 2)
     // Set pool metadata
     cy.get('[data-type="pool-edit"').within(() => {
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
@@ -37,13 +53,29 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=insert-size]').type('100')
     })
     // and samples that have failed qc should not be selectable
-    cy.get('[data-type=pool-aliquot-edit]').within(() => {
-      cy.get('[data-type=tag-list]').select('bc1001')
-      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
-      cy.get('[data-attribute=volume]').type('1')
-      cy.get('[data-attribute=concentration]').type('10.0')
-      cy.get('[data-attribute=insert-size]').type('100')
-    })
+    cy.get('[data-type=pool-aliquot-edit]')
+      .first()
+      .within(() => {
+        cy.get('[data-type=tag-list]').select('bc1001')
+        cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+        cy.get('[data-attribute=volume]').type('1')
+        cy.get('[data-attribute=concentration]').type('10.0')
+        cy.get('[data-attribute=insert-size]').type('100')
+      })
+    // Check the library attributes are pre-populated
+    cy.get('[data-type=pool-aliquot-edit]')
+      .last()
+      .within(() => {
+        // Tag doesn't get auto-populated
+        cy.get('[data-type=tag-list]').select('bc1002')
+        cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+          'have.value',
+          '029979102141700063023',
+        )
+        cy.get('[data-attribute=volume]').should('have.value', '1')
+        cy.get('[data-attribute=concentration]').should('have.value', '1')
+        cy.get('[data-attribute=insert-size]').should('have.value', '500')
+      })
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
