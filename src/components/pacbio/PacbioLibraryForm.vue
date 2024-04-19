@@ -43,7 +43,7 @@
             >
               Used volume is {{ formLibrary.used_volume }}
             </div>
-            <traction-badge id="library-used-volume" colour="green"
+            <traction-badge id="library-used-volume" colour="sanger-green"
               ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
             >
           </div>
