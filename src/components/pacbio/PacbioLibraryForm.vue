@@ -30,20 +30,20 @@
           <traction-label class="ml-1 w-full">Volume</traction-label>
           <div
             v-if="formLibrary.used_volume"
+            id="library-used-volume-div"
             class="justify-end contents-end px-1 relative"
             @mouseover="hover = true"
             @mouseleave="hover = false"
-            id="library-used-volume-div"
           >
             <div
               v-if="hover"
-              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0"
               id="library-used-volume-tooltip"
+              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0"
               :style="{ top: '-25px' }"
             >
               Used volume is {{ formLibrary.used_volume }}
             </div>
-            <traction-badge colour="green" id="library-used-volume"
+            <traction-badge id="library-used-volume" colour="green"
               ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
             >
           </div>
@@ -160,8 +160,12 @@ const props = defineProps({
     },
   },
 })
-debugger
+
+/* A reactive reference to a boolean value indicating whether the element is being hovered over.
+  This will be used to show the used volume tooltip when the user hovers over the used volume badge.
+ */
 const hover = ref(false)
+
 /*
 formLibrary is a reactive variable, so it will update when the library prop changes
 initialize formLibrary with the library prop
@@ -237,7 +241,6 @@ watch(
   (newVal) => {
     if (newVal < formLibrary.value.used_volume) {
       nextTick(() => {
-        debugger
         formLibrary.value.volume = formLibrary.value.used_volume
       })
     }
