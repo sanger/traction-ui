@@ -140,10 +140,11 @@ describe('PacbioLibraryForm.vue', () => {
         isStatic: true,
         library: {
           tag_id: '113',
-          volume: '1',
+          volume: 15,
           concentration: '1',
           template_prep_kit_box_barcode: 'barcode',
           insert_size: '1',
+          used_volume: 10,
         },
       }
       const { wrapperObj } = mountWithStore({
@@ -155,12 +156,36 @@ describe('PacbioLibraryForm.vue', () => {
     })
     it('should display a form with the correct field values', async () => {
       await flushPromises()
-      expect(wrapper.find('#library-volume').element.value).toBe('1')
+      expect(wrapper.find('#library-volume').element.value).toBe('15')
       expect(wrapper.find('#library-concentration').element.value).toBe('1')
       expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('barcode')
       expect(wrapper.find('#library-insertSize').element.value).toBe('1')
       expect(wrapper.find('#tag-set-input').element.value).toBe('3')
+      expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
+      expect(wrapper.find('#library-used-volume').text()).toContain('10')
       expect(modal.selectedTagSetId).toBe('3')
+    })
+    it('shows and hides tooltip while hovering over used volume', async () => {
+      wrapper.find('#library-used-volume-div').trigger('mouseover')
+      await nextTick()
+      expect(wrapper.find('#library-used-volume-tooltip').element).toBeTruthy()
+      wrapper.find('#library-used-volume-div').trigger('mouseleave')
+      await nextTick()
+      expect(wrapper.find('#library-used-volume-tooltip').exists()).toBe(false)
+    })
+    it('resets volume to used_volume when entered volume is less than used_volume', async () => {
+      const input = wrapper.find('#library-volume')
+      await input.setValue('5')
+      await nextTick()
+      expect(wrapper.vm.formLibrary.volume).toBe(wrapper.vm.formLibrary.used_volume)
+      expect(wrapper.find('#library-volume').element.value).toBe('10')
+    })
+    it('sets volume to new value when entered volume is greater than used_volume', async () => {
+      const input = wrapper.find('#library-volume')
+      await input.setValue(25)
+      await nextTick()
+      expect(wrapper.vm.formLibrary.volume).toBe('25')
+      expect(wrapper.find('#library-volume').element.value).toBe('25')
     })
   })
 })
