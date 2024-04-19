@@ -1,5 +1,5 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import {
   mount,
   Data,

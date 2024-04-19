@@ -1,4 +1,4 @@
-import { handleResponse, newResponse } from '@/api/ResponseHelperV2'
+import { handleResponse, newResponse } from '@/api/v2/ResponseHelper'
 
 // TODO: we have left this in a broken state as we still need to work out how errors are handled
 describe('ResponseHelper', () => {

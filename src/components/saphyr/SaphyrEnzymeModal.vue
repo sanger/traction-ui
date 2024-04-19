@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import handlePromise from '@/api/PromiseHelper'
+import handlePromise from '@/api/v1/PromiseHelper'
 
 export default {
   name: 'SaphyrEnzymeModal',

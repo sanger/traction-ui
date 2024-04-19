@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 import { dataToObjectById, extractAttributes } from '@/api/JsonApi'
 import store from '@/store'
 

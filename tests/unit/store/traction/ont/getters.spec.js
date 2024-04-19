@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { Data } from '@support/testHelper'
 import getters from '@/store/traction/ont/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'

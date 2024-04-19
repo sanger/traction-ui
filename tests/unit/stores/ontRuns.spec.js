@@ -3,7 +3,7 @@ import useOntRootStore from '@/stores/ontRoot'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { beforeEach, describe } from 'vitest'
 import { flowCellType } from '@/stores/utilities/flowCell'
 

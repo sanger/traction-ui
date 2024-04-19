@@ -1,4 +1,4 @@
-import handleResponse from '@/api/ResponseHelper'
+import handleResponse from '@/api/v1/ResponseHelper'
 
 const setRequests = async ({ commit, getters }, filter, page) => {
   const request = getters.requestsRequest

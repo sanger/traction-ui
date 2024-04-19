@@ -1,4 +1,4 @@
-import createRequest from '@/api/createRequest'
+import createRequest from '@/api/v1/createRequest.js'
 
 /*
   This will construct the api based on any config that has been passed
