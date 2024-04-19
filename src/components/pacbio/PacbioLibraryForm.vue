@@ -26,12 +26,34 @@
         />
       </fieldset>
       <fieldset id="input-group-volume">
-        <traction-label class="ml-1">Volume</traction-label>
+        <div class="relative flex flex-row">
+          <traction-label class="ml-1 w-full">Volume</traction-label>
+          <div
+            v-if="formLibrary.used_volume"
+            class="justify-end contents-end px-1 relative"
+            @mouseover="hover = true"
+            @mouseleave="hover = false"
+            id="library-used-volume-div"
+          >
+            <div
+              v-if="hover"
+              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0"
+              id="library-used-volume-tooltip"
+              :style="{ top: '-25px' }"
+            >
+              Used volume is {{ formLibrary.used_volume }}
+            </div>
+            <traction-badge colour="green" id="library-used-volume"
+              ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
+            >
+          </div>
+        </div>
+
         <traction-input
           id="library-volume"
           v-model="formLibrary.volume"
           type="number"
-          min="0"
+          :min="formLibrary.used_volume"
           step="any"
           placeholder="Example: 1.0"
         >
@@ -115,9 +137,11 @@
  * PacbioLibraryForm component can be used to create or edit a library.
  * @param {Object} library - The library to be  edited or created
  */
-import { computed, ref } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
@@ -136,7 +160,8 @@ const props = defineProps({
     },
   },
 })
-
+debugger
+const hover = ref(false)
 /*
 formLibrary is a reactive variable, so it will update when the library prop changes
 initialize formLibrary with the library prop
@@ -203,6 +228,21 @@ const provider = async () => {
     showAlert(`Failed to find tags in Traction: ${error}`, 'danger')
   }
 }
+
+/**
+ * Watches for changes in the volume property of the formLibrary object.
+ * If the new volume is less than the used_volume, it resets the volume to the used_volume.*/
+watch(
+  () => formLibrary.value.volume,
+  (newVal) => {
+    if (newVal < formLibrary.value.used_volume) {
+      nextTick(() => {
+        debugger
+        formLibrary.value.volume = formLibrary.value.used_volume
+      })
+    }
+  },
+)
 
 provider()
 /**
