@@ -1,6 +1,6 @@
 import Response from '@/api/v1/Response'
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import EnzymesJson from '@tests/data/enzymes'
+import EnzymesJson from '@tests/data/v1/enzymes.json'
 import { mount, store, flushPromises } from '@support/testHelper'
 
 describe('SaphyrEnzymeModal.vue', () => {

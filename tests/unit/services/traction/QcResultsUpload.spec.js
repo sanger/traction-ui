@@ -3,7 +3,7 @@ import { createQcResultsUploadResource } from '@/services/traction/QcResultsUplo
 
 describe('QcResultsUpload', () => {
   describe('#createQcResultsUploadResource', () => {
-    const csv = fs.readFileSync('./tests/data/csv/pacbio-missing-source.csv', 'utf8')
+    const csv = fs.readFileSync('./tests/data/v1/csv/pacbio-missing-source.csv', 'utf8')
 
     const usedBySelected = 'extraction'
 
