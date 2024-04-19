@@ -658,7 +658,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           // Creates a request association for the used aliquot based on the source type
           usedAliquot.request =
             usedAliquot.source_type == 'Pacbio::Request'
-              ? this.resources.requests[usedAliquot.source_id].id
+              ? usedAliquot.source_id // If its a request, the source_id is the request id
               : this.resources.libraries[usedAliquot.source_id].request
 
           const key = `_${usedAliquot.request}`

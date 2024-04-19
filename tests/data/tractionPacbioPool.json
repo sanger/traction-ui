@@ -64,7 +64,7 @@
             "ready_for_run": true,
             "errors": []
           },
-          "source_id": 4,
+          "source_id": "4",
           "source_type": "Pacbio::Request"
         },
         "relationships": {
