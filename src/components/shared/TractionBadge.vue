@@ -33,7 +33,7 @@ const colourClasses = {
     'sanger-dark-blue': 'bg-sdb-200 text-gray-300',
     sp: 'bg-sp-400 text-white',
     'sanger-pink': 'bg-sp-400 text-white',
-    green: 'bg-green-400 text-white',
+    'sanger-green': 'bg-green-400 text-white',
   },
   statuses: {
     success: 'bg-success-dark text-success-light',
