@@ -7,7 +7,7 @@
       <traction-button
         id="update-btn"
         theme="edit"
-        :disabled="isErrorsInLibrary"
+        :disabled="errorInLibrary"
         @click="updateLibrary"
       >
         Update
@@ -73,7 +73,7 @@ const emit = defineEmits(['editCompleted']) // Defines an emit function that emi
  * A Vue computed property that checks if there are any errors in the formLibrary.
  * It returns true if there is error in formLibrary and false otherwise.
  */
-const isErrorsInLibrary = computed(() => formRef.value?.formLibrary?.error?.length > 0)
+const errorInLibrary = computed(() => formRef.value?.formLibrary?.error?.length > 0)
 /**
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
  * It is used to create a new library.

@@ -61,7 +61,7 @@
             step="any"
             placeholder="Example: 1.0"
             class="w-full"
-            @update:model-value="errorsForVolume"
+            @update:model-value="errorForVolume"
           >
           </traction-input>
         </traction-field-error>
@@ -218,11 +218,11 @@ const tagOptions = computed(() => {
 })
 
 /**
- * @method errorsForVolume
+ * @method errorForVolume
  * Sets the error message for the formLibrary if the volume is less than the used volume.
  * If the volume is not less than the used volume, it clears the error message.
  */
-const errorsForVolume = () => {
+const errorForVolume = () => {
   formLibrary.value.error =
     formLibrary.value.volume < formLibrary.value.used_volume
       ? 'Volume cannot be less than used volume'
