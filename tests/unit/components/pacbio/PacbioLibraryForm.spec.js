@@ -168,24 +168,28 @@ describe('PacbioLibraryForm.vue', () => {
     it('shows and hides tooltip while hovering over used volume', async () => {
       wrapper.find('#library-used-volume-div').trigger('mouseover')
       await nextTick()
-      expect(wrapper.find('#library-used-volume-tooltip').element).toBeTruthy()
+      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).not.toBe('none')
       wrapper.find('#library-used-volume-div').trigger('mouseleave')
       await nextTick()
-      expect(wrapper.find('#library-used-volume-tooltip').exists()).toBe(false)
+      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).toBe('none')
     })
-    it('resets volume to used_volume when entered volume is less than used_volume', async () => {
+    it('shows error when new value when entered volume is less than used_volume', async () => {
       const input = wrapper.find('#library-volume')
-      await input.setValue('5')
+      await input.setValue(5)
       await nextTick()
-      expect(wrapper.vm.formLibrary.volume).toBe(wrapper.vm.formLibrary.used_volume)
-      expect(wrapper.find('#library-volume').element.value).toBe('10')
+      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual(
+        'Volume cannot be less than used volume',
+      )
     })
-    it('sets volume to new value when entered volume is greater than used_volume', async () => {
+    it('removes error when new value when entered volume is greater than used_volume', async () => {
       const input = wrapper.find('#library-volume')
+      await input.setValue(5)
+      await nextTick()
+      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual(
+        'Volume cannot be less than used volume',
+      )
       await input.setValue(25)
-      await nextTick()
-      expect(wrapper.vm.formLibrary.volume).toBe('25')
-      expect(wrapper.find('#library-volume').element.value).toBe('25')
+      expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
     })
   })
 })
