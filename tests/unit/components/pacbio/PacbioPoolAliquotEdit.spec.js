@@ -21,7 +21,7 @@ const tags = {
   3: { id: '3', group_id: 'tag3' },
 }
 
-const usedAliquot = createUsedAliquot({ source_id: '1' })
+const usedAliquot = createUsedAliquot({ source_id: '1', request: '1' })
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -61,7 +61,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 
 // TODO: The tag list would probably better done using a separate component and an emit
 // but that is a bigger job
-describe('PacbioPoolLibraryEdit.vue', () => {
+describe('PacbioPoolAliquotEdit.vue', () => {
   let wrapper, store
 
   describe('valid', () => {

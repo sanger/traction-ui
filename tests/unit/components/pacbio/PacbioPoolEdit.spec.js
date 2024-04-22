@@ -306,17 +306,6 @@ describe('pacbioPoolEdit#edit', () => {
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
-
-    // it('says library when there is one library', async () => {
-    //   const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
-    //     used_aliquots: { _1: createUsedAliquot({ source_id: '1' }) },
-    //   })
-    //   store.$state = poolCreateStore
-    //   store.selected.tagSet.id = '1'
-    //   await nextTick()
-    //   expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
-    // })
-
     it('says pool when there are multiple libraries', async () => {
       store.$state = Data.AutoTagStore
       store.selected.tagSet.id = '1'

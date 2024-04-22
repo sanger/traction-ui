@@ -29,6 +29,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
     used_aliquots: {},
     requests: {},
     tags: {},
+    libraries: {},
   }),
   getters: {
     /**
@@ -46,8 +47,13 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
         const used_aliquots = pool.used_aliquots.map((used_aliquotId) => {
-          const { id, type, source_id, tag, run_suitability } = state.used_aliquots[used_aliquotId]
-          const { sample_name } = state.requests[source_id] || {}
+          const { id, type, source_id, source_type, tag, run_suitability } =
+            state.used_aliquots[used_aliquotId]
+          // Get the sample name based on the source_type
+          const { sample_name } =
+            source_type === 'Pacbio::Request'
+              ? state.requests[source_id]
+              : state.requests[state.libraries[source_id]?.pacbio_request_id]
           const { group_id } = state.tags[tag] || {}
           return { id, type, sample_name, group_id, run_suitability }
         })
@@ -82,7 +88,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
       const promise = request.get({
         page,
         filter,
-        include: 'tube,used_aliquots.tag,used_aliquots.source',
+        include: 'tube,used_aliquots.tag,used_aliquots.source,libraries.request',
         fields: {
           requests: 'sample_name',
           tubes: 'barcode',
@@ -93,12 +99,14 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
 
       const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
       if (success) {
-        const { tubes, aliquots, tags, requests } = groupIncludedByResource(included)
+        const { tubes, aliquots, tags, requests, libraries } = groupIncludedByResource(included)
+
+        this.libraries = dataToObjectById({ data: libraries })
         this.pools = dataToObjectById({ data, includeRelationships: true })
         this.tubes = dataToObjectById({ data: tubes })
-        this.used_aliquots = dataToObjectById({ data: aliquots, includeRelationships: true })
         this.tags = dataToObjectById({ data: tags })
         this.requests = dataToObjectById({ data: requests })
+        this.used_aliquots = dataToObjectById({ data: aliquots, includeRelationships: true })
       }
       return { success, errors, meta }
     },
