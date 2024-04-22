@@ -4,7 +4,12 @@
     <PacbioLibraryForm ref="formRef" :library="library" />
     <div class="flex flex-row items-center justify-end space-x-2 mt-3">
       <traction-button @click="emit('editCompleted')"> Cancel </traction-button>
-      <traction-button id="update-btn" theme="edit" @click="updateLibrary">
+      <traction-button
+        id="update-btn"
+        theme="edit"
+        @click="updateLibrary"
+        :disabled="isErrorsInLibrary"
+      >
         Update
       </traction-button>
     </div>
@@ -41,7 +46,7 @@
  * PacbioLibraryEdit component is used to edit a library.
  */
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import useAlert from '@/composables/useAlert.js'
 import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
@@ -64,6 +69,7 @@ const { showAlert } = useAlert()
 
 const emit = defineEmits(['editCompleted']) // Defines an emit function that emits a 'edit-completed' event.
 
+const isErrorsInLibrary = computed(() => formRef.value?.formLibrary?.errors?.length > 0)
 /**
  * usePacbioLibrariesStore is a composable function that is used to access the 'pacbioLibraries' store.
  * It is used to create a new library.
