@@ -3,7 +3,7 @@
     :class="[
       'badge', // badge class added for easy testing
       'inline-flex items-center',
-      'rounded-lg px-1 py-0 my-1 text-xs font-medium',
+      'rounded-lg px-1 py-0 text-xs font-medium',
       colourStyle,
     ]"
   >
