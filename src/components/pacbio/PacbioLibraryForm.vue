@@ -50,8 +50,8 @@
         </div>
         <traction-field-error
           data-attribute="volume-error"
-          :error="formLibrary.errors"
-          :with-icon="formLibrary.errors?.length > 0"
+          :error="formLibrary.error"
+          :with-icon="formLibrary.error?.length > 0"
         >
           <traction-input
             id="library-volume"
@@ -60,8 +60,8 @@
             :min="formLibrary.used_volume"
             step="any"
             placeholder="Example: 1.0"
-            @update:modelValue="errorsForVolume"
             class="w-full"
+            @update:model-value="errorsForVolume"
           >
           </traction-input>
         </traction-field-error>
@@ -144,7 +144,7 @@
  * PacbioLibraryForm component can be used to create or edit a library.
  * @param {Object} library - The library to be  edited or created
  */
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
@@ -217,8 +217,13 @@ const tagOptions = computed(() => {
   return [placeholder, ...pacbioRootStore.tagChoicesForId(selectedTagSetId.value)]
 })
 
+/**
+ * @method errorsForVolume
+ * Sets the error message for the formLibrary if the volume is less than the used volume.
+ * If the volume is not less than the used volume, it clears the error message.
+ */
 const errorsForVolume = () => {
-  formLibrary.value.errors =
+  formLibrary.value.error =
     formLibrary.value.volume < formLibrary.value.used_volume
       ? 'Volume cannot be less than used volume'
       : ''

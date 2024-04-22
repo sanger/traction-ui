@@ -78,7 +78,7 @@ describe('PacbioLibraryEdit.vue', () => {
     await nextTick()
     expect(wrapper.find('#update-btn').element.disabled).toBe(false)
     expect(wrapper.vm.formRef).toBeDefined()
-    wrapper.vm.formRef.formLibrary.errors = 'error'
+    wrapper.vm.formRef.formLibrary.error = 'error'
     await nextTick()
     expect(wrapper.find('#update-btn').element.disabled).toBe(true)
   })
