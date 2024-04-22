@@ -28,6 +28,7 @@
       <fieldset id="input-group-volume">
         <div class="relative flex flex-row">
           <traction-label class="ml-1 w-full">Volume</traction-label>
+
           <div
             v-if="formLibrary.used_volume"
             id="library-used-volume-div"
@@ -36,10 +37,9 @@
             @mouseleave="hover = false"
           >
             <div
-              v-if="hover"
+              v-show="hover"
               id="library-used-volume-tooltip"
-              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0"
-              :style="{ top: '-25px' }"
+              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0 top-[-25px]"
             >
               Used volume is {{ formLibrary.used_volume }}
             </div>
@@ -48,16 +48,23 @@
             >
           </div>
         </div>
-
-        <traction-input
-          id="library-volume"
-          v-model="formLibrary.volume"
-          type="number"
-          :min="formLibrary.used_volume"
-          step="any"
-          placeholder="Example: 1.0"
+        <traction-field-error
+          data-attribute="volume-error"
+          :error="formLibrary.errors"
+          :with-icon="formLibrary.errors?.length > 0"
         >
-        </traction-input>
+          <traction-input
+            id="library-volume"
+            v-model="formLibrary.volume"
+            type="number"
+            :min="formLibrary.used_volume"
+            step="any"
+            placeholder="Example: 1.0"
+            @update:modelValue="errorsForVolume"
+            class="w-full"
+          >
+          </traction-input>
+        </traction-field-error>
       </fieldset>
 
       <fieldset id="input-group-concentration">
@@ -210,6 +217,13 @@ const tagOptions = computed(() => {
   return [placeholder, ...pacbioRootStore.tagChoicesForId(selectedTagSetId.value)]
 })
 
+const errorsForVolume = () => {
+  formLibrary.value.errors =
+    formLibrary.value.volume < formLibrary.value.used_volume
+      ? 'Volume cannot be less than used volume'
+      : ''
+}
+
 /**
  * @method provider
  * Fetches the pacbio tag sets from the 'pacbioLibraries' store.
@@ -232,20 +246,6 @@ const provider = async () => {
     showAlert(`Failed to find tags in Traction: ${error}`, 'danger')
   }
 }
-
-/**
- * Watches for changes in the volume property of the formLibrary object.
- * If the new volume is less than the used_volume, it resets the volume to the used_volume.*/
-watch(
-  () => formLibrary.value.volume,
-  (newVal) => {
-    if (newVal < formLibrary.value.used_volume) {
-      nextTick(() => {
-        formLibrary.value.volume = formLibrary.value.used_volume
-      })
-    }
-  },
-)
 
 provider()
 /**
