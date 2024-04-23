@@ -25,47 +25,63 @@
           :disabled="!selectedTagSetId"
         />
       </fieldset>
-      <fieldset id="input-group-volume">
-        <div class="relative flex flex-row">
-          <traction-label class="ml-1 w-full">Volume</traction-label>
 
-          <div
-            v-if="formLibrary.used_volume"
-            id="library-used-volume-div"
-            class="justify-end contents-end px-1 relative"
-            @mouseover="hover = true"
-            @mouseleave="hover = false"
-          >
+      <flagged-feature name="dpl_1070_check_primary_aliquot_library_volume">
+        <fieldset id="input-group-volume">
+          <div class="relative flex flex-row">
+            <traction-label class="ml-1 w-full">Volume</traction-label>
+
             <div
-              v-show="hover"
-              id="library-used-volume-tooltip"
-              class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0 top-[-25px]"
+              v-if="formLibrary.used_volume"
+              id="library-used-volume-div"
+              class="justify-end contents-end px-1 relative"
+              @mouseover="hover = true"
+              @mouseleave="hover = false"
             >
-              Used volume is {{ formLibrary.used_volume }}
+              <div
+                v-show="hover"
+                id="library-used-volume-tooltip"
+                class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0 top-[-25px]"
+              >
+                Used volume is {{ formLibrary.used_volume }}
+              </div>
+              <traction-badge id="library-used-volume" colour="sanger-green"
+                ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
+              >
             </div>
-            <traction-badge id="library-used-volume" colour="sanger-green"
-              ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
-            >
           </div>
-        </div>
-        <traction-field-error
-          data-attribute="volume-error"
-          :error="formLibrary.error"
-          :with-icon="formLibrary.error?.length > 0"
-        >
-          <traction-input
-            id="library-volume"
-            v-model="formLibrary.volume"
-            type="number"
-            :min="formLibrary.used_volume"
-            step="any"
-            placeholder="Example: 1.0"
-            class="w-full"
-            @update:model-value="errorForVolume"
+          <traction-field-error
+            data-attribute="volume-error"
+            :error="formLibrary.error"
+            :with-icon="formLibrary.error?.length > 0"
           >
-          </traction-input>
-        </traction-field-error>
-      </fieldset>
+            <traction-input
+              id="library-volume"
+              v-model="formLibrary.volume"
+              type="number"
+              :min="formLibrary.used_volume"
+              step="any"
+              placeholder="Example: 1.0"
+              class="w-full"
+              @update:model-value="errorForVolume"
+            >
+            </traction-input>
+          </traction-field-error>
+        </fieldset>
+        <template #disabled
+          ><fieldset id="input-group-volume">
+            <traction-label class="ml-1 w-full">Volume</traction-label>
+            <traction-input
+              id="library-volume"
+              v-model="formLibrary.volume"
+              type="number"
+              step="any"
+              placeholder="Example: 1.0"
+              class="w-full"
+            >
+            </traction-input></fieldset
+        ></template>
+      </flagged-feature>
 
       <fieldset id="input-group-concentration">
         <traction-label class="ml-1">Concentration</traction-label>
