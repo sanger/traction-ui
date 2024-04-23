@@ -11,6 +11,16 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+vi.mock('swrv', () => ({
+  default: vi.fn(() => ({
+    data: {
+      features: {
+        dpl_1070_check_primary_aliquot_library_volume: { enabled: true },
+      },
+    },
+  })),
+}))
+
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
  * This method also returns the wrapper and the store object for further testing.
