@@ -3,7 +3,7 @@
     :class="[
       'badge', // badge class added for easy testing
       'inline-flex items-center',
-      'rounded-lg px-1 py-0 my-1 text-xs font-medium',
+      'rounded-lg px-1 py-0 text-xs font-medium',
       colourStyle,
     ]"
   >
@@ -33,6 +33,7 @@ const colourClasses = {
     'sanger-dark-blue': 'bg-sdb-200 text-gray-300',
     sp: 'bg-sp-400 text-white',
     'sanger-pink': 'bg-sp-400 text-white',
+    'sanger-green': 'bg-green-400 text-white',
   },
   statuses: {
     success: 'bg-success-dark text-success-light',
