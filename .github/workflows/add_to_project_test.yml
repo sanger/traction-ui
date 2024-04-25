@@ -3,8 +3,7 @@ name: Add dependencies to test project board on push
 on:
  push:
     branches:
-      - develop
-      - master
+      - y24-060-sanger-access-token
 jobs:
  add-to-project-using-github-app:
     name: Add pull request to project using github app
