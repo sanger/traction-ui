@@ -17,8 +17,8 @@ jobs:
           application_private_key: ${{ secrets.PSD_DEMO_APP_KEY }}
           organization: sanger
 
-       - name: Use Application Token to add to project
-         uses: actions/add-to-project@v0.5.0
-         with:
-           project-url: https://github.com/orgs/sanger/projects/13
-           github-token: ${{ steps.get_workflow_token.outputs.token }}
+      - name: Use Application Token to add to project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/orgs/sanger/projects/13
+          github-token: ${{ steps.get_workflow_token.outputs.token }}
