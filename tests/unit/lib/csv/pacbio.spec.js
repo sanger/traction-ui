@@ -7,7 +7,7 @@ import { eachRecord } from '@/lib/csv/pacbio'
 
 describe('eachRecord', () => {
   it('yields the expected records', () => {
-    const csv = fs.readFileSync('./tests/data/v1/csv/pacbio.csv', 'utf8')
+    const csv = fs.readFileSync('./tests/data/csv/pacbio.csv', 'utf8')
     const callback = vi.fn()
 
     eachRecord(csv, callback)
@@ -47,7 +47,7 @@ describe('eachRecord', () => {
   })
 
   it('handles empty columns', () => {
-    const csv = fs.readFileSync('./tests/data/v1/csv/pacbio-empty.csv', 'utf8')
+    const csv = fs.readFileSync('./tests/data/csv/pacbio-empty.csv', 'utf8')
     const callback = vi.fn()
     eachRecord(csv, callback)
     expect(callback).toHaveBeenCalledTimes(5)
@@ -81,7 +81,7 @@ describe('eachRecord', () => {
   })
 
   it('throws an exception if source column is missing', () => {
-    const csv = fs.readFileSync('./tests/data/v1/csv/pacbio-missing-source.csv', 'utf8')
+    const csv = fs.readFileSync('./tests/data/csv/pacbio-missing-source.csv', 'utf8')
     const callback = vi.fn()
     let thrownErrorMessage
     try {

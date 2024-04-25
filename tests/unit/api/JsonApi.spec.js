@@ -1,6 +1,6 @@
 import * as JsonApi from '@/api/JsonApi'
-import TestResponse from '@tests/data/v1/testResponse'
-import CircularResponse from '@tests/data/v1/circularResponse'
+import TestResponse from '@tests/data/testResponse'
+import CircularResponse from '@tests/data/circularResponse'
 import { describe, expect } from 'vitest'
 import { Data } from '@support/testHelper'
 

@@ -1,6 +1,6 @@
 import { mount, createTestingPinia } from '@support/testHelper.js'
 import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList.vue'
-import storeRunPools from '@tests/data/v1/StoreRunPools.json'
+import storeRunPools from '@tests/data/StoreRunPools.json'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 /**
