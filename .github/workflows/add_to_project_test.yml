@@ -22,4 +22,3 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
         with:
           project-url: https://github.com/orgs/sanger/projects/13
-          github-token: ${{ secrets.ADD_TO_PROJECT_PAT_ORG_WIDE }}
