@@ -77,14 +77,6 @@ describe('PacbioRunPlateItem.vue', () => {
       expect(plateItem.storePlate).toEqual(store.plates[1])
     })
 
-    // why is this not showing up? I wonder if this is an issue with traction-input
-    // this is tested elsehwere but it vexes me.
-    it.skip('returns the sequencing kit box barcode', () => {
-      expect(wrapper.find('[data-attribute="sequencing-kit-box-barcode-1"]').text()).toEqual(
-        'twentyonecharacters00',
-      )
-    })
-
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
         expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
@@ -152,14 +144,6 @@ describe('PacbioRunPlateItem.vue', () => {
 
     it('has a plate', () => {
       expect(plateItem.storePlate).toEqual(store.plates[1])
-    })
-
-    // why is this not showing up? I wonder if this is an issue with traction-input
-    // this is tested elsehwere but it vexes me.
-    it.skip('returns the sequencing kit box barcode', () => {
-      expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
-        '1021188000301570037320231019',
-      )
     })
 
     it('returns the serialNumber', () => {
