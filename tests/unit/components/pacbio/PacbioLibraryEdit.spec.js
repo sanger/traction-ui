@@ -73,6 +73,16 @@ describe('PacbioLibraryEdit.vue', () => {
     expect(modal.library).toEqual(props.library)
   })
 
+  it('disables te update button if there are errors in formLibrary', async () => {
+    wrapper.vm.showModal = true
+    await nextTick()
+    expect(wrapper.find('#update-btn').element.disabled).toBe(false)
+    expect(wrapper.vm.formRef).toBeDefined()
+    wrapper.vm.formRef.formLibrary.error = 'error'
+    await nextTick()
+    expect(wrapper.find('#update-btn').element.disabled).toBe(true)
+  })
+
   describe('#updateLibrary', () => {
     let payload
 

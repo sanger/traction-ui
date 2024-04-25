@@ -26,6 +26,7 @@ describe('TractionBadge', () => {
       'sanger-dark-blue': 'bg-sdb-200',
       sp: 'bg-sp-400',
       'sanger-pink': 'bg-sp-400',
+      'sanger-green': 'bg-green-400',
       success: 'bg-success-dark',
       warning: 'bg-warning-dark',
       failure: 'bg-failure-dark',
@@ -64,7 +65,13 @@ describe('TractionBadge', () => {
       'blue',
       'purple',
     ])
-    expect(TractionBadge.colours.sanger).toEqual(['sdb', 'sanger-dark-blue', 'sp', 'sanger-pink'])
+    expect(TractionBadge.colours.sanger).toEqual([
+      'sdb',
+      'sanger-dark-blue',
+      'sp',
+      'sanger-pink',
+      'sanger-green',
+    ])
     expect(TractionBadge.colours.statuses).toEqual(['success', 'warning', 'failure'])
   })
 })

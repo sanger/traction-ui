@@ -164,9 +164,8 @@ const aliquotSetter = (attr) => {
         props.notify()
       }
       store.updateUsedAliquot({
-        source_id: aliquot.value.source_id,
+        request: aliquot.value.request,
         [attr]: newValue,
-        source_type: store.sourceTypeForRequest(props.request),
       })
     },
   })
@@ -192,7 +191,7 @@ const tag_id = computed({
       props.notify()
     }
     store.applyTags({
-      used_aliquots: { tag_id, source_id: aliquot.value.source_id },
+      used_aliquots: { tag_id, request: aliquot.value.request },
       autoTag: props.autoTag,
     })
   },

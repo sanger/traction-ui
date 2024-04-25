@@ -15,7 +15,7 @@
           <label class="text-base">Table view</label>
           <traction-toggle v-model="tableView" data-attribute="table-check-box" />
         </div>
-        <div v-if="!tableView" class="flex flex-wrap overflo-y-auto">
+        <div v-if="!tableView" class="flex flex-wrap overflow-y-auto">
           <div
             v-for="item in selectedLabware"
             :key="item.id"

@@ -21,9 +21,21 @@ const requests = {
 }
 
 const used_aliquots = {
-  _1: { source_id: '1', ...aliquotAttributes },
-  _2: { source_id: '2', ...aliquotAttributes, tag_id: '2' },
-  _3: { source_id: '3', ...aliquotAttributes, tag_id: '3' },
+  _1: { source_id: '1', source_type: 'Pacbio::Request', request: '1', ...aliquotAttributes },
+  _2: {
+    source_id: '2',
+    source_type: 'Pacbio::Request',
+    request: '2',
+    ...aliquotAttributes,
+    tag_id: '2',
+  },
+  _3: {
+    source_id: '3',
+    source_type: 'Pacbio::Request',
+    request: '3',
+    ...aliquotAttributes,
+    tag_id: '3',
+  },
 }
 
 const tagSet = {

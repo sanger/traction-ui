@@ -54,8 +54,12 @@ const generateSamplesForPools = (state, pool) => {
    * merge the sample name with the group id
    */
   return used_aliquots.map((aliquot) => {
-    const { source_id, tag } = aliquot
-    const { sample_name } = state.requests[source_id]
+    const { source_id, source_type, tag } = aliquot
+    // Get the sample name based on the source_type
+    const { sample_name } =
+      source_type === 'Pacbio::Request'
+        ? state.requests[source_id]
+        : state.requests[state.libraries[source_id]?.pacbio_request_id]
     const { group_id = '' } = state.tags[tag] || {}
     return combineSampleNameAndGroupId(sample_name, group_id)
   })
@@ -101,9 +105,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Libraries: The libraries that belong to the wells or the library selected for a new run
     libraries: {},
-
-    // Libraries that belong to a pool
-    library_pools: {},
 
     //Tubes: The tubes for each pool or the tubes selected for a new run
     tubes: {},
@@ -265,7 +266,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // so we only look for request in the includes
       const promise = request.get({
         include:
-          'pools.used_aliquots.request,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
+          'pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag',
         fields: {
           requests: 'sample_name',
           tags: 'group_id',
@@ -306,7 +307,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       })
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -333,7 +334,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         // Populate the plates
         this.plates = dataToObjectByPlateNumber({ data: plates, includeRelationships: true })
 
-        //Populate pools, libraries, library_pools, tags, requests and tubes
+        //Populate pools, libraries, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.tubes = formatById(this.tubes, tubes, true)

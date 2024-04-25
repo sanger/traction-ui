@@ -11,6 +11,16 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+vi.mock('swrv', () => ({
+  default: vi.fn(() => ({
+    data: {
+      features: {
+        dpl_1070_check_primary_aliquot_library_volume: { enabled: true },
+      },
+    },
+  })),
+}))
+
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
  * This method also returns the wrapper and the store object for further testing.
@@ -140,10 +150,11 @@ describe('PacbioLibraryForm.vue', () => {
         isStatic: true,
         library: {
           tag_id: '113',
-          volume: '1',
+          volume: 15,
           concentration: '1',
           template_prep_kit_box_barcode: 'barcode',
           insert_size: '1',
+          used_volume: 10,
         },
       }
       const { wrapperObj } = mountWithStore({
@@ -155,12 +166,40 @@ describe('PacbioLibraryForm.vue', () => {
     })
     it('should display a form with the correct field values', async () => {
       await flushPromises()
-      expect(wrapper.find('#library-volume').element.value).toBe('1')
+      expect(wrapper.find('#library-volume').element.value).toBe('15')
       expect(wrapper.find('#library-concentration').element.value).toBe('1')
       expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('barcode')
       expect(wrapper.find('#library-insertSize').element.value).toBe('1')
       expect(wrapper.find('#tag-set-input').element.value).toBe('3')
+      expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
+      expect(wrapper.find('#library-used-volume').text()).toContain('10')
       expect(modal.selectedTagSetId).toBe('3')
+    })
+    it('shows and hides tooltip while hovering over used volume', async () => {
+      wrapper.find('#library-used-volume-div').trigger('mouseover')
+      await nextTick()
+      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).not.toBe('none')
+      wrapper.find('#library-used-volume-div').trigger('mouseleave')
+      await nextTick()
+      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).toBe('none')
+    })
+    it('shows error when new value when entered volume is less than used_volume', async () => {
+      const input = wrapper.find('#library-volume')
+      await input.setValue(5)
+      await nextTick()
+      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual(
+        'Volume cannot be less than used volume',
+      )
+    })
+    it('removes error when new value when entered volume is greater than used_volume', async () => {
+      const input = wrapper.find('#library-volume')
+      await input.setValue(5)
+      await nextTick()
+      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual(
+        'Volume cannot be less than used volume',
+      )
+      await input.setValue(25)
+      expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
     })
   })
 })
