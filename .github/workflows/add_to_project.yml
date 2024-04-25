@@ -25,7 +25,6 @@ jobs:
         with:
           application_id: ${{ vars.PSD_DEMO_APP_ID }}
           application_private_key: ${{ secrets.PSD_DEMO_APP_KEY }}
-          permissions: "actions:write"
 
       - name: Use Application Token to add to project
         uses: actions/add-to-project@v0.5.0
