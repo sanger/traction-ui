@@ -13,8 +13,8 @@ jobs:
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@v3
         with:
-          application_id: ${{ vars.DEMO_ID }}
-          application_private_key: ${{ secrets.DEMO_KEY }}
+          application_id: ${{ vars.ADD_TO_PROJECT_APP_ID_PSD }}
+          application_private_key: ${{ secrets.ADD_TO_PROJECT_APP_KEY_PSD }}
 
       - name: Use Application Token to add to project
         uses: actions/add-to-project@v0.5.0
