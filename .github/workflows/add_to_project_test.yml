@@ -19,6 +19,6 @@ jobs:
       - name: Use Application Token to add to project
         uses: actions/add-to-project@v0.5.0
         with:
-          project-url: https://github.com/orgs/sanger/projects/13
+          project-url: https://github.com/orgs/sanger/projects/12
           github-token: ${{ steps.get_workflow_token.outputs.token }}
           labeled: githubapptest
