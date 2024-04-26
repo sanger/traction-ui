@@ -6,12 +6,21 @@ on:
       - labeled
 
 jobs:
-  add-to-project:
-    name: Add pull request to project
+ add-to-project:
+    name: Add pull request to project using github app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@v0.5.0
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v3
         with:
-          project-url: https://github.com/orgs/sanger/projects/12
-          github-token: ${{ secrets.ADD_TO_PROJECT_PAT_ORG_WIDE }}
+          application_id: ${{ vars.ADD_TO_PROJECT_APP_ID_PSD }}
+          application_private_key: ${{ secrets.ADD_TO_PROJECT_APP_KEY_PSD }}
+
+      - name: Use Application Token to add to project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/orgs/sanger/projects/13
+          github-token: ${{ steps.get_workflow_token.outputs.token }}
           labeled: depfu
+  
