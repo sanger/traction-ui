@@ -14,7 +14,7 @@ jobs:
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@v3
         with:
-          application_id: ${{ vars.ADD_TO_PROJECT_APP_ID_PSD }}
+          application_id: ${{ secrets.ADD_TO_PROJECT_APP_ID_PSD }}
           application_private_key: ${{ secrets.ADD_TO_PROJECT_APP_KEY_PSD }}
 
       - name: Use Application Token to add to project
@@ -22,5 +22,5 @@ jobs:
         with:
           project-url: https://github.com/orgs/sanger/projects/13
           github-token: ${{ steps.get_workflow_token.outputs.token }}
-          labeled: depfu
+          labeled: githubapptest
   
