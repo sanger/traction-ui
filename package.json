@@ -45,7 +45,7 @@
     "cypress": "^13.8.0",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.5",
-    "eslint": "^9.0.0",
+    "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-cypress": "^2.15.2",
     "eslint-plugin-vue": "^9.25.0",
