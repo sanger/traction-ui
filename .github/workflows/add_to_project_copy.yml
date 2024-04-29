@@ -6,8 +6,8 @@ on:
       - labeled
 
 jobs:
- call-add-to-project:
-    uses: ./.github/workflows/test.yml
+  call-add-to-project:
+    uses: sanger/.github/.github/workflows/test.yml@master
     
     
   
