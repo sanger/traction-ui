@@ -1,3 +1,6 @@
+# Calls a reusable workflow in the .github repo,
+# which adds the PR that triggered this to the Technical Debt project board, if it is a 'depfu' one.
+# Passes the 'PSD-AddToProject' GitHub App key and App Id as secrets to the reusable workflow.
 name: Add dependencies to technical debt project
 
 on:
