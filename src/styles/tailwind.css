@@ -11,7 +11,12 @@
 .failure-message {
   @apply bg-failure-light text-failure-dark hover:bg-failure;
 }
-
 .failure-icon {
   @apply text-failure-dark hover:text-failure-light;
+}
+.warning-message {
+  @apply bg-warning-light text-warning-dark hover:bg-warning;
+}
+.warning-icon {
+  @apply text-warning-dark hover:text-warning-light;
 }
