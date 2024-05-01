@@ -10,7 +10,7 @@
     data-attribute="message"
     :data-type="dataType"
     :class="[
-      'flex flex-row border-gray-200 rounded rounded-md px-5 py-3 space-x-4 mb-4', //border and padding
+      'flex flex-row rounded rounded-md px-5 py-3 space-x-4 mb-4', // padding
       `text-base leading-6`, // text style
       `${color.message}`, // font color, background color
     ]"

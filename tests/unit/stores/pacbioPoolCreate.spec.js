@@ -1398,6 +1398,7 @@ describe('usePacbioPoolCreateStore', () => {
             131: { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
           }
 
+          rootStore.addVuexMessage = vi.fn()
           store.selectTagSet('3')
           store.selectRequest({ id: '1' })
 
@@ -1422,6 +1423,11 @@ describe('usePacbioPoolCreateStore', () => {
               concentration: null,
               insert_size: null,
             },
+          })
+          // Adds a warning message to root store
+          expect(rootStore.addVuexMessage).toHaveBeenCalledWith({
+            message: 'Library tag not populated as bc1023T is not in the selected tag group',
+            type: 'warning',
           })
         })
       })

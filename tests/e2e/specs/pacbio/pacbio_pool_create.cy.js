@@ -66,8 +66,8 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=pool-aliquot-edit]')
       .last()
       .within(() => {
-        // Tag doesn't get auto-populated
-        cy.get('[data-type=tag-list]').select('bc1002')
+        // Select field value is tag_id 250
+        cy.get('[data-type=tag-list]').should('have.value', '250')
         cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
           'have.value',
           '029979102141700063023',
