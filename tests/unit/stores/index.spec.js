@@ -1,5 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
+import rootVuexStore from '@/store/index'
 import PlateMap from '@/config/PlateMap'
 import PrinterList from '@/config/PrinterList'
 
@@ -45,6 +46,58 @@ describe('index', () => {
       const store = useRootStore()
       expect(store.printerNames).toBeDefined()
       expect(store.printerNames).toEqual(PrinterList.map((obj) => obj.printerName))
+    })
+  })
+
+  describe('actions', () => {
+    describe('addVuexMessage', () => {
+      it('adds a message to the vuex root store', () => {
+        const store = useRootStore()
+        store.addVuexMessage({
+          type: 'warning',
+          message: 'foo',
+        })
+        expect(Object.values(rootVuexStore.state.traction.messages)).toEqual([
+          { type: 'warning', message: 'foo' },
+        ])
+      })
+    })
+
+    describe('clearMessages', () => {
+      it('clears all messages', () => {
+        const store = useRootStore()
+        store.messages = [
+          { type: 'warning', message: 'foo' },
+          { type: 'danger', message: 'bar' },
+        ]
+        store.clearMessages()
+        expect(store.messages).toEqual({})
+      })
+    })
+
+    describe('addMessage', () => {
+      it('adds a message to the store', () => {
+        const store = useRootStore()
+        store.addMessage({
+          type: 'warning',
+          message: 'foo',
+        })
+        expect(Object.values(store.messages)).toEqual([{ type: 'warning', message: 'foo' }])
+      })
+    })
+
+    describe('removeMessage', () => {
+      it('removes a message from the store', () => {
+        const store = useRootStore()
+        store.messages = {
+          1: { type: 'warning', message: 'foo' },
+          2: { type: 'danger', message: 'bar' },
+        }
+        store.removeMessage(1)
+        expect(store.messages).toEqual({
+          2: { type: 'danger', message: 'bar' },
+        })
+      })
     })
   })
 })

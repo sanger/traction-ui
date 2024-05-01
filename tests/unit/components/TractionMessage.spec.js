@@ -57,6 +57,19 @@ describe('TractionMessage.vue', () => {
         'failure-icon',
       )
     })
+
+    it('displays warning style', () => {
+      wrapper = mount(TractionMessage, {
+        props: { ...requiredProps, type: 'warning' },
+      })
+      expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
+        'warning-message',
+      )
+      expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
+        'warning-icon',
+      )
+    })
+
     it('emits dismissed event on close button click', () => {
       wrapper = mount(TractionMessage, {
         props: { ...requiredProps, type: 'danger' },
