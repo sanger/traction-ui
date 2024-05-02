@@ -1,4 +1,9 @@
-import { createUsedAliquot, validate, payload } from '@/stores/utilities/pool'
+import {
+  createUsedAliquot,
+  validate,
+  payload,
+  validateFieldForUsedAliquot,
+} from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 
 describe('pool', () => {
@@ -64,6 +69,33 @@ describe('pool', () => {
       expect(used_aliquots['2'].errors).toEqual({
         insert_size: 'must be present',
         source_id: 'must be present',
+      })
+    })
+
+    it('returns false when a library volume is less than available volume', () => {
+      const used_aliquots = {
+        1: {
+          tag_id: 'tag1',
+          volume: 10,
+          concentration: 5,
+          insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
+          source_id: '1',
+          available_volume: 5,
+        },
+        2: {
+          tag_id: 'tag2',
+          volume: 10,
+          concentration: 5,
+          template_prep_kit_box_barcode: 'barcode1',
+          insert_size: 1000,
+          source_id: '1',
+        },
+      }
+
+      expect(validate({ used_aliquots, pool: {} })).toBe(false)
+      expect(used_aliquots['1'].errors).toEqual({
+        volume: 'must be less than available volume',
       })
     })
 
@@ -137,6 +169,45 @@ describe('pool', () => {
         Object.values(used_aliquots).every((library) => Object.keys(library.errors).length === 0),
       ).toBeTruthy()
       expect(Object.keys(pool.errors).length).toBe(0)
+    })
+  })
+
+  describe('validateFieldForUsedAliquot', () => {
+    describe('when value is passed in as prop', () => {
+      it('should return "must be present" if value is not provided', () => {
+        const used_aliquot = { test: 'abc' }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '')
+        expect(result).toBe('must be present')
+      })
+
+      it('should return undefined if value is provided', () => {
+        const used_aliquot = { test: '' }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '123')
+        expect(result).toBe('')
+      })
+      it('should return error if given volume is greater than available volume', () => {
+        const used_aliquot = { volume: 5, available_volume: 10 }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'volume', 15)
+        expect(result).toBe('must be less than available volume')
+      })
+    })
+    describe('when value not passed in as prop', () => {
+      it('should return undefined if value is in used_aliquot', () => {
+        const used_aliquot = { test: 'abc' }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'test')
+        expect(result).toBe('')
+      })
+      it('should return "must be present" if value is not in used_aliquot and is not provided', () => {
+        const used_aliquot = { test: 'abc' }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '')
+        expect(result).toBe('must be present')
+      })
+
+      it('should return error if aliquot volume is greater than available volume', () => {
+        const used_aliquot = { volume: 15, available_volume: 10 }
+        const result = validateFieldForUsedAliquot(used_aliquot, 'volume')
+        expect(result).toBe('must be less than available volume')
+      })
     })
   })
 

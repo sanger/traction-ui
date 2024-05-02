@@ -71,8 +71,9 @@ const validate = ({ used_aliquots, pool }) => {
   aliquotEntries.forEach(([key, used_aliquot]) => {
     const errors = {}
     requiredAliquotAttrs.forEach((field) => {
-      if (!used_aliquot[field]) {
-        errors[field] = 'must be present'
+      const error = validateFieldForUsedAliquot(used_aliquot, field)
+      if (error) {
+        errors[field] = error
         isValid = false
       }
     })
@@ -93,6 +94,37 @@ const validate = ({ used_aliquots, pool }) => {
   })
 
   return isValid
+}
+/**
+ * Validates a specific field for a used aliquot.
+ *
+ * @param {Object} used_aliquot - The used aliquot to validate.
+ * @param {string} field - The field to validate.
+ * @param {*} value - The value to validate. If null, the function will use the value of the field in the used aliquot.
+ * @returns {string} - Returns a string with the validation error message if the validation fails, otherwise returns an empty string.
+ *
+ * @example
+ * // Example usage:
+ * const aliquot = {
+ *   volume: 10,
+ *   available_volume: 20
+ * };
+ * console.log(validateFieldForUsedAliquot(aliquot, 'volume', 30)); // Outputs: 'must be less than available volume'
+ * console.log(validateFieldForUsedAliquot(aliquot, 'volume', 10)); // Outputs: ''
+ */
+const validateFieldForUsedAliquot = (used_aliquot, field, value) => {
+  const valueToCheck = value != null ? value : used_aliquot[field]
+  if (!valueToCheck) {
+    return 'must be present'
+  }
+  if (
+    field === 'volume' &&
+    used_aliquot.available_volume &&
+    valueToCheck > used_aliquot.available_volume
+  ) {
+    return 'must be less than available volume'
+  }
+  return ''
 }
 
 /**
@@ -138,4 +170,4 @@ const payload = ({ used_aliquots, pool }) => {
   }
 }
 
-export { usedAliquotAttributes, createUsedAliquot, validate, payload }
+export { usedAliquotAttributes, createUsedAliquot, validate, payload, validateFieldForUsedAliquot }

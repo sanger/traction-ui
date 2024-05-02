@@ -9,7 +9,7 @@ import { newResponse } from '@/api/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
 vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
+  checkFeatureFlag: vi.fn().mockReturnValue(Promise.resolve(true)),
 }))
 
 describe('usePacbioPoolCreateStore', () => {
@@ -1206,6 +1206,7 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: 100,
             request: '1',
             source_type: 'Pacbio::Library',
+            available_volume: null,
           },
           _2: {
             source_id: '2',
@@ -1230,7 +1231,6 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('clearPoolData', () => {
       it('clears the pool data', () => {
-        store.li
         store.clearPoolData()
         expect(store.resources).toEqual({
           requests: {},
@@ -1238,6 +1238,61 @@ describe('usePacbioPoolCreateStore', () => {
           wells: {},
           tubes: {},
           libraries: {},
+        })
+      })
+    })
+    describe('validateUsedAliquots', () => {
+      it('will not set errors if the requested field is valid', () => {
+        store.used_aliquots = {
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            request: '1',
+            source_type: 'Pacbio::Library',
+          },
+        }
+        store.validateUsedAliquot(store.used_aliquots['_2'], 'concentration')
+        expect(store.used_aliquots['_2'].errors).toBeUndefined()
+      })
+      it('will remove if errors exist for the requested field and it is valid', () => {
+        store.used_aliquots = {
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            request: '2',
+            source_type: 'Pacbio::Library',
+            errors: { concentration: ['error'] },
+          },
+        }
+        store.validateUsedAliquot(store.used_aliquots['_2'], 'concentration')
+        expect(store.used_aliquots['_2'].errors).toEqual({})
+      })
+      it('will add error if the requested field is invalid', () => {
+        store.used_aliquots = {
+          _2: {
+            source_id: '2',
+            tag_id: null,
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+            request: '2',
+            source_type: 'Pacbio::Library',
+            errors: { concentration: ['error'] },
+          },
+        }
+        store.validateUsedAliquot(store.used_aliquots['_2'], 'volume', '')
+        expect(store.used_aliquots['_2'].errors).toEqual({
+          concentration: ['error'],
+          volume: 'must be present',
         })
       })
     })

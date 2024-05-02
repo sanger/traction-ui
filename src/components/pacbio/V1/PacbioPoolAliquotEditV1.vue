@@ -34,26 +34,14 @@
       </traction-field-error>
     </traction-table-column>
     <traction-table-column>
-      <div class="flex w-full justify-end contents-end px-1"></div>
       <traction-field-error
         data-attribute="volume-error"
         :error="errorsFor('volume')"
         :with-icon="isValidationExists('volume')"
       >
         <traction-input v-model="volume" data-attribute="volume" placeholder="Volume" />
-        <div class="flex items-center px-1">
-          <traction-tooltip
-            v-show="aliquot.available_volume"
-            :tooltip-text="'Available volume is ' + aliquot.available_volume"
-          >
-            <traction-badge id="library-used-volume" colour="sanger-yellow"
-              ><TractionInfoIcon class="mr-1" />{{ aliquot.available_volume }}</traction-badge
-            >
-          </traction-tooltip>
-        </div>
       </traction-field-error>
     </traction-table-column>
-
     <traction-table-column>
       <traction-field-error
         data-attribute="concentration-error"
@@ -94,9 +82,6 @@
  */
 import { computed, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import TractionBadge from '@/components/shared/TractionBadge.vue'
-import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
-import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 
 const props = defineProps({
   /*
@@ -143,8 +128,6 @@ const fieldsThatRequireValidation = ref([]) // store the fields that have been a
 // store
 const store = usePacbioPoolCreateStore()
 
-const volumeCheckError = ref('')
-
 /**
  *The list of tags in the selected tag set ready for use in a select component
   The format is an array of objects with value and text properties
@@ -175,11 +158,15 @@ const aliquotSetter = (attr) => {
       return aliquot.value[attr]
     },
     set(newValue) {
+      if (newValue !== aliquot.value[attr]) {
+        // record that the attribute has been altered
+        fieldsThatRequireValidation.value[attr] = true
+        props.notify()
+      }
       store.updateUsedAliquot({
         request: aliquot.value.request,
         [attr]: newValue,
       })
-      store.validateUsedAliquot(aliquot.value, attr)
     },
   })
 }
@@ -203,7 +190,6 @@ const tag_id = computed({
       fieldsThatRequireValidation.value['tag_id'] = true
       props.notify()
     }
-    console.log('I AM INNNNN')
     store.applyTags({
       used_aliquots: { tag_id, request: aliquot.value.request },
       autoTag: props.autoTag,
@@ -231,5 +217,4 @@ const isValidationExists = (attribute) => {
     return !fieldsThatRequireValidation.value[attribute]
   }
 }
-store.validateUsedAliquot(aliquot.value, 'volume')
 </script>

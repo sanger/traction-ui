@@ -3,7 +3,12 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
+import {
+  validate,
+  payload,
+  createUsedAliquot,
+  validateFieldForUsedAliquot,
+} from '@/stores/utilities/pool.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
@@ -1000,15 +1005,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
+
         const autoFillLibraryAttributes = [
           'template_prep_kit_box_barcode',
           'volume',
           'concentration',
           'insert_size',
+          'available_volume',
         ]
         const library = Object.values(this.resources.libraries).find(
           (library) => library.request == id,
         )
+
         const libraryAttributes = library
           ? autoFillLibraryAttributes.reduce((result, key) => {
               result[key] = library[key] ?? null
@@ -1052,6 +1060,27 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const resources = this.resources
       this.$reset()
       this.resources = resources
+    },
+
+    validateUsedAliquot(used_aliquot_obj, field, value) {
+      // If the given used_aliquot object is not valid or does not have a 'source_id'property, return without doing anything.
+      if (
+        !used_aliquot_obj ||
+        typeof used_aliquot_obj !== 'object' ||
+        !used_aliquot_obj['request']
+      ) {
+        return
+      }
+      const used_aliquot = this.usedAliquotItem(used_aliquot_obj.request)
+      if (!used_aliquot) return
+      const error = validateFieldForUsedAliquot(used_aliquot, field, value)
+      if (!error) {
+        if (used_aliquot['errors']) {
+          delete used_aliquot['errors'][field]
+        }
+        return
+      }
+      used_aliquot['errors'] = { ...used_aliquot['errors'], [field]: error }
     },
   },
 })
