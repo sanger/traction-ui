@@ -386,7 +386,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(mockApiSplitData).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(store.pools).toEqual({})
-        expect(store.library_pools).toEqual({})
+        expect(store.libraries).toEqual({})
         expect(store.tags).toEqual(jsonapi.dataToObjectById({}))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({}))
         expect(store.tubes).toEqual(jsonapi.dataToObjectById({}))
@@ -734,7 +734,6 @@ describe('usePacbioRunCreateStore', () => {
           pools: {},
           tubes: {},
           libraries: {},
-          library_pools: {},
           requests: {},
           tags: {},
           smrtLinkVersion: {},

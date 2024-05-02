@@ -54,7 +54,7 @@
           </traction-button>
         </template>
         <template #row-details="row">
-          <PacbioLibraryEdit :library="row.item" @edit-completed="row.toggleDetails" />
+          <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="row.toggleDetails" />
         </template>
       </traction-table>
     </div>
@@ -213,5 +213,18 @@ const printLabels = async (printerName) => {
 
 const fetchLibraries = async () => {
   return await fetchWithQueryParams(librariesStore.fetchLibraries, state.filterOptions)
+}
+/**
+ * This function takes a row object and returns the corresponding library from the libraries list.
+ * The row object is expected to have an item property which in turn should have an id property.
+ * The function uses this id to find the corresponding library.
+ *
+ * @param {Object} row - The row object from which the library id is to be extracted.
+ *
+ * @returns {Object} The library object that matches the id from the row object. If no match is found, returns undefined.
+ */
+const getEditLibrary = (row) => {
+  const value = libraries.value.find((library) => library.id === row.item.id)
+  return value
 }
 </script>

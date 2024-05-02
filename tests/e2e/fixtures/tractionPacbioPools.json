@@ -118,7 +118,9 @@
           "ready_for_run": true,
           "errors": []
         },
-        "source_type": "Pacbio::Request"
+        "source_id": 1,
+        "source_type": "Pacbio::Request",
+        "tag_id": 26
       },
       "links": {
         "self": "/v1/pacbio/aliquots/1"
@@ -154,7 +156,9 @@
           "ready_for_run": true,
           "errors": []
         },
-        "source_type": "Pacbio::Request"
+        "source_id": "2",
+        "source_type": "Pacbio::Request",
+        "tag_id": 7
       },
       "links": {
         "self": "/v1/pacbio/aliquots/2"
