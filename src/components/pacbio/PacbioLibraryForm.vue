@@ -30,25 +30,14 @@
         <fieldset id="input-group-volume">
           <div class="relative flex flex-row">
             <traction-label class="ml-1 w-full">Volume</traction-label>
-
-            <div
+            <traction-tooltip
               v-if="formLibrary.used_volume"
-              id="library-used-volume-div"
-              class="justify-end contents-end px-1 relative"
-              @mouseover="hover = true"
-              @mouseleave="hover = false"
+              :tooltip-text="'Used volume is ' + formLibrary.used_volume"
             >
-              <div
-                v-show="hover"
-                id="library-used-volume-tooltip"
-                class="text-sm px-1 bg-gray-700 text-gray-100 absolute rounded bg-opacity-50 shadow-xl left-0 top-[-25px]"
-              >
-                Used volume is {{ formLibrary.used_volume }}
-              </div>
-              <traction-badge id="library-used-volume" colour="sanger-green"
+              <traction-badge id="library-used-volume" colour="sanger-yellow"
                 ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
               >
-            </div>
+            </traction-tooltip>
           </div>
           <traction-field-error
             data-attribute="volume-error"
@@ -165,6 +154,7 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
@@ -232,7 +222,6 @@ const tagOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag' }
   return [placeholder, ...pacbioRootStore.tagChoicesForId(selectedTagSetId.value)]
 })
-
 /**
  * @method errorForVolume
  * Sets the error message for the formLibrary if the volume is less than the used volume.
