@@ -179,6 +179,7 @@ const aliquotSetter = (attr) => {
         request: aliquot.value.request,
         [attr]: newValue,
       })
+      // Validate the given attribute in the aliquot object
       store.validateUsedAliquot(aliquot.value, attr)
     },
   })
@@ -203,7 +204,6 @@ const tag_id = computed({
       fieldsThatRequireValidation.value['tag_id'] = true
       props.notify()
     }
-    console.log('I AM INNNNN')
     store.applyTags({
       used_aliquots: { tag_id, request: aliquot.value.request },
       autoTag: props.autoTag,
@@ -231,5 +231,10 @@ const isValidationExists = (attribute) => {
     return !fieldsThatRequireValidation.value[attribute]
   }
 }
-store.validateUsedAliquot(aliquot.value, 'volume')
+/*
+  This is to display any volume error for a library request on mounting component in case 
+  the auto-filled volume (original volume of library) is greater than the available volume
+ */
+aliquot.value.source_type === 'Pacbio::Library' &&
+  store.validateUsedAliquot(aliquot.value, 'volume')
 </script>

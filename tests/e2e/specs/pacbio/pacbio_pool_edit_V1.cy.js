@@ -19,13 +19,6 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
     })
-
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        dpl_1072_check_library_volume_in_pools: { enabled: true },
-      },
-    })
   })
 
   it('updates pool information on clicking requests table rows', () => {
@@ -86,15 +79,18 @@ describe('Pacbio Pool Edit', () => {
         cy.get('[data-attribute=insert-size-error-icon]').within(() => {
           cy.get('[data-attribute=pass]').should('be.visible')
         })
-        cy.get('[data-attribute=volume]').type('20', { force: true })
-        cy.get('[data-attribute=volume-error-icon]').within(() => {
-          cy.get('[data-attribute=fail]').should('be.visible')
-        })
-        cy.get('[data-attribute=volume-error]').within(() => {
-          cy.contains('must be less than available volume')
-        })
+        cy.get('[data-attribute=insert-size]').clear()
+        cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
       })
     cy.get('[data-action=update-pool]').click()
+    cy.get('[data-type=pool-aliquot-edit]')
+      .first()
+      .within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=fail]').should('be.visible')
+        })
+      })
     cy.contains('[data-type=pool-create-message]', 'The pool is invalid')
   })
 })

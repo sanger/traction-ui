@@ -1,16 +1,7 @@
 <template>
   <div v-if="store.selectedRequests" data-type="pool-library-list">
     <traction-table :fields="state.headerFields" simple>
-       <PacbioPoolAliquotEditV1
-            v-for="request in store.selectedRequests"
-            :key="request.id"
-            :request="request"
-            :auto-tag="props.autoTag"
-            :validated="props.validated"
-            :notify="props.notify"
-          ></PacbioPoolAliquotEditV1
-        >
-      <!-- <flagged-feature name="dpl_1072_check_library_volume_in_pools">
+      <flagged-feature name="dpl_1072_check_library_volume_in_pools">
         <PacbioPoolAliquotEdit
           v-for="request in store.selectedRequests"
           :key="request.id"
@@ -29,7 +20,7 @@
             :notify="props.notify"
           ></PacbioPoolAliquotEditV1
         ></template>
-      </flagged-feature> -->
+      </flagged-feature>
     </traction-table>
   </div>
 </template>

@@ -1062,6 +1062,17 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       this.resources = resources
     },
 
+    /**
+     * Validates the given field in used aliquot object.
+     *
+     * @param {Object} used_aliquot_obj - The used aliquot object to validate.
+     * @param {string} field - The field to validate.
+     * @param {any} value - The value to validate is optional.If not provided, the value from the used_aliquot object is used.
+     * @returns {void}
+     *
+     * @example
+     * validateUsedAliquot({ request: 'request1' }, 'field1', 'value1');
+     */
     validateUsedAliquot(used_aliquot_obj, field, value) {
       // If the given used_aliquot object is not valid or does not have a 'source_id'property, return without doing anything.
       if (
@@ -1071,6 +1082,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       ) {
         return
       }
+      // Get the used aliquot item based on the request id to ensure the used aliquot exists
       const used_aliquot = this.usedAliquotItem(used_aliquot_obj.request)
       if (!used_aliquot) return
       const error = validateFieldForUsedAliquot(used_aliquot, field, value)
