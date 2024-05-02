@@ -9,7 +9,7 @@ import { newResponse } from '@/api/v1/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
 vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(Promise.resolve(true)),
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))
 
 describe('usePacbioPoolCreateStore', () => {
@@ -1257,6 +1257,7 @@ describe('usePacbioPoolCreateStore', () => {
               insert_size: 100,
               request: '1',
               source_type: 'Pacbio::Library',
+              available_volume: null,
             },
             _2: {
               source_id: '2',
@@ -1329,6 +1330,7 @@ describe('usePacbioPoolCreateStore', () => {
               insert_size: 100,
               request: '1',
               source_type: 'Pacbio::Library',
+              available_volume: null,
             },
             _2: {
               source_id: '2',
@@ -1412,6 +1414,7 @@ describe('usePacbioPoolCreateStore', () => {
               insert_size: 100,
               request: '1',
               source_type: 'Pacbio::Library',
+              available_volume: null,
             },
             _2: {
               source_id: '2',
