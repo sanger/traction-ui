@@ -1,4 +1,4 @@
-import handlePromise from '@/api/PromiseHelper'
+import handlePromise from '@/api/v1/PromiseHelper'
 
 const setTags = async ({ getters, commit }) => {
   const request = getters.tagsRequest

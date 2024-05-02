@@ -1,6 +1,6 @@
 import { mount, Data, store } from '@support/testHelper'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('PacbioSampleMetadataEdit.vue', () => {
   let wrapper, modal, props, mockSamples

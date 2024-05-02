@@ -1,4 +1,4 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/requests/actions'
 import { Data } from '@support/testHelper'
 

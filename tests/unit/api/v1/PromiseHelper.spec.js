@@ -1,5 +1,5 @@
-import * as PromiseHelper from '@/api/PromiseHelper'
-import Api from '@/api'
+import * as PromiseHelper from '@/api/v1/PromiseHelper'
+import Response from '@/api/v1/Response'
 
 describe('PromiseHelper', () => {
   describe('handlePromise', () => {
@@ -29,7 +29,7 @@ describe('PromiseHelper', () => {
         })
 
         const response = await PromiseHelper.handlePromise(promise)
-        expect(response).toBeInstanceOf(Api.Response)
+        expect(response).toBeInstanceOf(Response)
 
         expect(response.status).toEqual(200)
         expect(response.statusText).toEqual('OK')
@@ -56,7 +56,7 @@ describe('PromiseHelper', () => {
         })
 
         const response = await PromiseHelper.handlePromise(promise)
-        expect(response).toBeInstanceOf(Api.Response)
+        expect(response).toBeInstanceOf(Response)
 
         expect(response.status).toEqual(422)
         const message =

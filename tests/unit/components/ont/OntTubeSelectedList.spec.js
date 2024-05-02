@@ -1,6 +1,6 @@
 import { mount, store, Data, nextTick } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { expect } from 'vitest'
 
 describe('OntTubeSelectedList', () => {

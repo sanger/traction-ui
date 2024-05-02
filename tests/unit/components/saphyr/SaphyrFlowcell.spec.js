@@ -1,7 +1,7 @@
 import { mount, Data, store } from '@support/testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
-import * as Run from '@/api/SaphyrRun'
-import Response from '@/api/Response'
+import * as Run from '@/api/v1/SaphyrRun.js'
+import Response from '@/api/v1/Response'
 
 describe('Flowcell', () => {
   let wrapper, flowcell, props

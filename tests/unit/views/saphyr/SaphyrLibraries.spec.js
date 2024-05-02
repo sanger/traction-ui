@@ -1,6 +1,6 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, store, Data } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries

@@ -5,7 +5,7 @@ import useRootStore from '@/stores'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pool.js'
-import { newResponse } from '@/api/ResponseHelper.js'
+import { newResponse } from '@/api/v1/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 
 vi.mock('@/api/FeatureFlag', () => ({
@@ -29,6 +29,7 @@ describe('usePacbioPoolCreateStore', () => {
       tags: [],
     },
   }
+
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -38,9 +39,11 @@ describe('usePacbioPoolCreateStore', () => {
 
   describe('getters', () => {
     let store
+
     beforeEach(() => {
       store = usePacbioPoolCreateStore()
     })
+
     it('returns the selected tag set', () => {
       const tagSet = { id: '1' }
       const pacbioRootStore = usePacbioRootStore()
@@ -48,6 +51,7 @@ describe('usePacbioPoolCreateStore', () => {
       store.selected.tagSet = tagSet
       expect(store.selectedTagSet).toEqual(tagSets['1'])
     })
+
     it('return the selected plates', () => {
       const plates = {
         1: {
@@ -60,6 +64,7 @@ describe('usePacbioPoolCreateStore', () => {
       store.selected.plates = plates
       expect(store.selectedPlates).toEqual(Object.values(plates))
     })
+
     it('returns the selected requests', () => {
       const payload = Data.PacbioRequestsRequest.data
       const requestResources = payload.data
@@ -116,6 +121,7 @@ describe('usePacbioPoolCreateStore', () => {
         { ...requests['3'], selected: true },
       ])
     })
+
     describe('well list', () => {
       const wells = {
         1: { id: '1', position: 'A1' },
@@ -185,6 +191,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.requestList(ids).length).toEqual(ids.length)
       })
     })
+
     it('returns used_aliquotsItems', () => {
       const used_aliquots = {
         _3: {
@@ -227,8 +234,10 @@ describe('usePacbioPoolCreateStore', () => {
       })
     })
   })
+
   describe('actions', () => {
     let store, pacbioRootStore, rootStore
+
     beforeEach(() => {
       store = usePacbioPoolCreateStore()
       pacbioRootStore = usePacbioRootStore()
@@ -241,11 +250,13 @@ describe('usePacbioPoolCreateStore', () => {
         pacbioRootStore.tagSets = Data.AutoTagStore.resources.tagSets
         pacbioRootStore.tags = Data.AutoTagStore.resources.tags
       })
+
       it('will not update used_aliquots when given with invalid values', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
         store.autoTagPlate({})
         expect(store.used_aliquots).toEqual(initialUsedAliquots)
       })
+
       it('updates all used_aliquots of same plate with a new tag ', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
         store.autoTagPlate({ source_id: '1', request: '1', tag_id: '130' })
@@ -308,17 +319,20 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.updateUsedAliquot).toHaveBeenCalledTimes(5)
       })
     })
+
     describe('autoTagTube', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         pacbioRootStore.tagSets = Data.AutoTagStore.resources.tagSets
         pacbioRootStore.tags = Data.AutoTagStore.resources.tags
       })
+
       it('will not update used_aliquots when given with invalid values', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
         store.autoTagTube({})
         expect(store.used_aliquots).toEqual(initialUsedAliquots)
       })
+
       it('updates all used_aliquots of same tube with a new tag ', () => {
         const initialUsedAliquots = { ...store.used_aliquots }
         store.autoTagTube({ source_id: '97', request: '97', tag_id: '130' })
@@ -361,17 +375,20 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.updateUsedAliquot).toHaveBeenCalledTimes(1)
       })
     })
+
     describe('requestForPlate', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         store.selected.plates = {}
         store.selectPlate = vi.fn()
       })
+
       it('returns the request for a given plate', () => {
         const request = store.requestsForPlate('DN1', 'A1')
         expect(request).toEqual({ success: true, requestIds: ['1'] })
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: true })
       })
+
       it('gives an error when the plate is not found', () => {
         const request = store.requestsForPlate('DN55', 'A1')
         expect(request).toEqual({
@@ -381,6 +398,7 @@ describe('usePacbioPoolCreateStore', () => {
         })
         expect(store.selectPlate).not.toBeCalled()
       })
+
       it('gives an error when the well is not found', () => {
         const request = store.requestsForPlate('DN1', 'A16')
         expect(request).toEqual({
@@ -390,6 +408,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: true })
       })
     })
+
     describe('requestForTube', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
@@ -402,6 +421,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(request).toEqual({ success: true, requestIds: ['97'] })
         expect(store.selectTube).toBeCalledWith({ id: '1', selected: true })
       })
+
       it('gives an error when the tube is not found', () => {
         const request = store.requestsForPlate('DN55')
         expect(store.selectTube).not.toBeCalled()
@@ -419,39 +439,47 @@ describe('usePacbioPoolCreateStore', () => {
         store.requestsForPlate = vi.fn()
         store.requestsForTube = vi.fn()
       })
+
       it('returns the requests for a plate', () => {
         store.findRequestsForSource({ barcode: 'DN1', wellName: 'A1' })
         expect(store.requestsForPlate).toBeCalledWith('DN1', 'A1')
       })
+
       it('returns the requests for a tube', () => {
         store.findRequestsForSource({ barcode: '3980000001795' })
         expect(store.requestsForTube).toBeCalledWith('3980000001795')
       })
     })
+
     describe('selectWellRequests', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         store.selectRequest = vi.fn()
       })
+
       it('selects the requests for a given well', () => {
         store.selectWellRequests('1')
         expect(store.selectRequest).toBeCalledWith({ id: '1', selected: false })
       })
     })
+
     describe('updateUsedAliquot', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
       })
+
       it('updates the used_aliquot with the given values', () => {
         store.updateUsedAliquot({ request: '1', source_id: '1', tag_id: '130' })
         expect(store.used_aliquots['_1'].tag_id).toEqual('130')
       })
+
       it('will not update the used_aliquot when given no source_id given', () => {
         const initialUsedAliquot = { ...store.used_aliquots['_1'] }
         store.updateUsedAliquot({ tag_id: '130' })
         expect(store.used_aliquots['_1']).toEqual(initialUsedAliquot)
       })
     })
+
     describe('desselectPlateAndContents', () => {
       it('deselects the plate and its contents', () => {
         store.$state = Data.AutoTagStore
@@ -462,17 +490,20 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.selectRequest).toBeCalledTimes(48)
       })
     })
+
     describe('desselectTubeAndContents', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         store.selectTube = vi.fn()
         store.selectRequest = vi.fn()
       })
+
       it('deselects the tube and its contents', () => {
         store.deselectTubeAndContents('2')
         expect(store.selectTube).toBeCalledWith({ id: '2', selected: false })
         expect(store.selectRequest).toBeCalledWith({ id: '98', selected: false })
       })
+
       it('will not deselect the tube when given invalid barcode', () => {
         store.deselectTubeAndContents('TRAC-2-22')
         expect(store.selectTube).not.toBeCalled()
@@ -482,10 +513,12 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('createPool', () => {
       let create
+
       beforeEach(() => {
         create = vi.fn()
         rootStore.api = { traction: { pacbio: { pools: { create } } } }
       })
+
       const used_aliquot1 = {
         source_id: '1',
         source_type: 'Pacbio::Request',
@@ -601,6 +634,7 @@ describe('usePacbioPoolCreateStore', () => {
       }
 
       let update, used_aliquots
+
       beforeEach(() => {
         update = vi.fn()
         rootStore.api = { traction: { pacbio: { pools: { update } } } }
@@ -659,6 +693,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('populateUsedAliquotsFromPool', () => {
       let find
+
       beforeEach(() => {
         find = vi.fn()
         rootStore.api = { traction: { pacbio: { pools: { find } } } }
@@ -667,6 +702,7 @@ describe('usePacbioPoolCreateStore', () => {
         pacbioRootStore.tags = Data.TractionPacbioTagSets.data.included
         store.selected = { tagset: {}, plates: {}, tubes: {} }
       })
+
       it('handles success', async () => {
         find.mockResolvedValue(Data.TractionPacbioPool)
         const { success } = await store.populateUsedAliquotsFromPool()
@@ -742,6 +778,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.autoTagPlate).not.toHaveBeenCalled()
         expect(store.autoTagTube).not.toHaveBeenCalled()
       })
+
       it('calls autoTagPlate when autoTag is true and the used_aliquot given has a request with well', async () => {
         const used_aliquots = { request: '13', tag_id: '130' }
         const autoTag = true
@@ -756,6 +793,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.autoTagPlate).toHaveBeenCalledWith(used_aliquots)
         expect(store.autoTagTube).not.toHaveBeenCalled()
       })
+
       it('calls autoTagTube when autoTag is true and the used_aliquot given has a request with no well attribute', async () => {
         const used_aliquots = { request: '97', tag_id: '130' }
         const autoTag = true
@@ -777,6 +815,7 @@ describe('usePacbioPoolCreateStore', () => {
         lines: 3,
         records: 2,
       }
+
       beforeEach(() => {
         store.$reset()
         store.$state = Data.AutoTagStore
@@ -809,6 +848,7 @@ describe('usePacbioPoolCreateStore', () => {
           134: { id: '134', type: 'tags', oligo: 'CTCTGCTCTGACTCTCT', group_id: 'bc1028T' },
         }
       })
+
       it('updates the corresponding used_aliquot', async () => {
         const record = {
           source: 'DN1:A10',
@@ -880,6 +920,7 @@ describe('usePacbioPoolCreateStore', () => {
           'DN34 could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
         )
       })
+
       it('records an error when the well cant be found', async () => {
         const record = {
           source: 'DN1:X13',
@@ -964,10 +1005,12 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('findPacbioPlate', () => {
       const get = vi.fn()
+
       beforeEach(() => {
         rootStore.api = { traction: { pacbio: { plates: { get } } } }
         store.selectPlate = vi.fn()
       })
+
       it('returns the plate that fits the valid plate barcode', async () => {
         get.mockResolvedValue(Data.PacbioPlateRequest)
 
@@ -1009,10 +1052,12 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('findPacbioTube', () => {
       const get = vi.fn()
+
       beforeEach(() => {
         rootStore.api = { traction: { pacbio: { tubes: { get } } } }
         store.selectPlate = vi.fn()
       })
+
       it('returns the tube that fits the valid tube barcode', async () => {
         get.mockResolvedValue(Data.PacbioTubeRequest)
         store.selectTube = vi.fn()
@@ -1066,6 +1111,7 @@ describe('usePacbioPoolCreateStore', () => {
           2: { id: '2', selected: true },
         })
       })
+
       it('deselects a plate when selected is false', () => {
         store.selected = {
           plates: {
@@ -1077,6 +1123,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.selected.plates).toEqual({})
       })
     })
+
     describe('selectTube', () => {
       it('selects a tube by default', () => {
         store.selected = {
@@ -1095,6 +1142,7 @@ describe('usePacbioPoolCreateStore', () => {
           2: { id: '2', selected: true },
         })
       })
+
       it('deselects a tube when selected is false', () => {
         store.selected = {
           tubes: {
@@ -1106,6 +1154,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.selected.tubes).toEqual({})
       })
     })
+
     describe('selectRequest', () => {
       it('selects a request by default', () => {
         store.used_aliquots = {
@@ -1120,7 +1169,6 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           },
         }
-
         store.resources.requests = {
           1: {
             tube: '2',
@@ -1156,6 +1204,7 @@ describe('usePacbioPoolCreateStore', () => {
           },
         })
       })
+
       it('deselects a tube when selected is false', () => {
         store.used_aliquots = {
           _1: { source_id: '1', request: '1', tag_id: '1' },
@@ -1164,60 +1213,222 @@ describe('usePacbioPoolCreateStore', () => {
         //We expect the tube to be removed in the selected plates
         expect(store.used_aliquots).toEqual({})
       })
-      it('updates template_prep_kit_box_barcode,volume,concentration,insert_size if request is associated with library', () => {
-        store.used_aliquots = {
-          _2: {
-            source_id: '2',
-            source_type: 'Pacbio::Request',
-            request: '2',
-            tag_id: null,
-            template_prep_kit_box_barcode: null,
-            volume: null,
-            concentration: null,
-            insert_size: null,
-          },
-        }
 
-        store.resources.requests = {
-          1: {
-            id: '1',
-          },
-        }
-        store.resources.libraries = {
-          2: {
-            id: '2',
-            type: 'libraries',
-            template_prep_kit_box_barcode: 'ABC1',
-            volume: 1,
-            concentration: 1,
-            insert_size: 100,
-            request: '1',
-          },
-        }
-        store.selectRequest({ id: '1' })
+      describe('when selecting a library', () => {
+        it('updates template_prep_kit_box_barcode,volume,concentration,insert_size when tag_id is null', () => {
+          store.used_aliquots = {
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          }
+          store.resources.requests = {
+            1: {
+              id: '1',
+            },
+          }
+          store.resources.libraries = {
+            2: {
+              id: '2',
+              type: 'libraries',
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              tag_id: null,
+            },
+          }
+          store.selectRequest({ id: '1' })
 
-        expect(store.used_aliquots).toEqual({
-          _1: {
-            source_id: '2',
-            tag_id: null,
-            template_prep_kit_box_barcode: 'ABC1',
-            volume: 1,
-            concentration: 1,
-            insert_size: 100,
-            request: '1',
-            source_type: 'Pacbio::Library',
-            available_volume: null,
-          },
-          _2: {
-            source_id: '2',
-            source_type: 'Pacbio::Request',
-            request: '2',
-            tag_id: null,
-            template_prep_kit_box_barcode: null,
-            volume: null,
-            concentration: null,
-            insert_size: null,
-          },
+          expect(store.used_aliquots).toEqual({
+            _1: {
+              source_id: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              source_type: 'Pacbio::Library',
+            },
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          })
+        })
+
+        it('updates library data and tag_id when tag_id is present and no tagset has been selected', () => {
+          store.used_aliquots = {
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          }
+          store.resources.requests = {
+            1: {
+              id: '1',
+            },
+          }
+          store.resources.libraries = {
+            2: {
+              id: '2',
+              type: 'libraries',
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              tag_id: 129,
+            },
+          }
+          pacbioRootStore.tagSets = {
+            3: {
+              id: '3',
+              type: 'tag_sets',
+              name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+              uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+              pipeline: 'pacbio',
+              tags: ['129', '130'],
+            },
+          }
+          pacbioRootStore.tags = {
+            129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+            130: { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
+          }
+
+          store.selected.tagSet = {}
+          store.selectRequest({ id: '1' })
+
+          expect(store.used_aliquots).toEqual({
+            _1: {
+              source_id: '2',
+              tag_id: 129,
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              source_type: 'Pacbio::Library',
+            },
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          })
+          expect(store.selected.tagSet).toEqual({ id: '3' })
+        })
+
+        it('updates library data but not the tag_id when tag_id is present but not part of the selected tag set', () => {
+          store.used_aliquots = {
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          }
+          store.resources.requests = {
+            1: {
+              id: '1',
+            },
+          }
+          store.resources.libraries = {
+            2: {
+              id: '2',
+              type: 'libraries',
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              tag_id: 131,
+            },
+          }
+          pacbioRootStore.tagSets = {
+            3: {
+              id: '3',
+              type: 'tag_sets',
+              name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+              uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+              pipeline: 'pacbio',
+              tags: ['129', '130'],
+            },
+            4: {
+              id: '4',
+              type: 'tag_sets',
+              name: 'Sequel_48_Microbial_Barcoded_OHA_v2',
+              uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+              pipeline: 'pacbio',
+              tags: ['131'],
+            },
+          }
+          pacbioRootStore.tags = {
+            129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+            130: { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
+            131: { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
+          }
+
+          rootStore.addVuexMessage = vi.fn()
+          store.selectTagSet('3')
+          store.selectRequest({ id: '1' })
+
+          expect(store.used_aliquots).toEqual({
+            _1: {
+              source_id: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              source_type: 'Pacbio::Library',
+            },
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          })
+          // Adds a warning message to root store
+          expect(rootStore.addVuexMessage).toHaveBeenCalledWith({
+            message: 'Library tag not populated as bc1023T is not in the selected tag group',
+            type: 'warning',
+          })
         })
       })
     })

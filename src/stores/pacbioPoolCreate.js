@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
-import { handleResponse } from '@/api/ResponseHelper.js'
+import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import {
@@ -1012,6 +1012,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           'concentration',
           'insert_size',
           'available_volume',
+          'tag_id',
         ]
         const library = Object.values(this.resources.libraries).find(
           (library) => library.request == id,
@@ -1023,6 +1024,32 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
               return result
             }, {})
           : {}
+
+        /* 
+          if the library has a tag id we want to select the tag_set if its not already selected
+          unless the tag doesn't match the existing selected tag_set
+        */
+        if (libraryAttributes.tag_id) {
+          const rootStore = useRootStore()
+          const selectedTagSet = this.selected.tagSet
+          const pacbioRootStore = usePacbioRootStore()
+          const tagSet = pacbioRootStore.tagsetForTagId(libraryAttributes.tag_id)
+          const tag = pacbioRootStore.tags[libraryAttributes.tag_id]
+
+          // If there is no selected tag set, select the tag set for the library if it exists
+          if (!selectedTagSet.id && tagSet) {
+            this.selectTagSet(tagSet.id)
+          }
+
+          // If the selectedTagSet is not the same as the tagSet and the tag exists, add a message and remove the tag from the library
+          if (this.selected.tagSet.id !== tagSet.id && libraryAttributes.tag_id) {
+            rootStore.addVuexMessage({
+              type: 'warning',
+              message: `Library tag not populated as ${tag.group_id || 'tag'} is not in the selected tag group`,
+            })
+            libraryAttributes.tag_id = null
+          }
+        }
 
         const source_id = library ? library.id : id
         this.used_aliquots[`_${id}`] = {

@@ -1,4 +1,4 @@
-import handlePromise from '@/api/PromiseHelper'
+import handlePromise from '@/api/v1/PromiseHelper'
 
 const setRequests = async ({ commit, getters }) => {
   const request = getters.requestsRequest

@@ -1,6 +1,6 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
 import { mount, store, Data, flushPromises } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('Runs.vue', () => {
   const pipeline = 'saphyr'

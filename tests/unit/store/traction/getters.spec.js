@@ -1,4 +1,4 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { Data } from '@support/testHelper'
 import getters from '@/store/traction/getters'
 

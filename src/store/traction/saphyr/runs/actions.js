@@ -1,5 +1,5 @@
-import handlePromise from '@/api/PromiseHelper'
-import * as Run from '@/api/SaphyrRun'
+import handlePromise from '@/api/v1/PromiseHelper'
+import * as Run from '@/api/v1/SaphyrRun'
 
 const setRuns = async ({ commit, getters }) => {
   const request = getters.runRequest

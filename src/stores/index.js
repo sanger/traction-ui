@@ -1,9 +1,9 @@
 import config from '@/api/Config'
-import build from '@/api/ApiBuilder'
+import build from '@/api/v1/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import PlateMap from '@/config/PlateMap'
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper.js'
+import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
 
@@ -72,6 +72,11 @@ const useRootStore = defineStore('root', {
       this.messages = {}
     },
 
+    //TODO: This need to be removed once we converted all stores to Pinia
+    addVuexMessage({ type, message }) {
+      store.commit('traction/addMessage', { type, message })
+    },
+
     /**
      * Adds a CSV log message with the given information, error, and type.
      * The type defaults to 'danger' if not provided.
@@ -89,7 +94,7 @@ const useRootStore = defineStore('root', {
     addCSVLogMessage(info, error, type = 'danger') {
       this.addMessage({ type, message: errorFor(info, error) }, { root: true })
       //TODO: This need to be removed once we converted all stores to Pinia
-      store.commit('traction/addMessage', { type, message: errorFor(info, error) })
+      this.addVuexMessage({ type, message: errorFor(info, error) })
     },
   },
 })

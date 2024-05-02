@@ -1,4 +1,4 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/mutations'
 import { expect } from 'vitest'

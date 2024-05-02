@@ -1,8 +1,8 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import useRootStore from '@/stores'
 import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
-import { newResponse } from '@/api/ResponseHelper.js'
+import { newResponse } from '@/api/v1/ResponseHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
