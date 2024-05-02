@@ -1,7 +1,7 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/runs/actions'
 import { Data } from '@support/testHelper'
-import * as Run from '@/api/SaphyrRun'
+import * as Run from '@/api/v1/SaphyrRun.js'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse

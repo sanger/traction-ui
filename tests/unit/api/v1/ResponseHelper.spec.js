@@ -1,4 +1,4 @@
-import { handleResponse, newResponse } from '@/api/ResponseHelper'
+import { handleResponse, newResponse } from '@/api/v1/ResponseHelper'
 
 describe('ResponseHelper', () => {
   describe('createResponse', () => {

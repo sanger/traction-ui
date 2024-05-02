@@ -1,6 +1,6 @@
 import ONTRuns from '@/views/ont/ONTRunIndex'
 import { mount, store, Data, router, flushPromises } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('ONTRuns.vue', () => {
   let wrapper, runs, mockRuns

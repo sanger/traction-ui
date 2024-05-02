@@ -1,6 +1,6 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, store, Data, router } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('Samples.vue', () => {
   let wrapper, samples

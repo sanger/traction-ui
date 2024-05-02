@@ -1,9 +1,9 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
-import { newResponse } from '@/api/ResponseHelper'
+import { newResponse } from '@/api/v1/ResponseHelper'
 import { extractAttributes } from '@/api/JsonApi'
 
 describe('usePacbioRunsStore', () => {

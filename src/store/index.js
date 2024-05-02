@@ -60,7 +60,7 @@
 
 import { createStore } from 'vuex'
 import config from '@/api/Config'
-import build from '@/api/ApiBuilder'
+import build from '@/api/v1/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import traction from '@/store/traction'
 import printMyBarcode from '@/store/printMyBarcode'

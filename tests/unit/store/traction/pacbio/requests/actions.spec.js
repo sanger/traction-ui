@@ -1,8 +1,8 @@
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { Data } from '@support/testHelper'
 import { expect } from 'vitest'
-import { newResponse } from '@/api/ResponseHelper'
+import { newResponse } from '@/api/v1/ResponseHelper'
 
 let requests
 

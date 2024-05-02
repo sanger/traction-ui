@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { wellFor, wellToIndex } from './wellHelpers'
 import { validate, valid, payload } from './pool'

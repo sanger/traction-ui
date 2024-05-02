@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 

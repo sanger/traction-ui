@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'

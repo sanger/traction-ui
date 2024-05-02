@@ -1,4 +1,4 @@
-import Api from '@/api'
+import Response from '@/api/v1/Response'
 
 /*
  * Note: Please see handleResponse for updated handling of responses,
@@ -32,7 +32,7 @@ const handlePromise = async (promise) => {
       throw resp
     }
   }
-  const response = new Api.Response(rawResponse)
+  const response = new Response(rawResponse)
   return response
 }
 
