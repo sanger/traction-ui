@@ -8,7 +8,7 @@
     <div
       v-show="hover"
       id="tooltip-text"
-      class="text-sm px-1 bg-yellow-400 text-gray-500 absolute rounded bg-opacity-50 shadow-xl left-0 top-[-25px]"
+      class="text-sm px-1 bg-yellow-400 text-gray-700 absolute rounded bg-opacity-75 shadow-xl left-0 top-[-25px]"
     >
       {{ tooltipText }}
     </div>
