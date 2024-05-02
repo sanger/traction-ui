@@ -132,7 +132,7 @@
       "attributes": {
         "state": "pending",
         "volume": 1,
-        "available_volume": 10,
+        "available_volume": 5,
         "concentration": 1,
         "template_prep_kit_box_barcode": "2424",
         "insert_size": 1,
