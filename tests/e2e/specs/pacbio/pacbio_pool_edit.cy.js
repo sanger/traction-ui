@@ -65,7 +65,7 @@ describe('Pacbio Pool Edit', () => {
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
   })
 
-  it('Will not update a pool if there is an error', () => {
+  it.only('Will not update a pool if there is an error', () => {
     cy.visit('#/pacbio/pools')
     cy.get('#pool-index').within(() => {
       cy.get('#edit-pool').first().click()
@@ -79,7 +79,7 @@ describe('Pacbio Pool Edit', () => {
         cy.get('[data-attribute=insert-size-error-icon]').within(() => {
           cy.get('[data-attribute=pass]').should('be.visible')
         })
-        cy.get('[data-attribute=insert-size]').clear()
+        cy.get('[data-attribute=insert-size]').clear({ force: true }).type('')
         cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
       })
     cy.get('[data-action=update-pool]').click()

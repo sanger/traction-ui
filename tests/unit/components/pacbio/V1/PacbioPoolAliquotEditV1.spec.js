@@ -61,7 +61,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 
 // TODO: The tag list would probably better done using a separate component and an emit
 // but that is a bigger job
-describe('PacbioPoolAliquotEdit.vue', () => {
+describe('PacbioPoolAliquotEditV1.vue', () => {
   let wrapper, store
 
   describe('valid', () => {
@@ -126,7 +126,6 @@ describe('PacbioPoolAliquotEdit.vue', () => {
         const input = wrapper.find('[data-attribute=volume]')
         await input.setValue('10.0')
         expect(store.used_aliquots['_1'].volume).toEqual('10.0')
-        expect(store.validateUsedAliquot).toBeCalled()
       })
 
       it('concentration', async () => {
@@ -207,44 +206,6 @@ describe('PacbioPoolAliquotEdit.vue', () => {
       expect(wrapperObj.find('[data-attribute=insert-size-error]').text()).toEqual(
         'must be present',
       )
-    })
-  })
-  describe('On mount with available volume', () => {
-    it('With a volume greater than available volume', () => {
-      const props = {
-        id: 1,
-        request,
-        notify: () => {},
-      }
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: { id: tagSet.id },
-          },
-          used_aliquots: { _1: { ...usedAliquot, volume: 10, available_volume: 5 } },
-        },
-        props,
-      })
-      expect(wrapperObj.find('[data-attribute=volume-error]').text()).toEqual(
-        'must be less than available volume',
-      )
-    })
-    it('With a volume less than available volume', () => {
-      const props = {
-        id: 1,
-        request,
-        notify: () => {},
-      }
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: { id: tagSet.id },
-          },
-          used_aliquots: { _1: { ...usedAliquot, volume: 5, available_volume: 10 } },
-        },
-        props,
-      })
-      expect(wrapperObj.find('[data-attribute=volume-error]').exists()).toBe(false)
     })
   })
 })

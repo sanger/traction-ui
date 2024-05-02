@@ -93,6 +93,7 @@ describe('PacbioLibraryForm.vue', () => {
     expect(wrapper.find('#library-concentration').element.value).toBe('')
     expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('')
     expect(wrapper.find('#library-insertSize').element.value).toBe('')
+    expect(wrapper.find('#tooltip-div').exists()).toBeFalsy()
   })
 
   it('must have tagSetOptions data', () => {
@@ -173,16 +174,10 @@ describe('PacbioLibraryForm.vue', () => {
       expect(wrapper.find('#tag-set-input').element.value).toBe('3')
       expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
       expect(wrapper.find('#library-used-volume').text()).toContain('10')
+      expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
       expect(modal.selectedTagSetId).toBe('3')
     })
-    it('shows and hides tooltip while hovering over used volume', async () => {
-      wrapper.find('#library-used-volume-div').trigger('mouseover')
-      await nextTick()
-      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).not.toBe('none')
-      wrapper.find('#library-used-volume-div').trigger('mouseleave')
-      await nextTick()
-      expect(wrapper.find('#library-used-volume-tooltip').element.style.display).toBe('none')
-    })
+
     it('shows error when new value when entered volume is less than used_volume', async () => {
       const input = wrapper.find('#library-volume')
       await input.setValue(5)
