@@ -87,9 +87,6 @@ describe('Pacbio Pool Edit', () => {
           cy.get('[data-attribute=pass]').should('be.visible')
         })
         cy.get('[data-attribute=volume]').type('20', { force: true })
-        cy.get('[data-attribute=volume-error-icon]').within(() => {
-          cy.get('[data-attribute=fail]').should('be.visible')
-        })
         cy.get('[data-attribute=volume-error]').within(() => {
           cy.contains('must be less than available volume')
         })

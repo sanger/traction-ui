@@ -143,8 +143,6 @@ const fieldsThatRequireValidation = ref([]) // store the fields that have been a
 // store
 const store = usePacbioPoolCreateStore()
 
-const volumeCheckError = ref('')
-
 /**
  *The list of tags in the selected tag set ready for use in a select component
   The format is an array of objects with value and text properties

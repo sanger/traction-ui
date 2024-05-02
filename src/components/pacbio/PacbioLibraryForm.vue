@@ -174,11 +174,6 @@ const props = defineProps({
   },
 })
 
-/* A reactive reference to a boolean value indicating whether the element is being hovered over.
-  This will be used to show the used volume tooltip when the user hovers over the used volume badge.
- */
-const hover = ref(false)
-
 /*
 formLibrary is a reactive variable, so it will update when the library prop changes
 initialize formLibrary with the library prop
