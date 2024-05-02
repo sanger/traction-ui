@@ -29,7 +29,7 @@
       <flagged-feature name="dpl_1070_check_primary_aliquot_library_volume">
         <fieldset id="input-group-volume">
           <div class="relative flex flex-row">
-            <traction-label class="ml-1 w-full">Volume</traction-label>
+            <traction-label class="ml-1 w-full">Initial Volume</traction-label>
             <traction-tooltip
               v-if="formLibrary.used_volume"
               :tooltip-text="'Used volume is ' + formLibrary.used_volume"
