@@ -663,7 +663,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           if (usedAliquot.source_type == 'Pacbio::Request') {
             usedAliquot.request = usedAliquot.source_id
           } else {
-            debugger
             // If the source is a library, set the request to the library request
             usedAliquot.request = this.resources.libraries[usedAliquot.source_id].request
             //Set the available volume to be the sum of the available volume and the volume of the used aliquot
