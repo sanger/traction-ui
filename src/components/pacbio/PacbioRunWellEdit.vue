@@ -17,22 +17,22 @@
     </fieldset>
 
     <traction-table
-      id="wellPoolsAndLibraries"
+      id="wellUsedAliquots"
       stacked
-      :items="localPoolsAndLibraries"
-      :fields="wellPoolsLibrariesFields"
+      :items="localUsedAliquots"
+      :fields="wellUsedAliquotsFields"
     >
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
         <traction-form classes="flex flex-wrap items-center">
           <traction-input
-            id="poolLibraryBarcode"
-            ref="poolLibraryBarcode"
+            id="usedAliquotSourceBarcode"
+            ref="usedAliquotSourceBarcode"
             :model-value="`${row.item.barcode}`"
             placeholder="Pool/Library barcode"
             :debounce="500"
-            @update:model-value="updatePoolLibraryBarcode(row, $event)"
+            @update:model-value="updateUsedAliquotSource(row, $event)"
           ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
@@ -88,9 +88,9 @@ defineProps({
 // well object
 const well = ref({})
 // local pools and libraries which are added to the well
-const localPoolsAndLibraries = ref([])
+const localUsedAliquots = ref([])
 // fields for the well pools and libraries table
-const wellPoolsLibrariesFields = ref([{ key: 'barcode', label: 'Barcode' }])
+const wellUsedAliquotsFields = ref([{ key: 'barcode', label: 'Barcode' }])
 // isShow ref to determine if the modal is visible
 const isShow = ref(false)
 // position ref to store the position of the well
@@ -130,36 +130,20 @@ const action = computed(() => {
       }
 })
 
-/* `addRow` is a function that adds a new row to the `localPoolsAndLibraries` array.
-  Each row is an object with an `id` and `barcode`, both initialized as empty strings.*/
+/* `addRow` is a function that adds a new row to the `localUsedAliquots` array.
+  Each row is an object with an `id`, and `barcode`, both initialized as empty strings.*/
 const addRow = () => {
-  localPoolsAndLibraries.value.push({ id: '', barcode: '' })
+  localUsedAliquots.value.push({ id: '', barcode: '', source_id: '', source_type: '' })
 }
 
-/* `removeRow` is a function that removes a row from the `localPoolsAndLibraries` array.*/
+/* `removeRow` is a function that removes a row from the `localUsedAliquots` array.*/
 const removeRow = (row) => {
-  localPoolsAndLibraries.value.splice(row.index, 1)
+  localUsedAliquots.value.splice(row.index, 1)
 }
 
-/* `idsByType` is a function that returns an array of ids based on the type (pools or libraries).*/
-const idsByType = (type) => {
-  return localPoolsAndLibraries.value.filter((item) => item.type === type).map((item) => item.id)
-}
-
-/* `wellPayload` is a computed property that returns the well object with the pools and libraries ids.*/
-const wellPayload = computed(() => {
-  return {
-    ...well.value,
-    pools: idsByType('pools'),
-    libraries: idsByType('libraries'),
-  }
-})
-
-/* `removeInvalidPools` is a function that removes invalid pools from the `localPoolsAndLibraries` array.*/
-const removeInvalidPools = () => {
-  localPoolsAndLibraries.value = localPoolsAndLibraries.value.filter(
-    (item) => item.id && item.barcode,
-  )
+/* `filteredAliquots` is a function that returns a list of valid aliquots from the `localUsedAliquots` array.*/
+const filteredAliquots = () => {
+  return localUsedAliquots.value.filter((item) => item.barcode)
 }
 
 /* `formatLoadingTargetValue` is a function that formats the loading target value.*/
@@ -172,6 +156,7 @@ const formatLoadingTargetValue = (val) => {
     }
   }
 }
+
 /* `disableAdaptiveLoadingInput` is a function that disables the adaptive loading input.*/
 const disableAdaptiveLoadingInput = () => {
   well.value.loading_target_p1_plus_p2 = ''
@@ -184,6 +169,7 @@ const showModalForPositionAndPlate = async (positionValue, plateNumberValue) => 
   await setupWell()
   isShow.value = true
 }
+
 /**Expose the showModalForPositionAndPlate function to the parent component
  * By using `defineExpose`, we're telling Vue that `showModalForPositionAndPlate` is a public method that can be accessed by other components.
  ***/
@@ -195,30 +181,31 @@ defineExpose({
 const hide = () => {
   isShow.value = false
 }
+
 //update function is used to update the well
 const update = () => {
-  removeInvalidPools()
-  store.updateWell({ well: wellPayload.value, plateNumber: plateNumber.value })
+  well.value.used_aliquots = filteredAliquots()
+  store.updateWell({ well: well.value, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
+
 //removeWell function is used to remove the well
 const removeWell = () => {
-  store.deleteWell({ well: wellPayload.value, plateNumber: plateNumber.value })
+  store.deleteWell({ well: well.value, plateNumber: plateNumber.value })
   showAlert('Well successfully deleted', 'success')
   hide()
 }
-//updatePoolLibraryBarcode function is used to update the pool or library barcode
-const updatePoolLibraryBarcode = async (row, barcode) => {
+
+//updateUsedAliquotSource function is used to update the pool or library barcode
+const updateUsedAliquotSource = async (row, barcode) => {
   const index = row.index
   await store.findPoolsOrLibrariesByTube({ barcode })
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
-    tubeContent.type === 'libraries'
-      ? (localPoolsAndLibraries.value[index] = { id: tubeContent.id, barcode, type: 'libraries' })
-      : tubeContent.type === 'pools'
-        ? (localPoolsAndLibraries.value[index] = { id: tubeContent.id, barcode, type: 'pools' })
-        : null
+    const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+    const id = row.item.id || ''
+    localUsedAliquots.value[index] = { id, source_id: tubeContent.id, source_type: type, barcode }
   } else {
     showAlert('Pool is not valid', 'danger')
   }
@@ -226,20 +213,19 @@ const updatePoolLibraryBarcode = async (row, barcode) => {
 
 /**
  * setupWell function is used to setup the well by fetching the well object from the store
- * and populating the localPoolsAndLibraries array with the pools and libraries associated with the well.
+ * and populating the localUsedAliquots array with the used_aliquots associated with the well.
  * This function is called when the modal is shown for a specific position and plate number.
  */
 const setupWell = async () => {
   well.value = await store.getOrCreateWell(position.value, plateNumber.value)
-  localPoolsAndLibraries.value = []
-  well.value.pools?.forEach((id) => {
-    const pool = store.tubeContents.find((tubeContent) => tubeContent.id == id)
-    pool ? localPoolsAndLibraries.value.push({ id, barcode: pool.barcode, type: 'pools' }) : null
-  })
-  well.value.libraries?.forEach((id) => {
-    const library = store.tubeContents.find((tubeContent) => tubeContent.id == id)
-    library
-      ? localPoolsAndLibraries.value.push({ id, barcode: library.barcode, type: 'libraries' })
+  localUsedAliquots.value = []
+  well.value.used_aliquots.forEach((aliquot) => {
+    const type = aliquot.source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
+    const poolOrLibrary = store.tubeContents.find(
+      (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
+    )
+    poolOrLibrary
+      ? localUsedAliquots.value.push({ ...aliquot, barcode: poolOrLibrary.barcode })
       : null
   })
 }

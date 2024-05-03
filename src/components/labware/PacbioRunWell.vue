@@ -14,7 +14,7 @@
       <p class="truncate font-light">{{ position }}</p>
     </div>
     <span
-      v-if="hasPoolsOrLibraries && hover"
+      v-show="hasUsedAliquots && hover"
       class="absolute z-1 bg-black text-white text-xs p-2 rounded"
       data-attribute="tooltip"
     >
@@ -122,20 +122,25 @@ const storeWell = computed(() => {
  * @returns {string} - The tooltip for the well.
  */
 const tooltip = computed(() => {
-  return [...storeWell.value.pools, ...storeWell.value.libraries]
-    .map((id) => {
-      return store.tubeContents.find((tubeContent) => id == tubeContent.id).barcode
-    })
-    .filter(Boolean)
-    .join(',')
+  return storeWell.value?.used_aliquots
+    ? [...storeWell.value.used_aliquots]
+        .map(({ source_id, source_type }) => {
+          const type = source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
+          return store.tubeContents.find(
+            (tubeContent) => source_id == tubeContent.id && type == tubeContent.type,
+          ).barcode
+        })
+        .filter(Boolean)
+        .join(',')
+    : ''
 })
 
 /*
  * Computed property that returns whether the well has pools or libraries.
  * @returns {boolean} - Whether the well has pools or libraries.
  */
-const hasPoolsOrLibraries = computed(() => {
-  return storeWell.value?.pools.length > 0 || storeWell.value?.libraries.length > 0
+const hasUsedAliquots = computed(() => {
+  return storeWell.value?.used_aliquots.length > 0
 })
 
 /*
@@ -159,10 +164,10 @@ const hasSomeMetadata = computed(() => {
  * @returns {string} - The status of the well.
  */
 const status = computed(() => {
-  if (hasPoolsOrLibraries.value && hasValidMetadata.value) {
+  if (hasUsedAliquots.value && hasValidMetadata.value) {
     // Complete
     return 'bg-success text-white'
-  } else if (hasPoolsOrLibraries.value || hasSomeMetadata.value) {
+  } else if (hasUsedAliquots.value || hasSomeMetadata.value) {
     // Incomplete
     return 'bg-failure text-white'
   }
@@ -185,7 +190,7 @@ const onClick = () => {
  */
 const drop = async (event) => {
   hover.value = false
-  await updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
+  await updateUsedAliquotSource(event.dataTransfer.getData('barcode'))
 }
 
 /*
@@ -193,10 +198,12 @@ const drop = async (event) => {
  * Fetches the well object from the store and updates the pools or libraries array with the barcode.
  * @param {string} barcode - The barcode of the pool or library.
  */
-const updatePoolLibraryBarcode = async (barcode) => {
+const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
   const { id, type } = store.tubeContentByBarcode(barcode)
-  type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
+  // should move to a createUsedAliquot method
+  const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+  well.used_aliquots.push({ id: '', source_id: id, source_type, barcode })
   store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>
