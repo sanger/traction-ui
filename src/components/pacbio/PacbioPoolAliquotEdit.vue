@@ -40,9 +40,9 @@
         :with-icon="isValidationExists('volume')"
       >
         <traction-input v-model="volume" data-attribute="volume" placeholder="Volume" />
-        <div class="flex items-center px-1">
+        <div class="flex items-center px-1" data-attribute="available-volume-div">
           <traction-tooltip
-            v-show="aliquot.available_volume"
+            v-show="aliquot.available_volume != null"
             :tooltip-text="'Available volume is ' + aliquot.available_volume"
           >
             <traction-badge id="library-used-volume" colour="sanger-yellow"
@@ -228,10 +228,4 @@ const isValidationExists = (attribute) => {
     return !fieldsThatRequireValidation.value[attribute]
   }
 }
-/*
-  This is to display any volume error for a library request on mounting component in case 
-  the auto-filled volume (original volume of library) is greater than the available volume
- */
-aliquot.value.source_type === 'Pacbio::Library' &&
-  store.validateUsedAliquot(aliquot.value, 'volume')
 </script>

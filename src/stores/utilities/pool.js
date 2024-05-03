@@ -109,7 +109,7 @@ const validate = ({ used_aliquots, pool }) => {
  *   volume: 10,
  *   available_volume: 20
  * };
- * console.log(validateFieldForUsedAliquot(aliquot, 'volume', 30)); // Outputs: 'must be less than available volume'
+ * console.log(validateFieldForUsedAliquot(aliquot, 'volume', 30)); // Outputs: 'must be less or equal to available volume'
  * console.log(validateFieldForUsedAliquot(aliquot, 'volume', 10)); // Outputs: ''
  */
 const validateFieldForUsedAliquot = (used_aliquot, field, value) => {
@@ -119,10 +119,10 @@ const validateFieldForUsedAliquot = (used_aliquot, field, value) => {
   }
   if (
     field === 'volume' &&
-    used_aliquot.available_volume &&
+    used_aliquot.available_volume != null &&
     valueToCheck > used_aliquot.available_volume
   ) {
-    return 'must be less than available volume'
+    return 'must be less or equal to available volume'
   }
   return ''
 }

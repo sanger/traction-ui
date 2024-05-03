@@ -95,7 +95,7 @@ describe('pool', () => {
 
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
       expect(used_aliquots['1'].errors).toEqual({
-        volume: 'must be less than available volume',
+        volume: 'must be less or equal to available volume',
       })
     })
 
@@ -188,7 +188,7 @@ describe('pool', () => {
       it('should return error if given volume is greater than available volume', () => {
         const used_aliquot = { volume: 5, available_volume: 10 }
         const result = validateFieldForUsedAliquot(used_aliquot, 'volume', 15)
-        expect(result).toBe('must be less than available volume')
+        expect(result).toBe('must be less or equal to available volume')
       })
     })
     describe('when value not passed in as prop', () => {
@@ -206,7 +206,7 @@ describe('pool', () => {
       it('should return error if aliquot volume is greater than available volume', () => {
         const used_aliquot = { volume: 15, available_volume: 10 }
         const result = validateFieldForUsedAliquot(used_aliquot, 'volume')
-        expect(result).toBe('must be less than available volume')
+        expect(result).toBe('must be less or equal to available volume')
       })
     })
   })

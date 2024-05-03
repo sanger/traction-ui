@@ -209,46 +209,4 @@ describe('PacbioPoolAliquotEdit.vue', () => {
       )
     })
   })
-  describe('On mount with available volume', () => {
-    it('displays error for libray if the volume is greater than available volume', () => {
-      const props = {
-        id: 1,
-        request,
-        notify: () => {},
-      }
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: { id: tagSet.id },
-          },
-          used_aliquots: {
-            _1: { ...usedAliquot, volume: 10, available_volume: 5, source_type: 'Pacbio::Library' },
-          },
-        },
-        props,
-      })
-      expect(wrapperObj.find('[data-attribute=volume-error]').text()).toEqual(
-        'must be less than available volume',
-      )
-    })
-    it('displays no error if the volume is lesser than available volume', () => {
-      const props = {
-        id: 1,
-        request,
-        notify: () => {},
-      }
-      const { wrapperObj } = mountWithStore({
-        state: {
-          selected: {
-            tagSet: { id: tagSet.id },
-          },
-          used_aliquots: {
-            _1: { ...usedAliquot, volume: 5, available_volume: 10, source_type: 'Pacbio::Library' },
-          },
-        },
-        props,
-      })
-      expect(wrapperObj.find('[data-attribute=volume-error]').exists()).toBe(false)
-    })
-  })
 })

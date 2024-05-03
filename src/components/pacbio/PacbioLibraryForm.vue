@@ -31,7 +31,7 @@
           <div class="relative flex flex-row">
             <traction-label class="ml-1 w-full">Initial Volume</traction-label>
             <traction-tooltip
-              v-if="formLibrary.used_volume"
+              v-if="formLibrary.used_volume != null"
               :tooltip-text="'Used volume is ' + formLibrary.used_volume"
             >
               <traction-badge id="library-used-volume" colour="sanger-yellow"

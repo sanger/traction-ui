@@ -657,9 +657,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           data: aliquots,
           includeRelationships: true,
         })
-
         // Set the used_aliquots
         Object.values(usedAliquots).forEach((usedAliquot) => {
+          // Creates a request association for the used aliquot based on the source type
+          if (usedAliquot.source_type == 'Pacbio::Request') {
+            usedAliquot.request = usedAliquot.source_id
+          } else {
+            debugger
+            // If the source is a library, set the request to the library request
+            usedAliquot.request = this.resources.libraries[usedAliquot.source_id].request
+            //Set the available volume to be the sum of the available volume and the volume of the used aliquot
+            usedAliquot.available_volume =
+              this.resources.libraries[usedAliquot.source_id].available_volume + usedAliquot.volume
+          }
           // Creates a request association for the used aliquot based on the source type
           usedAliquot.request =
             usedAliquot.source_type == 'Pacbio::Request'
@@ -1057,6 +1067,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           ...libraryAttributes,
           source_type: this.sourceTypeForRequest(this.resources.requests[id]),
         }
+        // Validate the used aliquot if the request is from library
+        library && this.validateUsedAliquot(library, 'volume')
       } else {
         delete this.used_aliquots[`_${id}`]
       }
@@ -1101,7 +1113,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * validateUsedAliquot({ request: 'request1' }, 'field1', 'value1');
      */
     validateUsedAliquot(used_aliquot_obj, field, value) {
-      // If the given used_aliquot object is not valid or does not have a 'source_id'property, return without doing anything.
+      // If the given used_aliquot object is not valid or does not have a 'request' property, return without doing anything.
       if (
         !used_aliquot_obj ||
         typeof used_aliquot_obj !== 'object' ||

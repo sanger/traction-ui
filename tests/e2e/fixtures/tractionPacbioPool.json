@@ -2561,7 +2561,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:F4",
         "pacbio_request_id": 30,
-        "tag_id": null
+        "tag_id": null,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {

@@ -1433,6 +1433,122 @@ describe('usePacbioPoolCreateStore', () => {
             type: 'warning',
           })
         })
+        it('updates volume error in used aliquot when volume is greater than available volume', () => {
+          store.used_aliquots = {
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          }
+          store.resources.requests = {
+            1: {
+              id: '1',
+            },
+          }
+          store.resources.libraries = {
+            2: {
+              id: '2',
+              type: 'libraries',
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 15,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              tag_id: null,
+              available_volume: 5,
+            },
+          }
+          store.selectRequest({ id: '1' })
+
+          expect(store.used_aliquots).toEqual({
+            _1: {
+              source_id: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 15,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              source_type: 'Pacbio::Library',
+              available_volume: 5,
+              errors: { volume: 'must be less or equal to available volume' },
+            },
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          })
+        })
+
+        it('does not error in used aliquot when volume is less than available volume', () => {
+          store.used_aliquots = {
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          }
+          store.resources.requests = {
+            1: {
+              id: '1',
+            },
+          }
+          store.resources.libraries = {
+            2: {
+              id: '2',
+              type: 'libraries',
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              tag_id: null,
+              available_volume: 5,
+            },
+          }
+          store.selectRequest({ id: '1' })
+
+          expect(store.used_aliquots).toEqual({
+            _1: {
+              source_id: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: 'ABC1',
+              volume: 1,
+              concentration: 1,
+              insert_size: 100,
+              request: '1',
+              source_type: 'Pacbio::Library',
+              available_volume: 5,
+            },
+            _2: {
+              source_id: '2',
+              source_type: 'Pacbio::Request',
+              request: '2',
+              tag_id: null,
+              template_prep_kit_box_barcode: null,
+              volume: null,
+              concentration: null,
+              insert_size: null,
+            },
+          })
+        })
       })
     })
 

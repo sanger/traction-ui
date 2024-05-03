@@ -82,13 +82,14 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-type=pool-aliquot-edit]')
       .first()
       .within(() => {
+        cy.get('[data-attribute=available-volume-div]').contains('6')
         cy.get('[data-attribute=volume-error-icon]').should('be.visible')
         cy.get('[data-attribute=volume-error-icon]').within(() => {
           cy.get('[data-attribute=pass]').should('be.visible')
         })
         cy.get('[data-attribute=volume]').focus().should('not.be.disabled').type('8')
         cy.get('[data-attribute=volume-error]').within(() => {
-          cy.contains('must be less than available volume')
+          cy.contains('must be less or equal to available volume')
         })
         cy.get('[data-attribute=volume-error-icon]').within(() => {
           cy.get('[data-attribute=fail]').should('be.visible')
