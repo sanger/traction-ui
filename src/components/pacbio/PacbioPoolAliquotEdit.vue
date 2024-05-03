@@ -34,7 +34,6 @@
       </traction-field-error>
     </traction-table-column>
     <traction-table-column>
-      <div class="flex w-full justify-end contents-end px-1"></div>
       <traction-field-error
         data-attribute="volume-error"
         :error="errorsFor('volume')"
