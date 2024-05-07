@@ -81,7 +81,7 @@ describe('usePrintingStore', () => {
       })
     })
 
-    describe.skip('#createPrintJob', () => {
+    describe('#createPrintJob', () => {
       const printJobOptions = {
         printerName: 'my_printer',
         labels: [
@@ -99,12 +99,16 @@ describe('usePrintingStore', () => {
 
       it('successful', async () => {
         const store = usePrintingStore()
-        const create = vi.fn()
         const tubeLabelTemplateName = 'tube_label_template'
+        store.tubeLabelTemplateName = tubeLabelTemplateName
+
         const mockResponse = {
           status: '201',
         }
 
+        const rootStore = useRootStore()
+        const create = vi.fn()
+        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         const { success, message } = await store.createPrintJob({ ...printJobOptions })
@@ -120,7 +124,6 @@ describe('usePrintingStore', () => {
 
       it('unsuccessful', async () => {
         const store = usePrintingStore()
-        const create = vi.fn()
         const mockResponse = {
           status: '422',
           response: {
@@ -137,6 +140,9 @@ describe('usePrintingStore', () => {
           },
         }
 
+        const create = vi.fn()
+        const rootStore = useRootStore()
+        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
         create.mockRejectedValue(mockResponse)
 
         // eslint-disable-next-line no-unused-vars

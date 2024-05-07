@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse as handleResponseV1 } from '@/api/v1/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
@@ -35,7 +36,7 @@ export const usePrintingStore = defineStore('printing', {
 
       const promise = request.create({ data: payload })
 
-      const response = await handleResponse(promise)
+      const response = await handleResponseV1(promise)
 
       const { success, data, errors } = response
 
@@ -62,7 +63,6 @@ export const usePrintingStore = defineStore('printing', {
 
       const response = await handleResponse(promise)
 
-      // const { success, data: { data } = {}, errors = [] } = response
       const {
         success,
         body: { data },
