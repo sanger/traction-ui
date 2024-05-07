@@ -5,9 +5,14 @@ import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
 
+const usedAliquots = {
+  1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
+  2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '14' },
+  3: { id: '3', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '30' },
+}
 const storeWell = {
   position: 'A1',
-  used_aliquots: ['1', '2', '3'],
+  used_aliquots: [usedAliquots['1'], usedAliquots['2'], usedAliquots['3']],
   on_plate_loading_concentration: 234,
   movie_time: 15,
   generate_hifi: 'In SMRT Link',
@@ -17,13 +22,6 @@ const storeWell = {
   library_concentration: 123,
   polymerase_kit: '123',
   pre_extension_time: 1,
-  libraries: ['30'],
-  pools: ['12', '14'],
-}
-const usedAliquots = {
-  1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
-  2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '14' },
-  3: { id: '3', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '30' },
 }
 const props = {
   position: 'A1',
@@ -108,10 +106,10 @@ describe('PacbioRunWell.vue', () => {
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
-      it('will be invalid if there are no pools or libraries in the store', () => {
+      it('will be invalid if there are no used_aliquots in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null, libraries: [], pools: [] } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: [] } } },
           },
         })
 
@@ -125,16 +123,14 @@ describe('PacbioRunWell.vue', () => {
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
-      it('will be empty if there are no pools or metadata', () => {
+      it('will be empty if there are no used_aliquots or metadata', () => {
         const { wrapperObj } = mountWithStore({
           state: {
             wells: {
               1: {
                 A1: {
                   ...storeWell,
-                  used_aliquots: null,
-                  libraries: [],
-                  pools: [],
+                  used_aliquots: [],
                   movie_time: '',
                   generate_hifi: '',
                   ccs_analysis_output: '',
@@ -173,10 +169,10 @@ describe('PacbioRunWell.vue', () => {
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
-      it('will be invalid if there are no pools or libraries in the store', () => {
+      it('will be invalid if there are no used_aliquots in the store', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: null, pools: [], libraries: [] } } },
+            wells: { 1: { A1: { ...storeWell, used_aliquots: [] } } },
             smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
@@ -189,16 +185,14 @@ describe('PacbioRunWell.vue', () => {
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
-      it('will be empty if there are no pools, libraries or metadata', () => {
+      it('will be empty if there are no used_aliquots or metadata', () => {
         const { wrapperObj } = mountWithStore({
           state: {
             wells: {
               1: {
                 A1: {
                   ...storeWell,
-                  used_aliquots: null,
-                  pools: [],
-                  libraries: [],
+                  used_aliquots: [],
                   movie_acquisition_time: '',
                   polymerase_kit: '',
                   pre_extension_time: '',
@@ -220,7 +214,7 @@ describe('PacbioRunWell.vue', () => {
   // TRAC-2-22 - pools - 12
   // TRAC-2-24 - pools - 14
 
-  describe('updatePoolLibraryBarcode', () => {
+  describe('updateUsedAliquotSource', () => {
     let expectedWell
 
     it('adds the pool to the well', async () => {
@@ -232,9 +226,7 @@ describe('PacbioRunWell.vue', () => {
             1: {
               A1: {
                 ...storeWell,
-                used_aliquots: null,
-                pools: [],
-                libraries: [],
+                used_aliquots: [],
               },
             },
           },
@@ -247,9 +239,13 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
-      expectedWell.pools.push('12')
-      await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
+      expectedWell = {
+        ...storeWell,
+        used_aliquots: [
+          { barcode: 'TRAC-2-22', id: '', source_id: '12', source_type: 'Pacbio::Pool' },
+        ],
+      }
+      await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
         well: expectedWell,
         plateNumber: props.plateNumber,
@@ -265,9 +261,7 @@ describe('PacbioRunWell.vue', () => {
             1: {
               A1: {
                 ...storeWell,
-                used_aliquots: null,
-                pools: [],
-                libraries: [],
+                used_aliquots: [],
               },
             },
           },
@@ -280,9 +274,13 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = { ...storeWell, used_aliquots: null, pools: [], libraries: [] }
-      expectedWell.libraries.push('30')
-      await wrapperObj.vm.updatePoolLibraryBarcode(newBarcode)
+      expectedWell = {
+        ...storeWell,
+        used_aliquots: [
+          { barcode: 'TRAC-2-20', id: '', source_id: '30', source_type: 'Pacbio::Library' },
+        ],
+      }
+      await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
       expect(updateWellMockFn).toBeCalledWith({
         well: expectedWell,
         plateNumber: props.plateNumber,
@@ -291,60 +289,24 @@ describe('PacbioRunWell.vue', () => {
   })
 
   describe('tooltip', () => {
-    it('will be visible if there are pools', async () => {
+    it('will not be empty if used_aliquots are empty', () => {
       const { wrapperObj } = mountWithStore({
         state: {
           wells: {
             1: {
               A1: {
                 ...storeWell,
-                used_aliquots: ['1', '2'],
-                libraries: [],
-                pools: ['12', '14'],
+                used_aliquots: [],
               },
             },
           },
-          ...storePools,
-          aliquots: { ...usedAliquots, ...storePools.aliquots },
         },
       })
-
-      wrapperObj.vm.hover = true
-      await nextTick()
-
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
-      // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-22,TRAC-2-24'
-      expect(tooltip.text()).toEqual(expected)
+      expect(tooltip.text()).toEqual('')
     })
 
-    it('will be visible if there are libraries', async () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          wells: {
-            1: {
-              A1: {
-                ...storeWell,
-                used_aliquots: ['3'],
-                libraries: ['30'],
-                pools: [],
-              },
-            },
-          },
-          ...storePools,
-          aliquots: { ...usedAliquots, ...storePools.aliquots },
-        },
-      })
-      wrapperObj.vm.hover = true
-      await nextTick()
-
-      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
-      // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-20'
-      expect(tooltip.text()).toEqual(expected)
-    })
-
-    it('will be visible if there are pools and libraries', async () => {
+    it('will be visible if there are used_aliquots sourced from pools or libraries', async () => {
       wrapper.vm.hover = true
       await nextTick()
 
@@ -378,8 +340,18 @@ describe('PacbioRunWell.vue', () => {
       await nextTick()
       expect(store.updateWell).toBeCalledWith({
         // 30 is the id of the library with the barcode being used
-        // 30 is seen twice because the library is being added a second time
-        well: { ...storeWell, libraries: ['30', '30'] },
+        well: {
+          ...storeWell,
+          used_aliquots: [
+            ...Object.values(usedAliquots),
+            {
+              id: '',
+              source_id: '30',
+              source_type: 'Pacbio::Library',
+              barcode: 'TRAC-2-20',
+            },
+          ],
+        },
         plateNumber: 1,
       })
     })

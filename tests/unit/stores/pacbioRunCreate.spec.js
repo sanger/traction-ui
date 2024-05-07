@@ -196,7 +196,13 @@ describe('usePacbioRunCreateStore', () => {
       const position = 'A1'
 
       it('if it exists', () => {
-        const well = newWell({ position, used_aliquots: ['1', '2'], pools: ['1', '2'] })
+        const well = newWell({
+          position,
+          used_aliquots: [
+            { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
+            { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
+          ],
+        })
         const store = usePacbioRunCreateStore()
         store.$state = {
           ...store.$state,
@@ -213,7 +219,10 @@ describe('usePacbioRunCreateStore', () => {
         }
         const gottenWell = store.getWell(plateNumber, position)
         expect(gottenWell.position).toEqual(position)
-        expect(gottenWell.pools).toEqual(['1', '2'])
+        expect(gottenWell.used_aliquots).toEqual([
+          { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
+          { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
+        ])
       })
 
       it('if the well does not exist', () => {
@@ -244,7 +253,7 @@ describe('usePacbioRunCreateStore', () => {
     const wells = {
       1: {
         A1: { ...newWell({ position: 'A1' }) },
-        A2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
+        A2: { ...newWell({ position: 'A2' }) },
         _destroy: [],
       },
     }
