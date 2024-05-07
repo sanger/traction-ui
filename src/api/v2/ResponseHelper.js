@@ -43,12 +43,13 @@ const parseErrorArray = (errors) =>
   errors.map(({ title, detail }) => `${title} ${detail}`).join(', ')
 
 /*
- * @param {Object} e.g. { success = true, data: { id: 1}, errors = { error1: ['nasty'], error2: ['broken', 'crushed'], }, error = 'there was an error', error = { title: 'Invalid field', detail: 'tag_group is not a valid includable relationship of tags', code: '112', status: '400',
- * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
+ * @param {Object} e.g. { success = true, body: { data: { id: 1 } }, errors = { error1: ['nasty'], error2: ['broken', 'crushed'], }, error = 'there was an error', error = { title: 'Invalid field', detail: 'tag_group is not a valid includable relationship of tags', code: '112', status: '400',
+ * it is better to use body rather than data. No overlapping and more in keeping with standard approach
+ * @returns { Boolean, {Object}, String} { success, body, errors } e.g. { success: true, body: {data: { id: 1}}} or {success: false, errors: 'there was an error'}
  */
-const newResponse = ({ success, data = null, errors = null, error = null }) => ({
+const newResponse = ({ success, body = {}, errors = null, error = null }) => ({
   success,
-  data,
+  body,
   // we need to parse the errors into something viewable
   errors: !success ? parseErrors(errors, error) : undefined,
 })
@@ -69,7 +70,8 @@ const handleResponse = async (promise) => {
       return newResponse({ success: false, ...response })
     }
 
-    return newResponse({ success: rawResponse.ok, data: response })
+    // we add the response to the body
+    return newResponse({ success: rawResponse.ok, body: response })
     // rejects the promise if the fetch was unsuccessful
   } catch (error) {
     // we only want this to output during development or production
