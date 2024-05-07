@@ -63,7 +63,11 @@ export const usePrintingStore = defineStore('printing', {
       const response = await handleResponse(promise)
 
       // const { success, data: { data } = {}, errors = [] } = response
-      const { success, data = {}, errors = [] } = response
+      const {
+        success,
+        body: { data },
+        errors = [],
+      } = response
 
       if (success) {
         // populate printers in store

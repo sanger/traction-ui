@@ -47,7 +47,7 @@ describe('usePrintingStore', () => {
 
   describe('actions', () => {
     // need to fix fetch API implementation
-    describe.skip('#fetchPrinters', () => {
+    describe('#fetchPrinters', () => {
       it('successful', async () => {
         //Mock useRootStore
         const rootStore = useRootStore()
@@ -61,7 +61,7 @@ describe('usePrintingStore', () => {
 
         const { success } = await store.fetchPrinters()
 
-        expect(store.resources.printers).toEqual(jsonapi.dataToObjectById({ data: printers.data }))
+        expect(store.resources.printers).toEqual(jsonapi.dataToObjectById({ ...printers }))
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
@@ -100,7 +100,6 @@ describe('usePrintingStore', () => {
       it('successful', async () => {
         const store = usePrintingStore()
         const create = vi.fn()
-        //const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
         const tubeLabelTemplateName = 'tube_label_template'
         const mockResponse = {
           status: '201',
@@ -122,7 +121,6 @@ describe('usePrintingStore', () => {
       it('unsuccessful', async () => {
         const store = usePrintingStore()
         const create = vi.fn()
-        // const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
         const mockResponse = {
           status: '422',
           response: {
