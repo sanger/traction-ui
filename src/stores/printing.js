@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v1/ResponseHelper'
-import store from '@/store'
+import { handleResponse } from '@/api/v2/ResponseHelper'
+import { dataToObjectById } from '@/api/JsonApi'
+import useRootStore from '@/stores'
 
 export const usePrintingStore = defineStore('printing', {
   state: () => ({
-    printers: [],
+    resources: {
+      printers: {},
+    },
     tubeLabelTemplateName: import.meta.env.VITE_TUBE_LABEL_TEMPLATE_NAME,
   }),
   actions: {
@@ -18,8 +21,10 @@ export const usePrintingStore = defineStore('printing', {
      * @returns {Object {success: Boolean, message: String}} Is the print job successful? With a success or failure message
      **/
     async createPrintJob({ printerName, labels, copies }) {
+      const rootStore = useRootStore()
+
       // extract the request from the rootState
-      const request = store.state.api.printMyBarcode.print_jobs
+      const request = rootStore.api.printMyBarcode.print_jobs
 
       const payload = {
         printer_name: printerName,
@@ -46,6 +51,25 @@ export const usePrintingStore = defineStore('printing', {
             errors
 
       return { success, message }
+    },
+
+    async fetchPrinters() {
+      const rootStore = useRootStore()
+
+      const request = rootStore.api.traction.printers
+
+      const promise = request.get({})
+
+      const response = await handleResponse(promise)
+
+      // const { success, data: { data } = {}, errors = [] } = response
+      const { success, data = {}, errors = [] } = response
+
+      if (success) {
+        // populate printers in store
+        this.resources.printers = dataToObjectById({ data })
+      }
+      return { success, data, errors }
     },
   },
 })
