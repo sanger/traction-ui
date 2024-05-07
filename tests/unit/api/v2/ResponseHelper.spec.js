@@ -6,9 +6,11 @@ describe('ResponseHelper', () => {
     describe('successful', () => {
       const rawResponse = {
         success: true,
-        data: {
-          id: 1,
-          type: 'nice',
+        body: {
+          data: {
+            id: 1,
+            type: 'nice',
+          },
         },
         status: 200,
         statusText: 'OK',
@@ -21,7 +23,7 @@ describe('ResponseHelper', () => {
 
       it('data', () => {
         const response = newResponse(rawResponse)
-        expect(response.data).toEqual(rawResponse.data)
+        expect(response.body).toEqual(rawResponse.body)
       })
 
       it('errors', () => {
@@ -137,7 +139,7 @@ describe('ResponseHelper', () => {
       const promise = Promise.resolve(mockResponse)
       const response = await handleResponse(promise)
       expect(response.success).toBeTruthy()
-      expect(response.data).toEqual(responseData)
+      expect(response.body).toEqual(responseData)
     })
 
     it('failure with response', async () => {
