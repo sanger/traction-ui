@@ -45,6 +45,7 @@ const parseErrorArray = (errors) =>
 /*
  * @param {Object} e.g. { success = true, body: { data: { id: 1 } }, errors = { error1: ['nasty'], error2: ['broken', 'crushed'], }, error = 'there was an error', error = { title: 'Invalid field', detail: 'tag_group is not a valid includable relationship of tags', code: '112', status: '400',
  * it is better to use body rather than data. No overlapping and more in keeping with standard approach
+ * we set the body to an empty object to avoid any issues with destructuring
  * @returns { Boolean, {Object}, String} { success, body, errors } e.g. { success: true, body: {data: { id: 1}}} or {success: false, errors: 'there was an error'}
  */
 const newResponse = ({ success, body = {}, errors = null, error = null }) => ({
