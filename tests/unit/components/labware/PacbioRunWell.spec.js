@@ -4,6 +4,7 @@ import storePools from '@tests/data/StoreRunPools.json'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
+import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 
 const usedAliquots = {
   1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
@@ -29,8 +30,11 @@ const props = {
   interactive: true,
 }
 const smrtLinkVersions = {
-  1: { id: 1, name: 'v11', default: true, active: true },
-  2: { id: 2, name: 'v12_revio', default: false, active: true },
+  v11: { id: 1, name: 'v11', default: true, active: true },
+  v12_revio: { id: 2, name: 'v12_revio', default: false, active: true },
+  v12_sequel_iie: { id: 3, name: 'v12_sequel_iie', default: false, active: true },
+  v13_revio: { id: 4, name: 'v13_revio', default: false, active: true },
+  v13_sequel_iie: { id: 5, name: 'v13_sequel_iie', default: false, active: true },
 }
 
 /**
@@ -49,7 +53,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     wells: { 1: { A1: storeWell } },
     ...storePools,
     aliquots: { ...usedAliquots, ...storePools.aliquots },
-    smrtLinkVersion: smrtLinkVersions['1'],
+    smrtLinkVersion: smrtLinkVersions['v11'],
     resources: { smrtLinkVersions },
   }
   const wrapperObj = mount(PacbioRunWell, {
@@ -90,120 +94,91 @@ describe('PacbioRunWell.vue', () => {
   })
 
   describe('status', () => {
-    describe('for smrtlink v11', () => {
-      it('will be valid if it is complete', () => {
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-success text-white')
-      })
+    describe.each([
+      { smrt_link_version: 'v11' },
+      { smrt_link_version: 'v12_revio' },
+      { smrt_link_version: 'v12_sequel_iie' },
+      { smrt_link_version: 'v13_revio' },
+      { smrt_link_version: 'v13_sequel_iie' },
+    ])('for SMRTLink version $smrt_link_version status is correct', ({ smrt_link_version }) => {
+      let valid_required_fields
 
-      it('will be invalid if there is any missing meta data', () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            wells: { 1: { A1: { ...storeWell, movie_time: '' } } },
-          },
-        })
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-failure text-white')
-      })
-
-      it('will be invalid if there are no used_aliquots in the store', () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: [] } } },
-          },
-        })
-
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-failure text-white')
-      })
-
-      it('will be valid if all required metadata is present', () => {
-        const { wrapperObj } = mountWithStore()
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-success text-white')
-      })
-
-      it('will be empty if there are no used_aliquots or metadata', () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            wells: {
-              1: {
-                A1: {
-                  ...storeWell,
-                  used_aliquots: [],
-                  movie_time: '',
-                  generate_hifi: '',
-                  ccs_analysis_output: '',
-                  on_plate_loading_concentration: '',
-                  pre_extension_time: '',
-                  binding_kit_box_barcode: '',
-                },
-              },
-            },
-          },
-        })
-
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-gray-100 text-black')
-      })
-    })
-
-    describe('for smrtlink v12_revio', () => {
       beforeEach(() => {
-        const { wrapperObj } = mountWithStore({ smrtLinkVersion: smrtLinkVersions['2'] })
+        valid_required_fields = PacbioRunWellComponents[smrt_link_version].reduce(
+          (result, field) => {
+            if (field.required) {
+              // If its a required field give it a value
+              result[field.value] = 'has_value'
+            }
+            return result
+          },
+          {},
+        )
+
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: { 1: { A1: { ...valid_required_fields, used_aliquots: [usedAliquots['1']] } } },
+            smrtLinkVersion: smrtLinkVersions[smrt_link_version],
+          },
+        })
+
         wrapper = wrapperObj
+        well = wrapper.vm
       })
-      it('will be valid if it is complete', () => {
+
+      it('will be valid if it is complete', async () => {
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
-      it('will be invalid if there is any missing meta data', () => {
+      it('will be invalid if there are aliquots but no metadata', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            smrtLinkVersion: smrtLinkVersions['2'],
-            wells: { 1: { A1: { ...storeWell, movie_acquisition_time: '' } } },
+            wells: { 1: { A1: { used_aliquots: [usedAliquots['1']] } } },
+            smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
         })
         const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
-      it('will be invalid if there are no used_aliquots in the store', () => {
+      it('will be invalid if there is metadata but no aliquots', () => {
         const { wrapperObj } = mountWithStore({
           state: {
-            wells: { 1: { A1: { ...storeWell, used_aliquots: [] } } },
-            smrtLinkVersion: smrtLinkVersions['2'],
+            wells: { 1: { A1: { ...valid_required_fields, used_aliquots: [] } } },
+            smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
         })
         const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
-      it('will be valid if all required metadata is present', () => {
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-success text-white')
-      })
+      it('will be empty if there is no aliquots or metadata', () => {
+        const empty_required_fields = PacbioRunWellComponents[smrt_link_version].reduce(
+          (result, field) => {
+            if (field.required) {
+              // If its a required field give it a value
+              result[field.value] = ''
+            }
+            return result
+          },
+          {},
+        )
 
-      it('will be empty if there are no used_aliquots or metadata', () => {
         const { wrapperObj } = mountWithStore({
           state: {
             wells: {
               1: {
                 A1: {
-                  ...storeWell,
                   used_aliquots: [],
-                  movie_acquisition_time: '',
-                  polymerase_kit: '',
-                  pre_extension_time: '',
-                  library_concentration: '',
-                  include_base_kinetics: '',
+                  ...empty_required_fields,
                 },
               },
             },
-            smrtLinkVersion: smrtLinkVersions['2'],
+            smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
         })
+
         const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-gray-100 text-black')
       })

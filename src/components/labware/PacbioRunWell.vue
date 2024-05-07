@@ -27,6 +27,7 @@
  * @name PacbioRunWell
  * @description A single well in a Pacbio run plate
  */
+import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 
@@ -90,23 +91,12 @@ const wellClassNames = computed(() => {
  * @returns {Array} - An array of required metadata fields for the well.
  */
 const required_metadata_fields = computed(() => {
-  if (store.smrtLinkVersion.name == 'v11') {
-    return [
-      'movie_time',
-      'on_plate_loading_concentration',
-      'binding_kit_box_barcode',
-      'generate_hifi',
-    ]
-  } else if (store.smrtLinkVersion.name == 'v12_revio') {
-    return [
-      'movie_acquisition_time',
-      'include_base_kinetics',
-      'library_concentration',
-      'polymerase_kit',
-      'pre_extension_time',
-    ]
-  }
-  return []
+  return (
+    PacbioRunWellComponents[store.smrtLinkVersion.name]?.reduce((result, field) => {
+      field.required && result.push(field.value)
+      return result
+    }, []) || []
+  )
 })
 
 /*
