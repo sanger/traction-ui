@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v2/ResponseHelper'
-import { handleResponse as handleResponseV1 } from '@/api/v1/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
@@ -36,9 +35,13 @@ export const usePrintingStore = defineStore('printing', {
 
       const promise = request.create({ data: payload })
 
-      const response = await handleResponseV1(promise)
+      const response = await handleResponse(promise)
 
-      const { success, data, errors } = response
+      const {
+        success,
+        body: { data = {} },
+        errors,
+      } = response
 
       // we need to create a final message
       const message = success
@@ -54,13 +57,14 @@ export const usePrintingStore = defineStore('printing', {
       return { success, message }
     },
 
+    /**
+     * fetches the list of printers from traction
+     * @returns {Object {success: Boolean, data: Object, errors: Array}} Is the fetch successful? The data and any errors
+     */
     async fetchPrinters() {
       const rootStore = useRootStore()
-
       const request = rootStore.api.traction.printers
-
       const promise = request.get({})
-
       const response = await handleResponse(promise)
 
       const {
