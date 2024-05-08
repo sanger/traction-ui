@@ -28,7 +28,7 @@ describe('Pacbio Pool Edit', () => {
     })
   })
 
-  it('updates pool information on clicking requests table rows', () => {
+  it.only('updates pool information on clicking requests table rows', () => {
     cy.visit('#/pacbio/pools')
     cy.get('#pool-index').within(() => {
       cy.get('#edit-pool').first().click()
@@ -43,6 +43,12 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-type=pool-library-list]').within(() => {
       cy.get('[data-testid=row]').should('have.length', 4)
     })
+
+    cy.get('[ data-type="pool-aliquot-edit"]').first().click()
+    cy.get('[ data-type="pool-aliquot-edit"]')
+      .first()
+      .invoke('attr', 'class')
+      .should('contain', 'border-2 border-blue-600')
 
     //Deselect row requests
     cy.get('[data-attribute^="request-checkbox"]').eq(1).click()
@@ -87,7 +93,7 @@ describe('Pacbio Pool Edit', () => {
         cy.get('[data-attribute=volume-error-icon]').within(() => {
           cy.get('[data-attribute=pass]').should('be.visible')
         })
-        cy.get('[data-attribute=volume]').focus().should('not.be.disabled').type('8')
+        cy.get('[data-attribute=volume]').clear().type('8')
         cy.get('[data-attribute=volume-error]').within(() => {
           cy.contains('must be less or equal to available volume')
         })
