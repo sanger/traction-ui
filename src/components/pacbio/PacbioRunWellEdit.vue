@@ -18,31 +18,33 @@
 
     <traction-table
       id="wellUsedAliquots"
-      stacked
       :items="localUsedAliquots"
       :fields="wellUsedAliquotsFields"
     >
-      <template #table-caption>Pools</template>
-
       <template #cell(barcode)="row">
-        <traction-form classes="flex flex-wrap items-center">
-          <traction-input
-            id="usedAliquotSourceBarcode"
-            ref="usedAliquotSourceBarcode"
-            :model-value="`${row.item.barcode}`"
-            placeholder="Pool/Library barcode"
-            :debounce="500"
-            @update:model-value="updateUsedAliquotSource(row, $event)"
-          ></traction-input>
-
-          <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
-            >-</traction-button
-          >
-        </traction-form>
+        <traction-input
+          id="usedAliquotSourceBarcode"
+          :model-value="`${row.item.barcode}`"
+          placeholder="Pool/Library barcode"
+          :debounce="500"
+          @update:model-value="updateUsedAliquotSource(row, $event)"
+        ></traction-input>
+      </template>
+      <template #cell(volume)="row">
+        <traction-input
+          id="usedAliquotVolume"
+          data-attribute="aliquot-volume"
+          :model-value="`${row.item.volume}`"
+          placeholder="Pool/Library volume"
+          @update:model-value="updateUsedAliquotVolume(row, $event)"
+        ></traction-input>
+      </template>
+      <template #cell(actions)="row">
+        <traction-button theme="delete" @click="removeRow(row)">-</traction-button>
       </template>
     </traction-table>
 
-    <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
+    <traction-button theme="create" @click="addRow">+</traction-button>
 
     <template #modal-footer="{}">
       <traction-button
@@ -90,7 +92,11 @@ const well = ref({})
 // local pools and libraries which are added to the well
 const localUsedAliquots = ref([])
 // fields for the well pools and libraries table
-const wellUsedAliquotsFields = ref([{ key: 'barcode', label: 'Barcode' }])
+const wellUsedAliquotsFields = ref([
+  { key: 'barcode', label: 'Barcode' },
+  { key: 'volume', label: 'Volume' },
+  { key: 'actions', label: 'Actions' },
+])
 // isShow ref to determine if the modal is visible
 const isShow = ref(false)
 // position ref to store the position of the well
@@ -133,7 +139,15 @@ const action = computed(() => {
 /* `addRow` is a function that adds a new row to the `localUsedAliquots` array.
   Each row is an object with an `id`, and `barcode`, both initialized as empty strings.*/
 const addRow = () => {
-  localUsedAliquots.value.push({ id: '', barcode: '', source_id: '', source_type: '' })
+  localUsedAliquots.value.push({
+    id: '',
+    barcode: '',
+    source_id: '',
+    source_type: '',
+    volume: 0,
+    concentration: 0,
+    template_prep_kit_box_barcode: '',
+  })
 }
 
 /* `removeRow` is a function that removes a row from the `localUsedAliquots` array.*/
@@ -197,6 +211,12 @@ const removeWell = () => {
   hide()
 }
 
+//updateUsedAliquotVolume function is used to update the volume of the pool or library
+const updateUsedAliquotVolume = (row, volume) => {
+  const index = row.index
+  localUsedAliquots.value[index].volume = volume
+}
+
 //updateUsedAliquotSource function is used to update the pool or library barcode
 const updateUsedAliquotSource = async (row, barcode) => {
   const index = row.index
@@ -204,9 +224,8 @@ const updateUsedAliquotSource = async (row, barcode) => {
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
     const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-    const id = row.item.id || ''
     localUsedAliquots.value[index] = {
-      id,
+      id: row.item.id || '',
       source_id: tubeContent.id,
       source_type: type,
       barcode,

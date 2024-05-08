@@ -1,8 +1,15 @@
 import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
-import { beforeEach, describe, expect } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -228,124 +235,287 @@ describe('PacbioWellEdit', () => {
         })
       })
     })
+  })
 
-    describe('well type', () => {
-      it('if it doesnt exist in state (new)', async () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            smrtLinkVersion: smrtLinkVersions['1'],
-            wells: {
-              1: {},
+  describe('well type', () => {
+    it('if it doesnt exist in state (new)', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions['1'],
+          wells: {
+            1: {},
+          },
+        },
+      })
+      wrapper = wrapperObj
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+      await nextTick()
+      const button = wrapper.find('[data-action=create-well]')
+      expect(button.text()).toEqual('Create')
+    })
+
+    it('if it is an existing well', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions['1'],
+          wells: {
+            1: {
+              A1: newWell({ attributes: { id: 1 }, position: position }),
             },
           },
-        })
-        wrapper = wrapperObj
-        wrapper.vm.isShow = true
-        wrapper.vm.position = position
-        wrapper.vm.plateNumber = plateNumber
-        await nextTick()
-        const button = wrapper.find('[data-action=create-well]')
-        expect(button.text()).toEqual('Create')
+        },
+      })
+      wrapper = wrapperObj
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+      await nextTick()
+      const button = wrapper.find('[data-action=update-well]')
+      expect(button.text()).toEqual('Update')
+    })
+  })
+
+  describe('filteredAliquots', () => {
+    it('well should have correct used_aliquots when updated', async () => {
+      const well = newWell({
+        position: position,
+        ...{
+          id: 1,
+          used_aliquots: [
+            {
+              id: 1,
+              source_id: 1,
+              source_type: 'Pacbio::Pool',
+              barcode: 'TRAC-1',
+              volume: 5,
+              concentration: 10,
+              template_prep_kit_box_barcode: 'tpkbb1',
+            },
+          ],
+        },
       })
 
-      it('if it is an existing well', async () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            smrtLinkVersion: smrtLinkVersions['1'],
-            wells: {
-              1: {
-                A1: newWell({ attributes: { id: 1 }, position: position }),
-              },
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pools: {
+            1: {
+              id: 1,
+              tube: 1,
+              used_aliquots: [],
+              type: 'pools',
+              volume: 5,
+              concentration: 10,
+              template_prep_kit_box_barcode: 'tpkbb1',
+            },
+            2: {
+              id: 2,
+              tube: 2,
+              used_aliquots: [],
+              type: 'pools',
+              volume: 6,
+              concentration: 11,
+              template_prep_kit_box_barcode: 'tpkbb1',
             },
           },
+          libraries: {
+            1: {
+              id: 1,
+              tube: 1,
+              request: 1,
+              type: 'libraries',
+              volume: 7,
+              concentration: 12,
+              template_prep_kit_box_barcode: 'tpkbb1',
+            },
+            2: { id: 2, tube: 2, request: 2, type: 'libraries' },
+          },
+          aliquots: {
+            1: {
+              id: 1,
+              source_id: 1,
+              source_type: 'Pacbio::Pool',
+            },
+            2: {
+              id: 2,
+              source_id: 1,
+              source_type: 'Pacbio::Library',
+            },
+          },
+          tubes: {
+            1: { barcode: 'TRAC-1', pools: [1] },
+            2: { barcode: 'TRAC-2', pools: [2] },
+            3: { barcode: 'TRAC-3', libraries: [1] },
+          },
+          requests: {
+            1: { id: 1, sample_name: 'sample1' },
+            2: { id: 2, sample_name: 'sample2' },
+          },
+          smrtLinkVersion: smrtLinkVersions['1'],
+          run: {},
+          plates: { 1: { plate_number: 1 } },
+          wells: {
+            1: {
+              A1: well,
+            },
+          },
+        },
+      })
+      wrapper = wrapperObj
+      // This method sets the well data for the modal on show
+      await wrapper.vm.showModalForPositionAndPlate('A1', 1)
+      wrapper.vm.localUsedAliquots.push(
+        {
+          id: 2,
+          barcode: 'TRAC-2',
+          source_id: 2,
+          source_type: 'Pacbio::Pool',
+          volume: 6,
+          concentration: 11,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        },
+        {
+          id: 3,
+          barcode: 'TRAC-3',
+          source_id: 1,
+          source_type: 'Pacbio::Library',
+          volume: 7,
+          concentration: 12,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        },
+        // Incomplete aliquots should not be included in filteredAliquots
+        {
+          id: '',
+          barcode: '',
+        },
+      )
+      expect(wrapper.vm.filteredAliquots()).toEqual([
+        {
+          id: 1,
+          barcode: 'TRAC-1',
+          source_id: 1,
+          source_type: 'Pacbio::Pool',
+          volume: 5,
+          concentration: 10,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        },
+        {
+          id: 2,
+          barcode: 'TRAC-2',
+          source_id: 2,
+          source_type: 'Pacbio::Pool',
+          volume: 6,
+          concentration: 11,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        },
+        {
+          id: 3,
+          barcode: 'TRAC-3',
+          source_id: 1,
+          source_type: 'Pacbio::Library',
+          volume: 7,
+          concentration: 12,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        },
+      ])
+    })
+  })
+
+  describe('Aliquot rows', () => {
+    let store
+
+    beforeEach(async () => {
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions['1'],
+          wells: {
+            1: {
+              A1: newWell({ position }),
+            },
+          },
+        },
+      })
+      store = storeObj
+      wrapper = wrapperObj
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+    })
+
+    describe('addRow', () => {
+      it('addRow adds an empty used aliquot to the localUsedAliquots list', () => {
+        wrapper.vm.addRow()
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
+          id: '',
+          barcode: '',
+          source_id: '',
+          source_type: '',
+          volume: 0,
+          concentration: 0,
+          template_prep_kit_box_barcode: '',
         })
-        wrapper = wrapperObj
-        wrapper.vm.isShow = true
-        wrapper.vm.position = position
-        wrapper.vm.plateNumber = plateNumber
-        await nextTick()
-        const button = wrapper.find('[data-action=update-well]')
-        expect(button.text()).toEqual('Update')
+        expect(wrapper.vm.localUsedAliquots.length).toEqual(1)
       })
     })
 
-    describe('filteredAliquots', () => {
-      it('well should have correct used_aliquots when updated', async () => {
-        const well = newWell({
-          position: position,
-          ...{
-            id: 1,
-            used_aliquots: [
-              {
-                id: 1,
-                source_id: 1,
-                source_type: 'Pacbio::Pool',
-                barcode: 'TRAC-1',
-              },
-            ],
-          },
-        })
+    describe('removeRow', () => {
+      it('removeRow removes the used aliquot at the given index from the localUsedAliquots list', () => {
+        wrapper.vm.addRow()
+        expect(wrapper.vm.localUsedAliquots.length).toEqual(1)
+        wrapper.vm.removeRow(0)
+        expect(wrapper.vm.localUsedAliquots.length).toEqual(0)
+      })
+    })
 
-        const { wrapperObj } = mountWithStore({
-          state: {
-            pools: {
-              1: { id: 1, tube: 1, used_aliquots: [], type: 'pools' },
-              2: { id: 2, tube: 2, used_aliquots: [], type: 'pools' },
-            },
-            libraries: {
-              1: { id: 1, tube: 1, request: 1, type: 'libraries' },
-              2: { id: 2, tube: 2, request: 2, type: 'libraries' },
-            },
-            aliquots: {
-              1: { id: 1, source_id: 1, source_type: 'Pacbio::Pool' },
-              2: { id: 2, source_id: 1, source_type: 'Pacbio::Library' },
-            },
-            tubes: {
-              1: { barcode: 'TRAC-1', pools: [1] },
-              2: { barcode: 'TRAC-2', pools: [2] },
-              3: { barcode: 'TRAC-3', libraries: [1] },
-            },
-            requests: {
-              1: { id: 1, sample_name: 'sample1' },
-              2: { id: 2, sample_name: 'sample2' },
-            },
-            smrtLinkVersion: smrtLinkVersions['1'],
-            run: {},
-            plates: { 1: { plate_number: 1 } },
-            wells: {
-              1: {
-                A1: well,
-              },
-            },
-          },
+    describe('updateUsedAliquotVolume', () => {
+      it('updates the volume of the used aliquot at the given index', () => {
+        wrapper.vm.addRow()
+        wrapper.vm.updateUsedAliquotVolume({ index: 0 }, 10)
+        expect(wrapper.vm.localUsedAliquots[0].volume).toEqual(10)
+      })
+    })
+
+    describe('updateUsedAliquotSource', () => {
+      it('updates the source of the used aliquot at the given index', async () => {
+        store.findPoolsOrLibrariesByTube = vi.fn()
+        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+          id: 1,
+          type: 'pools',
+          barcode: 'TRAC-2-1',
+          volume: 5,
+          concentration: 10,
+          template_prep_kit_box_barcode: 'tpkbb1',
         })
-        wrapper = wrapperObj
-        // This method sets the well data for the modal on show
-        await wrapper.vm.showModalForPositionAndPlate('A1', 1)
-        wrapper.vm.localUsedAliquots.push(
-          {
-            id: 2,
-            barcode: 'TRAC-2',
-            source_id: 2,
-            source_type: 'Pacbio::Pool',
-          },
-          {
-            id: 3,
-            barcode: 'TRAC-3',
-            source_id: 1,
-            source_type: 'Pacbio::Library',
-          },
-          // Incomplete aliquots should not be included in filteredAliquots
-          {
-            id: '',
-            barcode: '',
-          },
-        )
-        expect(wrapper.vm.filteredAliquots()).toEqual([
-          { id: 1, barcode: 'TRAC-1', source_id: 1, source_type: 'Pacbio::Pool' },
-          { id: 2, barcode: 'TRAC-2', source_id: 2, source_type: 'Pacbio::Pool' },
-          { id: 3, barcode: 'TRAC-3', source_id: 1, source_type: 'Pacbio::Library' },
-        ])
+        wrapper.vm.addRow()
+        await wrapper.vm.updateUsedAliquotSource({ index: 0, item: { id: '' } }, 'TRAC-2-1')
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
+          id: '',
+          barcode: 'TRAC-2-1',
+          source_id: 1,
+          source_type: 'Pacbio::Pool',
+          volume: 0,
+          concentration: 0,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        })
+      })
+
+      it('shows an alert if the source does not exist', async () => {
+        store.findPoolsOrLibrariesByTube = vi.fn()
+        store.tubeContentByBarcode = vi.fn().mockReturnValue(undefined)
+
+        wrapper.vm.addRow()
+        await wrapper.vm.updateUsedAliquotSource({ index: 0, item: { id: '' } }, 'TRAC-2-1')
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
+          id: '',
+          barcode: '',
+          source_id: '',
+          source_type: '',
+          volume: 0,
+          concentration: 0,
+          template_prep_kit_box_barcode: '',
+        })
+        expect(mockShowAlert).toBeCalledWith('Pool is not valid', 'danger')
       })
     })
   })
