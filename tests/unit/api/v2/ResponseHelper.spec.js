@@ -1,4 +1,5 @@
 import { handleResponse, newResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
+import { it } from 'vitest'
 
 // TODO: we have left this in a broken state as we still need to work out how errors are handled
 describe('ResponseHelper', () => {
@@ -51,6 +52,7 @@ describe('ResponseHelper', () => {
       it('errors', () => {
         const response = newResponse(rawResponse)
         expect(response.errors).toEqual('error1 nasty, error2 broken, error2 crushed')
+        expect(response.body).toEqual({})
       })
     })
 
@@ -79,6 +81,7 @@ describe('ResponseHelper', () => {
         expect(response.errors).toEqual(
           'Invalid field tag_group is not a valid includable relationship of tags',
         )
+        expect(response.body).toEqual({})
       })
     })
 
@@ -105,6 +108,7 @@ describe('ResponseHelper', () => {
       it('errors', () => {
         const response = newResponse(rawResponse)
         expect(response.errors).toEqual('Internal Server Error Internal Server Error')
+        expect(response.body).toEqual({})
       })
     })
 
@@ -123,6 +127,11 @@ describe('ResponseHelper', () => {
       it('should contain errors array and error object', () => {
         const response = newResponse(rawResponse)
         expect(response.errors).toEqual('Network error')
+      })
+
+      it('should contain an empty body', () => {
+        const response = newResponse(rawResponse)
+        expect(response.body).toEqual({})
       })
     })
 
@@ -145,6 +154,11 @@ describe('ResponseHelper', () => {
       it('should contain errors as a string', () => {
         const response = newResponse(rawResponse)
         expect(response.errors).toEqual("printer can't be blank")
+      })
+
+      it('should contain an empty body', () => {
+        const response = newResponse(rawResponse)
+        expect(response.body).toEqual({})
       })
     })
   })
