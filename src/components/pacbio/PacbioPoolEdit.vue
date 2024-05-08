@@ -85,7 +85,7 @@
         </div>
       </div>
     </traction-section>
-    <PacbioPoolAliquotList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
+    <PacbioPoolAliquotList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" @aliquot-selected="notifyAliquotSelection"/>
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -140,6 +140,7 @@ const poolType = computed(() => {
       return 'Pool'
   }
 })
+const emit = defineEmits(['aliquot-selected'])
 
 const border = computed(() => {
   if (parsedFile.value === null) return 'border-0'
@@ -206,4 +207,9 @@ const uploadFile = async (evt) => {
 const onFieldUpdate = () => {
   validated.value = false
 }
+
+const notifyAliquotSelection = (request) => {
+  emit('aliquot-selected', request)
+}
+
 </script>

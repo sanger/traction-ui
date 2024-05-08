@@ -9,6 +9,8 @@
           :auto-tag="props.autoTag"
           :validated="props.validated"
           :notify="props.notify"
+          @aliquot-selected="(selected) => notifyAliquotSelection(selected, request)"
+          :selected="selectedRequest && selectedRequest.id === request.id"
         ></PacbioPoolAliquotEdit>
         <template #disabled>
           <PacbioPoolAliquotEditV1
@@ -33,10 +35,11 @@
  * @param {Boolean} props.validated - Whether the attributes in child component(s) have been validated
  * @param {Function} props.notify - Callback function when user changes an attribute in a child component
  */
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
 import PacbioPoolAliquotEditV1 from '@/components/pacbio/V1/PacbioPoolAliquotEditV1.vue'
+
 const props = defineProps({
   autoTag: {
     type: Boolean,
@@ -58,6 +61,8 @@ const props = defineProps({
 })
 
 const store = usePacbioPoolCreateStore()
+const emit = defineEmits(['aliquot-selected'])
+const selectedRequest = ref(null)
 
 /**
  * The fields to display in in the table
@@ -73,4 +78,13 @@ const state = reactive({
     'Insert Size',
   ],
 })
+const notifyAliquotSelection = (selected, request) => {
+  let requestOnSelection = request
+  if(!selected) {
+    requestOnSelection = null
+  }
+  selectedRequest.value = requestOnSelection
+  
+  emit('aliquot-selected', requestOnSelection)
+}
 </script>

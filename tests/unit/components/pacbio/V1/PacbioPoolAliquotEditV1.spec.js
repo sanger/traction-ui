@@ -1,5 +1,5 @@
 import { mount, createTestingPinia } from '@support/testHelper.js'
-import { createUsedAliquot } from '@/stores/utilities/pool.js'
+import {createUsedAliquot} from '@/stores/utilities/usedAliquot.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
 

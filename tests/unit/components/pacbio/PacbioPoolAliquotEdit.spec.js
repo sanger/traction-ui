@@ -1,7 +1,8 @@
 import { mount, createTestingPinia } from '@support/testHelper.js'
-import { createUsedAliquot } from '@/stores/utilities/pool.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
+import { expect } from 'vitest'
 
 const request = {
   id: '1',
@@ -207,6 +208,51 @@ describe('PacbioPoolAliquotEdit.vue', () => {
       expect(wrapperObj.find('[data-attribute=insert-size-error]').text()).toEqual(
         'must be present',
       )
+    })
+
+    it('displays the selected border', () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          selected: {
+            tagSet: { id: tagSet.id },
+          },
+          used_aliquots: { _1: { ...usedAliquot, errors: { insert_size: 'must be present' } } },
+        },
+        props: { ...props, selected: true },
+      })
+      expect(wrapperObj.classes()).toContain('cursor-pointer')
+      expect(wrapperObj.classes()).toContain('border-2')
+      expect(wrapperObj.classes()).toContain('border-blue-600')
+    })
+
+    it('emits an event when user clicks the table', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          selected: {
+            tagSet: { id: tagSet.id },
+          },
+          used_aliquots: { _1: { ...usedAliquot, errors: { insert_size: 'must be present' } } },
+        },
+        props,
+      })
+      wrapperObj.find('[ data-type="pool-aliquot-edit"]').trigger('click')
+      expect(wrapperObj.emitted()).toHaveProperty('aliquotSelected')
+      //check emitted value is true
+      expect(wrapperObj.emitted()['aliquotSelected'][0]).toEqual([true])
+    })
+    it('emits an event with false value when user clicks the table', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          selected: {
+            tagSet: { id: tagSet.id },
+          },
+          used_aliquots: { _1: { ...usedAliquot, errors: { insert_size: 'must be present' } } },
+        },
+        props: { ...props, selected: true },
+      })
+      wrapperObj.find('[ data-type="pool-aliquot-edit"]').trigger('click')
+      //check emitted value is false
+      expect(wrapperObj.emitted()['aliquotSelected'][0]).toEqual([false])
     })
   })
 })

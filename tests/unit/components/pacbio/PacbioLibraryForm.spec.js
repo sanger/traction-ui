@@ -155,7 +155,7 @@ describe('PacbioLibraryForm.vue', () => {
           concentration: '1',
           template_prep_kit_box_barcode: 'barcode',
           insert_size: '1',
-          used_volume: 10,
+          used_volume: 10.4222,
         },
       }
       const { wrapperObj } = mountWithStore({
@@ -173,7 +173,7 @@ describe('PacbioLibraryForm.vue', () => {
       expect(wrapper.find('#library-insertSize').element.value).toBe('1')
       expect(wrapper.find('#tag-set-input').element.value).toBe('3')
       expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
-      expect(wrapper.find('#library-used-volume').text()).toContain('10')
+      expect(wrapper.find('#library-used-volume').text()).toContain('10.42')
       expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
       expect(modal.selectedTagSetId).toBe('3')
     })

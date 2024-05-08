@@ -8,7 +8,7 @@
    */
 -->
 <template>
-  <tr v-bind="$attrs" data-testid="row" :class="classes">
+  <tr v-bind="$attrs" data-testid="row" :class="classes" @click="handleClick">
     <slot />
   </tr>
 </template>
@@ -23,5 +23,10 @@ export default {
       default: '',
     },
   },
+  methods: {
+    handleClick() {
+      this.$emit('click')
+    },
+  }
 }
 </script>

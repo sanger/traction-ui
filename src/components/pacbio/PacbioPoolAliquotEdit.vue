@@ -1,5 +1,9 @@
 <template>
-  <traction-table-row data-type="pool-aliquot-edit">
+  <traction-table-row
+    data-type="pool-aliquot-edit"
+    @click="onTableRowClick"
+    :class="['cursor-pointer', `${props.selected && 'border-2 border-blue-600'}`]"
+  >
     <traction-table-column data-attribute="request-sample-name">
       {{ props.request.sample_name }}
     </traction-table-column>
@@ -39,7 +43,12 @@
         :error="errorsFor('volume')"
         :with-icon="isValidationExists('volume')"
       >
-        <traction-input v-model="volume" data-attribute="volume" placeholder="Volume" />
+        <traction-input
+          v-model="volume"
+          data-attribute="volume"
+          placeholder="Volume"
+          classes="min-w-128"
+        />
         <div class="flex items-center px-1" data-attribute="available-volume-div">
           <traction-tooltip
             v-show="aliquot.available_volume != null"
@@ -127,6 +136,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  selected: {
+    type: Boolean,
+    default: false,
+  },
   /**
    * @type {Function}
    * Callback function passed from parent indicating what to do when an attribute is changed
@@ -137,6 +151,8 @@ const props = defineProps({
     default: () => {},
   },
 })
+
+const emit = defineEmits(['aliquotSelected'])
 
 const fieldsThatRequireValidation = ref([]) // store the fields that have been altered and require validation
 // store
@@ -227,5 +243,9 @@ const isValidationExists = (attribute) => {
   } else {
     return !fieldsThatRequireValidation.value[attribute]
   }
+}
+
+const onTableRowClick = () => {
+  emit('aliquotSelected', !props.selected)
 }
 </script>

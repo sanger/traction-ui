@@ -1,41 +1,55 @@
-import {
-  createUsedAliquot,
-  validate,
-  payload,
-  validateFieldForUsedAliquot,
-} from '@/stores/utilities/pool'
+import { validate, payload } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
+import {createUsedAliquot} from '@/stores/utilities/usedAliquot.js'
 
 describe('pool', () => {
-  it('createUsedAliquot', () => {
-    expect(createUsedAliquot()).toEqual({
-      source_id: null,
-      template_prep_kit_box_barcode: null,
-      tag_id: null,
-      volume: null,
-      concentration: null,
-      insert_size: null,
+  describe('createUsedAliquot', () => {
+    it('createUsedAliquot with default values', () => {
+      const usedAliquot = createUsedAliquot()
+      expect(usedAliquot.source_id).toBe(null)
+      expect(usedAliquot.template_prep_kit_box_barcode).toBe(null)
+      expect(usedAliquot.tag_id).toBe(null)
+      expect(usedAliquot.volume).toBe(null)
+      expect(usedAliquot.concentration).toBe(null)
+      expect(usedAliquot.insert_size).toBe(null)
+    })
+    it('createUsedAliquot with custom values', () => {
+      const usedAliquot = createUsedAliquot({
+        source_id: '1',
+        template_prep_kit_box_barcode: 'barcode1',
+        tag_id: 'tag1',
+        volume: 10,
+        concentration: 5,
+        insert_size: 1,
+      })
+      expect(usedAliquot.source_id).toBe('1')
+      expect(usedAliquot.template_prep_kit_box_barcode).toBe('barcode1')
+      expect(usedAliquot.tag_id).toBe('tag1')
+      expect(usedAliquot.volume).toBe(10)
+      expect(usedAliquot.concentration).toBe(5)
+      expect(usedAliquot.insert_size).toBe(1)
     })
   })
+
   describe('validate', () => {
     it('returns true when all used_aliquots are valid and there are no duplicate tags', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           tag_id: 'tag2',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
-        },
+        }),
       }
       // Setup a valid pool so validation doesnt fail on the pool
       const pool = {
@@ -49,20 +63,20 @@ describe('pool', () => {
 
     it('returns false when a library is missing a required attribute', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           tag_id: 'tag2',
           volume: 10,
           concentration: 5,
           template_prep_kit_box_barcode: 'barcode1',
-        },
+        }),
       }
 
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
@@ -74,7 +88,7 @@ describe('pool', () => {
 
     it('returns false when a library volume is less than available volume', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
@@ -82,15 +96,15 @@ describe('pool', () => {
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
           available_volume: 5,
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           tag_id: 'tag2',
           volume: 10,
           concentration: 5,
           template_prep_kit_box_barcode: 'barcode1',
           insert_size: 1000,
           source_id: '1',
-        },
+        }),
       }
 
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
@@ -101,22 +115,22 @@ describe('pool', () => {
 
     it('returns false when there are duplicate tags', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
-        },
+        }),
       }
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
       expect(used_aliquots['2'].errors).toEqual({ tag_id: 'duplicated' })
@@ -140,22 +154,22 @@ describe('pool', () => {
 
     it('returns true when the pool and used_aliquots are valid', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           tag_id: 'tag1',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           tag_id: 'tag2',
           volume: 10,
           concentration: 5,
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
-        },
+        }),
       }
       const pool = {
         insert_size: 100,
@@ -172,49 +186,10 @@ describe('pool', () => {
     })
   })
 
-  describe('validateFieldForUsedAliquot', () => {
-    describe('when value is passed in as prop', () => {
-      it('should return "must be present" if value is not provided', () => {
-        const used_aliquot = { test: 'abc' }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '')
-        expect(result).toBe('must be present')
-      })
-
-      it('should return undefined if value is provided', () => {
-        const used_aliquot = { test: '' }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '123')
-        expect(result).toBe('')
-      })
-      it('should return error if given volume is greater than available volume', () => {
-        const used_aliquot = { volume: 5, available_volume: 10 }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'volume', 15)
-        expect(result).toBe('must be less or equal to available volume')
-      })
-    })
-    describe('when value not passed in as prop', () => {
-      it('should return undefined if value is in used_aliquot', () => {
-        const used_aliquot = { test: 'abc' }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'test')
-        expect(result).toBe('')
-      })
-      it('should return "must be present" if value is not in used_aliquot and is not provided', () => {
-        const used_aliquot = { test: 'abc' }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'test', '')
-        expect(result).toBe('must be present')
-      })
-
-      it('should return error if aliquot volume is greater than available volume', () => {
-        const used_aliquot = { volume: 15, available_volume: 10 }
-        const result = validateFieldForUsedAliquot(used_aliquot, 'volume')
-        expect(result).toBe('must be less or equal to available volume')
-      })
-    })
-  })
-
   describe('payload', () => {
     it('returns a payload object with the correct structure', () => {
       const used_aliquots = {
-        1: {
+        1: createUsedAliquot({
           id: '1',
           tag_id: 'tag1',
           volume: 10,
@@ -222,8 +197,8 @@ describe('pool', () => {
           insert_size: 1,
           source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
-        },
-        2: {
+        }),
+        2: createUsedAliquot({
           id: '2',
           tag_id: 'tag2',
           volume: 10,
@@ -232,7 +207,7 @@ describe('pool', () => {
           source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
           otherUsedAliquotAttribute: 'aliquotValue',
-        },
+        }),
       }
       const pool = {
         id: '1',
