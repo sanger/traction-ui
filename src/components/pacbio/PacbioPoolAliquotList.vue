@@ -9,8 +9,8 @@
           :auto-tag="props.autoTag"
           :validated="props.validated"
           :notify="props.notify"
-          @aliquot-selected="(selected) => notifyAliquotSelection(selected, request)"
           :selected="selectedRequest && selectedRequest.id === request.id"
+          @aliquot-selected="(selected) => notifyAliquotSelection(selected, request)"
         ></PacbioPoolAliquotEdit>
         <template #disabled>
           <PacbioPoolAliquotEditV1
@@ -80,11 +80,11 @@ const state = reactive({
 })
 const notifyAliquotSelection = (selected, request) => {
   let requestOnSelection = request
-  if(!selected) {
+  if (!selected) {
     requestOnSelection = null
   }
   selectedRequest.value = requestOnSelection
-  
+
   emit('aliquot-selected', requestOnSelection)
 }
 </script>

@@ -85,7 +85,12 @@
         </div>
       </div>
     </traction-section>
-    <PacbioPoolAliquotList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" @aliquot-selected="notifyAliquotSelection"/>
+    <PacbioPoolAliquotList
+      :auto-tag="autoTag"
+      :validated="validated"
+      :notify="onFieldUpdate"
+      @aliquot-selected="notifyAliquotSelection"
+    />
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -211,5 +216,4 @@ const onFieldUpdate = () => {
 const notifyAliquotSelection = (request) => {
   emit('aliquot-selected', request)
 }
-
 </script>

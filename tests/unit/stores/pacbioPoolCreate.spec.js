@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/v1/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
-import {createUsedAliquot} from '@/stores/utilities/usedAliquot.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))

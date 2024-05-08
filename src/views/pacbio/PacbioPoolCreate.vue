@@ -40,8 +40,8 @@
         <div>
           <PacbioLabwareSelectedList
             :labware="scannedLabware"
-            @closed="onClosed"
             :highlight="aliquotSelectionHighlightLabware"
+            @closed="onClosed"
           />
         </div>
         <div>
@@ -170,10 +170,9 @@ const handleAliquotSelection = (request) => {
   )
   if (!labware) {
     labware = pacbioPoolCreateStore.selectedPlates.find((plate) =>
-      plate.wells.some((well) => {
-        const wellList = pacbioPoolCreateStore.wellList(plate.wells || [])
-        return wellList.some((well) => well.requests.includes(request.id))
-      }),
+      pacbioPoolCreateStore
+        .wellList(plate.wells || [])
+        .some((well) => well.requests.includes(request.id)),
     )
   }
   aliquotSelectionHighlightLabware.value = { labware, request }

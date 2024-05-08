@@ -26,7 +26,7 @@
             <div
               :class="[
                 'border border-sdb bg-blue-100 rounded-lg p-1 mr-3 mt-2',
-                `${item.barcode === props.highlight?.labware.barcode && 'border-2 border-blue-600'}`,
+                `${item.barcode === props.highlight?.labware.barcode && 'border-2 border-blue-400'}`,
               ]"
             >
               <div class="flex w-full justify-end">
@@ -228,7 +228,7 @@ const onClose = (labware) => {
  */
 const tableRowColour = (row) => {
   return `${row.selected ? 'bg-yellow-300' : 'bg-gray-200'} ${
-    row.id === props.highlight?.request.id && 'border-2 border-blue-600'
+    row.id === props.highlight?.request.id && 'border-2 border-blue-400'
   } cursor-pointer`
 }
 

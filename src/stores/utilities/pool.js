@@ -1,4 +1,3 @@
-
 /**
  * Validates a set of used_aliquots and the pool.
  * Checks if all required attributes are present in each used_aliquot and if there are no duplicate tags.

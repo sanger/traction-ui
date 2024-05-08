@@ -1,6 +1,6 @@
 import { validate, payload } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
-import {createUsedAliquot} from '@/stores/utilities/usedAliquot.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 describe('pool', () => {
   describe('createUsedAliquot', () => {

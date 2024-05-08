@@ -222,7 +222,7 @@ describe('PacbioPoolAliquotEdit.vue', () => {
       })
       expect(wrapperObj.classes()).toContain('cursor-pointer')
       expect(wrapperObj.classes()).toContain('border-2')
-      expect(wrapperObj.classes()).toContain('border-blue-600')
+      expect(wrapperObj.classes()).toContain('border-blue-400')
     })
 
     it('emits an event when user clicks the table', async () => {

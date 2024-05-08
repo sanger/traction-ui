@@ -23,10 +23,11 @@ export default {
       default: '',
     },
   },
+  emits: ['click'],
   methods: {
     handleClick() {
       this.$emit('click')
     },
-  }
+  },
 }
 </script>
