@@ -125,7 +125,7 @@ describe('usePrintingStore', () => {
         expect(message).toEqual('Barcode(s) successfully printed')
       })
 
-      it.skip('unsuccessful', async () => {
+      it('unsuccessful', async () => {
         const store = usePrintingStore()
         const mockResponse = {
           status: '422',
@@ -133,7 +133,7 @@ describe('usePrintingStore', () => {
           json: () =>
             Promise.resolve({
               errors: [
-                { source: { pointer: '/data/attributes/printer', detail: "can't be blank" } },
+                { source: { pointer: '/data/attributes/printer' }, detail: "can't be blank" },
               ],
             }),
         }
@@ -149,8 +149,8 @@ describe('usePrintingStore', () => {
         const { success, message } = await store.createPrintJob({ ...rest })
 
         expect(success).toBeFalsy()
-        // looks like there is an issue with the errors again. How many times do we have to fix this.
-        expect(message).toEqual("/data/attributes/printer can't be blank")
+        // we are kind of retesting this but not sure what else to do
+        expect(message).toEqual("printer can't be blank")
       })
     })
   })

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
@@ -35,25 +35,15 @@ export const usePrintingStore = defineStore('printing', {
 
       const promise = request.create({ data: payload })
 
-      const response = await handleResponse(promise)
+      const response = await handleResponse(promise, parsePrintMyBarcodeErrors)
 
-      const {
-        success,
-        body: { data = {} },
-        errors,
-      } = response
+      const { success, errors } = response
 
       // we need to create a final message
       const message = success
         ? // if it was success just send a simple message
           'Barcode(s) successfully printed'
-        : // print my barcode does not return the errors in the correct format
-          // so we need to extract the errors and turn them into something meaningful
-          data?.errors?.length > 0
-          ? data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
-          : // otherwise we can just return the errors
-            errors
-
+        : errors
       return { success, message }
     },
 
