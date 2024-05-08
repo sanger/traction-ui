@@ -9,27 +9,27 @@ import { join } from 'path'
 const ResponseFactory = (name, axios = true) => {
   const filePath = join(__dirname, '../../data', `${name}.json`)
 
-  let response = {}
+  let data = {}
 
   try {
     const fileContent = fs.readFileSync(filePath, 'utf8')
-    response = JSON.parse(fileContent)
+    data = JSON.parse(fileContent)
   } catch (err) {
     console.error(err)
   }
-
   if (axios) {
     return {
       status: 200,
       statusText: 'OK',
-      data: { ...response.data },
+      data: { ...data },
     }
   } else {
     return {
       status: 200,
       statusText: 'OK',
-      json: () => Promise.resolve(response.data),
+      json: () => Promise.resolve(data),
       ok: true,
+      content: data,
     }
   }
 }
@@ -86,7 +86,11 @@ describe('usePrintingStore', () => {
 
         const { success } = await store.fetchPrinters()
 
-        expect(store.resources.printers).toEqual(jsonapi.dataToObjectById({ ...printers }))
+        console.log(printers.content.data)
+
+        expect(store.resources.printers).toEqual(
+          jsonapi.dataToObjectById({ data: printers.content.data }),
+        )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
@@ -125,8 +129,6 @@ describe('usePrintingStore', () => {
 
       it('successful', async () => {
         const store = usePrintingStore()
-        // const tubeLabelTemplateName = 'tube_label_template'
-        // store.tubeLabelTemplateName = tubeLabelTemplateName
 
         const mockResponse = {
           status: '201',
