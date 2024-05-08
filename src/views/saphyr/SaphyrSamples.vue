@@ -45,7 +45,7 @@
 
 <script>
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import PrinterModal from '@/components/PrinterModal'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 

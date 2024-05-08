@@ -1,5 +1,5 @@
 import { mount, nextTick } from '@support/testHelper'
-import PrinterModal from '@/components/PrinterModal'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 
 describe('Modal.vue', () => {
   let wrapper, modal
