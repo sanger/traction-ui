@@ -165,7 +165,6 @@ describe('ResponseHelper', () => {
     })
 
     it('failure with response', async () => {
-      // TODO: we need to work out how to fix this response.
       const mockResponse = {
         ok: false,
         status: 422,
@@ -186,6 +185,28 @@ describe('ResponseHelper', () => {
       const response = await handleResponse(promise)
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(error)
+    })
+
+    it('print my barcode failure', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 422,
+        statusText: 'Unprocessible entity',
+        json: () =>
+          Promise.resolve({
+            errors: [{ source: { pointer: '/data/attributes/printer' }, detail: "can't be blank" }],
+          }),
+      }
+      const promise = Promise.resolve(mockResponse)
+      const errors = await mockResponse.json()
+      const expectedResponse = newResponse({
+        ...errors,
+        success: false,
+        errorHandler: parsePrintMyBarcodeErrors,
+      })
+      const response = await handleResponse(promise, parsePrintMyBarcodeErrors)
+      expect(response.success).toBeFalsy()
+      expect(response.errors).toEqual(expectedResponse.errors)
     })
   })
 })

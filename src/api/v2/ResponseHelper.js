@@ -83,9 +83,10 @@ const newResponse = ({
 
 /*
  * @param {Promise} promise
+ * @param {Function} errorHandler - a function that takes errors and parses them into a readable string
  * @returns {newResponse}
  */
-const handleResponse = async (promise) => {
+const handleResponse = async (promise, errorHandler) => {
   try {
     // yay it worked.
     const rawResponse = await promise
@@ -94,7 +95,7 @@ const handleResponse = async (promise) => {
     // Please check https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
     // for more information on the ok property
     if (!rawResponse.ok) {
-      return newResponse({ success: false, ...response })
+      return newResponse({ success: false, errorHandler, ...response })
     }
 
     // we add the response to the body
