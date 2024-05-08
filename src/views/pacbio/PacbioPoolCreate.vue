@@ -38,10 +38,14 @@
           <PacbioTagSetItem />
         </div>
         <div>
-          <PacbioLabwareSelectedList :labware="scannedLabware" @closed="onClosed" />
+          <PacbioLabwareSelectedList
+            :labware="scannedLabware"
+            @closed="onClosed"
+            :highlight="aliquotSelectionHighlightLabware"
+          />
         </div>
         <div>
-          <PacbioPoolEdit />
+          <PacbioPoolEdit @aliquot-selected="handleAliquotSelection" />
         </div>
       </div>
     </div>
@@ -88,6 +92,8 @@ const searchText = ref('')
  * The search input ref
  */
 const searchRef = ref(null)
+
+const aliquotSelectionHighlightLabware = ref(null)
 
 /**
  * Fetches the pools data
@@ -152,5 +158,24 @@ const search = async (value) => {
   // Add the labware to the scanned labware array
   scannedLabware.value.push({ barcode: value, type: findPlate.success ? 'plates' : 'tubes' })
   searchText.value = ''
+}
+
+const handleAliquotSelection = (request) => {
+  if (!request) {
+    aliquotSelectionHighlightLabware.value = null
+    return
+  }
+  let labware = pacbioPoolCreateStore.selectedTubes.find((tube) =>
+    tube.requests.some((req) => req === request.id),
+  )
+  if (!labware) {
+    labware = pacbioPoolCreateStore.selectedPlates.find((plate) =>
+      plate.wells.some((well) => {
+        const wellList = pacbioPoolCreateStore.wellList(plate.wells || [])
+        return wellList.some((well) => well.requests.includes(request.id))
+      }),
+    )
+  }
+  aliquotSelectionHighlightLabware.value = { labware, request }
 }
 </script>
