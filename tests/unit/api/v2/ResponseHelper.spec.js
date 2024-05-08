@@ -1,4 +1,4 @@
-import { handleResponse, newResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse, newResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
 
 // TODO: we have left this in a broken state as we still need to work out how errors are handled
 describe('ResponseHelper', () => {
@@ -123,6 +123,28 @@ describe('ResponseHelper', () => {
       it('should contain errors array and error object', () => {
         const response = newResponse(rawResponse)
         expect(response.errors).toEqual('Network error')
+      })
+    })
+
+    describe('failure with print my barcode request', () => {
+      const rawResponse = {
+        success: false,
+        errors: [
+          {
+            source: {
+              pointer: '/data/attributes/printer',
+            },
+            detail: "can't be blank",
+          },
+        ],
+        status: 422,
+        statusText: 'Unprocessible entity',
+        errorHandler: parsePrintMyBarcodeErrors,
+      }
+
+      it('should contain errors as a string', () => {
+        const response = newResponse(rawResponse)
+        expect(response.errors).toEqual("printer can't be blank")
       })
     })
   })
