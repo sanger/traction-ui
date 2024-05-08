@@ -20,7 +20,12 @@ export const usePrintingStore = defineStore('printing', {
      * @param {Integer} copies Number of copies of labels
      * @returns {Object {success: Boolean, message: String}} Is the print job successful? With a success or failure message
      **/
-    async createPrintJob({ printerName, labels, copies }) {
+    async createPrintJob({
+      printerName,
+      labels,
+      copies,
+      labelTemplateName = 'tube_label_template',
+    }) {
       const rootStore = useRootStore()
 
       // extract the request from the rootState
@@ -28,7 +33,7 @@ export const usePrintingStore = defineStore('printing', {
 
       const payload = {
         printer_name: printerName,
-        label_template_name: this.tubeLabelTemplateName,
+        label_template_name: labelTemplateName,
         labels,
         copies,
       }

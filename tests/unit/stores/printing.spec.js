@@ -84,6 +84,7 @@ describe('usePrintingStore', () => {
     describe('#createPrintJob', () => {
       const printJobOptions = {
         printerName: 'my_printer',
+        labelTemplateName: 'my_label_template',
         labels: [
           {
             barcode: 'TRAC-1',
@@ -99,8 +100,8 @@ describe('usePrintingStore', () => {
 
       it('successful', async () => {
         const store = usePrintingStore()
-        const tubeLabelTemplateName = 'tube_label_template'
-        store.tubeLabelTemplateName = tubeLabelTemplateName
+        // const tubeLabelTemplateName = 'tube_label_template'
+        // store.tubeLabelTemplateName = tubeLabelTemplateName
 
         const mockResponse = {
           status: '201',
@@ -116,10 +117,14 @@ describe('usePrintingStore', () => {
 
         const { success, message } = await store.createPrintJob({ ...printJobOptions })
 
-        const { printerName: printer_name, ...payload } = printJobOptions
+        const {
+          printerName: printer_name,
+          labelTemplateName: label_template_name,
+          ...payload
+        } = printJobOptions
 
         expect(create).toBeCalledWith({
-          data: { ...payload, printer_name, label_template_name: tubeLabelTemplateName },
+          data: { ...payload, printer_name, label_template_name },
         })
         expect(success).toBeTruthy()
         expect(message).toEqual('Barcode(s) successfully printed')
