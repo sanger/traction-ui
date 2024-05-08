@@ -205,7 +205,15 @@ const updateUsedAliquotSource = async (row, barcode) => {
   if (tubeContent) {
     const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
     const id = row.item.id || ''
-    localUsedAliquots.value[index] = { id, source_id: tubeContent.id, source_type: type, barcode }
+    localUsedAliquots.value[index] = {
+      id,
+      source_id: tubeContent.id,
+      source_type: type,
+      barcode,
+      volume: 0,
+      concentration: 0,
+      template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
+    }
   } else {
     showAlert('Pool is not valid', 'danger')
   }

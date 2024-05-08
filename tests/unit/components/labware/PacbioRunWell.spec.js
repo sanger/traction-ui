@@ -217,7 +217,15 @@ describe('PacbioRunWell.vue', () => {
       expectedWell = {
         ...storeWell,
         used_aliquots: [
-          { barcode: 'TRAC-2-22', id: '', source_id: '12', source_type: 'Pacbio::Pool' },
+          {
+            barcode: 'TRAC-2-22',
+            id: '',
+            source_id: '12',
+            source_type: 'Pacbio::Pool',
+            concentration: 0,
+            volume: 0,
+            template_prep_kit_box_barcode: '029979102141700063023',
+          },
         ],
       }
       await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
@@ -252,7 +260,15 @@ describe('PacbioRunWell.vue', () => {
       expectedWell = {
         ...storeWell,
         used_aliquots: [
-          { barcode: 'TRAC-2-20', id: '', source_id: '30', source_type: 'Pacbio::Library' },
+          {
+            barcode: 'TRAC-2-20',
+            id: '',
+            source_id: '30',
+            source_type: 'Pacbio::Library',
+            concentration: 0,
+            volume: 0,
+            template_prep_kit_box_barcode: '029979102141700063023',
+          },
         ],
       }
       await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
@@ -324,6 +340,9 @@ describe('PacbioRunWell.vue', () => {
               source_id: '30',
               source_type: 'Pacbio::Library',
               barcode: 'TRAC-2-20',
+              concentration: 0,
+              volume: 0,
+              template_prep_kit_box_barcode: '029979102141700063023',
             },
           ],
         },

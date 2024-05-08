@@ -190,10 +190,18 @@ const drop = async (event) => {
  */
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
-  const { id, type } = store.tubeContentByBarcode(barcode)
+  const { id, type, template_prep_kit_box_barcode } = store.tubeContentByBarcode(barcode)
   // should move to a createUsedAliquot method
   const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-  well.used_aliquots.push({ id: '', source_id: id, source_type, barcode })
+  well.used_aliquots.push({
+    id: '',
+    source_id: id,
+    source_type,
+    barcode,
+    volume: 0,
+    concentration: 0,
+    template_prep_kit_box_barcode,
+  })
   store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>
