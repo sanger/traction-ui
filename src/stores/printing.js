@@ -10,6 +10,22 @@ export const usePrintingStore = defineStore('printing', {
     },
     tubeLabelTemplateName: import.meta.env.VITE_TUBE_LABEL_TEMPLATE_NAME,
   }),
+  getters: {
+    /**
+     *
+     * @param {Object} state
+     * @param {String} labwareType the type of labware to filter printers by
+     * @returns {Array} Array of printers that match the labwareType
+     */
+    printers: (state) => (labwareType) => {
+      if (labwareType) {
+        return Object.values(state.resources.printers).filter(
+          (printer) => printer.labware_type === labwareType,
+        )
+      }
+      return state.resources.printers.values
+    },
+  },
   actions: {
     /**
      * Creates a print job in PrintMyBarcode

@@ -6,13 +6,13 @@ import * as jsonapi from '@/api/JsonApi'
 import fs from 'fs'
 import { join } from 'path'
 
-const ResponseFactory = async (name, axios = true) => {
+const ResponseFactory = (name, axios = true) => {
   const filePath = join(__dirname, '../../data', `${name}.json`)
 
   let response = {}
 
   try {
-    const fileContent = await fs.readFileSync(filePath, 'utf8')
+    const fileContent = fs.readFileSync(filePath, 'utf8')
     response = JSON.parse(fileContent)
   } catch (err) {
     console.error(err)
@@ -34,6 +34,15 @@ const ResponseFactory = async (name, axios = true) => {
   }
 }
 
+const storePrinters = {
+  1: { id: 1, name: 'printer1', labware_type: 'tube' },
+  2: { id: 2, name: 'printer2', labware_type: 'tube' },
+  3: { id: 3, name: 'printer3', labware_type: 'tube' },
+  4: { id: 4, name: 'printer4', labware_type: 'tube' },
+  5: { id: 5, name: 'printer5', labware_type: 'plate' },
+  6: { id: 6, name: 'printer6', labware_type: 'plate' },
+}
+
 describe('usePrintingStore', () => {
   beforeEach(() => {
     const pinia = createPinia()
@@ -45,6 +54,22 @@ describe('usePrintingStore', () => {
     expect(store.resources.printers).toEqual({})
   })
 
+  describe('getters', () => {
+    describe('#printers', () => {
+      it('should return printers', async () => {
+        const store = usePrintingStore()
+        store.resources.printers = storePrinters
+        expect(store.printers()).toEqual(store.resources.printers.values)
+      })
+
+      it('can return printers by laware type', async () => {
+        const store = usePrintingStore()
+        store.resources.printers = storePrinters
+        expect(store.printers('tube').length).toEqual(4)
+      })
+    })
+  })
+
   describe('actions', () => {
     // need to fix fetch API implementation
     describe('#fetchPrinters', () => {
@@ -52,7 +77,7 @@ describe('usePrintingStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        const printers = await ResponseFactory('Printers', false)
+        const printers = ResponseFactory('Printers', false)
 
         get.mockResolvedValue(printers)
         rootStore.api = { traction: { printers: { get } } }
