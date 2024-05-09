@@ -41,6 +41,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
+          source_type: 'Pacbio:Request',
         }),
         2: createUsedAliquot({
           tag_id: 'tag2',
@@ -49,6 +50,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
+          source_type: 'Pacbio:Request',
         }),
       }
       // Setup a valid pool so validation doesnt fail on the pool
@@ -83,6 +85,7 @@ describe('pool', () => {
       expect(used_aliquots['2'].errors).toEqual({
         insert_size: 'must be present',
         source_id: 'must be present',
+        source_type: 'must be present',
       })
     })
 
@@ -95,6 +98,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
+          source_type: 'Pacbio:Request',
           available_volume: 5,
         }),
         2: createUsedAliquot({
@@ -104,6 +108,7 @@ describe('pool', () => {
           template_prep_kit_box_barcode: 'barcode1',
           insert_size: 1000,
           source_id: '1',
+          source_type: 'Pacbio:Request',
         }),
       }
 
@@ -122,6 +127,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
+          source_type: 'Pacbio:Request',
         }),
         2: createUsedAliquot({
           tag_id: 'tag1',
@@ -130,6 +136,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
+          source_type: 'Pacbio:Request',
         }),
       }
       expect(validate({ used_aliquots, pool: {} })).toBe(false)
@@ -161,6 +168,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '1',
+          source_type: 'Pacbio:Request',
         }),
         2: createUsedAliquot({
           tag_id: 'tag2',
@@ -169,6 +177,7 @@ describe('pool', () => {
           insert_size: 1000,
           template_prep_kit_box_barcode: 'barcode1',
           source_id: '2',
+          source_type: 'Pacbio:Request',
         }),
       }
       const pool = {
@@ -197,6 +206,7 @@ describe('pool', () => {
           insert_size: 1,
           source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
+          source_type: 'Pacbio:Request',
         }),
         2: createUsedAliquot({
           id: '2',
@@ -207,6 +217,7 @@ describe('pool', () => {
           source_id: '1',
           template_prep_kit_box_barcode: 'barcode1',
           otherUsedAliquotAttribute: 'aliquotValue',
+          source_type: 'Pacbio:Request',
         }),
       }
       const pool = {
@@ -230,6 +241,7 @@ describe('pool', () => {
                 concentration: 5,
                 insert_size: 1,
                 source_id: '1',
+                source_type: 'Pacbio:Request',
                 tag_id: 'tag1',
                 template_prep_kit_box_barcode: 'barcode1',
               },
@@ -239,6 +251,7 @@ describe('pool', () => {
                 concentration: 5,
                 insert_size: 1,
                 source_id: '1',
+                source_type: 'Pacbio:Request',
                 tag_id: 'tag2',
                 template_prep_kit_box_barcode: 'barcode1',
               },

@@ -10,6 +10,7 @@ function createUsedAliquot(attributes) {
    */
   const defaultUsedAliquotAttributes = {
     source_id: null,
+    source_type: null,
     template_prep_kit_box_barcode: null,
     tag_id: null,
     volume: null,
@@ -68,6 +69,7 @@ function createUsedAliquot(attributes) {
     requiredAliquotAttributes: function (isPool) {
       return [
         'source_id',
+        'source_type',
         'volume',
         'concentration',
         'insert_size',

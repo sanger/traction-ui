@@ -5,6 +5,7 @@ describe('usedAliquot', () => {
   it('should create a usedAliquot object with default attributes when no attributes are provided', () => {
     const usedAliquot = createUsedAliquot({})
     expect(usedAliquot.source_id).toBeNull()
+    expect(usedAliquot.source_type).toBeNull()
     expect(usedAliquot.template_prep_kit_box_barcode).toBeNull()
     expect(usedAliquot.tag_id).toBeNull()
     expect(usedAliquot.volume).toBeNull()
@@ -43,6 +44,7 @@ describe('usedAliquot', () => {
       insert_size: 1000,
       template_prep_kit_box_barcode: 'barcode1',
       source_id: '1',
+      source_type: 'Pacbio:Request',
     })
     expect(usedAliquot.validate(true)).toBe(true)
   })
@@ -57,6 +59,7 @@ describe('usedAliquot', () => {
     expect(usedAliquot.errors).toEqual({
       insert_size: 'must be present',
       source_id: 'must be present',
+      source_type: 'must be present',
     })
   })
   it('returns false when a library volume is less than available volume', () => {
@@ -67,6 +70,7 @@ describe('usedAliquot', () => {
       insert_size: 1000,
       template_prep_kit_box_barcode: 'barcode1',
       source_id: '1',
+      source_type: 'Pacbio:Request',
       available_volume: 5,
     })
     expect(usedAliquot.validate(true)).toBe(false)
@@ -87,6 +91,7 @@ describe('usedAliquot', () => {
   it('should return an object with the payload attributes of the aliquot', () => {
     const usedAliquot = createUsedAliquot({
       source_id: '1',
+      source_type: 'Pacbio:Request',
       volume: 10,
       concentration: 5,
       insert_size: 1000,
@@ -97,12 +102,12 @@ describe('usedAliquot', () => {
     expect(payloadAttributes).toEqual({
       id: undefined,
       source_id: '1',
+      source_type: 'Pacbio:Request',
       volume: 10,
       concentration: 5,
       insert_size: 1000,
       template_prep_kit_box_barcode: 'barcode1',
       tag_id: 'tag1',
-      source_type: undefined,
     })
   })
   //Write test case for isValidUsedAliquot
