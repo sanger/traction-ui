@@ -12,11 +12,6 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
  * The required fields are 'id', 'template_prep_kit_box_barcode', 'volume' and 'concentration'.
  * The 'tag' and 'insert_size' fields are optional.
  */
-const validateFields = (library) => {
-  // tag field is optional
-  const requiredAttributes = ['id', 'template_prep_kit_box_barcode', 'volume', 'concentration']
-  return requiredAttributes.every((field) => library[field])
-}
 
 /**
  * Importing `defineStore` function from 'pinia' library.
@@ -184,9 +179,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async updateLibrary(libraryFields) {
       //Validate the libraryFields to ensure that all required fields are present
-      if (!validateFields(libraryFields)) {
-        return { success: false, errors: 'The library is invalid' }
-      }
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.libraries
       const body = {

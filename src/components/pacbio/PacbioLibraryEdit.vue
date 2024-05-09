@@ -86,6 +86,13 @@ const librariesStore = usePacbioLibrariesStore()
  * If the update is successful, it shows a success message, otherwise shows a failure message.
  */
 const updateLibrary = async () => {
+
+  const valid = validateFields(formRef.value.formLibrary)
+  if (!valid.success) {
+    showAlert(`Please fill in all required fields: ${valid.errors.join(", ")}`, 'danger');
+    return
+  }
+
   const { success, errors } = await librariesStore.updateLibrary(formRef.value.formLibrary)
   if (success) {
     emit('editCompleted') // Emits a 'editCompleted' event which the parent component can listen to.
@@ -94,4 +101,15 @@ const updateLibrary = async () => {
     showAlert(`Failed to update library in Traction: ${errors}`, 'danger')
   }
 }
+
+const validateFields = (library) => {
+  const requiredAttributes = ['id', 'template_prep_kit_box_barcode', 'volume', 'concentration'];
+  const errors = requiredAttributes.filter(field => !library[field]);
+  
+  return {
+    success: errors.length === 0,
+    errors
+  }
+};
+
 </script>
