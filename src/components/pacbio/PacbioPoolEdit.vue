@@ -5,8 +5,9 @@
       title="Pooled Samples"
       :tag="`${poolType}`"
       data-attribute="pool-type"
+      :description="'Click on Sample Name/Source to highlight associated labware'"
     >
-      <div>
+      <div class="pt-2">
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
           <div :class="['w-full', `${border}`]">

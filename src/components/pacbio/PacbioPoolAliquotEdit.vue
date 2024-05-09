@@ -245,7 +245,11 @@ const isValidationExists = (attribute) => {
   }
 }
 
-const onTableRowClick = () => {
+const onTableRowClick = (event) => {
+  // Avoid toggle selection when user clivks on any edit fields
+  if (event.target.tagName !== 'TD') {
+    return
+  }
   emit('aliquotSelected', !props.selected)
 }
 </script>
