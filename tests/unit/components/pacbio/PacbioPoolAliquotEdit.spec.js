@@ -235,7 +235,7 @@ describe('PacbioPoolAliquotEdit.vue', () => {
         },
         props,
       })
-      wrapperObj.find('[ data-type="pool-aliquot-edit"]').trigger('click')
+      wrapperObj.find('[data-attribute="request-sample-name"]').trigger('click')
       expect(wrapperObj.emitted()).toHaveProperty('aliquotSelected')
       //check emitted value is true
       expect(wrapperObj.emitted()['aliquotSelected'][0]).toEqual([true])
@@ -250,7 +250,7 @@ describe('PacbioPoolAliquotEdit.vue', () => {
         },
         props: { ...props, selected: true },
       })
-      wrapperObj.find('[ data-type="pool-aliquot-edit"]').trigger('click')
+      wrapperObj.find('[data-attribute="request-sample-name"]').trigger('click')
       //check emitted value is false
       expect(wrapperObj.emitted()['aliquotSelected'][0]).toEqual([false])
     })

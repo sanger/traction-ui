@@ -44,8 +44,8 @@ describe('Pacbio Pool Edit', () => {
       cy.get('[data-testid=row]').should('have.length', 4)
     })
 
-    cy.get('[ data-type="pool-aliquot-edit"]').first().click()
-    cy.get('[ data-type="pool-aliquot-edit"]')
+    cy.get('[data-attribute="request-sample-name"]').first().click()
+    cy.get('[data-type="pool-aliquot-edit"]')
       .first()
       .invoke('attr', 'class')
       .should('contain', 'border-2 border-purple-500')
