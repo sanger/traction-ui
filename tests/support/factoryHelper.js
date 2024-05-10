@@ -17,9 +17,11 @@ const RequestFactory = (name, axios = true) => {
   const data = loadFile(name)
   if (axios) {
     return {
-      status: 200,
-      statusText: 'OK',
-      data: { ...data },
+      response: {
+        status: 200,
+        statusText: 'OK',
+        ...data,
+      },
     }
   } else {
     return {
