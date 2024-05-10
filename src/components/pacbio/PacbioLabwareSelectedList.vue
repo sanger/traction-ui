@@ -25,8 +25,8 @@
           >
             <div
               :class="[
-                'border border-sdb bg-blue-100 rounded-lg p-1 mr-3 mt-2',
-                `${item.barcode === props.highlight?.labware.barcode && 'border-2 border-purple-500'}`,
+                'bg-blue-100 rounded-lg p-1 mr-3 mt-2',
+                `${item.barcode === props.highlight?.labware.barcode ? 'border-2 border-purple-500' : 'border border-sdb '}`,
               ]"
             >
               <div class="flex w-full justify-end">
