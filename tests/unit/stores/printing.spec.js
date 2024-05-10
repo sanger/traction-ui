@@ -1,38 +1,8 @@
-import { createPinia, setActivePinia } from '@support/testHelper.js'
+import { createPinia, setActivePinia, RequestFactory } from '@support/testHelper.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi'
-import fs from 'fs'
-import { join } from 'path'
-
-const ResponseFactory = (name, axios = true) => {
-  const filePath = join(__dirname, '../../data', `${name}.json`)
-
-  let data = {}
-
-  try {
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    data = JSON.parse(fileContent)
-  } catch (err) {
-    console.error(err)
-  }
-  if (axios) {
-    return {
-      status: 200,
-      statusText: 'OK',
-      data: { ...data },
-    }
-  } else {
-    return {
-      status: 200,
-      statusText: 'OK',
-      json: () => Promise.resolve(data),
-      ok: true,
-      content: data,
-    }
-  }
-}
 
 const storePrinters = {
   1: { id: 1, name: 'printer1', labware_type: 'tube' },
@@ -77,19 +47,17 @@ describe('usePrintingStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        const printers = ResponseFactory('Printers', false)
+        const printerRequestFactory = RequestFactory('Printers', false)
 
-        get.mockResolvedValue(printers)
+        get.mockResolvedValue(printerRequestFactory.response)
         rootStore.api = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
         const { success } = await store.fetchPrinters()
 
-        console.log(printers.content.data)
-
         expect(store.resources.printers).toEqual(
-          jsonapi.dataToObjectById({ data: printers.content.data }),
+          jsonapi.dataToObjectById({ data: printerRequestFactory.content.data }),
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
