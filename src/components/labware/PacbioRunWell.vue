@@ -28,6 +28,7 @@
  * @description A single well in a Pacbio run plate
  */
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 
@@ -190,18 +191,20 @@ const drop = async (event) => {
  */
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
-  const { id, type, template_prep_kit_box_barcode } = store.tubeContentByBarcode(barcode)
-  // should move to a createUsedAliquot method
+  const { id, type, volume, concentration, insert_size, template_prep_kit_box_barcode } =
+    store.tubeContentByBarcode(barcode)
   const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-  well.used_aliquots.push({
-    id: '',
+  const used_aliquot = createUsedAliquot({
     source_id: id,
     source_type,
-    barcode,
-    volume: 0,
-    concentration: 0,
+    volume,
+    concentration,
+    insert_size,
     template_prep_kit_box_barcode,
+    barcode,
   })
+
+  well.used_aliquots.push(used_aliquot)
   store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>

@@ -5,6 +5,7 @@ import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 const usedAliquots = {
   1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
@@ -13,7 +14,11 @@ const usedAliquots = {
 }
 const storeWell = {
   position: 'A1',
-  used_aliquots: [usedAliquots['1'], usedAliquots['2'], usedAliquots['3']],
+  used_aliquots: [
+    createUsedAliquot({ ...usedAliquots['1'] }),
+    createUsedAliquot({ ...usedAliquots['2'] }),
+    createUsedAliquot({ ...usedAliquots['3'] }),
+  ],
   on_plate_loading_concentration: 234,
   movie_time: 15,
   generate_hifi: 'In SMRT Link',
@@ -190,8 +195,6 @@ describe('PacbioRunWell.vue', () => {
   // TRAC-2-24 - pools - 14
 
   describe('updateUsedAliquotSource', () => {
-    let expectedWell
-
     it('adds the pool to the well', async () => {
       const newBarcode = 'TRAC-2-22'
       const updateWellMockFn = vi.fn()
@@ -214,25 +217,20 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = {
-        ...storeWell,
-        used_aliquots: [
-          {
-            barcode: 'TRAC-2-22',
-            id: '',
-            source_id: '12',
-            source_type: 'Pacbio::Pool',
-            concentration: 0,
-            volume: 0,
-            template_prep_kit_box_barcode: '029979102141700063023',
-          },
-        ],
-      }
       await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
-      expect(updateWellMockFn).toBeCalledWith({
-        well: expectedWell,
-        plateNumber: props.plateNumber,
-      })
+      expect(updateWellMockFn).toBeCalled()
+      // Check the aliquot exists and contains the correct data
+      expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
+        expect.objectContaining({
+          source_id: '12',
+          source_type: 'Pacbio::Pool',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+          template_prep_kit_box_barcode: '029979102141700063023',
+          barcode: newBarcode,
+        }),
+      )
     })
 
     it('adds the library to the well', async () => {
@@ -257,25 +255,19 @@ describe('PacbioRunWell.vue', () => {
           },
         ],
       })
-      expectedWell = {
-        ...storeWell,
-        used_aliquots: [
-          {
-            barcode: 'TRAC-2-20',
-            id: '',
-            source_id: '30',
-            source_type: 'Pacbio::Library',
-            concentration: 0,
-            volume: 0,
-            template_prep_kit_box_barcode: '029979102141700063023',
-          },
-        ],
-      }
       await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
-      expect(updateWellMockFn).toBeCalledWith({
-        well: expectedWell,
-        plateNumber: props.plateNumber,
-      })
+      expect(updateWellMockFn).toBeCalled()
+      // Check the aliquot exists and contains the correct data
+      expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
+        expect.objectContaining({
+          source_id: '30',
+          source_type: 'Pacbio::Library',
+          volume: 1,
+          concentration: 1,
+          template_prep_kit_box_barcode: '029979102141700063023',
+          barcode: newBarcode,
+        }),
+      )
     })
   })
 
@@ -329,25 +321,18 @@ describe('PacbioRunWell.vue', () => {
     it('will update the barcode', async () => {
       wrapper.vm.drop(mockEvent)
       await nextTick()
-      expect(store.updateWell).toBeCalledWith({
-        // 30 is the id of the library with the barcode being used
-        well: {
-          ...storeWell,
-          used_aliquots: [
-            ...Object.values(usedAliquots),
-            {
-              id: '',
-              source_id: '30',
-              source_type: 'Pacbio::Library',
-              barcode: 'TRAC-2-20',
-              concentration: 0,
-              volume: 0,
-              template_prep_kit_box_barcode: '029979102141700063023',
-            },
-          ],
-        },
-        plateNumber: 1,
-      })
+      expect(store.updateWell).toBeCalled()
+      // Check the aliquot exists and contains the correct data
+      expect(wrapper.vm.storeWell.used_aliquots[3]).toEqual(
+        expect.objectContaining({
+          source_id: '30',
+          source_type: 'Pacbio::Library',
+          volume: 1,
+          concentration: 1,
+          template_prep_kit_box_barcode: '029979102141700063023',
+          barcode: newBarcode,
+        }),
+      )
     })
   })
 })

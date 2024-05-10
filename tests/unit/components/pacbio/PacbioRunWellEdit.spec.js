@@ -391,7 +391,7 @@ describe('PacbioWellEdit', () => {
         },
       )
       expect(wrapper.vm.filteredAliquots()).toEqual([
-        {
+        expect.objectContaining({
           id: 1,
           barcode: 'TRAC-1',
           source_id: 1,
@@ -399,7 +399,7 @@ describe('PacbioWellEdit', () => {
           volume: 5,
           concentration: 10,
           template_prep_kit_box_barcode: 'tpkbb1',
-        },
+        }),
         {
           id: 2,
           barcode: 'TRAC-2',
@@ -446,15 +446,17 @@ describe('PacbioWellEdit', () => {
     describe('addRow', () => {
       it('addRow adds an empty used aliquot to the localUsedAliquots list', () => {
         wrapper.vm.addRow()
-        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
-          id: '',
-          barcode: '',
-          source_id: '',
-          source_type: '',
-          volume: 0,
-          concentration: 0,
-          template_prep_kit_box_barcode: '',
-        })
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual(
+          expect.objectContaining({
+            id: '',
+            barcode: '',
+            source_id: null,
+            source_type: null,
+            volume: 0,
+            concentration: null,
+            template_prep_kit_box_barcode: null,
+          }),
+        )
         expect(wrapper.vm.localUsedAliquots.length).toEqual(1)
       })
     })
@@ -489,15 +491,17 @@ describe('PacbioWellEdit', () => {
         })
         wrapper.vm.addRow()
         await wrapper.vm.updateUsedAliquotSource({ index: 0, item: { id: '' } }, 'TRAC-2-1')
-        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
-          id: '',
-          barcode: 'TRAC-2-1',
-          source_id: 1,
-          source_type: 'Pacbio::Pool',
-          volume: 0,
-          concentration: 0,
-          template_prep_kit_box_barcode: 'tpkbb1',
-        })
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual(
+          expect.objectContaining({
+            id: '',
+            barcode: 'TRAC-2-1',
+            source_id: 1,
+            source_type: 'Pacbio::Pool',
+            volume: 5,
+            concentration: 10,
+            template_prep_kit_box_barcode: 'tpkbb1',
+          }),
+        )
       })
 
       it('shows an alert if the source does not exist', async () => {
@@ -506,15 +510,17 @@ describe('PacbioWellEdit', () => {
 
         wrapper.vm.addRow()
         await wrapper.vm.updateUsedAliquotSource({ index: 0, item: { id: '' } }, 'TRAC-2-1')
-        expect(wrapper.vm.localUsedAliquots[0]).toEqual({
-          id: '',
-          barcode: '',
-          source_id: '',
-          source_type: '',
-          volume: 0,
-          concentration: 0,
-          template_prep_kit_box_barcode: '',
-        })
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual(
+          expect.objectContaining({
+            id: '',
+            barcode: '',
+            source_id: null,
+            source_type: null,
+            volume: 0,
+            concentration: null,
+            template_prep_kit_box_barcode: null,
+          }),
+        )
         expect(mockShowAlert).toBeCalledWith('Pool is not valid', 'danger')
       })
     })

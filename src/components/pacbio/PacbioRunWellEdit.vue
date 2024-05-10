@@ -31,13 +31,26 @@
         ></traction-input>
       </template>
       <template #cell(volume)="row">
-        <traction-input
-          id="usedAliquotVolume"
-          data-attribute="aliquot-volume"
-          :model-value="`${row.item.volume}`"
-          placeholder="Pool/Library volume"
-          @update:model-value="updateUsedAliquotVolume(row, $event)"
-        ></traction-input>
+        <div class="flex flex-row">
+          <traction-input
+            id="usedAliquotVolume"
+            class="grow"
+            data-attribute="aliquot-volume"
+            :model-value="`${row.item.volume}`"
+            placeholder="Pool/Library volume"
+            @update:model-value="updateUsedAliquotVolume(row, $event)"
+          ></traction-input>
+          <div v-show="row.item.available_volume != null" class="flex items-center">
+            <traction-tooltip
+              :tooltip-text="'Available volume is ' + row.item.available_volume"
+              class="flex max-w-xs"
+            >
+              <traction-badge id="library-used-volume" colour="sanger-yellow"
+                ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
+              >
+            </traction-tooltip>
+          </div>
+        </div>
       </template>
       <template #cell(actions)="row">
         <traction-button theme="delete" @click="removeRow(row)">-</traction-button>
@@ -71,6 +84,10 @@ import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 import useAlert from '@/composables/useAlert.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -139,15 +156,7 @@ const action = computed(() => {
 /* `addRow` is a function that adds a new row to the `localUsedAliquots` array.
   Each row is an object with an `id`, and `barcode`, both initialized as empty strings.*/
 const addRow = () => {
-  localUsedAliquots.value.push({
-    id: '',
-    barcode: '',
-    source_id: '',
-    source_type: '',
-    volume: 0,
-    concentration: 0,
-    template_prep_kit_box_barcode: '',
-  })
+  localUsedAliquots.value.push(createUsedAliquot({ id: '', barcode: '', volume: 0 }))
 }
 
 /* `removeRow` is a function that removes a row from the `localUsedAliquots` array.*/
@@ -224,15 +233,17 @@ const updateUsedAliquotSource = async (row, barcode) => {
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
     const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-    localUsedAliquots.value[index] = {
+    const used_aliquot = createUsedAliquot({
       id: row.item.id || '',
       source_id: tubeContent.id,
       source_type: type,
       barcode,
-      volume: 0,
-      concentration: 0,
+      volume: tubeContent.volume,
+      concentration: tubeContent.concentration,
+      insert_size: tubeContent.insert_size,
       template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
-    }
+    })
+    localUsedAliquots.value[index] = used_aliquot
   } else {
     showAlert('Pool is not valid', 'danger')
   }
@@ -251,9 +262,13 @@ const setupWell = async () => {
     const poolOrLibrary = store.tubeContents.find(
       (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
     )
-    poolOrLibrary
-      ? localUsedAliquots.value.push({ ...aliquot, barcode: poolOrLibrary.barcode })
-      : null
+    if (poolOrLibrary) {
+      const used_aliquot = createUsedAliquot({
+        ...aliquot,
+        barcode: poolOrLibrary.barcode,
+      })
+      localUsedAliquots.value.push(used_aliquot)
+    }
   })
 }
 
