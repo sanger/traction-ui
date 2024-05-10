@@ -515,5 +515,53 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       this.$reset()
       this.resources = resources
     },
+    getAvailableVolumeForLibraryAliquot({ libraryId = null, aliquotId = null, volume = null }) {
+      if (!libraryId) {
+        return null
+      }
+
+      // Get the original aliquot if it exists
+      const original_aliquot = this.aliquots[aliquotId]
+      const library_available_volume = this.libraries[libraryId].available_volume || 0
+
+      let library_used_aliquots_volume = 0
+      // eslint-disable-next-line no-unused-vars
+      Object.entries(this.wells).forEach(([_plateNumber, plate]) => {
+        // eslint-disable-next-line no-unused-vars
+        Object.entries(plate).forEach(([_position, well]) => {
+          well.used_aliquots?.forEach((aliquot) => {
+            // For each aliquot used in wells, check if the source is the library and if so add the volume used
+            if (
+              aliquot &&
+              aliquot.source_id === libraryId &&
+              aliquot.source_type === 'Pacbio::Library'
+            ) {
+              library_used_aliquots_volume = (
+                parseFloat(library_used_aliquots_volume) + parseFloat(aliquot.volume)
+              ).toFixed(2)
+            }
+          })
+        })
+      }, 0)
+
+      let total_available_volume = (
+        parseFloat(library_available_volume) - parseFloat(library_used_aliquots_volume)
+      ).toFixed(2)
+
+      if (original_aliquot) {
+        // If its an existing aliquot we need to add the original volume back
+        // Because its taken into account in the library_available_volume
+        total_available_volume = (
+          parseFloat(total_available_volume) + parseFloat(original_aliquot.volume)
+        ).toFixed(2)
+      } else {
+        // If its a new aliquot we need to add the volume to the total available volume
+        total_available_volume = (parseFloat(total_available_volume) + parseFloat(volume)).toFixed(
+          2,
+        )
+      }
+
+      return total_available_volume
+    },
   },
 })

@@ -40,7 +40,7 @@
             placeholder="Pool/Library volume"
             @update:model-value="updateUsedAliquotVolume(row, $event)"
           ></traction-input>
-          <div v-show="row.item.available_volume != null" class="flex items-center">
+          <div v-if="row.item.available_volume != null" class="flex items-center">
             <traction-tooltip
               :tooltip-text="'Available volume is ' + row.item.available_volume"
               class="flex max-w-xs"
@@ -267,6 +267,13 @@ const setupWell = async () => {
         ...aliquot,
         barcode: poolOrLibrary.barcode,
       })
+      if (used_aliquot.source_type === 'Pacbio::Library') {
+        used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
+          libraryId: aliquot.source_id,
+          aliquotId: aliquot.id,
+          volume: aliquot.volume,
+        })
+      }
       localUsedAliquots.value.push(used_aliquot)
     }
   })
