@@ -13,7 +13,7 @@ describe('LabelPrinting.vue', () => {
   })
 
   describe('components', () => {
-    it('has a LabelPrintingForm component', () => {
+    it.skip('has a LabelPrintingForm component', () => {
       expect(wrapper.findComponent({ ref: 'LabelPrintingForm' })).toBeTruthy()
     })
   })

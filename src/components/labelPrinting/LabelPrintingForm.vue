@@ -99,9 +99,10 @@ import {
   createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers'
 import { getCurrentDate } from '@/lib/DateHelpers'
-import { mapActions } from 'vuex'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { nextTick } from 'vue'
+import { usePrintingStore } from '@/stores/printing.js'
+import { mapActions, mapState } from 'pinia'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
@@ -123,8 +124,9 @@ export default {
     }
   },
   computed: {
+    ...mapState(usePrintingStore, ['printers']),
     printerOptions() {
-      return this.$store.getters.printers.map((name) => ({
+      return this.printers('tube').map((name) => ({
         text: name,
       }))
     },
@@ -152,6 +154,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(usePrintingStore, ['createPrintJob']),
     /*
       Creates the print job and shows a success or failure alert
       @param {event}
@@ -177,7 +180,6 @@ export default {
         this.show = true
       })
     },
-    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

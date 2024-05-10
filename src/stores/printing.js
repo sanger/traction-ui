@@ -8,7 +8,6 @@ export const usePrintingStore = defineStore('printing', {
     resources: {
       printers: {},
     },
-    tubeLabelTemplateName: import.meta.env.VITE_TUBE_LABEL_TEMPLATE_NAME,
   }),
   getters: {
     /**
@@ -23,7 +22,7 @@ export const usePrintingStore = defineStore('printing', {
           (printer) => printer.labware_type === labwareType,
         )
       }
-      return state.resources.printers.values
+      return Object.values(state.resources.printers)
     },
   },
   actions: {

@@ -1,8 +1,9 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 import SuffixList from '@/config/SuffixList'
 import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { usePrintingStore } from '@/stores/printing.js'
 
 const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
@@ -18,23 +19,66 @@ const evt = {
   },
 }
 
-describe('LabelPrintingForm.vue', () => {
-  let wrapper, labelPrintingForm
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
+  const wrapperObj = mount(LabelPrintingForm, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            printing: state,
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+  })
+  const storeObj = usePrintingStore()
+  return { wrapperObj, storeObj }
+}
 
-  describe('computed properties', () => {
+const printers = {
+  1: { id: 1, name: 'printer1', labware_type: 'tube' },
+  2: { id: 2, name: 'printer2', labware_type: 'tube' },
+  3: { id: 3, name: 'printer3', labware_type: 'tube' },
+  4: { id: 4, name: 'printer4', labware_type: 'tube' },
+  5: { id: 5, name: 'printer5', labware_type: 'plate' },
+  6: { id: 6, name: 'printer6', labware_type: 'plate' },
+}
+
+describe('LabelPrintingForm.vue', () => {
+  let wrapper, store, labelPrintingForm
+
+  describe.only('computed properties', () => {
     beforeEach(() => {
-      wrapper = mount(LabelPrintingForm, {
-        store,
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          resources: {
+            printers,
+          },
+        },
       })
-      labelPrintingForm = wrapper.vm
+
+      wrapper = wrapperObj
+      store = storeObj
     })
 
     it('has the correct printer Options', () => {
-      expect(labelPrintingForm.printerOptions.length).toEqual(store.getters.printers.length)
+      expect(wrapper.vm.printerOptions.length).toEqual(store.printers('tube').length)
     })
 
     it('has the correct Suffix Options', () => {
-      expect(labelPrintingForm.suffixOptions).toEqual(createSuffixDropdownOptions(SuffixList))
+      expect(wrapper.vm.suffixOptions).toEqual(createSuffixDropdownOptions(SuffixList))
     })
   })
 

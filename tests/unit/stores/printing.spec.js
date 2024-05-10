@@ -29,7 +29,7 @@ describe('usePrintingStore', () => {
       it('should return printers', async () => {
         const store = usePrintingStore()
         store.resources.printers = storePrinters
-        expect(store.printers()).toEqual(store.resources.printers.values)
+        expect(store.printers()).toEqual(Object.values(store.resources.printers))
       })
 
       it('can return printers by laware type', async () => {
