@@ -667,7 +667,9 @@ describe('PacbioWellEdit', () => {
           'must be less or equal to available volume',
         )
         // Check the error is shown in the UI
-        expect(wrapper.find('[data-attribute="volume-error"]').text()).toContain('must be less or equal to available volume')
+        expect(wrapper.find('[data-attribute="volume-error"]').text()).toContain(
+          'must be less or equal to available volume',
+        )
       })
 
       it('shows an alert if the source does not exist', async () => {
