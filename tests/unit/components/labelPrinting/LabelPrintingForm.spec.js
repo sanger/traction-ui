@@ -29,7 +29,7 @@ const evt = {
  * stubActions - boolean to stub actions or not.
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
+function mountWithStore({ state = {}, stubActions = false, plugins = [], data = {} } = {}) {
   const wrapperObj = mount(LabelPrintingForm, {
     global: {
       plugins: [
@@ -41,6 +41,9 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
           plugins,
         }),
       ],
+    },
+    data() {
+      return data
     },
   })
   const storeObj = usePrintingStore()
@@ -59,7 +62,7 @@ const printers = {
 describe('LabelPrintingForm.vue', () => {
   let wrapper, store, labelPrintingForm
 
-  describe.only('computed properties', () => {
+  describe('computed properties', () => {
     beforeEach(() => {
       const { wrapperObj, storeObj } = mountWithStore({
         state: {
@@ -89,30 +92,40 @@ describe('LabelPrintingForm.vue', () => {
    */
   describe('labels', () => {
     it('should have the correct number', () => {
-      const wrapper = mount(LabelPrintingForm, {
-        data() {
-          return {
-            form: options,
-          }
+      const { wrapperObj } = mountWithStore({
+        state: {
+          resources: {
+            printers,
+          },
+        },
+        data: {
+          form: options,
         },
       })
+
+      wrapper = wrapperObj
 
       // 3 barcodes and 3 of each
       expect(wrapper.vm.labels.length).toEqual(9)
     })
 
     it('should remove new lines', () => {
-      const wrapper = mount(LabelPrintingForm, {
-        data() {
-          return {
-            form: {
-              ...options,
-              sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
-              numberOfLabels: 1,
-            },
-          }
+      const { wrapperObj } = mountWithStore({
+        state: {
+          resources: {
+            printers,
+          },
+        },
+        data: {
+          form: {
+            ...options,
+            sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
+            numberOfLabels: 1,
+          },
         },
       })
+
+      wrapper = wrapperObj
 
       expect(wrapper.vm.labels.length).toEqual(3)
     })
@@ -121,29 +134,48 @@ describe('LabelPrintingForm.vue', () => {
   describe('methods', () => {
     describe('onReset', () => {
       it('resets the forms data', () => {
-        wrapper.setData({
-          form: { printerName: 'stub' },
+        const { wrapperObj } = mountWithStore({
+          state: {
+            resources: {
+              printers,
+            },
+          },
+          data: {
+            form: { printerName: 'stub' },
+          },
         })
+
+        wrapper = wrapperObj
 
         labelPrintingForm = wrapper.vm
 
         labelPrintingForm.onReset(evt)
-        expect(labelPrintingForm.form.sourceBarcodeList).toEqual(null)
-        expect(labelPrintingForm.form.suffix).toEqual(null)
-        expect(labelPrintingForm.form.numberOfLabels).toEqual(null)
-        expect(labelPrintingForm.form.printerName).toEqual(null)
+
+        // when we move this to the composition api we can test the form is reset using defaultForm
+        expect(labelPrintingForm.form).toEqual({
+          sourceBarcodeList: null,
+          suffix: null,
+          numberOfLabels: null,
+          printerName: null,
+          copies: 1,
+        })
       })
     })
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        const wrapper = mount(LabelPrintingForm, {
-          data() {
-            return {
-              form: options,
-            }
+        const { wrapperObj } = mountWithStore({
+          state: {
+            resources: {
+              printers,
+            },
+          },
+          data: {
+            form: options,
           },
         })
+
+        wrapper = wrapperObj
 
         labelPrintingForm = wrapper.vm
       })
