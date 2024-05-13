@@ -3,6 +3,7 @@ import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -366,7 +367,7 @@ describe('PacbioWellEdit', () => {
       // This method sets the well data for the modal on show
       await wrapper.vm.showModalForPositionAndPlate('A1', 1)
       wrapper.vm.localUsedAliquots.push(
-        {
+        createUsedAliquot({
           id: 2,
           barcode: 'TRAC-2',
           source_id: 2,
@@ -374,8 +375,8 @@ describe('PacbioWellEdit', () => {
           volume: 6,
           concentration: 11,
           template_prep_kit_box_barcode: 'tpkbb1',
-        },
-        {
+        }),
+        createUsedAliquot({
           id: 3,
           barcode: 'TRAC-3',
           source_id: 1,
@@ -383,12 +384,12 @@ describe('PacbioWellEdit', () => {
           volume: 7,
           concentration: 12,
           template_prep_kit_box_barcode: 'tpkbb1',
-        },
+        }),
         // Incomplete aliquots should not be included in filteredAliquots
-        {
+        createUsedAliquot({
           id: '',
           barcode: '',
-        },
+        }),
       )
       expect(wrapper.vm.filteredAliquots()).toEqual([
         expect.objectContaining({
@@ -400,7 +401,7 @@ describe('PacbioWellEdit', () => {
           concentration: 10,
           template_prep_kit_box_barcode: 'tpkbb1',
         }),
-        {
+        expect.objectContaining({
           id: 2,
           barcode: 'TRAC-2',
           source_id: 2,
@@ -408,8 +409,8 @@ describe('PacbioWellEdit', () => {
           volume: 6,
           concentration: 11,
           template_prep_kit_box_barcode: 'tpkbb1',
-        },
-        {
+        }),
+        expect.objectContaining({
           id: 3,
           barcode: 'TRAC-3',
           source_id: 1,
@@ -417,7 +418,7 @@ describe('PacbioWellEdit', () => {
           volume: 7,
           concentration: 12,
           template_prep_kit_box_barcode: 'tpkbb1',
-        },
+        }),
       ])
     })
   })
@@ -472,9 +473,10 @@ describe('PacbioWellEdit', () => {
               tube: 1,
               request: 1,
               type: 'libraries',
-              volume: 7,
+              volume: 10,
               concentration: 12,
               template_prep_kit_box_barcode: 'tpkbb1',
+              available_volume: 10,
             },
             2: { id: 2, tube: 2, request: 2, type: 'libraries' },
           },
@@ -483,11 +485,13 @@ describe('PacbioWellEdit', () => {
               id: 1,
               source_id: 1,
               source_type: 'Pacbio::Pool',
+              volume: 5,
             },
             2: {
               id: 2,
               source_id: 1,
               source_type: 'Pacbio::Library',
+              volume: 5,
             },
           },
           tubes: {
@@ -618,8 +622,8 @@ describe('PacbioWellEdit', () => {
           template_prep_kit_box_barcode: 'tpkbb1',
         })
         wrapper.vm.addRow()
-        await wrapper.vm.updateUsedAliquotSource({ index: 0, item: { id: '' } }, 'TRAC-2-1')
-        expect(wrapper.vm.localUsedAliquots[0]).toEqual(
+        await wrapper.vm.updateUsedAliquotSource({ index: 1, item: { id: '' } }, 'TRAC-2-1')
+        expect(wrapper.vm.localUsedAliquots[1]).toEqual(
           expect.objectContaining({
             id: '',
             barcode: 'TRAC-2-1',
@@ -628,9 +632,42 @@ describe('PacbioWellEdit', () => {
             volume: 5,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: '5.00',
+            available_volume: '10.00',
+            errors: {},
           }),
         )
+      })
+
+      it('adds an error if the available volume is less than the volume of the aliquot', async () => {
+        store.findPoolsOrLibrariesByTube = vi.fn()
+        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+          id: 1,
+          type: 'libraries',
+          barcode: 'TRAC-2-1',
+          volume: 15,
+          concentration: 10,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        })
+        wrapper.vm.addRow()
+        await wrapper.vm.updateUsedAliquotSource({ index: 1, item: { id: '' } }, 'TRAC-2-1')
+        expect(wrapper.vm.localUsedAliquots[1]).toEqual(
+          expect.objectContaining({
+            id: '',
+            barcode: 'TRAC-2-1',
+            source_id: 1,
+            source_type: 'Pacbio::Library',
+            volume: 15,
+            concentration: 10,
+            template_prep_kit_box_barcode: 'tpkbb1',
+            available_volume: '10.00',
+          }),
+        )
+        // Check the error is added to the aliquot
+        expect(wrapper.vm.localUsedAliquots[1].errors.volume).toEqual(
+          'must be less or equal to available volume',
+        )
+        // Check the error is shown in the UI
+        expect(wrapper.find('[data-attribute="volume-error"]').text()).toContain('must be less or equal to available volume')
       })
 
       it('shows an alert if the source does not exist', async () => {

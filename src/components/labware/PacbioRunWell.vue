@@ -28,7 +28,7 @@
  * @description A single well in a Pacbio run plate
  */
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
-import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 

@@ -31,7 +31,11 @@
         ></traction-input>
       </template>
       <template #cell(volume)="row">
-        <div class="flex flex-row">
+        <traction-field-error
+          data-attribute="volume-error"
+          :error="errorsFor(row.item, 'volume')"
+          :with-icon="true"
+        >
           <traction-input
             id="usedAliquotVolume"
             class="grow"
@@ -54,7 +58,7 @@
               >
             </traction-tooltip>
           </div>
-        </div>
+        </traction-field-error>
       </template>
       <template #cell(actions)="row">
         <traction-button data-action="remove-row" theme="delete" @click="removeRow(row)"
@@ -228,8 +232,8 @@ const removeWell = () => {
 
 //updateUsedAliquotVolume function is used to update the volume of the pool or library
 const updateUsedAliquotVolume = (row, volume) => {
-  const index = row.index
-  localUsedAliquots.value[index].volume = volume
+  const aliquot = localUsedAliquots.value[row.index]
+  aliquot.volume = volume
 }
 
 //updateUsedAliquotSource function is used to update the pool or library barcode
@@ -253,7 +257,8 @@ const updateUsedAliquotSource = async (row, barcode) => {
       used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
         libraryId: used_aliquot.source_id,
         aliquotId: used_aliquot.id,
-        volume: used_aliquot.volume,
+        // Volume is 0 because this aliquot is not yet saved so it shouldnt count as used
+        volume: 0,
       })
     }
     localUsedAliquots.value[index] = used_aliquot
@@ -268,7 +273,9 @@ const updateUsedAliquotSource = async (row, barcode) => {
  * This function is called when the modal is shown for a specific position and plate number.
  */
 const setupWell = async () => {
-  well.value = await store.getOrCreateWell(position.value, plateNumber.value)
+  // We clone the well as it gets binded to the form and we don't want to change the original object
+  // without a confirmation action like the 'update' button
+  well.value = { ...(await store.getOrCreateWell(position.value, plateNumber.value)) }
   localUsedAliquots.value = []
   well.value.used_aliquots.forEach((aliquot) => {
     const type = aliquot.source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
@@ -291,6 +298,16 @@ const setupWell = async () => {
       localUsedAliquots.value.push(used_aliquot)
     }
   })
+}
+
+/**
+ * The errors for an attribute
+ */
+const errorsFor = (aliquot, attribute) => {
+  if (aliquot && attribute) {
+    aliquot.validateField(attribute, aliquot[attribute])
+    return aliquot.errors?.[attribute]
+  }
 }
 
 //handleCustomProps function is used to handle custom props for the component
