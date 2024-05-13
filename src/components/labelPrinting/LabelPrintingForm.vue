@@ -54,6 +54,20 @@
           </fieldset>
 
           <fieldset>
+            <traction-heading level="3" show-border>Printer Labware Type</traction-heading>
+            <traction-muted-text>Labware type for printer selection</traction-muted-text>
+            <div class="mt-2">
+              <traction-select
+                id="printer-labware-choice"
+                v-model="form.printerLabwareType"
+                :options="printerLabwareOptions"
+                value-field="text"
+                required
+              ></traction-select>
+            </div>
+          </fieldset>
+
+          <fieldset>
             <traction-heading level="3" show-border>Choice of Printer</traction-heading>
             <traction-muted-text>The printer to print the labels</traction-muted-text>
             <div class="mt-2">
@@ -128,8 +142,9 @@ import LabelPrintingSummaryItem from './LabelPrintingSummaryItem.vue'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
-  suffix: null,
+  suffix: null, // Default to No suffix
   numberOfLabels: null,
+  printerLabwareType: 'tubePrinter', // Default to 'tubePrinter
   printerName: null,
   copies: 1,
 })
@@ -147,6 +162,13 @@ export default {
     }
   },
   computed: {
+    printerLabwareOptions() {
+      return [
+        { text: 'Tube Printer', value: 'tubePrinter' },
+        { text: '96-Well Plate Printer', value: '96WellPlatePrinter' },
+        { text: '384-Well Plate Printer', value: '384WellPlatePrinter' },
+      ]
+    },
     printerOptions() {
       return this.$store.getters.printers.map((name) => ({
         text: name,
