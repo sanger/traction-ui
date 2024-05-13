@@ -19,7 +19,7 @@ describe('Label Printing page', () => {
 
     cy.get('#submit-button').click()
 
-    cy.contains('Barcodes to be printed')
+    cy.contains('Preview Barcodes')
     cy.contains('aBarcode-OPLX-1')
     cy.contains('aBarcode-OPLX-2')
     cy.contains('aBarcode-OPLX-3')

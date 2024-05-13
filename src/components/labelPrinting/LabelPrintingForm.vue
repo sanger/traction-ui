@@ -64,7 +64,7 @@
         </div>
         <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
           <traction-heading level="3" class-name="text-white italic" show-border>
-            Barcodes to be printed
+            Preview Barcodes
           </traction-heading>
           <div>
             <div class="space-x-4 pb-4 flex flex-row">
