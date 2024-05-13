@@ -74,13 +74,26 @@
         </traction-heading>
         <div>
           <div class="space-x-4 pb-4 flex flex-row">
-            <traction-button id="submit-button" class="grow" type="submit" theme="printRed"
-              >Print Labels</traction-button
-            >
-            <traction-button id="reset-button" type="reset" theme="resetWhite"
-              >Reset</traction-button
-            >
+            <traction-button id="submit-button" class="grow" type="submit" theme="printRed">
+              Print Labels
+            </traction-button>
+            <traction-button id="reset-button" type="reset" theme="resetWhite">
+              Reset
+            </traction-button>
           </div>
+
+          <traction-heading level="5" class-name="text-white">
+            Print Settings Summary
+          </traction-heading>
+          <div class="text-left text-white font-light">
+            <label-printing-summary-item label="Labels">
+              {{ form.numberOfLabels }}
+            </label-printing-summary-item>
+            <label-printing-summary-item label="Printer">
+              {{ form.printerName }}
+            </label-printing-summary-item>
+          </div>
+
           <traction-heading level="5" class-name="mt-4 text-white">Barcode List</traction-heading>
           <div tag="article" class="mb-2 text-black text-left font-mono">
             <div class="flex flex-col bg-white rounded p-4">
@@ -111,6 +124,7 @@ import { getCurrentDate } from '@/lib/DateHelpers'
 import { mapActions } from 'vuex'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { nextTick } from 'vue'
+import LabelPrintingSummaryItem from './LabelPrintingSummaryItem.vue'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
@@ -124,6 +138,7 @@ export default {
   name: 'LabelPrintingForm',
   components: {
     BarcodeIcon,
+    LabelPrintingSummaryItem,
   },
   data() {
     return {
