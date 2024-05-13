@@ -1,7 +1,7 @@
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
-import * as Run from '@/api/SaphyrRun'
-import build from '@/api/ApiBuilder'
+import Response from '@/api/v1/Response'
+import * as Run from '@/api/v2/SaphyrRun'
+import build from '@/api/v2/ApiBuilder'
 import config from '@/api/Config'
 
 describe('Run', () => {

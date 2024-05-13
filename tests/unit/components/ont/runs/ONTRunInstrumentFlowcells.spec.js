@@ -1,7 +1,7 @@
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 import { mount, router, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { useOntRunsStore } from '@/stores/ontRuns'
 

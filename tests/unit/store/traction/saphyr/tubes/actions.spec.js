@@ -1,5 +1,5 @@
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
 
 describe('#getTractionTubesForBarcodes', () => {

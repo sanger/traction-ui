@@ -1,4 +1,4 @@
-import handleResponse from '@/api/ResponseHelper'
+import handleResponse from '@/api/v1/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPlates = async ({ commit, getters }, filter, page) => {

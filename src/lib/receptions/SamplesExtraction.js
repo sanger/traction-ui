@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/ResponseHelper.js'
+import { handleResponse } from '@/api/v1/ResponseHelper.js'
 
 /*
   return a set of labware by their barcodes

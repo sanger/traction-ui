@@ -170,7 +170,9 @@ const errors = computed(
 )
 const classObject = computed(
   () =>
-    `shadow-md border cursor-pointer rounded-md transition-all duration-200 ${valid.value ? 'hover:border-green-400' : 'hover:border-red-400'}`,
+    `shadow-md border cursor-pointer rounded-md transition-all duration-200 ${
+      valid.value ? 'hover:border-green-400' : 'hover:border-red-400'
+    }`,
 )
 const drag = (barcode, event) => {
   event.dataTransfer.setDragImage(img, 120, 50)

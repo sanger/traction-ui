@@ -1,4 +1,4 @@
-import * as ApiBuilder from '@/api/ApiBuilder'
+import * as ApiBuilder from '@/api/v1/ApiBuilder'
 
 import.meta.env.VITE_API1_BASE_URL = 'http://api1'
 import.meta.env.VITE_API2_BASE_URL = 'http://api2'

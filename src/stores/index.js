@@ -1,9 +1,9 @@
 import config from '@/api/Config'
-import build from '@/api/ApiBuilder'
+import build from '@/api/v1/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import PlateMap from '@/config/PlateMap'
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper.js'
+import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
 

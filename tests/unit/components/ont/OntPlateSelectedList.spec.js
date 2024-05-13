@@ -1,6 +1,6 @@
 import { mount, store, Data } from '@support/testHelper'
 import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
-import Response from '@/api/Response'
+import Response from '@/api/v1/Response'
 
 describe('OntPlateSelectedList', () => {
   let wrapper, mockPlates

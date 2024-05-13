@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 /**
  * Generates a reception resource in traction
  * @param request: {Function} Function to make a request to the Traction

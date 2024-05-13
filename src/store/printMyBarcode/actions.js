@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/v1/ResponseHelper'
 
 /*
   TODO. The only action we have is createPrintJob

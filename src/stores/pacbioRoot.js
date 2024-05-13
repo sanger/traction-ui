@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper.js'
+import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
 import defaultState from '@/store/traction/ont/pools/state'
 import { payload } from '@/store/traction/ont/pools/pool'
-import { newResponse } from '@/api/ResponseHelper'
+import { newResponse } from '@/api/v1/ResponseHelper'
 
 describe('actions.js', () => {
   const {
