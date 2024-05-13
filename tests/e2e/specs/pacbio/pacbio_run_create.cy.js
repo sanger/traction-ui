@@ -70,6 +70,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
     cy.get('#update').click()
     cy.get('button').contains('Create').click()

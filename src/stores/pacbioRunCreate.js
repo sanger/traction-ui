@@ -533,14 +533,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // Get the available volume for the library
       const library_available_volume = this.libraries[libraryId].available_volume || 0
 
-      // Calculate the sum of the volume of all the aliquots used in wells that are from the library
+      // Calculate the sum of the volume of all the new aliquots used in wells that are from the library
       let library_used_aliquots_volume = 0
       // eslint-disable-next-line no-unused-vars
       Object.entries(this.wells).forEach(([_plateNumber, plate]) => {
         // eslint-disable-next-line no-unused-vars
         Object.entries(plate).forEach(([_position, well]) => {
           well.used_aliquots?.forEach((aliquot) => {
-            // Untouched existing aliquots should be counted as they are already taken into account in the library available volume
+            // Existing aliquots should not be counted as they are already taken into account in the library available volume
             if (original_aliquot && aliquot.id === original_aliquot.id) {
               return
             }
@@ -573,7 +573,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           parseFloat(total_available_volume) + parseFloat(original_aliquot.volume)
         ).toFixed(2)
       } else {
-        // If its a new aliquot we need to add the volume to the total available volume
+        // If its a new aliquot we need to add the volume back in to the total available volume
+        // because it was removed as part of the library_used_aliquots volume but it should be available in this instance of aliquot
         total_available_volume = (parseFloat(total_available_volume) + parseFloat(volume)).toFixed(
           2,
         )
