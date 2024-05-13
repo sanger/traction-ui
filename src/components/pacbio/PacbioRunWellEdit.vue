@@ -218,6 +218,16 @@ const hide = () => {
 //update function is used to update the well
 const update = () => {
   well.value.used_aliquots = filteredAliquots()
+  const aliquot_errors = well.value.used_aliquots.some(
+    (aliquot) => Object.values(aliquot.errors).length > 0,
+  )
+
+  if (aliquot_errors) {
+    // We can assume the errors are related to volume as thats the only thing we validate
+    showAlert('Insufficient volume available', 'danger')
+    return
+  }
+
   store.updateWell({ well: well.value, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()

@@ -62,7 +62,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
   return { wrapperObj, storeObj }
 }
 
-describe('PacbioWellEdit', () => {
+describe('PacbioRunWellEdit', () => {
   let wrapper
 
   describe('SMRT Link Versions', () => {
@@ -691,6 +691,91 @@ describe('PacbioWellEdit', () => {
         )
         expect(mockShowAlert).toBeCalledWith('Pool is not valid', 'danger')
       })
+    })
+  })
+
+  describe('update', () => {
+    let store
+
+    beforeEach(() => {
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions['1'],
+          wells: {
+            1: {
+              A1: newWell({ position }),
+            },
+          },
+        },
+      })
+      store = storeObj
+      wrapper = wrapperObj
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+    })
+
+    it('updates the well if it is valid', () => {
+      const aliquots = [
+        createUsedAliquot({
+          id: 2,
+          barcode: 'TRAC-2',
+          source_id: 2,
+          source_type: 'Pacbio::Pool',
+          volume: 6,
+          concentration: 11,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        }),
+        createUsedAliquot({
+          id: 3,
+          barcode: 'TRAC-3',
+          source_id: 1,
+          source_type: 'Pacbio::Library',
+          volume: 7,
+          concentration: 12,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        }),
+      ]
+      wrapper.vm.localUsedAliquots = aliquots
+      wrapper.vm.update()
+      expect(store.updateWell).toBeCalledWith({
+        plateNumber: 1,
+        well: {
+          used_aliquots: aliquots,
+        },
+      })
+      expect(wrapper.vm.isShow).toBeFalsy()
+    })
+
+    it('does not update the well and shows an error if the aliquots have errors', () => {
+      const aliquots = [
+        createUsedAliquot({
+          id: 2,
+          barcode: 'TRAC-2',
+          source_id: 2,
+          source_type: 'Pacbio::Pool',
+          volume: 6,
+          concentration: 11,
+          template_prep_kit_box_barcode: 'tpkbb1',
+          errors: {
+            volume: 'must be less or equal to available volume',
+          },
+        }),
+        createUsedAliquot({
+          id: 3,
+          barcode: 'TRAC-3',
+          source_id: 1,
+          source_type: 'Pacbio::Library',
+          volume: 7,
+          concentration: 12,
+          template_prep_kit_box_barcode: 'tpkbb1',
+        }),
+      ]
+      wrapper.vm.localUsedAliquots = aliquots
+      wrapper.vm.update()
+      expect(mockShowAlert).toBeCalledWith('Insufficient volume available', 'danger')
+      expect(store.updateWell).not.toBeCalled()
+      expect(wrapper.vm.isShow).toBeTruthy()
     })
   })
 })
