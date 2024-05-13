@@ -756,5 +756,207 @@ describe('usePacbioRunCreateStore', () => {
         })
       })
     })
+    describe('getAvailableVolumeForLibraryAliquot', () => {
+      it('returns null if no library id is provided', () => {
+        const store = usePacbioRunCreateStore()
+        const available_volume = store.getAvailableVolumeForLibraryAliquot({})
+        expect(available_volume).toBeNull()
+      })
+
+      describe('new aliquots', () => {
+        it('returns the library available volume if there are no other aliquots from the same library', () => {
+          const store = usePacbioRunCreateStore()
+          const library = {
+            id: '1',
+            type: 'libraries',
+            available_volume: 10,
+          }
+          store.$state = {
+            libraries: {
+              1: library,
+            },
+            wells: {
+              1: {
+                A1: {
+                  id: '1',
+                  type: 'wells',
+                  position: 'A1',
+                  used_aliquots: [
+                    {
+                      id: '',
+                      type: 'aliquots',
+                      volume: 5,
+                      source_type: 'Pacbio::Library',
+                      source_id: '1',
+                    },
+                  ],
+                },
+              },
+            },
+            aliquots: {},
+          }
+          const available_volume = store.getAvailableVolumeForLibraryAliquot({
+            libraryId: '1',
+            aliquotId: '',
+            volume: 5,
+          })
+          expect(available_volume).toEqual(library.available_volume.toFixed(2))
+        })
+
+        it('returns the library available volume minus the sum of the volumes of the other aliquots from the same library', () => {
+          const store = usePacbioRunCreateStore()
+          const library = {
+            id: '1',
+            type: 'libraries',
+            available_volume: 10,
+          }
+          store.$state = {
+            libraries: {
+              1: library,
+            },
+            wells: {
+              1: {
+                A1: {
+                  id: '1',
+                  type: 'wells',
+                  position: 'A1',
+                  used_aliquots: [
+                    {
+                      id: '',
+                      type: 'aliquots',
+                      volume: 5,
+                      source_type: 'Pacbio::Library',
+                      source_id: '1',
+                    },
+                    {
+                      id: '',
+                      type: 'aliquots',
+                      volume: 5,
+                      source_type: 'Pacbio::Library',
+                      source_id: '1',
+                    },
+                    {
+                      id: '',
+                      type: 'aliquots',
+                      volume: 5,
+                      source_type: 'Pacbio::Library',
+                      source_id: '2', // This is not the library we are calculating the available volume for so we ignore its volume
+                    },
+                  ],
+                },
+              },
+            },
+            aliquots: {},
+          }
+          // Minus 5 because there are two aliquots with volume 5
+          // But one is the aliquot we are calculating the available volume for so we ignore its volume
+          const expected_available_volume = (library.available_volume - 5).toFixed(2)
+          const available_volume = store.getAvailableVolumeForLibraryAliquot({
+            libraryId: '1',
+            aliquotId: '',
+            volume: 5,
+          })
+          expect(available_volume).toEqual(expected_available_volume)
+        })
+      })
+
+      describe('existing aliquots', () => {
+        it('returns the library available volume plus the volume of the existing aliquot', () => {
+          const store = usePacbioRunCreateStore()
+          const library = {
+            id: '1',
+            type: 'libraries',
+            available_volume: 10,
+          }
+          store.$state = {
+            libraries: {
+              1: library,
+            },
+            wells: {
+              1: {
+                A1: {
+                  id: '1',
+                  type: 'wells',
+                  position: 'A1',
+                  used_aliquots: [
+                    {
+                      id: '1',
+                      type: 'aliquots',
+                      volume: 5,
+                      source_type: 'Pacbio::Library',
+                      source_id: '1',
+                    },
+                  ],
+                },
+              },
+            },
+            aliquots: {
+              1: {
+                id: '1',
+                type: 'aliquots',
+                volume: 5,
+                source_type: 'Pacbio::Library',
+                source_id: '1',
+              },
+            },
+          }
+          const expected_volume = (library.available_volume + 5).toFixed(2)
+          const available_volume = store.getAvailableVolumeForLibraryAliquot({
+            libraryId: '1',
+            aliquotId: 1,
+            volume: 5,
+          })
+          expect(available_volume).toEqual(expected_volume)
+        })
+
+        it('returns the correct value when an existing aliquot volume is updated', () => {
+          const store = usePacbioRunCreateStore()
+          const library = {
+            id: '1',
+            type: 'libraries',
+            available_volume: 10,
+          }
+          store.$state = {
+            libraries: {
+              1: library,
+            },
+            wells: {
+              1: {
+                A1: {
+                  id: '1',
+                  type: 'wells',
+                  position: 'A1',
+                  used_aliquots: [
+                    {
+                      id: '1',
+                      type: 'aliquots',
+                      volume: 10,
+                      source_type: 'Pacbio::Library',
+                      source_id: '1',
+                    },
+                  ],
+                },
+              },
+            },
+            aliquots: {
+              1: {
+                id: '1',
+                type: 'aliquots',
+                volume: 5,
+                source_type: 'Pacbio::Library',
+                source_id: '1',
+              },
+            },
+          }
+          const expected_available_volume = (library.available_volume + 5).toFixed(2)
+          const available_volume = store.getAvailableVolumeForLibraryAliquot({
+            libraryId: '1',
+            aliquotId: '1',
+            volume: 5,
+          })
+          expect(available_volume).toEqual(expected_available_volume)
+        })
+      })
+    })
   })
 })

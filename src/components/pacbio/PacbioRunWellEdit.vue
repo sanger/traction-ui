@@ -40,7 +40,11 @@
             placeholder="Pool/Library volume"
             @update:model-value="updateUsedAliquotVolume(row, $event)"
           ></traction-input>
-          <div v-if="row.item.available_volume != null" class="flex items-center">
+          <div
+            v-if="row.item.available_volume != null"
+            class="flex items-center"
+            data-attribute="available-volume-div"
+          >
             <traction-tooltip
               :tooltip-text="'Available volume is ' + row.item.available_volume"
               class="flex max-w-xs"
@@ -53,11 +57,13 @@
         </div>
       </template>
       <template #cell(actions)="row">
-        <traction-button theme="delete" @click="removeRow(row)">-</traction-button>
+        <traction-button data-action="remove-row" theme="delete" @click="removeRow(row)"
+          >-</traction-button
+        >
       </template>
     </traction-table>
 
-    <traction-button theme="create" @click="addRow">+</traction-button>
+    <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
     <template #modal-footer="{}">
       <traction-button
@@ -243,6 +249,13 @@ const updateUsedAliquotSource = async (row, barcode) => {
       insert_size: tubeContent.insert_size,
       template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
     })
+    if (used_aliquot.source_type === 'Pacbio::Library') {
+      used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
+        libraryId: used_aliquot.source_id,
+        aliquotId: used_aliquot.id,
+        volume: used_aliquot.volume,
+      })
+    }
     localUsedAliquots.value[index] = used_aliquot
   } else {
     showAlert('Pool is not valid', 'danger')
@@ -267,6 +280,7 @@ const setupWell = async () => {
         ...aliquot,
         barcode: poolOrLibrary.barcode,
       })
+      // If the source type is a library, get the available volume for the library aliquot
       if (used_aliquot.source_type === 'Pacbio::Library') {
         used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
           libraryId: aliquot.source_id,

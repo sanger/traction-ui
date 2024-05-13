@@ -515,6 +515,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       this.$reset()
       this.resources = resources
     },
+    /**
+     * Returns the available volume for a library aliquot
+     * @param {Object} libraryId The id of the library
+     * @param {Object} aliquotId The id of the aliquot
+     * @param {Object} volume The volume of the aliquot
+     *
+     * @returns {Number} The available volume for the aliquot
+     */
     getAvailableVolumeForLibraryAliquot({ libraryId = null, aliquotId = null, volume = null }) {
       if (!libraryId) {
         return null
@@ -522,14 +530,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Get the original aliquot if it exists
       const original_aliquot = this.aliquots[aliquotId]
+      // Get the available volume for the library
       const library_available_volume = this.libraries[libraryId].available_volume || 0
 
+      // Calculate the sum of the volume of all the aliquots used in wells that are from the library
       let library_used_aliquots_volume = 0
       // eslint-disable-next-line no-unused-vars
       Object.entries(this.wells).forEach(([_plateNumber, plate]) => {
         // eslint-disable-next-line no-unused-vars
         Object.entries(plate).forEach(([_position, well]) => {
           well.used_aliquots?.forEach((aliquot) => {
+            // Untouched existing aliquots should be counted as they are already taken into account in the library available volume
+            if (original_aliquot && aliquot.id === original_aliquot.id) {
+              return
+            }
+
             // For each aliquot used in wells, check if the source is the library and if so add the volume used
             if (
               aliquot &&
@@ -544,13 +559,16 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         })
       }, 0)
 
+      // Calculate the total available volume for the library
+      // Subtract the used aliquots volume from the available volume
       let total_available_volume = (
         parseFloat(library_available_volume) - parseFloat(library_used_aliquots_volume)
       ).toFixed(2)
 
-      if (original_aliquot) {
-        // If its an existing aliquot we need to add the original volume back
-        // Because its taken into account in the library_available_volume
+      // If its an existing aliquot we need to add the original volume back
+      // Because its taken into account in the library_available_volume
+      // Unless the volume is 0 as that won't affect the available volume
+      if (original_aliquot && original_aliquot.volume != 0) {
         total_available_volume = (
           parseFloat(total_available_volume) + parseFloat(original_aliquot.volume)
         ).toFixed(2)
