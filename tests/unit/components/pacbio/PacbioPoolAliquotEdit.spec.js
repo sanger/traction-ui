@@ -221,7 +221,7 @@ describe('PacbioPoolAliquotEdit.vue', () => {
         props: { ...props, selected: true },
       })
       expect(wrapperObj.classes()).toContain('cursor-pointer')
-      expect(wrapperObj.classes()).toContain('border-2')
+      expect(wrapperObj.classes()).toContain('border-4')
       expect(wrapperObj.classes()).toContain('border-purple-500')
     })
 

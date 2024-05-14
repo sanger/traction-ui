@@ -82,7 +82,7 @@ describe('PacbioTubeWell', () => {
     })
     it('should display the well color and well border as seleced', () => {
       const classes = wrapper.find('[data-attribute="traction-well"]').classes()
-      const expectedClasses = ['bg-green-600', 'border-solid', 'border-yellow-400', 'border-2']
+      const expectedClasses = ['bg-green-600', 'border-solid', 'border-yellow-400', 'border-4']
       expect(expectedClasses.every((expectedClass) => classes.includes(expectedClass))).toBe(true)
     })
   })
