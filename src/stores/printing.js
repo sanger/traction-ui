@@ -43,7 +43,6 @@ export const usePrintingStore = defineStore('printing', {
     }) {
       const rootStore = useRootStore()
 
-      // extract the request from the rootState
       const request = rootStore.api.printMyBarcode.print_jobs
 
       const payload = {
@@ -73,7 +72,9 @@ export const usePrintingStore = defineStore('printing', {
      */
     async fetchPrinters() {
       const rootStore = useRootStore()
+
       const request = rootStore.api.traction.printers
+
       const promise = request.get({})
       const response = await handleResponse(promise)
 

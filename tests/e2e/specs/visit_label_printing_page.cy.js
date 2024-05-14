@@ -2,6 +2,10 @@
 
 describe('Label Printing page', () => {
   beforeEach(() => {
+    cy.intercept('/v1/printers', {
+      fixture: 'tractionPrinters.json',
+    })
+
     cy.visit('#/label-printing')
     cy.get('#barcode-input').type('aBarcode')
     cy.get('#suffix-selection').select('OPLX - Pool')

@@ -6,14 +6,54 @@ import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
+import { createRequest } from '@/api/v2/createRequest.js'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
 
+/**
+ *
+ * @param {*} api
+ * @returns {Object} api
+ * Currently, we are using fetch for traction printing and printMyBarcode.
+ * We are using axios for everything else.
+ * When the api is created we create requests up front as axios request.
+ * We need to create requests for traction and printMyBarcode as fetch requests.
+ * This function merges the traction and printMyBarcode apis with the rest of the api.
+ * TODO: We need to v1 and v2 the api in the config so we can slowly move from axios.
+ */
+const mergeApis = (api) => {
+  // Destructure the api object to get the traction object
+  const { traction } = api
+  // Create the printMyBarcode object as a fetch request
+  const printMyBarcode = {
+    print_jobs: createRequest({
+      rootURL: import.meta.env['VITE_PRINTMYBARCODE_BASE_URL'],
+      apiNamespace: 'v2',
+      resource: 'print_jobs',
+    }),
+  }
+  // Create the printers object as a fetch request
+  const printers = createRequest({
+    rootURL: import.meta.env['VITE_TRACTION_BASE_URL'],
+    apiNamespace: 'v1',
+    resource: 'printers',
+  })
+  // merge the api object with the traction object and the printMyBarcode object
+  return {
+    ...api,
+    traction: {
+      ...traction,
+      printers,
+    },
+    printMyBarcode,
+  }
+}
+
 const useRootStore = defineStore('root', {
   state: () => ({
     //Build an API instance using the config
-    api: build({ config }),
+    api: mergeApis(build({ config })),
 
     //Create printers state from PrinterList.json file
     printers: PrinterList,

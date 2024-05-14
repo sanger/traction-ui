@@ -48,19 +48,21 @@
             </div>
           </fieldset>
 
-          <fieldset>
-            <traction-heading level="3" show-border>Choice of Printer</traction-heading>
-            <traction-muted-text>The printer to print the labels</traction-muted-text>
-            <div class="mt-2">
-              <traction-select
-                id="printer-choice"
-                v-model="form.printerName"
-                :options="printerOptions"
-                value-field="text"
-                required
-              ></traction-select>
-            </div>
-          </fieldset>
+          <DataFetcher :fetcher="fetchPrinters">
+            <fieldset>
+              <traction-heading level="3" show-border>Choice of Printer</traction-heading>
+              <traction-muted-text>The printer to print the labels</traction-muted-text>
+              <div class="mt-2">
+                <traction-select
+                  id="printer-choice"
+                  v-model="form.printerName"
+                  :options="printerOptions"
+                  value-field="text"
+                  required
+                ></traction-select>
+              </div>
+            </fieldset>
+          </DataFetcher>
         </div>
         <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
           <traction-heading level="3" class-name="text-white italic" show-border>
@@ -103,6 +105,7 @@ import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { nextTick } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { mapActions, mapState } from 'pinia'
+import DataFetcher from '@/components/DataFetcher.vue'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
@@ -116,6 +119,7 @@ export default {
   name: 'LabelPrintingForm',
   components: {
     BarcodeIcon,
+    DataFetcher,
   },
   data() {
     return {
@@ -126,7 +130,7 @@ export default {
   computed: {
     ...mapState(usePrintingStore, ['printers']),
     printerOptions() {
-      return this.printers('tube').map((name) => ({
+      return this.printers('tube').map(({ name }) => ({
         text: name,
       }))
     },
@@ -154,7 +158,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(usePrintingStore, ['createPrintJob']),
+    ...mapActions(usePrintingStore, ['createPrintJob', 'fetchPrinters']),
     /*
       Creates the print job and shows a success or failure alert
       @param {event}

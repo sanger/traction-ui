@@ -1,7 +1,7 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 import SuffixList from '@/config/SuffixList'
 import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
-import { mount, createTestingPinia } from '@support/testHelper'
+import { mount, createTestingPinia, RequestFactory, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 
@@ -18,6 +18,16 @@ const evt = {
     return {}
   },
 }
+
+const printerRequestFactory = RequestFactory('Printers', false)
+
+const plugins = [
+  ({ store }) => {
+    if (store.$id === 'root') {
+      store.api.traction.printers.get = vi.fn().mockResolvedValue(printerRequestFactory.response)
+    }
+  },
+]
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -50,28 +60,16 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], data = 
   return { wrapperObj, storeObj }
 }
 
-const printers = {
-  1: { id: 1, name: 'printer1', labware_type: 'tube' },
-  2: { id: 2, name: 'printer2', labware_type: 'tube' },
-  3: { id: 3, name: 'printer3', labware_type: 'tube' },
-  4: { id: 4, name: 'printer4', labware_type: 'tube' },
-  5: { id: 5, name: 'printer5', labware_type: 'plate' },
-  6: { id: 6, name: 'printer6', labware_type: 'plate' },
-}
-
 describe('LabelPrintingForm.vue', () => {
   let wrapper, store, labelPrintingForm
 
   describe('computed properties', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const { wrapperObj, storeObj } = mountWithStore({
-        state: {
-          resources: {
-            printers,
-          },
-        },
+        plugins,
       })
 
+      await flushPromises()
       wrapper = wrapperObj
       store = storeObj
     })
@@ -91,17 +89,15 @@ describe('LabelPrintingForm.vue', () => {
    * we also have a e2e test
    */
   describe('labels', () => {
-    it('should have the correct number', () => {
+    it('should have the correct number', async () => {
       const { wrapperObj } = mountWithStore({
-        state: {
-          resources: {
-            printers,
-          },
-        },
+        plugins,
         data: {
           form: options,
         },
       })
+
+      await flushPromises()
 
       wrapper = wrapperObj
 
@@ -109,13 +105,9 @@ describe('LabelPrintingForm.vue', () => {
       expect(wrapper.vm.labels.length).toEqual(9)
     })
 
-    it('should remove new lines', () => {
+    it('should remove new lines', async () => {
       const { wrapperObj } = mountWithStore({
-        state: {
-          resources: {
-            printers,
-          },
-        },
+        plugins,
         data: {
           form: {
             ...options,
@@ -125,6 +117,8 @@ describe('LabelPrintingForm.vue', () => {
         },
       })
 
+      await flushPromises()
+
       wrapper = wrapperObj
 
       expect(wrapper.vm.labels.length).toEqual(3)
@@ -133,17 +127,15 @@ describe('LabelPrintingForm.vue', () => {
 
   describe('methods', () => {
     describe('onReset', () => {
-      it('resets the forms data', () => {
+      it('resets the forms data', async () => {
         const { wrapperObj } = mountWithStore({
-          state: {
-            resources: {
-              printers,
-            },
-          },
+          plugins,
           data: {
             form: { printerName: 'stub' },
           },
         })
+
+        await flushPromises()
 
         wrapper = wrapperObj
 
@@ -163,17 +155,15 @@ describe('LabelPrintingForm.vue', () => {
     })
 
     describe('#printLabels', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         const { wrapperObj } = mountWithStore({
-          state: {
-            resources: {
-              printers,
-            },
-          },
+          plugins,
           data: {
             form: options,
           },
         })
+
+        await flushPromises()
 
         wrapper = wrapperObj
 
