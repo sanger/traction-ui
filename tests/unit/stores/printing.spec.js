@@ -43,7 +43,7 @@ describe('usePrintingStore', () => {
   describe('actions', () => {
     // need to fix fetch API implementation
     describe('#fetchPrinters', () => {
-      it.only('successful', async () => {
+      it('successful', async () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
