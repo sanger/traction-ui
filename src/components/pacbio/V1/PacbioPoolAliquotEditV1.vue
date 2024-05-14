@@ -1,9 +1,5 @@
 <template>
-  <traction-table-row
-    data-type="pool-aliquot-edit"
-    :class="['cursor-pointer', `${props.selected && 'border-2 border-purple-500'}`]"
-    @click="onTableRowClick"
-  >
+  <traction-table-row data-type="pool-aliquot-edit">
     <traction-table-column data-attribute="request-sample-name">
       {{ props.request.sample_name }}
     </traction-table-column>
@@ -43,25 +39,9 @@
         :error="errorsFor('volume')"
         :with-icon="isValidationExists('volume')"
       >
-        <traction-input
-          v-model="volume"
-          data-attribute="volume"
-          placeholder="Volume"
-          classes="min-w-128"
-        />
-        <div class="flex items-center px-1" data-attribute="available-volume-div">
-          <traction-tooltip
-            v-show="aliquot.available_volume != null"
-            :tooltip-text="'Available volume is ' + aliquot.available_volume"
-          >
-            <traction-badge id="library-used-volume" colour="sanger-yellow"
-              ><TractionInfoIcon class="mr-1" />{{ aliquot.available_volume }}</traction-badge
-            >
-          </traction-tooltip>
-        </div>
+        <traction-input v-model="volume" data-attribute="volume" placeholder="Volume" />
       </traction-field-error>
     </traction-table-column>
-
     <traction-table-column>
       <traction-field-error
         data-attribute="concentration-error"
@@ -102,9 +82,6 @@
  */
 import { computed, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import TractionBadge from '@/components/shared/TractionBadge.vue'
-import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
-import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 
 const props = defineProps({
   /*
@@ -136,11 +113,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-
-  selected: {
-    type: Boolean,
-    default: false,
-  },
   /**
    * @type {Function}
    * Callback function passed from parent indicating what to do when an attribute is changed
@@ -151,8 +123,6 @@ const props = defineProps({
     default: () => {},
   },
 })
-
-const emit = defineEmits(['aliquotSelected'])
 
 const fieldsThatRequireValidation = ref([]) // store the fields that have been altered and require validation
 // store
@@ -188,12 +158,15 @@ const aliquotSetter = (attr) => {
       return aliquot.value[attr]
     },
     set(newValue) {
+      if (newValue !== aliquot.value[attr]) {
+        // record that the attribute has been altered
+        fieldsThatRequireValidation.value[attr] = true
+        props.notify()
+      }
       store.updateUsedAliquot({
         request: aliquot.value.request,
         [attr]: newValue,
       })
-      // Validate the given attribute in the aliquot object
-      store.validateUsedAliquot(aliquot.value, attr)
     },
   })
 }
@@ -243,13 +216,5 @@ const isValidationExists = (attribute) => {
   } else {
     return !fieldsThatRequireValidation.value[attribute]
   }
-}
-
-const onTableRowClick = (event) => {
-  // Avoid toggle selection when user clivks on any edit fields
-  if (event.target.tagName !== 'TD') {
-    return
-  }
-  emit('aliquotSelected', !props.selected)
 }
 </script>

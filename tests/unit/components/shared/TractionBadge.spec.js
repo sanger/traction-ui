@@ -71,6 +71,7 @@ describe('TractionBadge', () => {
       'sp',
       'sanger-pink',
       'sanger-green',
+      'sanger-yellow',
     ])
     expect(TractionBadge.colours.statuses).toEqual(['success', 'warning', 'failure'])
   })

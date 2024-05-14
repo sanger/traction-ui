@@ -3,7 +3,8 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload, createUsedAliquot } from '@/stores/utilities/pool.js'
+import { validate, payload } from '@/stores/utilities/pool.js'
+import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
@@ -301,14 +302,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     autoTagPlate(used_aliquot) {
       // If the used_aliquot object is not valid or does not have a 'source_id' or 'tag_id' property, return without doing anything.
-      if (
-        !used_aliquot ||
-        typeof used_aliquot !== 'object' ||
-        !used_aliquot['tag_id'] ||
-        !used_aliquot['request']
-      ) {
-        return
-      }
+      if (!isValidUsedAliquot(used_aliquot, ['request', 'tag_id'])) return
       const pacbioRootStore = usePacbioRootStore()
       //Helper function to get the well for a given source_id
       const initialWell = wellFor(this.resources, used_aliquot.request)
@@ -347,14 +341,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     autoTagTube(used_aliquot) {
       // If the used_aliquot object is not valid or does not have a 'tag_id' property, return without doing anything.
-      if (
-        !used_aliquot ||
-        typeof used_aliquot !== 'object' ||
-        !used_aliquot['tag_id'] ||
-        !used_aliquot['request']
-      ) {
-        return
-      }
+      if (!isValidUsedAliquot(used_aliquot, ['request', 'tag_id'])) return
       const pacbioRootStore = usePacbioRootStore()
       const initialTube = this.resources.tubes[this.resources.requests[used_aliquot.request]?.tube]
       const tags = pacbioRootStore.tagSets[this.selected.tagSet.id].tags
@@ -462,7 +449,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     updateUsedAliquot(used_aliquot) {
       // If the used_aliquot object is not valid or does not have a 'source_id'property, return without doing anything.
-      if (!used_aliquot || typeof used_aliquot !== 'object' || !used_aliquot['request']) {
+      if (!isValidUsedAliquot(used_aliquot)) {
         return
       }
       // Update the used_aliquot in the state used_aliquots object based on the provided used_aliquot object.
@@ -652,22 +639,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           data: aliquots,
           includeRelationships: true,
         })
-
         // Set the used_aliquots
         Object.values(usedAliquots).forEach((usedAliquot) => {
-          // Creates a request association for the used aliquot based on the source type
-          usedAliquot.request =
-            usedAliquot.source_type == 'Pacbio::Request'
-              ? usedAliquot.source_id // If its a request, the source_id is the request id
-              : this.resources.libraries[usedAliquot.source_id].request
-
-          const key = `_${usedAliquot.request}`
-          this.used_aliquots[key] = createUsedAliquot({
+          const usedAliquotObject = createUsedAliquot({
             ...usedAliquot,
             tag_id: usedAliquot.tag,
           })
+          usedAliquotObject.setRequestAndVolume(this.resources.libraries)
+          this.used_aliquots[`_${usedAliquotObject.request}`] = usedAliquotObject
         })
-
         //Selects all the tubes and plates
         Object.values(this.resources.tubes).forEach(({ id }) =>
           this.selectTube({ id, selected: true }),
@@ -1000,16 +980,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
+
         const autoFillLibraryAttributes = [
           'template_prep_kit_box_barcode',
           'volume',
           'concentration',
           'insert_size',
+          'available_volume',
           'tag_id',
         ]
         const library = Object.values(this.resources.libraries).find(
           (library) => library.request == id,
         )
+
         const libraryAttributes = library
           ? autoFillLibraryAttributes.reduce((result, key) => {
               result[key] = library[key] ?? null
@@ -1045,10 +1028,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
         const source_id = library ? library.id : id
         this.used_aliquots[`_${id}`] = {
-          ...createUsedAliquot({ source_id, request: id }),
-          ...libraryAttributes,
-          source_type: this.sourceTypeForRequest(this.resources.requests[id]),
+          ...createUsedAliquot({
+            source_id,
+            request: id,
+            ...libraryAttributes,
+            source_type: this.sourceTypeForRequest(this.resources.requests[id]),
+          }),
         }
+        // Validate the used aliquot if the request is from library
+        library && this.validateUsedAliquot(library, 'volume')
       } else {
         delete this.used_aliquots[`_${id}`]
       }
@@ -1079,6 +1067,28 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const resources = this.resources
       this.$reset()
       this.resources = resources
+    },
+
+    /**
+     * Validates the given field in used aliquot object.
+     *
+     * @param {Object} used_aliquot_obj - The used aliquot object to validate.
+     * @param {string} field - The field to validate.
+     * @param {any} value - The value to validate is optional.If not provided, the value from the used_aliquot object is used.
+     * @returns {void}
+     *
+     * @example
+     * validateUsedAliquot({ request: 'request1' }, 'field1', 'value1');
+     */
+    validateUsedAliquot(used_aliquot_obj, field, value) {
+      // If the given used_aliquot object is not valid or does not have a 'request' property, return without doing anything.
+      if (!isValidUsedAliquot(used_aliquot_obj)) {
+        return
+      }
+      // Get the used aliquot item based on the request id to ensure the used aliquot exists
+      const used_aliquot = this.usedAliquotItem(used_aliquot_obj.request)
+      if (!used_aliquot) return
+      used_aliquot.validateField(field, value)
     },
   },
 })
