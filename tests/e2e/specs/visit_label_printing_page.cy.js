@@ -30,8 +30,6 @@ describe('Label Printing page', () => {
   })
 
   it('PMB request is successful', () => {
-    cy.get('#submit-button').click()
-
     cy.intercept('/v2/print_jobs', {
       statusCode: 200,
       body: {
@@ -57,6 +55,6 @@ describe('Label Printing page', () => {
       },
     })
     cy.get('#submit-button').click()
-    cy.contains('api/label is invalid')
+    cy.contains('label is invalid')
   })
 })
