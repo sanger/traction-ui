@@ -12,6 +12,20 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
+}))
+
+vi.mock('swrv', () => ({
+  default: vi.fn(() => ({
+    data: {
+      features: {
+        dpl_1076_check_library_volume_in_runs: { enabled: true },
+      },
+    },
+  })),
+}))
+
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
   1: {
@@ -715,7 +729,7 @@ describe('PacbioRunWellEdit', () => {
       wrapper.vm.plateNumber = plateNumber
     })
 
-    it('updates the well if it is valid', () => {
+    it('updates the well if it is valid', async () => {
       const aliquots = [
         createUsedAliquot({
           id: 2,
@@ -731,13 +745,13 @@ describe('PacbioRunWellEdit', () => {
           barcode: 'TRAC-3',
           source_id: 1,
           source_type: 'Pacbio::Library',
-          volume: 7,
+          volume: 100,
           concentration: 12,
           template_prep_kit_box_barcode: 'tpkbb1',
         }),
       ]
       wrapper.vm.localUsedAliquots = aliquots
-      wrapper.vm.update()
+      await wrapper.vm.update()
       expect(store.updateWell).toBeCalledWith({
         plateNumber: 1,
         well: {
@@ -747,7 +761,7 @@ describe('PacbioRunWellEdit', () => {
       expect(wrapper.vm.isShow).toBeFalsy()
     })
 
-    it('does not update the well and shows an error if the aliquots have errors', () => {
+    it('does not update the well and shows an error if the aliquots have errors', async () => {
       const aliquots = [
         createUsedAliquot({
           id: 2,
@@ -757,9 +771,7 @@ describe('PacbioRunWellEdit', () => {
           volume: 6,
           concentration: 11,
           template_prep_kit_box_barcode: 'tpkbb1',
-          errors: {
-            volume: 'must be less or equal to available volume',
-          },
+          available_volume: 6
         }),
         createUsedAliquot({
           id: 3,
@@ -767,12 +779,16 @@ describe('PacbioRunWellEdit', () => {
           source_id: 1,
           source_type: 'Pacbio::Library',
           volume: 7,
+          available_volume: 6,
           concentration: 12,
           template_prep_kit_box_barcode: 'tpkbb1',
+          errors: {
+            volume: 'must be less or equal to available volume',
+          },
         }),
       ]
       wrapper.vm.localUsedAliquots = aliquots
-      wrapper.vm.update()
+      await wrapper.vm.update()
       expect(mockShowAlert).toBeCalledWith('Insufficient volume available', 'danger')
       expect(store.updateWell).not.toBeCalled()
       expect(wrapper.vm.isShow).toBeTruthy()

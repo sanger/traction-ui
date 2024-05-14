@@ -541,7 +541,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         Object.entries(plate).forEach(([_position, well]) => {
           well.used_aliquots?.forEach((aliquot) => {
             // Existing aliquots should not be counted as they are already taken into account in the library available volume
-            if (original_aliquot && aliquot.id === original_aliquot.id) {
+            // This has the issue that if an existing aliquots volume is changed it will not be reflected in the available volume
+            if (aliquot.id) {
               return
             }
 

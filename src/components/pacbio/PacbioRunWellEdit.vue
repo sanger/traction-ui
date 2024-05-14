@@ -31,34 +31,46 @@
         ></traction-input>
       </template>
       <template #cell(volume)="row">
-        <traction-field-error
-          data-attribute="volume-error"
-          :error="errorsFor(row.item, 'volume')"
-          :with-icon="true"
-        >
-          <traction-input
-            id="usedAliquotVolume"
-            class="grow"
-            data-attribute="aliquot-volume"
-            :model-value="`${row.item.volume}`"
-            placeholder="Pool/Library volume"
-            @update:model-value="updateUsedAliquotVolume(row, $event)"
-          ></traction-input>
-          <div
-            v-if="row.item.available_volume != null"
-            class="flex items-center"
-            data-attribute="available-volume-div"
+        <flagged-feature name="dpl_1076_check_library_volume_in_runs">
+          <traction-field-error
+            data-attribute="volume-error"
+            :error="errorsFor(row.item, 'volume')"
+            :with-icon="true"
           >
-            <traction-tooltip
-              :tooltip-text="'Available volume is ' + row.item.available_volume"
-              class="flex max-w-xs"
+            <traction-input
+              id="usedAliquotVolume"
+              class="grow"
+              data-attribute="aliquot-volume"
+              :model-value="`${row.item.volume}`"
+              placeholder="Pool/Library volume"
+              @update:model-value="updateUsedAliquotVolume(row, $event)"
+            ></traction-input>
+            <div
+              v-if="row.item.available_volume != null"
+              class="flex items-center"
+              data-attribute="available-volume-div"
             >
-              <traction-badge id="library-used-volume" colour="sanger-yellow"
-                ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
+              <traction-tooltip
+                :tooltip-text="'Available volume is ' + row.item.available_volume"
+                class="flex max-w-xs"
               >
-            </traction-tooltip>
-          </div>
-        </traction-field-error>
+                <traction-badge id="library-used-volume" colour="sanger-yellow"
+                  ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
+                >
+              </traction-tooltip>
+            </div>
+          </traction-field-error>
+          <template #disabled>
+            <traction-input
+              id="usedAliquotVolume"
+              class="grow"
+              data-attribute="aliquot-volume"
+              :model-value="`${row.item.volume}`"
+              placeholder="Pool/Library volume"
+              @update:model-value="updateUsedAliquotVolume(row, $event)"
+            ></traction-input>
+          </template>
+        </flagged-feature>
       </template>
       <template #cell(actions)="row">
         <traction-button data-action="remove-row" theme="delete" @click="removeRow(row)"
@@ -98,6 +110,7 @@ import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 import TractionTooltip from '@/components/shared/TractionTooltip.vue'
+import { checkFeatureFlag } from '@/api/FeatureFlag'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -216,16 +229,19 @@ const hide = () => {
 }
 
 //update function is used to update the well
-const update = () => {
+const update = async () => {
   well.value.used_aliquots = filteredAliquots()
-  const aliquot_errors = well.value.used_aliquots.some(
-    (aliquot) => Object.values(aliquot.errors).length > 0,
-  )
+  const volume_check_flag = await checkFeatureFlag('dpl_1076_check_library_volume_in_runs')
 
-  if (aliquot_errors) {
-    // We can assume the errors are related to volume as thats the only thing we validate
-    showAlert('Insufficient volume available', 'danger')
-    return
+  if (volume_check_flag) {
+    const aliquot_errors = well.value.used_aliquots.some(
+      (aliquot) => Object.values(aliquot.errors).length > 0,
+    )
+    if (aliquot_errors) {
+      // We can assume the errors are related to volume as thats the only thing we validate
+      showAlert('Insufficient volume available', 'danger')
+      return
+    }
   }
 
   store.updateWell({ well: well.value, plateNumber: plateNumber.value })
