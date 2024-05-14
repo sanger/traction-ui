@@ -48,7 +48,7 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-type="pool-aliquot-edit"]')
       .first()
       .invoke('attr', 'class')
-      .should('contain', 'border-2 border-purple-500')
+      .should('contain', 'border-4 border-purple-500')
 
     //Deselect row requests
     cy.get('[data-attribute^="request-checkbox"]').eq(1).click()

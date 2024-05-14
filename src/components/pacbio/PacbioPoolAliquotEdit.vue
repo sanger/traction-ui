@@ -1,7 +1,7 @@
 <template>
   <traction-table-row
     data-type="pool-aliquot-edit"
-    :class="['cursor-pointer', `${props.selected && 'border-2 border-purple-500'}`]"
+    :class="['cursor-pointer', `${props.selected && 'border-4 border-purple-500'}`]"
     @click="onTableRowClick"
   >
     <traction-table-column data-attribute="request-sample-name">
