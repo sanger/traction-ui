@@ -39,7 +39,7 @@ const plugins = [
  * stubActions - boolean to stub actions or not.
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], data = {} } = {}) {
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
   const wrapperObj = mount(LabelPrintingForm, {
     global: {
       plugins: [
@@ -51,9 +51,6 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], data = 
           plugins,
         }),
       ],
-    },
-    data() {
-      return data
     },
   })
   const storeObj = usePrintingStore()
@@ -92,10 +89,9 @@ describe('LabelPrintingForm.vue', () => {
     it('should have the correct number', async () => {
       const { wrapperObj } = mountWithStore({
         plugins,
-        data: {
-          form: options,
-        },
       })
+
+      wrapperObj.vm.form = options
 
       await flushPromises()
 
@@ -108,16 +104,15 @@ describe('LabelPrintingForm.vue', () => {
     it('should remove new lines', async () => {
       const { wrapperObj } = mountWithStore({
         plugins,
-        data: {
-          form: {
-            ...options,
-            sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
-            numberOfLabels: 1,
-          },
-        },
       })
 
       await flushPromises()
+
+      wrapperObj.vm.form = {
+        ...options,
+        sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
+        numberOfLabels: 1,
+      }
 
       wrapper = wrapperObj
 
@@ -130,9 +125,6 @@ describe('LabelPrintingForm.vue', () => {
       it('resets the forms data', async () => {
         const { wrapperObj } = mountWithStore({
           plugins,
-          data: {
-            form: { printerName: 'stub' },
-          },
         })
 
         await flushPromises()
@@ -140,6 +132,8 @@ describe('LabelPrintingForm.vue', () => {
         wrapper = wrapperObj
 
         labelPrintingForm = wrapper.vm
+
+        labelPrintingForm.form = { printerName: 'stub' }
 
         labelPrintingForm.onReset(evt)
 
@@ -155,23 +149,20 @@ describe('LabelPrintingForm.vue', () => {
     })
 
     describe('#printLabels', () => {
-      beforeEach(async () => {
-        const { wrapperObj } = mountWithStore({
+      it('calls printJob successfully', async () => {
+        const { wrapperObj, storeObj } = mountWithStore({
           plugins,
-          data: {
-            form: options,
-          },
         })
 
         await flushPromises()
 
         wrapper = wrapperObj
+        store = storeObj
 
         labelPrintingForm = wrapper.vm
-      })
+        labelPrintingForm.form = options
 
-      it('calls printJob successfully', async () => {
-        labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
+        store.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -183,13 +174,29 @@ describe('LabelPrintingForm.vue', () => {
           copies: options.copies,
         }
 
-        expect(labelPrintingForm.createPrintJob).toBeCalledWith(expected)
+        expect(store.createPrintJob).toBeCalledWith(expected)
         expect(result).toEqual({ success: true, message: 'success' })
       })
 
       // not sure we need to test failure??
       it('calls printJob unsuccessfully', async () => {
         labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: false, message: 'failure' }
+        })
+
+        const { wrapperObj, storeObj } = mountWithStore({
+          plugins,
+        })
+
+        await flushPromises()
+
+        wrapper = wrapperObj
+        store = storeObj
+
+        labelPrintingForm = wrapper.vm
+        labelPrintingForm.form = options
+
+        store.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: false, message: 'failure' }
         })
 
@@ -201,7 +208,7 @@ describe('LabelPrintingForm.vue', () => {
           copies: options.copies,
         }
 
-        expect(labelPrintingForm.createPrintJob).toBeCalledWith(expected)
+        expect(store.createPrintJob).toBeCalledWith(expected)
         expect(result).toEqual({ success: false, message: 'failure' })
       })
     })

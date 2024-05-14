@@ -93,7 +93,130 @@
   </div>
 </template>
 
-<script>
+<script setup>
+/**
+ * LabelPrintingForm component is used to print labels.
+ */
+
+import { ref, computed } from 'vue'
+import { usePrintingStore } from '@/stores/printing.js'
+import useAlert from '@/composables/useAlert.js'
+import DataFetcher from '@/components/DataFetcher.vue'
+import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
+import {
+  createSuffixDropdownOptions,
+  createSuffixItems,
+  createLabelsFromBarcodes,
+} from '@/lib/LabelPrintingHelpers.js'
+import SuffixList from '@/config/SuffixList.json'
+import { nextTick } from 'vue'
+
+/**
+ * provides default values for the form
+ * @returns {Object} default form values
+ */
+const defaultForm = () => ({
+  sourceBarcodeList: null,
+  suffix: null,
+  numberOfLabels: null,
+  printerName: null,
+  copies: 1,
+})
+
+const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
+
+/**
+ * usePacbioLibrariesStore is a composable function that is used to access the 'printing' store.
+ * It is used to fetch printers and create a print job.
+ */
+const printingStore = usePrintingStore()
+
+const form = ref(defaultForm()) // Create a ref for the form
+
+const show = ref(true) // Create a ref for the show variable
+
+/**
+ * Creates a computed property to get the printer names
+ * @returns {Array} printer names
+ */
+const printerOptions = computed(() => {
+  return printingStore.printers('tube').map(({ name }) => ({
+    text: name,
+  }))
+})
+
+/**
+ * Creates a computed property to get the suffix options
+ * @returns {Array} suffix options
+ */
+const suffixOptions = computed(() => {
+  return createSuffixDropdownOptions(SuffixList)
+})
+
+/**
+ * Creates a computed property to get the suffix items
+ * @returns {Array} suffix items
+ */
+const suffixItems = computed(() => {
+  return createSuffixItems(SuffixList)
+})
+
+/**
+ * Creates a computed property to get the labels
+ * @returns {Array} labels
+ */
+const labels = computed(() => {
+  const date = getCurrentDate()
+  const suffixItem = suffixItems.value[form.value.suffix]
+
+  // it is possible for there to be no barcodes so we need to add a guard
+  // we filter to remove an nulls
+  const splitSourceBarcodeList =
+    form.value.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
+
+  return createLabelsFromBarcodes({
+    sourceBarcodeList: splitSourceBarcodeList,
+    date,
+    suffixItem,
+    numberOfLabels: form.value.numberOfLabels,
+  })
+})
+
+/**
+ * Creates a method to print labels
+ * @returns {Object} success or failure message
+ */
+const printLabels = async () => {
+  const { success, message = {} } = await printingStore.createPrintJob({
+    printerName: form.value.printerName,
+    labels: labels.value,
+    copies: form.value.copies,
+  })
+
+  showAlert(message, success ? 'success' : 'danger')
+
+  return { success, message }
+}
+
+/**
+ * Creates a method to reset the form
+ */
+const onReset = () => {
+  // Reset our form values
+  form.value = defaultForm()
+
+  // Trick to reset/clear native browser form validation state
+  show.value = false
+  nextTick(() => {
+    show.value = true
+  })
+}
+
+const fetchPrinters = printingStore.fetchPrinters
+</script>
+
+<!-- <script>
 import SuffixList from '@/config/SuffixList'
 import {
   createSuffixDropdownOptions,
@@ -186,4 +309,4 @@ export default {
     },
   },
 }
-</script>
+</script> -->
