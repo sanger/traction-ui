@@ -23,6 +23,13 @@ describe('Pacbio Run Create view', () => {
       },
     )
 
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1076_check_library_volume_in_runs: { enabled: true },
+      },
+    })
+
     // Message on successful creation or edit of the run
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 201,

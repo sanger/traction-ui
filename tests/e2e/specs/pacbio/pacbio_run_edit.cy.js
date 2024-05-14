@@ -6,6 +6,12 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1076_check_library_volume_in_runs: { enabled: true },
+      },
+    })
   })
 
   it('Updates a Revio run successfully', () => {

@@ -771,7 +771,7 @@ describe('PacbioRunWellEdit', () => {
           volume: 6,
           concentration: 11,
           template_prep_kit_box_barcode: 'tpkbb1',
-          available_volume: 6
+          available_volume: 6,
         }),
         createUsedAliquot({
           id: 3,
