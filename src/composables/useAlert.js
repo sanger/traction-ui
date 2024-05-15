@@ -15,7 +15,7 @@ export default function useAlert() {
     const page = route.name
     const time = new Date().toLocaleString()
 
-    // Commit the mutation to the Vuex store
+    // Commit the mutation  to the Vuex store
     store.commit('traction/addMessage', { type, message, dataType, page, time })
   }
 

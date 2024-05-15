@@ -17,10 +17,10 @@
   >
     <div class="w-full">
       {{ message }}
-      <div class="text-xs text-gray-500 flex justify-between items-center">
-        <span class="mr-1">{{ page }}</span>
-        <span>&#9679;</span>
-        <span class="ml-1">{{ time }}</span>
+      <div class="text-xs text-gray-500 flex items-left">
+      <span>{{ page }}</span>
+      <span style="margin: 0 6px;"> - </span>
+      <span>{{ time }}</span>
       </div>
     </div>
     <div class="flex justify-end">
