@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DataFetcher :fetcher="fetchPrinters">
     <traction-button id="printLabels" theme="print" :disabled="disabled" @click="onPrintAction()">
       Print Labels
     </traction-button>
@@ -14,19 +14,29 @@
       @cancel="handleCancel"
       @shown="clearSelect"
     >
-      <traction-select v-model="selectedPrinterId" :options="printerOptions" />
+      <traction-select
+        data-attribute="printer-options"
+        v-model="selectedPrinterId"
+        :options="printerOptions"
+      />
       <template #modal-footer="{ ok, cancel }">
         <traction-button size="sm" theme="accent" @click="ok()"> OK </traction-button>
         <traction-button size="sm" theme="cancel" @click="cancel()"> Cancel </traction-button>
       </template>
     </traction-modal>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
-const MESSAGE_PRINTER_SELECT = 'Please select a printer'
+import { usePrintingStore } from '@/stores/printing.js'
+import { mapActions, mapState } from 'pinia'
+import DataFetcher from '@/components/DataFetcher.vue'
+
 export default {
   name: 'PrinterModal',
+  components: {
+    DataFetcher,
+  },
   props: {
     disabled: Boolean,
     isStatic: Boolean,
@@ -35,14 +45,21 @@ export default {
   data() {
     return {
       selectedPrinterId: null,
-      printerOptions: [],
       isShow: false,
     }
   },
-  created() {
-    this.provider()
+  computed: {
+    ...mapState(usePrintingStore, ['printers']),
+    printerOptions() {
+      const options = this.printers('tube').map(({ name }, index) => ({
+        value: index + 1,
+        text: name,
+      }))
+      return [{ value: null, text: 'Please select a printer' }, ...options]
+    },
   },
   methods: {
+    ...mapActions(usePrintingStore, ['fetchPrinters']),
     clearSelect() {
       this.selectedPrinterId = null
     },
@@ -51,7 +68,7 @@ export default {
     },
     handleOk() {
       if (!this.selectedPrinterId) {
-        alert(MESSAGE_PRINTER_SELECT)
+        alert('Please select a printer')
       } else {
         this.handleSubmit()
       }
@@ -65,17 +82,6 @@ export default {
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
       this.isShow = false
-    },
-    setPrinterNames() {
-      const printerOptions = this.$store.getters.printers.map((printer, index) => ({
-        value: index + 1,
-        text: printer,
-      }))
-      printerOptions.unshift({ value: null, text: MESSAGE_PRINTER_SELECT })
-      this.printerOptions = printerOptions
-    },
-    provider() {
-      this.setPrinterNames()
     },
   },
 }

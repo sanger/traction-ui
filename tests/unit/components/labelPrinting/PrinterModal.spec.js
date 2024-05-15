@@ -1,71 +1,81 @@
-import { mount, nextTick } from '@support/testHelper'
+import {
+  mount,
+  nextTick,
+  RequestFactory,
+  createTestingPinia,
+  flushPromises,
+} from '@support/testHelper.js'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
+import { usePrintingStore } from '@/stores/printing.js'
 
-describe('Modal.vue', () => {
-  let wrapper, modal
+const printerRequestFactory = RequestFactory('Printers', false)
 
-  beforeEach(() => {
-    wrapper = mount(PrinterModal, {
+const plugins = [
+  ({ store }) => {
+    if (store.$id === 'root') {
+      store.api.traction.printers.get = vi.fn().mockResolvedValue(printerRequestFactory.response)
+    }
+  },
+]
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(PrinterModal, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            printing: state,
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePrintingStore()
+  return { wrapperObj, storeObj }
+}
+
+describe('PrinterModal.vue', () => {
+  let wrapper, modal, store
+
+  beforeEach(async () => {
+    const { wrapperObj, storeObj } = mountWithStore({
+      plugins,
       props: {
         disabled: true,
         isStatic: true,
       },
     })
+
+    await flushPromises()
+    wrapper = wrapperObj
+    store = storeObj
     modal = wrapper.vm
   })
 
-  it('will have a printerOptions', () => {
-    expect(modal.printerOptions.length).not.toBe(0)
+  it('will have some printer options', async () => {
+    wrapper.vm.isShow = true
+    await nextTick()
+    expect(wrapper.find('select').findAll('option').length).toEqual(
+      store.printers('tube').length + 1,
+    )
   })
 
-  it('will have an button component', () => {
-    expect(wrapper.find('button').element).toBeTruthy()
-  })
-
-  it('will have an modal component', () => {
-    expect(wrapper.find('.modal')).toBeTruthy()
-  })
-
-  describe('data', () => {
-    it('has a selectedPrinterId', () => {
-      wrapper.setData({ selectedPrinterId: 1 })
-      expect(modal.selectedPrinterId).toBe(1)
-    })
-
-    it('has printer options', () => {
-      const printerOptions = [
-        { value: null, text: 'Please select a printer' },
-        { value: 1, text: 'print1' },
-        { value: 2, text: 'printer2' },
-      ]
-
-      wrapper.setData({ printerOptions: printerOptions })
-      expect(modal.printerOptions).toEqual(printerOptions)
-    })
-  })
-
-  describe('modal', () => {
-    it('has printer select form', async () => {
-      const printerOptions = [
-        { value: null, text: 'Please select a printer' },
-        { value: 1, text: 'printer1' },
-        { value: 2, text: 'printer2' },
-        { value: 3, text: 'printer3' },
-        { value: 4, text: 'printer4' },
-        { value: 5, text: 'printer5' },
-      ]
-
-      wrapper.setData({ printerOptions: printerOptions })
-      wrapper.vm.isShow = true
-      await nextTick()
-      expect(wrapper.find('select').findAll('option').length).toEqual(printerOptions.length)
-    })
-  })
-
-  describe('props', () => {
-    it('has a disabled property', () => {
-      expect(wrapper.props().disabled).toBe(true)
-    })
+  it('has a selectedPrinterId', () => {
+    wrapper.setData({ selectedPrinterId: 1 })
+    expect(modal.selectedPrinterId).toBe(1)
   })
 
   describe('#handleOk', () => {
@@ -85,7 +95,7 @@ describe('Modal.vue', () => {
       expect(modal.handleSubmit).not.toBeCalled()
     })
 
-    it('with selectedEnzymeId', () => {
+    it('with selected printer', () => {
       wrapper.setData({ selectedPrinterId: 1 })
       const evt = {
         preventDefault: () => {
@@ -101,28 +111,11 @@ describe('Modal.vue', () => {
     it('#handleSubmit', () => {
       wrapper.setData({ selectedPrinterId: 1 })
 
-      const printerOptions = [
-        { value: null, text: 'Please select a printer' },
-        { value: 1, text: 'printer1' },
-        { value: 2, text: 'printer2' },
-      ]
-
-      wrapper.setData({ printerOptions: printerOptions })
-
       modal.handleSubmit()
       expect(wrapper.emitted().selectPrinter).toBeTruthy()
-      expect(wrapper.emitted().selectPrinter[0]).toEqual(['printer1'])
+      console.log(wrapper.emitted().selectPrinter[0])
+      expect(wrapper.emitted().selectPrinter[0]).toEqual([store.printers('tube')[0].name])
       expect(modal.selectedPrinterId).toBeFalsy()
-    })
-  })
-
-  describe('#setPrinterNames', () => {
-    it('sets printerOptions data', async () => {
-      modal.setPrinterNames()
-
-      expect(modal.printerOptions[0]).toEqual({ value: null, text: 'Please select a printer' })
-      expect(modal.printerOptions[1]).toBeDefined()
-      expect(modal.printerOptions[2]).toBeDefined()
     })
   })
 })

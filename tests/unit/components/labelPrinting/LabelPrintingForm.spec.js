@@ -1,7 +1,7 @@
-import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
-import SuffixList from '@/config/SuffixList'
-import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
-import { mount, createTestingPinia, RequestFactory, flushPromises } from '@support/testHelper'
+import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
+import SuffixList from '@/config/SuffixList.json'
+import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
+import { mount, createTestingPinia, RequestFactory, flushPromises } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 
