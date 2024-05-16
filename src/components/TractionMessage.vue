@@ -18,7 +18,7 @@
     <div class="w-full">
       {{ message }}
       <div class="text-xs text-gray-500 flex items-left">
-      <span>{{ page }}</span>
+      <span>{{ origin }}</span>
       <span style="margin: 0 6px;"> - </span>
       <span>{{ time }}</span>
       </div>
@@ -67,13 +67,15 @@ export default {
       type: String,
       required: true,
     },
-    page: {
+    origin: {
       type: String,
       required: false,
+      default: 'Unknown Origin',
     },
     time: {
       type: String,
       required: false,
+      default: new Date().toLocaleTimeString(),
     },
   },
   emits: ['dismissed'],
