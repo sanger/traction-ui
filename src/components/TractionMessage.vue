@@ -5,7 +5,7 @@
    * 
    */
    -->
-<template>
+  <template>
   <div
     data-attribute="message"
     :data-type="dataType"
@@ -15,18 +15,18 @@
       `${color.message}`, // font color, background color
     ]"
   >
-    <div class="inline-block">
+    <div class="inline-block flex-grow">
       <div>{{ message }}</div>
       <div class="text-xs text-gray-500">{{ origin }} - {{ time }}</div>
     </div>
-    <div class="flex justify-end">
+    <div class="flex justify-end items-center">
       <button data-attribute="close" @click="dismiss">
         <traction-close-icon :class-names="`${color.icon}`" />
       </button>
     </div>
   </div>
 </template>
-
+  
 <script>
 const colorStyles = {
   success: {
