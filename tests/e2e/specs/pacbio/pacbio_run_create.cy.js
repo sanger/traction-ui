@@ -114,7 +114,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="message"]').within(() => {
       cy.get('[data-attribute="dismiss"]').click()
     })
-    
+
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
