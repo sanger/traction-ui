@@ -5,7 +5,7 @@
    * 
    */
    -->
-  <template>
+<template>
   <div
     data-attribute="message"
     :data-type="dataType"
@@ -26,7 +26,7 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 const colorStyles = {
   success: {
