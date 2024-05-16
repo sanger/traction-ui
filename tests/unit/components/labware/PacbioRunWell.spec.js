@@ -298,6 +298,34 @@ describe('PacbioRunWell.vue', () => {
       const expected = 'TRAC-2-22,TRAC-2-24,TRAC-2-20'
       expect(tooltip.text()).toEqual(expected)
     })
+
+    it('will only display aliquot source barcodes if the aliquot is not marked for destruction', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          wells: {
+            1: {
+              A1: {
+                ...storeWell,
+                used_aliquots: [
+                  createUsedAliquot({ ...usedAliquots['1'], _destroy: true }),
+                  createUsedAliquot({ ...usedAliquots['2'] }),
+                ],
+              },
+            },
+          },
+          ...storePools,
+        },
+        stubActions: false,
+      })
+
+      wrapperObj.vm.hover = true
+      await nextTick()
+
+      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      // Only shows barcode of the non-destroyed aliquot
+      const expected = 'TRAC-2-24'
+      expect(tooltip.text()).toEqual(expected)
+    })
   })
 
   describe('drag and drop', () => {

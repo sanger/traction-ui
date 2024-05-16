@@ -437,6 +437,18 @@ describe('PacbioRunWellEdit', () => {
     })
   })
 
+  describe('validLocalUsedAliquots', () => {
+    it('returns the localUsedAliquots that are not marked for destruction', () => {
+      const aliquots = [
+        createUsedAliquot({ id: 1, _destroy: true }),
+        createUsedAliquot({ id: 2 }),
+        createUsedAliquot({ id: 3, _destroy: true }),
+      ]
+      wrapper.vm.localUsedAliquots = aliquots
+      expect(wrapper.vm.validLocalUsedAliquots).toEqual([aliquots[1]])
+    })
+  })
+
   describe('Aliquot rows', () => {
     let store
 
@@ -584,10 +596,18 @@ describe('PacbioRunWellEdit', () => {
     })
 
     describe('removeRow', () => {
-      it('removeRow removes the used aliquot at the given index from the localUsedAliquots list', () => {
+      it('adds a _destroy key to the correct aliquot at the given index from the localUsedAliquots list if the aliquot has an id', () => {
+        wrapper.vm.addRow()
+        expect(wrapper.vm.localUsedAliquots.length).toEqual(2)
+        wrapper.vm.removeRow({ index: 0, item: { id: '1' } })
+        expect(wrapper.vm.localUsedAliquots[0]).toEqual(expect.objectContaining({ _destroy: true }))
+      })
+
+      it('removes the aliquot at the given index from the localUsedAliquots list if the aliquot does not have an id', () => {
+        wrapper.vm.addRow()
+        expect(wrapper.vm.localUsedAliquots.length).toEqual(2)
+        wrapper.vm.removeRow({ index: 1, item: { id: '' } })
         expect(wrapper.vm.localUsedAliquots.length).toEqual(1)
-        wrapper.vm.removeRow(0)
-        expect(wrapper.vm.localUsedAliquots.length).toEqual(0)
       })
     })
 

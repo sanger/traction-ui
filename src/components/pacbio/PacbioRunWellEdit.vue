@@ -18,7 +18,7 @@
 
     <traction-table
       id="wellUsedAliquots"
-      :items="localUsedAliquots"
+      :items="validLocalUsedAliquots"
       :fields="wellUsedAliquotsFields"
     >
       <template #cell(barcode)="row">
@@ -159,6 +159,11 @@ const newWell = computed(() => {
   return !store.getWell(plateNumber.value, position.value)
 })
 
+// A computed property to only return the non-destroyed aliquots from the localUsedAliquots array
+const validLocalUsedAliquots = computed(() => {
+  return localUsedAliquots.value.filter((aliquot) => !aliquot['_destroy'])
+})
+
 // Define a computed property to determine the action for the modal which is either create or update
 const action = computed(() => {
   return newWell.value
@@ -182,9 +187,14 @@ const addRow = () => {
   localUsedAliquots.value.push(createUsedAliquot({ id: '', barcode: '', volume: 0 }))
 }
 
-/* `removeRow` is a function that removes a row from the `localUsedAliquots` array.*/
+/* `removeRow` is a function that adds a destroy key to the a given aliquot in the`localUsedAliquots` array.
+  or removes the aliquot from the array if it does not have an existing id */
 const removeRow = (row) => {
-  localUsedAliquots.value.splice(row.index, 1)
+  if (row.item.id) {
+    localUsedAliquots.value[row.index]['_destroy'] = true
+  } else {
+    localUsedAliquots.value.splice(row.index, 1)
+  }
 }
 
 /* `filteredAliquots` is a function that returns a list of valid aliquots from the `localUsedAliquots` array.*/

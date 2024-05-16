@@ -115,7 +115,9 @@ const storeWell = computed(() => {
 const tooltip = computed(() => {
   return storeWell.value?.used_aliquots
     ? [...storeWell.value.used_aliquots]
-        .map(({ source_id, source_type }) => {
+        .map(({ source_id, source_type, _destroy }) => {
+          // If the used aliquot has been destroyed, return null
+          if (_destroy) return
           const type = source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
           return store.tubeContents.find(
             (tubeContent) => source_id == tubeContent.id && type == tubeContent.type,
