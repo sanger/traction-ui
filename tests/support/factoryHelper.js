@@ -2,7 +2,7 @@ import fs from 'fs'
 import { join } from 'path'
 
 //This is the path to the data folder where all the test json files are stored
-const dataPath = '../data'
+const dataPath = '/../data/'
 
 /**
  * This function will load a file and return a factory object
