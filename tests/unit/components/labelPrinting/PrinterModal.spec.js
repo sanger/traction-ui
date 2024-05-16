@@ -113,7 +113,6 @@ describe('PrinterModal.vue', () => {
 
       modal.handleSubmit()
       expect(wrapper.emitted().selectPrinter).toBeTruthy()
-      console.log(wrapper.emitted().selectPrinter[0])
       expect(wrapper.emitted().selectPrinter[0]).toEqual([store.printers('tube')[0].name])
       expect(modal.selectedPrinterId).toBeFalsy()
     })
