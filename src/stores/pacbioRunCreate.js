@@ -535,10 +535,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Calculate the sum of the volume of all the new aliquots used in wells that are from the library
       let library_used_aliquots_volume = 0
-      // eslint-disable-next-line no-unused-vars
-      Object.entries(this.wells).forEach(([_plateNumber, plate]) => {
-        // eslint-disable-next-line no-unused-vars
-        Object.entries(plate).forEach(([_position, well]) => {
+      Object.values(this.wells).forEach((plate) => {
+        Object.values(plate).forEach((well) => {
           well.used_aliquots?.forEach((aliquot) => {
             // Existing aliquots should not be counted as they are already taken into account in the library available volume
             // This has the issue that if an existing aliquots volume is changed it will not be reflected in the available volume
@@ -552,9 +550,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
               aliquot.source_id === libraryId &&
               aliquot.source_type === 'Pacbio::Library'
             ) {
-              library_used_aliquots_volume = (
+              library_used_aliquots_volume =
                 parseFloat(library_used_aliquots_volume) + parseFloat(aliquot.volume)
-              ).toFixed(2)
             }
           })
         })
@@ -562,26 +559,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Calculate the total available volume for the library
       // Subtract the used aliquots volume from the available volume
-      let total_available_volume = (
-        parseFloat(library_available_volume) - parseFloat(library_used_aliquots_volume)
-      ).toFixed(2)
+      let total_available_volume = library_available_volume - library_used_aliquots_volume
 
       // If its an existing aliquot we need to add the original volume back
       // Because its taken into account in the library_available_volume
       // Unless the volume is 0 as that won't affect the available volume
       if (original_aliquot && original_aliquot.volume != 0) {
-        total_available_volume = (
-          parseFloat(total_available_volume) + parseFloat(original_aliquot.volume)
-        ).toFixed(2)
+        total_available_volume = total_available_volume + original_aliquot.volume
       } else {
         // If its a new aliquot we need to add the volume back in to the total available volume
         // because it was removed as part of the library_used_aliquots volume but it should be available in this instance of aliquot
-        total_available_volume = (parseFloat(total_available_volume) + parseFloat(volume)).toFixed(
-          2,
-        )
+        total_available_volume = parseFloat(total_available_volume) + parseFloat(volume)
       }
 
-      return total_available_volume
+      // Return the total available volume rounded to 2 decimal places
+      return total_available_volume.toFixed(2)
     },
   },
 })

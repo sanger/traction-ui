@@ -127,8 +127,8 @@ const tooltip = computed(() => {
 })
 
 /*
- * Computed property that returns whether the well has pools or libraries.
- * @returns {boolean} - Whether the well has pools or libraries.
+ * Computed property that returns whether the well has used aliquots.
+ * @returns {boolean} - Whether the well has used aliquots.
  */
 const hasUsedAliquots = computed(() => {
   return storeWell.value?.used_aliquots.length > 0
@@ -185,9 +185,9 @@ const drop = async (event) => {
 }
 
 /*
- * Method that updates the pool or library barcode for the well.
- * Fetches the well object from the store and updates the pools or libraries array with the barcode.
- * @param {string} barcode - The barcode of the pool or library.
+ * Method that creates an aliquot given a source barcode in the well.
+ * Fetches the well object from the store and updates used aliquots array with the appropriate data.
+ * @param {string} barcode - The barcode of a pool or library.
  */
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
