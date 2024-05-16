@@ -18,6 +18,8 @@ describe('#useAlert', () => {
       type: 'success',
       message: 'show this message',
       dataType: undefined,
+      origin: 'Unknown Origin',
+      time: expect.any(String),
     })
   })
 })
