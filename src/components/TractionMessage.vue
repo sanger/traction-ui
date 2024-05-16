@@ -10,18 +10,14 @@
     data-attribute="message"
     :data-type="dataType"
     :class="[
-      'flex flex-row rounded rounded-md px-5 py-3 space-x-4 mb-4', // padding
-      `text-base leading-6`, // text style
+      'flex flex-row rounded rounded-md px-5 py-1 space-x-4 mb-1', // padding
+      `text-base leading-0`, // text style
       `${color.message}`, // font color, background color
     ]"
   >
-    <div class="w-full">
-      {{ message }}
-      <div class="text-xs text-gray-500 flex items-left">
-      <span>{{ origin }}</span>
-      <span style="margin: 0 6px;"> - </span>
-      <span>{{ time }}</span>
-      </div>
+    <div class="inline-block">
+      <div>{{ message }}</div>
+      <div class="text-xs text-gray-500">{{ origin }} - {{ time }}</div>
     </div>
     <div class="flex justify-end">
       <button data-attribute="close" @click="dismiss">
