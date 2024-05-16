@@ -12,11 +12,11 @@ export default function useAlert() {
   const route = useRoute()
 
   const showAlert = (message, type, dataType) => {
-    const page = route.name
+    const origin = route?.name || 'Unknown Origin'
     const time = new Date().toLocaleString()
 
     // Commit the mutation  to the Vuex store
-    store.commit('traction/addMessage', { type, message, dataType, page, time })
+    store.commit('traction/addMessage', { type, message, dataType, origin, time })
   }
 
   // Return the showAlert method
