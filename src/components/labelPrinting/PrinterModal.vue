@@ -15,8 +15,8 @@
       @shown="clearSelect"
     >
       <traction-select
-        data-attribute="printer-options"
         v-model="selectedPrinterId"
+        data-attribute="printer-options"
         :options="printerOptions"
       />
       <template #modal-footer="{ ok, cancel }">
@@ -27,7 +27,95 @@
   </DataFetcher>
 </template>
 
-<script>
+<script setup>
+/**
+ * PrinterModal component is used to select a printer to print labels.
+ */
+
+import { usePrintingStore } from '@/stores/printing.js'
+import DataFetcher from '@/components/DataFetcher.vue'
+import { ref, computed } from 'vue'
+
+const props = defineProps({
+  /**
+   * Whether the component is disabled
+   * @type {Boolean}
+   * @default false
+   */
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  /**
+   * Whether the component is static
+   * @type {Boolean}
+   * @default false
+   */
+  isStatic: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['selectPrinter'])
+
+const selectedPrinterId = ref(null) // selected printer id
+
+const isShow = ref(false) // show modal
+
+/**
+ * Printer options
+ * @returns {Array} - Printer options
+ * @example [{ value: 1, text: 'Printer 1' }, { value: 2, text: 'Printer 2' }]
+ */
+const printerOptions = computed(() => {
+  const options = usePrintingStore()
+    .printers('tube')
+    .map(({ name }, index) => ({
+      value: index + 1,
+      text: name,
+    }))
+  return [{ value: null, text: 'Please select a printer' }, ...options]
+})
+
+// set the selected printer id to null
+const clearSelect = () => {
+  selectedPrinterId.value = null
+}
+
+// show the modal
+const onPrintAction = () => {
+  isShow.value = true
+}
+
+// handle ok button click
+const handleOk = () => {
+  if (!selectedPrinterId.value) {
+    alert('Please select a printer')
+  } else {
+    handleSubmit()
+  }
+}
+
+// handle cancel button click
+const handleCancel = () => {
+  isShow.value = false
+}
+
+// handle submit
+// emit the selected printer name
+const handleSubmit = () => {
+  // OR store holds key id and text value - emit id then store handles get name
+  const printerName = printerOptions.value[selectedPrinterId.value].text
+  emit('selectPrinter', printerName)
+  clearSelect()
+  isShow.value = false
+}
+
+const fetchPrinters = usePrintingStore().fetchPrinters
+</script>
+
+<!-- <script>
 import { usePrintingStore } from '@/stores/printing.js'
 import { mapActions, mapState } from 'pinia'
 import DataFetcher from '@/components/DataFetcher.vue'
@@ -85,4 +173,4 @@ export default {
     },
   },
 }
-</script>
+</script> -->

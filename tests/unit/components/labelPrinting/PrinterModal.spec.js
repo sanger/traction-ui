@@ -74,7 +74,7 @@ describe('PrinterModal.vue', () => {
   })
 
   it('has a selectedPrinterId', () => {
-    wrapper.setData({ selectedPrinterId: 1 })
+    wrapper.vm.selectedPrinterId = 1
     expect(modal.selectedPrinterId).toBe(1)
   })
 
@@ -96,7 +96,7 @@ describe('PrinterModal.vue', () => {
     })
 
     it('with selected printer', () => {
-      wrapper.setData({ selectedPrinterId: 1 })
+      wrapper.vm.selectedPrinterId = 1
       const evt = {
         preventDefault: () => {
           return {}
@@ -109,7 +109,7 @@ describe('PrinterModal.vue', () => {
 
   describe('#handleSubmit', () => {
     it('#handleSubmit', () => {
-      wrapper.setData({ selectedPrinterId: 1 })
+      wrapper.vm.selectedPrinterId = 1
 
       modal.handleSubmit()
       expect(wrapper.emitted().selectPrinter).toBeTruthy()
