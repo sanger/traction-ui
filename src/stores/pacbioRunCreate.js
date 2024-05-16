@@ -555,7 +555,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             }
           })
         })
-      }, 0)
+      })
 
       // Calculate the total available volume for the library
       // Subtract the used aliquots volume from the available volume
