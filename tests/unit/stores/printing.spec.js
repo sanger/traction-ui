@@ -47,7 +47,7 @@ describe('usePrintingStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        const printerRequestFactory = RequestFactory('Printers', false)
+        const printerRequestFactory = RequestFactory('printers', false)
 
         get.mockResolvedValue(printerRequestFactory.response)
         rootStore.api = { traction: { printers: { get } } }

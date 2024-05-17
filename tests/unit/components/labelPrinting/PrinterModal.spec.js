@@ -8,7 +8,7 @@ import {
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { usePrintingStore } from '@/stores/printing.js'
 
-const printerRequestFactory = RequestFactory('Printers', false)
+const printerRequestFactory = RequestFactory('printers', false)
 
 const plugins = [
   ({ store }) => {
