@@ -36,6 +36,16 @@ import { usePrintingStore } from '@/stores/printing.js'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { ref, computed } from 'vue'
 
+const emit = defineEmits(['selectPrinter'])
+
+const selectedPrinterId = ref(null) // selected printer id
+
+const isShow = ref(false) // show modal
+
+// eslint has got this wrong
+// there is an npm package but it is overkill
+// cant seem to disable this in the eslint config
+/* eslint-disable no-unused-vars */
 const props = defineProps({
   /**
    * Whether the component is disabled
@@ -56,12 +66,7 @@ const props = defineProps({
     default: false,
   },
 })
-
-const emit = defineEmits(['selectPrinter'])
-
-const selectedPrinterId = ref(null) // selected printer id
-
-const isShow = ref(false) // show modal
+/* eslint-enable no-unused-vars */
 
 /**
  * Printer options
@@ -112,7 +117,13 @@ const handleSubmit = () => {
   isShow.value = false
 }
 
-const fetchPrinters = usePrintingStore().fetchPrinters
+// const fetchPrinters = () => {
+//   if (!usePrintingStore().printers('tube').length) {
+//     usePrintingStore().fetchPrinters()
+//   }
+// }
+
+const fetchPrinters = () => usePrintingStore().fetchPrinters()
 </script>
 
 <!-- <script>
