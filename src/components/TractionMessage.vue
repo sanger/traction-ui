@@ -23,7 +23,7 @@
     <div class="inline-block flex-grow text-end mb-[3px]">
       {{ message }}
       <div class="text-xs text-gray-500 text-end border-t-2 border-gray-300">
-        {{ origin }} - {{ time }}
+        {{ origin }}{{ time }}
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@ export default {
     origin: {
       type: String,
       required: false,
-      default: 'Unknown Origin',
+      default: '',
     },
     time: {
       type: String,

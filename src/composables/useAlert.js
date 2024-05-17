@@ -12,7 +12,7 @@ export default function useAlert() {
   const route = useRoute()
 
   const showAlert = (message, type, dataType) => {
-    const origin = route?.name || 'Unknown Origin'
+    const origin = route?.name + " - " || ''
     const time = new Date().toLocaleTimeString()
 
     // Commit the mutation  to the Vuex store
