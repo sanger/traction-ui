@@ -54,7 +54,7 @@
                 :tooltip-text="'Available volume is ' + row.item.available_volume"
                 class="flex max-w-xs"
               >
-                <traction-badge id="library-used-volume" colour="sanger-yellow"
+                <traction-badge id="library-available-volume" colour="sanger-yellow"
                   ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
                 >
               </traction-tooltip>
