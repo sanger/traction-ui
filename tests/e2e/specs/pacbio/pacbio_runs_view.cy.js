@@ -1,10 +1,16 @@
+import RequestFactory from '../../../support/factoryHelper.js'
+
+const smrtLinkVersionRequestFactory = RequestFactory('tractionPacbioSmrtLinkVersions', false)
+
 describe('Pacbio Runs view', () => {
   it('Visits the pacbio runs url', () => {
     cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
-      fixture: 'tractionPacbioSmrtLinkVersions.json',
+      // fixture: 'tractionPacbioSmrtLinkVersions.json',
+      statusCode: 201,
+      body: smrtLinkVersionRequestFactory.content,
     })
     cy.visit('#/pacbio/runs')
     // Check filters are visible
