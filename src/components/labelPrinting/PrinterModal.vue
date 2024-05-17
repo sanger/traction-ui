@@ -117,71 +117,12 @@ const handleSubmit = () => {
   isShow.value = false
 }
 
-// const fetchPrinters = () => {
-//   if (!usePrintingStore().printers('tube').length) {
-//     usePrintingStore().fetchPrinters()
-//   }
-// }
-
-const fetchPrinters = () => usePrintingStore().fetchPrinters()
-</script>
-
-<!-- <script>
-import { usePrintingStore } from '@/stores/printing.js'
-import { mapActions, mapState } from 'pinia'
-import DataFetcher from '@/components/DataFetcher.vue'
-
-export default {
-  name: 'PrinterModal',
-  components: {
-    DataFetcher,
-  },
-  props: {
-    disabled: Boolean,
-    isStatic: Boolean,
-  },
-  emits: ['selectPrinter'],
-  data() {
-    return {
-      selectedPrinterId: null,
-      isShow: false,
-    }
-  },
-  computed: {
-    ...mapState(usePrintingStore, ['printers']),
-    printerOptions() {
-      const options = this.printers('tube').map(({ name }, index) => ({
-        value: index + 1,
-        text: name,
-      }))
-      return [{ value: null, text: 'Please select a printer' }, ...options]
-    },
-  },
-  methods: {
-    ...mapActions(usePrintingStore, ['fetchPrinters']),
-    clearSelect() {
-      this.selectedPrinterId = null
-    },
-    onPrintAction() {
-      this.isShow = true
-    },
-    handleOk() {
-      if (!this.selectedPrinterId) {
-        alert('Please select a printer')
-      } else {
-        this.handleSubmit()
-      }
-    },
-    handleCancel() {
-      this.isShow = false
-    },
-    handleSubmit() {
-      // OR store holds key id and text value - emit id then store handles get name
-      const printerName = this.printerOptions[this.selectedPrinterId].text
-      this.$emit('selectPrinter', printerName)
-      this.clearSelect()
-      this.isShow = false
-    },
-  },
+// fetch printers
+// if no printers are in the store, fetch them
+// @returns {Promise} - Promise
+const fetchPrinters = async () => {
+  if (usePrintingStore().printers().length === 0) {
+    return await usePrintingStore().fetchPrinters()
+  }
 }
-</script> -->
+</script>
