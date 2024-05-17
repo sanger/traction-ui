@@ -20,7 +20,7 @@
         <traction-close-icon :class-names="`${color.icon}`" />
       </button>
     </div>
-    <div class="inline-block flex-grow text-end" style="margin-bottom: 3px">
+    <div class="inline-block flex-grow text-end mb-[3px]">
       {{ message }}
       <div class="text-xs text-gray-500 text-end border-t-2 border-gray-300">
         {{ origin }} - {{ time }}
