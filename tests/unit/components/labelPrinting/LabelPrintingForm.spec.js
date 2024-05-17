@@ -19,7 +19,7 @@ const evt = {
   },
 }
 
-const printerRequestFactory = RequestFactory('Printers', false)
+const printerRequestFactory = RequestFactory('printers', false)
 
 const plugins = [
   ({ store }) => {

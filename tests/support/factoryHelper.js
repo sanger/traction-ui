@@ -2,7 +2,7 @@ import fs from 'fs'
 import { join } from 'path'
 
 //This is the path to the data folder where all the test json files are stored
-const dataPath = './tests/data/'
+const dataPath = '/../data/'
 
 /**
  * This function will load a file and return a factory object
@@ -43,8 +43,8 @@ const RequestFactory = (name, axios = true) => {
  * @returns The content of the file
  */
 const loadFile = (fileName) => {
-  // const filePath = join(__dirname, dataPath, `${fileName}.json`)
-  const filePath = join(dataPath, `${fileName}.json`)
+  const filePath = join(__dirname, dataPath, `${fileName}.json`)
+  // const filePath = join(dataPath, `${fileName}.json`)
   try {
     const fileContent = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(fileContent)
