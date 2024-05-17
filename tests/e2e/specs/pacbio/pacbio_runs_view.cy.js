@@ -8,7 +8,6 @@ describe('Pacbio Runs view', () => {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
-      // fixture: 'tractionPacbioSmrtLinkVersions.json',
       statusCode: 201,
       body: smrtLinkVersionRequestFactory.content,
     })
