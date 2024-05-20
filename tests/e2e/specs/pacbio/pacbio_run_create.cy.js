@@ -111,6 +111,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
 
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
+
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
@@ -131,6 +135,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+
     cy.get('#update').click()
 
     cy.get('button').contains('Create').click()
@@ -171,6 +176,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
