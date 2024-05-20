@@ -375,7 +375,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
     cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
     cy.get('#update').click()
-    cy.get('button[data-attribute=close]').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
 
     //Create another well with same library TRAC-2-20
     cy.get('[data-attribute="selected-pool-library-list"]')
@@ -399,7 +402,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
     cy.get('#update').click()
-    cy.get('button[data-attribute=close]').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
 
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
