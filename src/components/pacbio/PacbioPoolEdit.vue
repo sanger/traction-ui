@@ -5,8 +5,9 @@
       title="Pooled Samples"
       :tag="`${poolType}`"
       data-attribute="pool-type"
+      :description="'Click on Sample Name/Source to highlight associated labware'"
     >
-      <div>
+      <div class="pt-2">
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
           <div :class="['w-full', `${border}`]">
@@ -40,7 +41,7 @@
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Template Prep Kit Box Barcode</traction-label>
                 <traction-field-error
-                  data-attribute="template_prep_kit_box_barcode-error"
+                  data-attribute="pool-template-prep-kit-box-barcode-error"
                   :error="poolErrorsFor('template_prep_kit_box_barcode')"
                   :with-icon="!!pool.errors?.template_prep_kit_box_barcode"
                 >
@@ -53,7 +54,7 @@
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Volume</traction-label>
                 <traction-field-error
-                  data-attribute="volume-error"
+                  data-attribute="pool-volume-error"
                   :error="poolErrorsFor('volume')"
                   :with-icon="!!pool.errors?.volume"
                 >
@@ -63,7 +64,7 @@
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Concentration</traction-label>
                 <traction-field-error
-                  data-attribute="concentration-error"
+                  data-attribute="pool-concentration-error"
                   :error="poolErrorsFor('concentration')"
                   :with-icon="!!pool.errors?.concentration"
                 >
@@ -73,7 +74,7 @@
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Insert Size</traction-label>
                 <traction-field-error
-                  data-attribute="insert_size-error"
+                  data-attribute="pool-insert_size-error"
                   :error="poolErrorsFor('insert_size')"
                   :with-icon="!!pool.errors?.insert_size"
                 >
@@ -85,7 +86,12 @@
         </div>
       </div>
     </traction-section>
-    <PacbioPoolAliquotList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
+    <PacbioPoolAliquotList
+      :auto-tag="autoTag"
+      :validated="validated"
+      :notify="onFieldUpdate"
+      @aliquot-selected="notifyAliquotSelection"
+    />
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -140,6 +146,7 @@ const poolType = computed(() => {
       return 'Pool'
   }
 })
+const emit = defineEmits(['aliquot-selected'])
 
 const border = computed(() => {
   if (parsedFile.value === null) return 'border-0'
@@ -205,5 +212,9 @@ const uploadFile = async (evt) => {
 // clicks the update button and the changed values are checked and saved.
 const onFieldUpdate = () => {
   validated.value = false
+}
+
+const notifyAliquotSelection = (request) => {
+  emit('aliquot-selected', request)
 }
 </script>

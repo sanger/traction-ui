@@ -114,3 +114,25 @@ describe('PacbioPoolAliquotList.vue', () => {
     )
   })
 })
+it('emits aliquot-selected event with request', async () => {
+  const { wrapperObj } = mountWithStore({
+    props: {
+      notify: () => {},
+    },
+  })
+  await wrapperObj.vm.notifyAliquotSelection(true, { id: 1 })
+  expect(wrapperObj.emitted()).toHaveProperty('aliquot-selected')
+  expect(wrapperObj.emitted()['aliquot-selected'][0]).toEqual([{ id: 1 }])
+})
+
+it('emits aliquot-selected event with request', async () => {
+  const { wrapperObj } = mountWithStore({
+    props: {
+      notify: () => {},
+    },
+  })
+  await wrapperObj.vm.notifyAliquotSelection(false, { id: 1 })
+  expect(wrapperObj.emitted()).toHaveProperty('aliquot-selected')
+  expect(wrapperObj.emitted()['aliquot-selected'][0]).toEqual([null])
+  console.log(wrapperObj.emitted())
+})
