@@ -168,8 +168,8 @@
             <traction-label>Printers</traction-label>
             <traction-select
               id="printer-choice"
-              data-attribute="printer-options"
               v-model="printerName"
+              data-attribute="printer-options"
               :options="printerOptions"
               value-field="text"
               required
