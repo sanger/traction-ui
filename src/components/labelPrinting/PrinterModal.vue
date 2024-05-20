@@ -123,6 +123,8 @@ const handleSubmit = () => {
 const fetchPrinters = async () => {
   if (usePrintingStore().printers().length === 0) {
     return await usePrintingStore().fetchPrinters()
+  } else {
+    return { success: true }
   }
 }
 </script>
