@@ -1,28 +1,14 @@
 <template>
   <div v-if="store.selectedRequests" data-type="pool-library-list">
     <traction-table :fields="state.headerFields" simple>
-      <flagged-feature name="dpl_1072_check_library_volume_in_pools">
-        <PacbioPoolAliquotEdit
-          v-for="request in store.selectedRequests"
-          :key="request.id"
-          :request="request"
-          :auto-tag="props.autoTag"
-          :validated="props.validated"
-          :notify="props.notify"
-          :selected="selectedRequest && selectedRequest.id === request.id"
-          @aliquot-selected="(selected) => notifyAliquotSelection(selected, request)"
-        ></PacbioPoolAliquotEdit>
-        <template #disabled>
-          <PacbioPoolAliquotEditV1
-            v-for="request in store.selectedRequests"
-            :key="request.id"
-            :request="request"
-            :auto-tag="props.autoTag"
-            :validated="props.validated"
-            :notify="props.notify"
-          ></PacbioPoolAliquotEditV1
-        ></template>
-      </flagged-feature>
+      <PacbioPoolAliquotEdit
+        v-for="request in store.selectedRequests"
+        :key="request.id"
+        :request="request"
+        :auto-tag="props.autoTag"
+        :validated="props.validated"
+        :notify="props.notify"
+      ></PacbioPoolAliquotEdit>
     </traction-table>
   </div>
 </template>
@@ -35,10 +21,9 @@
  * @param {Boolean} props.validated - Whether the attributes in child component(s) have been validated
  * @param {Function} props.notify - Callback function when user changes an attribute in a child component
  */
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
-import PacbioPoolAliquotEditV1 from '@/components/pacbio/V1/PacbioPoolAliquotEditV1.vue'
 
 const props = defineProps({
   autoTag: {
@@ -61,8 +46,6 @@ const props = defineProps({
 })
 
 const store = usePacbioPoolCreateStore()
-const emit = defineEmits(['aliquot-selected'])
-const selectedRequest = ref(null)
 
 /**
  * The fields to display in in the table
@@ -78,13 +61,4 @@ const state = reactive({
     'Insert Size',
   ],
 })
-const notifyAliquotSelection = (selected, request) => {
-  let requestOnSelection = request
-  if (!selected) {
-    requestOnSelection = null
-  }
-  selectedRequest.value = requestOnSelection
-
-  emit('aliquot-selected', requestOnSelection)
-}
 </script>

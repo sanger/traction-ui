@@ -107,9 +107,7 @@ describe('pacbioPoolEdit#new', () => {
       })
       await nextTick()
 
-      expect(wrapperObj.find('[data-attribute=pool-volume-error]').text()).toEqual(
-        'must be present',
-      )
+      expect(wrapperObj.find('[data-attribute=volume-error]').text()).toEqual('must be present')
     })
 
     it('concentration', async () => {
@@ -126,7 +124,7 @@ describe('pacbioPoolEdit#new', () => {
       })
       await nextTick()
 
-      expect(wrapperObj.find('[data-attribute=pool-concentration-error]').text()).toEqual(
+      expect(wrapperObj.find('[data-attribute=concentration-error]').text()).toEqual(
         'must be present',
       )
     })
@@ -144,7 +142,7 @@ describe('pacbioPoolEdit#new', () => {
         },
       })
       await nextTick()
-      expect(wrapperObj.find('[data-attribute=pool-insert_size-error]').text()).toEqual(
+      expect(wrapperObj.find('[data-attribute=insert_size-error]').text()).toEqual(
         'must be present',
       )
     })
@@ -164,7 +162,7 @@ describe('pacbioPoolEdit#new', () => {
       await nextTick()
 
       expect(
-        wrapperObj.find('[data-attribute=pool-template-prep-kit-box-barcode-error]').text(),
+        wrapperObj.find('[data-attribute=template_prep_kit_box_barcode-error]').text(),
       ).toEqual('must be present')
     })
   })
@@ -179,12 +177,12 @@ describe('pacbioPoolEdit#new', () => {
       }
       await nextTick()
 
-      expect(wrapper.find('[data-attribute=pool-volume-error]').exists()).toBe(false)
-      expect(wrapper.find('[data-attribute=pool-insert_size-error]').exists()).toBe(false)
-      expect(
-        wrapper.find('[data-attribute=pool-template_prep_kit_box_barcode-error]').exists(),
-      ).toBe(false)
-      expect(wrapper.find('[data-attribute=pool-concentration-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=volume-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=insert_size-error]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=template_prep_kit_box_barcode-error]').exists()).toBe(
+        false,
+      )
+      expect(wrapper.find('[data-attribute=concentration-error]').exists()).toBe(false)
     })
   })
 

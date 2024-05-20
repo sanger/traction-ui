@@ -26,7 +26,6 @@ import TractionModal from '@/components/shared/TractionModal'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
-import TractionTooltip from '@/components/shared/TractionTooltip'
 
 const components = {
   FlaggedFeature,
@@ -57,7 +56,6 @@ const components = {
   TractionTableColumn,
   TractionModal,
   TractionCloseIcon,
-  TractionTooltip,
 }
 
 const registerGlobal = (vue) => {
