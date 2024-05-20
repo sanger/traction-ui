@@ -164,17 +164,19 @@
               max-rows="10"
             />
           </div>
-          <div class="flex flex-col text-left w-1/2 space-y-2">
-            <traction-label>Printers</traction-label>
-            <traction-select
-              id="printer-choice"
-              v-model="printerName"
-              data-attribute="printer-options"
-              :options="printerOptions"
-              value-field="text"
-              required
-            />
-          </div>
+          <DataFetcher :fetcher="fetchPrinters">
+            <div class="flex flex-col text-left w-1/2 space-y-2">
+              <traction-label>Printers</traction-label>
+              <traction-select
+                id="printer-choice"
+                v-model="printerName"
+                data-attribute="printer-options"
+                :options="printerOptions"
+                value-field="text"
+                required
+              />
+            </div>
+          </DataFetcher>
         </div>
         <div class="flex justify-end mt-3 w-full">
           <traction-button
@@ -230,13 +232,13 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
-// import { mapActions } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers.js'
 
 import { usePrintingStore } from '@/stores/printing.js'
 import useRootStore from '@/stores'
 import { mapActions, mapState } from 'pinia'
+import DataFetcher from '@/components/DataFetcher.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -250,6 +252,7 @@ export default {
     TractionHeading,
     LibraryTypeSelect,
     DataTypeSelect,
+    DataFetcher,
   },
   props: {
     receptions: {
@@ -442,6 +445,13 @@ export default {
     handleSourceChange() {
       this.resetLabwareData()
       this.barcodes = ''
+    },
+    async fetchPrinters() {
+      if (usePrintingStore().printers().length === 0) {
+        return await usePrintingStore().fetchPrinters()
+      } else {
+        return { success: true }
+      }
     },
     ...mapActions('printing', ['createPrintJob']),
   },
