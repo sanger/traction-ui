@@ -1,26 +1,6 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-// import { mount, store, Data, router, flushPromises, RequestFactory, createTestingPinia } from '@support/testHelper'
 import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
-// import { dataToObjectById } from '@/api/JsonApi'
-
-// import { usePrintingStore } from '@/stores/printing.js'
-
-// const printerRequestFactory = RequestFactory('Printers', false)
-
-// console.log(printerRequestFactory.content.data)
-
-// // usePrintingStore().resources.printers = dataToObjectById({ data: printerRequestFactory.content.data })
-
-// createTestingPinia({
-//   initialState: {
-//     printing: {
-//       resources: {
-//         printers: dataToObjectById({ data: printerRequestFactory.content.data }),
-//       },
-//     },
-//   },
-// })
 
 describe('OntPoolIndex', () => {
   let wrapper, pools
