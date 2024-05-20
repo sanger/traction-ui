@@ -14,7 +14,7 @@
       <p class="truncate font-light">{{ position }}</p>
     </div>
     <span
-      v-if="hasPoolsOrLibraries && hover"
+      v-show="hasUsedAliquots && hover"
       class="absolute z-1 bg-black text-white text-xs p-2 rounded"
       data-attribute="tooltip"
     >
@@ -27,6 +27,8 @@
  * @name PacbioRunWell
  * @description A single well in a Pacbio run plate
  */
+import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 
@@ -90,23 +92,12 @@ const wellClassNames = computed(() => {
  * @returns {Array} - An array of required metadata fields for the well.
  */
 const required_metadata_fields = computed(() => {
-  if (store.smrtLinkVersion.name == 'v11') {
-    return [
-      'movie_time',
-      'on_plate_loading_concentration',
-      'binding_kit_box_barcode',
-      'generate_hifi',
-    ]
-  } else if (store.smrtLinkVersion.name == 'v12_revio') {
-    return [
-      'movie_acquisition_time',
-      'include_base_kinetics',
-      'library_concentration',
-      'polymerase_kit',
-      'pre_extension_time',
-    ]
-  }
-  return []
+  return (
+    PacbioRunWellComponents[store.smrtLinkVersion.name]?.reduce((result, field) => {
+      field.required && result.push(field.value)
+      return result
+    }, []) || []
+  )
 })
 
 /*
@@ -122,20 +113,27 @@ const storeWell = computed(() => {
  * @returns {string} - The tooltip for the well.
  */
 const tooltip = computed(() => {
-  return [...storeWell.value.pools, ...storeWell.value.libraries]
-    .map((id) => {
-      return store.tubeContents.find((tubeContent) => id == tubeContent.id).barcode
-    })
-    .filter(Boolean)
-    .join(',')
+  return storeWell.value?.used_aliquots
+    ? [...storeWell.value.used_aliquots]
+        .map(({ source_id, source_type, _destroy }) => {
+          // If the used aliquot has been destroyed, return null
+          if (_destroy) return
+          const type = source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
+          return store.tubeContents.find(
+            (tubeContent) => source_id == tubeContent.id && type == tubeContent.type,
+          ).barcode
+        })
+        .filter(Boolean)
+        .join(',')
+    : ''
 })
 
 /*
- * Computed property that returns whether the well has pools or libraries.
- * @returns {boolean} - Whether the well has pools or libraries.
+ * Computed property that returns whether the well has used aliquots.
+ * @returns {boolean} - Whether the well has used aliquots.
  */
-const hasPoolsOrLibraries = computed(() => {
-  return storeWell.value?.pools.length > 0 || storeWell.value?.libraries.length > 0
+const hasUsedAliquots = computed(() => {
+  return storeWell.value?.used_aliquots.length > 0
 })
 
 /*
@@ -159,10 +157,10 @@ const hasSomeMetadata = computed(() => {
  * @returns {string} - The status of the well.
  */
 const status = computed(() => {
-  if (hasPoolsOrLibraries.value && hasValidMetadata.value) {
+  if (hasUsedAliquots.value && hasValidMetadata.value) {
     // Complete
     return 'bg-success text-white'
-  } else if (hasPoolsOrLibraries.value || hasSomeMetadata.value) {
+  } else if (hasUsedAliquots.value || hasSomeMetadata.value) {
     // Incomplete
     return 'bg-failure text-white'
   }
@@ -185,18 +183,30 @@ const onClick = () => {
  */
 const drop = async (event) => {
   hover.value = false
-  await updatePoolLibraryBarcode(event.dataTransfer.getData('barcode'))
+  await updateUsedAliquotSource(event.dataTransfer.getData('barcode'))
 }
 
 /*
- * Method that updates the pool or library barcode for the well.
- * Fetches the well object from the store and updates the pools or libraries array with the barcode.
- * @param {string} barcode - The barcode of the pool or library.
+ * Method that creates an aliquot given a source barcode in the well.
+ * Fetches the well object from the store and updates used aliquots array with the appropriate data.
+ * @param {string} barcode - The barcode of a pool or library.
  */
-const updatePoolLibraryBarcode = async (barcode) => {
+const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
-  const { id, type } = store.tubeContentByBarcode(barcode)
-  type === 'libraries' ? well.libraries.push(id) : type === 'pools' ? well.pools.push(id) : null
+  const { id, type, volume, concentration, insert_size, template_prep_kit_box_barcode } =
+    store.tubeContentByBarcode(barcode)
+  const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+  const used_aliquot = createUsedAliquot({
+    source_id: id,
+    source_type,
+    volume,
+    concentration,
+    insert_size,
+    template_prep_kit_box_barcode,
+    barcode,
+  })
+
+  well.used_aliquots.push(used_aliquot)
   store.updateWell({ well: well, plateNumber: props.plateNumber })
 }
 </script>

@@ -10,6 +10,7 @@
       pxStyle,
       classes,
     ]"
+    v-bind="$attrs"
     @click="click"
   >
     {{ text }}
