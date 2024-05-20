@@ -24,6 +24,11 @@ function mountWithStore({ props } = {}) {
   const wrapperObj = mount(PacbioSamples, {
     global: {
       plugins: [createTestingPinia({})],
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+      },
     },
     store,
     router,
