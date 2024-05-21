@@ -372,6 +372,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
         library.volume = ''
         const { success, errors } = await store.updateLibrary(library)
+
         expect(success).toBeFalsy()
         expect(errors).toEqual('The library is invalid')
       })
