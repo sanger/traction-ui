@@ -165,7 +165,7 @@
             />
           </div>
           <DataFetcher :fetcher="fetchPrinters">
-            <div class="flex flex-col text-left w-1/2 space-y-2">
+            <div class="flex flex-col text-left w-full space-y-2">
               <traction-label>Printers</traction-label>
               <traction-select
                 id="printer-choice"
