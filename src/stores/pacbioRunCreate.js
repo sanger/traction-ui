@@ -354,6 +354,13 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         // eslint-disable-next-line no-unused-vars
         Object.entries(wellsByPlate).forEach(([_plateNumber, plate]) => {
           plate['_destroy'] = []
+          // Sets the used_aliquots directly in the well
+          // eslint-disable-next-line no-unused-vars
+          Object.entries(plate).forEach(([_position, well]) => {
+            well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
+              return this.aliquots[aliquotId]
+            })
+          })
         })
 
         this.wells = wellsByPlate
@@ -507,6 +514,66 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const resources = this.resources
       this.$reset()
       this.resources = resources
+    },
+    /**
+     * Returns the available volume for a library aliquot
+     * @param {Object} libraryId The id of the library
+     * @param {Object} aliquotId The id of the aliquot
+     * @param {Object} volume The volume of the aliquot
+     *
+     * @returns {Number} The available volume for the aliquot
+     */
+    getAvailableVolumeForLibraryAliquot({ libraryId = null, aliquotId = null, volume = null }) {
+      if (!libraryId) {
+        return null
+      }
+
+      // Get the original aliquot if it exists
+      const original_aliquot = this.aliquots[aliquotId]
+      // Get the available volume for the library
+      const library_available_volume = this.libraries[libraryId].available_volume || 0
+
+      // Calculate the sum of the volume of all the new aliquots used in wells that are from the library
+      let library_used_aliquots_volume = 0
+      Object.values(this.wells).forEach((plate) => {
+        Object.values(plate).forEach((well) => {
+          well.used_aliquots?.forEach((aliquot) => {
+            // Existing aliquots should not be counted as they are already taken into account in the library available volume
+            // This has the issue that if an existing aliquots volume is changed it will not be reflected in the available volume
+            if (aliquot.id) {
+              return
+            }
+
+            // For each aliquot used in wells, check if the source is the library and if so add the volume used
+            if (
+              aliquot &&
+              aliquot.source_id === libraryId &&
+              aliquot.source_type === 'Pacbio::Library'
+            ) {
+              library_used_aliquots_volume =
+                parseFloat(library_used_aliquots_volume) + parseFloat(aliquot.volume)
+            }
+          })
+        })
+      })
+
+      // Calculate the total available volume for the library
+      // Subtract the used aliquots volume from the available volume
+      let total_available_volume = library_available_volume - library_used_aliquots_volume
+
+      // If its an existing aliquot we need to add the original volume back
+      // Because its taken into account in the library_available_volume
+      // Unless the volume is 0 as that won't affect the available volume
+      if (original_aliquot && original_aliquot.volume != 0) {
+        total_available_volume = total_available_volume + original_aliquot.volume
+      } else {
+        // If its a new aliquot we need to add the volume back in to the total available volume
+        // because it was removed as part of the library_used_aliquots volume but it should be available in this instance of aliquot
+        total_available_volume = parseFloat(total_available_volume) + parseFloat(volume)
+      }
+
+      // Return the total available volume rounded to 2 decimal places
+      return total_available_volume.toFixed(2)
     },
   },
 })

@@ -23,6 +23,13 @@ describe('Pacbio Run Create view', () => {
       },
     )
 
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1076_check_library_volume_in_runs: { enabled: true },
+      },
+    })
+
     // Message on successful creation or edit of the run
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 201,
@@ -70,6 +77,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
     cy.get('#update').click()
     cy.get('button').contains('Create').click()
@@ -111,6 +119,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
 
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
+
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
@@ -131,6 +143,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+
     cy.get('#update').click()
 
     cy.get('button').contains('Create').click()
@@ -171,6 +184,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
@@ -326,5 +343,79 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').should('have.value', '')
     // bg-gray-100 is the default colour of the well
     cy.get('[data-attribute=pacbio-run-well]').first().should('have.class', 'bg-gray-100')
+  })
+
+  it('Correctly displays the available volume information for a library in a well', () => {
+    const dataTransfer = new DataTransfer()
+
+    //Create a well with library TRAC-2-20
+    cy.visit('#/pacbio/runs')
+    cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('#labware-finder-input').type('TRAC-2-20')
+    cy.get('button').contains('Search').click()
+
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    //It displays the correct volume information for the library in this context
+    cy.get('#library-available-volume').contains('20.00')
+    cy.get('[data-attribute="movie-time"]').select('15.0')
+    cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
+    cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
+    cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="pre-extension-time"]').type(3)
+    cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
+    cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
+    cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
+    cy.get('#update').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
+
+    //Create another well with same library TRAC-2-20
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-well]')
+      .eq(1)
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    //It displays the correct volume information for the library in this context
+    cy.get('#library-available-volume').contains('15.00')
+    cy.get('[data-attribute="movie-time"]').select('15.0')
+    cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
+    cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
+    cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="pre-extension-time"]').type(3)
+    cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
+    cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
+    cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('#update').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
+
+    //Open the first well
+    cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
+    //It should update the availble volume with the volume used in the second well
+    cy.get('#library-available-volume').contains('10.00')
+    cy.get('#update').click()
+
+    //Open the second well
+    cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
+    //It should update the availble volume with the volume used in the first well
+    cy.get('#library-available-volume').contains('15.00')
   })
 })

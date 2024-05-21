@@ -55,7 +55,11 @@
         />
       </traction-field-group>
 
-      <traction-field-group label="Comments" for="comments">
+      <traction-field-group
+        label="Comments"
+        for="comments"
+        description="Barcodes & concentrations are automatically appended"
+      >
         <traction-input
           id="comments"
           v-model="store.run.comments"

@@ -6,6 +6,12 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1076_check_library_volume_in_runs: { enabled: true },
+      },
+    })
   })
 
   it('Updates a Revio run successfully', () => {
@@ -39,6 +45,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="aliquot-volume"').type('10')
     cy.get('#update').click()
     cy.get('button').contains('Update').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')
@@ -74,6 +81,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('[data-attribute="movie-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
+    cy.get('[data-attribute="aliquot-volume"').type('10')
     cy.get('#update').click()
     cy.get('button').contains('Update').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')

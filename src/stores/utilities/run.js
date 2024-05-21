@@ -75,8 +75,7 @@ const newWell = ({ position, ...attributes }) => {
   const [row, column] = splitPosition(position)
   return {
     ...defaultWellAttributes(),
-    pools: [],
-    libraries: [],
+    used_aliquots: [],
     ...attributes,
     position,
     row,
@@ -195,11 +194,11 @@ const createWellsPayload = (wells) => {
     .sort()
     .reduce((result, key) => ((result[key] = wells[key]), result), {})
 
-  // return the wells with the pools and libraries replaced by pool_ids and library_ids attribute
+  // return the wells with the used_aliquots replaced by used_aliquots_attributes
   return (
     Object.values(rest)
-      .map(({ pools: pool_ids, libraries: library_ids, ...attributes }) => {
-        return { ...attributes, pool_ids, library_ids }
+      .map(({ used_aliquots: used_aliquots_attributes, ...attributes }) => {
+        return { ...attributes, used_aliquots_attributes }
       })
       // add the _destroy attribute back to the wells
       .concat(_destroy || [])

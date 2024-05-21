@@ -134,5 +134,4 @@ it('emits aliquot-selected event with request', async () => {
   await wrapperObj.vm.notifyAliquotSelection(false, { id: 1 })
   expect(wrapperObj.emitted()).toHaveProperty('aliquot-selected')
   expect(wrapperObj.emitted()['aliquot-selected'][0]).toEqual([null])
-  console.log(wrapperObj.emitted())
 })
