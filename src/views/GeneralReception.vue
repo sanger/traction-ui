@@ -453,7 +453,7 @@ export default {
         return { success: true }
       }
     },
-    ...mapActions('printing', ['createPrintJob']),
+    ...mapActions(usePrintingStore, ['createPrintJob']),
   },
 }
 </script>

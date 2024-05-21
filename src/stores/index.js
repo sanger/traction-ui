@@ -63,10 +63,6 @@ const useRootStore = defineStore('root', {
      */
     messages: {},
   }),
-  getters: {
-    //Get the printer names from the printers
-    printerNames: (state) => state.printers.map((obj) => obj.printerName),
-  },
   actions: {
     /**
      * Asynchronously sets tractionTags in store using tags fetched from service (/traction/tags).

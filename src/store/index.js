@@ -63,6 +63,7 @@ import config from '@/api/Config'
 import build from '@/api/v1/ApiBuilder'
 import traction from '@/store/traction'
 import PlateMap from '@/config/PlateMap'
+import printMyBarcode from '@/store/printMyBarcode'
 
 const store = createStore({
   state: {
@@ -76,6 +77,7 @@ const store = createStore({
   },
   modules: {
     traction,
+    printMyBarcode,
   },
 })
 
