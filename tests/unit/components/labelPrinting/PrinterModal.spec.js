@@ -79,29 +79,15 @@ describe('PrinterModal.vue', () => {
   })
 
   describe('#handleOk', () => {
-    beforeEach(() => {
-      modal.handleSubmit = vi.fn()
-    })
-
     it('without selectedPrinterId', () => {
-      const evt = {
-        preventDefault: () => {
-          return {}
-        },
-      }
       window.alert = vi.fn()
-      modal.handleOk(evt)
+      modal.handleOk()
       expect(window.alert).toBeCalledWith('Please select a printer')
     })
 
     it('with selected printer', () => {
       wrapper.vm.selectedPrinterId = 1
-      const evt = {
-        preventDefault: () => {
-          return {}
-        },
-      }
-      modal.handleOk(evt)
+      modal.handleOk()
       expect(wrapper.emitted().selectPrinter).toBeTruthy()
       expect(wrapper.emitted().selectPrinter[0]).toEqual([store.printers('tube')[0].name])
     })

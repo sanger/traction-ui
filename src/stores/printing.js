@@ -17,12 +17,11 @@ export const usePrintingStore = defineStore('printing', {
      * @returns {Array} Array of printers that match the labwareType
      */
     printers: (state) => (labwareType) => {
+      const printerValues = Object.values(state.resources.printers)
       if (labwareType) {
-        return Object.values(state.resources.printers).filter(
-          (printer) => printer.labware_type === labwareType,
-        )
+        return printerValues.filter((printer) => printer.labware_type === labwareType)
       }
-      return Object.values(state.resources.printers)
+      return printerValues
     },
   },
   actions: {

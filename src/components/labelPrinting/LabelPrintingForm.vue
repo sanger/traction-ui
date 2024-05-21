@@ -218,8 +218,8 @@ const onReset = () => {
 // if there are printers in the store, return success prevents error in DataFetcher
 // @returns {Promise} - Promise
 const fetchPrinters = async () => {
-  if (usePrintingStore().printers().length === 0) {
-    return await usePrintingStore().fetchPrinters()
+  if (printingStore.printers().length === 0) {
+    return await printingStore.fetchPrinters()
   } else {
     return { success: true }
   }
