@@ -213,100 +213,15 @@ const onReset = () => {
   })
 }
 
-const fetchPrinters = printingStore.fetchPrinters
-</script>
-
-<!-- <script>
-import SuffixList from '@/config/SuffixList'
-import {
-  createSuffixDropdownOptions,
-  createSuffixItems,
-  createLabelsFromBarcodes,
-} from '@/lib/LabelPrintingHelpers'
-import { getCurrentDate } from '@/lib/DateHelpers'
-import BarcodeIcon from '@/icons/BarcodeIcon.vue'
-import { nextTick } from 'vue'
-import { usePrintingStore } from '@/stores/printing.js'
-import { mapActions, mapState } from 'pinia'
-import DataFetcher from '@/components/DataFetcher.vue'
-
-const defaultForm = () => ({
-  sourceBarcodeList: null,
-  suffix: null,
-  numberOfLabels: null,
-  printerName: null,
-  copies: 1,
-})
-
-export default {
-  name: 'LabelPrintingForm',
-  components: {
-    BarcodeIcon,
-    DataFetcher,
-  },
-  data() {
-    return {
-      form: defaultForm(),
-      show: true,
-    }
-  },
-  computed: {
-    ...mapState(usePrintingStore, ['printers']),
-    printerOptions() {
-      return this.printers('tube').map(({ name }) => ({
-        text: name,
-      }))
-    },
-    suffixOptions() {
-      return createSuffixDropdownOptions(SuffixList)
-    },
-    suffixItems() {
-      return createSuffixItems(SuffixList)
-    },
-    labels() {
-      const date = getCurrentDate()
-      const suffixItem = this.suffixItems[this.form.suffix]
-
-      // it is possible for there to be no barcodes so we need to add a guard
-      // we filter to remove an nulls
-      const splitSourceBarcodeList =
-        this.form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
-
-      return createLabelsFromBarcodes({
-        sourceBarcodeList: splitSourceBarcodeList,
-        date,
-        suffixItem,
-        numberOfLabels: this.form.numberOfLabels,
-      })
-    },
-  },
-  methods: {
-    ...mapActions(usePrintingStore, ['createPrintJob', 'fetchPrinters']),
-    /*
-      Creates the print job and shows a success or failure alert
-      @param {event}
-    */
-    async printLabels() {
-      const { success, message = {} } = await this.createPrintJob({
-        printerName: this.form.printerName,
-        labels: this.labels,
-        copies: this.form.copies,
-      })
-
-      this.showAlert(message, success ? 'success' : 'danger')
-
-      return { success, message }
-    },
-    onReset() {
-      // Reset our form values
-      this.form = defaultForm()
-
-      // Trick to reset/clear native browser form validation state
-      this.show = false
-      nextTick(() => {
-        this.show = true
-      })
-    },
-  },
+// fetch printers
+// if no printers are in the store, fetch them
+// if there are printers in the store, return success prevents error in DataFetcher
+// @returns {Promise} - Promise
+const fetchPrinters = async () => {
+  if (usePrintingStore().printers().length === 0) {
+    return await usePrintingStore().fetchPrinters()
+  } else {
+    return { success: true }
+  }
 }
-</script> -->
+</script>

@@ -30,6 +30,9 @@
 <script setup>
 /**
  * PrinterModal component is used to select a printer to print labels.
+ * Now this is aligned with other methods of printing we should think about
+ * turning this into a generic component that can be used for all printer selection
+ * Not a modal.
  */
 
 import { usePrintingStore } from '@/stores/printing.js'
@@ -119,6 +122,7 @@ const handleSubmit = () => {
 
 // fetch printers
 // if no printers are in the store, fetch them
+// if there are printers in the store, return success prevents error in DataFetcher
 // @returns {Promise} - Promise
 const fetchPrinters = async () => {
   if (usePrintingStore().printers().length === 0) {

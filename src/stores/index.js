@@ -1,7 +1,6 @@
-import config from '@/api/Config'
-import build from '@/api/v1/ApiBuilder'
-import PrinterList from '@/config/PrinterList'
-import PlateMap from '@/config/PlateMap'
+import config from '@/api/Config.js'
+import build from '@/api/v1/ApiBuilder.js'
+import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
@@ -55,8 +54,6 @@ const useRootStore = defineStore('root', {
     //Build an API instance using the config
     api: mergeApis(build({ config })),
 
-    //Create printers state from PrinterList.json file
-    printers: PrinterList,
     //Get plateMap state from the PlateMap.json file
     plateMap: PlateMap,
 

@@ -1,8 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
-import rootVuexStore from '@/store/index'
-import PlateMap from '@/config/PlateMap'
-import PrinterList from '@/config/PrinterList'
+import rootVuexStore from '@/store/index.js'
+import PlateMap from '@/config/PlateMap.json'
 
 describe('index', () => {
   beforeEach(() => {
@@ -15,11 +14,6 @@ describe('index', () => {
     it('has api state', () => {
       const store = useRootStore()
       expect(store.api).toBeDefined()
-    })
-
-    it('has a list of printers', () => {
-      const store = useRootStore()
-      expect(store.printers).toBeDefined()
     })
 
     describe('api', () => {
@@ -38,14 +32,6 @@ describe('index', () => {
       expect(plateMap.columns).toBeDefined()
       expect(plateMap.wells).toBeDefined()
       expect(store.plateMap).toEqual(PlateMap)
-    })
-  })
-
-  describe('getters', () => {
-    it('has printerNmaes', () => {
-      const store = useRootStore()
-      expect(store.printerNames).toBeDefined()
-      expect(store.printerNames).toEqual(PrinterList.map((obj) => obj.printerName))
     })
   })
 
