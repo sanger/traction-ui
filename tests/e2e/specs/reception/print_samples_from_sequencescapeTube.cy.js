@@ -61,6 +61,6 @@ describe('Print samples from Sequencescape Tubes', () => {
       },
     })
     cy.get('#print-button').click()
-    cy.contains('api/label is invalid')
+    cy.contains('label is invalid')
   })
 })
