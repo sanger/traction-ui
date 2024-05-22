@@ -139,7 +139,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests', {
           method: 'GET',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
         })
 
         const jsonData = await response.json()
@@ -162,7 +162,7 @@ describe('createRequest', () => {
           'http://traction/v1/requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
           {
             method: 'GET',
-            headers: attributes.headers,
+            headers: { ...attributes.headers, ...defaultHeaders },
           },
         )
 
@@ -183,7 +183,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests', {
           method: 'POST',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
           body: JSON.stringify(data),
         })
 
@@ -199,7 +199,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests?include=tube', {
           method: 'POST',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
           body: JSON.stringify(data),
         })
 
@@ -219,7 +219,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'GET',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
         })
 
         const jsonData = await response.json()
@@ -234,7 +234,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1?include=sample', {
           method: 'GET',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
         })
 
         const jsonData = await response.json()
@@ -253,7 +253,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'PATCH',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
           body: JSON.stringify(payload),
         })
 
@@ -273,7 +273,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'DELETE',
-          headers: attributes.headers,
+          headers: { ...attributes.headers, ...defaultHeaders },
         })
 
         const jsonData = await responses[0].json()

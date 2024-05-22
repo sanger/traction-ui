@@ -95,7 +95,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
     const fullURL = `${baseURL}/${url}`
     return fetch(fullURL, {
       method: type,
-      headers,
+      headers: api.headers,
       ...(data && { body: JSON.stringify(data) }),
     })
   }
