@@ -38,7 +38,7 @@ export const usePrintingStore = defineStore('printing', {
       printerName,
       labels,
       copies,
-      labelTemplateName = 'tube_label_template',
+      labelTemplateName = 'traction_tube_label_template',
     }) {
       const rootStore = useRootStore()
 
