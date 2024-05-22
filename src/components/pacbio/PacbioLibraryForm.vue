@@ -103,7 +103,9 @@
       </fieldset>
 
       <fieldset id="input-group-templatePrepKitBoxBarcode">
-        <traction-label class="ml-1 whitespace-nowrap">Template prep kit box barcode</traction-label>
+        <traction-label class="ml-1 whitespace-nowrap"
+          >Template prep kit box barcode</traction-label
+        >
         <traction-field-error
           data-attribute="template-prep-kit-box-barcode-error"
           :error="libraryErrorsFor('template_prep_kit_box_barcode')"
@@ -222,7 +224,7 @@ const libraryErrorsFor = (attribute) => {
 }
 
 const inputBorderClass = (attribute) => {
-  return formLibrary.value[attribute] ? 'rounded-border' : 'rounded-border red-border';
+  return formLibrary.value[attribute] ? 'rounded-border' : 'rounded-border red-border'
 }
 </script>
 

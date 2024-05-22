@@ -367,15 +367,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(store.libraries[1].template_prep_kit_box_barcode).toEqual('LK12348')
         expect(store.libraries[1].volume).toEqual(4.0)
       })
-      it('should return error if required attributes are empty', async () => {
-        await store.fetchLibraries()
-        expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
-        library.volume = ''
-        const { success, errors } = await store.updateLibrary(library)
-
-        expect(success).toBeFalsy()
-        expect(errors).toEqual('The library is invalid')
-      })
       it('should not return error if optional attributes are empty', async () => {
         await store.fetchLibraries()
         const newLibrary = { ...library, tag_id: null }

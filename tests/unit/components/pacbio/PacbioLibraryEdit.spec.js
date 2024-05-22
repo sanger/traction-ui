@@ -44,7 +44,13 @@ describe('PacbioLibraryEdit.vue', () => {
     props = {
       disabled: true,
       isStatic: true,
-      library: { id: 1, barcode: 'TRAC-1', volume: 1, concentration: 1, template_prep_kit_box_barcode: 1 },
+      library: {
+        id: 1,
+        barcode: 'TRAC-1',
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: 1,
+      },
     }
     const plugins = [
       ({ store }) => {
@@ -108,7 +114,12 @@ describe('PacbioLibraryEdit.vue', () => {
 
     it('shows a error message on failure', async () => {
       modal.library.value = payload
-      const expectedResponse = { success: false, barcode: '', template_prep_kit_box_barcode: '', errors: ['it did not work'] }
+      const expectedResponse = {
+        success: false,
+        barcode: '',
+        template_prep_kit_box_barcode: '',
+        errors: ['it did not work'],
+      }
       store.updateLibrary.mockReturnValue(expectedResponse)
 
       await modal.updateLibrary()
