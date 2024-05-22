@@ -67,7 +67,14 @@ const wells = {
   },
   existing: {
     1: {
-      A1: { ...newWell({ position: 'A1' }), id: 1, pools: [1, 2], libraries: [] },
+      A1: {
+        ...newWell({ position: 'A1' }),
+        id: 1,
+        used_aliquots: [
+          { id: 1, source_id: 1, source_type: 'Pacbio::Pool', volume: 1, concentration: 2 },
+          { id: 2, source_id: 2, source_type: 'Pacbio::Pool', volume: 3, concentration: 4 },
+        ],
+      },
       _destroy: [],
     },
     2: { A1: { ...newWell({ position: 'A1' }), id: 2 }, _destroy: [{ id: 3, _destroy: true }] },
@@ -98,8 +105,7 @@ describe('run.js', () => {
         position: 'A1',
         row: 'A',
         column: '1',
-        pools: [],
-        libraries: [],
+        used_aliquots: [],
       })
     })
 
@@ -115,8 +121,7 @@ describe('run.js', () => {
         position: 'A1',
         row: 'A',
         column: '1',
-        pools: [],
-        libraries: [],
+        used_aliquots: [],
       })
     })
   })
@@ -371,12 +376,11 @@ describe('run.js', () => {
       const A1 = newWell({ position: 'A1' })
       const inputWells = { B1: B1, C1: C1, A1: A1 }
 
-      // pools attribute is replaced with pool_ids in the payload
+      // used_aliquots attribute is replaced with used_aliquots_attributes in the payload
       // eslint-disable-next-line no-unused-vars
-      const expected = [A1, B1, C1].map(({ pools, libraries, ...rest }) => ({
+      const expected = [A1, B1, C1].map(({ used_aliquots, ...rest }) => ({
         ...rest,
-        pool_ids: [],
-        library_ids: [],
+        used_aliquots_attributes: [],
       }))
 
       const payload = createWellsPayload(inputWells)

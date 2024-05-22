@@ -120,6 +120,7 @@ function createUsedAliquot(attributes) {
      */
     validateField: function (field, value) {
       const valueToCheck = value != null ? value : this[field]
+
       let error = ''
       if (!valueToCheck) {
         error = 'must be present'
@@ -127,7 +128,7 @@ function createUsedAliquot(attributes) {
       if (
         field === 'volume' &&
         this.available_volume != null &&
-        valueToCheck > this.available_volume
+        parseFloat(valueToCheck) > parseFloat(this.available_volume)
       ) {
         error = 'must be less or equal to available volume'
       }
