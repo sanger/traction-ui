@@ -47,7 +47,7 @@
  */
 
 import { ref, computed } from 'vue'
-import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
+import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import useAlert from '@/composables/useAlert.js'
 import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 

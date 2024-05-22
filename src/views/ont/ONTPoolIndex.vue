@@ -73,7 +73,7 @@
 <script>
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
-import PrinterModal from '@/components/PrinterModal'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 import useQueryParams from '@/composables/useQueryParams'
