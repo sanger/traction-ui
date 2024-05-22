@@ -225,6 +225,7 @@
   </div>
 </template>
 
+// TODO: Move to composition api. Already using pinia store.
 <script>
 import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
