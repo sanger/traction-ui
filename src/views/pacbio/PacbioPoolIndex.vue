@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import PrinterModal from '@/components/PrinterModal.vue'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'

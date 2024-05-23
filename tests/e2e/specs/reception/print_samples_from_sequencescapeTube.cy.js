@@ -1,5 +1,13 @@
 describe('Print samples from Sequencescape Tubes', () => {
   beforeEach(() => {
+    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
+      fixture: 'tractionLibraryTypes.json',
+    })
+
+    cy.intercept('/v1/printers', {
+      fixture: 'tractionPrinters.json',
+    })
+
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
     cy.contains('Scan barcodes')
@@ -26,7 +34,7 @@ describe('Print samples from Sequencescape Tubes', () => {
 
     cy.get('#barcodes').type('3980000001795\n')
     cy.get('#print-barcodes').should('have.value', 'NT1O')
-    cy.get('#printer-choice').select('stub')
+    cy.get('#printer-choice').select('g216bc')
   })
   it('successfully prints', () => {
     cy.intercept('/v2/print_jobs', {
@@ -53,6 +61,6 @@ describe('Print samples from Sequencescape Tubes', () => {
       },
     })
     cy.get('#print-button').click()
-    cy.contains('api/label is invalid')
+    cy.contains('label is invalid')
   })
 })

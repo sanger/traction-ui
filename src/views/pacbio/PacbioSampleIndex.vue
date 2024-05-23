@@ -74,7 +74,7 @@
 <script>
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit.vue'
-import PrinterModal from '@/components/PrinterModal.vue'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import useQueryParams from '@/composables/useQueryParams.js'

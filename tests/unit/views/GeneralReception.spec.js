@@ -1,42 +1,53 @@
-import { mount, store, nextTick } from '@support/testHelper'
+import { mount, store, nextTick, createTestingPinia, RequestFactory } from '@support/testHelper.js'
 import GeneralReception from '@/views/GeneralReception.vue'
-import * as Reception from '@/services/traction/Reception'
+import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
+import * as jsonapi from '@/api/JsonApi'
 
-const tractionReceptionsCreate = store.getters.api.traction.receptions.create
+// const tractionReceptionsCreate = store.getters.api.traction.receptions.create
+
+const printerRequestFactory = RequestFactory('printers', false)
+const printers = jsonapi.dataToObjectById({ data: printerRequestFactory.content.data })
+
+function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(GeneralReception, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            printing: state,
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('GeneralReception', () => {
-  const buildWrapper = (props = { receptions: Receptions }) => {
-    return mount(GeneralReception, {
-      props,
-      store,
-    })
+  const buildWrapper = () => {
+    return mountWithStore({ props: { receptions: Receptions }, state: { resources: { printers } } })
   }
 
-  it('generates a wrapper', () => {
-    const wrapper = buildWrapper()
-    expect(wrapper).toBeTruthy()
-  })
-
   it('has a source selector', () => {
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
 
-    expect(wrapper.find('[data-type=source-list]').findAll('option')[0].text()).toBe(
-      'Sequencescape',
-    )
-    expect(wrapper.find('[data-type=source-list]').findAll('option')[1].text()).toBe(
-      'Samples Extraction',
-    )
-    expect(wrapper.find('[data-type=source-list]').findAll('option')[2].text()).toBe(
-      'Sequencescape Tubes',
-    )
+    expect(
+      wrapper
+        .find('[data-type=source-list]')
+        .findAll('option')
+        .map((element) => element.text()),
+    ).toEqual(['Sequencescape', 'Samples Extraction', 'Sequencescape Tubes'])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
 
   it('shows print options for only for Sequencescape Tubes', async () => {
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
     const options = wrapper.find('[data-type=source-list]').findAll('option')
     // It should show print options only when Sequencescape Tubes is the selected source
     await options[2].setSelected()
@@ -49,21 +60,26 @@ describe('GeneralReception', () => {
   })
 
   it('has a pipeline selector', () => {
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
     expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
     expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[1].text()).toBe('ONT')
     // It defaults to PacBio
     expect(wrapper.find('[data-type=pipeline-list]').element.value).toEqual('PacBio')
   })
 
+  it('has a list of printers', () => {
+    const { wrapperObj: wrapper } = buildWrapper()
+    expect(wrapper.vm.printerOptions.length).toBeGreaterThan(0)
+  })
+
   describe('request options', () => {
     it('has the a cost code input field', () => {
-      const wrapper = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       expect(wrapper.find('[data-attribute=cost-code-input]')).toBeTruthy()
     })
 
     it('shows ONT options when ONT is selected', async () => {
-      const wrapper = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       await wrapper.setData({ pipeline: 'ONT' })
 
       // Library type
@@ -81,7 +97,7 @@ describe('GeneralReception', () => {
     })
 
     it('shows PacBio options when PacBio is selected', async () => {
-      const wrapper = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       await wrapper.setData({ pipeline: 'PacBio' })
 
       // Library type
@@ -103,7 +119,7 @@ describe('GeneralReception', () => {
   describe('barcode text area', () => {
     describe('single barcode', () => {
       it('should not update importText until barcode is fetched', async () => {
-        const wrapper = buildWrapper()
+        const { wrapperObj: wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n')
         expect(wrapper.vm.barcodes).toEqual('DN1\n')
         expect(wrapper.find('#importText').text()).toEqual(
@@ -111,7 +127,7 @@ describe('GeneralReception', () => {
         )
       })
       it('should update importText when fetch function is called', async () => {
-        const wrapper = buildWrapper()
+        const { wrapperObj: wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n')
         const mockedFetchFunction = vi
           .fn()
@@ -128,7 +144,7 @@ describe('GeneralReception', () => {
 
     describe('multiple barcodes', () => {
       it('when fetch function is called with multiple barcode', async () => {
-        const wrapper = buildWrapper()
+        const { wrapperObj: wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN5\n')
         const foundBarcodes = new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5'])
         const mockedFetchFunction = vi.fn().mockResolvedValue({
@@ -148,7 +164,8 @@ describe('GeneralReception', () => {
   describe('print area', () => {
     let wrapper
     beforeEach(async () => {
-      wrapper = buildWrapper()
+      const { wrapperObj } = buildWrapper()
+      wrapper = wrapperObj
       const options = wrapper.find('[data-type=source-list]').findAll('option')
       await options[2].setSelected()
     })
@@ -204,7 +221,7 @@ describe('GeneralReception', () => {
   })
 
   it('has a summary area', () => {
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into PacBio from Sequencescape',
@@ -215,7 +232,7 @@ describe('GeneralReception', () => {
 
   it('handles a failed import - load', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
     wrapper.vm.reception.fetchFunction = vi.fn().mockRejectedValue('Failed fetch')
 
     await wrapper.vm.fetchLabware()
@@ -232,7 +249,9 @@ describe('GeneralReception', () => {
       .spyOn(Reception, 'createReceptionResource')
       .mockImplementation(() => {})
     const mockedcreateMessages = vi.spyOn(Reception, 'createMessages').mockImplementation(() => {})
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
+
+    const tractionReceptionsCreate = wrapper.vm.api.traction.receptions.create
 
     const foundBarcodes = new Set(['NT1'])
     const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
@@ -256,7 +275,7 @@ describe('GeneralReception', () => {
     const message = 'The princess is in another castle'
 
     vi.spyOn(Reception, 'createReceptionResource').mockRejectedValue(new Error(message))
-    const wrapper = buildWrapper()
+    const { wrapperObj: wrapper } = buildWrapper()
     // We've begun the import
     await wrapper.vm.importLabware()
     expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')

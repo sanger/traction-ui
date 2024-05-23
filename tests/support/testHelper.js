@@ -16,6 +16,7 @@ import router from '@/router'
 import { nextTick } from 'vue'
 import globalAlert from '@/mixins/globalAlert'
 import { components } from '@/components/shared'
+import RequestFactory from './factoryHelper.js'
 
 /* 
     This setups up a global config for all tests that use these methods
@@ -38,4 +39,5 @@ export {
   setActivePinia,
   createPinia,
   createTestingPinia,
+  RequestFactory,
 }

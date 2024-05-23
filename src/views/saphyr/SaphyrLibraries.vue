@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import PrinterModal from '@/components/PrinterModal'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
