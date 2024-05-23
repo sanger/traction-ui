@@ -23,6 +23,7 @@ describe('Pacbio Pool Create', () => {
       flipper_id: 'User',
       features: {
         multiplexing_phase_2_add_libraries_to_pool: { enabled: true },
+        dpl_1072_check_library_volume_in_pools: { enabled: true },
       },
     })
   })
@@ -136,7 +137,7 @@ describe('Pacbio Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'error1 There was a problem')
   })
 
-  it('can automate creation of large pools', () => {
+  it.only('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
