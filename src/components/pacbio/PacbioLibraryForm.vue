@@ -135,7 +135,7 @@
         <traction-field-error
           data-attribute="insert-size-error"
           :error="libraryErrorsFor('insert_size')"
-          :with-icon="!!library.errors?.insert_size"   
+          :with-icon="!!library.errors?.insert_size"
         >
           <traction-input
             id="library-insertSize"
@@ -301,8 +301,8 @@ const libraryErrorsFor = (attribute) => {
 }
 
 const inputBorderClass = (attribute) => {
-  return formLibrary.value[attribute] 
-    ? 'rounded-md border border-gray-300' 
-    : 'rounded-md border border-red-500';
+  return formLibrary.value[attribute]
+    ? 'rounded-md border border-gray-300'
+    : 'rounded-md border border-red-500'
 }
 </script>
