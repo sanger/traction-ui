@@ -7,35 +7,23 @@
     >
       <fieldset id="tag-set-select-input">
         <traction-label class="ml-1">Tag set</traction-label>
-        <traction-field-error
-          data-attribute="tag-set-error"
-          :error="libraryErrorsFor('tag_set')"
-          :with-icon="!!library.errors?.tag_set"
-        >
-          <traction-select
-            id="tag-set-input"
-            v-model="selectedTagSetId"
-            data-type="tag-set-list"
-            :options="tagSetOptions"
-            @update:model-value="resetSelectedTagId"
-          />
-        </traction-field-error>
+        <traction-select
+          id="tag-set-input"
+          v-model="selectedTagSetId"
+          data-type="tag-set-list"
+          :options="tagSetOptions"
+          @update:model-value="resetSelectedTagId"
+        />
       </fieldset>
 
       <fieldset id="tag-select-input">
         <traction-label class="ml-1">Tag</traction-label>
-        <traction-field-error
-          data-attribute="tag-error"
-          :error="libraryErrorsFor('tag')"
-          :with-icon="!!library.errors?.tag"
-        >
-          <traction-select
-            id="tag-input"
-            v-model="formLibrary.tag_id"
-            :options="tagOptions"
-            :disabled="!selectedTagSetId"
-          />
-        </traction-field-error>
+        <traction-select
+          id="tag-input"
+          v-model="formLibrary.tag_id"
+          :options="tagOptions"
+          :disabled="!selectedTagSetId"
+        />
       </fieldset>
 
       <flagged-feature name="dpl_1070_check_primary_aliquot_library_volume">
@@ -88,65 +76,47 @@
 
       <fieldset id="input-group-concentration">
         <traction-label class="ml-1">Concentration</traction-label>
-        <traction-field-error
-          data-attribute="concentration-error"
-          :error="libraryErrorsFor('concentration')"
-          :with-icon="!!library.errors?.concentration"
-        >
-          <traction-input
-            id="library-concentration"
-            v-model="formLibrary.concentration"
-            data-attribute="concentration"
-            :class="inputBorderClass('concentration')"
-            type="number"
-            min="0"
-            step="any"
-            placeholder="Example: 1.0"
-          />
-        </traction-field-error>
+        <traction-input
+          id="library-concentration"
+          v-model="formLibrary.concentration"
+          data-attribute="concentration"
+          :class="inputBorderClass('concentration')"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="Example: 1.0"
+        />
       </fieldset>
 
       <fieldset id="input-group-templatePrepKitBoxBarcode">
         <traction-label class="ml-1 whitespace-nowrap"
           >Template prep kit box barcode</traction-label
         >
-        <traction-field-error
-          data-attribute="template-prep-kit-box-barcode-error"
-          :error="libraryErrorsFor('template_prep_kit_box_barcode')"
-          :with-icon="!!library.errors?.template_prep_kit_box_barcode"
-        >
-          <traction-input
-            id="library-templatePrepKitBoxBarcode"
-            v-model="formLibrary.template_prep_kit_box_barcode"
-            data-attribute="template-prep-kit-box-barcode"
-            :class="inputBorderClass('template_prep_kit_box_barcode')"
-            type="text"
-            minlength="21"
-            maxlength="21"
-            placeholder="Example: 012345678901234567890"
-            pattern="\d*"
-            inputmode="numeric"
-          />
-        </traction-field-error>
+        <traction-input
+          id="library-templatePrepKitBoxBarcode"
+          v-model="formLibrary.template_prep_kit_box_barcode"
+          data-attribute="template-prep-kit-box-barcode"
+          :class="inputBorderClass('template_prep_kit_box_barcode')"
+          type="text"
+          minlength="21"
+          maxlength="21"
+          placeholder="Example: 012345678901234567890"
+          pattern="\d*"
+          inputmode="numeric"
+        />
       </fieldset>
 
       <fieldset id="input-group-insertSize">
         <traction-label class="ml-1">Insert size</traction-label>
-        <traction-field-error
-          data-attribute="insert-size-error"
-          :error="libraryErrorsFor('insert_size')"
-          :with-icon="!!library.errors?.insert_size"
-        >
-          <traction-input
-            id="library-insertSize"
-            v-model="formLibrary.insert_size"
-            data-attribute="insert-size"
-            type="number"
-            step="1"
-            min="0"
-            placeholder="Example: 100"
-          />
-        </traction-field-error>
+        <traction-input
+          id="library-insertSize"
+          v-model="formLibrary.insert_size"
+          data-attribute="insert-size"
+          type="number"
+          step="1"
+          min="0"
+          placeholder="Example: 100"
+        />
       </fieldset>
     </traction-form>
   </div>
@@ -290,14 +260,6 @@ provider()
  */
 const resetSelectedTagId = () => {
   formLibrary.value.tag_id = ''
-}
-
-const libraryErrorsFor = (attribute) => {
-  if (formLibrary.value?.[attribute]?.length) {
-    delete formLibrary.value?.errors?.[attribute]
-    return ''
-  }
-  return formLibrary.value?.errors?.[attribute]
 }
 
 const inputBorderClass = (attribute) => {
