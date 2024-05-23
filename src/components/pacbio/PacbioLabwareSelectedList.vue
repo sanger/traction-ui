@@ -152,14 +152,15 @@ const selectedRequests = computed(() => {
       const plate = pacbioPoolCreateStore.selectedPlates.find(
         (item) => item.barcode === labware.barcode,
       )
-      return pacbioPoolCreateStore
-        .wellList(plate.wells)
-        .flatMap((well) => pacbioPoolCreateStore.requestList(well.requests || []))
+      return pacbioPoolCreateStore.wellList(plate.wells).flatMap((well) => {
+        const reqList = pacbioPoolCreateStore.requestList(well)
+        return reqList.map((req) => ({ ...req, well }))
+      })
     } else {
       const tube = pacbioPoolCreateStore.selectedTubes.find(
         (item) => item.barcode === labware.barcode,
       )
-      return pacbioPoolCreateStore.requestList(tube.requests || [])
+      return pacbioPoolCreateStore.requestList(tube).map((req) => ({ ...req, tube }))
     }
   })
   //sort requests by selection if sortBySelection is true
@@ -208,14 +209,14 @@ const isPlate = (labware) => {
  * @param {Object} tube - The tube object
  * @returns {Array} - An array of requests associated with the tube
  */
-const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube.requests || [])
-
+const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube)
 /**
  * A method that handles the request clicked event
  * @param {Object} request - The request object
  */
-const requestClicked = ({ id, selected }) =>
-  pacbioPoolCreateStore.selectRequest({ id, selected: !selected })
+const requestClicked = ({ source_id, request, selected }) =>
+  pacbioPoolCreateStore.selectRequest({ request, source_id, selected: !selected })
+
 const onClose = (labware) => {
   emit('closed', labware)
 }

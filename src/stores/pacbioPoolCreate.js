@@ -213,9 +213,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Object[]} The selected requests sorted by well column index and labware.
      */
     selectedRequests: ({ used_aliquots, resources }) => {
+      debugger
       return Object.values(used_aliquots)
-        .map(({ request }) => ({
+        .map(({ request, source_id, source_type }) => ({
           ...resources.requests[request],
+          source_id,
+          source_type,
           selected: true,
         }))
         .sort(sortRequestByWellColumnIndex(resources))
@@ -258,13 +261,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * // Get specific requests
      * const specificRequests = requestList(state)(['id1', 'id2']);
      */
-    requestList: (state) => (ids) => {
+    requestList: (state) => (source_obj) => {
       const requests = state.resources.requests
+      const source_id = source_obj.source_id
       const selectedRequests = state.used_aliquots
       let val = []
-      if (ids) {
-        val = ids.map((id) => {
-          return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
+      if (source_obj) {
+        const selected = !!selectedRequests[`_${source_id}`]
+        val = source_obj['requests'].map((id) => {
+          return { ...requests[id], selected, source_id }
         })
       } else {
         val = Object.values(requests).map((request) => {
@@ -302,7 +307,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     autoTagPlate(used_aliquot) {
       // If the used_aliquot object is not valid or does not have a 'source_id' or 'tag_id' property, return without doing anything.
-      if (!isValidUsedAliquot(used_aliquot, ['request', 'tag_id'])) return
+      if (!isValidUsedAliquot(used_aliquot, ['request', 'tag_id', 'source_id'])) return
       const pacbioRootStore = usePacbioRootStore()
       //Helper function to get the well for a given source_id
       const initialWell = wellFor(this.resources, used_aliquot.request)
@@ -316,8 +321,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const plate = initialWell.plate
 
       //Iterate over all used_aliquots and update the tag of each used_aliquot on the same plate and with a higher well index.
-      Object.values(this.used_aliquots).forEach(({ request }) => {
-        const otherWell = wellFor(this.resources, request)
+      Object.values(this.used_aliquots).forEach((aliquot) => {
+        const otherWell = wellFor(this.resources, aliquot.request)
 
         if (otherWell?.plate !== plate) return
 
@@ -326,7 +331,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         if (offset < 1) return
 
         const newTag = (initialTagIndex + offset) % tags.length
-        this.updateUsedAliquot({ request, tag_id: tags[newTag] })
+        this.updateUsedAliquot({ ...aliquot, tag_id: tags[newTag] })
       })
     },
     /**
@@ -352,7 +357,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         })
         .forEach((req, offset) => {
           const newTag = (initialTagIndex + offset + 1) % tags.length
-          this.updateUsedAliquot({ request: req.id, tag_id: tags[newTag] })
+          this.updateUsedAliquot({
+            request: req.id,
+            tag_id: tags[newTag],
+            source_id: req.source_id,
+          })
         })
     },
 
@@ -379,7 +388,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           success: false,
           errors: `A well named ${wellName} could not be found on ${barcode}`,
         }
-      return { success: true, requestIds: wells[wellId].requests }
+      return { success: true, requestIds: wells[wellId].requests, source_id: wellId }
     },
 
     /**
@@ -395,7 +404,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
       // Ensure the tube is registered as selected
       this.selectTube({ id: tube.id, selected: true })
-      return { success: true, requestIds: tube.requests }
+      return { success: true, requestIds: tube.requests, source_id: tube.source_id }
     },
 
     /**
@@ -434,8 +443,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const { requests } = this.resources.wells[well_id]
       const selectedRequests = this.used_aliquots
       for (const id of requests) {
-        const selected = !!selectedRequests[`_${id}`]
-        this.selectRequest({ id, selected: !selected })
+        const selected = !!selectedRequests[`_${well_id}`]
+        this.selectRequest({ request: id, source_id: well_id, selected: !selected })
       }
     },
 
@@ -453,7 +462,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         return
       }
       // Update the used_aliquot in the state used_aliquots object based on the provided used_aliquot object.
-      const key = `_${used_aliquot.request}`
+      const key = `_${used_aliquot.source_id}`
       this.used_aliquots[key] = { ...this.used_aliquots[key], ...used_aliquot }
     },
 
@@ -474,7 +483,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       for (const wellId of wells) {
         const { requests = [] } = this.resources.wells[wellId]
         for (const requestId of requests) {
-          this.selectRequest({ id: requestId, selected: false })
+          this.selectRequest({ request: requestId, source_id: wellId, selected: false })
         }
       }
     },
@@ -497,7 +506,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
       for (const requestId of requests) {
-        this.selectRequest({ id: requestId, selected: false })
+        this.selectRequest({ request: requestId, source_id: tube.source_id, selected: false })
       }
     },
 
@@ -624,6 +633,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         Object.values(this.resources.libraries).forEach((library) => {
           const request = this.resources.requests[library.request]
           this.resources.tubes[library.tube].requests = [request.id]
+          this.resources.tubes[library.tube].source_id = library.id
         })
         //Populate plates
         this.resources.plates = dataToObjectById({
@@ -638,15 +648,17 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         const usedAliquots = dataToObjectById({
           data: aliquots,
           includeRelationships: true,
+          id_key: 'source_id',
         })
         // Set the used_aliquots
         Object.values(usedAliquots).forEach((usedAliquot) => {
+          usedAliquot.request = usedAliquot.id
           const usedAliquotObject = createUsedAliquot({
             ...usedAliquot,
             tag_id: usedAliquot.tag,
           })
           usedAliquotObject.setRequestAndVolume(this.resources.libraries)
-          this.used_aliquots[`_${usedAliquotObject.request}`] = usedAliquotObject
+          this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
         })
         //Selects all the tubes and plates
         Object.values(this.resources.tubes).forEach(({ id }) =>
@@ -732,7 +744,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
       const match = source.match(sourceRegex)
       const sourceData = match?.groups || { barcode: source }
-      const { success, errors, requestIds } = this.findRequestsForSource(sourceData)
+      const { success, errors, requestIds, source_id } = this.findRequestsForSource(sourceData)
 
       if (!success) {
         rootStore.addCSVLogMessage(info, errors)
@@ -756,12 +768,14 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       requestIds.forEach((request_id) => {
-        if (!this.used_aliquots[`_${request_id}`]) {
+        const used_aliquot = this.used_aliquots[`_${source_id}`]
+        if (!used_aliquot) {
           // We're adding a used_aliquot
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
         }
         this.updateUsedAliquot({
           request: request_id,
+          source_id,
           ...tagAttributes,
           ...attributes,
         })
@@ -793,7 +807,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           errors: ['Please provide a plate barcode'],
         }
       }
-
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.plates
       const promise = request.get({ filter: filter, include: 'wells.requests' })
@@ -888,12 +901,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //If this a library, the requests will be associated with library, therefore manually assign it to a tube
         const tubes = dataToObjectById({ data, includeRelationships: true })
         if (libraries) {
-          Object.keys(tubes).forEach((key) => {
-            tubes[key] = {
-              ...tubes[key],
-              requests: requests.map((request) => request.id),
-            }
-          })
           this.resources.libraries = {
             ...this.resources.libraries,
             ...dataToObjectById({
@@ -902,6 +909,13 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             }),
           }
         }
+        Object.keys(tubes).forEach((key) => {
+          tubes[key] = {
+            ...tubes[key],
+            requests: libraries ? requests.map((request) => request.id) : tubes[key].requests,
+            source_id: libraries ? tubes[key].libraries : tubes[key].id,
+          }
+        })
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
         this.resources.tubes = {
@@ -976,7 +990,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * selectRequest({ id: 1, selected: false })
      */
 
-    selectRequest({ id, selected = true }) {
+    selectRequest({ request, source_id, selected = true }) {
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
@@ -990,7 +1004,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           'tag_id',
         ]
         const library = Object.values(this.resources.libraries).find(
-          (library) => library.request == id,
+          (library) => library.id == source_id,
         )
 
         const libraryAttributes = library
@@ -1025,20 +1039,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             libraryAttributes.tag_id = null
           }
         }
-
-        const source_id = library ? library.id : id
-        this.used_aliquots[`_${id}`] = {
+        this.used_aliquots[`_${source_id}`] = {
           ...createUsedAliquot({
             source_id,
-            request: id,
+            request,
             ...libraryAttributes,
-            source_type: this.sourceTypeForRequest(this.resources.requests[id]),
+            source_type: this.sourceTypeForRequest(this.resources.requests[request]),
           }),
         }
         // Validate the used aliquot if the request is from library
         library && this.validateUsedAliquot(library, 'volume')
       } else {
-        delete this.used_aliquots[`_${id}`]
+        delete this.used_aliquots[`_${source_id}`]
       }
     },
 
@@ -1086,7 +1098,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         return
       }
       // Get the used aliquot item based on the request id to ensure the used aliquot exists
-      const used_aliquot = this.usedAliquotItem(used_aliquot_obj.request)
+      const used_aliquot = this.usedAliquotItem(used_aliquot_obj.source_id)
       if (!used_aliquot) return
       used_aliquot.validateField(field, value)
     },
