@@ -21,10 +21,14 @@ describe('Samples.vue', () => {
     wrapper = mount(Samples, {
       store,
       router,
-      stubs: {
-        PrinterModal: true,
-        Modal: true,
-        EnzymeModal: true,
+      global: {
+        stubs: {
+          PrinterModal: {
+            template: '<div ref="printerModal"></div>',
+          },
+          Modal: true,
+          EnzymeModal: true,
+        },
       },
     })
 

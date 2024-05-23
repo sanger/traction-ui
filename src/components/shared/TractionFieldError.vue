@@ -12,7 +12,7 @@
     </div>
     <div
       v-if="error.length"
-      :class="`text-left ml-1 text-failure mt-1 text-xs ${classes} whitespace-normal`"
+      :class="`text-left ml-1 text-failure mt-1 text-xs ${classes} whitespace-normal min-h-7`"
       :data-attribute="dataAttribute"
     >
       {{ error }}

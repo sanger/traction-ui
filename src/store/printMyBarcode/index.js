@@ -10,3 +10,5 @@ const printMyBarcode = {
 }
 
 export default printMyBarcode
+
+// TODO: Once users of this store are refactored to use the new store, this file can be deleted.

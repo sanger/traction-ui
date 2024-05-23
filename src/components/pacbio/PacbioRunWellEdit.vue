@@ -17,32 +17,69 @@
     </fieldset>
 
     <traction-table
-      id="wellPoolsAndLibraries"
-      stacked
-      :items="localPoolsAndLibraries"
-      :fields="wellPoolsLibrariesFields"
+      id="wellUsedAliquots"
+      :items="validLocalUsedAliquots"
+      :fields="wellUsedAliquotsFields"
     >
-      <template #table-caption>Pools</template>
-
       <template #cell(barcode)="row">
-        <traction-form classes="flex flex-wrap items-center">
-          <traction-input
-            id="poolLibraryBarcode"
-            ref="poolLibraryBarcode"
-            :model-value="`${row.item.barcode}`"
-            placeholder="Pool/Library barcode"
-            :debounce="500"
-            @update:model-value="updatePoolLibraryBarcode(row, $event)"
-          ></traction-input>
-
-          <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
-            >-</traction-button
+        <traction-input
+          id="usedAliquotSourceBarcode"
+          :model-value="`${row.item.barcode}`"
+          placeholder="Pool/Library barcode"
+          :debounce="500"
+          @update:model-value="updateUsedAliquotSource(row, $event)"
+        ></traction-input>
+      </template>
+      <template #cell(volume)="row">
+        <flagged-feature name="dpl_1076_check_library_volume_in_runs">
+          <traction-field-error
+            data-attribute="volume-error"
+            :error="errorsFor(row.item, 'volume')"
+            :with-icon="true"
           >
-        </traction-form>
+            <traction-input
+              id="usedAliquotVolume"
+              class="grow"
+              data-attribute="aliquot-volume"
+              :model-value="`${row.item.volume}`"
+              placeholder="Pool/Library volume"
+              @update:model-value="updateUsedAliquotVolume(row, $event)"
+            ></traction-input>
+            <div
+              v-if="row.item.available_volume != null"
+              class="flex items-center"
+              data-attribute="available-volume-div"
+            >
+              <traction-tooltip
+                :tooltip-text="'Available volume is ' + row.item.available_volume"
+                class="flex max-w-xs"
+              >
+                <traction-badge id="library-available-volume" colour="sanger-yellow"
+                  ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
+                >
+              </traction-tooltip>
+            </div>
+          </traction-field-error>
+          <template #disabled>
+            <traction-input
+              id="usedAliquotVolume"
+              class="grow"
+              data-attribute="aliquot-volume"
+              :model-value="`${row.item.volume}`"
+              placeholder="Pool/Library volume"
+              @update:model-value="updateUsedAliquotVolume(row, $event)"
+            ></traction-input>
+          </template>
+        </flagged-feature>
+      </template>
+      <template #cell(actions)="row">
+        <traction-button data-action="remove-row" theme="delete" @click="removeRow(row)"
+          >-</traction-button
+        >
       </template>
     </traction-table>
 
-    <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
+    <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
     <template #modal-footer="{}">
       <traction-button
@@ -69,6 +106,11 @@ import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
 import useAlert from '@/composables/useAlert.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionTooltip from '@/components/shared/TractionTooltip.vue'
+import { checkFeatureFlag } from '@/api/FeatureFlag'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -88,9 +130,13 @@ defineProps({
 // well object
 const well = ref({})
 // local pools and libraries which are added to the well
-const localPoolsAndLibraries = ref([])
+const localUsedAliquots = ref([])
 // fields for the well pools and libraries table
-const wellPoolsLibrariesFields = ref([{ key: 'barcode', label: 'Barcode' }])
+const wellUsedAliquotsFields = ref([
+  { key: 'barcode', label: 'Barcode' },
+  { key: 'volume', label: 'Volume' },
+  { key: 'actions', label: 'Actions' },
+])
 // isShow ref to determine if the modal is visible
 const isShow = ref(false)
 // position ref to store the position of the well
@@ -113,6 +159,11 @@ const newWell = computed(() => {
   return !store.getWell(plateNumber.value, position.value)
 })
 
+// A computed property to only return the non-destroyed aliquots from the localUsedAliquots array
+const validLocalUsedAliquots = computed(() => {
+  return localUsedAliquots.value.filter((aliquot) => !aliquot['_destroy'])
+})
+
 // Define a computed property to determine the action for the modal which is either create or update
 const action = computed(() => {
   return newWell.value
@@ -130,36 +181,25 @@ const action = computed(() => {
       }
 })
 
-/* `addRow` is a function that adds a new row to the `localPoolsAndLibraries` array.
-  Each row is an object with an `id` and `barcode`, both initialized as empty strings.*/
+/* `addRow` is a function that adds a new row to the `localUsedAliquots` array.
+  Each row is an object with an `id`, and `barcode`, both initialized as empty strings.*/
 const addRow = () => {
-  localPoolsAndLibraries.value.push({ id: '', barcode: '' })
+  localUsedAliquots.value.push(createUsedAliquot({ id: '', barcode: '', volume: 0 }))
 }
 
-/* `removeRow` is a function that removes a row from the `localPoolsAndLibraries` array.*/
+/* `removeRow` is a function that adds a destroy key to the a given aliquot in the`localUsedAliquots` array.
+  or removes the aliquot from the array if it does not have an existing id */
 const removeRow = (row) => {
-  localPoolsAndLibraries.value.splice(row.index, 1)
-}
-
-/* `idsByType` is a function that returns an array of ids based on the type (pools or libraries).*/
-const idsByType = (type) => {
-  return localPoolsAndLibraries.value.filter((item) => item.type === type).map((item) => item.id)
-}
-
-/* `wellPayload` is a computed property that returns the well object with the pools and libraries ids.*/
-const wellPayload = computed(() => {
-  return {
-    ...well.value,
-    pools: idsByType('pools'),
-    libraries: idsByType('libraries'),
+  if (row.item.id) {
+    localUsedAliquots.value[row.index]['_destroy'] = true
+  } else {
+    localUsedAliquots.value.splice(row.index, 1)
   }
-})
+}
 
-/* `removeInvalidPools` is a function that removes invalid pools from the `localPoolsAndLibraries` array.*/
-const removeInvalidPools = () => {
-  localPoolsAndLibraries.value = localPoolsAndLibraries.value.filter(
-    (item) => item.id && item.barcode,
-  )
+/* `filteredAliquots` is a function that returns a list of valid aliquots from the `localUsedAliquots` array.*/
+const filteredAliquots = () => {
+  return localUsedAliquots.value.filter((item) => item.barcode)
 }
 
 /* `formatLoadingTargetValue` is a function that formats the loading target value.*/
@@ -172,6 +212,7 @@ const formatLoadingTargetValue = (val) => {
     }
   }
 }
+
 /* `disableAdaptiveLoadingInput` is a function that disables the adaptive loading input.*/
 const disableAdaptiveLoadingInput = () => {
   well.value.loading_target_p1_plus_p2 = ''
@@ -184,6 +225,7 @@ const showModalForPositionAndPlate = async (positionValue, plateNumberValue) => 
   await setupWell()
   isShow.value = true
 }
+
 /**Expose the showModalForPositionAndPlate function to the parent component
  * By using `defineExpose`, we're telling Vue that `showModalForPositionAndPlate` is a public method that can be accessed by other components.
  ***/
@@ -195,30 +237,67 @@ defineExpose({
 const hide = () => {
   isShow.value = false
 }
+
 //update function is used to update the well
-const update = () => {
-  removeInvalidPools()
-  store.updateWell({ well: wellPayload.value, plateNumber: plateNumber.value })
+const update = async () => {
+  well.value.used_aliquots = filteredAliquots()
+  const volume_check_flag = await checkFeatureFlag('dpl_1076_check_library_volume_in_runs')
+
+  if (volume_check_flag) {
+    const aliquot_errors = well.value.used_aliquots.some(
+      (aliquot) => Object.values(aliquot.errors).length > 0,
+    )
+    if (aliquot_errors) {
+      // We can assume the errors are related to volume as thats the only thing we validate
+      showAlert('Insufficient volume available', 'danger')
+      return
+    }
+  }
+
+  store.updateWell({ well: well.value, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
+
 //removeWell function is used to remove the well
 const removeWell = () => {
-  store.deleteWell({ well: wellPayload.value, plateNumber: plateNumber.value })
+  store.deleteWell({ well: well.value, plateNumber: plateNumber.value })
   showAlert('Well successfully deleted', 'success')
   hide()
 }
-//updatePoolLibraryBarcode function is used to update the pool or library barcode
-const updatePoolLibraryBarcode = async (row, barcode) => {
+
+//updateUsedAliquotVolume function is used to update the volume of the pool or library
+const updateUsedAliquotVolume = (row, volume) => {
+  const aliquot = localUsedAliquots.value[row.index]
+  aliquot.volume = volume
+}
+
+//updateUsedAliquotSource function is used to update the pool or library barcode
+const updateUsedAliquotSource = async (row, barcode) => {
   const index = row.index
   await store.findPoolsOrLibrariesByTube({ barcode })
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
-    tubeContent.type === 'libraries'
-      ? (localPoolsAndLibraries.value[index] = { id: tubeContent.id, barcode, type: 'libraries' })
-      : tubeContent.type === 'pools'
-        ? (localPoolsAndLibraries.value[index] = { id: tubeContent.id, barcode, type: 'pools' })
-        : null
+    const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+    const used_aliquot = createUsedAliquot({
+      id: row.item.id || '',
+      source_id: tubeContent.id,
+      source_type: type,
+      barcode,
+      volume: tubeContent.volume,
+      concentration: tubeContent.concentration,
+      insert_size: tubeContent.insert_size,
+      template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
+    })
+    if (used_aliquot.source_type === 'Pacbio::Library') {
+      used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
+        libraryId: used_aliquot.source_id,
+        aliquotId: used_aliquot.id,
+        // Volume is 0 because this aliquot is not yet saved so it shouldnt count as used
+        volume: 0,
+      })
+    }
+    localUsedAliquots.value[index] = used_aliquot
   } else {
     showAlert('Pool is not valid', 'danger')
   }
@@ -226,22 +305,45 @@ const updatePoolLibraryBarcode = async (row, barcode) => {
 
 /**
  * setupWell function is used to setup the well by fetching the well object from the store
- * and populating the localPoolsAndLibraries array with the pools and libraries associated with the well.
+ * and populating the localUsedAliquots array with the used_aliquots associated with the well.
  * This function is called when the modal is shown for a specific position and plate number.
  */
 const setupWell = async () => {
-  well.value = await store.getOrCreateWell(position.value, plateNumber.value)
-  localPoolsAndLibraries.value = []
-  well.value.pools?.forEach((id) => {
-    const pool = store.tubeContents.find((tubeContent) => tubeContent.id == id)
-    pool ? localPoolsAndLibraries.value.push({ id, barcode: pool.barcode, type: 'pools' }) : null
+  // We clone the well as it gets binded to the form and we don't want to change the original object
+  // without a confirmation action like the 'update' button
+  well.value = { ...(await store.getOrCreateWell(position.value, plateNumber.value)) }
+  localUsedAliquots.value = []
+  well.value.used_aliquots.forEach((aliquot) => {
+    const type = aliquot.source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
+    const poolOrLibrary = store.tubeContents.find(
+      (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
+    )
+    if (poolOrLibrary) {
+      const used_aliquot = createUsedAliquot({
+        ...aliquot,
+        barcode: poolOrLibrary.barcode,
+      })
+      // If the source type is a library, get the available volume for the library aliquot
+      if (used_aliquot.source_type === 'Pacbio::Library') {
+        used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
+          libraryId: aliquot.source_id,
+          aliquotId: aliquot.id,
+          volume: aliquot.volume,
+        })
+      }
+      localUsedAliquots.value.push(used_aliquot)
+    }
   })
-  well.value.libraries?.forEach((id) => {
-    const library = store.tubeContents.find((tubeContent) => tubeContent.id == id)
-    library
-      ? localPoolsAndLibraries.value.push({ id, barcode: library.barcode, type: 'libraries' })
-      : null
-  })
+}
+
+/**
+ * The errors for an attribute
+ */
+const errorsFor = (aliquot, attribute) => {
+  if (aliquot && attribute) {
+    aliquot.validateField(attribute, aliquot[attribute])
+    return aliquot.errors?.[attribute]
+  }
 }
 
 //handleCustomProps function is used to handle custom props for the component

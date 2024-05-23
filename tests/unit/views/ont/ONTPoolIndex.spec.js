@@ -11,6 +11,13 @@ describe('OntPoolIndex', () => {
     wrapper = mount(ONTPoolIndex, {
       store,
       router,
+      global: {
+        stubs: {
+          PrinterModal: {
+            template: '<div ref="printerModal"></div>',
+          },
+        },
+      },
     })
     await flushPromises()
   })

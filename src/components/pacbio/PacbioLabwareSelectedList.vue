@@ -15,6 +15,7 @@
           <label class="text-base">Table view</label>
           <traction-toggle v-model="tableView" data-attribute="table-check-box" />
         </div>
+
         <div v-if="!tableView" class="flex flex-wrap overflow-y-auto">
           <div
             v-for="item in selectedLabware"
@@ -22,7 +23,12 @@
             data-type="selected-labware-item"
             class="w-1/2"
           >
-            <div class="border border-sdb bg-blue-100 rounded-lg p-1 mr-3 mt-2">
+            <div
+              :class="[
+                'bg-blue-100 rounded-lg p-1 mr-3 mt-2',
+                `${item.barcode === props.highlight?.labware.barcode ? 'border-4 border-purple-500' : 'border border-sdb '}`,
+              ]"
+            >
               <div class="flex w-full justify-end">
                 <button
                   :id="'remove-btn-' + item.id"
@@ -54,7 +60,7 @@
             <traction-table
               :items="selectedRequests"
               :fields="state.requestFields"
-              :tbodyTrClass="tableRowBackground"
+              :tbodyTrClass="tableRowColour"
               @row-clicked="requestClicked"
               ><template #cell(actions)="row">
                 <div class="flex flex-row justify-center">
@@ -106,8 +112,12 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  highlight: {
+    type: Object,
+    required: false,
+    default: undefined,
+  },
 })
-
 /**
  * @property {Array} requestFields - The fields to display in the table view
  */
@@ -216,8 +226,10 @@ const onClose = (labware) => {
  * @returns {String} - A string representing the background color of the row based on the selection state
  * The background color is yellow if the row is selected and gray if it is not selected
  */
-const tableRowBackground = (row) => {
-  return row.selected ? 'bg-yellow-300 cursor-pointer' : 'bg-gray-200 cursor-pointer'
+const tableRowColour = (row) => {
+  return `${row.selected ? 'bg-yellow-300' : 'bg-gray-200'} ${
+    row.id === props.highlight?.request.id && 'border-4 border-purple-500'
+  } cursor-pointer`
 }
 
 /**
