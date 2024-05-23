@@ -98,6 +98,10 @@
             v-model="formLibrary.concentration"
             data-attribute="concentration"
             :class="inputBorderClass('concentration')"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Example: 1.0"
           />
         </traction-field-error>
       </fieldset>
@@ -116,6 +120,12 @@
             v-model="formLibrary.template_prep_kit_box_barcode"
             data-attribute="template-prep-kit-box-barcode"
             :class="inputBorderClass('template_prep_kit_box_barcode')"
+            type="text"
+            minlength="21"
+            maxlength="21"
+            placeholder="Example: 012345678901234567890"
+            pattern="\d*"
+            inputmode="numeric"
           />
         </traction-field-error>
       </fieldset>
@@ -125,12 +135,16 @@
         <traction-field-error
           data-attribute="insert-size-error"
           :error="libraryErrorsFor('insert_size')"
-          :with-icon="!!library.errors?.insert_size"
+          :with-icon="!!library.errors?.insert_size"   
         >
           <traction-input
             id="library-insertSize"
             v-model="formLibrary.insert_size"
             data-attribute="insert-size"
+            type="number"
+            step="1"
+            min="0"
+            placeholder="Example: 100"
           />
         </traction-field-error>
       </fieldset>
