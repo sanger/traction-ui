@@ -301,17 +301,8 @@ const libraryErrorsFor = (attribute) => {
 }
 
 const inputBorderClass = (attribute) => {
-  return formLibrary.value[attribute] ? 'rounded-border' : 'rounded-border red-border'
+  return formLibrary.value[attribute] 
+    ? 'rounded-md border border-gray-300' 
+    : 'rounded-md border border-red-500';
 }
 </script>
-
-<style scoped>
-.rounded-border {
-  border-radius: 0.46rem;
-  border-width: 1px;
-}
-
-.red-border {
-  border-color: #f00;
-}
-</style>
