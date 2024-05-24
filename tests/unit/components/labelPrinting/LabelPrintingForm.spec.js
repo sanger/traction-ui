@@ -5,12 +5,14 @@ import { mount, createTestingPinia, RequestFactory, flushPromises } from '@suppo
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 
+// how can we use the default form here?
 const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
   suffix: 'UPRL',
   numberOfLabels: 3,
   copies: 1,
   printerName: 'aPrinter',
+  labelType: 'tube2d',
 }
 
 const evt = {
@@ -138,13 +140,7 @@ describe('LabelPrintingForm.vue', () => {
         labelPrintingForm.onReset(evt)
 
         // when we move this to the composition api we can test the form is reset using defaultForm
-        expect(labelPrintingForm.form).toEqual({
-          sourceBarcodeList: null,
-          suffix: null,
-          numberOfLabels: null,
-          printerName: null,
-          copies: 1,
-        })
+        expect(labelPrintingForm.form).toEqual(labelPrintingForm.defaultForm())
       })
     })
 
@@ -172,6 +168,7 @@ describe('LabelPrintingForm.vue', () => {
           printerName: options.printerName,
           labels: labelPrintingForm.labels,
           copies: options.copies,
+          labelTemplateName: 'traction_tube_label_template',
         }
 
         expect(store.createPrintJob).toBeCalledWith(expected)
@@ -206,10 +203,39 @@ describe('LabelPrintingForm.vue', () => {
           printerName: options.printerName,
           labels: labelPrintingForm.labels,
           copies: options.copies,
+          labelTemplateName: 'traction_tube_label_template',
         }
 
         expect(store.createPrintJob).toBeCalledWith(expected)
         expect(result).toEqual({ success: false, message: 'failure' })
+      })
+    })
+
+    describe('label types', () => {
+      beforeEach(async () => {
+        const { wrapperObj, storeObj } = mountWithStore({
+          plugins,
+        })
+
+        await flushPromises()
+
+        wrapper = wrapperObj
+        store = storeObj
+
+        labelPrintingForm = wrapper.vm
+      })
+
+      it('should present some label types', async () => {
+        expect(
+          wrapper.find('[data-attribute=label-type-options]').findAll('option').length,
+        ).toEqual(Object.values(labelPrintingForm.labelTypes).length)
+      })
+
+      it('should limit printers to the selected label type', async () => {
+        expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
+          store.printers(labelPrintingForm.labelTypes[labelPrintingForm.form.labelType].labwareType)
+            .length,
+        )
       })
     })
   })

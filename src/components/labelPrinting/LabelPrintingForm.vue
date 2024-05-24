@@ -56,10 +56,22 @@
           <DataFetcher :fetcher="fetchPrinters">
             <fieldset>
               <traction-heading level="3" show-border>Choice of Printer</traction-heading>
+              <traction-muted-text>Label type</traction-muted-text>
+              <div class="mt-2">
+                <traction-select
+                  id="label-type"
+                  data-attribute="label-type-options"
+                  v-model="form.labelType"
+                  :options="labelTypeOptions"
+                  value-field="text"
+                  required
+                ></traction-select>
+              </div>
               <traction-muted-text>The printer to print the labels</traction-muted-text>
               <div class="mt-2">
                 <traction-select
                   id="printer-choice"
+                  data-attribute="printer-options"
                   v-model="form.printerName"
                   :options="printerOptions"
                   value-field="text"
@@ -83,18 +95,6 @@
               Reset
             </traction-button>
           </div>
-
-          <!-- <traction-heading level="5" class-name="text-white">
-            Print Settings Summary
-          </traction-heading>
-          <div class="text-left text-white font-light">
-            <label-printing-summary-item label="Labels">
-              {{ form.numberOfLabels }}
-            </label-printing-summary-item>
-            <label-printing-summary-item label="Printer">
-              {{ form.printerName }}
-            </label-printing-summary-item>
-          </div> -->
 
           <traction-heading level="5" class-name="mt-4 text-white">Barcode List</traction-heading>
           <div tag="article" class="mb-2 text-black text-left font-mono">
@@ -133,7 +133,6 @@ import {
 } from '@/lib/LabelPrintingHelpers.js'
 import SuffixList from '@/config/SuffixList.json'
 import { nextTick } from 'vue'
-//import LabelPrintingSummaryItem from './LabelPrintingSummaryItem.vue'
 
 /**
  * provides default values for the form
@@ -143,16 +142,31 @@ const defaultForm = () => ({
   sourceBarcodeList: null,
   suffix: null, // Default to No suffix
   numberOfLabels: null,
-  // printerLabwareType: 'tubePrinter', // Default to 'tubePrinter
+  labelType: 'tube2d', // Default to tube
   printerName: null,
   copies: 1,
 })
 
-// const printerLabwareOptions = [
-//   { text: 'Tube Printer', value: 'tubePrinter' },
-//   { text: '96-Well Plate Printer', value: '96WellPlatePrinter' },
-//   { text: '384-Well Plate Printer', value: '384WellPlatePrinter' },
-// ]
+const labelTypes = {
+  tube2d: {
+    text: 'Tube - 2d',
+    value: 'tube2d',
+    labwareType: 'tube',
+    labelTemplateName: 'traction_tube_label_template',
+  },
+  plate1d: {
+    text: '96-Well Plate - 1d',
+    value: 'plate1d',
+    labwareType: 'plate',
+    labelTemplateName: 'traction_plate_label_template_1d',
+  },
+  plate2d: {
+    text: '96-Well Plate - 2d',
+    value: 'plate2d',
+    labwareType: 'plate',
+    labelTemplateName: 'traction_plate_label_template_2d',
+  },
+}
 
 const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 
@@ -167,11 +181,22 @@ const form = ref(defaultForm()) // Create a ref for the form
 const show = ref(true) // Create a ref for the show variable
 
 /**
+ * Creates a computed property to get the label type options
+ * @returns {Array} label type options
+ */
+const labelTypeOptions = computed(() => {
+  return Object.values(labelTypes).map(({ text, value }) => ({
+    text,
+    value,
+  }))
+})
+
+/**
  * Creates a computed property to get the printer names
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
-  return printingStore.printers('tube').map(({ name }) => ({
+  return printingStore.printers(labelTypes[form.value.labelType].labwareType).map(({ name }) => ({
     text: name,
   }))
 })
@@ -222,6 +247,7 @@ const printLabels = async () => {
     printerName: form.value.printerName,
     labels: labels.value,
     copies: form.value.copies,
+    labelTemplateName: labelTypes[form.value.labelType].labelTemplateName,
   })
 
   showAlert(message, success ? 'success' : 'danger')
