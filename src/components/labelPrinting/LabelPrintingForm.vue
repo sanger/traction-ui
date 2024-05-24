@@ -96,15 +96,11 @@
             </traction-button>
           </div>
 
-          <traction-heading level="5" class-name="mt-4 text-white">Barcode List</traction-heading>
-          <div tag="article" class="mb-2 text-black text-left font-mono">
+          <div tag="article" class="mb-2 text-black text-left">
             <div class="flex flex-col bg-white rounded p-4">
               <ul id="list-barcodes-to-print">
                 <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
                   {{ barcode }}
-                </li>
-                <li v-if="labels.length === 0" class="text-sm text-gray-600 font-light italic">
-                  No barcodes
                 </li>
               </ul>
             </div>
