@@ -84,7 +84,7 @@
             </traction-button>
           </div>
 
-          <traction-heading level="5" class-name="text-white">
+          <!-- <traction-heading level="5" class-name="text-white">
             Print Settings Summary
           </traction-heading>
           <div class="text-left text-white font-light">
@@ -94,7 +94,7 @@
             <label-printing-summary-item label="Printer">
               {{ form.printerName }}
             </label-printing-summary-item>
-          </div>
+          </div> -->
 
           <traction-heading level="5" class-name="mt-4 text-white">Barcode List</traction-heading>
           <div tag="article" class="mb-2 text-black text-left font-mono">
@@ -133,7 +133,7 @@ import {
 } from '@/lib/LabelPrintingHelpers.js'
 import SuffixList from '@/config/SuffixList.json'
 import { nextTick } from 'vue'
-import LabelPrintingSummaryItem from './LabelPrintingSummaryItem.vue'
+//import LabelPrintingSummaryItem from './LabelPrintingSummaryItem.vue'
 
 /**
  * provides default values for the form
@@ -143,7 +143,7 @@ const defaultForm = () => ({
   sourceBarcodeList: null,
   suffix: null, // Default to No suffix
   numberOfLabels: null,
-  printerLabwareType: 'tubePrinter', // Default to 'tubePrinter
+  // printerLabwareType: 'tubePrinter', // Default to 'tubePrinter
   printerName: null,
   copies: 1,
 })
