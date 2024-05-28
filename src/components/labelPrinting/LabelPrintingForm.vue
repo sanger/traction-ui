@@ -57,7 +57,7 @@
             <fieldset>
               <traction-heading level="3" show-border>Choice of Printer</traction-heading>
               <traction-muted-text>Label type</traction-muted-text>
-              <div class="mt-2">
+              <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
                   data-attribute="label-type-options"
@@ -116,7 +116,7 @@
  * LabelPrintingForm component is used to print labels.
  */
 
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import useAlert from '@/composables/useAlert.js'
 import DataFetcher from '@/components/DataFetcher.vue'
@@ -129,6 +129,7 @@ import {
 } from '@/lib/LabelPrintingHelpers.js'
 import SuffixList from '@/config/SuffixList.json'
 import { nextTick } from 'vue'
+import LabelTypes from '@/config/LabelTypes.json'
 
 /**
  * provides default values for the form
@@ -138,31 +139,10 @@ const defaultForm = () => ({
   sourceBarcodeList: null,
   suffix: null, // Default to No suffix
   numberOfLabels: null,
-  labelType: 'tube2d', // Default to tube
   printerName: null,
   copies: 1,
+  labelType: 'tube2d',
 })
-
-const labelTypes = {
-  tube2d: {
-    text: 'Tube - 2d',
-    value: 'tube2d',
-    labwareType: 'tube',
-    labelTemplateName: 'traction_tube_label_template',
-  },
-  plate1d: {
-    text: '96-Well Plate - 1d',
-    value: 'plate1d',
-    labwareType: 'plate',
-    labelTemplateName: 'traction_plate_label_template_1d',
-  },
-  plate2d: {
-    text: '96-Well Plate - 2d',
-    value: 'plate2d',
-    labwareType: 'plate',
-    labelTemplateName: 'traction_plate_label_template_2d',
-  },
-}
 
 const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 
@@ -172,7 +152,7 @@ const { showAlert } = useAlert() // useAlert is a composable function that is us
  */
 const printingStore = usePrintingStore()
 
-const form = ref(defaultForm()) // Create a ref for the form
+let form = reactive(defaultForm()) // Create a reactive for the form
 
 const show = ref(true) // Create a ref for the show variable
 
@@ -181,7 +161,7 @@ const show = ref(true) // Create a ref for the show variable
  * @returns {Array} label type options
  */
 const labelTypeOptions = computed(() => {
-  return Object.values(labelTypes).map(({ text, value }) => ({
+  return Object.values(LabelTypes).map(({ text, value }) => ({
     text,
     value,
   }))
@@ -192,9 +172,18 @@ const labelTypeOptions = computed(() => {
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
-  return printingStore.printers(labelTypes[form.value.labelType].labwareType).map(({ name }) => ({
+  return printingStore.printers(labelType.value.labwareType).map(({ name }) => ({
     text: name,
   }))
+})
+
+/**
+ * Creates a computed property to get the label type
+ * Created from the selected label type
+ * @returns {Object} label type
+ */
+const labelType = computed(() => {
+  return LabelTypes[form.labelType]
 })
 
 /**
@@ -219,18 +208,18 @@ const suffixItems = computed(() => {
  */
 const labels = computed(() => {
   const date = getCurrentDate()
-  const suffixItem = suffixItems.value[form.value.suffix]
+  const suffixItem = suffixItems.value[form.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
   const splitSourceBarcodeList =
-    form.value.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
+    form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
   return createLabelsFromBarcodes({
     sourceBarcodeList: splitSourceBarcodeList,
     date,
     suffixItem,
-    numberOfLabels: form.value.numberOfLabels,
+    numberOfLabels: form.numberOfLabels,
   })
 })
 
@@ -240,10 +229,10 @@ const labels = computed(() => {
  */
 const printLabels = async () => {
   const { success, message = {} } = await printingStore.createPrintJob({
-    printerName: form.value.printerName,
+    printerName: form.printerName,
     labels: labels.value,
-    copies: form.value.copies,
-    labelTemplateName: labelTypes[form.value.labelType].labelTemplateName,
+    copies: form.copies,
+    labelTemplateName: labelType.value.labelTemplateName,
   })
 
   showAlert(message, success ? 'success' : 'danger')
@@ -256,7 +245,7 @@ const printLabels = async () => {
  */
 const onReset = () => {
   // Reset our form values
-  form.value = defaultForm()
+  form = reactive(defaultForm())
 
   // Trick to reset/clear native browser form validation state
   show.value = false

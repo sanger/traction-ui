@@ -12,7 +12,6 @@ const options = {
   numberOfLabels: 3,
   copies: 1,
   printerName: 'aPrinter',
-  labelType: 'tube2d',
 }
 
 const evt = {
@@ -93,11 +92,14 @@ describe('LabelPrintingForm.vue', () => {
         plugins,
       })
 
-      wrapperObj.vm.form = options
-
       await flushPromises()
 
       wrapper = wrapperObj
+
+      // for reactive data we need to set the data on the form
+      // you can't reassign the form
+      // could we reset this on mount?
+      Object.assign(wrapper.vm.form, options)
 
       // 3 barcodes and 3 of each
       expect(wrapper.vm.labels.length).toEqual(9)
@@ -110,13 +112,10 @@ describe('LabelPrintingForm.vue', () => {
 
       await flushPromises()
 
-      wrapperObj.vm.form = {
-        ...options,
-        sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
-        numberOfLabels: 1,
-      }
-
       wrapper = wrapperObj
+
+      wrapper.vm.form.sourceBarcodeList = 'SQSC-1\nSQSC-2\nSQSC-3\n\n'
+      wrapper.vm.form.numberOfLabels = 1
 
       expect(wrapper.vm.labels.length).toEqual(3)
     })
@@ -134,12 +133,9 @@ describe('LabelPrintingForm.vue', () => {
         wrapper = wrapperObj
 
         labelPrintingForm = wrapper.vm
-
-        labelPrintingForm.form = { printerName: 'stub' }
-
+        labelPrintingForm.form.printerName = 'stub'
         labelPrintingForm.onReset(evt)
 
-        // when we move this to the composition api we can test the form is reset using defaultForm
         expect(labelPrintingForm.form).toEqual(labelPrintingForm.defaultForm())
       })
     })
@@ -156,7 +152,8 @@ describe('LabelPrintingForm.vue', () => {
         store = storeObj
 
         labelPrintingForm = wrapper.vm
-        labelPrintingForm.form = options
+        // the tests pass irrespective of this line??
+        Object.assign(labelPrintingForm.form, options)
 
         store.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
@@ -191,7 +188,7 @@ describe('LabelPrintingForm.vue', () => {
         store = storeObj
 
         labelPrintingForm = wrapper.vm
-        labelPrintingForm.form = options
+        Object.assign(labelPrintingForm.form, options)
 
         store.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: false, message: 'failure' }
@@ -228,13 +225,12 @@ describe('LabelPrintingForm.vue', () => {
       it('should present some label types', async () => {
         expect(
           wrapper.find('[data-attribute=label-type-options]').findAll('option').length,
-        ).toEqual(Object.values(labelPrintingForm.labelTypes).length)
+        ).toEqual(Object.values(labelPrintingForm.LabelTypes).length)
       })
 
       it('should limit printers to the selected label type', async () => {
         expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
-          store.printers(labelPrintingForm.labelTypes[labelPrintingForm.form.labelType].labwareType)
-            .length,
+          store.printers(labelPrintingForm.labelType.labwareType).length,
         )
       })
     })
