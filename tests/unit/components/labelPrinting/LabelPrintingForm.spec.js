@@ -1,7 +1,13 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
 import SuffixList from '@/config/SuffixList.json'
 import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
-import { mount, createTestingPinia, RequestFactory, flushPromises } from '@support/testHelper.js'
+import {
+  mount,
+  createTestingPinia,
+  RequestFactory,
+  flushPromises,
+  nextTick,
+} from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 
@@ -222,13 +228,21 @@ describe('LabelPrintingForm.vue', () => {
         labelPrintingForm = wrapper.vm
       })
 
-      it('should present some label types', async () => {
+      it('should present some label types', () => {
         expect(
           wrapper.find('[data-attribute=label-type-options]').findAll('option').length,
         ).toEqual(Object.values(labelPrintingForm.LabelTypes).length)
       })
 
-      it('should limit printers to the selected label type', async () => {
+      it('should limit printers to the selected label type', () => {
+        expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
+          store.printers(labelPrintingForm.labelType.labwareType).length,
+        )
+      })
+
+      it('should list printers if selected label type is changed', async () => {
+        labelPrintingForm.form.labelType = 'plate1d'
+        await nextTick()
         expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
           store.printers(labelPrintingForm.labelType.labwareType).length,
         )
