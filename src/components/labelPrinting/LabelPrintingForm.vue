@@ -60,8 +60,8 @@
               <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
-                  data-attribute="label-type-options"
                   v-model="form.labelType"
+                  data-attribute="label-type-options"
                   :options="labelTypeOptions"
                   value-field="text"
                   required
@@ -71,8 +71,8 @@
               <div class="mt-2">
                 <traction-select
                   id="printer-choice"
-                  data-attribute="printer-options"
                   v-model="form.printerName"
+                  data-attribute="printer-options"
                   :options="printerOptions"
                   value-field="text"
                   required
