@@ -254,7 +254,10 @@ const update = async () => {
     }
   }
 
-  store.updateWell({ well: well.value, plateNumber: plateNumber.value })
+  /*Update the well, and keep the updated flag. 
+  This is used to determine if the well is updated or not.
+  The volume displayed is initialised to available_volume if it is not updated */
+  store.updateWell({ well: { ...well.value, updated: true }, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
@@ -296,6 +299,8 @@ const updateUsedAliquotSource = async (row, barcode) => {
         // Volume is 0 because this aliquot is not yet saved so it shouldnt count as used
         volume: 0,
       })
+      //initialize the volume to the available volume for the library aliquot
+      used_aliquot.volume = used_aliquot.available_volume
     }
     localUsedAliquots.value[index] = used_aliquot
   } else {
@@ -330,6 +335,10 @@ const setupWell = async () => {
           aliquotId: aliquot.id,
           volume: aliquot.volume,
         })
+        // If the well is not yet updated, initialise the volume to the available volume for the library aliquot
+        if (!well.value.updated) {
+          used_aliquot.volume = used_aliquot.available_volume
+        }
       }
       localUsedAliquots.value.push(used_aliquot)
     }

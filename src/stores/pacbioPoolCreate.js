@@ -1033,10 +1033,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             request: id,
             ...libraryAttributes,
             source_type: this.sourceTypeForRequest(this.resources.requests[id]),
+            volume: library ? library.available_volume ?? library.volume : null,
           }),
         }
         // Validate the used aliquot if the request is from library
-        library && this.validateUsedAliquot(library, 'volume')
+        library && this.validateUsedAliquot(this.used_aliquots[`_${id}`], 'volume')
       } else {
         delete this.used_aliquots[`_${id}`]
       }

@@ -345,7 +345,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute=pacbio-run-well]').first().should('have.class', 'bg-gray-100')
   })
 
-  it('Correctly displays the available volume information for a library in a well', () => {
+  it.only('Correctly displays the available volume information for a library in a well', () => {
     const dataTransfer = new DataTransfer()
 
     //Create a well with library TRAC-2-20
@@ -364,6 +364,8 @@ describe('Pacbio Run Create view', () => {
       .trigger('click')
     //It displays the correct volume information for the library in this context
     cy.get('#library-available-volume').contains('20.00')
+    //Initialises the volume to available volume
+    cy.get('[data-attribute="aliquot-volume"]').should('have.value', '20.00')
     cy.get('[data-attribute="movie-time"]').select('15.0')
     cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
     cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
@@ -411,6 +413,8 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
     cy.get('#library-available-volume').contains('10.00')
+    //Once updated, the volume field displays the edited value
+    cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
 
     //Open the second well

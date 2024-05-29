@@ -360,6 +360,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
               return this.aliquots[aliquotId]
             })
+            /*This is used to determine if the well is updated or not.
+              The volume displayed depends on this and is initialised to available_volume if it is not updated */
+            well.updated = true
           })
         })
 
