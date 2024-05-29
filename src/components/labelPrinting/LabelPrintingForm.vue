@@ -56,7 +56,7 @@
           <DataFetcher :fetcher="fetchPrinters">
             <fieldset>
               <traction-heading level="3" show-border>Choice of Printer</traction-heading>
-              <traction-muted-text>Label type</traction-muted-text>
+              <traction-heading level="5">Select label type</traction-heading>
               <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
@@ -67,7 +67,7 @@
                   required
                 ></traction-select>
               </div>
-              <traction-muted-text>The printer to print the labels</traction-muted-text>
+              <traction-heading level="5">Select printer</traction-heading>
               <div class="mt-2">
                 <traction-select
                   id="printer-choice"
