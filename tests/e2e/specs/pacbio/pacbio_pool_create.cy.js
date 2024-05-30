@@ -72,7 +72,7 @@ describe('Pacbio Pool Create', () => {
           'have.value',
           '029979102141700063023',
         )
-        cy.get('[data-attribute=volume]').should('have.value', '1')
+        cy.get('[data-attribute=volume]').should('have.value', '20')
         cy.get('[data-attribute=concentration]').should('have.value', '1')
         cy.get('[data-attribute=insert-size]').should('have.value', '500')
       })

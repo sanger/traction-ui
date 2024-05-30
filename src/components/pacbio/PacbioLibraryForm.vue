@@ -34,7 +34,7 @@
               v-if="formLibrary.used_volume != null"
               :tooltip-text="'Used volume is ' + formLibrary.used_volume"
             >
-              <traction-badge id="library-used-volume" colour="sanger-yellow"
+              <traction-badge id="library-used-volume" colour="sanger-pink"
                 ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
               >
             </traction-tooltip>
