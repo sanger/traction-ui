@@ -122,17 +122,17 @@ const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = []
 /*
  * @param {Array} sourceBarcode - set of sourceBarcodes
  * @param {string} date - date the barcode is created
- * @param {suffixItem} - used for text on labels defaults to NullWorkflowItem
+ * @param {workflowItem} - used for text on labels defaults to NullWorkflowItem
  * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
  * @returns [BarcodeLabelItem, ...} - An array of BarcodeLabelItem objects suitable for printing
  */
 const createLabelsFromBarcodes = ({
   sourceBarcodeList,
   date,
-  suffixItem = NullWorkflowItem,
+  workflowItem = NullWorkflowItem,
   numberOfLabels = 0,
 } = {}) => {
-  const { stage, suffix } = suffixItem
+  const { stage, suffix } = workflowItem
 
   // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
   // if number is 0 returns an empty array
@@ -192,10 +192,10 @@ const WorkflowItemType = ({
 const WorkflowListType = ({
   sourceBarcodeList,
   date,
-  suffixItem = NullWorkflowItem,
+  workflowItem = NullWorkflowItem,
   numberOfLabels = 0,
 } = {}) => {
-  const { stage, suffix } = suffixItem
+  const { stage, suffix } = workflowItem
 
   // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
   // if number is 0 returns an empty array

@@ -32,7 +32,7 @@
               <traction-select
                 id="suffix-selection"
                 v-model="form.suffix"
-                :options="suffixOptions"
+                :options="workflowDropdownOptions"
                 placeholder="Please select a suffix"
               ></traction-select>
             </div>
@@ -187,10 +187,10 @@ const labelType = computed(() => {
 })
 
 /**
- * Creates a computed property to get the suffix options
+ * Creates a computed property to get the workflow dropdown options
  * @returns {Array} suffix options
  */
-const suffixOptions = computed(() => {
+const workflowDropdownOptions = computed(() => {
   return createWorkflowDropdownOptions(WorkflowList)
 })
 
@@ -198,7 +198,7 @@ const suffixOptions = computed(() => {
  * Creates a computed property to get the suffix items
  * @returns {Array} suffix items
  */
-const suffixItems = computed(() => {
+const workflowOptionList = computed(() => {
   return createWorkflowOptions(WorkflowList)
 })
 
@@ -208,7 +208,7 @@ const suffixItems = computed(() => {
  */
 const labels = computed(() => {
   const date = getCurrentDate()
-  const suffixItem = suffixItems.value[form.suffix]
+  const workflowOption = workflowOptionList.value[form.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
@@ -218,7 +218,7 @@ const labels = computed(() => {
   return createLabelsFromBarcodes({
     sourceBarcodeList: splitSourceBarcodeList,
     date,
-    suffixItem,
+    workflowOption,
     numberOfLabels: form.numberOfLabels,
   })
 })

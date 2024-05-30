@@ -82,8 +82,10 @@ describe('LabelPrintingForm.vue', () => {
       expect(wrapper.vm.printerOptions.length).toEqual(store.printers('tube').length)
     })
 
-    it('has the correct Suffix Options', () => {
-      expect(wrapper.vm.suffixOptions).toEqual(createWorkflowDropdownOptions(WorkflowList))
+    it('has the correct Workflow Dropdown Options', () => {
+      expect(wrapper.vm.workflowDropdownOptions).toEqual(
+        createWorkflowDropdownOptions(WorkflowList),
+      )
     })
   })
 
