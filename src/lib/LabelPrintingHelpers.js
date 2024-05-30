@@ -81,8 +81,8 @@ const createWorkflowOptions = (WorkflowList) => {
   }, {})
 }
 
-// @returns {Object} - An empty SuffixItem with all attributes set to null
-const NullSuffixItem = () => ({
+// @returns {Object} - An empty WorkflowOptions with all attributes set to null
+const NullWorkflowItem = () => ({
   stage: null,
   suffix: null,
   text: null,
@@ -122,14 +122,14 @@ const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = []
 /*
  * @param {Array} sourceBarcode - set of sourceBarcodes
  * @param {string} date - date the barcode is created
- * @param {suffixItem} - used for text on labels defaults to NullSuffixItem
+ * @param {suffixItem} - used for text on labels defaults to NullWorkflowItem
  * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
  * @returns [BarcodeLabelItem, ...} - An array of BarcodeLabelItem objects suitable for printing
  */
 const createLabelsFromBarcodes = ({
   sourceBarcodeList,
   date,
-  suffixItem = NullSuffixItem,
+  suffixItem = NullWorkflowItem,
   numberOfLabels = 0,
 } = {}) => {
   const { stage, suffix } = suffixItem
@@ -192,7 +192,7 @@ const WorkflowItemType = ({
 const WorkflowListType = ({
   sourceBarcodeList,
   date,
-  suffixItem = NullSuffixItem,
+  suffixItem = NullWorkflowItem,
   numberOfLabels = 0,
 } = {}) => {
   const { stage, suffix } = suffixItem
