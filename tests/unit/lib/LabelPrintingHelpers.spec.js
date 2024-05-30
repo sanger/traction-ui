@@ -5,6 +5,8 @@ import {
   createSuffixItems,
   createBarcodeLabelItem,
   createLabelsFromBarcodes,
+  WorkflowItemType,
+  WorkflowListType,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
@@ -270,6 +272,179 @@ describe('LabelPrintingHelpers.js', () => {
         'SQSC-5-2',
         'SQSC-5-3',
       ])
+    })
+  })
+
+  describe('workflow step type', () => {
+    const currentDate = getCurrentDate()
+    const originalBarcode = 'SQSC-1234'
+    const aStage = 'ST1 - Stage 1'
+
+    it('barcode only', () => {
+      const { barcode, date, sourceBarcode, parsedSuffixes, number, stage } = WorkflowItemType({
+        sourceBarcode: originalBarcode,
+        date: currentDate,
+      })
+      expect(barcode).toEqual(originalBarcode)
+      expect(date).toEqual(date)
+      expect(stage).toEqual('')
+      expect(sourceBarcode).toEqual(originalBarcode)
+      expect(parsedSuffixes).toEqual('')
+      expect(number).toEqual(null)
+    })
+
+    it('with a single suffix', () => {
+      const suffixes = ['ST1']
+      const { barcode, date, stage, sourceBarcode, parsedSuffixes, number } = WorkflowItemType({
+        sourceBarcode: originalBarcode,
+        date: currentDate,
+        stage: aStage,
+        suffixes,
+      })
+      expect(barcode).toEqual(`${originalBarcode}-${suffixes[0]}`)
+      expect(date).toEqual(date)
+      expect(stage).toEqual(aStage)
+      expect(sourceBarcode).toEqual(originalBarcode)
+      expect(parsedSuffixes).toEqual(suffixes[0])
+      expect(number).toEqual(null)
+    })
+
+    // we could go on but not necessary
+    it('with multiple suffixes', () => {
+      const suffixes = ['ST1', 'ST2']
+      const { barcode, date, stage, sourceBarcode, parsedSuffixes, number } = WorkflowItemType({
+        sourceBarcode: originalBarcode,
+        date: currentDate,
+        stage: aStage,
+        suffixes,
+      })
+      expect(barcode).toEqual(`${originalBarcode}-${suffixes[0]}-${suffixes[1]}`)
+      expect(date).toEqual(date)
+      expect(stage).toEqual(aStage)
+      expect(sourceBarcode).toEqual(`${originalBarcode}`)
+      expect(parsedSuffixes).toEqual(`${suffixes[0]}-${suffixes[1]}`)
+      expect(number).toEqual(null)
+    })
+
+    it('with suffixes and a number', () => {
+      const suffixes = ['ST1', 'ST2']
+      const aNumber = 1
+      const { barcode, date, stage, sourceBarcode, parsedSuffixes, number } = WorkflowItemType({
+        sourceBarcode: originalBarcode,
+        date: currentDate,
+        stage: aStage,
+        suffixes,
+        number: aNumber,
+      })
+      expect(barcode).toEqual(`${originalBarcode}-${suffixes[0]}-${suffixes[1]}-${aNumber}`)
+      expect(date).toEqual(date)
+      expect(stage).toEqual(aStage)
+      expect(sourceBarcode).toEqual(`${originalBarcode}`)
+      expect(parsedSuffixes).toEqual(`${suffixes[0]}-${suffixes[1]}-${aNumber}`)
+      expect(number).toEqual(aNumber)
+    })
+
+    it('with a number only', () => {
+      const aNumber = 1
+      const { barcode, date, stage, sourceBarcode, parsedSuffixes, number } = WorkflowItemType({
+        sourceBarcode: originalBarcode,
+        date: currentDate,
+        stage: aStage,
+        number: aNumber,
+      })
+      expect(barcode).toEqual(`${originalBarcode}-${aNumber}`)
+      expect(date).toEqual(date)
+      expect(stage).toEqual(aStage)
+      expect(sourceBarcode).toEqual(`${originalBarcode}`)
+      expect(parsedSuffixes).toEqual(`${aNumber}`)
+      expect(number).toEqual(aNumber)
+    })
+  })
+
+  describe('#WorkflowListType', () => {
+    const sourceBarcodeList = ['SQSC-1', 'SQSC-2', 'SQSC-3', 'SQSC-4', 'SQSC-5']
+    const date = getCurrentDate()
+    const suffixItem = {
+      stage: 'Stage1',
+      suffix: 'ST1',
+      text: 'ST1 - Stage1',
+      value: 'ST1',
+      workflow: 'Worflow 1',
+    }
+    const numberOfLabels = 3
+
+    it('with no workflow stage', () => {
+      const barcodeLabels = WorkflowListType({ sourceBarcodeList, date })
+      expect(barcodeLabels.length).toEqual(5)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual(sourceBarcodeList)
+    })
+
+    it('with a workflow stage', () => {
+      const workflowList = WorkflowListType({ sourceBarcodeList, date, suffixItem })
+      expect(workflowList.length).toEqual(5)
+      expect(workflowList[0]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[0],
+          date,
+          stage: suffixItem.stage,
+          suffixes: [suffixItem.suffix],
+        }),
+      )
+      expect(workflowList[4]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[4],
+          date,
+          stage: suffixItem.stage,
+          suffixes: [suffixItem.suffix],
+        }),
+      )
+    })
+
+    it('with a workflow stage and numbers', () => {
+      const workflowList = WorkflowListType({
+        sourceBarcodeList,
+        date,
+        suffixItem,
+        numberOfLabels,
+      })
+      expect(workflowList.length).toEqual(15)
+      expect(workflowList[0]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[0],
+          date,
+          stage: suffixItem.stage,
+          suffixes: [suffixItem.suffix],
+          number: 1,
+        }),
+      )
+      expect(workflowList[14]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[4],
+          date,
+          stage: suffixItem.stage,
+          suffixes: [suffixItem.suffix],
+          number: 3,
+        }),
+      )
+    })
+
+    it('with numbers only', () => {
+      const workflowList = WorkflowListType({ sourceBarcodeList, date, numberOfLabels })
+      expect(workflowList.length).toEqual(15)
+      expect(workflowList[0]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[0],
+          date,
+          number: 1,
+        }),
+      )
+      expect(workflowList[14]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[4],
+          date,
+          number: 3,
+        }),
+      )
     })
   })
 })

@@ -154,10 +154,75 @@ const createLabelsFromBarcodes = ({
   })
 }
 
+/**
+ * @param {Object} sourceBarcode - original barcode
+ * @param {string} date - date the barcode is created
+ * @param {String} stage - stage in the workflow
+ * @param {Array} suffixes - an array of suffixes to be added to the barcode
+ * @param {Number} number - an optional number to be added to the barcode
+ * @returns {Object} A Workflow step. This is made up of:
+ * barcode - a parsed barcode made up of the sourceBarcode and suffixes added e.g. SQSC-ST1-1
+ * date - the date
+ * sourceBarcode - the original barcode.
+ * parsedSuffixes - suffixes joined together e.g. ST1-1
+ * stage - stage in the workflow
+ * number - an optional number to be added to the barcode
+ */
+const WorkflowItemType = ({
+  sourceBarcode,
+  date,
+  stage = '',
+  suffixes = [],
+  number = null,
+} = {}) => {
+  // takes the suffixes, removes any falseys e.g null, undefined and joins them together with a dash
+  const parsedSuffixes = [...suffixes, number].filter(Boolean).join('-')
+
+  // takes the sourceBarcode and joins with the parsedSuffixes if there are any with a dash
+  const barcode = `${sourceBarcode}${parsedSuffixes ? '-' : ''}${parsedSuffixes}`
+
+  return {
+    barcode,
+    date,
+    sourceBarcode,
+    parsedSuffixes,
+    stage,
+    number,
+  }
+}
+
+const WorkflowListType = ({
+  sourceBarcodeList,
+  date,
+  suffixItem = NullSuffixItem,
+  numberOfLabels = 0,
+} = {}) => {
+  const { stage, suffix } = suffixItem
+
+  // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
+  // if number is 0 returns an empty array
+  const numberList = Array.from({ length: numberOfLabels }, (v, k) => k + 1)
+
+  // for each sourceBarcode create a BarcodeLabelItem
+  return sourceBarcodeList.flatMap((sourceBarcode) => {
+    // if numberOfLabels is empty we just want to return a single item with suffix
+    if (numberList.length === 0) {
+      return WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix] })
+    } else {
+      // if numberList is filled return a WorkflowItemType for each one
+      return numberList.map((number) =>
+        WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix], number }),
+      )
+    }
+  })
+}
+
 export {
   byAttribute,
   createSuffixDropdownOptions,
   createSuffixItems,
   createBarcodeLabelItem,
   createLabelsFromBarcodes,
+  WorkflowItemType,
+  WorkflowListType,
 }
