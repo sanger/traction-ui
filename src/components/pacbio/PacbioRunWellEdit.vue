@@ -258,7 +258,7 @@ const update = async () => {
   well.value.used_aliquots.forEach((aliquot) => {
     aliquot.volumeEdited = aliquot.volume != aliquot.available_volume
   })
-  store.updateWell({ well: { ...well.value}, plateNumber: plateNumber.value })
+  store.updateWell({ well: { ...well.value }, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }

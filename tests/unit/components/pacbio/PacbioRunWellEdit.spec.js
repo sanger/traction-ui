@@ -776,7 +776,7 @@ describe('PacbioRunWellEdit', () => {
       expect(store.updateWell).toBeCalledWith({
         plateNumber: 1,
         well: {
-          used_aliquots: aliquots
+          used_aliquots: aliquots,
         },
       })
       expect(wrapper.vm.isShow).toBeFalsy()
