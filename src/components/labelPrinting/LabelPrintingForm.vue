@@ -123,11 +123,11 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import {
-  createSuffixDropdownOptions,
-  createSuffixItems,
+  createWorkflowDropdownOptions,
+  createWorkflowOptions,
   createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers.js'
-import SuffixList from '@/config/SuffixList.json'
+import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
 
@@ -191,7 +191,7 @@ const labelType = computed(() => {
  * @returns {Array} suffix options
  */
 const suffixOptions = computed(() => {
-  return createSuffixDropdownOptions(SuffixList)
+  return createWorkflowDropdownOptions(WorkflowList)
 })
 
 /**
@@ -199,7 +199,7 @@ const suffixOptions = computed(() => {
  * @returns {Array} suffix items
  */
 const suffixItems = computed(() => {
-  return createSuffixItems(SuffixList)
+  return createWorkflowOptions(WorkflowList)
 })
 
 /**

@@ -1,6 +1,6 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
-import SuffixList from '@/config/SuffixList.json'
-import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
+import WorkflowList from '@/config/WorkflowList.json'
+import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
 import {
   mount,
   createTestingPinia,
@@ -83,7 +83,7 @@ describe('LabelPrintingForm.vue', () => {
     })
 
     it('has the correct Suffix Options', () => {
-      expect(wrapper.vm.suffixOptions).toEqual(createSuffixDropdownOptions(SuffixList))
+      expect(wrapper.vm.suffixOptions).toEqual(createWorkflowDropdownOptions(WorkflowList))
     })
   })
 

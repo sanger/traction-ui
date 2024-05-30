@@ -8,8 +8,8 @@
 */
 
 /*
- * @example: suffixList
-  Example format of suffixList:
+ * @example: WorkflowList
+  Example format of WorkflowList:
     [{
       worklow: 'workflow 1', 
       options: [
@@ -27,7 +27,7 @@
 */
 
 /*
- * @param {Array [Object, ...]} suffixList
+ * @param {Array [Object, ...]} WorkflowList
  * @param {String} the attribute to extract from each object
  * @returns [Array] e.g. [attribute, attribute ...]
  * for each object return the named attribute
@@ -37,28 +37,26 @@ const byAttribute = (objects, attribute) => {
 }
 
 /*
- * @param {Array [Object, ...]} suffixList
- * @returns {Array} A list which can be used as a drop-down (Bootstrap only?) in the format
+ * @param {Array [Object, ...]} WorkflowList
+ * @returns {Array} A list which can be used as a drop-down in the format
  * example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
  */
-const createSuffixDropdownOptions = (suffixList) => {
-  return suffixList
-    .map((item) => ({
-      label: item.workflow,
-      options: item.options.map(({ text, value }) => ({
-        text,
-        value,
-      })),
-    }))
-    .concat([{ text: 'No suffix', value: null }])
+const createWorkflowDropdownOptions = (WorkflowList) => {
+  return WorkflowList.map((item) => ({
+    label: item.workflow,
+    options: item.options.map(({ text, value }) => ({
+      text,
+      value,
+    })),
+  })).concat([{ text: 'No suffix', value: null }])
 }
 
 /*
- * @param {Array [Object, ...]} suffixList
+ * @param {Array [Object, ...]} WorkflowList
  * @returns {Object} e.g. { suffix: {options}, ...}
  */
-const suffixesByOption = (options) => {
+const workflowByOptions = (options) => {
   return options.reduce((result, options) => {
     return {
       ...result,
@@ -68,17 +66,17 @@ const suffixesByOption = (options) => {
 }
 
 /*
- * @param {Array [Object, ...]} suffixList
+ * @param {Array [Object, ...]} WorkflowList
  * @returns {Object} A list with the suffix as the key and the option as the value.
  * For each item Ignores the workflow and flattens all options into a single object
  * This allows for searching by suffix
  * example: { SF1: { ...option }, ...}
  */
-const createSuffixItems = (suffixList) => {
-  return suffixList.reduce((result, { options }) => {
+const createWorkflowOptions = (WorkflowList) => {
+  return WorkflowList.reduce((result, { options }) => {
     return {
       ...result,
-      ...suffixesByOption(options),
+      ...workflowByOptions(options),
     }
   }, {})
 }
@@ -219,8 +217,8 @@ const WorkflowListType = ({
 
 export {
   byAttribute,
-  createSuffixDropdownOptions,
-  createSuffixItems,
+  createWorkflowDropdownOptions,
+  createWorkflowOptions,
   createBarcodeLabelItem,
   createLabelsFromBarcodes,
   WorkflowItemType,

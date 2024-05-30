@@ -1,8 +1,8 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
 import {
   byAttribute,
-  createSuffixDropdownOptions,
-  createSuffixItems,
+  createWorkflowDropdownOptions,
+  createWorkflowOptions,
   createBarcodeLabelItem,
   createLabelsFromBarcodes,
   WorkflowItemType,
@@ -10,7 +10,7 @@ import {
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
-const suffixList = [
+const workflowList = [
   {
     workflow: 'Workflow 1',
     options: [
@@ -76,20 +76,20 @@ describe('LabelPrintingHelpers.js', () => {
       expect(byAttribute(array, 'a')).toEqual([1, 3, 5])
     })
   })
-  describe('createSuffixDropdownOptions', () => {
+  describe('createWorkflowDropdownOptions', () => {
     it('creates an item for each workflow', () => {
-      const items = createSuffixDropdownOptions(suffixList)
-      expect(items.length).toEqual(suffixList.length + 1)
+      const items = createWorkflowDropdownOptions(workflowList)
+      expect(items.length).toEqual(workflowList.length + 1)
     })
 
     it('creates a label for each workflow', () => {
-      const items = createSuffixDropdownOptions(suffixList)
+      const items = createWorkflowDropdownOptions(workflowList)
       expect(items[0].label).toEqual('Workflow 1')
       expect(items[1].label).toEqual('Workflow 2')
     })
 
     it('creates an option for each stage', () => {
-      const items = createSuffixDropdownOptions(suffixList)
+      const items = createWorkflowDropdownOptions(workflowList)
       expect(items[0].options.length).toEqual(3)
       const { text, value } = items[0].options[0]
       expect(text).toEqual('ST1 - Stage 1')
@@ -97,22 +97,22 @@ describe('LabelPrintingHelpers.js', () => {
     })
 
     it('creates a no suffix option', () => {
-      const items = createSuffixDropdownOptions(suffixList)
+      const items = createWorkflowDropdownOptions(workflowList)
       const { text, value } = items.slice(-1)[0]
       expect(text).toEqual('No suffix')
       expect(value).toBeNull()
     })
   })
 
-  describe('#createSuffixItems', () => {
+  describe('#createWorkflowOptions', () => {
     it('creates a key for each suffix', () => {
-      const items = createSuffixItems(suffixList)
+      const items = createWorkflowOptions(workflowList)
       expect(Object.keys(items)).toEqual(['ST1', 'ST2', 'ST3', 'ST10', 'ST11', 'ST12'])
     })
 
     it('creates a list of options for each suffix', () => {
-      const items = createSuffixItems(suffixList)
-      expect(Object.values(items)[0]).toEqual(suffixList[0].options[0])
+      const items = createWorkflowOptions(workflowList)
+      expect(Object.values(items)[0]).toEqual(workflowList[0].options[0])
     })
   })
 
