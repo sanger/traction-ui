@@ -254,10 +254,11 @@ const update = async () => {
     }
   }
 
-  /*Update the well, and keep the updated flag. 
-  This is used to determine if the well is updated or not.
-  The volume displayed is initialised to available_volume if it is not updated */
-  store.updateWell({ well: { ...well.value, updated: true }, plateNumber: plateNumber.value })
+  //Update the well object with the used aliquots
+  well.value.used_aliquots.forEach((aliquot) => {
+    aliquot.volumeEdited = aliquot.volume != aliquot.available_volume
+  })
+  store.updateWell({ well: { ...well.value}, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
@@ -335,8 +336,8 @@ const setupWell = async () => {
           aliquotId: aliquot.id,
           volume: aliquot.volume,
         })
-        // If the well is not yet updated, initialise the volume to the available volume for the library aliquot
-        if (!well.value.updated) {
+        // Initialise the volume to the available volume for the library aliquot, if we haven't edited the volume
+        if (!aliquot.volumeEdited) {
           used_aliquot.volume = used_aliquot.available_volume
         }
       }
