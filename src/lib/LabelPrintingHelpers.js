@@ -276,6 +276,23 @@ const createPlateBarcodeLabel = ({ workflowItemType }) => {
   } = workflowItemType
   return { barcode, first_line, second_line, third_line, fourth_line, label_name: 'main_label' }
 }
+
+/**
+ * @param {Object} workflowBarcodeItems
+ * @param {String} labwareType
+ * @returns {Array} - An array of BarcodeLabelItem objects suitable for printing
+ */
+const createBarcodeLabels = ({ workflowBarcodeItems, labwareType }) => {
+  const barcodeLabelFns = {
+    tube: createTubeBarcodeLabel,
+    plate96: createPlateBarcodeLabel,
+  }
+
+  const barcodeLabelFn = barcodeLabelFns[labwareType]
+
+  return workflowBarcodeItems.map((workflowItemType) => barcodeLabelFn({ workflowItemType }))
+}
+
 export {
   byAttribute,
   createWorkflowDropdownOptions,
@@ -286,4 +303,5 @@ export {
   WorkflowListType,
   createTubeBarcodeLabel,
   createPlateBarcodeLabel,
+  createBarcodeLabels,
 }

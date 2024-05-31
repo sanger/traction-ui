@@ -9,6 +9,7 @@ import {
   WorkflowListType,
   createTubeBarcodeLabel,
   createPlateBarcodeLabel,
+  createBarcodeLabels,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
@@ -66,6 +67,21 @@ const workflowList = [
     ],
   },
 ]
+
+const labelTypes = {
+  tube2d: {
+    text: 'Tube - 2d',
+    value: 'tube2d',
+    labwareType: 'tube',
+    labelTemplateName: 'traction_tube_label_template',
+  },
+  plate1d: {
+    text: '96-Well Plate - 1d',
+    value: 'plate1d',
+    labwareType: 'plate96',
+    labelTemplateName: 'traction_plate_label_template_1d',
+  },
+}
 
 describe('LabelPrintingHelpers.js', () => {
   describe('byAttribute', () => {
@@ -512,6 +528,66 @@ describe('LabelPrintingHelpers.js', () => {
       expect(third_line).toEqual(workflowItemType.sourceBarcode)
       expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
       expect(label_name).toEqual('main_label')
+    })
+  })
+
+  describe('#createBarcodeLabels', () => {
+    const sourceBarcodeList = ['SQSC-1', 'SQSC-2', 'SQSC-3', 'SQSC-4', 'SQSC-5']
+    const date = getCurrentDate()
+    const workflowItem = {
+      stage: 'Stage1',
+      suffix: 'ST1',
+      text: 'ST1 - Stage1',
+      value: 'ST1',
+      workflow: 'Worflow 1',
+    }
+    const numberOfLabels = 3
+    const workflowListType = WorkflowListType({
+      sourceBarcodeList,
+      date,
+      workflowItem,
+      numberOfLabels,
+    })
+    const workflowBarcodeItems = workflowListType.createWorkflowBarcodeItemList({
+      workflowListType,
+    })
+
+    it('creates tube labels', () => {
+      const tubeLabels = createBarcodeLabels({
+        workflowBarcodeItems,
+        labelTypes,
+        labwareType: 'tube',
+      })
+      expect(tubeLabels.length).toEqual(15)
+      expect(tubeLabels[0]).toEqual(
+        createTubeBarcodeLabel({
+          workflowItemType: workflowBarcodeItems[0],
+        }),
+      )
+      expect(tubeLabels[14]).toEqual(
+        createTubeBarcodeLabel({
+          workflowItemType: workflowBarcodeItems[14],
+        }),
+      )
+    })
+
+    it('creates plate labels', () => {
+      const plateLabels = createBarcodeLabels({
+        workflowBarcodeItems,
+        labelTypes,
+        labwareType: 'plate96',
+      })
+      expect(plateLabels.length).toEqual(15)
+      expect(plateLabels[0]).toEqual(
+        createPlateBarcodeLabel({
+          workflowItemType: workflowBarcodeItems[0],
+        }),
+      )
+      expect(plateLabels[14]).toEqual(
+        createPlateBarcodeLabel({
+          workflowItemType: workflowBarcodeItems[14],
+        }),
+      )
     })
   })
 })
