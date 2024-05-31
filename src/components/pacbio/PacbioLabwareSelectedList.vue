@@ -217,11 +217,11 @@ const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube)
  * A method that handles the request clicked event
  * @param {Object} request - The request object
  */
-const requestClicked = (request) =>
+const requestClicked = (source) =>
   pacbioPoolCreateStore.selectUsedAliquot({
-    request: request.id,
-    source_id: request.source_id,
-    selected: !request.selected,
+    request: source.request,
+    source_id: source.source_id,
+    selected: !source.selected,
   })
 
 const onClose = (labware) => {

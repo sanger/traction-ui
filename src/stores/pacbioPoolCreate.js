@@ -218,7 +218,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           return {
             //return following properties just to ensure that the object is returned with required fields
             ...resources.requests[request],
-            source_id:String(source_id),
+            source_id: String(source_id),
             source_type,
             request,
             selected: true,
@@ -272,7 +272,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         const source_id = source_obj.source_id ?? source_obj.id
         const selected = !!selectedUsedAliquots[`_${source_id}`]
         val = source_obj['requests']?.map((id) => {
-          return { ...requests[id], selected, source_id:String(source_id) }
+          return { ...requests[id], selected, source_id: String(source_id) }
         })
       } else {
         val = Object.values(requests).map((request) => {
@@ -509,7 +509,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
       for (const requestId of requests) {
-        this.selectUsedAliquot({ request: requestId, source_id: String(tube.source_id), selected: false })
+        this.selectUsedAliquot({
+          request: requestId,
+          source_id: String(tube.source_id),
+          selected: false,
+        })
       }
     },
 
@@ -989,6 +993,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
 
     selectUsedAliquot({ request, source_id, selected = true }) {
+      debugger
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
