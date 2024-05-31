@@ -32,7 +32,7 @@
               <traction-select
                 id="suffix-selection"
                 v-model="form.suffix"
-                :options="suffixOptions"
+                :options="workflowDropdownOptions"
                 placeholder="Please select a suffix"
               ></traction-select>
             </div>
@@ -123,11 +123,11 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import {
-  createSuffixDropdownOptions,
-  createSuffixItems,
+  createWorkflowDropdownOptions,
+  createWorkflowOptions,
   createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers.js'
-import SuffixList from '@/config/SuffixList.json'
+import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
 
@@ -190,16 +190,16 @@ const labelType = computed(() => {
  * Creates a computed property to get the suffix options
  * @returns {Array} suffix options
  */
-const suffixOptions = computed(() => {
-  return createSuffixDropdownOptions(SuffixList)
+const workflowDropdownOptions = computed(() => {
+  return createWorkflowDropdownOptions(WorkflowList)
 })
 
 /**
  * Creates a computed property to get the suffix items
  * @returns {Array} suffix items
  */
-const suffixItems = computed(() => {
-  return createSuffixItems(SuffixList)
+const workflowOptions = computed(() => {
+  return createWorkflowOptions(WorkflowList)
 })
 
 /**
@@ -208,7 +208,7 @@ const suffixItems = computed(() => {
  */
 const labels = computed(() => {
   const date = getCurrentDate()
-  const suffixItem = suffixItems.value[form.suffix]
+  const workflowItem = workflowOptions.value[form.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
@@ -218,7 +218,7 @@ const labels = computed(() => {
   return createLabelsFromBarcodes({
     sourceBarcodeList: splitSourceBarcodeList,
     date,
-    suffixItem,
+    workflowItem,
     numberOfLabels: form.numberOfLabels,
   })
 })

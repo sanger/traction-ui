@@ -126,31 +126,31 @@ const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = []
  * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
  * @returns [BarcodeLabelItem, ...} - An array of BarcodeLabelItem objects suitable for printing
  */
-// const createLabelsFromBarcodes = ({
-//   sourceBarcodeList,
-//   date,
-//   workflowItem = NullWorkflowItem,
-//   numberOfLabels = 0,
-// } = {}) => {
-//   const { stage, suffix } = workflowItem
+const createLabelsFromBarcodes = ({
+  sourceBarcodeList,
+  date,
+  workflowItem = NullWorkflowItem,
+  numberOfLabels = 0,
+} = {}) => {
+  const { stage, suffix } = workflowItem
 
-//   // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
-//   // if number is 0 returns an empty array
-//   const numberList = Array.from({ length: numberOfLabels }, (v, k) => k + 1)
+  // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
+  // if number is 0 returns an empty array
+  const numberList = Array.from({ length: numberOfLabels }, (v, k) => k + 1)
 
-//   // for each sourceBarcode create a BarcodeLabelItem
-//   return sourceBarcodeList.flatMap((sourceBarcode) => {
-//     // if numberOfLabels is empty we just want to return a single item with
-//     if (numberList.length === 0) {
-//       return createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix] })
-//     } else {
-//       // if numberList is filled return a BarcodeLabelItem for each one
-//       return numberList.map((number) =>
-//         createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix, number] }),
-//       )
-//     }
-//   })
-// }
+  // for each sourceBarcode create a BarcodeLabelItem
+  return sourceBarcodeList.flatMap((sourceBarcode) => {
+    // if numberOfLabels is empty we just want to return a single item with
+    if (numberList.length === 0) {
+      return createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix] })
+    } else {
+      // if numberList is filled return a BarcodeLabelItem for each one
+      return numberList.map((number) =>
+        createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix, number] }),
+      )
+    }
+  })
+}
 
 /**
  * @param {Object} sourceBarcode - original barcode
@@ -243,7 +243,7 @@ export {
   createWorkflowDropdownOptions,
   createWorkflowOptions,
   createBarcodeLabelItem,
-  // createLabelsFromBarcodes,
+  createLabelsFromBarcodes,
   WorkflowItemType,
   WorkflowListType,
 }
