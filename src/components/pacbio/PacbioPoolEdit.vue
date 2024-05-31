@@ -134,12 +134,12 @@ const autoTag = ref(false) //  Flag to indicate if auto-tagging is enabled
 const parsedFile = ref(null) // Holds the data of the parsed file
 const validated = ref(true) // Flag to indicate if the form data is valid
 
-const { pool, tubeItem, selectedRequests, createPool, updatePool, updateUsedAliquotFromCsvRecord } =
+const { pool, tubeItem, selectedUsedAliquots, createPool, updatePool, updateUsedAliquotFromCsvRecord } =
   usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const persisted = computed(() => !!pool.id)
 const poolType = computed(() => {
-  switch (selectedRequests.length) {
+  switch (selectedUsedAliquots.length) {
     case 0:
       return 'Empty'
     default:
@@ -214,7 +214,7 @@ const onFieldUpdate = () => {
   validated.value = false
 }
 
-const notifyAliquotSelection = (request) => {
-  emit('aliquot-selected', request)
+const notifyAliquotSelection = (aliquot) => {
+  emit('aliquot-selected', aliquot)
 }
 </script>

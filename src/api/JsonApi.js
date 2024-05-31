@@ -60,15 +60,12 @@ const extractRelationshipsAndGroupById = (relationships = {}) => {
  * @param {Array} data Array of JSON API data
  * @returns {Object} keys will be the id of the data
  */
-const dataToObjectById = ({ data = [], includeRelationships = false, id_key = 'id' }) => {
-  return data.reduce((result, item) => {
-    const { type, attributes, relationships } = item
-    const key = id_key !== 'id' ? attributes[id_key] : item.id
+const dataToObjectById = ({ data = [], includeRelationships = false }) => {
+  return data.reduce((result, { id, type, attributes, relationships }) => {
     return {
-      [key]: {
-        // we still keep the key as it will be needed
-        [id_key]: key,
-        id: item.id,
+      [id]: {
+        // we still keep the id as it will be needed
+        id,
         // the type can be useful for components
         type,
         ...attributes,

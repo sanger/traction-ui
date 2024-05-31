@@ -58,7 +58,7 @@
           </div>
           <div class="overflow-y-auto h-screen">
             <traction-table
-              :items="selectedRequests"
+              :items="selectedRequestsWithSource"
               :fields="state.requestFields"
               :tbodyTrClass="tableRowColour"
               @row-clicked="requestClicked"
@@ -69,7 +69,7 @@
                     :checked="row.item.selected"
                     type="checkbox"
                     :data-attribute="'request-checkbox-' + row.item.id"
-                    @change="requestClicked({ id: row.item.id, selected: row.item.selected })"
+                    @change="requestClicked(row.item)"
                   />
                 </div> </template
             ></traction-table>
@@ -143,26 +143,29 @@ const pacbioPoolCreateStore = usePacbioPoolCreateStore() // A composable store f
 /**
  * A computed property that returns all selected requests
  * If the sortBySelection value is true, the requests are sorted by selection
- * @returns {Array} - An array of selected requests which can be sorted by selection
+ * @returns {Array} - An array of selected requests with its source labware which can be sorted by selection
  */
-const selectedRequests = computed(() => {
+const selectedRequestsWithSource = computed(() => {
   //get all selected requests first in the order of the labware scanned
-  const requests = props.labware.flatMap((labware) => {
-    if (isPlate(labware)) {
-      const plate = pacbioPoolCreateStore.selectedPlates.find(
-        (item) => item.barcode === labware.barcode,
-      )
-      return pacbioPoolCreateStore.wellList(plate.wells).flatMap((well) => {
-        const reqList = pacbioPoolCreateStore.requestList(well)
-        return reqList.map((req) => ({ ...req, well }))
-      })
-    } else {
-      const tube = pacbioPoolCreateStore.selectedTubes.find(
-        (item) => item.barcode === labware.barcode,
-      )
-      return pacbioPoolCreateStore.requestList(tube).map((req) => ({ ...req, tube }))
-    }
-  })
+  const requests = props.labware
+    .flatMap((labware) => {
+      if (isPlate(labware)) {
+        const plate = pacbioPoolCreateStore.selectedPlates.find(
+          (item) => item.barcode === labware.barcode,
+        )
+        return pacbioPoolCreateStore.wellList(plate.wells).flatMap((well) => {
+          const reqList = pacbioPoolCreateStore.requestList(well)
+          return reqList?.map((req) => ({ ...req, well }))
+        })
+      } else {
+        const tube = pacbioPoolCreateStore.selectedTubes.find(
+          (item) => item.barcode === labware.barcode,
+        )
+        return pacbioPoolCreateStore.requestList(tube).map((req) => ({ ...req, tube }))
+      }
+    })
+    .filter((item) => item !== undefined) //filter out undefined values for
+
   //sort requests by selection if sortBySelection is true
   return sortBySelection.value ? requests.sort((a, b) => b.selected - a.selected) : requests
 })
@@ -214,8 +217,12 @@ const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube)
  * A method that handles the request clicked event
  * @param {Object} request - The request object
  */
-const requestClicked = ({ source_id, request, selected }) =>
-  pacbioPoolCreateStore.selectRequest({ request, source_id, selected: !selected })
+const requestClicked = (request) =>
+  pacbioPoolCreateStore.selectUsedAliquot({
+    request: request.id,
+    source_id: request.source_id,
+    selected: !request.selected,
+  })
 
 const onClose = (labware) => {
   emit('closed', labware)
@@ -229,7 +236,7 @@ const onClose = (labware) => {
  */
 const tableRowColour = (row) => {
   return `${row.selected ? 'bg-yellow-300' : 'bg-gray-200'} ${
-    row.id === props.highlight?.request.id && 'border-4 border-purple-500'
+    row.source_id === props.highlight?.request.source_id && 'border-4 border-purple-500'
   } cursor-pointer`
 }
 

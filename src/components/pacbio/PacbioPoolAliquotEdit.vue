@@ -176,6 +176,7 @@ const tagListOptions = computed(() => {
  */
 const aliquot = computed(() => store.usedAliquotItem(props.request.source_id))
 
+
 /**
  * A function to set the library attributes
  * @param {String} attr - The attribute to set
