@@ -214,13 +214,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     selectedUsedAliquots: ({ used_aliquots, resources }) => {
       return Object.values(used_aliquots)
-        .map(({ request, source_id, source_type }) => {
+        .map((aliquot) => {
           return {
-            //return following properties just to ensure that the object is returned with required fields
-            ...resources.requests[request],
-            source_id: String(source_id),
-            source_type,
-            request,
+            ...resources.requests[aliquot.request],
+            ...aliquot,
             selected: true,
           }
         })
@@ -252,17 +249,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     },
     /**
      * Returns a list of requests.
-     * If IDs are provided, returns the requests with those IDs and a selected property indicating if they are in the selected requests.
-     * Otherwise, returns all requests with a selected property indicating if they are in the selected requests.
+     * If a source object is provided, returns the requests for that source object.
+     * Otherwise, returns all requests with a selected property indicating if they are in the selected requests with their source_id.
      *
      * @param {Object} state - The Pinia state object.
-     * @returns {Function} A function that takes an array of IDs and returns the corresponding requests with a selected property.
+     * @returns {Function} A function that takes a source object and returns the corresponding requests with their source_id.
      *
-     * @example
-     * // Get all requests
-     * const allRequests = requestList(state)();
-     * // Get specific requests
-     * const specificRequests = requestList(state)(['id1', 'id2']);
      */
     requestList: (state) => (source_obj) => {
       const requests = state.resources.requests
@@ -270,9 +262,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       let val = []
       if (source_obj) {
         const source_id = source_obj.source_id ?? source_obj.id
-        const selected = !!selectedUsedAliquots[`_${source_id}`]
+        const used_aliquot = state.used_aliquots[`_${source_id}`]
+        const selected = !!used_aliquot
         val = source_obj['requests']?.map((id) => {
-          return { ...requests[id], selected, source_id: String(source_id) }
+          return { ...requests[id], selected, source_id }
         })
       } else {
         val = Object.values(requests).map((request) => {
@@ -447,7 +440,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const selectedUsedAliquotRequests = this.used_aliquots
       for (const id of requests) {
         const selected = !!selectedUsedAliquotRequests[`_${well_id}`]
-        this.selectUsedAliquot({ request: id, source_id: String(well_id), selected: !selected })
+        this.selectRequestInSource({ request: id, source_id: String(well_id), selected: !selected })
       }
     },
 
@@ -486,7 +479,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       for (const wellId of wells) {
         const { requests = [] } = this.resources.wells[wellId]
         for (const requestId of requests) {
-          this.selectUsedAliquot({ request: requestId, source_id: String(wellId), selected: false })
+          this.selectRequestInSource({
+            request: requestId,
+            source_id: String(wellId),
+            selected: false,
+          })
         }
       }
     },
@@ -509,7 +506,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       this.selectTube({ id: tube.id, selected: false })
       const { requests } = this.resources.tubes[tube.id]
       for (const requestId of requests) {
-        this.selectUsedAliquot({
+        this.selectRequestInSource({
           request: requestId,
           source_id: String(tube.source_id),
           selected: false,
@@ -981,7 +978,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     },
 
     /**
-     * Selects or deselects a request based on the provided id and selected status.
+     * Selects or deselects a request based on the provided request object, source_id and selected status.
      * If selected, a new used_aliquot is created for the request and added to the used_aliquots object.
      * If not selected, the used_aliquot for the request is removed from the used_aliquots object.
      *
@@ -992,8 +989,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {void}
      */
 
-    selectUsedAliquot({ request, source_id, selected = true }) {
-      debugger
+    selectRequestInSource({ request, source_id, selected = true }) {
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/

@@ -122,6 +122,10 @@ describe('usePacbioPoolCreateStore', () => {
           source_id: '40',
           request: '40',
           source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
         },
         {
           ...requests['136'],
@@ -129,6 +133,10 @@ describe('usePacbioPoolCreateStore', () => {
           source_id: '136',
           request: '136',
           source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
         },
         {
           ...requests['3'],
@@ -136,6 +144,10 @@ describe('usePacbioPoolCreateStore', () => {
           source_id: '3',
           request: '3',
           source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
         },
       ])
     })
@@ -475,12 +487,12 @@ describe('usePacbioPoolCreateStore', () => {
     describe('selectWellRequests', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
-        store.selectUsedAliquot = vi.fn()
+        store.selectRequestInSource = vi.fn()
       })
 
       it('selects the requests for a given well', () => {
         store.selectWellRequests('1')
-        expect(store.selectUsedAliquot).toBeCalledWith({
+        expect(store.selectRequestInSource).toBeCalledWith({
           selected: false,
           request: '1',
           source_id: '1',
@@ -509,10 +521,10 @@ describe('usePacbioPoolCreateStore', () => {
       it('deselects the plate and its contents', () => {
         store.$state = Data.AutoTagStore
         store.selectPlate = vi.fn()
-        store.selectUsedAliquot = vi.fn()
+        store.selectRequestInSource = vi.fn()
         store.deselectPlateAndContents('1')
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: false })
-        expect(store.selectUsedAliquot).toBeCalledTimes(48)
+        expect(store.selectRequestInSource).toBeCalledTimes(48)
       })
     })
 
@@ -520,13 +532,13 @@ describe('usePacbioPoolCreateStore', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         store.selectTube = vi.fn()
-        store.selectUsedAliquot = vi.fn()
+        store.selectRequestInSource = vi.fn()
       })
 
       it('deselects the tube and its contents', () => {
         store.deselectTubeAndContents('2')
         expect(store.selectTube).toBeCalledWith({ id: '2', selected: false })
-        expect(store.selectUsedAliquot).toBeCalledWith({
+        expect(store.selectRequestInSource).toBeCalledWith({
           selected: false,
           request: '98',
           source_id: '2',
@@ -536,7 +548,7 @@ describe('usePacbioPoolCreateStore', () => {
       it('will not deselect the tube when given invalid barcode', () => {
         store.deselectTubeAndContents('TRAC-2-22')
         expect(store.selectTube).not.toBeCalled()
-        expect(store.selectUsedAliquot).not.toBeCalled()
+        expect(store.selectRequestInSource).not.toBeCalled()
       })
     })
 
@@ -1193,7 +1205,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
     })
 
-    describe('selectUsedAliquot', () => {
+    describe('selectRequestInSource', () => {
       const attributeKeys = [
         'source_id',
         'tag_id',
@@ -1222,7 +1234,7 @@ describe('usePacbioPoolCreateStore', () => {
             tube: '2',
           },
         }
-        store.selectUsedAliquot({ request: '1', source_id: '1' })
+        store.selectRequestInSource({ request: '1', source_id: '1' })
 
         /*
         We expect the plate to be recorded in the selected plates it should:
@@ -1256,7 +1268,7 @@ describe('usePacbioPoolCreateStore', () => {
         store.used_aliquots = {
           _1: { source_id: '1', request: '1', tag_id: '1' },
         }
-        store.selectUsedAliquot({ request: '1', source_id: '1', tag_id: '1', selected: false })
+        store.selectRequestInSource({ request: '1', source_id: '1', tag_id: '1', selected: false })
         //We expect the tube to be removed in the selected plates
         expect(store.used_aliquots).toEqual({})
       })
@@ -1292,7 +1304,7 @@ describe('usePacbioPoolCreateStore', () => {
               tag_id: null,
             },
           }
-          store.selectUsedAliquot({ request: '1', source_id: '2' })
+          store.selectRequestInSource({ request: '1', source_id: '2' })
           expect(store.used_aliquots['_2'].attributes(attributeKeys)).toEqual({
             source_id: '2',
             tag_id: null,
@@ -1361,7 +1373,7 @@ describe('usePacbioPoolCreateStore', () => {
           }
 
           store.selected.tagSet = {}
-          store.selectUsedAliquot({ request: '1', source_id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
             source_id: '1',
@@ -1442,7 +1454,7 @@ describe('usePacbioPoolCreateStore', () => {
 
           rootStore.addVuexMessage = vi.fn()
           store.selectTagSet('3')
-          store.selectUsedAliquot({ request: '1', source_id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
             source_id: '1',
@@ -1501,7 +1513,7 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectUsedAliquot({ request: '1', source_id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),
@@ -1560,7 +1572,7 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectUsedAliquot({ request: '1', source_id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),

@@ -218,9 +218,9 @@ const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube)
  * @param {Object} request - The request object
  */
 const requestClicked = (source) =>
-  pacbioPoolCreateStore.selectUsedAliquot({
-    request: source.request,
-    source_id: source.source_id,
+  pacbioPoolCreateStore.selectRequestInSource({
+    ...source,
+    request: source.request ?? source.id,
     selected: !source.selected,
   })
 
