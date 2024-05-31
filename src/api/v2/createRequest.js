@@ -101,8 +101,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   }
 
   /*
-   * @param {Object} filter - query filters
-   * @param String include - query include
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a get query
    */
@@ -112,7 +111,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
 
   /*
    * @param String,Number id - id of the record to find
-   * @param String include - query include
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a get query with an id
    */
@@ -122,6 +121,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
 
   /*
    * @param {Object} data - data to send for create
+  * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a create
    */
