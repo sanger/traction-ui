@@ -189,12 +189,12 @@ const WorkflowItemType = ({
   }
 }
 
-const WorkflowListType = ({
-  sourceBarcodeList,
-  date,
-  workflowItem = NullWorkflowItem,
-  numberOfLabels = 0,
-} = {}) => {
+/**
+ * @param {Object} workflowListType
+ * @returns {Array} - An array of WorkflowItemType objects suitable for displaying barcodes
+ */
+const createWorkflowBarcodeItemList = ({ workflowListType }) => {
+  const { sourceBarcodeList, date, workflowItem, numberOfLabels } = workflowListType
   const { stage, suffix } = workflowItem
 
   // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
@@ -213,6 +213,29 @@ const WorkflowListType = ({
       )
     }
   })
+}
+
+/**
+ * @param {Object} sourceBarcodeList - original barcode
+ * @param {string} date - date the barcode is created
+ * @param {String} workflowItem - a workflow item
+ * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
+ * @returns {Object} A WorkflowListType object suitable for displaying barcodes
+ * It would be better if createWorkflowBarcodeItemList did not need WorkflowListType but not sure how to do that
+ */
+const WorkflowListType = ({
+  sourceBarcodeList,
+  date,
+  workflowItem = NullWorkflowItem,
+  numberOfLabels = 0,
+} = {}) => {
+  return {
+    sourceBarcodeList,
+    date,
+    workflowItem,
+    numberOfLabels,
+    createWorkflowBarcodeItemList,
+  }
 }
 
 export {

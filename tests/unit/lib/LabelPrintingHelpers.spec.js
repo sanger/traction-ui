@@ -374,15 +374,32 @@ describe('LabelPrintingHelpers.js', () => {
     const numberOfLabels = 3
 
     it('with no workflow stage', () => {
-      const barcodeLabels = WorkflowListType({ sourceBarcodeList, date })
-      expect(barcodeLabels.length).toEqual(5)
-      expect(byAttribute(barcodeLabels, 'barcode')).toEqual(sourceBarcodeList)
+      const workflowListType = WorkflowListType({ sourceBarcodeList, date })
+      const workflowBarcodeItems = workflowListType.createWorkflowBarcodeItemList({
+        workflowListType,
+      })
+      expect(workflowBarcodeItems.length).toEqual(5)
+      expect(workflowBarcodeItems[0]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[0],
+          date,
+        }),
+      )
+      expect(workflowBarcodeItems[4]).toEqual(
+        WorkflowItemType({
+          sourceBarcode: sourceBarcodeList[4],
+          date,
+        }),
+      )
     })
 
     it('with a workflow stage', () => {
-      const workflowList = WorkflowListType({ sourceBarcodeList, date, workflowItem })
-      expect(workflowList.length).toEqual(5)
-      expect(workflowList[0]).toEqual(
+      const workflowListType = WorkflowListType({ sourceBarcodeList, date, workflowItem })
+      const workflowBarcodeItems = workflowListType.createWorkflowBarcodeItemList({
+        workflowListType,
+      })
+      expect(workflowBarcodeItems.length).toEqual(5)
+      expect(workflowBarcodeItems[0]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[0],
           date,
@@ -390,7 +407,7 @@ describe('LabelPrintingHelpers.js', () => {
           suffixes: [workflowItem.suffix],
         }),
       )
-      expect(workflowList[4]).toEqual(
+      expect(workflowBarcodeItems[4]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[4],
           date,
@@ -401,14 +418,17 @@ describe('LabelPrintingHelpers.js', () => {
     })
 
     it('with a workflow stage and numbers', () => {
-      const workflowList = WorkflowListType({
+      const workflowListType = WorkflowListType({
         sourceBarcodeList,
         date,
         workflowItem,
         numberOfLabels,
       })
-      expect(workflowList.length).toEqual(15)
-      expect(workflowList[0]).toEqual(
+      const workflowBarcodeItems = workflowListType.createWorkflowBarcodeItemList({
+        workflowListType,
+      })
+      expect(workflowBarcodeItems.length).toEqual(15)
+      expect(workflowBarcodeItems[0]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[0],
           date,
@@ -417,7 +437,7 @@ describe('LabelPrintingHelpers.js', () => {
           number: 1,
         }),
       )
-      expect(workflowList[14]).toEqual(
+      expect(workflowBarcodeItems[14]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[4],
           date,
@@ -429,16 +449,19 @@ describe('LabelPrintingHelpers.js', () => {
     })
 
     it('with numbers only', () => {
-      const workflowList = WorkflowListType({ sourceBarcodeList, date, numberOfLabels })
-      expect(workflowList.length).toEqual(15)
-      expect(workflowList[0]).toEqual(
+      const workflowListType = WorkflowListType({ sourceBarcodeList, date, numberOfLabels })
+      const workflowBarcodeItems = workflowListType.createWorkflowBarcodeItemList({
+        workflowListType,
+      })
+      expect(workflowBarcodeItems.length).toEqual(15)
+      expect(workflowBarcodeItems[0]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[0],
           date,
           number: 1,
         }),
       )
-      expect(workflowList[14]).toEqual(
+      expect(workflowBarcodeItems[14]).toEqual(
         WorkflowItemType({
           sourceBarcode: sourceBarcodeList[4],
           date,
