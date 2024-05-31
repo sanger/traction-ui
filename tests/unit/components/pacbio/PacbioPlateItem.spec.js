@@ -87,17 +87,17 @@ describe('PacbioPlateItem.vue', () => {
         expect(mappedWell[0]).toEqual({
           ...wells[1],
           ...rootStore.plateMap.wells['A1'],
-          source_id: '1',
+          sourceId: '1',
         })
         expect(mappedWell[12]).toEqual({
           ...wells[2],
           ...rootStore.plateMap.wells['B1'],
-          source_id: '2',
+          sourceId: '2',
         })
         expect(mappedWell[24]).toEqual({
           ...wells[3],
           ...rootStore.plateMap.wells['C1'],
-          source_id: '3',
+          sourceId: '3',
         })
       })
     })

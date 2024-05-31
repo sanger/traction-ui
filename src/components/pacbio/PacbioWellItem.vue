@@ -83,7 +83,11 @@ const props = defineProps({
       return []
     },
   },
-  source_id: {
+
+  /**
+   * The id of the well
+   */
+  sourceId: {
     type: String,
     default: '',
   },
@@ -97,7 +101,9 @@ const emit = defineEmits(['click'])
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 
 const getRequest = computed(() => {
-  return props.requests.length ? pacbioPoolCreateStore.requestList(props)[0] : ''
+  return props.requests.length
+    ? pacbioPoolCreateStore.requestList({ requests: props.requests, source_id: props.sourceId })[0]
+    : ''
 })
 
 const checkRequest = computed(() => {

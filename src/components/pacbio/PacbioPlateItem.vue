@@ -44,7 +44,7 @@ const emit = defineEmits(['clickWell'])
 const mappedWells = computed(() => {
   return Object.entries(rootStore.plateMap.wells).map(([position, mapWell]) => {
     const well = wellData.value.find((well) => well.position == position)
-    return well ? { ...mapWell, ...well, source_id: well.id } : mapWell
+    return well ? { ...mapWell, ...well, sourceId: well.id } : mapWell
   })
 })
 

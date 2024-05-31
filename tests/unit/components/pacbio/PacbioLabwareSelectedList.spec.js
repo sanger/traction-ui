@@ -293,20 +293,24 @@ describe('PacbioLabwareSelectedList', () => {
       it('should call selectRequestInSource method on select checkbox click ', async () => {
         store.selectRequestInSource = vi.fn()
         await wrapper.find('[data-attribute=request-checkbox-241]').setChecked(false)
-        expect(store.selectRequestInSource).toHaveBeenCalledWith({
-          request: '241',
-          selected: false,
-          source_id: '1',
-        })
+        expect(store.selectRequestInSource).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '241',
+            selected: false,
+            source_id: '1',
+          }),
+        )
       })
       it('should call selectRequestInSource method on click on a table cell ', async () => {
         store.selectRequestInSource = vi.fn()
         wrapper.find('tbody').findAll('td')[0].trigger('click')
-        expect(store.selectRequestInSource).toHaveBeenCalledWith({
-          request: '40',
-          source_id: '4722',
-          selected: true,
-        })
+        expect(store.selectRequestInSource).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '40',
+            source_id: '4722',
+            selected: true,
+          }),
+        )
       })
     })
   })

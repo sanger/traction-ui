@@ -216,21 +216,21 @@
         "type": "tubes",
         "barcode": "3980000001795",
         "requests": ["97"],
-        "source_id":"1"
+        "source_id": "1"
       },
       "2": {
         "id": "2",
         "type": "tubes",
         "barcode": "TRAC-2-2",
         "requests": ["98"],
-        "source_id":"2"
+        "source_id": "2"
       },
       "3": {
         "id": "3",
         "type": "tubes",
         "barcode": "TRAC-2-4",
         "requests": ["99"],
-        "source_id":"3"
+        "source_id": "3"
       }
     },
     "wells": {
