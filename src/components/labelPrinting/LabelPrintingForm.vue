@@ -32,7 +32,7 @@
               <traction-select
                 id="suffix-selection"
                 v-model="form.suffix"
-                :options="workflowDropdownOptions"
+                :options="suffixOptions"
                 placeholder="Please select a suffix"
               ></traction-select>
             </div>
@@ -123,12 +123,11 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import {
-  createWorkflowDropdownOptions,
-  createWorkflowOptions,
-  // createLabelsFromBarcodes,
-  WorkflowListType,
+  createSuffixDropdownOptions,
+  createSuffixItems,
+  createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers.js'
-import WorkflowList from '@/config/WorkflowList.json'
+import SuffixList from '@/config/SuffixList.json'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
 
@@ -188,19 +187,19 @@ const labelType = computed(() => {
 })
 
 /**
- * Creates a computed property to get the workflow dropdown options
+ * Creates a computed property to get the suffix options
  * @returns {Array} suffix options
  */
-const workflowDropdownOptions = computed(() => {
-  return createWorkflowDropdownOptions(WorkflowList)
+const suffixOptions = computed(() => {
+  return createSuffixDropdownOptions(SuffixList)
 })
 
 /**
  * Creates a computed property to get the suffix items
  * @returns {Array} suffix items
  */
-const workflowOptionList = computed(() => {
-  return createWorkflowOptions(WorkflowList)
+const suffixItems = computed(() => {
+  return createSuffixItems(SuffixList)
 })
 
 /**
@@ -209,21 +208,19 @@ const workflowOptionList = computed(() => {
  */
 const labels = computed(() => {
   const date = getCurrentDate()
-  const workflowOption = workflowOptionList.value[form.suffix]
+  const suffixItem = suffixItems.value[form.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
   const splitSourceBarcodeList =
     form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
-  const workflowListType = WorkflowListType({
-    date,
-    workflowItem: workflowOption,
-    numberOfLabels: form.numberOfLabels,
+  return createLabelsFromBarcodes({
     sourceBarcodeList: splitSourceBarcodeList,
+    date,
+    suffixItem,
+    numberOfLabels: form.numberOfLabels,
   })
-
-  return workflowListType.createWorkflowBarcodeItemList({ workflowListType })
 })
 
 /**
