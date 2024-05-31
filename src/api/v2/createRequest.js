@@ -121,7 +121,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
 
   /*
    * @param {Object} data - data to send for create
-  * @param {Object} queryParametersType - query parameters
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a create
    */
