@@ -121,7 +121,7 @@ describe('PacbioPlateItem.vue', () => {
     })
   })
 
-  describe.only('well@click', () => {
+  describe('well@click', () => {
     it('emits a clickWell event with the well id', async () => {
       const well = wrapper.findComponent('[data-attribute="well"]')
       await well.vm.$emit('click')

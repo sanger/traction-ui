@@ -44,8 +44,12 @@ describe('Libraries.vue', () => {
 
     wrapper = mount(Libraries, {
       store,
-      stubs: {
-        PrinterModal: true,
+      global: {
+        stubs: {
+          PrinterModal: {
+            template: '<div ref="printerModal"></div>',
+          },
+        },
       },
     })
     libraries = wrapper.vm

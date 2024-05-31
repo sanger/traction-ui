@@ -13,7 +13,7 @@
           data-type="tag-set-list"
           :options="tagSetOptions"
           @update:model-value="resetSelectedTagId"
-        ></traction-select>
+        />
       </fieldset>
 
       <fieldset id="tag-select-input">
@@ -34,7 +34,7 @@
               v-if="formLibrary.used_volume != null"
               :tooltip-text="'Used volume is ' + formLibrary.used_volume"
             >
-              <traction-badge id="library-used-volume" colour="sanger-yellow"
+              <traction-badge id="library-used-volume" colour="sanger-pink"
                 ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
               >
             </traction-tooltip>
@@ -51,6 +51,7 @@
               :min="formLibrary.used_volume"
               step="any"
               placeholder="Example: 1.0"
+              :class="formLibrary.volume < formLibrary.used_volume"
               class="w-full"
               @update:model-value="errorForVolume"
             >
@@ -66,6 +67,7 @@
               type="number"
               step="any"
               placeholder="Example: 1.0"
+              :class="inputBorderClass('volume')"
               class="w-full"
             >
             </traction-input></fieldset
@@ -74,16 +76,16 @@
 
       <fieldset id="input-group-concentration">
         <traction-label class="ml-1">Concentration</traction-label>
-
         <traction-input
           id="library-concentration"
           v-model="formLibrary.concentration"
+          data-attribute="concentration"
+          :class="inputBorderClass('concentration')"
           type="number"
           min="0"
           step="any"
           placeholder="Example: 1.0"
-        >
-        </traction-input>
+        />
       </fieldset>
 
       <fieldset id="input-group-templatePrepKitBoxBarcode">
@@ -93,14 +95,15 @@
         <traction-input
           id="library-templatePrepKitBoxBarcode"
           v-model="formLibrary.template_prep_kit_box_barcode"
+          data-attribute="template-prep-kit-box-barcode"
+          :class="inputBorderClass('template_prep_kit_box_barcode')"
           type="text"
           minlength="21"
           maxlength="21"
           placeholder="Example: 012345678901234567890"
           pattern="\d*"
           inputmode="numeric"
-        >
-        </traction-input>
+        />
       </fieldset>
 
       <fieldset id="input-group-insertSize">
@@ -108,12 +111,12 @@
         <traction-input
           id="library-insertSize"
           v-model="formLibrary.insert_size"
+          data-attribute="insert-size"
           type="number"
           step="1"
           min="0"
           placeholder="Example: 100"
-        >
-        </traction-input>
+        />
       </fieldset>
     </traction-form>
   </div>
@@ -144,7 +147,6 @@
 * defineExpose: is a Vue 3 function that allows you to expose properties to parent components.
  * {@link} https://vuejs.org/api/sfc-script-setup.html#defineexpose
  *  */
-
 /***
  * PacbioLibraryForm component can be used to create or edit a library.
  * @param {Object} library - The library to be  edited or created
@@ -159,7 +161,7 @@ import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()
 
-// usePacbioRootStore is a Pinia composable function that returns the pacbio root store
+// usePacbioRootStore is a Pinia composable function that returns the pacbio root store.
 const pacbioRootStore = usePacbioRootStore()
 
 // Define props
@@ -184,9 +186,7 @@ const formLibrary = ref(props.library ? { ...props.library } : {})
 Expose formLibrary to parent component as a reactive variable,
 so that the parent component can access the formLibrary and its properties
 */
-defineExpose({
-  formLibrary,
-})
+defineExpose({ formLibrary })
 
 /*
 selectedTagSetId is a reactive variable, so it will be initialised with an empty string 
@@ -217,6 +217,7 @@ const tagOptions = computed(() => {
   const placeholder = { value: '', text: 'Please select a tag' }
   return [placeholder, ...pacbioRootStore.tagChoicesForId(selectedTagSetId.value)]
 })
+
 /**
  * @method errorForVolume
  * Sets the error message for the formLibrary if the volume is less than the used volume.
@@ -259,5 +260,11 @@ provider()
  */
 const resetSelectedTagId = () => {
   formLibrary.value.tag_id = ''
+}
+
+const inputBorderClass = (attribute) => {
+  return formLibrary.value[attribute]
+    ? 'rounded-md border border-gray-300'
+    : 'rounded-md border border-red-500'
 }
 </script>

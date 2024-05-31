@@ -16,6 +16,9 @@ const config = [
       {
         name: 'qc_results_uploads',
       },
+      {
+        name: 'printers',
+      },
     ],
     pipelines: [
       {

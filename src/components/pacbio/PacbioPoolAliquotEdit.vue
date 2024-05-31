@@ -54,7 +54,7 @@
             v-show="aliquot.available_volume != null"
             :tooltip-text="'Available volume is ' + aliquot.available_volume"
           >
-            <traction-badge id="library-used-volume" colour="sanger-yellow"
+            <traction-badge id="library-used-selectUsedAliquots" colour="sanger-yellow"
               ><TractionInfoIcon class="mr-1" />{{ aliquot.available_volume }}</traction-badge
             >
           </traction-tooltip>

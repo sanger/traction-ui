@@ -89,7 +89,7 @@
  * script setup is a new Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
  * The following code defines the reactive variables, computed properties, and methods for the PacbioLibraryIndex component.
  */
-import PrinterModal from '@/components/PrinterModal.vue'
+import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'

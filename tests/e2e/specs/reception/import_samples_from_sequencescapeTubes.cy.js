@@ -3,6 +3,10 @@ describe('Import samples from Sequencescape Tubes', () => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
     })
+
+    cy.intercept('/v1/printers', {
+      fixture: 'tractionPrinters.json',
+    })
   })
 
   it('Successfully - V2', () => {

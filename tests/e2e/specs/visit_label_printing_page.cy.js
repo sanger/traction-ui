@@ -2,6 +2,10 @@
 
 describe('Label Printing page', () => {
   beforeEach(() => {
+    cy.intercept('/v1/printers', {
+      fixture: 'tractionPrinters.json',
+    })
+
     cy.visit('#/label-printing')
     cy.get('#barcode-input').type('aBarcode')
     cy.get('#suffix-selection').select('OPLX - Pool')
@@ -19,15 +23,13 @@ describe('Label Printing page', () => {
 
     cy.get('#submit-button').click()
 
-    cy.contains('Barcodes to be printed')
+    cy.contains('Preview Barcodes')
     cy.contains('aBarcode-OPLX-1')
     cy.contains('aBarcode-OPLX-2')
     cy.contains('aBarcode-OPLX-3')
   })
 
   it('PMB request is successful', () => {
-    cy.get('#submit-button').click()
-
     cy.intercept('/v2/print_jobs', {
       statusCode: 200,
       body: {
@@ -53,6 +55,6 @@ describe('Label Printing page', () => {
       },
     })
     cy.get('#submit-button').click()
-    cy.contains('api/label is invalid')
+    cy.contains('label is invalid')
   })
 })
