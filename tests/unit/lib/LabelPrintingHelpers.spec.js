@@ -473,7 +473,7 @@ describe('LabelPrintingHelpers.js', () => {
     })
   })
 
-  describe.only('barcode labels', () => {
+  describe('barcode labels', () => {
     const workflowItemType = {
       sourceBarcode: 'SQSC-1234',
       date: getCurrentDate(),
