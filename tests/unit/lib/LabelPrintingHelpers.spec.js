@@ -7,6 +7,8 @@ import {
   createLabelsFromBarcodes,
   WorkflowItemType,
   WorkflowListType,
+  createTubeBarcodeLabel,
+  createPlateBarcodeLabel,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
@@ -468,6 +470,48 @@ describe('LabelPrintingHelpers.js', () => {
           number: 3,
         }),
       )
+    })
+  })
+
+  describe.only('barcode labels', () => {
+    const workflowItemType = {
+      sourceBarcode: 'SQSC-1234',
+      date: getCurrentDate(),
+      stage: 'ST1 - Stage 1',
+      suffixes: ['ST1'],
+      number: 1,
+    }
+
+    it('#createTubeBarcodeLabel', () => {
+      const {
+        barcode,
+        first_line,
+        second_line,
+        third_line,
+        fourth_line,
+        round_label_top_line,
+        label_name,
+      } = createTubeBarcodeLabel({ workflowItemType })
+
+      expect(barcode).toEqual(workflowItemType.barcode)
+      expect(first_line).toEqual(workflowItemType.date)
+      expect(second_line).toEqual(workflowItemType.stage)
+      expect(third_line).toEqual(workflowItemType.sourceBarcode)
+      expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
+      expect(round_label_top_line).toEqual(workflowItemType.number)
+      expect(label_name).toEqual('main_label')
+    })
+
+    it('#createPlateBarcodeLabel', () => {
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createPlateBarcodeLabel({ workflowItemType })
+
+      expect(barcode).toEqual(workflowItemType.barcode)
+      expect(first_line).toEqual(workflowItemType.date)
+      expect(second_line).toEqual(workflowItemType.stage)
+      expect(third_line).toEqual(workflowItemType.sourceBarcode)
+      expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
+      expect(label_name).toEqual('main_label')
     })
   })
 })
