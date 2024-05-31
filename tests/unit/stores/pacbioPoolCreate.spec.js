@@ -1514,9 +1514,6 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.selectRequestInSource({ request: '1', source_id: '1' })
-          store.used_aliquots['_1'].volume = 15
-          store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
-
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),
           ).toEqual({
@@ -1574,7 +1571,10 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectRequest({ id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
+
+          store.used_aliquots['_1'].volume = 15
+          store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
 
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),

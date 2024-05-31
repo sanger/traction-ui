@@ -153,7 +153,7 @@ function createUsedAliquot(attributes) {
      * }
      */
     isValidObject: function () {
-      if (!this || typeof this !== 'object' || !this['request']) {
+      if (!this || typeof this !== 'object' || !this['request'] || !this['source_id']) {
         return false
       }
       return true
