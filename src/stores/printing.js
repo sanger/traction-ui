@@ -74,7 +74,7 @@ export const usePrintingStore = defineStore('printing', {
 
       const request = rootStore.api.traction.printers
 
-      const promise = request.get({})
+      const promise = request.get()
       const response = await handleResponse(promise)
 
       const {
