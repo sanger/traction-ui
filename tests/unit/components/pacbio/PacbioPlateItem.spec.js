@@ -84,9 +84,21 @@ describe('PacbioPlateItem.vue', () => {
       it('merges mapWell and well at the given position ', () => {
         const mappedWell = plate.mappedWells
         const rootStore = useRootStore()
-        expect(mappedWell[0]).toEqual({ ...wells[1], ...rootStore.plateMap.wells['A1'] })
-        expect(mappedWell[12]).toEqual({ ...wells[2], ...rootStore.plateMap.wells['B1'] })
-        expect(mappedWell[24]).toEqual({ ...wells[3], ...rootStore.plateMap.wells['C1'] })
+        expect(mappedWell[0]).toEqual({
+          ...wells[1],
+          ...rootStore.plateMap.wells['A1'],
+          source_id: '1',
+        })
+        expect(mappedWell[12]).toEqual({
+          ...wells[2],
+          ...rootStore.plateMap.wells['B1'],
+          source_id: '2',
+        })
+        expect(mappedWell[24]).toEqual({
+          ...wells[3],
+          ...rootStore.plateMap.wells['C1'],
+          source_id: '3',
+        })
       })
     })
   })

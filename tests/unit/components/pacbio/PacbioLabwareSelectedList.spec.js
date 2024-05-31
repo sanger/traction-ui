@@ -52,10 +52,19 @@ describe('PacbioLabwareSelectedList', () => {
     data: Data.PacbioPlatesRequest.data.included.slice(4, 7),
     includeRelationships: true,
   })
-  const tubes = dataToObjectById({
+  const tubesData = dataToObjectById({
     data: Data.PacbioTubesRequest.data.data,
     includeRelationships: true,
   })
+  const tubes = Object.keys(tubesData).reduce((acc, key) => {
+    return {
+      ...acc,
+      [key]: {
+        ...tubesData[key],
+        source_id: tubesData[key].id,
+      },
+    }
+  }, {})
   const requests = dataToObjectById({
     data: Data.PacbioTubesRequest.data.included,
     includeRelationships: true,
@@ -170,13 +179,13 @@ describe('PacbioLabwareSelectedList', () => {
       expect(tubeWellComponent.exists()).toBe(true)
     })
     it('should select request associated with the tube', async () => {
-      store.selectRequest = vi.fn()
+      store.selectUsedAliquot = vi.fn()
       const tubeWellComponent = wrapper.findComponent(PacbioTubeWell)
       await tubeWellComponent.vm.$emit('click', {
         id: 1,
         selected: true,
       })
-      expect(store.selectRequest).toHaveBeenCalledOnce()
+      expect(store.selectUsedAliquot).toHaveBeenCalledOnce()
     })
     it('should emit closed event when remove button is clicked', async () => {
       const button = wrapper.find('#remove-btn-1')
@@ -232,7 +241,7 @@ describe('PacbioLabwareSelectedList', () => {
       beforeEach(() => {
         wrapper.find('[data-attribute=table-check-box]').trigger('click')
         //Select the requests associated with the tube
-        store.selectRequest({ id: '241', selected: true })
+        store.selectUsedAliquot({ request: '241', source_id: '1', selected: true })
       })
       it('should display table view', () => {
         expect(wrapper.find('[data-attribute=table-view]').exists()).toBe(true)
@@ -281,15 +290,23 @@ describe('PacbioLabwareSelectedList', () => {
         expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('3')
         expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('100')
       })
-      it('should call selectRequest method on select checkbox click ', async () => {
-        store.selectRequest = vi.fn()
+      it('should call selectUsedAliquot method on select checkbox click ', async () => {
+        store.selectUsedAliquot = vi.fn()
         await wrapper.find('[data-attribute=request-checkbox-241]').setChecked(false)
-        expect(store.selectRequest).toHaveBeenCalledWith({ id: '241', selected: false })
+        expect(store.selectUsedAliquot).toHaveBeenCalledWith({
+          request: '241',
+          selected: false,
+          source_id: '1',
+        })
       })
-      it('should call selectRequest method on click on a table cell ', async () => {
-        store.selectRequest = vi.fn()
+      it('should call selectUsedAliquot method on click on a table cell ', async () => {
+        store.selectUsedAliquot = vi.fn()
         wrapper.find('tbody').findAll('td')[0].trigger('click')
-        expect(store.selectRequest).toHaveBeenCalledWith({ id: '40', selected: true })
+        expect(store.selectUsedAliquot).toHaveBeenCalledWith({
+          request: '40',
+          source_id: '4722',
+          selected: true,
+        })
       })
     })
   })
