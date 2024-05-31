@@ -125,7 +125,8 @@ import { getCurrentDate } from '@/lib/DateHelpers.js'
 import {
   createWorkflowDropdownOptions,
   createWorkflowOptions,
-  createLabelsFromBarcodes,
+  // createLabelsFromBarcodes,
+  WorkflowListType,
 } from '@/lib/LabelPrintingHelpers.js'
 import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
@@ -215,12 +216,14 @@ const labels = computed(() => {
   const splitSourceBarcodeList =
     form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
-  return createLabelsFromBarcodes({
-    sourceBarcodeList: splitSourceBarcodeList,
+  const workflowListType = WorkflowListType({
     date,
-    workflowOption,
+    workflowItem: workflowOption,
     numberOfLabels: form.numberOfLabels,
+    sourceBarcodeList: splitSourceBarcodeList,
   })
+
+  return workflowListType.createWorkflowBarcodeItemList({ workflowListType })
 })
 
 /**
