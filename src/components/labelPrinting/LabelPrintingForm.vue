@@ -15,7 +15,7 @@
             <div class="mt-2">
               <textarea
                 id="barcode-input"
-                v-model="form.sourceBarcodeList"
+                v-model="printJob.sourceBarcodeList"
                 class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
                 placeholder="Please scan the barcodes"
                 required
@@ -31,8 +31,8 @@
             <div class="mt-2">
               <traction-select
                 id="suffix-selection"
-                v-model="form.suffix"
-                :options="suffixOptions"
+                v-model="printJob.suffix"
+                :options="workflowDropdownOptions"
                 placeholder="Please select a suffix"
               ></traction-select>
             </div>
@@ -44,7 +44,7 @@
             <div class="mt-2">
               <traction-input
                 id="number-of-labels"
-                v-model="form.numberOfLabels"
+                v-model="printJob.numberOfLabels"
                 type="number"
                 min="1"
                 max="80"
@@ -60,7 +60,7 @@
               <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
-                  v-model="form.labelType"
+                  v-model="printJob.labelType"
                   data-attribute="label-type-options"
                   :options="labelTypeOptions"
                   value-field="text"
@@ -71,7 +71,7 @@
               <div class="mt-2">
                 <traction-select
                   id="printer-choice"
-                  v-model="form.printerName"
+                  v-model="printJob.printerName"
                   data-attribute="printer-options"
                   :options="printerOptions"
                   value-field="text"
@@ -99,7 +99,7 @@
           <div tag="article" class="mb-2 text-black text-left">
             <div class="flex flex-col bg-white rounded p-4">
               <ul id="list-barcodes-to-print">
-                <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
+                <li v-for="{ barcode } in workflowBarcodeItems" :key="barcode" class="text-sm">
                   {{ barcode }}
                 </li>
               </ul>
@@ -123,26 +123,15 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import {
-  createSuffixDropdownOptions,
-  createSuffixItems,
-  createLabelsFromBarcodes,
+  createWorkflowDropdownOptions,
+  createWorkflowOptions,
+  PrintJobType,
+  WorkflowListType,
+  createBarcodeLabels,
 } from '@/lib/LabelPrintingHelpers.js'
-import SuffixList from '@/config/SuffixList.json'
+import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
-
-/**
- * provides default values for the form
- * @returns {Object} default form values
- */
-const defaultForm = () => ({
-  sourceBarcodeList: null,
-  suffix: null, // Default to No suffix
-  numberOfLabels: null,
-  printerName: null,
-  copies: 1,
-  labelType: 'tube2d',
-})
 
 const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 
@@ -152,7 +141,7 @@ const { showAlert } = useAlert() // useAlert is a composable function that is us
  */
 const printingStore = usePrintingStore()
 
-let form = reactive(defaultForm()) // Create a reactive for the form
+let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
 const show = ref(true) // Create a ref for the show variable
 
@@ -183,43 +172,56 @@ const printerOptions = computed(() => {
  * @returns {Object} label type
  */
 const labelType = computed(() => {
-  return LabelTypes[form.labelType]
+  return LabelTypes[printJob.labelType]
 })
 
 /**
  * Creates a computed property to get the suffix options
  * @returns {Array} suffix options
  */
-const suffixOptions = computed(() => {
-  return createSuffixDropdownOptions(SuffixList)
+const workflowDropdownOptions = computed(() => {
+  return createWorkflowDropdownOptions(WorkflowList)
 })
 
 /**
  * Creates a computed property to get the suffix items
  * @returns {Array} suffix items
  */
-const suffixItems = computed(() => {
-  return createSuffixItems(SuffixList)
+const workflowOptions = computed(() => {
+  return createWorkflowOptions(WorkflowList)
 })
 
 /**
- * Creates a computed property to get the labels
+ * Creates a computed property to get the labels (workflow barcode items)
  * @returns {Array} labels
  */
-const labels = computed(() => {
+const workflowBarcodeItems = computed(() => {
   const date = getCurrentDate()
-  const suffixItem = suffixItems.value[form.suffix]
+  const workflowItem = workflowOptions.value[printJob.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
   const splitSourceBarcodeList =
-    form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
+    printJob.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
-  return createLabelsFromBarcodes({
+  const workflowListType = WorkflowListType({
     sourceBarcodeList: splitSourceBarcodeList,
     date,
-    suffixItem,
-    numberOfLabels: form.numberOfLabels,
+    workflowItem,
+    numberOfLabels: printJob.numberOfLabels,
+  })
+
+  return workflowListType.createWorkflowBarcodeItemList({ workflowListType })
+})
+
+/**
+ * Creates a computed property to get the barcode labels
+ * @returns {Array} labels
+ */
+const barcodeLabels = computed(() => {
+  return createBarcodeLabels({
+    workflowBarcodeItems: workflowBarcodeItems.value,
+    labwareType: labelType.value.labwareType,
   })
 })
 
@@ -229,9 +231,9 @@ const labels = computed(() => {
  */
 const printLabels = async () => {
   const { success, message = {} } = await printingStore.createPrintJob({
-    printerName: form.printerName,
-    labels: labels.value,
-    copies: form.copies,
+    printerName: printJob.printerName,
+    labels: barcodeLabels.value,
+    copies: printJob.copies,
     labelTemplateName: labelType.value.labelTemplateName,
   })
 
@@ -241,11 +243,11 @@ const printLabels = async () => {
 }
 
 /**
- * Creates a method to reset the form
+ * Creates a method to reset the print job
  */
 const onReset = () => {
   // Reset our form values
-  form = reactive(defaultForm())
+  printJob = reactive(PrintJobType())
 
   // Trick to reset/clear native browser form validation state
   show.value = false

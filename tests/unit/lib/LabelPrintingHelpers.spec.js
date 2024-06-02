@@ -10,6 +10,7 @@ import {
   createTubeBarcodeLabel,
   createPlateBarcodeLabel,
   createBarcodeLabels,
+  PrintJobType,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
@@ -588,6 +589,21 @@ describe('LabelPrintingHelpers.js', () => {
           workflowItemType: workflowBarcodeItems[14],
         }),
       )
+    })
+  })
+
+  describe('#PrintJobType', () => {
+    it('returns a PrintJob object', () => {
+      const printJob = PrintJobType()
+      expect(printJob).toEqual({
+        sourceBarcodeList: null,
+        suffix: null,
+        numberOfLabels: null,
+        printerName: null,
+        copies: 1,
+        labelType: 'tube2d',
+        labels: null,
+      })
     })
   })
 })

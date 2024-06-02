@@ -278,7 +278,7 @@ const createPlateBarcodeLabel = ({ workflowItemType }) => {
 }
 
 /**
- * @param {Object} workflowBarcodeItems
+ * @param {Array} workflowBarcodeItems
  * @param {String} labwareType
  * @returns {Array} - An array of BarcodeLabelItem objects suitable for printing
  */
@@ -293,6 +293,20 @@ const createBarcodeLabels = ({ workflowBarcodeItems, labwareType }) => {
   return workflowBarcodeItems.map((workflowItemType) => barcodeLabelFn({ workflowItemType }))
 }
 
+/**
+ * @returns {Object} - An empty PrintJobType
+ * This is used to set the default values for the printJob object
+ */
+const PrintJobType = () => ({
+  sourceBarcodeList: null,
+  suffix: null, // Default to No suffix
+  numberOfLabels: null,
+  printerName: null,
+  copies: 1,
+  labelType: 'tube2d',
+  labels: null,
+})
+
 export {
   byAttribute,
   createWorkflowDropdownOptions,
@@ -304,4 +318,5 @@ export {
   createTubeBarcodeLabel,
   createPlateBarcodeLabel,
   createBarcodeLabels,
+  PrintJobType,
 }
