@@ -239,10 +239,20 @@ const WorkflowListType = ({
 }
 
 /**
- * @param {Object} workflowListType
+ * @param {Object} barcodeItem - an object which contains the barcode and other information
+ * @returns {Object} - { barcode, first_line, second_line, label_name } label suitable for printing to a tube printer
+ * This is a basic label with just the barcode and date
+ */
+const createBasicTubeBarcodeLabel = (barcodeItem) => {
+  const { barcode, date: first_line, barcode: second_line } = barcodeItem
+  return { barcode, first_line, second_line, label_name: 'main_label' }
+}
+
+/**
+ * @param {Object} barcodeItem - an object which contains the barcode and other information
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, label_name } label suitable for printing to a tube printer
  */
-const createWorkflowTubeBarcodeLabel = ({ workflowItemType }) => {
+const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
   const {
     barcode,
     date: first_line,
@@ -250,7 +260,7 @@ const createWorkflowTubeBarcodeLabel = ({ workflowItemType }) => {
     sourceBarcode: third_line,
     parsedSuffixes: fourth_line,
     number: round_label_top_line,
-  } = workflowItemType
+  } = barcodeItem
   return {
     barcode,
     first_line,
@@ -263,34 +273,27 @@ const createWorkflowTubeBarcodeLabel = ({ workflowItemType }) => {
 }
 
 /**
- * @param {Object} workflowListType
+ * @param {Object} barcodeItem - an object which contains the barcode and other information
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, label_name } label suitable for printing to a plate printer
  */
-const createWorkflowPlateBarcodeLabel = ({ workflowItemType }) => {
+const createWorkflowPlateBarcodeLabel = (barcodeItem) => {
   const {
     barcode,
     date: first_line,
     stage: second_line,
     sourceBarcode: third_line,
     parsedSuffixes: fourth_line,
-  } = workflowItemType
+  } = barcodeItem
   return { barcode, first_line, second_line, third_line, fourth_line, label_name: 'main_label' }
 }
 
 /**
- * @param {Array} workflowBarcodeItems
- * @param {String} labwareType
+ * @param {Array} barcodeItems - an array of objects which contain the barcode and other information
+ * @param {String} createLabelFn - the function to create the label
  * @returns {Array} - An array of BarcodeLabelItem objects suitable for printing
  */
-const createBarcodeLabels = ({ workflowBarcodeItems, labwareType }) => {
-  const barcodeLabelFns = {
-    tube: createWorkflowTubeBarcodeLabel,
-    plate96: createWorkflowPlateBarcodeLabel,
-  }
-
-  const barcodeLabelFn = barcodeLabelFns[labwareType]
-
-  return workflowBarcodeItems.map((workflowItemType) => barcodeLabelFn({ workflowItemType }))
+const createBarcodeLabels = ({ barcodeItems, createLabelFn }) => {
+  return barcodeItems.map((barcodeItem) => createLabelFn(barcodeItem))
 }
 
 /**
@@ -339,6 +342,7 @@ export {
   createWorkflowOptions,
   WorkflowItemType,
   WorkflowListType,
+  createBasicTubeBarcodeLabel,
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
   createBarcodeLabels,

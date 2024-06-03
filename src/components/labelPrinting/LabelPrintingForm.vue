@@ -129,6 +129,8 @@ import {
   WorkflowListType,
   createBarcodeLabels,
   createPayload,
+  createWorkflowTubeBarcodeLabel,
+  createWorkflowPlateBarcodeLabel,
 } from '@/lib/LabelPrintingHelpers.js'
 import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
@@ -145,6 +147,14 @@ const printingStore = usePrintingStore()
 let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
 const show = ref(true) // Create a ref for the show variable
+
+/**
+ * Creates a map of functions to create labels
+ */
+const createLabelFns = {
+  tube: createWorkflowTubeBarcodeLabel,
+  plate96: createWorkflowPlateBarcodeLabel,
+}
 
 /**
  * Creates a computed property to get the label type options
@@ -221,8 +231,8 @@ const workflowBarcodeItems = computed(() => {
  */
 const barcodeLabels = computed(() => {
   return createBarcodeLabels({
-    workflowBarcodeItems: workflowBarcodeItems.value,
-    labwareType: labelType.value.labwareType,
+    barcodeItems: workflowBarcodeItems.value,
+    createLabelFn: createLabelFns[labelType.value.labwareType],
   })
 })
 
