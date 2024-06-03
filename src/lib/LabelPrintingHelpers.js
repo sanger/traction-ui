@@ -242,7 +242,7 @@ const WorkflowListType = ({
  * @param {Object} workflowListType
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, label_name } label suitable for printing to a tube printer
  */
-const createTubeBarcodeLabel = ({ workflowItemType }) => {
+const createWorkflowTubeBarcodeLabel = ({ workflowItemType }) => {
   const {
     barcode,
     date: first_line,
@@ -266,7 +266,7 @@ const createTubeBarcodeLabel = ({ workflowItemType }) => {
  * @param {Object} workflowListType
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, label_name } label suitable for printing to a plate printer
  */
-const createPlateBarcodeLabel = ({ workflowItemType }) => {
+const createWorkflowPlateBarcodeLabel = ({ workflowItemType }) => {
   const {
     barcode,
     date: first_line,
@@ -284,8 +284,8 @@ const createPlateBarcodeLabel = ({ workflowItemType }) => {
  */
 const createBarcodeLabels = ({ workflowBarcodeItems, labwareType }) => {
   const barcodeLabelFns = {
-    tube: createTubeBarcodeLabel,
-    plate96: createPlateBarcodeLabel,
+    tube: createWorkflowTubeBarcodeLabel,
+    plate96: createWorkflowPlateBarcodeLabel,
   }
 
   const barcodeLabelFn = barcodeLabelFns[labwareType]
@@ -339,8 +339,8 @@ export {
   createWorkflowOptions,
   WorkflowItemType,
   WorkflowListType,
-  createTubeBarcodeLabel,
-  createPlateBarcodeLabel,
+  createWorkflowTubeBarcodeLabel,
+  createWorkflowPlateBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
   createPayload,

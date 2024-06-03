@@ -7,8 +7,8 @@ import {
   createWorkflowOptions,
   WorkflowItemType,
   WorkflowListType,
-  createTubeBarcodeLabel,
-  createPlateBarcodeLabel,
+  createWorkflowTubeBarcodeLabel,
+  createWorkflowPlateBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
   createPayload,
@@ -508,7 +508,7 @@ describe('LabelPrintingHelpers.js', () => {
       number: 1,
     }
 
-    it('#createTubeBarcodeLabel', () => {
+    it('#createWorkflowTubeBarcodeLabel', () => {
       const {
         barcode,
         first_line,
@@ -517,7 +517,7 @@ describe('LabelPrintingHelpers.js', () => {
         fourth_line,
         round_label_top_line,
         label_name,
-      } = createTubeBarcodeLabel({ workflowItemType })
+      } = createWorkflowTubeBarcodeLabel({ workflowItemType })
 
       expect(barcode).toEqual(workflowItemType.barcode)
       expect(first_line).toEqual(workflowItemType.date)
@@ -528,9 +528,9 @@ describe('LabelPrintingHelpers.js', () => {
       expect(label_name).toEqual('main_label')
     })
 
-    it('#createPlateBarcodeLabel', () => {
+    it('#createWorkflowPlateBarcodeLabel', () => {
       const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
-        createPlateBarcodeLabel({ workflowItemType })
+        createWorkflowPlateBarcodeLabel({ workflowItemType })
 
       expect(barcode).toEqual(workflowItemType.barcode)
       expect(first_line).toEqual(workflowItemType.date)
@@ -570,12 +570,12 @@ describe('LabelPrintingHelpers.js', () => {
       })
       expect(tubeLabels.length).toEqual(15)
       expect(tubeLabels[0]).toEqual(
-        createTubeBarcodeLabel({
+        createWorkflowTubeBarcodeLabel({
           workflowItemType: workflowBarcodeItems[0],
         }),
       )
       expect(tubeLabels[14]).toEqual(
-        createTubeBarcodeLabel({
+        createWorkflowTubeBarcodeLabel({
           workflowItemType: workflowBarcodeItems[14],
         }),
       )
@@ -589,12 +589,12 @@ describe('LabelPrintingHelpers.js', () => {
       })
       expect(plateLabels.length).toEqual(15)
       expect(plateLabels[0]).toEqual(
-        createPlateBarcodeLabel({
+        createWorkflowPlateBarcodeLabel({
           workflowItemType: workflowBarcodeItems[0],
         }),
       )
       expect(plateLabels[14]).toEqual(
-        createPlateBarcodeLabel({
+        createWorkflowPlateBarcodeLabel({
           workflowItemType: workflowBarcodeItems[14],
         }),
       )
