@@ -33,6 +33,7 @@ export const usePrintingStore = defineStore('printing', {
      * @param {Array} labels Should be of a standard structure. See relevant components.
      * @param {Integer} copies Number of copies of labels
      * @returns {Object {success: Boolean, message: String}} Is the print job successful? With a success or failure message
+     * we should probably move this to the PrintJobType. Need to work out how to make payload reactive.
      **/
     async createPrintJob({
       printerName,

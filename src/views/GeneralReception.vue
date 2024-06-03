@@ -400,7 +400,6 @@ export default {
       create the labels needed for the print job
     */
     createLabels(foundBarcodes, date) {
-      console.log(this.labwareData)
       const sourceBarcodeList = Array.from(foundBarcodes)
       const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
       return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
