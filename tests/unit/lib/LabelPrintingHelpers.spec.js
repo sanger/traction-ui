@@ -1,6 +1,8 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
 import {
   byAttribute,
+  createBarcodeLabelItem,
+  createLabelsFromBarcodes,
   createWorkflowDropdownOptions,
   createWorkflowOptions,
   WorkflowItemType,
@@ -9,6 +11,7 @@ import {
   createPlateBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
+  createPayload,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 
@@ -82,6 +85,13 @@ const labelTypes = {
   },
 }
 
+const options = {
+  sourceBarcodeList: ['SQSC-1', 'SQSC-2', 'SQSC-3'],
+  numberOfLabels: 3,
+  printerName: 'printer1',
+  labelType: 'plate1d',
+}
+
 describe('LabelPrintingHelpers.js', () => {
   describe('byAttribute', () => {
     it('returns each attribute', () => {
@@ -93,6 +103,166 @@ describe('LabelPrintingHelpers.js', () => {
       expect(byAttribute(array, 'a')).toEqual([1, 3, 5])
     })
   })
+
+  describe('#createBarcodeLabelItem', () => {
+    const date = getCurrentDate()
+    const sourceBarcode = 'SQSC-1234'
+    const stage = 'ST1 - Stage 1'
+
+    it('barcode only', () => {
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          date,
+        })
+      expect(barcode).toEqual(sourceBarcode)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual('')
+      expect(third_line).toEqual(sourceBarcode)
+      expect(fourth_line).toEqual('')
+      expect(label_name).toEqual('main_label')
+    })
+
+    it('barcode with a single suffix', () => {
+      const suffixes = ['ST1']
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          stage,
+          date,
+          suffixes,
+        })
+      expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}`)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual(stage)
+      expect(third_line).toEqual(sourceBarcode)
+      expect(fourth_line).toEqual(suffixes[0])
+      expect(label_name).toEqual('main_label')
+    })
+
+    // we could go on but not necessary
+    it('barcode with 2 suffixes', () => {
+      const suffixes = ['ST1', '1']
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          stage,
+          date,
+          suffixes,
+        })
+      expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}-${suffixes[1]}`)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual(stage)
+      expect(third_line).toEqual(`${sourceBarcode}`)
+      expect(fourth_line).toEqual(`${suffixes[0]}-${suffixes[1]}`)
+      expect(label_name).toEqual('main_label')
+    })
+  })
+
+  describe('#createLabelsFromBarcodes', () => {
+    const sourceBarcodeList = ['SQSC-1', 'SQSC-2', 'SQSC-3', 'SQSC-4', 'SQSC-5']
+    const date = getCurrentDate()
+    const suffixItem = {
+      stage: 'Stage1',
+      suffix: 'ST1',
+      text: 'ST1 - Stage1',
+      value: 'ST1',
+      workflow: 'Worflow 1',
+    }
+    const numberOfLabels = 3
+
+    it('with no workflow stage', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date })
+      expect(barcodeLabels.length).toEqual(5)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual(sourceBarcodeList)
+    })
+
+    it('with a workflow stage', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date, suffixItem })
+      expect(barcodeLabels.length).toEqual(5)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-ST1',
+        'SQSC-2-ST1',
+        'SQSC-3-ST1',
+        'SQSC-4-ST1',
+        'SQSC-5-ST1',
+      ])
+      expect(barcodeLabels[0]).toEqual({
+        barcode: 'SQSC-1-ST1',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-1',
+        fourth_line: 'ST1',
+        label_name: 'main_label',
+      })
+    })
+
+    it('with a workflow stage and numbers', () => {
+      const barcodeLabels = createLabelsFromBarcodes({
+        sourceBarcodeList,
+        date,
+        suffixItem,
+        numberOfLabels,
+      })
+      expect(barcodeLabels.length).toEqual(15)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-ST1-1',
+        'SQSC-1-ST1-2',
+        'SQSC-1-ST1-3',
+        'SQSC-2-ST1-1',
+        'SQSC-2-ST1-2',
+        'SQSC-2-ST1-3',
+        'SQSC-3-ST1-1',
+        'SQSC-3-ST1-2',
+        'SQSC-3-ST1-3',
+        'SQSC-4-ST1-1',
+        'SQSC-4-ST1-2',
+        'SQSC-4-ST1-3',
+        'SQSC-5-ST1-1',
+        'SQSC-5-ST1-2',
+        'SQSC-5-ST1-3',
+      ])
+      expect(barcodeLabels[0]).toEqual({
+        barcode: 'SQSC-1-ST1-1',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-1',
+        fourth_line: 'ST1-1',
+        label_name: 'main_label',
+      })
+      expect(barcodeLabels.slice(-1)[0]).toEqual({
+        barcode: 'SQSC-5-ST1-3',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-5',
+        fourth_line: 'ST1-3',
+        label_name: 'main_label',
+      })
+    })
+
+    it('with numbers only', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date, numberOfLabels })
+      expect(barcodeLabels.length).toEqual(15)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-1',
+        'SQSC-1-2',
+        'SQSC-1-3',
+        'SQSC-2-1',
+        'SQSC-2-2',
+        'SQSC-2-3',
+        'SQSC-3-1',
+        'SQSC-3-2',
+        'SQSC-3-3',
+        'SQSC-4-1',
+        'SQSC-4-2',
+        'SQSC-4-3',
+        'SQSC-5-1',
+        'SQSC-5-2',
+        'SQSC-5-3',
+      ])
+    })
+  })
+
   describe('createWorkflowDropdownOptions', () => {
     it('creates an item for each workflow', () => {
       const items = createWorkflowDropdownOptions(workflowList)
@@ -442,6 +612,26 @@ describe('LabelPrintingHelpers.js', () => {
         copies: 1,
         labelType: 'tube2d',
         labels: null,
+      })
+    })
+
+    it('returns a print job type with options', () => {
+      const printJob = PrintJobType(options)
+      expect(printJob).toEqual({ ...PrintJobType(), ...options })
+    })
+  })
+
+  describe('#createPayload', () => {
+    it('returns a payload object', () => {
+      const labels = ['label1', 'label2']
+      const printJob = PrintJobType({ ...options, labels })
+      const labelType = labelTypes['plate1d']
+      const payload = createPayload({ printJob, labelType })
+      expect(payload).toEqual({
+        printerName: printJob.printerName,
+        labels,
+        copies: printJob.copies,
+        labelTemplateName: labelType.labelTemplateName,
       })
     })
   })

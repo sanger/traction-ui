@@ -37,6 +37,68 @@ const byAttribute = (objects, attribute) => {
 }
 
 /*
+ * @param {String} sourceBarcode - original barcode
+ * @param {string} date - date the barcode is created
+ * @param {String} stage - stage in the workflow
+ * @param {Array} suffixes - an array of suffixes to be added to the barcode
+ * @returns {Object} A label which is able to be printed. This is made up of:
+ *  barcode - a parsed barcode made up of the sourceBarcode and suffixes added e.g. SQSC-ST1-1
+ *  first_line - the date
+ *  second_line - the workflow stage
+ *  third_line - sourceBarcde. The original barcode.
+ *  fourth_line - suffixes joined together e.g. ST1-1
+ */
+const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = [] } = {}) => {
+  // takes the suffixes, removes any falseys e.g null, undefined and joins them together with a dash
+  const parsedSuffixes = suffixes.filter((suffix) => suffix).join('-')
+
+  // takes the sourceBarcode and joins with the parsedSuffixes if there are any with a dash
+  const barcode = `${sourceBarcode}${parsedSuffixes ? '-' : ''}${parsedSuffixes}`
+
+  return {
+    barcode,
+    first_line: date,
+    second_line: stage,
+    third_line: sourceBarcode,
+    fourth_line: parsedSuffixes,
+    label_name: 'main_label',
+  }
+}
+
+/*
+ * @param {Array} sourceBarcode - set of sourceBarcodes
+ * @param {string} date - date the barcode is created
+ * @param {suffixItem} - used for text on labels defaults to NullSuffixItem
+ * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
+ * @returns [BarcodeLabelItem, ...} - An array of BarcodeLabelItem objects suitable for printing
+ */
+const createLabelsFromBarcodes = ({
+  sourceBarcodeList,
+  date,
+  suffixItem = NullWorkflowItem,
+  numberOfLabels = 0,
+} = {}) => {
+  const { stage, suffix } = suffixItem
+
+  // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
+  // if number is 0 returns an empty array
+  const numberList = Array.from({ length: numberOfLabels }, (v, k) => k + 1)
+
+  // for each sourceBarcode create a BarcodeLabelItem
+  return sourceBarcodeList.flatMap((sourceBarcode) => {
+    // if numberOfLabels is empty we just want to return a single item with
+    if (numberList.length === 0) {
+      return createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix] })
+    } else {
+      // if numberList is filled return a BarcodeLabelItem for each one
+      return numberList.map((number) =>
+        createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix, number] }),
+      )
+    }
+  })
+}
+
+/*
  * @param {Array [Object, ...]} WorkflowList
  * @returns {Array} A list which can be used as a drop-down in the format
  * example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
@@ -235,18 +297,44 @@ const createBarcodeLabels = ({ workflowBarcodeItems, labwareType }) => {
  * @returns {Object} - An empty PrintJobType
  * This is used to set the default values for the printJob object
  */
-const PrintJobType = () => ({
-  sourceBarcodeList: null,
-  suffix: null, // Default to No suffix
-  numberOfLabels: null,
-  printerName: null,
-  copies: 1,
-  labelType: 'tube2d',
-  labels: null,
-})
+const PrintJobType = ({
+  sourceBarcodeList = null,
+  suffix = null,
+  numberOfLabels = null,
+  printerName = null,
+  copies = 1,
+  labelType = 'tube2d',
+  labels = null,
+} = {}) => {
+  return {
+    sourceBarcodeList,
+    suffix,
+    numberOfLabels,
+    printerName,
+    copies,
+    labelType,
+    labels,
+  }
+}
+
+/**
+ * @param {Object} printJob - the printJob object
+ * @param {Object} labelType - the labelType object
+ * @returns {Object} - A payload object suitable for sending to the server { printerName, labels, copies, labelTemplateName }
+ */
+const createPayload = ({ printJob, labelType }) => {
+  return {
+    printerName: printJob.printerName,
+    labels: printJob.labels,
+    copies: printJob.copies,
+    labelTemplateName: labelType.labelTemplateName,
+  }
+}
 
 export {
   byAttribute,
+  createBarcodeLabelItem,
+  createLabelsFromBarcodes,
   createWorkflowDropdownOptions,
   createWorkflowOptions,
   WorkflowItemType,
@@ -255,4 +343,5 @@ export {
   createPlateBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
+  createPayload,
 }
