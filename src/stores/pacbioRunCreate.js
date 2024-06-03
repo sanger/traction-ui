@@ -358,7 +358,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           // eslint-disable-next-line no-unused-vars
           Object.entries(plate).forEach(([_position, well]) => {
             well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
-              return this.aliquots[aliquotId]
+              return { ...this.aliquots[aliquotId], volumeEdited: true }
             })
           })
         })
