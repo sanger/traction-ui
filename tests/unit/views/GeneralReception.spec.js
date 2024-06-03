@@ -289,7 +289,7 @@ describe('GeneralReception', () => {
 
   // arbitrary test just to ensure this works
   describe('#createLabels', () => {
-    it.only('will create some labels', async () => {
+    it('will create some labels', async () => {
       const foundBarcodes = new Set(['DN1', 'DN2', 'DN3'])
       const date = getCurrentDate()
       const { wrapperObj: wrapper } = buildWrapper()
