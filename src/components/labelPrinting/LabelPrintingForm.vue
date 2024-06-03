@@ -128,6 +128,7 @@ import {
   PrintJobType,
   WorkflowListType,
   createBarcodeLabels,
+  createPayload,
 } from '@/lib/LabelPrintingHelpers.js'
 import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
@@ -230,12 +231,12 @@ const barcodeLabels = computed(() => {
  * @returns {Object} success or failure message
  */
 const printLabels = async () => {
-  const { success, message = {} } = await printingStore.createPrintJob({
-    printerName: printJob.printerName,
-    labels: barcodeLabels.value,
-    copies: printJob.copies,
-    labelTemplateName: labelType.value.labelTemplateName,
+  // it would be better if labels were attached to the print job but it has to be reactive
+  const payload = createPayload({
+    printJob: { ...printJob, labels: barcodeLabels.value },
+    labelType: labelType.value,
   })
+  const { success, message = {} } = await printingStore.createPrintJob({ ...payload })
 
   showAlert(message, success ? 'success' : 'danger')
 

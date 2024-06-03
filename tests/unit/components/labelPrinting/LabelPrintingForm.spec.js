@@ -1,6 +1,6 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
 import WorkflowList from '@/config/WorkflowList.json'
-import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
+import { createWorkflowDropdownOptions, createPayload } from '@/lib/LabelPrintingHelpers.js'
 import {
   mount,
   createTestingPinia,
@@ -168,14 +168,11 @@ describe('LabelPrintingForm.vue', () => {
 
         const result = await labelPrintingForm.printLabels(evt)
 
-        console.log(labelPrintingForm.barcodeLabels)
-
-        const expected = {
-          printerName: options.printerName,
-          labels: labelPrintingForm.barcodeLabels,
-          copies: options.copies,
-          labelTemplateName: 'traction_tube_label_template',
-        }
+        // if we could work out how to make labels reactive we would not need this.
+        const expected = createPayload({
+          printJob: { ...labelPrintingForm.printJob, labels: labelPrintingForm.barcodeLabels },
+          labelType: labelPrintingForm.labelType,
+        })
 
         expect(store.createPrintJob).toBeCalledWith(expected)
         expect(result).toEqual({ success: true, message: 'success' })
@@ -204,13 +201,10 @@ describe('LabelPrintingForm.vue', () => {
         })
 
         const result = await labelPrintingForm.printLabels(evt)
-
-        const expected = {
-          printerName: options.printerName,
-          labels: labelPrintingForm.barcodeLabels,
-          copies: options.copies,
-          labelTemplateName: 'traction_tube_label_template',
-        }
+        const expected = createPayload({
+          printJob: { ...labelPrintingForm.printJob, labels: labelPrintingForm.barcodeLabels },
+          labelType: labelPrintingForm.labelType,
+        })
 
         expect(store.createPrintJob).toBeCalledWith(expected)
         expect(result).toEqual({ success: false, message: 'failure' })
