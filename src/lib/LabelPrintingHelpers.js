@@ -1,8 +1,8 @@
 /**
  * A suite of helpers to support label printing
  * It is now in the state that it can be used ny multiple components / views
- * Still struggling with how to make objects reactive e.g. WorkflowListType, PrintJobType
- * I also think we could create a composables
+ * I also think we could create a composables ... but that is for another day
+ * A bit more workand this could be a truly reusable library
  */
 
 /*
