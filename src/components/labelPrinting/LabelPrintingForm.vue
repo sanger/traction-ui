@@ -60,7 +60,7 @@
               <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
-                  v-model="printJob.labelType"
+                  v-model="printJob.labelTypeKey"
                   data-attribute="label-type-options"
                   :options="labelTypeOptions"
                   value-field="text"
@@ -127,8 +127,6 @@ import {
   createWorkflowOptions,
   PrintJobType,
   WorkflowListType,
-  createBarcodeLabels,
-  createPayload,
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
 } from '@/lib/LabelPrintingHelpers.js'
@@ -183,7 +181,7 @@ const printerOptions = computed(() => {
  * @returns {Object} label type
  */
 const labelType = computed(() => {
-  return LabelTypes[printJob.labelType]
+  return LabelTypes[printJob.labelTypeKey]
 })
 
 /**
@@ -226,27 +224,17 @@ const workflowBarcodeItems = computed(() => {
 })
 
 /**
- * Creates a computed property to get the barcode labels
- * @returns {Array} labels
- */
-const barcodeLabels = computed(() => {
-  return createBarcodeLabels({
-    barcodeItems: workflowBarcodeItems.value,
-    createLabelFn: createLabelFns[labelType.value.labwareType],
-  })
-})
-
-/**
  * Creates a method to print labels
  * @returns {Object} success or failure message
  */
 const printLabels = async () => {
-  // it would be better if labels were attached to the print job but it has to be reactive
-  const payload = createPayload({
-    printJob: { ...printJob, labels: barcodeLabels.value },
-    labelType: labelType.value,
+  printJob.createLabels({
+    barcodeItems: workflowBarcodeItems.value,
+    createLabelFn: createLabelFns[labelType.value.labwareType],
   })
-  const { success, message = {} } = await printingStore.createPrintJob({ ...payload })
+  printJob.labelType = labelType.value
+
+  const { success, message = {} } = await printingStore.createPrintJob({ ...printJob.payload() })
 
   showAlert(message, success ? 'success' : 'danger')
 

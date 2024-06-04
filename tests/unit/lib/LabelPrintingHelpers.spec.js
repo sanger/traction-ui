@@ -88,7 +88,7 @@ const options = {
   sourceBarcodeList: ['SQSC-1', 'SQSC-2', 'SQSC-3'],
   numberOfLabels: 3,
   printerName: 'printer1',
-  labelType: 'plate1d',
+  labelTypeKey: 'plate1d',
 }
 
 describe('LabelPrintingHelpers.js', () => {
@@ -442,7 +442,8 @@ describe('LabelPrintingHelpers.js', () => {
         numberOfLabels: null,
         printerName: null,
         copies: 1,
-        labelType: 'tube2d',
+        labelTypeKey: 'tube2d',
+        labelType: null,
         labels: null,
         payload,
         createLabels,

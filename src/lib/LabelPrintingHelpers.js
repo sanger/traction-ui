@@ -235,7 +235,8 @@ const PrintJobType = (attributes = {}) => {
     numberOfLabels: null,
     printerName: null,
     copies: 1,
-    labelType: 'tube2d', // need to change this to object
+    labelTypeKey: 'tube2d', // need to change this to object
+    labelType: null,
     labels: null,
   }
 

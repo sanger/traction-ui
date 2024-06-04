@@ -1,6 +1,6 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
 import WorkflowList from '@/config/WorkflowList.json'
-import { createWorkflowDropdownOptions, createPayload } from '@/lib/LabelPrintingHelpers.js'
+import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
 import {
   mount,
   createTestingPinia,
@@ -17,6 +17,7 @@ const options = {
   numberOfLabels: 3,
   copies: 1,
   printerName: 'aPrinter',
+  labelType: 'tube2d',
 }
 
 const evt = {
@@ -171,17 +172,10 @@ describe('LabelPrintingForm.vue', () => {
 
         const result = await labelPrintingForm.printLabels(evt)
 
-        // if we could work out how to make labels reactive we would not need this.
-        const expected = createPayload({
-          printJob: { ...labelPrintingForm.printJob, labels: labelPrintingForm.barcodeLabels },
-          labelType: labelPrintingForm.labelType,
-        })
-
-        expect(store.createPrintJob).toBeCalledWith(expected)
+        expect(store.createPrintJob).toBeCalledWith(labelPrintingForm.printJob.payload())
         expect(result).toEqual({ success: true, message: 'success' })
       })
 
-      // not sure we need to test failure??
       it('calls printJob unsuccessfully', async () => {
         labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: false, message: 'failure' }
@@ -204,12 +198,8 @@ describe('LabelPrintingForm.vue', () => {
         })
 
         const result = await labelPrintingForm.printLabels(evt)
-        const expected = createPayload({
-          printJob: { ...labelPrintingForm.printJob, labels: labelPrintingForm.barcodeLabels },
-          labelType: labelPrintingForm.labelType,
-        })
 
-        expect(store.createPrintJob).toBeCalledWith(expected)
+        expect(store.createPrintJob).toBeCalledWith(labelPrintingForm.printJob.payload())
         expect(result).toEqual({ success: false, message: 'failure' })
       })
     })
