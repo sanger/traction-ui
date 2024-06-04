@@ -434,7 +434,8 @@ describe('LabelPrintingHelpers.js', () => {
   describe('#PrintJobType', () => {
     it('returns a PrintJob object', () => {
       const printJob = PrintJobType()
-      const payload = printJob.payload
+      // dont want to do this but not sure best way to get tests to pass.
+      const { payload, createLabels } = printJob
       expect(printJob).toEqual({
         sourceBarcodeList: null,
         suffix: null,
@@ -444,13 +445,14 @@ describe('LabelPrintingHelpers.js', () => {
         labelType: 'tube2d',
         labels: null,
         payload,
+        createLabels,
       })
     })
 
     it('returns a print job type with options', () => {
       const printJob = PrintJobType(options)
-      const payload = printJob.payload
-      expect(printJob).toEqual({ ...PrintJobType(), ...options, payload })
+      const { payload, createLabels } = printJob
+      expect(printJob).toEqual({ ...PrintJobType(), ...options, payload, createLabels })
     })
 
     describe('#payload', () => {
@@ -489,6 +491,21 @@ describe('LabelPrintingHelpers.js', () => {
           copies: printJob.copies,
           labelTemplateName: labelType.labelTemplateName,
         })
+      })
+    })
+
+    describe('#createLabels', () => {
+      it('creates some labels and adds them to the instance', () => {
+        const createLabelFn = (barcodeItem) => {
+          return { ...barcodeItem, label_name: 'main_label' }
+        }
+        const barcodeItems = [{ barcode: 'barcode1' }, { barcode: 'barcode2' }]
+        const printJob = PrintJobType(options)
+        printJob.createLabels({ barcodeItems, createLabelFn })
+        expect(printJob.labels).toEqual([
+          { barcode: 'barcode1', label_name: 'main_label' },
+          { barcode: 'barcode2', label_name: 'main_label' },
+        ])
       })
     })
   })

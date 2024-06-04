@@ -255,6 +255,12 @@ const PrintJobType = (attributes = {}) => {
     }
   }
 
+  instance.createLabels = ({ barcodeItems, createLabelFn }) => {
+    const labels = barcodeItems.map((barcodeItem) => createLabelFn(barcodeItem))
+    instance.labels = labels
+    return labels
+  }
+
   return instance
 }
 
