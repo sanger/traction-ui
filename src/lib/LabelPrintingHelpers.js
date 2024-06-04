@@ -61,13 +61,13 @@ const createWorkflowOptions = (WorkflowList) => {
 }
 
 // @returns {Object} - An empty WorkflowOptions with all attributes set to null
-const NullWorkflowItem = () => ({
-  stage: null,
+const NullWorkflowItem = {
+  stage: '',
   suffix: null,
   text: null,
   value: null,
   workflow: null,
-})
+}
 
 /**
  * @param {Object} sourceBarcode - original barcode
@@ -107,12 +107,16 @@ const WorkflowItemType = ({
 }
 
 /**
- * @param {Object} workflowListType
+ * @param {Object} - workflowListType
  * @returns {Array} - An array of WorkflowItemType objects suitable for displaying barcodes
  */
-const createWorkflowBarcodeItemList = ({ workflowListType }) => {
-  const { sourceBarcodeList, date, workflowItem, numberOfLabels } = workflowListType
-  const { stage, suffix } = workflowItem
+const createWorkflowBarcodeItemList = (workflowListType) => {
+  const {
+    sourceBarcodeList,
+    date,
+    workflowItem: { stage, suffix },
+    numberOfLabels,
+  } = workflowListType
 
   // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
   // if number is 0 returns an empty array
@@ -140,19 +144,23 @@ const createWorkflowBarcodeItemList = ({ workflowListType }) => {
  * @returns {Object} A WorkflowListType object suitable for displaying barcodes
  * It would be better if createWorkflowBarcodeItemList did not need WorkflowListType but not sure how to do that
  */
-const WorkflowListType = ({
-  sourceBarcodeList,
-  date,
-  workflowItem = NullWorkflowItem,
-  numberOfLabels = 0,
-} = {}) => {
-  return {
-    sourceBarcodeList,
-    date,
-    workflowItem,
-    numberOfLabels,
-    createWorkflowBarcodeItemList,
+const WorkflowListType = (attributes = {}) => {
+  const defaultAttributes = {
+    sourceBarcodeList: null,
+    date: null,
+    // this seems to get set to undefined
+    workflowItem: NullWorkflowItem,
+    numberOfLabels: 0,
   }
+
+  const instance = {}
+
+  // merge the default attributes with any passed in attributes
+  Object.assign(instance, { ...defaultAttributes, ...attributes })
+
+  instance.createWorkflowBarcodeItemList = () => createWorkflowBarcodeItemList(instance)
+
+  return instance
 }
 
 /**
@@ -288,4 +296,5 @@ export {
   createBarcodeLabels,
   PrintJobType,
   createPayload,
+  NullWorkflowItem,
 }

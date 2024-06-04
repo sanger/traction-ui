@@ -129,6 +129,7 @@ import {
   WorkflowListType,
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
+  NullWorkflowItem,
 } from '@/lib/LabelPrintingHelpers.js'
 import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
@@ -142,11 +143,11 @@ const { showAlert } = useAlert() // useAlert is a composable function that is us
  */
 const printingStore = usePrintingStore()
 
-let printJob = reactive(PrintJobType()) // Create a reactive for the print job
-
 const show = ref(true) // Create a ref for the show variable
 
 const labelOptions = reactive({ suffix: '', labelTypeKey: 'tube2d' }) // label options to be used for suffixes and label type
+
+let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
 /**
  * Creates a map of functions to create labels
@@ -181,6 +182,7 @@ const printerOptions = computed(() => {
  * Creates a computed property to get the label type
  * Created from the selected label type
  * @returns {Object} label type
+ * it would make sense to move this to the print job but it needs to be reactive. Not sure how to do that.
  */
 const labelType = computed(() => {
   return LabelTypes[labelOptions.labelTypeKey]
@@ -208,7 +210,8 @@ const workflowOptions = computed(() => {
  */
 const workflowBarcodeItems = computed(() => {
   const date = getCurrentDate()
-  const workflowItem = workflowOptions.value[labelOptions.suffix]
+  // without this we get an undefined error
+  const workflowItem = workflowOptions.value[labelOptions.suffix] || NullWorkflowItem
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove any nulls
@@ -222,7 +225,7 @@ const workflowBarcodeItems = computed(() => {
     numberOfLabels: printJob.numberOfLabels,
   })
 
-  return workflowListType.createWorkflowBarcodeItemList({ workflowListType })
+  return workflowListType.createWorkflowBarcodeItemList()
 })
 
 /**
@@ -234,6 +237,7 @@ const printLabels = async () => {
     barcodeItems: workflowBarcodeItems.value,
     createLabelFn: createLabelFns[labelType.value.labwareType],
   })
+  // it would be better if this was reactive but couldn't get it to work
   printJob.labelType = labelType.value
 
   const { success, message = {} } = await printingStore.createPrintJob(printJob.payload())
