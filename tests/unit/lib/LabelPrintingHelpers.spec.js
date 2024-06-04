@@ -434,6 +434,7 @@ describe('LabelPrintingHelpers.js', () => {
   describe('#PrintJobType', () => {
     it('returns a PrintJob object', () => {
       const printJob = PrintJobType()
+      const payload = printJob.payload
       expect(printJob).toEqual({
         sourceBarcodeList: null,
         suffix: null,
@@ -442,16 +443,57 @@ describe('LabelPrintingHelpers.js', () => {
         copies: 1,
         labelType: 'tube2d',
         labels: null,
+        payload,
       })
     })
 
     it('returns a print job type with options', () => {
       const printJob = PrintJobType(options)
-      expect(printJob).toEqual({ ...PrintJobType(), ...options })
+      const payload = printJob.payload
+      expect(printJob).toEqual({ ...PrintJobType(), ...options, payload })
+    })
+
+    describe('#payload', () => {
+      it('returns a payload object', () => {
+        const labelType = labelTypes['plate1d']
+        const labels = ['label1', 'label2']
+        const printJob = PrintJobType({ ...options, labelType, labels })
+        expect(printJob.payload()).toEqual({
+          printerName: printJob.printerName,
+          labels: printJob.labels,
+          copies: printJob.copies,
+          labelTemplateName: labelType.labelTemplateName,
+        })
+      })
+
+      // this might seem like overkill but I wanted to know if the attributes were being updated
+      it('creates the correct payload when we change the instance', () => {
+        let labels = ['label1', 'label2']
+        let labelType = labelTypes['plate1d']
+        const printJob = PrintJobType({ ...options, labels })
+        const payload = createPayload({ printJob, labelType })
+        expect(payload).toEqual({
+          printerName: printJob.printerName,
+          labels,
+          copies: printJob.copies,
+          labelTemplateName: labelType.labelTemplateName,
+        })
+
+        labels = ['label3', 'label4']
+        labelType = labelTypes['tube2d']
+        printJob.labels = labels
+        printJob.labelType = labelType
+        expect(printJob.payload()).toEqual({
+          printerName: printJob.printerName,
+          labels,
+          copies: printJob.copies,
+          labelTemplateName: labelType.labelTemplateName,
+        })
+      })
     })
   })
 
-  describe('#createPayload', () => {
+  describe('#createpayload', () => {
     it('returns a payload object', () => {
       const labels = ['label1', 'label2']
       const printJob = PrintJobType({ ...options, labels })

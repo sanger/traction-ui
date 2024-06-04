@@ -143,7 +143,10 @@ describe('LabelPrintingForm.vue', () => {
         labelPrintingForm.printJob.printerName = 'stub'
         labelPrintingForm.onReset(evt)
 
-        expect(labelPrintingForm.printJob).toEqual(labelPrintingForm.PrintJobType())
+        // we need to JSON.stringify otherwise we get a Compared values have no visual difference error. No idea why!
+        expect(JSON.stringify(labelPrintingForm.printJob)).toEqual(
+          JSON.stringify(labelPrintingForm.PrintJobType()),
+        )
       })
     })
 

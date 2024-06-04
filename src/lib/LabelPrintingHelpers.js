@@ -214,27 +214,48 @@ const createBarcodeLabels = ({ barcodeItems, createLabelFn }) => {
 }
 
 /**
+ * @param {Object} attributes - any attributes to override the defaults
+ *  attributes include:
+ *    - sourceBarcodeList: null,
+ *    - suffix: null,
+ *    - numberOfLabels: null,
+ *    - printerName: null,
+ *    - copies: 1,
+ *    - labelType: 'tube2d',
+ *    - labels: null,
  * @returns {Object} - An empty PrintJobType
  * This is used to set the default values for the printJob object
+ * creates an instance of PrintJobType with the default attributes and any attributes passed in
+ * It also has a payload method to return the payload object
  */
-const PrintJobType = ({
-  sourceBarcodeList = null,
-  suffix = null,
-  numberOfLabels = null,
-  printerName = null,
-  copies = 1,
-  labelType = 'tube2d',
-  labels = null,
-} = {}) => {
-  return {
-    sourceBarcodeList,
-    suffix,
-    numberOfLabels,
-    printerName,
-    copies,
-    labelType,
-    labels,
+const PrintJobType = (attributes = {}) => {
+  const defaultAttributes = {
+    sourceBarcodeList: null,
+    suffix: null,
+    numberOfLabels: null,
+    printerName: null,
+    copies: 1,
+    labelType: 'tube2d', // need to change this to object
+    labels: null,
   }
+
+  const instance = {}
+
+  // merge the default attributes with any passed in attributes
+  Object.assign(instance, { ...defaultAttributes, ...attributes })
+
+  // set the payload method
+  // returns printerName, labels, copies, labelTemplateName
+  instance.payload = () => {
+    return {
+      printerName: instance.printerName,
+      labels: instance.labels,
+      copies: instance.copies,
+      labelTemplateName: instance.labelType.labelTemplateName,
+    }
+  }
+
+  return instance
 }
 
 /**
