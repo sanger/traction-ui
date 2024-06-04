@@ -196,15 +196,24 @@ const updateUsedAliquotSource = async (barcode) => {
   const { id, type, volume, concentration, insert_size, template_prep_kit_box_barcode } =
     store.tubeContentByBarcode(barcode)
   const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-  const used_aliquot = createUsedAliquot({
-    source_id: id,
-    source_type,
-    volume,
-    concentration,
-    insert_size,
-    template_prep_kit_box_barcode,
-    barcode,
-  })
+  const used_aliquot = createUsedAliquot(
+    {
+      source_id: id,
+      source_type,
+      concentration,
+      insert_size,
+      template_prep_kit_box_barcode,
+      barcode,
+      volume,
+    },
+    source_type === 'Pacbio::Library'
+      ? () =>
+          store.getAvailableVolumeForLibraryAliquot({
+            libraryId: id,
+            volume: 0,
+          })
+      : null,
+  )
 
   well.used_aliquots.push(used_aliquot)
   store.updateWell({ well: well, plateNumber: props.plateNumber })
