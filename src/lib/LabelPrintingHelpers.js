@@ -217,11 +217,10 @@ const createBarcodeLabels = ({ barcodeItems, createLabelFn }) => {
  * @param {Object} attributes - any attributes to override the defaults
  *  attributes include:
  *    - sourceBarcodeList: null,
- *    - suffix: null,
  *    - numberOfLabels: null,
  *    - printerName: null,
  *    - copies: 1,
- *    - labelType: 'tube2d',
+ *    - labelType: null,
  *    - labels: null,
  * @returns {Object} - An empty PrintJobType
  * This is used to set the default values for the printJob object
@@ -231,11 +230,9 @@ const createBarcodeLabels = ({ barcodeItems, createLabelFn }) => {
 const PrintJobType = (attributes = {}) => {
   const defaultAttributes = {
     sourceBarcodeList: null,
-    suffix: null,
     numberOfLabels: null,
     printerName: null,
     copies: 1,
-    labelTypeKey: 'tube2d', // need to change this to object
     labelType: null,
     labels: null,
   }

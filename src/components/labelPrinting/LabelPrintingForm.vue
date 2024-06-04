@@ -31,7 +31,7 @@
             <div class="mt-2">
               <traction-select
                 id="suffix-selection"
-                v-model="printJob.suffix"
+                v-model="labelOptions.suffix"
                 :options="workflowDropdownOptions"
                 placeholder="Please select a suffix"
               ></traction-select>
@@ -60,7 +60,7 @@
               <div class="mt-2 pb-2">
                 <traction-select
                   id="label-type"
-                  v-model="printJob.labelTypeKey"
+                  v-model="labelOptions.labelTypeKey"
                   data-attribute="label-type-options"
                   :options="labelTypeOptions"
                   value-field="text"
@@ -146,6 +146,8 @@ let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
 const show = ref(true) // Create a ref for the show variable
 
+const labelOptions = reactive({ suffix: '', labelTypeKey: 'tube2d' }) // label options to be used for suffixes and label type
+
 /**
  * Creates a map of functions to create labels
  */
@@ -181,7 +183,7 @@ const printerOptions = computed(() => {
  * @returns {Object} label type
  */
 const labelType = computed(() => {
-  return LabelTypes[printJob.labelTypeKey]
+  return LabelTypes[labelOptions.labelTypeKey]
 })
 
 /**
@@ -206,10 +208,10 @@ const workflowOptions = computed(() => {
  */
 const workflowBarcodeItems = computed(() => {
   const date = getCurrentDate()
-  const workflowItem = workflowOptions.value[printJob.suffix]
+  const workflowItem = workflowOptions.value[labelOptions.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
-  // we filter to remove an nulls
+  // we filter to remove any nulls
   const splitSourceBarcodeList =
     printJob.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
@@ -234,7 +236,7 @@ const printLabels = async () => {
   })
   printJob.labelType = labelType.value
 
-  const { success, message = {} } = await printingStore.createPrintJob({ ...printJob.payload() })
+  const { success, message = {} } = await printingStore.createPrintJob(printJob.payload())
 
   showAlert(message, success ? 'success' : 'danger')
 

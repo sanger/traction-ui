@@ -13,11 +13,9 @@ import { usePrintingStore } from '@/stores/printing.js'
 
 const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
-  suffix: 'UPRL',
   numberOfLabels: 3,
   copies: 1,
   printerName: 'aPrinter',
-  labelType: 'tube2d',
 }
 
 const evt = {

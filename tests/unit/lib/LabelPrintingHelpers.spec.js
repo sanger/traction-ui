@@ -438,11 +438,9 @@ describe('LabelPrintingHelpers.js', () => {
       const { payload, createLabels } = printJob
       expect(printJob).toEqual({
         sourceBarcodeList: null,
-        suffix: null,
         numberOfLabels: null,
         printerName: null,
         copies: 1,
-        labelTypeKey: 'tube2d',
         labelType: null,
         labels: null,
         payload,
