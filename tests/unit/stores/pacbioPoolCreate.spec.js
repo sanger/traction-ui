@@ -630,12 +630,15 @@ describe('usePacbioPoolCreateStore', () => {
       // request is not sent
       // commit is not called
       it('when the pool used_aliquots are invalid', async () => {
-        store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
+        let concentration = used_aliquot2.concentration
+        used_aliquot2.concentration = ''
+        store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2 } }
         store.pool = pool
         const { success, errors } = await store.createPool()
         expect(create).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(errors).toEqual('The pool is invalid')
+        used_aliquot2.concentration = concentration
       })
 
       it('when the pool is invalid', async () => {
@@ -1216,6 +1219,10 @@ describe('usePacbioPoolCreateStore', () => {
         'source_type',
         'request',
       ]
+      beforeEach(() => {
+        const create = vi.fn()
+        rootStore.api = { traction: { pacbio: { pools: { create } } } }
+      })
       it('selects a request by default', () => {
         store.used_aliquots = {
           _2: createUsedAliquot({
@@ -1572,8 +1579,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.selectRequestInSource({ request: '1', source_id: '1' })
-
           store.used_aliquots['_1'].volume = 15
+          store.updateUsedAliquot(store.used_aliquots['_1'])
           store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
 
           expect(
@@ -1634,11 +1641,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.selectRequestInSource({ request: '1', source_id: '1' })
-
           store.used_aliquots['_1'].volume = 1
-          store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
-
-          store.used_aliquots['_1'].volume = 1
+          store.updateUsedAliquot(store.used_aliquots['_1'])
           store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
 
           expect(

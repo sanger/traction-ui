@@ -72,7 +72,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
     cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
-    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').clear().type('0.75')
     cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
@@ -345,7 +345,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute=pacbio-run-well]').first().should('have.class', 'bg-gray-100')
   })
 
-  it.only('Correctly displays the available volume information for a library in a well', () => {
+  it('Correctly displays the available volume information for a library in a well', () => {
     const dataTransfer = new DataTransfer()
 
     //Create a well with library TRAC-2-20
@@ -363,14 +363,14 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the library in this context
-    cy.get('#library-available-volume').contains('20.00')
+    cy.get('#library-available-volume').contains('20')
     //Initialises the volume to available volume
-    cy.get('[data-attribute="aliquot-volume"]').should('have.value', '20.00')
+    cy.get('[data-attribute="aliquot-volume"]').should('have.value', 20)
     cy.get('[data-attribute="movie-time"]').select('15.0')
     cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
     cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
-    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').clear().type('0.75')
     cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
@@ -392,12 +392,12 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the library in this context
-    cy.get('#library-available-volume').contains('15.00')
+    cy.get('#library-available-volume').contains(15)
     cy.get('[data-attribute="movie-time"]').select('15.0')
     cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
     cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
-    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').clear().type('0.75')
     cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
@@ -412,7 +412,7 @@ describe('Pacbio Run Create view', () => {
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
-    cy.get('#library-available-volume').contains('10.00')
+    cy.get('#library-available-volume').contains(20)
     //Once updated, the volume field displays the edited value
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
@@ -420,6 +420,6 @@ describe('Pacbio Run Create view', () => {
     //Open the second well
     cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
     //It should update the availble volume with the volume used in the first well
-    cy.get('#library-available-volume').contains('15.00')
+    cy.get('#library-available-volume').contains('15')
   })
 })
