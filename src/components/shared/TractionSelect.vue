@@ -47,7 +47,7 @@ export default {
    * Tailwind component to display a select field using html <select> element
    * Renders a custom select tailwind component to display a select field with an optional label
    *    - Title represents the label to be displayed (if required)
-   *    - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all recieving components props
+   *    - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all receiving components props
    *      is passed to the enclosed html <select> component. This allows to use this component as a normal html <select>
    *      element by passing in all props allowed in <select> to <traction-select>
    *      The $attrs object includes all attributes that are not declared by the component's props

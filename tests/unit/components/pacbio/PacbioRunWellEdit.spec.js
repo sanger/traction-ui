@@ -645,7 +645,7 @@ describe('PacbioRunWellEdit', () => {
         )
       })
 
-      it('updates the source and available_volume of the used aliquot at the given index if the source is a library', async () => {
+      it('updates the source, available_volume and volume of the used aliquot at the given index if the source is a library', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
         store.tubeContentByBarcode = vi.fn().mockReturnValue({
           id: 1,
@@ -663,7 +663,7 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: 5,
+            volume: '10.00',
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
             available_volume: '10.00',
@@ -672,7 +672,7 @@ describe('PacbioRunWellEdit', () => {
         )
       })
 
-      it('adds an error if the available volume is less than the volume of the aliquot', async () => {
+      it('adds an error if the volume changed to a value less than available volume of the aliquot', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
         store.tubeContentByBarcode = vi.fn().mockReturnValue({
           id: 1,
@@ -690,12 +690,13 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: 15,
+            volume: '10.00',
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
             available_volume: '10.00',
           }),
         )
+        await wrapper.vm.updateUsedAliquotVolume({ index: 1 }, 11)
         // Check the error is added to the aliquot
         expect(wrapper.vm.localUsedAliquots[1].errors.volume).toEqual(
           'must be less or equal to available volume',

@@ -254,7 +254,11 @@ const update = async () => {
     }
   }
 
-  store.updateWell({ well: well.value, plateNumber: plateNumber.value })
+  //Update the well object with the used aliquots
+  well.value.used_aliquots.forEach((aliquot) => {
+    aliquot.volumeEdited = aliquot.volume != aliquot.available_volume
+  })
+  store.updateWell({ well: { ...well.value }, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
@@ -296,6 +300,8 @@ const updateUsedAliquotSource = async (row, barcode) => {
         // Volume is 0 because this aliquot is not yet saved so it shouldnt count as used
         volume: 0,
       })
+      //initialize the volume to the available volume for the library aliquot
+      used_aliquot.volume = used_aliquot.available_volume
     }
     localUsedAliquots.value[index] = used_aliquot
   } else {
@@ -330,6 +336,10 @@ const setupWell = async () => {
           aliquotId: aliquot.id,
           volume: aliquot.volume,
         })
+        // Initialise the volume to the available volume for the library aliquot, if we haven't edited the volume
+        if (!aliquot.volumeEdited) {
+          used_aliquot.volume = used_aliquot.available_volume
+        }
       }
       localUsedAliquots.value.push(used_aliquot)
     }

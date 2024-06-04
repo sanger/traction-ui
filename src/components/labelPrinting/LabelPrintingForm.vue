@@ -1,8 +1,13 @@
 <template>
-  <div class="w-3/5 mx-auto">
-    <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
-      <traction-form v-if="show" classes="flex flex-row" @submit="printLabels" @reset="onReset">
-        <div class="w-full space-x-4 space-y-10 p-10">
+  <div class="w-full md:w-3/4 mx-auto">
+    <traction-form
+      v-if="show"
+      classes="flex flex-col md:flex-row px-10 gap-4"
+      @submit="printLabels"
+      @reset="onReset"
+    >
+      <div class="w-full md:w-3/5 p-4 gap-4 bg-gray-100 rounded-md">
+        <div class="space-y-10">
           <fieldset>
             <BarcodeIcon class="float-left mr-2 mt-3" />
             <traction-heading level="3" show-border>Barcodes</traction-heading>
@@ -51,11 +56,23 @@
           <DataFetcher :fetcher="fetchPrinters">
             <fieldset>
               <traction-heading level="3" show-border>Choice of Printer</traction-heading>
-              <traction-muted-text>The printer to print the labels</traction-muted-text>
+              <traction-heading level="5">Select label type</traction-heading>
+              <div class="mt-2 pb-2">
+                <traction-select
+                  id="label-type"
+                  v-model="form.labelType"
+                  data-attribute="label-type-options"
+                  :options="labelTypeOptions"
+                  value-field="text"
+                  required
+                ></traction-select>
+              </div>
+              <traction-heading level="5">Select printer</traction-heading>
               <div class="mt-2">
                 <traction-select
                   id="printer-choice"
                   v-model="form.printerName"
+                  data-attribute="printer-options"
                   :options="printerOptions"
                   value-field="text"
                   required
@@ -64,32 +81,33 @@
             </fieldset>
           </DataFetcher>
         </div>
-        <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
-          <traction-heading level="3" class-name="text-white italic" show-border>
-            Barcodes to be printed
-          </traction-heading>
-          <div>
-            <div class="space-x-4 pb-4 flex flex-row">
-              <traction-button id="submit-button" class="grow" type="submit" theme="printRed"
-                >Print Labels</traction-button
-              >
-              <traction-button id="reset-button" type="reset" theme="resetWhite"
-                >Reset</traction-button
-              >
-            </div>
-            <div tag="article" class="mb-2 text-black text-left">
-              <div class="flex flex-col bg-white rounded p-4">
-                <ul id="list-barcodes-to-print">
-                  <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
-                    {{ barcode }}
-                  </li>
-                </ul>
-              </div>
+      </div>
+      <div class="w-full md:w-2/5 p-4 space-y-4 bg-sdb-400 rounded-md border-t-4 border-sp">
+        <traction-heading level="3" class-name="text-white italic" show-border>
+          Preview Barcodes
+        </traction-heading>
+        <div>
+          <div class="space-x-4 pb-4 flex flex-row">
+            <traction-button id="submit-button" class="grow" type="submit" theme="printRed">
+              Print Labels
+            </traction-button>
+            <traction-button id="reset-button" type="reset" theme="resetWhite">
+              Reset
+            </traction-button>
+          </div>
+
+          <div tag="article" class="mb-2 text-black text-left">
+            <div class="flex flex-col bg-white rounded p-4">
+              <ul id="list-barcodes-to-print">
+                <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
+                  {{ barcode }}
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-      </traction-form>
-    </div>
+      </div>
+    </traction-form>
   </div>
 </template>
 
@@ -98,7 +116,7 @@
  * LabelPrintingForm component is used to print labels.
  */
 
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import useAlert from '@/composables/useAlert.js'
 import DataFetcher from '@/components/DataFetcher.vue'
@@ -111,6 +129,7 @@ import {
 } from '@/lib/LabelPrintingHelpers.js'
 import SuffixList from '@/config/SuffixList.json'
 import { nextTick } from 'vue'
+import LabelTypes from '@/config/LabelTypes.json'
 
 /**
  * provides default values for the form
@@ -118,10 +137,11 @@ import { nextTick } from 'vue'
  */
 const defaultForm = () => ({
   sourceBarcodeList: null,
-  suffix: null,
+  suffix: null, // Default to No suffix
   numberOfLabels: null,
   printerName: null,
   copies: 1,
+  labelType: 'tube2d',
 })
 
 const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
@@ -132,18 +152,38 @@ const { showAlert } = useAlert() // useAlert is a composable function that is us
  */
 const printingStore = usePrintingStore()
 
-const form = ref(defaultForm()) // Create a ref for the form
+let form = reactive(defaultForm()) // Create a reactive for the form
 
 const show = ref(true) // Create a ref for the show variable
+
+/**
+ * Creates a computed property to get the label type options
+ * @returns {Array} label type options
+ */
+const labelTypeOptions = computed(() => {
+  return Object.values(LabelTypes).map(({ text, value }) => ({
+    text,
+    value,
+  }))
+})
 
 /**
  * Creates a computed property to get the printer names
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
-  return printingStore.printers('tube').map(({ name }) => ({
+  return printingStore.printers(labelType.value.labwareType).map(({ name }) => ({
     text: name,
   }))
+})
+
+/**
+ * Creates a computed property to get the label type
+ * Created from the selected label type
+ * @returns {Object} label type
+ */
+const labelType = computed(() => {
+  return LabelTypes[form.labelType]
 })
 
 /**
@@ -168,18 +208,18 @@ const suffixItems = computed(() => {
  */
 const labels = computed(() => {
   const date = getCurrentDate()
-  const suffixItem = suffixItems.value[form.value.suffix]
+  const suffixItem = suffixItems.value[form.suffix]
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove an nulls
   const splitSourceBarcodeList =
-    form.value.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
+    form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
   return createLabelsFromBarcodes({
     sourceBarcodeList: splitSourceBarcodeList,
     date,
     suffixItem,
-    numberOfLabels: form.value.numberOfLabels,
+    numberOfLabels: form.numberOfLabels,
   })
 })
 
@@ -189,9 +229,10 @@ const labels = computed(() => {
  */
 const printLabels = async () => {
   const { success, message = {} } = await printingStore.createPrintJob({
-    printerName: form.value.printerName,
+    printerName: form.printerName,
     labels: labels.value,
-    copies: form.value.copies,
+    copies: form.copies,
+    labelTemplateName: labelType.value.labelTemplateName,
   })
 
   showAlert(message, success ? 'success' : 'danger')
@@ -204,7 +245,7 @@ const printLabels = async () => {
  */
 const onReset = () => {
   // Reset our form values
-  form.value = defaultForm()
+  form = reactive(defaultForm())
 
   // Trick to reset/clear native browser form validation state
   show.value = false
