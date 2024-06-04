@@ -66,8 +66,8 @@ const parametersToString = (attributes, parameter = undefined) => {
  * @return String
  * Turns a list of parameters into a query string
  */
-const buildQuery = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
-  const queryString = parametersToString({ page, filter, include, fields })
+const buildQuery = (queryParametersType = QueryParametersType()) => {
+  const queryString = parametersToString(queryParametersType)
 
   // if the query string has any length then put a ? in front
   // otherwise just return an empty string
@@ -101,32 +101,32 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   }
 
   /*
-   * @param {Object} filter - query filters
-   * @param String include - query include
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a get query
    */
-  const get = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
-    return execute('GET', `${resource}${buildQuery({ page, filter, include, fields })}`)
+  const get = (queryParametersType = QueryParametersType()) => {
+    return execute('GET', `${resource}${buildQuery(queryParametersType)}`)
   }
 
   /*
    * @param String,Number id - id of the record to find
-   * @param String include - query include
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a get query with an id
    */
-  const find = ({ id = '', include = '' } = {}) => {
-    return execute('GET', `${resource}/${id}${buildQuery({ include })}`)
+  const find = ({ id = '', queryParametersType = QueryParametersType() } = {}) => {
+    return execute('GET', `${resource}/${id}${buildQuery(queryParametersType)}`)
   }
 
   /*
    * @param {Object} data - data to send for create
+   * @param {Object} queryParametersType - query parameters
    * @return Promise
    * Execute a create
    */
-  const create = ({ data, include = '' }) => {
-    return execute('POST', `${resource}${buildQuery({ include })}`, data)
+  const create = ({ data, queryParametersType = QueryParametersType() }) => {
+    return execute('POST', `${resource}${buildQuery(queryParametersType)}`, data)
   }
 
   /*
@@ -162,6 +162,25 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   }
 }
 
-export { defaultHeaders, createRequest }
+/**
+ * This function is used to define the type of query parameters that can be passed to the createRequest function.
+ * @param {*} page - The page number and size of the results to return.
+ * @param {*} filter - The filter to apply to the results.
+ * @param {*} include - The related resources to include in the results.
+ * @param {*} fields - The fields to return in the results.
+ * @returns  {Object} An object with the specified query parameters.
+ * @example
+ * const queryParameters = QueryParametersType({ page: { number: 1, size: 10 }, filter: { barcode: 'ABC' }, include: 'wells.requests', fields: {requests:{sample_name: 'test'} } });
+ */
+const QueryParametersType = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
+  return {
+    page,
+    filter,
+    include,
+    fields,
+  }
+}
+
+export { defaultHeaders, createRequest, QueryParametersType }
 
 export default createRequest

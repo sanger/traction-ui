@@ -1,4 +1,4 @@
-import { defaultHeaders, createRequest } from '@/api/v2/createRequest.js'
+import { defaultHeaders, createRequest, QueryParametersType } from '@/api/v2/createRequest.js'
 
 import { expect } from 'vitest'
 
@@ -71,35 +71,41 @@ describe('createRequest', () => {
   describe('build query', () => {
     it('no filters, includes or fields', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery()
+      const query = request.buildQuery(QueryParametersType())
       expect(query).toEqual('')
     })
 
     it('filter', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({ filter: { a: '1', b: '2' } })
+      const queryParametersType = QueryParametersType({ filter: { a: '1', b: '2' } })
+      const query = request.buildQuery(queryParametersType)
       expect(query).toEqual('?filter[a]=1&filter[b]=2')
     })
 
     it('include', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({ include: 'sample.tube' })
+      const queryParametersType = QueryParametersType({ include: 'sample.tube' })
+      const query = request.buildQuery(queryParametersType)
       expect(query).toEqual('?include=sample.tube')
     })
 
     it('fields', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({ fields: { resource1: 'field1', resource2: 'field2' } })
+      const queryParametersType = QueryParametersType({
+        fields: { resource1: 'field1', resource2: 'field2' },
+      })
+      const query = request.buildQuery(queryParametersType)
       expect(query).toEqual('?fields[resource1]=field1&fields[resource2]=field2')
     })
 
     it('filter, include and fields', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({
+      const queryParametersType = QueryParametersType({
         filter: { a: '1', b: '2' },
         include: 'sample.tube',
         fields: { resource1: 'field1', resource2: 'field2' },
       })
+      const query = request.buildQuery(queryParametersType)
       expect(query).toEqual(
         '?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
       )
@@ -108,22 +114,25 @@ describe('createRequest', () => {
     describe('if any arguments are not a string or an object', () => {
       it('when one of the values is not a string', () => {
         const request = createRequest({ ...attributes })
+        const queryParametersType = QueryParametersType({ filter: { a: 1, b: 2 } })
         expect(() => {
-          request.buildQuery({ filter: { a: 1, b: 2 } })
+          request.buildQuery(queryParametersType)
         }).toThrowError(new TypeError('query arguments are not of the correct type'))
       })
 
       it('when one of the arguments is not an object', () => {
         const request = createRequest({ ...attributes })
+        const queryParametersType = QueryParametersType({ filter: [1, 2] })
         expect(() => {
-          request.buildQuery({ filter: [1, 2] })
+          request.buildQuery(queryParametersType)
         }).toThrowError(new TypeError('query arguments are not of the correct type'))
       })
 
       it('when one of the arguments is undefined', () => {
         const request = createRequest({ ...attributes })
+        const queryParametersType = QueryParametersType({ filter: { a: undefined } })
         expect(() => {
-          request.buildQuery({ filter: { a: undefined } })
+          request.buildQuery(queryParametersType)
         }).toThrowError(new TypeError('query arguments are not of the correct type'))
       })
     })
@@ -147,16 +156,16 @@ describe('createRequest', () => {
       })
 
       it('with a query', async () => {
-        const query = {
+        const queryParametersType = QueryParametersType({
           filter: { a: '1', b: '2' },
           include: 'sample.tube',
           fields: { resource1: 'field1', resource2: 'field2' },
-        }
+        })
 
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const createRequestFn = createRequest({ ...attributes })
-        const response = await createRequestFn.get(query)
+        const response = await createRequestFn.get(queryParametersType)
 
         expect(fetch).toBeCalledWith(
           'http://traction/v1/requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
@@ -195,7 +204,8 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockCreate })
 
         const request = createRequest({ ...attributes })
-        const response = await request.create({ data, include: 'tube' })
+        const queryParametersType = QueryParametersType({ include: 'tube' })
+        const response = await request.create({ data, queryParametersType })
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests?include=tube', {
           method: 'POST',
@@ -230,7 +240,8 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
-        const response = await request.find({ ...data, include: 'sample' })
+        const queryParametersType = QueryParametersType({ include: 'sample' })
+        const response = await request.find({ ...data, queryParametersType })
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1?include=sample', {
           method: 'GET',
@@ -294,6 +305,26 @@ describe('createRequest', () => {
           expect(response.json()).toEqual(mockResponse)
         }
       })
+    })
+  })
+  describe('QueryParametersType', () => {
+    it('should return a valid object', () => {
+      const queryParamsTypeObject = QueryParametersType({
+        page: { page: 1, limit: 10 },
+        filter: { name: 'test' },
+        include: 'test',
+        fields: { test: 'test' },
+      })
+      expect(queryParamsTypeObject).toEqual({
+        page: { page: 1, limit: 10 },
+        filter: { name: 'test' },
+        include: 'test',
+        fields: { test: 'test' },
+      })
+    })
+    it('should return an empty object', () => {
+      const queryParamsTypeObject = QueryParametersType()
+      expect(queryParamsTypeObject).toEqual({ filter: {}, page: {}, include: '', fields: {} })
     })
   })
 })
