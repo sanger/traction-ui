@@ -98,6 +98,6 @@ const validateSequencingKitBoxBarcode = computed(() => {
 // Define the alert function that emits an alert event with a message and type.
 const alert = (message, type) => emit('alert', message, type)
 // Define the onWellClick function that shows the modal for the clicked well position and plate number.
-const onWellClick = (position, plateNumber) => 
+const onWellClick = (position, plateNumber) =>
   modal.value.showModalForPositionAndPlate(position, plateNumber)
 </script>
