@@ -175,6 +175,6 @@ const handleAliquotSelection = (aliquot) => {
         .some((well) => well.id === aliquot.source_id),
     )
   }
-  aliquotSelectionHighlightLabware.value = { labware,aliquot }
+  aliquotSelectionHighlightLabware.value = { labware, aliquot }
 }
 </script>
