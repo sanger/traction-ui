@@ -4,7 +4,7 @@
  * @param {Object} attributes - The attributes to set on the used aliquot.
  * @returns {Object} The created used aliquot object.
  */
-function createUsedAliquot(attributes, initialiseToAvailableVolume) {
+function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
   /**
    * The default attributes for a used aliquot.
    */
@@ -20,11 +20,13 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume) {
     used_volume: null,
     errors: {},
   }
+  //Initialise the volume to the available volume of the aliquot if the source type is 'Pacbio::Library' and a function is provided to initialise the volume.
+  const isInitialiseVolume =
+    initialiseToAvailableVolume != null && attributes.source_type === 'Pacbio::Library'
 
   let availableVolume = formatValue(
-    initialiseToAvailableVolume ? initialiseToAvailableVolume() : attributes?.available_volume,
+    isInitialiseVolume ? initialiseToAvailableVolume() : attributes?.available_volume,
   )
-
   /**
    * The used aliquot object.
    * This object is created by merging the default attributes with the given attributes.
@@ -36,7 +38,7 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume) {
     ...defaultUsedAliquotAttributes,
     ...attributes,
     tag_id: (attributes && (attributes.tag || attributes.tag_id)) ?? null,
-    volume: initialiseToAvailableVolume ? availableVolume : formatValue(attributes?.volume),
+    volume: isInitialiseVolume ? availableVolume : formatValue(attributes?.volume),
     available_volume: availableVolume,
 
     /**

@@ -206,13 +206,11 @@ const updateUsedAliquotSource = async (barcode) => {
       barcode,
       volume,
     },
-    source_type === 'Pacbio::Library'
-      ? () =>
-          store.getAvailableVolumeForLibraryAliquot({
-            libraryId: id,
-            volume: 0,
-          })
-      : null,
+    () =>
+      store.getAvailableVolumeForLibraryAliquot({
+        libraryId: id,
+        volume: 0,
+      }),
   )
 
   well.used_aliquots.push(used_aliquot)

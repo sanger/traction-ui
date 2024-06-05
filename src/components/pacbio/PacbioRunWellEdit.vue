@@ -289,13 +289,11 @@ const updateUsedAliquotSource = async (row, barcode) => {
         insert_size: tubeContent.insert_size,
         template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
       },
-      type === 'Pacbio::Library'
-        ? () =>
-            store.getAvailableVolumeForLibraryAliquot({
-              libraryId: tubeContent.id,
-              volume: 0,
-            })
-        : null,
+      () =>
+        store.getAvailableVolumeForLibraryAliquot({
+          libraryId: tubeContent.id,
+          volume: 0,
+        }),
     )
     localUsedAliquots[index] = used_aliquot
   } else {
