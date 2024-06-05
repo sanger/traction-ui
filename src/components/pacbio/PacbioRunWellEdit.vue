@@ -128,7 +128,7 @@ defineProps({
 
 // Define refs for the component
 // well object
-const well = reactive({ used_aliquots: [], loading_target_p1_plus_p2: '' })
+const well = reactive({ used_aliquots: [] })
 // local pools and libraries which are added to the well
 const localUsedAliquots = reactive([])
 // fields for the well pools and libraries table
@@ -208,7 +208,7 @@ const formatLoadingTargetValue = (val) => {
     if (decimalPercentageRegex.test(val)) {
       return val
     } else {
-      return isNaN(well.value.loading_target_p1_plus_p2) ? 0 : well.loading_target_p1_plus_p2
+      return isNaN(well.loading_target_p1_plus_p2) ? 0 : well.loading_target_p1_plus_p2
     }
   }
 }
