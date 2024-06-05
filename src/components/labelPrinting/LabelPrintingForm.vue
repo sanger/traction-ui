@@ -149,6 +149,10 @@ const labelOptions = reactive({ suffix: '', labelTypeKey: 'tube2d' }) // label o
 
 let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
+const workflowOptions = reactive(createWorkflowOptions(WorkflowList)) // Create a reactive for the workflow options
+
+const workflowDropdownOptions = reactive(createWorkflowDropdownOptions(WorkflowList)) // Create a reactive for the workflow dropdown options
+
 /**
  * Creates a map of functions to create labels
  */
@@ -189,29 +193,13 @@ const labelType = computed(() => {
 })
 
 /**
- * Creates a computed property to get the suffix options
- * @returns {Array} suffix options
- */
-const workflowDropdownOptions = computed(() => {
-  return createWorkflowDropdownOptions(WorkflowList)
-})
-
-/**
- * Creates a computed property to get the suffix items
- * @returns {Array} suffix items
- */
-const workflowOptions = computed(() => {
-  return createWorkflowOptions(WorkflowList)
-})
-
-/**
  * Creates a computed property to get the labels (workflow barcode items)
  * @returns {Array} labels
  */
 const workflowBarcodeItems = computed(() => {
   const date = getCurrentDate()
   // without this we get an undefined error
-  const workflowItem = workflowOptions.value[labelOptions.suffix] || NullWorkflowItem
+  const workflowItem = workflowOptions[labelOptions.suffix] || NullWorkflowItem
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove any nulls
