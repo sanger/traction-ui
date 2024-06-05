@@ -86,7 +86,6 @@ const notifyAliquotSelection = (selected, aliquot) => {
     aliquotOnSelection = null
   }
   selectedAliquotRequest.value = aliquotOnSelection
-
   emit('aliquot-selected', aliquotOnSelection)
 }
 </script>

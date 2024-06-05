@@ -26,7 +26,7 @@
             <div
               :class="[
                 'bg-blue-100 rounded-lg p-1 mr-3 mt-2',
-                `${item.barcode === props.highlight?.labware.barcode ? 'border-4 border-purple-500' : 'border border-sdb '}`,
+                `${item.barcode === props.highlight?.labware?.barcode ? 'border-4 border-purple-500' : 'border border-sdb '}`,
               ]"
             >
               <div class="flex w-full justify-end">
@@ -147,6 +147,23 @@ const emit = defineEmits(['closed']) // Defines an emit function that emits a 'c
 const pacbioPoolCreateStore = usePacbioPoolCreateStore() // A composable store for the pacbio pool create store
 
 /**
+ * A method that processes the labware and returns the requests associated with the labware
+ * @param {Object} labware - The given labware object
+ * @param {Array} selectedItems - An array of selected items
+ * @param {Function} getRequestItems - A function that returns the request items
+ * @param {Function} requestMapper - A function that maps the request to the item
+ * @returns {Array} - An array of requests associated with the labware along with the source labware
+ 
+ */
+const processLabware = (labware, selectedItems, getRequestItems = null, requestMapper) => {
+  const item = selectedItems.find((item) => item.barcode === labware.barcode)
+  if (!item) return []
+  const requestItems = getRequestItems ? getRequestItems(item) : [item]
+  return requestItems.flatMap((reqItem) =>
+    pacbioPoolCreateStore.requestList(reqItem)?.map((request) => requestMapper(request, item)),
+  )
+}
+/**
  * A computed property that returns all selected requests
  * If the sortBySelection value is true, the requests are sorted by selection
  * @returns {Array} - An array of selected requests with its source labware which can be sorted by selection
@@ -156,18 +173,22 @@ const selectedRequestsWithSource = computed(() => {
   const requests = props.labware
     .flatMap((labware) => {
       if (isPlate(labware)) {
-        const plate = pacbioPoolCreateStore.selectedPlates.find(
-          (item) => item.barcode === labware.barcode,
+        return processLabware(
+          labware,
+          pacbioPoolCreateStore.selectedPlates,
+          (item) => pacbioPoolCreateStore.wellList(item.wells),
+          (request, well) => ({ ...request, well }),
         )
-        return pacbioPoolCreateStore.wellList(plate.wells).flatMap((well) => {
-          const reqList = pacbioPoolCreateStore.requestList(well)
-          return reqList?.map((req) => ({ ...req, well }))
-        })
       } else {
-        const tube = pacbioPoolCreateStore.selectedTubes.find(
-          (item) => item.barcode === labware.barcode,
+        return processLabware(
+          labware,
+          pacbioPoolCreateStore.selectedTubes,
+          null,
+          (request, tube) => ({
+            ...request,
+            tube,
+          }),
         )
-        return pacbioPoolCreateStore.requestList(tube).map((req) => ({ ...req, tube }))
       }
     })
     .filter((item) => item !== undefined) //filter out undefined values for

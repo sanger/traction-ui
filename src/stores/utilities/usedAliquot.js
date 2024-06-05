@@ -20,13 +20,21 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
     used_volume: null,
     errors: {},
   }
+  // Assigns the value of `attributes.source_type` to `source_type` if it exists.
+  // If `attributes.source_type` is undefined or null, checks if `attributes.type` equals 'pools'.
+  // If it does, assigns 'Pacbio::Pool' to `source_type`, otherwise assigns 'Pacbio::Library'.
+  const source_type =
+    attributes?.source_type ||
+    (attributes?.type ? (attributes.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library') : null)
+
   //Initialise the volume to the available volume of the aliquot if the source type is 'Pacbio::Library' and a function is provided to initialise the volume.
   const isInitialiseVolume =
-    initialiseToAvailableVolume != null && attributes.source_type === 'Pacbio::Library'
+    initialiseToAvailableVolume != null && source_type === 'Pacbio::Library'
 
-  let availableVolume = formatValue(
+  const availableVolume = formatValue(
     isInitialiseVolume ? initialiseToAvailableVolume() : attributes?.available_volume,
   )
+
   /**
    * The used aliquot object.
    * This object is created by merging the default attributes with the given attributes.
@@ -37,6 +45,7 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
   let usedAliquot = {
     ...defaultUsedAliquotAttributes,
     ...attributes,
+    source_type,
     tag_id: (attributes && (attributes.tag || attributes.tag_id)) ?? null,
     volume: isInitialiseVolume ? availableVolume : formatValue(attributes?.volume),
     available_volume: availableVolume,
