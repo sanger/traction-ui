@@ -194,8 +194,8 @@ const drop = async (event) => {
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
   const tubeContent = store.tubeContentByBarcode(barcode)
-  //id set to null because we are creating a new used aliquot and this is very important for calculating the available volume where
-  //it checks for existing aliquots
+  /*id set to null because we are creating a new used aliquot. This is very important for calculating 
+  the available volume where it checks for existing aliquots using id*/
   const used_aliquot = createUsedAliquot(
     { ...tubeContent, source_id: tubeContent.id, id: null },
     () =>
