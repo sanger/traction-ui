@@ -788,7 +788,6 @@ describe('PacbioRunWellEdit', () => {
       expect(store.updateWell).toBeCalledWith({
         plateNumber: 1,
         well: {
-          loading_target_p1_plus_p2: '',
           used_aliquots: aliquots,
         },
       })

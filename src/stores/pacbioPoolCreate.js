@@ -269,7 +269,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         })
       } else {
         val = Object.values(requests).map((request) => {
-          return { ...request, selected: !!selectedUsedAliquots[`_${request.source}`] }
+          const source = request.tube || request.well
+          return { ...request, selected: !!selectedUsedAliquots[`_${source}`] }
         })
       }
       return val

@@ -174,11 +174,11 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('requestList', () => {
       const requests = {
-        1: { id: '1', name: 'request1', source: '1' },
-        2: { id: '2', name: 'request2', source: '2' },
-        3: { id: '3', name: 'request3', source: '3' },
-        4: { id: '4', name: 'request4', source: '4' },
-        5: { id: '5', name: 'request5', source: '5' },
+        1: { id: '1', name: 'request1', tube: '1' },
+        2: { id: '2', name: 'request2', well: '2' },
+        3: { id: '3', name: 'request3', well: '3' },
+        4: { id: '4', name: 'request4', tube: '4' },
+        5: { id: '5', name: 'request5', tube: '5' },
       }
       const used_aliquots = {
         _3: {
@@ -202,11 +202,11 @@ describe('usePacbioPoolCreateStore', () => {
       }
 
       const mergedRequests = [
-        { id: '1', name: 'request1', selected: false, source: '1' },
-        { id: '2', name: 'request2', selected: false, source: '2' },
-        { id: '3', name: 'request3', selected: true, source: '3' },
-        { id: '4', name: 'request4', selected: true, source: '4' },
-        { id: '5', name: 'request5', selected: false, source: '5' },
+        { id: '1', name: 'request1', selected: false, tube: '1' },
+        { id: '2', name: 'request2', selected: false, well: '2' },
+        { id: '3', name: 'request3', selected: true, well: '3' },
+        { id: '4', name: 'request4', selected: true, tube: '4' },
+        { id: '5', name: 'request5', selected: false, tube: '5' },
       ]
 
       it('returns all requests', () => {
