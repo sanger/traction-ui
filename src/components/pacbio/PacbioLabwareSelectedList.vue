@@ -112,6 +112,12 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  /**
+   * The highlight object
+   * @type {Object}
+   * @default undefined
+   * @example { aliquot: { source_id: '1234' }, labware: { barcode: 'DN1234' } }
+   */
   highlight: {
     type: Object,
     required: false,
@@ -236,7 +242,7 @@ const onClose = (labware) => {
  */
 const tableRowColour = (row) => {
   return `${row.selected ? 'bg-yellow-300' : 'bg-gray-200'} ${
-    row.source_id === props.highlight?.request.source_id && 'border-4 border-purple-500'
+    row.source_id === props.highlight?.aliquot.source_id && 'border-4 border-purple-500'
   } cursor-pointer`
 }
 
