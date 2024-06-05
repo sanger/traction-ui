@@ -157,7 +157,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        */
       tubes: {},
     },
-    // used_aliquots. Indexed by an internally generated id.
+    /* used_aliquots. Indexed by source_id. 
+     When a used aliquot is selected, it is added to this object with the key being the source_id prefixed by '_'.
+     The '_' ensures keys are maintained in insertion order, not numeric order. 
+     This allow maintain the order in which they were selected'*/
     used_aliquots: {},
     // Pool: The current pool being edited or created
     pool: {},
