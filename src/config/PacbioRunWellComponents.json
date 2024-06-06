@@ -213,6 +213,18 @@
         "placeholder": "Pre-extension time",
         "dataAttribute": "pre-extension-time"
       }
+    },
+    {
+      "name": "library_type",
+      "component": "traction-select",
+      "value": "library_type",
+      "label": "Library Type",
+      "required": true,
+      "default": true,
+      "props": {
+        "options": ["Standard","Kinnex","Adeno-associated Virus"],
+        "dataAttribute": "library-type"
+      }
     }
   ],
   "v12_sequel_iie": [
@@ -427,6 +439,18 @@
       "props": {
         "placeholder": "Pre-extension time",
         "dataAttribute": "pre-extension-time"
+      }
+    },
+    {
+      "name": "library_type",
+      "component": "traction-select",
+      "value": "library_type",
+      "label": "Library Type",
+      "required": true,
+      "default": true,
+      "props": {
+        "options": ["Standard","Kinnex","Adeno-associated Virus"],
+        "dataAttribute": "library-type"
       }
     }
   ],

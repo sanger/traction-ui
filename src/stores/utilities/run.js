@@ -52,6 +52,7 @@ const defaultWellAttributes = () => {
     include_base_kinetics: 'False',
     library_concentration: null,
     polymerase_kit: null,
+    library_type: 'Standard',
   }
 }
 
