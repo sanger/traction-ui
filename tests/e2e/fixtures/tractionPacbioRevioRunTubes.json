@@ -948,7 +948,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:H4",
         "pacbio_request_id": 32,
-        "tag_id": 1
+        "tag_id": 1,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1028,7 +1029,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:A5",
         "pacbio_request_id": 33,
-        "tag_id": 2
+        "tag_id": 2,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1108,7 +1110,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:B5",
         "pacbio_request_id": 34,
-        "tag_id": 3
+        "tag_id": 3,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1188,7 +1191,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:C5",
         "pacbio_request_id": 35,
-        "tag_id": 4
+        "tag_id": 4,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1268,7 +1272,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:E5",
         "pacbio_request_id": 37,
-        "tag_id": 1
+        "tag_id": 1,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1348,7 +1353,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:F5",
         "pacbio_request_id": 38,
-        "tag_id": 2
+        "tag_id": 2,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1428,6 +1434,7 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:G5",
         "pacbio_request_id": 39,
+        "available_volume": 5.0,
         "tag_id": 3
       },
       "relationships": {
@@ -1508,7 +1515,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:H5",
         "pacbio_request_id": 40,
-        "tag_id": 4
+        "tag_id": 4,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {
@@ -1588,7 +1596,8 @@
         "deactivated_at": null,
         "source_identifier": "GEN-1710774222-1:F4",
         "pacbio_request_id": 30,
-        "tag_id": null
+        "tag_id": null,
+        "available_volume": 5.0
       },
       "relationships": {
         "request": {

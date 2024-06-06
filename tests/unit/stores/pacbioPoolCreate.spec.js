@@ -65,7 +65,7 @@ describe('usePacbioPoolCreateStore', () => {
       expect(store.selectedPlates).toEqual(Object.values(plates))
     })
 
-    it('returns the selected requests', () => {
+    it('returns the selected usedAliquots', () => {
       const payload = Data.PacbioRequestsRequest.data
       const requestResources = payload.data
       const { wells: wellResources, tubes: tubeResources } = groupIncludedByResource(
@@ -115,10 +115,40 @@ describe('usePacbioPoolCreateStore', () => {
         tubes,
       }
       store.used_aliquots = used_aliquots
-      expect(store.selectedRequests).toEqual([
-        { ...requests['40'], selected: true },
-        { ...requests['136'], selected: true },
-        { ...requests['3'], selected: true },
+      expect(store.selectedUsedAliquots).toEqual([
+        {
+          ...requests['40'],
+          selected: true,
+          source_id: '40',
+          request: '40',
+          source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
+        },
+        {
+          ...requests['136'],
+          selected: true,
+          source_id: '136',
+          request: '136',
+          source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
+        },
+        {
+          ...requests['3'],
+          selected: true,
+          source_id: '3',
+          request: '3',
+          source_type: 'Pacbio::Request',
+          concentration: null,
+          insert_size: null,
+          tag_id: null,
+          volume: null,
+        },
       ])
     })
 
@@ -144,17 +174,17 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('requestList', () => {
       const requests = {
-        1: { id: '1', name: 'request1' },
-        2: { id: '2', name: 'request2' },
-        3: { id: '3', name: 'request3' },
-        4: { id: '4', name: 'request4' },
-        5: { id: '5', name: 'request5' },
+        1: { id: '1', name: 'request1', tube: '1' },
+        2: { id: '2', name: 'request2', well: '2' },
+        3: { id: '3', name: 'request3', well: '3' },
+        4: { id: '4', name: 'request4', tube: '4' },
+        5: { id: '5', name: 'request5', tube: '5' },
       }
       const used_aliquots = {
         _3: {
           source_id: '3',
           source_type: 'Pacbio::Request',
-          request: '3',
+          requests: '3',
           tag_id: null,
           volume: null,
           concentration: null,
@@ -170,12 +200,13 @@ describe('usePacbioPoolCreateStore', () => {
           insert_size: null,
         },
       }
+
       const mergedRequests = [
-        { id: '1', name: 'request1', selected: false },
-        { id: '2', name: 'request2', selected: false },
-        { id: '3', name: 'request3', selected: true },
-        { id: '4', name: 'request4', selected: true },
-        { id: '5', name: 'request5', selected: false },
+        { id: '1', name: 'request1', selected: false, tube: '1' },
+        { id: '2', name: 'request2', selected: false, well: '2' },
+        { id: '3', name: 'request3', selected: true, well: '3' },
+        { id: '4', name: 'request4', selected: true, tube: '4' },
+        { id: '5', name: 'request5', selected: false, tube: '5' },
       ]
 
       it('returns all requests', () => {
@@ -184,11 +215,11 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.requestList()).toEqual(mergedRequests)
       })
 
-      it('returns specific requests when ids are included', () => {
+      it('returns specific requests for a a used_aliquot when used_aliquot is given', () => {
         store.resources.requests = requests
         store.used_aliquots = used_aliquots
-        const ids = ['1', '2', '3']
-        expect(store.requestList(ids).length).toEqual(ids.length)
+        const library = { source_id: '3', requests: ['3', '2'] }
+        expect(store.requestList(library).length).toEqual(2)
       })
     })
 
@@ -271,6 +302,8 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
           request: '37',
           tag_id: '132',
+          source_id: '37',
+          source_type: 'Pacbio::Request',
         })
 
         // We don't update earlier wells
@@ -280,17 +313,19 @@ describe('usePacbioPoolCreateStore', () => {
           }),
         )
 
-        // We don't update unselected wells
+        // // We don't update unselected wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
             request: '25', // C1
           }),
         )
 
-        // Including the next column
+        // // Including the next column
         expect(store.updateUsedAliquot).toHaveBeenCalledWith({
           request: '2', // A2
           tag_id: '137',
+          source_id: '2',
+          source_type: 'Pacbio::Request',
         })
         // But not another plate
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
@@ -315,7 +350,7 @@ describe('usePacbioPoolCreateStore', () => {
           }),
         )
 
-        // In total we expect to update 8 wells in this case
+        // // In total we expect to update 8 wells in this case
         expect(store.updateUsedAliquot).toHaveBeenCalledTimes(5)
       })
     })
@@ -334,9 +369,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('updates all used_aliquots of same tube with a new tag ', () => {
-        const initialUsedAliquots = { ...store.used_aliquots }
         store.autoTagTube({ source_id: '97', request: '97', tag_id: '130' })
-        expect(store.used_aliquots).not.toEqual(initialUsedAliquots)
         expect(store.used_aliquots['_98'].tag_id).toEqual('131')
         expect(store.used_aliquots['_99'].tag_id).toEqual('132')
       })
@@ -358,20 +391,20 @@ describe('usePacbioPoolCreateStore', () => {
             request: '97',
           }),
         )
-        // We don't update unselected wells
+        // // We don't update unselected wells
         expect(store.updateUsedAliquot).not.toHaveBeenCalledWith(
           expect.objectContaining({
             request: '25', // C1
           }),
         )
-        // We do update tubes with higher ids
+        // // We do update tubes with higher ids
         expect(store.updateUsedAliquot).toHaveBeenCalledWith(
           expect.objectContaining({
             request: '99', // D1
             tag_id: '131',
           }),
         )
-        // In total we expect ot update 2 tubes in this case
+        // // In total we expect ot update 2 tubes in this case
         expect(store.updateUsedAliquot).toHaveBeenCalledTimes(1)
       })
     })
@@ -385,7 +418,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given plate', () => {
         const request = store.requestsForPlate('DN1', 'A1')
-        expect(request).toEqual({ success: true, requestIds: ['1'] })
+        expect(request).toEqual({ success: true, requestIds: ['1'], source_id: '1' })
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: true })
       })
 
@@ -418,7 +451,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given tube', () => {
         const request = store.requestsForTube('3980000001795')
-        expect(request).toEqual({ success: true, requestIds: ['97'] })
+        expect(request).toEqual({ success: true, requestIds: ['97'], source_id: '1' })
         expect(store.selectTube).toBeCalledWith({ id: '1', selected: true })
       })
 
@@ -454,12 +487,16 @@ describe('usePacbioPoolCreateStore', () => {
     describe('selectWellRequests', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
-        store.selectRequest = vi.fn()
+        store.selectRequestInSource = vi.fn()
       })
 
       it('selects the requests for a given well', () => {
         store.selectWellRequests('1')
-        expect(store.selectRequest).toBeCalledWith({ id: '1', selected: false })
+        expect(store.selectRequestInSource).toBeCalledWith({
+          selected: false,
+          request: '1',
+          source_id: '1',
+        })
       })
     })
 
@@ -484,10 +521,10 @@ describe('usePacbioPoolCreateStore', () => {
       it('deselects the plate and its contents', () => {
         store.$state = Data.AutoTagStore
         store.selectPlate = vi.fn()
-        store.selectRequest = vi.fn()
+        store.selectRequestInSource = vi.fn()
         store.deselectPlateAndContents('1')
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: false })
-        expect(store.selectRequest).toBeCalledTimes(48)
+        expect(store.selectRequestInSource).toBeCalledTimes(48)
       })
     })
 
@@ -495,19 +532,23 @@ describe('usePacbioPoolCreateStore', () => {
       beforeEach(() => {
         store.$state = Data.AutoTagStore
         store.selectTube = vi.fn()
-        store.selectRequest = vi.fn()
+        store.selectRequestInSource = vi.fn()
       })
 
       it('deselects the tube and its contents', () => {
         store.deselectTubeAndContents('2')
         expect(store.selectTube).toBeCalledWith({ id: '2', selected: false })
-        expect(store.selectRequest).toBeCalledWith({ id: '98', selected: false })
+        expect(store.selectRequestInSource).toBeCalledWith({
+          selected: false,
+          request: '98',
+          source_id: '2',
+        })
       })
 
       it('will not deselect the tube when given invalid barcode', () => {
         store.deselectTubeAndContents('TRAC-2-22')
         expect(store.selectTube).not.toBeCalled()
-        expect(store.selectRequest).not.toBeCalled()
+        expect(store.selectRequestInSource).not.toBeCalled()
       })
     })
 
@@ -589,12 +630,15 @@ describe('usePacbioPoolCreateStore', () => {
       // request is not sent
       // commit is not called
       it('when the pool used_aliquots are invalid', async () => {
-        store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2, concentration: '' } }
+        let concentration = used_aliquot2.concentration
+        used_aliquot2.concentration = ''
+        store.used_aliquots = { _1: used_aliquot1, _2: { ...used_aliquot2 } }
         store.pool = pool
         const { success, errors } = await store.createPool()
         expect(create).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
         expect(errors).toEqual('The pool is invalid')
+        used_aliquot2.concentration = concentration
       })
 
       it('when the pool is invalid', async () => {
@@ -1074,12 +1118,12 @@ describe('usePacbioPoolCreateStore', () => {
         const { success } = await store.findPacbioTube({ barcode: 'GEN-1680611780-6' })
 
         expect(store.selectTube).toHaveBeenCalledWith({ id: '1', selected: true })
-        expect(store.resources.tubes).toEqual(
-          jsonapi.dataToObjectById({
-            data: Data.PacbioTubeRequest.data.data,
-            includeRelationships: true,
-          }),
-        )
+        const tubes = jsonapi.dataToObjectById({
+          data: Data.PacbioTubeRequest.data.data,
+          includeRelationships: true,
+        })
+        tubes['1'].source_id = '1'
+        expect(store.resources.tubes).toEqual(tubes)
         const requests = Data.PacbioTubeRequest.data.included.slice(0, 1)
         expect(store.resources.requests).toEqual(
           jsonapi.dataToObjectById({ data: requests, includeRelationships: true }),
@@ -1164,7 +1208,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
     })
 
-    describe('selectRequest', () => {
+    describe('selectRequestInSource', () => {
       const attributeKeys = [
         'source_id',
         'tag_id',
@@ -1175,6 +1219,10 @@ describe('usePacbioPoolCreateStore', () => {
         'source_type',
         'request',
       ]
+      beforeEach(() => {
+        const create = vi.fn()
+        rootStore.api = { traction: { pacbio: { pools: { create } } } }
+      })
       it('selects a request by default', () => {
         store.used_aliquots = {
           _2: createUsedAliquot({
@@ -1193,7 +1241,7 @@ describe('usePacbioPoolCreateStore', () => {
             tube: '2',
           },
         }
-        store.selectRequest({ id: '1' })
+        store.selectRequestInSource({ request: '1', source_id: '1' })
 
         /*
         We expect the plate to be recorded in the selected plates it should:
@@ -1227,7 +1275,7 @@ describe('usePacbioPoolCreateStore', () => {
         store.used_aliquots = {
           _1: { source_id: '1', request: '1', tag_id: '1' },
         }
-        store.selectRequest({ id: '1', tag_id: '1', selected: false })
+        store.selectRequestInSource({ request: '1', source_id: '1', tag_id: '1', selected: false })
         //We expect the tube to be removed in the selected plates
         expect(store.used_aliquots).toEqual({})
       })
@@ -1235,10 +1283,10 @@ describe('usePacbioPoolCreateStore', () => {
       describe('when selecting a library', () => {
         it('updates template_prep_kit_box_barcode,volume,concentration,insert_size when tag_id is null', () => {
           store.used_aliquots = {
-            _2: createUsedAliquot({
-              source_id: '2',
+            _1: createUsedAliquot({
+              source_id: '1',
               source_type: 'Pacbio::Request',
-              request: '2',
+              request: '1',
               tag_id: null,
               template_prep_kit_box_barcode: null,
               volume: null,
@@ -1263,8 +1311,8 @@ describe('usePacbioPoolCreateStore', () => {
               tag_id: null,
             },
           }
-          store.selectRequest({ id: '1' })
-          expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
+          store.selectRequestInSource({ request: '1', source_id: '2' })
+          expect(store.used_aliquots['_2'].attributes(attributeKeys)).toEqual({
             source_id: '2',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
@@ -1274,10 +1322,10 @@ describe('usePacbioPoolCreateStore', () => {
             source_type: 'Pacbio::Library',
             request: '1',
           })
-          expect(store.used_aliquots['_2'].attributes(attributeKeys)).toEqual({
-            source_id: '2',
+          expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
+            source_id: '1',
             source_type: 'Pacbio::Request',
-            request: '2',
+            request: '1',
             tag_id: null,
             template_prep_kit_box_barcode: null,
             volume: null,
@@ -1305,8 +1353,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.resources.libraries = {
-            2: {
-              id: '2',
+            1: {
+              id: '1',
               type: 'libraries',
               template_prep_kit_box_barcode: 'ABC1',
               volume: 1,
@@ -1332,10 +1380,10 @@ describe('usePacbioPoolCreateStore', () => {
           }
 
           store.selected.tagSet = {}
-          store.selectRequest({ id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
-            source_id: '2',
+            source_id: '1',
             tag_id: 129,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 1,
@@ -1376,8 +1424,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.resources.libraries = {
-            2: {
-              id: '2',
+            1: {
+              id: '1',
               type: 'libraries',
               template_prep_kit_box_barcode: 'ABC1',
               volume: 1,
@@ -1413,10 +1461,10 @@ describe('usePacbioPoolCreateStore', () => {
 
           rootStore.addVuexMessage = vi.fn()
           store.selectTagSet('3')
-          store.selectRequest({ id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
 
           expect(store.used_aliquots['_1'].attributes(attributeKeys)).toEqual({
-            source_id: '2',
+            source_id: '1',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 1,
@@ -1460,8 +1508,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.resources.libraries = {
-            2: {
-              id: '2',
+            1: {
+              id: '1',
               type: 'libraries',
               template_prep_kit_box_barcode: 'ABC1',
               volume: 15,
@@ -1472,12 +1520,11 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectRequest({ id: '1' })
-
+          store.selectRequestInSource({ request: '1', source_id: '1' })
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),
           ).toEqual({
-            source_id: '2',
+            source_id: '1',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 5,
@@ -1519,8 +1566,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.resources.libraries = {
-            2: {
-              id: '2',
+            1: {
+              id: '1',
               type: 'libraries',
               template_prep_kit_box_barcode: 'ABC1',
               volume: 15,
@@ -1531,14 +1578,15 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectRequest({ id: '1' })
+          store.selectRequestInSource({ request: '1', source_id: '1' })
           store.used_aliquots['_1'].volume = 15
+          store.updateUsedAliquot(store.used_aliquots['_1'])
           store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
 
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),
           ).toEqual({
-            source_id: '2',
+            source_id: '1',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 15,
@@ -1580,8 +1628,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           }
           store.resources.libraries = {
-            2: {
-              id: '2',
+            1: {
+              id: '1',
               type: 'libraries',
               template_prep_kit_box_barcode: 'ABC1',
               volume: 1,
@@ -1592,15 +1640,15 @@ describe('usePacbioPoolCreateStore', () => {
               available_volume: 5,
             },
           }
-          store.selectRequest({ id: '1' })
-
+          store.selectRequestInSource({ request: '1', source_id: '1' })
           store.used_aliquots['_1'].volume = 1
+          store.updateUsedAliquot(store.used_aliquots['_1'])
           store.validateUsedAliquot(store.used_aliquots['_1'], 'volume')
 
           expect(
             store.used_aliquots['_1'].attributes([...attributeKeys, 'available_volume', 'errors']),
           ).toEqual({
-            source_id: '2',
+            source_id: '1',
             tag_id: null,
             template_prep_kit_box_barcode: 'ABC1',
             volume: 1,

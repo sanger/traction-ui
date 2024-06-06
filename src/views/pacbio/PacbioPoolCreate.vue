@@ -160,21 +160,21 @@ const search = async (value) => {
   searchText.value = ''
 }
 
-const handleAliquotSelection = (request) => {
-  if (!request) {
+const handleAliquotSelection = (aliquot) => {
+  if (!aliquot) {
     aliquotSelectionHighlightLabware.value = null
     return
   }
-  let labware = pacbioPoolCreateStore.selectedTubes.find((tube) =>
-    tube.requests.some((req) => req === request.id),
+  let labware = pacbioPoolCreateStore.selectedTubes.find(
+    (tube) => tube.source_id === aliquot.source_id,
   )
   if (!labware) {
     labware = pacbioPoolCreateStore.selectedPlates.find((plate) =>
       pacbioPoolCreateStore
         .wellList(plate.wells || [])
-        .some((well) => well.requests.includes(request.id)),
+        .some((well) => well.id === aliquot.source_id),
     )
   }
-  aliquotSelectionHighlightLabware.value = { labware, request }
+  aliquotSelectionHighlightLabware.value = { labware, aliquot }
 }
 </script>

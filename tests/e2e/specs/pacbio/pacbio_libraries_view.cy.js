@@ -51,7 +51,7 @@ describe('Pacbio Libraries view', () => {
 
     //It should update the library values
     cy.get('#library-volume').focus().should('not.be.disabled').clear()
-    cy.get('#library-volume').type('2')
+    cy.get('#library-volume').clear().type('2')
     cy.get('#library-concentration').clear().type('2')
     cy.get('#library-insertSize').clear().type('200')
     cy.get('#library-templatePrepKitBoxBarcode').clear().type('LK54321')

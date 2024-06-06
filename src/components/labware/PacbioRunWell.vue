@@ -193,20 +193,18 @@ const drop = async (event) => {
  */
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
-  const { id, type, volume, concentration, insert_size, template_prep_kit_box_barcode } =
-    store.tubeContentByBarcode(barcode)
-  const source_type = type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-  const used_aliquot = createUsedAliquot({
-    source_id: id,
-    source_type,
-    volume,
-    concentration,
-    insert_size,
-    template_prep_kit_box_barcode,
-    barcode,
-  })
-
+  const tubeContent = store.tubeContentByBarcode(barcode)
+  /*id set to null because we are creating a new used aliquot. This is very important for calculating 
+  the available volume where it checks for existing aliquots using id*/
+  const used_aliquot = createUsedAliquot(
+    { ...tubeContent, source_id: tubeContent.id, id: null },
+    () =>
+      store.getAvailableVolumeForLibraryAliquot({
+        libraryId: tubeContent.id,
+        volume: 0,
+      }),
+  )
   well.used_aliquots.push(used_aliquot)
-  store.updateWell({ well: well, plateNumber: props.plateNumber })
+  store.updateWell({ well, plateNumber: props.plateNumber })
 }
 </script>
