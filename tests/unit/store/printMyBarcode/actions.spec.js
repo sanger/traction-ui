@@ -22,7 +22,7 @@ describe('actions', () => {
 
     it('successful', async () => {
       const create = vi.fn()
-      const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
+      const rootState = { api: { v1: { printMyBarcode: { print_jobs: { create } } } } }
       const mockResponse = {
         status: '201',
       }
@@ -45,7 +45,7 @@ describe('actions', () => {
 
     it('unsuccessful', async () => {
       const create = vi.fn()
-      const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
+      const rootState = { api: { v1: { printMyBarcode: { print_jobs: { create } } } } }
       const mockResponse = {
         status: '422',
         response: {

@@ -103,7 +103,7 @@ describe('usePacbioLibrariesStore', () => {
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
 
-        rootStore.api = {
+        rootStore.api.v1 = {
           traction: {
             pacbio: {
               libraries: { create },
@@ -175,7 +175,7 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(() => {
         destroy = vi.fn()
-        rootStore.api.traction.pacbio.libraries = { destroy: destroy }
+        rootStore.api.v1.traction.pacbio.libraries = { destroy: destroy }
         libraryIds = [1, 2]
       })
 
@@ -209,7 +209,7 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(() => {
         get = vi.fn()
-        rootStore.api.traction.pacbio.libraries.get = get
+        rootStore.api.v1.traction.pacbio.libraries.get = get
         failedResponse = {
           data: { data: { errors: { error1: ['There was an error'] } } },
           status: 500,
@@ -301,8 +301,8 @@ describe('usePacbioLibrariesStore', () => {
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
 
-        rootStore.api.traction.pacbio.libraries.get = get
-        rootStore.api.traction.pacbio.libraries.update = update
+        rootStore.api.v1.traction.pacbio.libraries.get = get
+        rootStore.api.v1.traction.pacbio.libraries.update = update
         await store.fetchLibraries()
         libraryBeforeUpdate = {
           id: '1',

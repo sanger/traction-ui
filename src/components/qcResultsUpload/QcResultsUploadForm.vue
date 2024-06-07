@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     api() {
-      return this.$store.getters.api
+      return this.$store.getters.api.v1
     },
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {

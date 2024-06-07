@@ -287,7 +287,7 @@ export default {
     // ...mapState(useRootStore, ['api']),
     reception: ({ receptions, source }) => receptions[source],
     api() {
-      return useRootStore().api
+      return useRootStore().api.v1
     }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],

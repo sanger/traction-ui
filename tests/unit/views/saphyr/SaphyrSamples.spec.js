@@ -15,7 +15,7 @@ describe('Samples.vue', () => {
       Data.TractionSaphyrRequests,
     )
     // Here we mock enzymes as they are loaded in the modal
-    vi.spyOn(store.getters.api.traction.saphyr.enzymes, 'get').mockResolvedValue({
+    vi.spyOn(store.getters.api.v1.traction.saphyr.enzymes, 'get').mockResolvedValue({
       data: Data.Enzymes,
     })
     wrapper = mount(Samples, {
