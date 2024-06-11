@@ -222,7 +222,7 @@
       "required": true,
       "default": true,
       "props": {
-        "options": ["Standard","Kinnex","Adeno-associated Virus"],
+        "options": ["Standard", "Kinnex", "Adeno-associated Virus"],
         "dataAttribute": "library-type"
       }
     }
@@ -449,7 +449,7 @@
       "required": true,
       "default": true,
       "props": {
-        "options": ["Standard","Kinnex","Adeno-associated Virus"],
+        "options": ["Standard", "Kinnex", "Adeno-associated Virus"],
         "dataAttribute": "library-type"
       }
     }
