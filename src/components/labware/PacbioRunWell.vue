@@ -27,7 +27,7 @@
  * @name PacbioRunWell
  * @description A single well in a Pacbio run plate
  */
-import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
@@ -93,7 +93,7 @@ const wellClassNames = computed(() => {
  */
 const required_metadata_fields = computed(() => {
   return (
-    PacbioRunWellComponents[store.smrtLinkVersion.name]?.reduce((result, field) => {
+    PacbioRunWellSmrtLinkOptions[store.smrtLinkVersion.name]?.reduce((result, field) => {
       field.required && result.push(field.value)
       return result
     }, []) || []
