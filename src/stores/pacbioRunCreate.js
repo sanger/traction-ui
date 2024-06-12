@@ -460,7 +460,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Sets the defaultWellAttributes
      */
     setDefaultWellAttributes() {
-      this.defaultWellAttributes = PacbioRunWellSmrtLinkOptions.defaultAttributes
+      this.defaultWellAttributes = { ...PacbioRunWellSmrtLinkOptions.defaultAttributes }
     },
 
     /**
