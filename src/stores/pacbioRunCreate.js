@@ -352,7 +352,17 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           // eslint-disable-next-line no-unused-vars
           Object.entries(plate).forEach(([_position, well]) => {
             well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
-              return { ...this.aliquots[aliquotId], volumeEdited: true }
+              const aliquot = this.aliquots[aliquotId]
+              return aliquot.source_type === 'Pacbio::Library'
+                ? {
+                    ...aliquot,
+                    available_volume: this.getAvailableVolumeForLibraryAliquot({
+                      aliquotId,
+                      libraryId: aliquot.source_id,
+                      volume: aliquot.volume,
+                    }),
+                  }
+                : { ...aliquot }
             })
           })
         })
@@ -525,7 +535,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       // Get the original aliquot if it exists
       const original_aliquot = this.aliquots[aliquotId]
       // Get the available volume for the library
-      const library_available_volume = this.libraries[libraryId].available_volume || 0
+      const library_available_volume = this.libraries[libraryId]?.available_volume || 0
 
       // Calculate the sum of the volume of all the new aliquots used in wells that are from the library
       let library_used_aliquots_volume = 0

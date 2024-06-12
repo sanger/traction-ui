@@ -8,6 +8,7 @@ const request = {
   id: '1',
   sample_name: 'Sample1',
   source_identifier: 'DN1:A1',
+  source_id: '1',
 }
 
 const tagSet = {

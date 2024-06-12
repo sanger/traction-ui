@@ -46,6 +46,7 @@ describe('usePacbioRunCreateStore', () => {
         },
         state: 'pending',
         volume: 1,
+        available_volume: 1,
         concentration: 1,
         template_prep_kit_box_barcode: '029979102141700063023',
         insert_size: null,

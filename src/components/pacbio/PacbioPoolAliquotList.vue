@@ -1,20 +1,22 @@
 <template>
-  <div v-if="store.selectedRequests" data-type="pool-library-list">
+  <div v-if="store.selectedUsedAliquots" data-type="pool-library-list">
     <traction-table :fields="state.headerFields" simple>
       <flagged-feature name="dpl_1072_check_library_volume_in_pools">
         <PacbioPoolAliquotEdit
-          v-for="request in store.selectedRequests"
-          :key="request.id"
-          :request="request"
+          v-for="aliquot in store.selectedUsedAliquots"
+          :key="aliquot.source_id"
+          :request="aliquot"
           :auto-tag="props.autoTag"
           :validated="props.validated"
           :notify="props.notify"
-          :selected="selectedRequest && selectedRequest.id === request.id"
-          @aliquot-selected="(selected) => notifyAliquotSelection(selected, request)"
+          :selected="
+            selectedAliquotRequest && selectedAliquotRequest.source_id === aliquot.source_id
+          "
+          @aliquot-selected="(selected) => notifyAliquotSelection(selected, aliquot)"
         ></PacbioPoolAliquotEdit>
         <template #disabled>
           <PacbioPoolAliquotEditV1
-            v-for="request in store.selectedRequests"
+            v-for="request in store.selectedUsedAliquots"
             :key="request.id"
             :request="request"
             :auto-tag="props.autoTag"
@@ -62,7 +64,7 @@ const props = defineProps({
 
 const store = usePacbioPoolCreateStore()
 const emit = defineEmits(['aliquot-selected'])
-const selectedRequest = ref(null)
+const selectedAliquotRequest = ref(null)
 
 /**
  * The fields to display in in the table
@@ -78,13 +80,12 @@ const state = reactive({
     'Insert Size',
   ],
 })
-const notifyAliquotSelection = (selected, request) => {
-  let requestOnSelection = request
+const notifyAliquotSelection = (selected, aliquot) => {
+  let aliquotOnSelection = aliquot
   if (!selected) {
-    requestOnSelection = null
+    aliquotOnSelection = null
   }
-  selectedRequest.value = requestOnSelection
-
-  emit('aliquot-selected', requestOnSelection)
+  selectedAliquotRequest.value = aliquotOnSelection
+  emit('aliquot-selected', aliquotOnSelection)
 }
 </script>

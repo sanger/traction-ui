@@ -151,7 +151,6 @@ const props = defineProps({
     default: () => {},
   },
 })
-
 const emit = defineEmits(['aliquotSelected'])
 
 const fieldsThatRequireValidation = ref([]) // store the fields that have been altered and require validation
@@ -172,11 +171,10 @@ const tagList = computed(() => {
 const tagListOptions = computed(() => {
   return [{ value: null, text: 'Please select a tag' }, ...tagList.value]
 })
-
 /**
  * The aliquot object for the request
  */
-const aliquot = computed(() => store.usedAliquotItem(props.request.id))
+const aliquot = computed(() => store.usedAliquotItem(props.request.source_id))
 
 /**
  * A function to set the library attributes
@@ -191,6 +189,7 @@ const aliquotSetter = (attr) => {
       store.updateUsedAliquot({
         request: aliquot.value.request,
         [attr]: newValue,
+        source_id: aliquot.value.source_id,
       })
       // Validate the given attribute in the aliquot object
       store.validateUsedAliquot(aliquot.value, attr)
@@ -209,7 +208,7 @@ const template_prep_kit_box_barcode = aliquotSetter('template_prep_kit_box_barco
  */
 const tag_id = computed({
   get() {
-    return store.usedAliquotItem(props.request.id).tag_id
+    return store.usedAliquotItem(aliquot.value.source_id).tag_id
   },
   set(tag_id) {
     if (tag_id !== this.tag_id) {
@@ -218,7 +217,7 @@ const tag_id = computed({
       props.notify()
     }
     store.applyTags({
-      used_aliquots: { tag_id, request: aliquot.value.request },
+      used_aliquots: { tag_id, request: aliquot.value.request, source_id: aliquot.value.source_id },
       autoTag: props.autoTag,
     })
   },

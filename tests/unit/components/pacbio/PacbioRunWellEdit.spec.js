@@ -342,6 +342,7 @@ describe('PacbioRunWellEdit', () => {
               type: 'libraries',
               volume: 7,
               concentration: 12,
+              available_volume: 10,
               template_prep_kit_box_barcode: 'tpkbb1',
             },
             2: { id: 2, tube: 2, request: 2, type: 'libraries' },
@@ -439,12 +440,23 @@ describe('PacbioRunWellEdit', () => {
 
   describe('validLocalUsedAliquots', () => {
     it('returns the localUsedAliquots that are not marked for destruction', () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions['1'],
+          wells: {
+            1: {
+              A1: newWell({ attributes: { id: 1 }, position: position }),
+            },
+          },
+        },
+      })
+      wrapper = wrapperObj
       const aliquots = [
         createUsedAliquot({ id: 1, _destroy: true }),
         createUsedAliquot({ id: 2 }),
         createUsedAliquot({ id: 3, _destroy: true }),
       ]
-      wrapper.vm.localUsedAliquots = aliquots
+      aliquots.forEach((aliquot) => wrapper.vm.localUsedAliquots.push(aliquot))
       expect(wrapper.vm.validLocalUsedAliquots).toEqual([aliquots[1]])
     })
   })
@@ -663,10 +675,10 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: '10.00',
+            volume: 10,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: '10.00',
+            available_volume: 10,
             errors: {},
           }),
         )
@@ -690,10 +702,10 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: '10.00',
+            volume: 10,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: '10.00',
+            available_volume: 10,
           }),
         )
         await wrapper.vm.updateUsedAliquotVolume({ index: 1 }, 11)
@@ -771,7 +783,7 @@ describe('PacbioRunWellEdit', () => {
           template_prep_kit_box_barcode: 'tpkbb1',
         }),
       ]
-      wrapper.vm.localUsedAliquots = aliquots
+      aliquots.forEach((aliquot) => wrapper.vm.localUsedAliquots.push(aliquot))
       await wrapper.vm.update()
       expect(store.updateWell).toBeCalledWith({
         plateNumber: 1,
@@ -808,7 +820,7 @@ describe('PacbioRunWellEdit', () => {
           },
         }),
       ]
-      wrapper.vm.localUsedAliquots = aliquots
+      aliquots.forEach((aliquot) => wrapper.vm.localUsedAliquots.push(aliquot))
       await wrapper.vm.update()
       expect(mockShowAlert).toBeCalledWith('Insufficient volume available', 'danger')
       expect(store.updateWell).not.toBeCalled()

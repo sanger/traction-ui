@@ -28,7 +28,7 @@ describe('Pacbio Pool Edit', () => {
     })
   })
 
-  it.only('updates pool information on clicking requests table rows', () => {
+  it('updates pool information on clicking requests table rows', () => {
     cy.visit('#/pacbio/pools')
     cy.get('#pool-index').within(() => {
       cy.get('#edit-pool').first().click()

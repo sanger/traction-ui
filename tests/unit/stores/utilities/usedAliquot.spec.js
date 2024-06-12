@@ -127,6 +127,7 @@ describe('usedAliquot', () => {
       concentration: 5,
       template_prep_kit_box_barcode: 'barcode1',
       request: '1',
+      source_id: '1',
     })
     expect(usedAliquot.isValidObject()).toBe(true)
   })

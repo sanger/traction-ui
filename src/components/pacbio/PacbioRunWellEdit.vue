@@ -104,7 +104,7 @@
 <script setup>
 import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
@@ -128,9 +128,9 @@ defineProps({
 
 // Define refs for the component
 // well object
-const well = ref({})
+const well = reactive({ used_aliquots: [] })
 // local pools and libraries which are added to the well
-const localUsedAliquots = ref([])
+const localUsedAliquots = reactive([])
 // fields for the well pools and libraries table
 const wellUsedAliquotsFields = ref([
   { key: 'barcode', label: 'Barcode' },
@@ -161,7 +161,7 @@ const newWell = computed(() => {
 
 // A computed property to only return the non-destroyed aliquots from the localUsedAliquots array
 const validLocalUsedAliquots = computed(() => {
-  return localUsedAliquots.value.filter((aliquot) => !aliquot['_destroy'])
+  return localUsedAliquots.filter((aliquot) => !aliquot['_destroy'])
 })
 
 // Define a computed property to determine the action for the modal which is either create or update
@@ -184,22 +184,22 @@ const action = computed(() => {
 /* `addRow` is a function that adds a new row to the `localUsedAliquots` array.
   Each row is an object with an `id`, and `barcode`, both initialized as empty strings.*/
 const addRow = () => {
-  localUsedAliquots.value.push(createUsedAliquot({ id: '', barcode: '', volume: 0 }))
+  localUsedAliquots.push(createUsedAliquot({ id: '', barcode: '', volume: 0 }))
 }
 
 /* `removeRow` is a function that adds a destroy key to the a given aliquot in the`localUsedAliquots` array.
   or removes the aliquot from the array if it does not have an existing id */
 const removeRow = (row) => {
   if (row.item.id) {
-    localUsedAliquots.value[row.index]['_destroy'] = true
+    localUsedAliquots[row.index]['_destroy'] = true
   } else {
-    localUsedAliquots.value.splice(row.index, 1)
+    localUsedAliquots.splice(row.index, 1)
   }
 }
 
 /* `filteredAliquots` is a function that returns a list of valid aliquots from the `localUsedAliquots` array.*/
 const filteredAliquots = () => {
-  return localUsedAliquots.value.filter((item) => item.barcode)
+  return localUsedAliquots.filter((item) => item.barcode)
 }
 
 /* `formatLoadingTargetValue` is a function that formats the loading target value.*/
@@ -208,14 +208,14 @@ const formatLoadingTargetValue = (val) => {
     if (decimalPercentageRegex.test(val)) {
       return val
     } else {
-      return isNaN(well.value.loading_target_p1_plus_p2) ? 0 : well.value.loading_target_p1_plus_p2
+      return isNaN(well.loading_target_p1_plus_p2) ? 0 : well.loading_target_p1_plus_p2
     }
   }
 }
 
 /* `disableAdaptiveLoadingInput` is a function that disables the adaptive loading input.*/
 const disableAdaptiveLoadingInput = () => {
-  well.value.loading_target_p1_plus_p2 = ''
+  well.loading_target_p1_plus_p2 = ''
 }
 
 /*showModalForPositionAndPlate function is used to show the modal for a specific position and plate number*/
@@ -240,11 +240,11 @@ const hide = () => {
 
 //update function is used to update the well
 const update = async () => {
-  well.value.used_aliquots = filteredAliquots()
+  well.used_aliquots = filteredAliquots()
   const volume_check_flag = await checkFeatureFlag('dpl_1076_check_library_volume_in_runs')
 
   if (volume_check_flag) {
-    const aliquot_errors = well.value.used_aliquots.some(
+    const aliquot_errors = well.used_aliquots.some(
       (aliquot) => Object.values(aliquot.errors).length > 0,
     )
     if (aliquot_errors) {
@@ -253,26 +253,21 @@ const update = async () => {
       return
     }
   }
-
-  //Update the well object with the used aliquots
-  well.value.used_aliquots.forEach((aliquot) => {
-    aliquot.volumeEdited = aliquot.volume != aliquot.available_volume
-  })
-  store.updateWell({ well: { ...well.value }, plateNumber: plateNumber.value })
+  store.updateWell({ well: { ...well }, plateNumber: plateNumber.value })
   showAlert('Well created', 'success')
   hide()
 }
 
 //removeWell function is used to remove the well
 const removeWell = () => {
-  store.deleteWell({ well: well.value, plateNumber: plateNumber.value })
+  store.deleteWell({ well, plateNumber: plateNumber.value })
   showAlert('Well successfully deleted', 'success')
   hide()
 }
 
 //updateUsedAliquotVolume function is used to update the volume of the pool or library
 const updateUsedAliquotVolume = (row, volume) => {
-  const aliquot = localUsedAliquots.value[row.index]
+  const aliquot = localUsedAliquots[row.index]
   aliquot.volume = volume
 }
 
@@ -283,27 +278,24 @@ const updateUsedAliquotSource = async (row, barcode) => {
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
     const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-    const used_aliquot = createUsedAliquot({
-      id: row.item.id || '',
-      source_id: tubeContent.id,
-      source_type: type,
-      barcode,
-      volume: tubeContent.volume,
-      concentration: tubeContent.concentration,
-      insert_size: tubeContent.insert_size,
-      template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
-    })
-    if (used_aliquot.source_type === 'Pacbio::Library') {
-      used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
-        libraryId: used_aliquot.source_id,
-        aliquotId: used_aliquot.id,
-        // Volume is 0 because this aliquot is not yet saved so it shouldnt count as used
-        volume: 0,
-      })
-      //initialize the volume to the available volume for the library aliquot
-      used_aliquot.volume = used_aliquot.available_volume
-    }
-    localUsedAliquots.value[index] = used_aliquot
+    const used_aliquot = createUsedAliquot(
+      {
+        id: row.item.id || '',
+        source_id: tubeContent.id,
+        source_type: type,
+        barcode,
+        volume: tubeContent.volume,
+        concentration: tubeContent.concentration,
+        insert_size: tubeContent.insert_size,
+        template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
+      },
+      () =>
+        store.getAvailableVolumeForLibraryAliquot({
+          libraryId: tubeContent.id,
+          volume: 0,
+        }),
+    )
+    localUsedAliquots[index] = used_aliquot
   } else {
     showAlert('Pool is not valid', 'danger')
   }
@@ -317,9 +309,9 @@ const updateUsedAliquotSource = async (row, barcode) => {
 const setupWell = async () => {
   // We clone the well as it gets binded to the form and we don't want to change the original object
   // without a confirmation action like the 'update' button
-  well.value = { ...(await store.getOrCreateWell(position.value, plateNumber.value)) }
-  localUsedAliquots.value = []
-  well.value.used_aliquots.forEach((aliquot) => {
+  Object.assign(well, await store.getOrCreateWell(position.value, plateNumber.value))
+  localUsedAliquots.splice(0)
+  well.used_aliquots.forEach((aliquot) => {
     const type = aliquot.source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
     const poolOrLibrary = store.tubeContents.find(
       (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
@@ -329,19 +321,7 @@ const setupWell = async () => {
         ...aliquot,
         barcode: poolOrLibrary.barcode,
       })
-      // If the source type is a library, get the available volume for the library aliquot
-      if (used_aliquot.source_type === 'Pacbio::Library') {
-        used_aliquot.available_volume = store.getAvailableVolumeForLibraryAliquot({
-          libraryId: aliquot.source_id,
-          aliquotId: aliquot.id,
-          volume: aliquot.volume,
-        })
-        // Initialise the volume to the available volume for the library aliquot, if we haven't edited the volume
-        if (!aliquot.volumeEdited) {
-          used_aliquot.volume = used_aliquot.available_volume
-        }
-      }
-      localUsedAliquots.value.push(used_aliquot)
+      localUsedAliquots.push(used_aliquot)
     }
   })
 }

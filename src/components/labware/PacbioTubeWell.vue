@@ -46,7 +46,7 @@ const wellClassNames = computed(() => {
  * Emits the request id and selected status of the well when clicked
  */
 const click = () => {
-  const { id, selected } = getRequest.value
-  emit('click', { id, selected })
+  const { id, selected, source_id } = getRequest.value
+  emit('click', { request: id, selected, source_id })
 }
 </script>
