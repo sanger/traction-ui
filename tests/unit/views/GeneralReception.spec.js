@@ -1,11 +1,10 @@
 import { mount, store, nextTick, createTestingPinia, RequestFactory } from '@support/testHelper.js'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import * as jsonapi from '@/api/JsonApi'
-
-// const tractionReceptionsCreate = store.getters.api.traction.receptions.create
 
 const printerRequestFactory = RequestFactory('printers', false)
 const printers = jsonapi.dataToObjectById({ data: printerRequestFactory.content.data })
@@ -285,6 +284,20 @@ describe('GeneralReception', () => {
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'danger',
       message: `Error: ${message}`,
+    })
+  })
+
+  // arbitrary test just to ensure this works
+  describe('#createLabels', () => {
+    it('will create some labels', async () => {
+      const foundBarcodes = new Set(['DN1', 'DN2', 'DN3'])
+      const date = getCurrentDate()
+      const { wrapperObj: wrapper } = buildWrapper()
+      const barcodeLabels = wrapper.vm.createLabels(foundBarcodes, date)
+      expect(barcodeLabels.length).toEqual(3)
+      const { barcode, second_line } = barcodeLabels[0]
+      expect(barcode).toEqual('DN1')
+      expect(second_line).toEqual('DN1')
     })
   })
 })

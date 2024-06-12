@@ -19,6 +19,12 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
     })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_1072_check_library_volume_in_pools: { enabled: false },
+      },
+    })
   })
 
   it('updates pool information on clicking requests table rows', () => {

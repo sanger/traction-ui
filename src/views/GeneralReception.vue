@@ -225,8 +225,8 @@
   </div>
 </template>
 
-// TODO: Move to composition api. Already using pinia store.
 <script>
+// TODO: Move to composition api. Already using pinia store.
 import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
@@ -234,8 +234,7 @@ import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers.js'
-
+import { createBarcodeLabels, createBasicTubeBarcodeLabel } from '@/lib/LabelPrintingHelpers.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import useRootStore from '@/stores'
 import { mapActions, mapState } from 'pinia'
@@ -400,12 +399,10 @@ export default {
     /*
       create the labels needed for the print job
     */
-    createLabels() {
-      return createLabelsFromBarcodes({
-        sourceBarcodeList: Array.from(this.labwareData.foundBarcodes),
-        date: getCurrentDate(),
-        numberOfLabels: 1,
-      })
+    createLabels(foundBarcodes, date) {
+      const sourceBarcodeList = Array.from(foundBarcodes)
+      const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
+      return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
     },
     /*
       Creates the print job and shows a success or failure alert
@@ -413,7 +410,7 @@ export default {
     async printLabels() {
       const { success, message = {} } = await this.createPrintJob({
         printerName: this.printerName,
-        labels: this.createLabels(),
+        labels: this.createLabels(this.labwareData.foundBarcodes, getCurrentDate()),
         copies: 1,
       })
 

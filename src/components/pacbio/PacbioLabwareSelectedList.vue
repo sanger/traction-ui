@@ -26,7 +26,7 @@
             <div
               :class="[
                 'bg-blue-100 rounded-lg p-1 mr-3 mt-2',
-                `${item.barcode === props.highlight?.labware.barcode ? 'border-4 border-purple-500' : 'border border-sdb '}`,
+                `${item.barcode === props.highlight?.labware?.barcode ? 'border-4 border-purple-500' : 'border border-sdb '}`,
               ]"
             >
               <div class="flex w-full justify-end">
@@ -58,7 +58,7 @@
           </div>
           <div class="overflow-y-auto h-screen">
             <traction-table
-              :items="selectedRequests"
+              :items="selectedRequestsWithSource"
               :fields="state.requestFields"
               :tbodyTrClass="tableRowColour"
               @row-clicked="requestClicked"
@@ -69,7 +69,7 @@
                     :checked="row.item.selected"
                     type="checkbox"
                     :data-attribute="'request-checkbox-' + row.item.id"
-                    @change="requestClicked({ id: row.item.id, selected: row.item.selected })"
+                    @change="requestClicked(row.item)"
                   />
                 </div> </template
             ></traction-table>
@@ -112,6 +112,12 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  /**
+   * The highlight object
+   * @type {Object}
+   * @default undefined
+   * @example { aliquot: { source_id: '1234' }, labware: { barcode: 'DN1234' } }
+   */
   highlight: {
     type: Object,
     required: false,
@@ -141,27 +147,52 @@ const emit = defineEmits(['closed']) // Defines an emit function that emits a 'c
 const pacbioPoolCreateStore = usePacbioPoolCreateStore() // A composable store for the pacbio pool create store
 
 /**
+ * A method that processes the labware and returns the requests associated with the labware
+ * @param {Object} labware - The given labware object
+ * @param {Array} selectedItems - An array of selected items
+ * @param {Function} getRequestItems - A function that returns the request items
+ * @param {Function} requestMapper - A function that maps the request to the item
+ * @returns {Array} - An array of requests associated with the labware along with the source labware
+ 
+ */
+const processLabware = (labware, selectedItems, getRequestItems = null, requestMapper) => {
+  const item = selectedItems.find((item) => item.barcode === labware.barcode)
+  if (!item) return []
+  const requestItems = getRequestItems ? getRequestItems(item) : [item]
+  return requestItems.flatMap((reqItem) =>
+    pacbioPoolCreateStore.requestList(reqItem)?.map((request) => requestMapper(request, item)),
+  )
+}
+/**
  * A computed property that returns all selected requests
  * If the sortBySelection value is true, the requests are sorted by selection
- * @returns {Array} - An array of selected requests which can be sorted by selection
+ * @returns {Array} - An array of selected requests with its source labware which can be sorted by selection
  */
-const selectedRequests = computed(() => {
+const selectedRequestsWithSource = computed(() => {
   //get all selected requests first in the order of the labware scanned
-  const requests = props.labware.flatMap((labware) => {
-    if (isPlate(labware)) {
-      const plate = pacbioPoolCreateStore.selectedPlates.find(
-        (item) => item.barcode === labware.barcode,
-      )
-      return pacbioPoolCreateStore
-        .wellList(plate.wells)
-        .flatMap((well) => pacbioPoolCreateStore.requestList(well.requests || []))
-    } else {
-      const tube = pacbioPoolCreateStore.selectedTubes.find(
-        (item) => item.barcode === labware.barcode,
-      )
-      return pacbioPoolCreateStore.requestList(tube.requests || [])
-    }
-  })
+  const requests = props.labware
+    .flatMap((labware) => {
+      if (isPlate(labware)) {
+        return processLabware(
+          labware,
+          pacbioPoolCreateStore.selectedPlates,
+          (item) => pacbioPoolCreateStore.wellList(item.wells),
+          (request, well) => ({ ...request, well }),
+        )
+      } else {
+        return processLabware(
+          labware,
+          pacbioPoolCreateStore.selectedTubes,
+          null,
+          (request, tube) => ({
+            ...request,
+            tube,
+          }),
+        )
+      }
+    })
+    .filter((item) => item !== undefined) //filter out undefined values for
+
   //sort requests by selection if sortBySelection is true
   return sortBySelection.value ? requests.sort((a, b) => b.selected - a.selected) : requests
 })
@@ -208,14 +239,18 @@ const isPlate = (labware) => {
  * @param {Object} tube - The tube object
  * @returns {Array} - An array of requests associated with the tube
  */
-const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube.requests || [])
-
+const getTubeRequest = (tube) => pacbioPoolCreateStore.requestList(tube)
 /**
  * A method that handles the request clicked event
  * @param {Object} request - The request object
  */
-const requestClicked = ({ id, selected }) =>
-  pacbioPoolCreateStore.selectRequest({ id, selected: !selected })
+const requestClicked = (source) =>
+  pacbioPoolCreateStore.selectRequestInSource({
+    ...source,
+    request: source.request ?? source.id,
+    selected: !source.selected,
+  })
+
 const onClose = (labware) => {
   emit('closed', labware)
 }
@@ -228,7 +263,7 @@ const onClose = (labware) => {
  */
 const tableRowColour = (row) => {
   return `${row.selected ? 'bg-yellow-300' : 'bg-gray-200'} ${
-    row.id === props.highlight?.request.id && 'border-4 border-purple-500'
+    row.source_id === props.highlight?.aliquot.source_id && 'border-4 border-purple-500'
   } cursor-pointer`
 }
 
