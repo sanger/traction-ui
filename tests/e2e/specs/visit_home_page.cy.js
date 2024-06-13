@@ -16,5 +16,6 @@ describe('Visit Home Page', () => {
     cy.contains('Saphyr')
     cy.contains('PacBio')
     cy.contains('ONT')
+    throw new Error('test fails here to test artifact upload')
   })
 })
