@@ -86,7 +86,6 @@ jobs:
         config-file: cypress.config.js
         config: video=false
         install: false
-        wait-on-timeout: 120
         browser: chrome
     # after the test run completes
     # store any screenshots
