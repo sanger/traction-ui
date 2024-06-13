@@ -25,20 +25,18 @@
       name: 'TractionHeader',
       data(){
         return {
-           dev: false,
-           uat:true,
-           production: false
+           environment: process.env.NODE_ENV,
         };
       },
       computed:{
         headerClasses(){
             let bgColorClass = '';
-            if (this.dev){
-                bgColorClass = 'bg-purple-600';
-            }else if(this.uat){
-                bgColorClass = 'bg-green-600';
-            }else {
+            if (this.environment == 'development'){
                 bgColorClass = 'bg-blue-600';
+            }else if(this.environment == 'uat'){
+                bgColorClass = 'bg-purple-600';
+            }else if(this.environment == 'production'){
+                bgColorClass = 'bg-gradient-to-tr';
             }
             return [ 'relative from-sdb to-sdb-400', bgColorClass ];
         }

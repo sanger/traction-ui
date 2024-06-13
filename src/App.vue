@@ -40,7 +40,7 @@ export default {
     TractionMessage,
     TractionLink,
     TractionHeading,
-    TractionHeader
+    TractionHeader,
   },
   computed: {
     mergedRoute() {
