@@ -64,7 +64,7 @@ jobs:
   cypress:
     name: Run Cypress tests
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node16.17.0-chrome106
       options: --user 1001
     steps:
@@ -78,15 +78,15 @@ jobs:
       run: >-
         npm ci --legacy-peer-deps
     - name: Cypress run
-      uses: cypress-io/github-action@v5
+      uses: cypress-io/github-action@v6
       with:
-        start: npx vite --host
+        start: npm start
         wait-on: http://localhost:5173/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
         config: video=false
         install: false
-        timeout-minutes: 5
+        wait-on-timeout: 120
         browser: chrome
     # after the test run completes
     # store any screenshots
