@@ -80,7 +80,7 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v6
       with:
-        start: npm start
+        start: npm start:host
         wait-on: http://localhost:5173/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
