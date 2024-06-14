@@ -71,7 +71,7 @@ export default {
             let bgColorClass = '';
             if (this.environment == 'development'){
                 bgColorClass = 'bg-blue-600';
-            }else if(this.environment == 'uat'){
+            }else if(this.environment == 'staging'){
                 bgColorClass = 'bg-purple-600';
             }else if(this.environment == 'production'){
                 bgColorClass = 'bg-gradient-to-tr';
