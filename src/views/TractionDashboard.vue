@@ -8,8 +8,7 @@
         :description="pipeline.description"
       >
         <TractionLink
-          v-for="(route, inner_index) in pipeline.routes"
-          :key="inner_index"
+          v-for="route in pipeline.routes.toSorted()"
           :name="humanise(route)"
           :link="`/${pipeline.name}/${route}`"
         />

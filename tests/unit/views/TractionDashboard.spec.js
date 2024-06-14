@@ -1,5 +1,5 @@
 import TractionDashboard from '@/views/TractionDashboard'
-import { mount, flushPromises } from '@support/testHelper'
+import { mount, flushPromises, findByText } from '@support/testHelper'
 
 describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
@@ -48,25 +48,28 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
+      it('will have buttons sorted by name', () => {
+        const buttons = box.findAll('a')
+        const buttonNames = buttons.map((button) => button.text())
+        expect(buttonNames).toEqual(buttonNames.toSorted())
+      })
+
       it('will have a samples button', async () => {
-        const button = box.findAll('a')[0]
-        expect(button.text()).toEqual('Samples')
+        const button = findByText(box, 'Samples')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/saphyr/samples')
       })
 
       it('will have a libraries button', async () => {
-        const button = box.findAll('a')[1]
-        expect(button.text()).toEqual('Libraries')
+        const button = findByText(box, 'Libraries')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/saphyr/libraries')
       })
 
       it('will have a runs button', async () => {
-        const button = box.findAll('a')[2]
-        expect(button.text()).toEqual('Runs')
+        const button = findByText(box, 'Runs')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
@@ -88,44 +91,44 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
+      it('will have buttons sorted by name', () => {
+        const buttons = box.findAll('a')
+        const buttonNames = buttons.map((button) => button.text())
+        expect(buttonNames).toEqual(buttonNames.toSorted())
+      })
+
       it('will have a plates button', async () => {
-        const platesButton = box.findAll('a')[0]
-        expect(platesButton.text()).toEqual('Plates')
-        platesButton.trigger('click')
+        const button = findByText(box, 'Plates')
+        button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/plates')
       })
       it('will have a samples button', async () => {
-        const button = box.findAll('a')[1]
-        expect(button.text()).toEqual('Samples')
+        const button = findByText(box, 'Samples')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
       })
       it('will have a libraries button', async () => {
-        const button = box.findAll('a')[2]
-        expect(button.text()).toEqual('Libraries')
+        const button = findByText(box, 'Libraries')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
       })
       it('will have a pools button', async () => {
-        const button = box.findAll('a')[3]
-        expect(button.text()).toEqual('Pools')
+        const button = findByText(box, 'Pools')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/pools')
       })
       it('will have a runs button', async () => {
-        const button = box.findAll('a')[4]
-        expect(button.text()).toEqual('Runs')
+        const button = findByText(box, 'Runs')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
       })
       it('will have a pool/new button', async () => {
-        const button = box.findAll('a')[5]
-        expect(button.text()).toEqual('Pool/new')
+        const button = findByText(box, 'Pool/new')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/pool/new')
@@ -147,30 +150,32 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
+      it('will have buttons sorted by name', () => {
+        const buttons = box.findAll('a')
+        const buttonNames = buttons.map((button) => button.text())
+        expect(buttonNames).toEqual(buttonNames.toSorted())
+      })
+
       it('will have a samples button', async () => {
-        const button = box.findAll('a')[0]
-        expect(button.text()).toEqual('Samples')
+        const button = findByText(box, 'Samples')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/samples')
       })
       it('will have a pools button', async () => {
-        const button = box.findAll('a')[1]
-        expect(button.text()).toEqual('Pools')
+        const button = findByText(box, 'Pools')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/pools')
       })
       it('will have a pool/new button', async () => {
-        const button = box.findAll('a')[2]
-        expect(button.text()).toEqual('Pool/new')
+        const button = findByText(box, 'Pool/new')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/pool/new')
       })
       it('will have a runs button', async () => {
-        const button = box.findAll('a')[3]
-        expect(button.text()).toEqual('Runs')
+        const button = findByText(box, 'Runs')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/runs')
