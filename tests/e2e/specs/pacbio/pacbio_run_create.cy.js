@@ -1,10 +1,20 @@
+import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory'
+
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
     cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
-    cy.intercept('/v1/pacbio/smrt_link_versions', {
-      fixture: 'tractionPacbioSmrtLinkVersions.json',
+    // cy.intercept('/v1/pacbio/smrt_link_versions', {
+    //   fixture: 'tractionPacbioSmrtLinkVersions.json',
+    //   fixture: PacbioSmrtLinkVersionFactory().,
+    // })
+
+    cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
+      statusCode: 200,
+      body: {
+        data: PacbioSmrtLinkVersionFactory().content,
+      },
     })
 
     // Find the pool being searched for by barcode
