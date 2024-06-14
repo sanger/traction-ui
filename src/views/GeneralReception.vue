@@ -354,6 +354,7 @@ export default {
       )
       //Creates the reception resource and shows a success or failure alert
       try {
+        console.log(this.labwareData.attributes)
         const response = await createReceptionResource(
           this.receptionRequest,
           this.labwareData.foundBarcodes,

@@ -1,6 +1,7 @@
 import * as SamplesExtraction from './SamplesExtraction.js'
 import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
+import * as SequencescapeLibraryTubes from './SequencescapeLibraryTubes.js'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
@@ -27,7 +28,13 @@ const ReceptionTypes = {
     text: 'Sequencescape Tubes',
     value: 'SequencescapeTubes',
   },
+  SequencescapeLibraryTubes: {
+    name: 'sequencescape-library-tubes',
+    text: 'Sequencescape Library Tubes',
+    value: 'SequencescapeLibraryTubes',
+  },
 }
+
 const Receptions = {
   options: Object.values(ReceptionTypes),
   Sequencescape: {
@@ -44,6 +51,11 @@ const Receptions = {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
     getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
+  },
+  SequencescapeLibraryTubes: {
+    ...ReceptionTypes.SequencescapeLibraryTubes,
+    fetchFunction: SequencescapeLibraryTubes.fetchLabwareForReception,
+    getAttributeKeysFunction: SequencescapeLibraryTubes.getAttributeKeys,
   },
 }
 

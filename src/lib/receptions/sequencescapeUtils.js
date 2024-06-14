@@ -38,6 +38,8 @@ const fetchLabwareFromSequencescape = async ({
   // find all the barcodes in the containerAttributes by type - plates or tubes
   const foundBarcodes = new Set(
     Object.keys(containerAttributes).reduce((result, type) => {
+      // TODO - for pools the only found barcode we want is the pool barcode
+      if (type === 'pool_attributes') return result
       return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
     }, []),
   )
@@ -102,6 +104,15 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
         barcodeAttribute: labwareType.barcodeAttribute,
       }),
     )
+
+    if (labwareType.pool) {
+      result['pool_attributes'] = buildPool({
+        labware,
+        included,
+        requestOptions,
+        barcodeAttribute: labwareType.barcodeAttribute,
+      })
+    }
 
     return result
   }, {})
@@ -169,6 +180,47 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
 }
 
 /**
+ * A function to build a reception library Object
+ * Currently only includes data for ONT Libraries
+ * @param {Object}  aliquot Aliquot object from Sequencescape
+ * @param {Object} sample_metadata Sample metadata object from Sequencescape
+ * @returns {Object} Object containing the library object
+ */
+const buildLibrary = ({ aliquot, sample_metadata }) => {
+  return {
+    library: {
+      volume: sample_metadata.volume,
+      concentration: sample_metadata.concentration,
+      insert_size: aliquot.attributes.insert_size_to,
+      tag_sequence: aliquot.attributes.tag_oligo,
+      kit_barcode: 'kit_barcode',
+    },
+  }
+}
+
+/**
+ * A function to build a reception pool Object
+ * Currently only includes data for ONT pools
+ * @param {Object}  aliquot Aliquot object from Sequencescape
+ * @param {Object} sample_metadata Sample metadata object from Sequencescape
+ * @returns {Object} Object containing the library object
+ */
+const buildPool = ({ labware, included, barcodeAttribute }) => {
+  // The sample metadata can be assumed to be the same from any sample_metadata object
+  const sample_metadata = included.find((item) => item.type === 'sample_metadata')
+  // The aliquot metadata can be assumed to be the same from any aliquot object
+  const aliquot = included.find((item) => item.type === 'aliquots')
+
+  return {
+    barcode: labware.attributes.labware_barcode[barcodeAttribute],
+    volume: sample_metadata.volume,
+    concentration: sample_metadata.concentration,
+    insert_size: aliquot.attributes.insert_size_to,
+    kit_barcode: 'kit_barcode',
+  }
+}
+
+/**
  *
  * @param {Object} labware Labware object from Sequencescape
  * @param {Array<Object>} included Included objects from Sequencescape
@@ -194,6 +246,31 @@ const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) 
     // build the request and sample objects
     ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
   }
+}
+
+const transformMultiplexedLibraryTube = ({ included, requestOptions, barcodeAttribute }) => {
+  const included_labware = included.filter((item) => item.type === 'labware')
+  const child_library_tubes = included_labware.map((child_library_tube) => {
+    const receptacle = findIncluded({
+      included,
+      data: child_library_tube.relationships.receptacles.data[0],
+      type: 'receptacles',
+    })
+
+    const { aliquot, study, sample, sample_metadata } = getIncludedData({
+      labware: receptacle,
+      included,
+    })
+
+    return {
+      barcode: child_library_tube.attributes.labware_barcode[barcodeAttribute],
+      // build the request and sample objects
+      ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+      ...buildLibrary({ aliquot, sample_metadata }),
+    }
+  })
+
+  return child_library_tubes
 }
 
 /**
@@ -238,8 +315,15 @@ const labwareTypes = {
   tubes: {
     type: 'tubes',
     attributes: 'tubes_attributes',
-    barcodeAttribute: 'machine_barcode',
     transformFunction: transformTube,
+    barcodeAttribute: 'machine_barcode',
+  },
+  multiplexed_library_tubes: {
+    type: 'tubes',
+    attributes: 'tubes_attributes',
+    pool: true,
+    transformFunction: transformMultiplexedLibraryTube,
+    barcodeAttribute: 'human_barcode',
   },
   plates: {
     type: 'plates',
