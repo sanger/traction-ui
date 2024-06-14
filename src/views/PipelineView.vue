@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-start">
     <traction-menu :border="true"
       ><traction-menu-item
-        v-for="(pipelineRoute, index) in this.sortedRoutes"
+        v-for="(pipelineRoute, index) in sortedRoutes"
         :key="index"
         :active="isActive(pipelineRoute)"
         color="blue"

@@ -9,6 +9,7 @@
       >
         <TractionLink
           v-for="route in pipeline.routes.toSorted()"
+          :key="route"
           :name="humanise(route)"
           :link="`/${pipeline.name}/${route}`"
         />
