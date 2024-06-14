@@ -1,4 +1,4 @@
-const PacbioSmrtLinkVersionFactory = (axios = true) => {
+const PacbioSmrtLinkVersionFactory = (axios = false) => {
   const data = {
     data: [
       {
