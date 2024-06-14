@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-start">
     <traction-menu :border="true"
       ><traction-menu-item
-        v-for="(pipelineRoute, index) in pipelineInfo.routes"
+        v-for="(pipelineRoute, index) in this.sortedRoutes"
         :key="index"
         :active="isActive(pipelineRoute)"
         color="blue"
@@ -34,6 +34,9 @@ export default {
     pipelineInfo() {
       return PipelinesConfig.find((p) => p.name == this.pipeline)
     },
+    sortedRoutes() {
+      return this.pipelineInfo.routes.toSorted()
+    },
   },
   methods: {
     /**This method returns the relative path to navigate to while clicking on a pipeline menu item*/
@@ -45,10 +48,10 @@ export default {
     setSource(index) {
       this.sourceIndex = index
       // If new tab is already active, do nothing
-      if (this.isActive(this.pipelineInfo.routes[index])) {
+      if (this.isActive(this.sortedRoutes[index])) {
         return
       }
-      this.$router.push({ path: this.path(this.pipelineInfo.routes[index]) }).catch((error) => {
+      this.$router.push({ path: this.path(this.sortedRoutes[index]) }).catch((error) => {
         if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
           console.error(error)
         }
