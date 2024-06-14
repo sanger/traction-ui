@@ -55,7 +55,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
   getters: {
     runRequest: () => {
       const rootStore = useRootStore()
-      return rootStore.api.traction.ont.runs
+      return rootStore.api.v1.traction.ont.runs
     },
     getFlowCell: (state) => (position) => {
       return state.currentRun.flowcell_attributes.find((fc) => fc.position == position)

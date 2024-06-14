@@ -238,7 +238,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchSmrtLinkVersions() {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.smrt_link_versions
+      const request = rootStore.api.v1.traction.pacbio.smrt_link_versions
       const promise = request.get({})
       const response = await handleResponse(promise)
 
@@ -261,7 +261,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
 
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.tubes
+      const request = rootStore.api.v1.traction.pacbio.tubes
       // used_aliquots could have a library instead of a request in the future but for the time being its just requests
       // so we only look for request in the includes
       const promise = request.get({
@@ -303,7 +303,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchRun({ id }) {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.runs
+      const request = rootStore.api.v1.traction.pacbio.runs
       const promise = request.find({
         id,
         include:
@@ -388,7 +388,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async saveRun() {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.runs
+      const request = rootStore.api.v1.traction.pacbio.runs
 
       // based on the runType create the payload and the promise
       const payload = this.runType.payload({

@@ -50,7 +50,7 @@ describe('usePrintingStore', () => {
         const printerRequestFactory = RequestFactory('printers', false)
 
         get.mockResolvedValue(printerRequestFactory.response)
-        rootStore.api = { traction: { printers: { get } } }
+        rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
@@ -68,7 +68,7 @@ describe('usePrintingStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue('Internal Server Error')
-        rootStore.api = { traction: { printers: { get } } }
+        rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
@@ -107,7 +107,7 @@ describe('usePrintingStore', () => {
 
         const rootStore = useRootStore()
         const create = vi.fn()
-        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         const { success, message } = await store.createPrintJob({ ...printJobOptions })
@@ -140,7 +140,7 @@ describe('usePrintingStore', () => {
 
         const create = vi.fn()
         const rootStore = useRootStore()
-        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         // eslint-disable-next-line no-unused-vars

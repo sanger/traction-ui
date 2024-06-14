@@ -62,7 +62,7 @@ describe('PacbioLibraryForm.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+          store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
         }
       },
     ]
@@ -124,7 +124,7 @@ describe('PacbioLibraryForm.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
+          store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
         }
       },
     ]
@@ -141,7 +141,7 @@ describe('PacbioLibraryForm.vue', () => {
       const plugins = [
         ({ store }) => {
           if (store.$id === 'root') {
-            store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+            store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
           }
         },
       ]
