@@ -36,7 +36,6 @@
 import { reactive, ref } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotEdit from '@/components/pacbio/PacbioPoolAliquotEdit.vue'
-import PacbioPoolAliquotEditV1 from '@/components/pacbio/V1/PacbioPoolAliquotEditV1.vue'
 
 const props = defineProps({
   autoTag: {
