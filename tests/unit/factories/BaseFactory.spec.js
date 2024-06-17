@@ -19,7 +19,7 @@ describe('BaseFactory', () => {
     expect(factory.responses.axios).toEqual({
       status: 200,
       statusText: 'OK',
-      ...data,
+      data: { ...data },
     })
   })
 

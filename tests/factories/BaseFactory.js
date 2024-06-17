@@ -12,7 +12,7 @@ const BaseFactory = (data) => {
       axios: {
         status: 200,
         statusText: 'OK',
-        ...data,
+        data: { ...data },
       },
       fetch: {
         status: 200,
