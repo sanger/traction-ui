@@ -7,9 +7,10 @@
         :title="pipeline.title"
         :description="pipeline.description"
       >
+        <!-- Links ordered by user workflow, specified in pipelines config -->
         <TractionLink
-          v-for="route in pipeline.routes.toSorted()"
-          :key="route"
+          v-for="(route, inner_index) in pipeline.routes"
+          :key="inner_index"
           :name="humanise(route)"
           :link="`/${pipeline.name}/${route}`"
         />

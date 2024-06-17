@@ -48,12 +48,6 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
-      it('will have buttons sorted by name', () => {
-        const buttons = box.findAll('a')
-        const buttonNames = buttons.map((button) => button.text())
-        expect(buttonNames).toEqual(buttonNames.toSorted())
-      })
-
       it('will have a samples button', async () => {
         const button = findByText(box, 'Samples')
         button.trigger('click')
@@ -91,12 +85,6 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
-      it('will have buttons sorted by name', () => {
-        const buttons = box.findAll('a')
-        const buttonNames = buttons.map((button) => button.text())
-        expect(buttonNames).toEqual(buttonNames.toSorted())
-      })
-
       it('will have a plates button', async () => {
         const button = findByText(box, 'Plates')
         button.trigger('click')
@@ -150,12 +138,6 @@ describe('TractionDashboard.vue', () => {
     })
 
     describe('route buttons', () => {
-      it('will have buttons sorted by name', () => {
-        const buttons = box.findAll('a')
-        const buttonNames = buttons.map((button) => button.text())
-        expect(buttonNames).toEqual(buttonNames.toSorted())
-      })
-
       it('will have a samples button', async () => {
         const button = findByText(box, 'Samples')
         button.trigger('click')
