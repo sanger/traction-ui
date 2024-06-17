@@ -92,7 +92,7 @@ describe('usePacbioRootStore', () => {
       beforeEach(() => {
         rootStore = useRootStore()
         store = usePacbioRootStore()
-        rootStore.api.traction.pacbio.tag_sets = { get }
+        rootStore.api.v1.traction.pacbio.tag_sets = { get }
       })
       it('handles success', async () => {
         // mock dependencies
@@ -111,7 +111,7 @@ describe('usePacbioRootStore', () => {
       it('handles failure', async () => {
         // mock dependencies
         const get = vi.fn()
-        rootStore.api.traction.pacbio.tag_sets = { get }
+        rootStore.api.v1.traction.pacbio.tag_sets = { get }
         get.mockRejectedValue({
           data: { data: [] },
           status: 500,

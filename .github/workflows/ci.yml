@@ -64,7 +64,7 @@ jobs:
   cypress:
     name: Run Cypress tests
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node16.17.0-chrome106
       options: --user 1001
     steps:
@@ -78,15 +78,14 @@ jobs:
       run: >-
         npm ci --legacy-peer-deps
     - name: Cypress run
-      uses: cypress-io/github-action@v5
+      uses: cypress-io/github-action@v6
       with:
-        start: npm start
+        start: npm run start:host
         wait-on: http://localhost:5173/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
         config: video=false
         install: false
-        timeout-minutes: 5
         browser: chrome
     # after the test run completes
     # store any screenshots
@@ -94,7 +93,7 @@ jobs:
     # thus we store screenshots only on failures
     # Alternative: create and commit an empty cypress/screenshots folder
     # to always have something to upload
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: cypress-screenshots

@@ -104,7 +104,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async createLibraryInTraction(library) {
       const rootState = useRootStore()
-      const request = rootState.api.traction.pacbio.libraries
+      const request = rootState.api.v1.traction.pacbio.libraries
       const body = {
         data: {
           type: 'libraries',
@@ -146,7 +146,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async deleteLibraries(libraryIds) {
       const rootStore = useRootStore()
-      const promises = rootStore.api.traction.pacbio.libraries.destroy(libraryIds)
+      const promises = rootStore.api.v1.traction.pacbio.libraries.destroy(libraryIds)
       const responses = await Promise.all(promises.map((promise) => handleResponse(promise)))
       return responses
     },
@@ -159,7 +159,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async fetchLibraries(filter, page) {
       const rootStore = useRootStore()
-      const pacbioLibraries = rootStore.api.traction.pacbio.libraries
+      const pacbioLibraries = rootStore.api.v1.traction.pacbio.libraries
       const promise = pacbioLibraries.get({
         page,
         filter,
@@ -194,7 +194,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       }
 
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.libraries
+      const request = rootStore.api.v1.traction.pacbio.libraries
       const body = {
         data: {
           type: 'libraries',

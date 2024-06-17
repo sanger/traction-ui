@@ -173,7 +173,7 @@ describe('usePacbioPools', () => {
         get = vi.fn()
         store = usePacbioPoolsStore()
         rootStore = useRootStore()
-        rootStore.api.traction.pacbio.pools.get = get
+        rootStore.api.v1.traction.pacbio.pools.get = get
         failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
       })
 

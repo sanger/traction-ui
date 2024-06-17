@@ -28,7 +28,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { requests: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { requests: { get } } } } } }
       get.mockResolvedValue(Data.TractionOntRequests)
       // apply action
       const { success } = await actions.fetchOntRequests({ commit, rootState })
@@ -45,7 +45,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { requests: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { requests: { get } } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
@@ -65,7 +65,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { get } } } } } }
       get.mockResolvedValue(Data.TractionOntPools)
       // apply action
       const { success } = await actions.fetchOntPools({ commit, rootState })
@@ -95,7 +95,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { get } } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
@@ -115,7 +115,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tag_sets: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { tag_sets: { get } } } } } }
       get.mockResolvedValue(Data.TractionOntTagSets)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
@@ -133,7 +133,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tag_sets: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { tag_sets: { get } } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
@@ -267,7 +267,7 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { create } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { create } } } } } }
       const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
@@ -290,7 +290,7 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
-      const rootState = { api: { traction: { ont: { pools: { update } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
@@ -309,7 +309,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { create } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { create } } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
         commit,
@@ -360,7 +360,7 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { update } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { pooling: { libraries, pool } } })
@@ -376,7 +376,7 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
-      const rootState = { api: { traction: { ont: { pools: { update } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
@@ -395,7 +395,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { update } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
         commit,
@@ -766,7 +766,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { find } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
       find.mockResolvedValue(Data.TractionOntPool)
       // apply action
       const { success } = await setPoolData({ commit, rootState }, 3)
@@ -811,7 +811,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { traction: { ont: { pools: { find } } } } }
+      const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
       find.mockResolvedValue(Data.TractionOntPool)
 
       const { success, errors } = await setPoolData({ commit, rootState }, 'new')
@@ -828,7 +828,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { plates: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
 
       get.mockResolvedValue(Data.OntPlateRequest)
 
@@ -853,7 +853,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { plates: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
 
       get.mockResolvedValue({ data: { data: [] } })
 
@@ -869,7 +869,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { plates: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
 
       const { success, errors } = await findOntPlate({ commit, rootState }, { barcode: '' })
       expect(errors).toEqual(['Please provide a plate barcode'])
@@ -883,7 +883,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
 
       get.mockResolvedValue(Data.OntTubeRequest)
 
@@ -904,7 +904,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
 
       get.mockResolvedValue({ data: { data: [] } })
 
@@ -920,7 +920,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+      const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
 
       const { success, errors } = await findOntTube({ commit, rootState }, { barcode: '' })
       expect(errors).toEqual(['Please provide a tube barcode'])

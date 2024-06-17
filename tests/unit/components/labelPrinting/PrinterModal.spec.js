@@ -13,7 +13,7 @@ const printerRequestFactory = RequestFactory('printers', false)
 const plugins = [
   ({ store }) => {
     if (store.$id === 'root') {
-      store.api.traction.printers.get = vi.fn().mockResolvedValue(printerRequestFactory.response)
+      store.api.v2.traction.printers.get = vi.fn().mockResolvedValue(printerRequestFactory.response)
     }
   },
 ]

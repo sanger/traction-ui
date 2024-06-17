@@ -78,7 +78,7 @@ export const usePacbioRootStore = defineStore('pacbioRoot', {
      */
     async fetchPacbioTagSets() {
       const rootStore = useRootStore()
-      const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
+      const promise = rootStore.api.v1.traction.pacbio.tag_sets.get({ include: 'tags' })
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
       if (success && data.length > 0) {
