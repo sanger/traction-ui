@@ -9,7 +9,7 @@
       "attributes": {
         "name": "g216bc",
         "labware_type": "tube",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:24:31.972Z",
         "updated_at": "2024-05-03T09:24:58.615Z",
         "deactivated_at": null
@@ -24,7 +24,7 @@
       "attributes": {
         "name": "h105bc",
         "labware_type": "tube",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:25:54.237Z",
         "updated_at": "2024-05-03T09:25:54.237Z",
         "deactivated_at": null
@@ -39,7 +39,7 @@
       "attributes": {
         "name": "aPrinterName",
         "labware_type": "plate96",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:26:20.279Z",
         "updated_at": "2024-05-03T09:26:20.279Z",
         "deactivated_at": null
@@ -54,7 +54,7 @@
       "attributes": {
         "name": "ssrtubebc-sq1",
         "labware_type": "tube",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:26:57.239Z",
         "updated_at": "2024-05-03T09:26:57.239Z",
         "deactivated_at": null
@@ -69,7 +69,7 @@
       "attributes": {
         "name": "aa309bc1",
         "labware_type": "tube",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:27:18.206Z",
         "updated_at": "2024-05-03T09:27:18.206Z",
         "deactivated_at": null
@@ -84,7 +84,7 @@
       "attributes": {
         "name": "aa309bc2",
         "labware_type": "plate96",
-        "active?": true,
+        "active": true,
         "created_at": "2024-05-03T09:27:31.950Z",
         "updated_at": "2024-05-03T09:27:31.950Z",
         "deactivated_at": null
