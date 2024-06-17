@@ -35,14 +35,18 @@ const fetchLabwareFromSequencescape = async ({
     labwareTypes,
   })
 
-  // find all the barcodes in the containerAttributes by type - plates or tubes
-  const foundBarcodes = new Set(
-    Object.keys(containerAttributes).reduce((result, type) => {
-      // TODO - for pools the only found barcode we want is the pool barcode
-      if (type === 'pool_attributes') return result
-      return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
-    }, []),
-  )
+  let foundBarcodes = new Set()
+  if (containerAttributes['pool_attributes']) {
+    // If we have a pool we only want to show the pool barcode
+    foundBarcodes = new Set([containerAttributes['pool_attributes']['barcode']])
+  } else {
+    // find all the barcodes in the containerAttributes by type - plates or tubes
+    foundBarcodes = new Set(
+      Object.keys(containerAttributes).reduce((result, type) => {
+        return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
+      }, []),
+    )
+  }
 
   return {
     attributes: { source: 'traction-ui.sequencescape', ...containerAttributes },

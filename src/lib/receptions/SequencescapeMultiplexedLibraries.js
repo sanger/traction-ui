@@ -47,11 +47,11 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
  */
 const getAttributeKeys = () => ['tubes_attributes', 'pool_attributes']
 
-const SequencescapeTubes = {
+const SequencescapeMultiplexedLibraries = {
   fetchLabwareForReception,
   getAttributeKeys,
 }
 
 export { fetchLabwareForReception, getAttributeKeys }
 
-export default SequencescapeTubes
+export default SequencescapeMultiplexedLibraries

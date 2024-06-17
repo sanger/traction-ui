@@ -296,7 +296,8 @@ export default {
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
     //displayPrintOptions is used to decide whether print options should be displayed or not
-    displayPrintOptions: ({ source }) => source === 'SequencescapeTubes',
+    displayPrintOptions: ({ source }) =>
+      ['SequencescapeTubes', 'SequencescapeMultiplexedLibraries'].includes(source),
     // printBarcodes is used to display the barcodes that will be printed
     printBarcodes: ({ labwareData }) => Array.from(labwareData.foundBarcodes).join('\n'),
     // printerOptions is used to display the printers that are available to print to

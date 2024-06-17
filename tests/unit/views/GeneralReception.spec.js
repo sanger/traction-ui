@@ -40,16 +40,23 @@ describe('GeneralReception', () => {
         .find('[data-type=source-list]')
         .findAll('option')
         .map((element) => element.text()),
-    ).toEqual(['Sequencescape', 'Samples Extraction', 'Sequencescape Tubes'])
+    ).toEqual([
+      'Sequencescape',
+      'Samples Extraction',
+      'Sequencescape Tubes',
+      'Sequencescape Multiplexed Libraries',
+    ])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
 
-  it('shows print options for only for Sequencescape Tubes', async () => {
+  it('shows print options for only for Sequencescape Tubes or Sequencescape Multiplexed Libraries', async () => {
     const { wrapperObj: wrapper } = buildWrapper()
     const options = wrapper.find('[data-type=source-list]').findAll('option')
-    // It should show print options only when Sequencescape Tubes is the selected source
+    // It should show print options only when Sequencescape Tubes or Sequencescape Mutliplexed Libraries are the selected source
     await options[2].setSelected()
+    expect(wrapper.find('[id=print]').exists()).toBe(true)
+    await options[3].setSelected()
     expect(wrapper.find('[id=print]').exists()).toBe(true)
     // It should not show print options when Sequencescape or Samples Extraction is the selected source
     await options[0].setSelected()
