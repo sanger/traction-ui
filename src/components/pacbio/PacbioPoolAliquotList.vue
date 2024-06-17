@@ -1,30 +1,26 @@
 <template>
   <div v-if="store.selectedUsedAliquots" data-type="pool-library-list">
     <traction-table :fields="state.headerFields" simple>
-      <flagged-feature name="dpl_1072_check_library_volume_in_pools">
-        <PacbioPoolAliquotEdit
-          v-for="aliquot in store.selectedUsedAliquots"
-          :key="aliquot.source_id"
-          :request="aliquot"
+      <PacbioPoolAliquotEdit
+        v-for="aliquot in store.selectedUsedAliquots"
+        :key="aliquot.source_id"
+        :request="aliquot"
+        :auto-tag="props.autoTag"
+        :validated="props.validated"
+        :notify="props.notify"
+        :selected="selectedAliquotRequest && selectedAliquotRequest.source_id === aliquot.source_id"
+        @aliquot-selected="(selected) => notifyAliquotSelection(selected, aliquot)"
+      ></PacbioPoolAliquotEdit>
+      <template #disabled>
+        <PacbioPoolAliquotEditV1
+          v-for="request in store.selectedUsedAliquots"
+          :key="request.id"
+          :request="request"
           :auto-tag="props.autoTag"
           :validated="props.validated"
           :notify="props.notify"
-          :selected="
-            selectedAliquotRequest && selectedAliquotRequest.source_id === aliquot.source_id
-          "
-          @aliquot-selected="(selected) => notifyAliquotSelection(selected, aliquot)"
-        ></PacbioPoolAliquotEdit>
-        <template #disabled>
-          <PacbioPoolAliquotEditV1
-            v-for="request in store.selectedUsedAliquots"
-            :key="request.id"
-            :request="request"
-            :auto-tag="props.autoTag"
-            :validated="props.validated"
-            :notify="props.notify"
-          ></PacbioPoolAliquotEditV1
-        ></template>
-      </flagged-feature>
+        ></PacbioPoolAliquotEditV1
+      ></template>
     </traction-table>
   </div>
 </template>

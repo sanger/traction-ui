@@ -23,7 +23,6 @@ describe('Pacbio Pool Create', () => {
       flipper_id: 'User',
       features: {
         multiplexing_phase_2_add_libraries_to_pool: { enabled: true },
-        dpl_1072_check_library_volume_in_pools: { enabled: true },
       },
     })
   })
