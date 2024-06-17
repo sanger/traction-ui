@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start:host": "npm-run-all -p serve:css serve:host",
     "start": "npm-run-all -p serve:css serve",
+    "serve:host": "vite --host",
     "serve": "vite",
     "build": "npm-run-all build:css build:js",
     "build:js": "vite build",
