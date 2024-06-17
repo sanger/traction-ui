@@ -189,8 +189,8 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
 const buildLibrary = ({ aliquot, sample_metadata }) => {
   return {
     library: {
-      volume: sample_metadata.volume,
-      concentration: sample_metadata.concentration,
+      volume: sample_metadata.attributes.volume,
+      concentration: sample_metadata.attributes.concentration,
       insert_size: aliquot.attributes.insert_size_to,
       tag_sequence: aliquot.attributes.tag_oligo,
       kit_barcode: 'kit_barcode',
@@ -213,8 +213,8 @@ const buildPool = ({ labware, included, barcodeAttribute }) => {
 
   return {
     barcode: labware.attributes.labware_barcode[barcodeAttribute],
-    volume: sample_metadata.volume,
-    concentration: sample_metadata.concentration,
+    volume: sample_metadata.attributes.volume,
+    concentration: sample_metadata.attributes.concentration,
     insert_size: aliquot.attributes.insert_size_to,
     kit_barcode: 'kit_barcode',
   }
