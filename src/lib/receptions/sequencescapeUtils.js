@@ -100,7 +100,7 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
       result[labwareType.attributes] = []
     }
     // add the transformed labware to the attributes object
-    result[labwareType.attributes].push(
+    result[labwareType.attributes] = result[labwareType.attributes].concat(
       labwareType.transformFunction({
         labware,
         included,
