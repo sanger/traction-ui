@@ -1,4 +1,6 @@
-const PacbioSmrtLinkVersionFactory = (axios = false) => {
+import BaseFactory from './BaseFactory.js'
+
+const PacbioSmrtLinkVersionFactory = () => {
   const data = {
     data: [
       {
@@ -83,26 +85,8 @@ const PacbioSmrtLinkVersionFactory = (axios = false) => {
       },
     ],
   }
-  if (axios) {
-    return {
-      response: {
-        status: 200,
-        statusText: 'OK',
-        ...data,
-      },
-    }
-  } else {
-    return {
-      response: {
-        status: 200,
-        statusText: 'OK',
-        json: () => Promise.resolve(data),
-        ok: true,
-      },
-      //This is the data within the file that was loaded which is parsed to json
-      content: data,
-    }
-  }
+
+  return BaseFactory(data)
 }
 
 export default PacbioSmrtLinkVersionFactory

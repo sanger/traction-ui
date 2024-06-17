@@ -7,9 +7,7 @@ describe('Pacbio Run Edit view', () => {
     })
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
       statusCode: 200,
-      body: {
-        data: PacbioSmrtLinkVersionFactory().content.data,
-      },
+      body: PacbioSmrtLinkVersionFactory().content,
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',

@@ -8,9 +8,7 @@ describe('Pacbio Run Create view', () => {
 
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
       statusCode: 200,
-      body: {
-        data: PacbioSmrtLinkVersionFactory().content.data,
-      },
+      body: PacbioSmrtLinkVersionFactory().content,
     })
 
     // Find the pool being searched for by barcode
