@@ -48,68 +48,66 @@ describe('SequencescapeMultiplexedLibraries', () => {
       expect(attributes).toEqual({
         source: 'traction-ui.sequencescape',
         tubes_attributes: [
-          [
-            {
-              barcode: 'NT39K',
-              request: {
-                cost_code: 'aCostCodeExample',
-                external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
-                library_type: 'Example',
-              },
-              sample: {
-                external_id: 'cfcc0198-2a3b-11ef-a718-46043cfb1bd9',
-                name: '2STDY6',
-                species: 'cat',
-              },
-              library: {
-                volume: '10',
-                concentration: '20',
-                insert_size: 100,
-                tag_sequence: 'AATCGTTA',
-                kit_barcode: 'kit_barcode',
-              },
+          {
+            barcode: 'NT39K',
+            request: {
+              cost_code: 'aCostCodeExample',
+              external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
+              library_type: 'Example',
             },
-            {
-              barcode: 'NT40D',
-              request: {
-                cost_code: 'aCostCodeExample',
-                external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
-                library_type: 'Example',
-              },
-              sample: {
-                external_id: 'cfe18810-2a3b-11ef-a718-46043cfb1bd9',
-                name: '2STDY7',
-                species: 'cat',
-              },
-              library: {
-                volume: '10',
-                concentration: '20',
-                insert_size: 100,
-                tag_sequence: 'AATCGGCG',
-                kit_barcode: 'kit_barcode',
-              },
+            sample: {
+              external_id: 'cfcc0198-2a3b-11ef-a718-46043cfb1bd9',
+              name: '2STDY6',
+              species: 'cat',
             },
-            {
-              barcode: 'NT41E',
-              request: {
-                cost_code: 'aCostCodeExample',
-                external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
-                library_type: 'Example',
-              },
-              sample: {
-                external_id: 'cfe8fb0e-2a3b-11ef-a718-46043cfb1bd9',
-                name: '2STDY8',
-                species: 'cat',
-              },
-              library: {
-                volume: '10',
-                concentration: '20',
-                insert_size: 100,
-                tag_sequence: 'AATCCGTT',
-                kit_barcode: 'kit_barcode',
-              },
+            library: {
+              volume: '10',
+              concentration: '20',
+              insert_size: 100,
+              tag_sequence: 'AATCGTTA',
+              kit_barcode: 'kit_barcode',
             },
-          ],
+          },
+          {
+            barcode: 'NT40D',
+            request: {
+              cost_code: 'aCostCodeExample',
+              external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
+              library_type: 'Example',
+            },
+            sample: {
+              external_id: 'cfe18810-2a3b-11ef-a718-46043cfb1bd9',
+              name: '2STDY7',
+              species: 'cat',
+            },
+            library: {
+              volume: '10',
+              concentration: '20',
+              insert_size: 100,
+              tag_sequence: 'AATCGGCG',
+              kit_barcode: 'kit_barcode',
+            },
+          },
+          {
+            barcode: 'NT41E',
+            request: {
+              cost_code: 'aCostCodeExample',
+              external_study_id: 'd8d67198-885a-11ee-87ba-46043cfb1bd9',
+              library_type: 'Example',
+            },
+            sample: {
+              external_id: 'cfe8fb0e-2a3b-11ef-a718-46043cfb1bd9',
+              name: '2STDY8',
+              species: 'cat',
+            },
+            library: {
+              volume: '10',
+              concentration: '20',
+              insert_size: 100,
+              tag_sequence: 'AATCCGTT',
+              kit_barcode: 'kit_barcode',
+            },
+          },
         ],
         pool_attributes: {
           barcode: 'NT42F',
