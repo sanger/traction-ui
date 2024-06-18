@@ -1,4 +1,12 @@
+// we need to use absolute paths for Cypress. @ not available. Can we add it
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from './../../src/api/JsonApi'
+
+/*
+ * Factory for creating a list of printers
+ * @returns a base factory object with the printers data
+ * @returns a storePrinters object with the printers data stored by id
+ */
 
 const PacbioSmrtLinkVersionFactory = () => {
   const data = {
@@ -103,7 +111,9 @@ const PacbioSmrtLinkVersionFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  const storePrinters = dataToObjectById({ ...data })
+
+  return { ...BaseFactory(data), storePrinters }
 }
 
 export default PacbioSmrtLinkVersionFactory

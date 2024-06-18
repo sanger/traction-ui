@@ -30,6 +30,7 @@ const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
  */
 function factory(options, dataProps) {
   const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
+  // TODO: Move this to the newly created SmrtLinkVersion factory.
   const spy2 = vi.fn().mockResolvedValue(Data.TractionPacbioSmrtLinkVersions)
 
   const wrapperObj = mount(PacbioRunIndex, {

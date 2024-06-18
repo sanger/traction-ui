@@ -270,6 +270,7 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
+        // TODO: Move this to use the newly created factory.
         get.mockResolvedValue(Data.TractionPacbioSmrtLinkVersions)
         rootStore.api.v1 = { traction: { pacbio: { smrt_link_versions: { get } } } }
 

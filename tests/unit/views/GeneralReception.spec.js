@@ -4,12 +4,9 @@ import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
-import * as jsonapi from '@/api/JsonApi'
 import PrintersFactory from '@tests/factories/PrintersFactory.js'
 
 const printersFactory = PrintersFactory()
-// TODO: Move this into a factory
-const printers = jsonapi.dataToObjectById({ ...printersFactory.content })
 
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(GeneralReception, {
@@ -31,7 +28,10 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 
 describe('GeneralReception', () => {
   const buildWrapper = () => {
-    return mountWithStore({ props: { receptions: Receptions }, state: { resources: { printers } } })
+    return mountWithStore({
+      props: { receptions: Receptions },
+      state: { resources: { printers: printersFactory.storePrinters } },
+    })
   }
 
   it('has a source selector', () => {
