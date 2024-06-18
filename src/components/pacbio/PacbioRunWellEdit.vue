@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
@@ -151,7 +151,7 @@ const decimalPercentageRegex = /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/
 
 // Get the default well components for the current SMRT Link version
 const smrtLinkWellDefaults = computed(() => {
-  return PacbioRunWellComponents[store.smrtLinkVersion.name]
+  return PacbioRunWellSmrtLinkOptions[store.smrtLinkVersion.name]
 })
 
 // Define a computed property to determine if the well is new

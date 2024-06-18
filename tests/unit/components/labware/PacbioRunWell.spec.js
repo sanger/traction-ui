@@ -4,7 +4,7 @@ import storePools from '@tests/data/StoreRunPools.json'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
-import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 const usedAliquots = {
@@ -109,7 +109,7 @@ describe('PacbioRunWell.vue', () => {
       let valid_required_fields
 
       beforeEach(() => {
-        valid_required_fields = PacbioRunWellComponents[smrt_link_version].reduce(
+        valid_required_fields = PacbioRunWellSmrtLinkOptions[smrt_link_version].reduce(
           (result, field) => {
             if (field.required) {
               // If its a required field give it a value
@@ -159,7 +159,7 @@ describe('PacbioRunWell.vue', () => {
       })
 
       it('will be empty if there is no aliquots or metadata', () => {
-        const empty_required_fields = PacbioRunWellComponents[smrt_link_version].reduce(
+        const empty_required_fields = PacbioRunWellSmrtLinkOptions[smrt_link_version].reduce(
           (result, field) => {
             if (field.required) {
               // If its a required field give it a value
