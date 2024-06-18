@@ -1,13 +1,15 @@
-import { mount, store, nextTick, createTestingPinia, RequestFactory } from '@support/testHelper.js'
+import { mount, store, nextTick, createTestingPinia } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import * as jsonapi from '@/api/JsonApi'
+import PrintersFactory from '@tests/factories/PrintersFactory.js'
 
-const printerRequestFactory = RequestFactory('printers', false)
-const printers = jsonapi.dataToObjectById({ data: printerRequestFactory.content.data })
+const printersFactory = PrintersFactory()
+// TODO: Move this into a factory
+const printers = jsonapi.dataToObjectById({ ...printersFactory.content })
 
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(GeneralReception, {

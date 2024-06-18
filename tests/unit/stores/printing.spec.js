@@ -1,9 +1,11 @@
-import { createPinia, setActivePinia, RequestFactory } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi'
+import PrinterFactory from '@tests/factories/PrintersFactory.js'
 
+// TODO: Move this to a factory
 const storePrinters = {
   1: { id: 1, name: 'printer1', labware_type: 'tube' },
   2: { id: 2, name: 'printer2', labware_type: 'tube' },
@@ -47,9 +49,9 @@ describe('usePrintingStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        const printerRequestFactory = RequestFactory('printers', false)
+        const printersFactory = PrinterFactory()
 
-        get.mockResolvedValue(printerRequestFactory.response)
+        get.mockResolvedValue(printersFactory.responses.fetch)
         rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
@@ -57,7 +59,7 @@ describe('usePrintingStore', () => {
         const { success } = await store.fetchPrinters()
 
         expect(store.resources.printers).toEqual(
-          jsonapi.dataToObjectById({ data: printerRequestFactory.content.data }),
+          jsonapi.dataToObjectById({ ...printersFactory.content }),
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
