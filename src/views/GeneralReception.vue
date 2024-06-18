@@ -225,8 +225,8 @@
   </div>
 </template>
 
-<script>
-// TODO: Move to composition api. Already using pinia store.
+<script setup>
+import { ref, watch, computed } from 'vue'
 import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
@@ -237,222 +237,204 @@ import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { createBarcodeLabels, createBasicTubeBarcodeLabel } from '@/lib/LabelPrintingHelpers.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import useRootStore from '@/stores'
-import { mapActions, mapState } from 'pinia'
 import DataFetcher from '@/components/DataFetcher.vue'
+import useAlert from '@/composables/useAlert.js'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
 const stuckModal =
   "We appear to be stuck, this shouldn't happen. Please contact support, and try reloading the page"
 const defaultModal = () => ({ visible: false, message: stuckModal })
+const receptions = Receptions
 
-export default {
-  name: 'GeneralReception',
-  components: {
-    TractionHeading,
-    LibraryTypeSelect,
-    DataTypeSelect,
-    DataFetcher,
-  },
-  props: {
-    receptions: {
-      type: Object,
-      default: () => Receptions,
-    },
-  },
-  data: () => ({
-    // Default source to sequencescape
-    source: 'Sequencescape',
-    // Default pipeline to PacBio
-    pipeline: 'PacBio',
-    pipelineOptions: [
-      { value: 'PacBio', text: 'PacBio' },
-      { value: 'ONT', text: 'ONT' },
-    ],
-    requestOptions: defaultRequestOptions(),
-    barcodes: '',
-    modalState: defaultModal(),
-    // labwareData is used to store the input barcodes as well as the data fetched from sequencescape which is then imported into traction
-    labwareData: {
-      inputBarcodes: [], // inputBarcodes is used to store the barcodes that the user has inputted
-      foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
-      attributes: [], // attributes is used to store the attributes that have been found in sequencescape
-    },
-    printerName: '',
-    debounceTimer: null, // debounce timer for barcode deletion
-    isFetching: false,
-  }),
-  computed: {
-    ...mapState(usePrintingStore, ['printers']),
-    // ...mapState(useRootStore, ['api']),
-    reception: ({ receptions, source }) => receptions[source],
-    api() {
-      return useRootStore().api.v1
-    }, // can't use this in arrow function
-    receptionRequest: ({ api }) => api.traction.receptions.create,
-    barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],
-    isDisabled: ({ barcodeArray, isFetching }) => Boolean(barcodeArray.length === 0 || isFetching),
-    barcodeCount: ({ barcodeArray }) => barcodeArray.length,
-    presentRequestOptions: ({ requestOptions }) =>
-      Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
-    //displayPrintOptions is used to decide whether print options should be displayed or not
-    displayPrintOptions: ({ source }) =>
-      ['SequencescapeTubes', 'SequencescapeMultiplexedLibraries'].includes(source),
-    // printBarcodes is used to display the barcodes that will be printed
-    printBarcodes: ({ labwareData }) => Array.from(labwareData.foundBarcodes).join('\n'),
-    // printerOptions is used to display the printers that are available to print to
-    printerOptions() {
-      return this.printers('tube').map(({ name }) => ({
-        text: name,
-      }))
-    },
-    // printEnabled is used to disable the print button if there are no barcodes to print
-    printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
-  },
-  watch: {
-    // Refetches the data when the barcodes field is changed
-    barcodes: {
-      handler: 'debounceBarcodeFetch',
-      immediate: true,
-    },
-    // Refetches the data when a request option changes as it may require information from sequencescape
-    requestOptions: {
-      handler: 'debounceBarcodeFetch',
-      deep: true,
-      immediate: true,
-    },
-  },
-  methods: {
-    clearModal() {
-      this.modalState = defaultModal()
-    },
-    showModal(message) {
-      this.modalState = { visible: true, message }
-    },
-    //Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
-    debounceBarcodeFetch() {
-      if (this.debounceTimer) {
-        clearTimeout(this.debounceTimer)
-      }
-      if (this.barcodeArray.length === 0) {
-        this.labwareData.foundBarcodes.clear()
-        this.isFetching = false
-        return
-      }
-      this.isFetching = true
-      this.debounceTimer = setTimeout(async () => {
-        await this.fetchLabware()
-        this.isFetching = false
-      }, 500)
-    },
-    /*
-      Imports the labware into traction.
-      This function is called when the user presses 'import'
-    */
-    async importLabware() {
-      this.showModal(
-        `Creating ${this.labwareData.foundBarcodes.size} labware(s) for ${this.reception.text}`,
-      )
-      //Creates the reception resource and shows a success or failure alert
-      try {
-        const response = await createReceptionResource(
-          this.receptionRequest,
-          this.labwareData.foundBarcodes,
-          this.labwareData.attributes,
-        )
-        const messages = createMessages({
-          barcodes: Array.from(this.labwareData.foundBarcodes),
-          response,
-          reception: this.reception,
-        })
+const { showAlert } = useAlert()
+const createPrintJob = usePrintingStore().createPrintJob
 
-        // we create a different alert for each message
-        messages.forEach(({ type, text }) => {
-          this.showAlert(text, type)
-        })
-        this.clearModal()
-      } catch (e) {
-        console.error(e)
-        this.showAlert(e, 'danger')
-        this.clearModal()
-      }
-    },
+// Default source to sequencescape
+const source = ref('Sequencescape')
+// Default pipeline to PacBio
+const pipeline = ref('PacBio')
+const pipelineOptions = ref([
+  { value: 'PacBio', text: 'PacBio' },
+  { value: 'ONT', text: 'ONT' },
+])
+const requestOptions = ref(defaultRequestOptions())
+const barcodes = ref('')
+const modalState = ref(defaultModal())
+// labwareData is used to store the input barcodes as well as the data fetched from sequencescape which is then imported into traction
+const labwareData = ref({
+  inputBarcodes: [], // inputBarcodes is used to store the barcodes that the user has inputted
+  foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
+  attributes: [], // attributes is used to store the attributes that have been found in sequencescape
+})
+const printerName = ref('')
+let debounceTimer = ref(null) // debounce timer for barcode deletion
+let isFetching = ref(false)
 
-    /*
-    Fetches the labware from sequencescape and updates the labwareData
-    This function is called when the user presses 'enter' in the barcodes field
-    */
-    async fetchLabware() {
-      try {
-        //Fetch barcodes from sequencescape
-        const { foundBarcodes, attributes } = await this.reception.fetchFunction({
-          requests: this.api,
-          barcodes: this.barcodeArray,
-          requestOptions: this.presentRequestOptions,
-        })
-        this.labwareData = { foundBarcodes, attributes, inputBarcodes: this.barcodeArray }
-        this.clearModal()
-      } catch (e) {
-        console.error(e)
-        this.showAlert(e.toString(), 'danger')
-      }
-    },
-    /*
-      create the labels needed for the print job
-    */
-    createLabels(foundBarcodes, date) {
-      const sourceBarcodeList = Array.from(foundBarcodes)
-      const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
-      return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
-    },
-    /*
-      Creates the print job and shows a success or failure alert
-    */
-    async printLabels() {
-      const { success, message = {} } = await this.createPrintJob({
-        printerName: this.printerName,
-        labels: this.createLabels(this.labwareData.foundBarcodes, getCurrentDate()),
-        copies: 1,
-      })
+const printers = usePrintingStore().printers
+const reception = computed(() => receptions[source.value])
+const api = useRootStore().api.v1
+const receptionRequest = api.traction.receptions.create
+const barcodeArray = computed(() => [...new Set(barcodes.value.split(/\s/).filter(Boolean))])
+const isDisabled = computed(() => Boolean(barcodeArray.value.length === 0 || isFetching.value))
+const presentRequestOptions = computed(() =>
+  Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
+)
+//displayPrintOptions is used to decide whether print options should be displayed or not
+const displayPrintOptions = computed(() =>
+  ['SequencescapeTubes', 'SequencescapeMultiplexedLibraries'].includes(source.value),
+)
+// printBarcodes is used to display the barcodes that will be printed
+const printBarcodes = computed(() => Array.from(labwareData.value.foundBarcodes).join('\n'))
+// printerOptions is used to display the printers that are available to print to
+const printerOptions = computed(() =>
+  printers('tube').map(({ name }) => ({
+    text: name,
+  })),
+)
+// printEnabled is used to disable the print button if there are no barcodes to print
+const printEnabled = computed(() => printerName.value && printBarcodes.value)
 
-      this.showAlert(message, success ? 'success' : 'danger')
-    },
-    reset() {
-      this.source = 'Sequencescape'
-      this.pipeline = 'PacBio'
-      this.requestOptions = defaultRequestOptions()
-      this.barcodes = ''
-      this.resetRequestOptions()
-      this.resetLabwareData()
-    },
-    resetRequestOptions() {
-      this.requestOptions = defaultRequestOptions()
-    },
-    /*
-      Resets the labwareData
-    */
-    resetLabwareData() {
-      this.labwareData = {
-        foundBarcodes: new Set(),
-        attributes: [],
-        inputBarcodes: [],
-      }
-    },
-    /*
-      Resets the labware data and input barcodes when the source is changed
-    */
-    handleSourceChange() {
-      this.resetLabwareData()
-      this.barcodes = ''
-    },
-    async fetchPrinters() {
-      if (usePrintingStore().printers().length === 0) {
-        return await usePrintingStore().fetchPrinters()
-      } else {
-        return { success: true }
-      }
-    },
-    ...mapActions(usePrintingStore, ['createPrintJob']),
-  },
+watch(barcodes, debounceBarcodeFetch, { immediate: true })
+watch(requestOptions, debounceBarcodeFetch, { deep: true, immediate: true })
+
+function clearModal() {
+  modalState.value = defaultModal()
+}
+
+function showModal(message) {
+  modalState.value = { visible: true, message }
+}
+
+//Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
+function debounceBarcodeFetch() {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer)
+  }
+  if (barcodeArray.value.length === 0) {
+    labwareData.value.foundBarcodes.clear()
+    isFetching.value = false
+    return
+  }
+  isFetching.value = true
+  debounceTimer.value = setTimeout(async () => {
+    await fetchLabware()
+    isFetching.value = false
+  }, 500)
+}
+
+/*
+  Imports the labware into traction.
+  This function is called when the user presses 'import'
+*/
+async function importLabware() {
+  showModal(
+    `Creating ${labwareData.value.foundBarcodes.size} labware(s) for ${reception.value.text}`,
+  )
+  //Creates the reception resource and shows a success or failure alert
+  try {
+    const response = await createReceptionResource(
+      receptionRequest,
+      labwareData.value.foundBarcodes,
+      labwareData.value.attributes,
+    )
+    const messages = createMessages({
+      barcodes: Array.from(labwareData.value.foundBarcodes),
+      response,
+      reception: reception.value,
+    })
+
+    // we create a different alert for each message
+    messages.forEach(({ type, text }) => {
+      showAlert(text, type)
+    })
+    clearModal()
+  } catch (e) {
+    console.error(e)
+    showAlert(e, 'danger')
+    clearModal()
+  }
+}
+
+/*
+  Fetches the labware from sequencescape and updates the labwareData
+  This function is called when the user presses 'enter' in the barcodes field
+*/
+async function fetchLabware() {
+  try {
+    //Fetch barcodes from sequencescape
+    const { foundBarcodes, attributes } = await reception.value.fetchFunction({
+      requests: api,
+      barcodes: barcodeArray.value,
+      requestOptions: presentRequestOptions.value,
+    })
+    labwareData.value = { foundBarcodes, attributes, inputBarcodes: barcodeArray.value }
+    clearModal()
+  } catch (e) {
+    console.error(e)
+    showAlert(e.toString(), 'danger')
+  }
+}
+
+/*
+  create the labels needed for the print job
+*/
+function createLabels(foundBarcodes, date) {
+  const sourceBarcodeList = Array.from(foundBarcodes)
+  const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
+  return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
+}
+
+/*
+  Creates the print job and shows a success or failure alert
+*/
+async function printLabels() {
+  const { success, message = {} } = await createPrintJob({
+    printerName: printerName,
+    labels: createLabels(labwareData.value.foundBarcodes, getCurrentDate()),
+    copies: 1,
+  })
+
+  showAlert(message, success ? 'success' : 'danger')
+}
+
+function reset() {
+  source.value = 'Sequencescape'
+  pipeline.value = 'PacBio'
+  requestOptions.value = defaultRequestOptions()
+  barcodes.value = ''
+  resetRequestOptions()
+  resetLabwareData()
+}
+
+function resetRequestOptions() {
+  requestOptions.value = defaultRequestOptions()
+}
+
+/*
+  Resets the labwareData
+*/
+function resetLabwareData() {
+  labwareData.value = {
+    foundBarcodes: new Set(),
+    attributes: [],
+    inputBarcodes: [],
+  }
+}
+
+/*
+  Resets the labware data and input barcodes when the source is changed
+*/
+function handleSourceChange() {
+  resetLabwareData()
+  barcodes.value = ''
+}
+
+async function fetchPrinters() {
+  if (usePrintingStore().printers().length === 0) {
+    return await usePrintingStore().fetchPrinters()
+  } else {
+    return { success: true }
+  }
 }
 </script>

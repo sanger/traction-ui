@@ -6,6 +6,13 @@ import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import * as jsonapi from '@/api/JsonApi'
 
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
 const printerRequestFactory = RequestFactory('printers', false)
 const printers = jsonapi.dataToObjectById({ data: printerRequestFactory.content.data })
 
@@ -86,7 +93,8 @@ describe('GeneralReception', () => {
 
     it('shows ONT options when ONT is selected', async () => {
       const { wrapperObj: wrapper } = buildWrapper()
-      await wrapper.setData({ pipeline: 'ONT' })
+      // Select ONT pipeline
+      await wrapper.find('[data-type=pipeline-list]').findAll('option')[1].setSelected()
 
       // Library type
       const libraryType = wrapper.find('[data-attribute=library-type-list]')
@@ -104,7 +112,8 @@ describe('GeneralReception', () => {
 
     it('shows PacBio options when PacBio is selected', async () => {
       const { wrapperObj: wrapper } = buildWrapper()
-      await wrapper.setData({ pipeline: 'PacBio' })
+      // Select PacBio pipeline
+      await wrapper.find('[data-type=pipeline-list]').findAll('option')[0].setSelected()
 
       // Library type
       const libraryType = wrapper.find('[data-attribute=library-type-list]')
@@ -242,11 +251,7 @@ describe('GeneralReception', () => {
     wrapper.vm.reception.fetchFunction = vi.fn().mockRejectedValue('Failed fetch')
 
     await wrapper.vm.fetchLabware()
-
-    expect(Object.values(store.state.traction.messages)).toContainEqual({
-      type: 'danger',
-      message: 'Failed fetch',
-    })
+    expect(mockShowAlert).toHaveBeenCalledWith('Failed fetch', 'danger')
   })
 
   it('handles a successful import', async () => {
@@ -288,10 +293,7 @@ describe('GeneralReception', () => {
 
     await nextTick()
 
-    expect(Object.values(store.state.traction.messages)).toContainEqual({
-      type: 'danger',
-      message: `Error: ${message}`,
-    })
+    expect(mockShowAlert).toHaveBeenCalledWith(new Error(message), 'danger')
   })
 
   // arbitrary test just to ensure this works

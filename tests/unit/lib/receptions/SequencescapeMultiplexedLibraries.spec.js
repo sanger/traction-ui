@@ -9,7 +9,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
       status: 500,
       statusText: 'Internal Server Error',
     }
-    const requests = store.getters.api
+    const requests = store.getters.api.v1
     let request
 
     beforeEach(() => {
@@ -31,7 +31,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
       expect(request).toHaveBeenCalledWith({
         filter: { barcode: barcodes.join(',') },
         include:
-          'receptacles.aliquots.library.aliquots.sample.sample_metadata,receptacles.aliquots.library.aliquots.study,receptacles.aliquots.library.aliquots.tag,receptacles.aliquots.library.aliquots,receptacles.aliquots.library.labware.receptacles',
+          'receptacles.aliquots.library.aliquots.sample.sample_metadata,receptacles.aliquots.library.aliquots.study,receptacles.aliquots.library.aliquots,receptacles.aliquots.library.labware.receptacles',
         fields: {
           tubes: 'labware_barcode,receptacles',
           labware: 'labware_barcode,receptacles',
@@ -40,7 +40,6 @@ describe('SequencescapeMultiplexedLibraries', () => {
           sample_metadata: 'sample_common_name,volume,concentration',
           studies: 'uuid',
           aliquots: 'study,library_type,sample,insert_size_to,tag_oligo',
-          tags: 'oligo',
         },
       })
 
