@@ -15,6 +15,9 @@ import {
 } from '@/stores/utilities/run'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory'
+
+const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 
 describe('usePacbioRunCreateStore', () => {
   beforeEach(() => {
@@ -271,7 +274,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         // TODO: Move this to use the newly created factory.
-        get.mockResolvedValue(Data.TractionPacbioSmrtLinkVersions)
+        get.mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.axios)
         rootStore.api.v1 = { traction: { pacbio: { smrt_link_versions: { get } } } }
 
         const store = usePacbioRunCreateStore()
@@ -279,7 +282,7 @@ describe('usePacbioRunCreateStore', () => {
         const { success } = await store.fetchSmrtLinkVersions()
 
         expect(store.resources.smrtLinkVersions).toEqual(
-          jsonapi.dataToObjectById({ data: Data.TractionPacbioSmrtLinkVersions.data.data }),
+          pacbioSmrtLinkVersionFactory.storeSmrtLinkVersions,
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()

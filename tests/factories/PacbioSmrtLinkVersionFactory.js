@@ -1,4 +1,5 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from './../../src/api/JsonApi'
 
 const PacbioSmrtLinkVersionFactory = () => {
   const data = {
@@ -86,7 +87,9 @@ const PacbioSmrtLinkVersionFactory = () => {
     ],
   }
 
-  return BaseFactory(data)
+  const storeSmrtLinkVersions = dataToObjectById({ ...data })
+
+  return { ...BaseFactory(data), storeSmrtLinkVersions }
 }
 
 export default PacbioSmrtLinkVersionFactory
