@@ -73,7 +73,6 @@ import TractionOntPools from './tractionOntPools.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
-import Printers from './printers.json'
 
 export default {
   CreateChip,
@@ -151,5 +150,4 @@ export default {
   TractionPacbioSmrtLinkVersions,
   PacbioRunWithWellDefaults,
   StorePools,
-  Printers,
 }
