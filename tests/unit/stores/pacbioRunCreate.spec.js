@@ -11,10 +11,10 @@ import {
   createRunType,
   newRunType,
   existingRunType,
-  defaultWellAttributes,
 } from '@/stores/utilities/run'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 
 describe('usePacbioRunCreateStore', () => {
   beforeEach(() => {
@@ -171,7 +171,7 @@ describe('usePacbioRunCreateStore', () => {
           wells: {
             [plateNumber]: {},
           },
-          defaultWellAttributes: { ...defaultWellAttributes() },
+          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
         }
         const position = 'A1'
         const well = store.getOrCreateWell(position, plateNumber)
@@ -185,7 +185,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...defaultWellAttributes() },
+          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
         }
         const gottenWell = store.getOrCreateWell(position, plateNumber)
         expect(gottenWell).toEqual(well)
@@ -208,7 +208,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...defaultWellAttributes() },
+          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
           aliquots: {
             1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
             2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
@@ -231,7 +231,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: {} },
-          defaultWellAttributes: { ...defaultWellAttributes() },
+          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
         }
         const gottenWell = store.getWell(plateNumber, position)
         expect(gottenWell).toBeUndefined()
