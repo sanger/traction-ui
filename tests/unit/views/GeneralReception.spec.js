@@ -4,9 +4,9 @@ import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
-import PrintersFactory from '@tests/factories/PrintersFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
-const printersFactory = PrintersFactory()
+const printerFactory = PrinterFactory()
 
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(GeneralReception, {
@@ -30,7 +30,7 @@ describe('GeneralReception', () => {
   const buildWrapper = () => {
     return mountWithStore({
       props: { receptions: Receptions },
-      state: { resources: { printers: printersFactory.storePrinters } },
+      state: { resources: { printers: printerFactory.storeData } },
     })
   }
 

@@ -1,16 +1,14 @@
 import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { usePrintingStore } from '@/stores/printing.js'
-import PrintersFactory from '@tests/factories/PrintersFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
-const printersFactory = PrintersFactory()
+const printerFactory = PrinterFactory()
 
 const plugins = [
   ({ store }) => {
     if (store.$id === 'root') {
-      store.api.v2.traction.printers.get = vi
-        .fn()
-        .mockResolvedValue(printersFactory.responses.fetch)
+      store.api.v2.traction.printers.get = vi.fn().mockResolvedValue(printerFactory.responses.fetch)
     }
   },
 ]

@@ -3,9 +3,9 @@ import { usePrintingStore } from '@/stores/printing.js'
 import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi'
-import PrinterFactory from '@tests/factories/PrintersFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
-const printersFactory = PrinterFactory()
+const printerFactory = PrinterFactory()
 
 describe('usePrintingStore', () => {
   beforeEach(() => {
@@ -22,13 +22,13 @@ describe('usePrintingStore', () => {
     describe('#printers', () => {
       it('should return printers', async () => {
         const store = usePrintingStore()
-        store.resources.printers = printersFactory.storePrinters
+        store.resources.printers = printerFactory.storeData
         expect(store.printers()).toEqual(Object.values(store.resources.printers))
       })
 
       it('can return printers by laware type', async () => {
         const store = usePrintingStore()
-        store.resources.printers = printersFactory.storePrinters
+        store.resources.printers = printerFactory.storeData
         expect(store.printers('tube').length).toEqual(4)
       })
     })
@@ -42,7 +42,7 @@ describe('usePrintingStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
 
-        get.mockResolvedValue(printersFactory.responses.fetch)
+        get.mockResolvedValue(printerFactory.responses.fetch)
         rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
@@ -50,7 +50,7 @@ describe('usePrintingStore', () => {
         const { success } = await store.fetchPrinters()
 
         expect(store.resources.printers).toEqual(
-          jsonapi.dataToObjectById({ ...printersFactory.content }),
+          jsonapi.dataToObjectById({ ...printerFactory.content }),
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()

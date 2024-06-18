@@ -15,7 +15,7 @@ import {
 } from '@/stores/utilities/run'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory'
+import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 
@@ -281,9 +281,7 @@ describe('usePacbioRunCreateStore', () => {
 
         const { success } = await store.fetchSmrtLinkVersions()
 
-        expect(store.resources.smrtLinkVersions).toEqual(
-          pacbioSmrtLinkVersionFactory.storeSmrtLinkVersions,
-        )
+        expect(store.resources.smrtLinkVersions).toEqual(pacbioSmrtLinkVersionFactory.storeData)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })

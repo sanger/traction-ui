@@ -4,7 +4,7 @@ import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
 import { mount, createTestingPinia, flushPromises, nextTick } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
-import PrintersFactory from '@tests/factories/PrintersFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
 const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
@@ -19,7 +19,7 @@ const evt = {
   },
 }
 
-const printersFactory = PrintersFactory()
+const printersFactory = PrinterFactory()
 
 const plugins = [
   ({ store }) => {

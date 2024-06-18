@@ -1,6 +1,11 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from './../../src/api/JsonApi'
 
+/*
+ * Factory for creating a list of smrt link versions
+ * @returns a base factory object with the smrt lin version data
+ * @returns a storeData object with the smrt link versions data stored by id
+ */
 const PacbioSmrtLinkVersionFactory = () => {
   const data = {
     data: [
@@ -87,9 +92,9 @@ const PacbioSmrtLinkVersionFactory = () => {
     ],
   }
 
-  const storeSmrtLinkVersions = dataToObjectById({ ...data })
+  const storeData = dataToObjectById({ ...data })
 
-  return { ...BaseFactory(data), storeSmrtLinkVersions }
+  return { ...BaseFactory(data), storeData }
 }
 
 export default PacbioSmrtLinkVersionFactory
