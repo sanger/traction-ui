@@ -1,5 +1,5 @@
 <template>
-  <footer :class="footerClasses">
+  <footer class="border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100 bg-sdb-400">
     <div class="max-w-sm mx-auto px-4 sm:px-6">
       <ul class="flex flex-row items-center justify-between my-2 text-xs text-gray-500 space-x-4">
         <li>
@@ -65,19 +65,6 @@ export default {
       linkSlice: 51, //length needed for to slice github URL down to release name
       defaultRelease: 'https://github.com/sanger/traction-ui/releases',
     }
-  },
-  computed: {
-    footerClasses() {
-      let bgColorClass = ''
-      if (this.environment == 'development') {
-        bgColorClass = 'bg-blue-600'
-      } else if (this.environment == 'staging') {
-        bgColorClass = 'bg-purple-600'
-      } else if (this.environment == 'production') {
-        bgColorClass = 'bg-gradient-to-tr'
-      }
-      return ['border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100', bgColorClass]
-    },
   },
   created() {
     this.provider()

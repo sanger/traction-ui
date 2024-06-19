@@ -17,6 +17,7 @@
 
 <script>
 import TractionLink from '@/components/TractionLink'
+import { bgColorClass } from '@/lib/BackgroundColor'
 
 export default {
   name: 'TractionHeader',
@@ -25,20 +26,12 @@ export default {
   },
   data() {
     return {
-      environment: process.env.NODE_ENV,
+      environment: import.meta.env['VITE_ENVIRONMENT']
     }
   },
   computed: {
     headerClasses() {
-      let bgColorClass = ''
-      if (this.environment == 'development') {
-        bgColorClass = 'bg-blue-600'
-      } else if (this.environment == 'staging') {
-        bgColorClass = 'bg-purple-600'
-      } else if (this.environment == 'production') {
-        bgColorClass = 'bg-gradient-to-tr'
-      }
-      return ['relative from-sdb to-sdb-400', bgColorClass]
+      return ['relative from-sdb to-sdb-400', bgColorClass[this.environment]]
     },
   },
 }
