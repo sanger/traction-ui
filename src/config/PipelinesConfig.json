@@ -18,6 +18,6 @@
     "title": "ONT",
     "description": "A LIMS pipeline to support tracking for ONT Long-Read Sequencing",
     "routes": ["samples", "pools", "pool/new", "runs"],
-    "active":true
+    "active": true
   }
 ]
