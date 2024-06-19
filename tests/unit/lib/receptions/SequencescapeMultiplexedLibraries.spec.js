@@ -1,5 +1,6 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeMultiplexedLibraries'
-import { Data, store } from '@support/testHelper'
+import { store } from '@support/testHelper'
+import SequencescapeMultiplexedLibraryFactory from '@tests/factories/SequencescapeMultiplexedLibraryFactory.js'
 
 describe('SequencescapeMultiplexedLibraries', () => {
   describe('#fetchLabwareForReception', () => {
@@ -17,7 +18,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
     })
 
     it('successfully', async () => {
-      request.mockResolvedValue(Data.SequencescapeMultiplexedLibrary)
+      request.mockResolvedValue({ data: SequencescapeMultiplexedLibraryFactory().content })
 
       const { attributes, foundBarcodes } = await fetchLabwareForReception({
         requests,

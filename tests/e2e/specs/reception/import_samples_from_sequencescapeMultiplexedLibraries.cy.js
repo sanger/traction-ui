@@ -1,3 +1,4 @@
+import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory'
 describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
@@ -32,7 +33,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         },
       },
       {
-        fixture: 'sequencescapeMultiplexedLibrary.json',
+        statusCode: 200,
+        body: SequencescapeMultiplexedLibraryFactory().content,
       },
     )
     cy.intercept('POST', '/v1/receptions', {
@@ -104,7 +106,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         },
       },
       {
-        fixture: 'sequencescapeMultiplexedLibrary.json',
+        statusCode: 200,
+        body: SequencescapeMultiplexedLibraryFactory().content,
       },
     )
     cy.intercept('/v1/receptions', {
