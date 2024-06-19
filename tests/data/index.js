@@ -50,7 +50,6 @@ import SequencescapeLabware from './sequencescapeLabware'
 import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
 import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
-import SequencescapeMultiplexedLibrary from './sequencescapeMultiplexedLibrary.json'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
 import TractionPacbioTagSets from './tractionPacbioTagSets.json'
@@ -128,7 +127,6 @@ export default {
   SequencescapeLabwarePlateOnly,
   SequencescapeLabwareTubeOnly,
   SequencescapePlates,
-  SequencescapeMultiplexedLibrary,
   tractionOntLibraries,
   TractionOntRequests,
   TractionOntTagSets,
