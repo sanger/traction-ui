@@ -29,7 +29,6 @@
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import TractionMessage from '@/components/TractionMessage'
-import TractionLink from '@/components/TractionLink'
 import TractionHeading from '@/components/TractionHeading'
 import TractionHeader from '@/components/TractionHeader'
 
@@ -38,7 +37,6 @@ export default {
   components: {
     InfoFooter,
     TractionMessage,
-    TractionLink,
     TractionHeading,
     TractionHeader,
   },
