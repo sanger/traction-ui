@@ -71,10 +71,8 @@ import OntRuns from './ontRuns.json'
 import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
-import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
-import Printers from './printers.json'
 
 export default {
   CreateChip,
@@ -150,8 +148,6 @@ export default {
   OntRuns,
   OntTubeRequest,
   OntTubesRequest,
-  TractionPacbioSmrtLinkVersions,
   PacbioRunWithWellDefaults,
   StorePools,
-  Printers,
 }

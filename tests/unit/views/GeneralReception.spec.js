@@ -1,10 +1,10 @@
-import { mount, store, nextTick, createTestingPinia, RequestFactory } from '@support/testHelper.js'
+import { mount, store, nextTick, createTestingPinia } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
-import * as jsonapi from '@/api/JsonApi'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -13,8 +13,7 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-const printerRequestFactory = RequestFactory('printers', false)
-const printers = jsonapi.dataToObjectById({ data: printerRequestFactory.content.data })
+const printerFactory = PrinterFactory()
 
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(GeneralReception, {
@@ -36,7 +35,10 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 
 describe('GeneralReception', () => {
   const buildWrapper = () => {
-    return mountWithStore({ props: { receptions: Receptions }, state: { resources: { printers } } })
+    return mountWithStore({
+      props: { receptions: Receptions },
+      state: { resources: { printers: printerFactory.storeData } },
+    })
   }
 
   it('has a source selector', () => {
