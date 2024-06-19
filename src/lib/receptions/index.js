@@ -3,6 +3,8 @@ import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
 
+import MultiBarcode from '@/components/reception/MultiBarcode.vue'
+
 const defaultRequestOptions = () => ({
   library_type: undefined,
   cost_code: null,
@@ -40,21 +42,25 @@ const Receptions = {
   Sequencescape: {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
     getAttributeKeysFunction: Sequencescape.getAttributeKeys,
   },
   SamplesExtraction: {
     ...ReceptionTypes.SamplesExtraction,
     fetchFunction: SamplesExtraction.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
     getAttributeKeysFunction: SamplesExtraction.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
     getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   SequencescapeMultiplexedLibraries: {
     ...ReceptionTypes.SequencescapeMultiplexedLibraries,
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
     getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
   },
 }
