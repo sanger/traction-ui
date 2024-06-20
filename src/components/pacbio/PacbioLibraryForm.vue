@@ -57,20 +57,6 @@
           </traction-input>
         </traction-field-error>
       </fieldset>
-      <template #disabled
-        ><fieldset id="input-group-volume">
-          <traction-label class="ml-1 w-full">Volume</traction-label>
-          <traction-input
-            id="library-volume"
-            v-model="formLibrary.volume"
-            type="number"
-            step="any"
-            placeholder="Example: 1.0"
-            :class="inputBorderClass('volume')"
-            class="w-full"
-          >
-          </traction-input></fieldset
-      ></template>
 
       <fieldset id="input-group-concentration">
         <traction-label class="ml-1">Concentration</traction-label>

@@ -11,16 +11,6 @@
         :selected="selectedAliquotRequest && selectedAliquotRequest.source_id === aliquot.source_id"
         @aliquot-selected="(selected) => notifyAliquotSelection(selected, aliquot)"
       ></PacbioPoolAliquotEdit>
-      <template #disabled>
-        <PacbioPoolAliquotEditV1
-          v-for="request in store.selectedUsedAliquots"
-          :key="request.id"
-          :request="request"
-          :auto-tag="props.autoTag"
-          :validated="props.validated"
-          :notify="props.notify"
-        ></PacbioPoolAliquotEditV1
-      ></template>
     </traction-table>
   </div>
 </template>
