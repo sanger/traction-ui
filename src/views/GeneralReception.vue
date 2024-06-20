@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="receptions.options"
+            :options="Receptions.options"
             data-type="source-list"
           />
         </traction-field-group>
@@ -154,7 +154,6 @@ import { defaultRequestOptions } from '@/lib/receptions'
 const stuckModal =
   "We appear to be stuck, this shouldn't happen. Please contact support, and try reloading the page"
 const defaultModal = () => ({ visible: false, message: stuckModal })
-const receptions = Receptions
 
 // Default source to sequencescape
 const source = ref('Sequencescape')
@@ -167,7 +166,7 @@ const pipelineOptions = ref([
 const requestOptions = ref(defaultRequestOptions())
 const modalState = ref(defaultModal())
 
-const reception = computed(() => receptions[source.value])
+const reception = computed(() => Receptions[source.value])
 
 function clearModal() {
   modalState.value = defaultModal()

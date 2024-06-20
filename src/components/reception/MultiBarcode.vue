@@ -232,7 +232,7 @@ function debounceBarcodeFetch() {
   This function is called when the user presses 'import'
 */
 async function importLabware() {
-  this.$emit('importStarted', {
+  emit('importStarted', {
     barcodes: labwareData.value.foundBarcodes.size,
   })
   //Creates the reception resource and shows a success or failure alert
@@ -242,10 +242,11 @@ async function importLabware() {
       labwareData.value.foundBarcodes,
       labwareData.value.attributes,
     )
+
     const messages = createMessages({
       barcodes: Array.from(labwareData.value.foundBarcodes),
       response,
-      reception: props.reception.value,
+      reception: props.reception,
     })
 
     // we create a different alert for each message
