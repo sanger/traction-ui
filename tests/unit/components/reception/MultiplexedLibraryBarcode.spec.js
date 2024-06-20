@@ -1,10 +1,11 @@
 import { mount, store, nextTick, createTestingPinia } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import MultiBarcode from '@/components/reception/MultiBarcode.vue'
+import MultiplexedLibraryBarcode from '@/components/reception/MultiplexedLibraryBarcode.vue'
 import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
+import { flushPromises } from '@vue/test-utils'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -15,13 +16,14 @@ vi.mock('@/composables/useAlert', () => ({
 
 const printerFactory = PrinterFactory()
 
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(MultiBarcode, {
+async function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
+  const wrapperObj = mount(MultiplexedLibraryBarcode, {
     global: {
       plugins: [
         createTestingPinia({
           initialState: {
             printing: state,
+            root: state,
           },
           stubActions,
           plugins,
@@ -30,15 +32,17 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
     },
     props,
   })
+
+  await flushPromises()
   return { wrapperObj }
 }
 
-describe('MultiBarcode', () => {
-  const buildWrapper = (props = {}) => {
-    return mountWithStore({
+describe('MultiplexedLibraryBarcode', () => {
+  const buildWrapper = async (props = {}) => {
+    return await mountWithStore({
       props: {
         pipeline: 'PacBio',
-        reception: Receptions['Sequencescape'],
+        reception: Receptions['SequencescapeMultiplexedLibraries'],
         requestOptions: {
           costCode: '1234',
         },
@@ -48,37 +52,25 @@ describe('MultiBarcode', () => {
     })
   }
 
-  it('shows print options for only for Sequencescape Tubes', async () => {
-    const { wrapperObj: wrapper } = buildWrapper()
-    // It should show print options only when Sequencescape Tubes or Sequencescape Mutliplexed Libraries are the selected source
-    await wrapper.setProps({ reception: Receptions['SequencescapeTubes'] })
-    expect(wrapper.find('[id=print]').exists()).toBe(true)
-
-    await wrapper.setProps({ reception: Receptions['Sequencescape'] })
-    expect(wrapper.find('[id=print]').exists()).toBe(false)
-    await wrapper.setProps({ reception: Receptions['Samples Extraction'] })
-    expect(wrapper.find('[id=print]').exists()).toBe(false)
-  })
-
-  it('has a list of printers', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+  it('has a list of printers', async () => {
+    const { wrapperObj: wrapper } = await buildWrapper()
     expect(wrapper.vm.printerOptions.length).toBeGreaterThan(0)
   })
 
-  describe('barcode text area', () => {
+  describe('barcode', () => {
     describe('single barcode', () => {
       it('should not update importText until barcode is fetched', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
-        await wrapper.find('#barcodes').setValue('DN1\n')
-        expect(wrapper.vm.barcodes).toEqual('DN1\n')
+        const { wrapperObj: wrapper } = await buildWrapper()
+        await wrapper.find('#barcode').setValue('DN1')
+        expect(wrapper.vm.barcode).toEqual('DN1')
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 0 labware into PacBio from Sequencescape',
+          'Import 0 labware into PacBio from Sequencescape Multiplexed Libraries',
         )
       })
 
       it('should update importText when fetch function is called', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
-        await wrapper.find('#barcodes').setValue('DN1\n')
+        const { wrapperObj: wrapper } = await buildWrapper()
+        await wrapper.find('#barcode').setValue('DN1')
         const mockedFetchFunction = vi
           .fn()
           .mockResolvedValue({ foundBarcodes: new Set(['DN1']), attributes: {} })
@@ -88,26 +80,7 @@ describe('MultiBarcode', () => {
         expect(mockedFetchFunction).toBeCalled()
         expect(wrapper.vm.labwareData.foundBarcodes).toEqual(new Set(['DN1']))
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 1 labware into PacBio from Sequencescape',
-        )
-      })
-    })
-
-    describe('multiple barcodes', () => {
-      it('when fetch function is called with multiple barcode', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
-        await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN5\n')
-        const foundBarcodes = new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5'])
-        const mockedFetchFunction = vi.fn().mockResolvedValue({
-          foundBarcodes,
-          attributes: {},
-        })
-        wrapper.vm.reception.fetchFunction = mockedFetchFunction
-        await wrapper.vm.fetchLabware()
-        expect(mockedFetchFunction).toBeCalled()
-        expect(wrapper.vm.labwareData.foundBarcodes).toEqual(foundBarcodes)
-        expect(wrapper.find('#importText').text()).toEqual(
-          'Import 5 labware into PacBio from Sequencescape',
+          'Import 1 labware into PacBio from Sequencescape Multiplexed Libraries',
         )
       })
     })
@@ -117,15 +90,15 @@ describe('MultiBarcode', () => {
     let wrapper
 
     beforeEach(async () => {
-      const { wrapperObj } = buildWrapper({ reception: Receptions['SequencescapeTubes'] })
+      const { wrapperObj } = await buildWrapper()
       wrapper = wrapperObj
     })
 
     it('displays all fetched barcodes in print area', async () => {
-      const value = 'DN1\nDN2\nDN3\nDN4\nDN5'
-      await wrapper.find('#barcodes').setValue(value)
+      const value = 'DN1'
+      await wrapper.find('#barcode').setValue(value)
       const mockedFetchFunction = vi.fn().mockResolvedValue({
-        foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5']),
+        foundBarcodes: new Set(['DN1']),
         attributes: {},
       })
       wrapper.vm.reception.fetchFunction = mockedFetchFunction
@@ -133,12 +106,12 @@ describe('MultiBarcode', () => {
       expect(wrapper.find('[id=print-barcodes]').element.value).toEqual(value)
     })
 
-    it('removes barcodes from print area when barcode is removed in  text area', async () => {
-      const value = 'DN1\nDN2\nDN3\nDN4\nDN5'
-      const barcodesInput = wrapper.find('#barcodes')
+    it('removes barcodes from print area when barcode is removed in text area', async () => {
+      const value = 'DN1'
+      const barcodesInput = wrapper.find('#barcode')
       await barcodesInput.setValue(value)
       let mockedFetchFunction = vi.fn().mockResolvedValue({
-        foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5']),
+        foundBarcodes: new Set(['DN1']),
         attributes: {},
       })
       wrapper.vm.reception.fetchFunction = mockedFetchFunction
@@ -147,20 +120,20 @@ describe('MultiBarcode', () => {
       await wrapper.vm.fetchLabware()
       expect(wrapper.find('[id=print-barcodes]').element.value).toEqual(value)
       mockedFetchFunction = wrapper.vm.reception.fetchFunction = vi.fn().mockResolvedValue({
-        foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4']),
+        foundBarcodes: new Set(['DN2']),
         attributes: {},
       })
-      await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN\n')
+      await wrapper.find('#barcode').setValue('DN2')
       await wrapper.vm.fetchLabware()
-      expect(wrapper.find('[id=print-barcodes]').element.value).toEqual('DN1\nDN2\nDN3\nDN4')
+      expect(wrapper.find('[id=print-barcodes]').element.value).toEqual('DN2')
     })
 
     it('enables print button only when print barcodes are present and a print option is selected', async () => {
-      const value = 'DN1\nDN2\nDN3\nDN4\nDN5'
-      const barcodesInput = wrapper.find('#barcodes')
+      const value = 'DN1'
+      const barcodesInput = wrapper.find('#barcode')
       await barcodesInput.setValue(value)
       const mockedFetchFunction = vi.fn().mockResolvedValue({
-        foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5']),
+        foundBarcodes: new Set(['DN1']),
         attributes: {},
       })
       wrapper.vm.reception.fetchFunction = mockedFetchFunction
@@ -174,11 +147,11 @@ describe('MultiBarcode', () => {
     })
   })
 
-  it('has a summary area', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+  it('has a summary area', async () => {
+    const { wrapperObj: wrapper } = await buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
-      'Import 0 labware into PacBio from Sequencescape',
+      'Import 0 labware into PacBio from Sequencescape Multiplexed Libraries',
     )
     expect(wrapper.find('[data-action=reset-form]').text()).toEqual('Reset')
     expect(wrapper.find('[data-action=import-labware]').text()).toEqual('Import')
@@ -186,7 +159,7 @@ describe('MultiBarcode', () => {
 
   it('handles a failed import - load', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapperObj: wrapper } = await buildWrapper()
     wrapper.vm.reception.fetchFunction = vi.fn().mockRejectedValue('Failed fetch')
 
     await wrapper.vm.fetchLabware()
@@ -199,7 +172,7 @@ describe('MultiBarcode', () => {
       .spyOn(Reception, 'createReceptionResource')
       .mockImplementation(() => {})
     const mockedcreateMessages = vi.spyOn(Reception, 'createMessages').mockImplementation(() => {})
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapperObj: wrapper } = await buildWrapper()
 
     const tractionReceptionsCreate = wrapper.vm.api.traction.receptions.create
 
@@ -209,7 +182,9 @@ describe('MultiBarcode', () => {
 
     // We've begun the import
     await wrapper.vm.importLabware()
-    expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')
+    expect(wrapper.text()).not.toContain(
+      'Creating 1 labware(s) for Sequencescape Multiplexed Libraries',
+    )
     expect(mockedcreateReception).toBeCalled
     expect(mockedcreateReception).toBeCalledWith(
       tractionReceptionsCreate,
@@ -225,10 +200,12 @@ describe('MultiBarcode', () => {
     const message = 'The princess is in another castle'
 
     vi.spyOn(Reception, 'createReceptionResource').mockRejectedValue(new Error(message))
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapperObj: wrapper } = await buildWrapper()
     // We've begun the import
     await wrapper.vm.importLabware()
-    expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')
+    expect(wrapper.text()).not.toContain(
+      'Creating 1 labware(s) for Sequencescape Multiplexed Libraries',
+    )
 
     await nextTick()
 
@@ -238,11 +215,11 @@ describe('MultiBarcode', () => {
   // arbitrary test just to ensure this works
   describe('#createLabels', () => {
     it('will create some labels', async () => {
-      const foundBarcodes = new Set(['DN1', 'DN2', 'DN3'])
+      const foundBarcodes = new Set(['DN1'])
       const date = getCurrentDate()
-      const { wrapperObj: wrapper } = buildWrapper()
+      const { wrapperObj: wrapper } = await buildWrapper()
       const barcodeLabels = wrapper.vm.createLabels(foundBarcodes, date)
-      expect(barcodeLabels.length).toEqual(3)
+      expect(barcodeLabels.length).toEqual(1)
       const { barcode, second_line } = barcodeLabels[0]
       expect(barcode).toEqual('DN1')
       expect(second_line).toEqual('DN1')

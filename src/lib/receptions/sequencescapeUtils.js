@@ -22,6 +22,7 @@ const fetchLabwareFromSequencescape = async ({
   requests,
   barcodes,
   requestOptions,
+  libraryOptions,
   labwareTypes,
   labwareRequestConfig,
 }) => {
@@ -32,6 +33,7 @@ const fetchLabwareFromSequencescape = async ({
     data,
     included,
     requestOptions,
+    libraryOptions,
     labwareTypes,
   })
 
@@ -86,7 +88,13 @@ const getLabware = async (request, barcodes, labwareRequestConfig) => {
  * @param { Object } labwareTypes Object containing the labware types and their attributes
  * @returns { Object } Object of containerAttributes for import into traction
  */
-const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = {}) => {
+const transformAllLabware = ({
+  data,
+  included,
+  requestOptions,
+  libraryOptions,
+  labwareTypes,
+} = {}) => {
   return data.reduce((result, labware) => {
     // find the labware type
     const labwareType = labwareTypes[labware.type]
@@ -105,6 +113,7 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
         labware,
         included,
         requestOptions,
+        libraryOptions,
         barcodeAttribute: labwareType.barcodeAttribute,
       }),
     )
@@ -113,7 +122,7 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
       result['pool_attributes'] = buildPool({
         labware,
         included,
-        requestOptions,
+        libraryOptions,
         barcodeAttribute: labwareType.barcodeAttribute,
       })
     }
@@ -190,14 +199,14 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
  * @param {Object} sample_metadata Sample metadata object from Sequencescape
  * @returns {Object} Object containing the library object
  */
-const buildLibrary = ({ aliquot, sample_metadata }) => {
+const buildLibrary = ({ aliquot, sample_metadata, libraryOptions }) => {
   return {
     library: {
       volume: sample_metadata.attributes.volume,
       concentration: sample_metadata.attributes.concentration,
       insert_size: aliquot.attributes.insert_size_to,
       tag_sequence: aliquot.attributes.tag_oligo,
-      kit_barcode: 'kit_barcode',
+      kit_barcode: libraryOptions.kit_barcode,
     },
   }
 }
@@ -209,7 +218,7 @@ const buildLibrary = ({ aliquot, sample_metadata }) => {
  * @param {Object} sample_metadata Sample metadata object from Sequencescape
  * @returns {Object} Object containing the library object
  */
-const buildPool = ({ labware, included, barcodeAttribute }) => {
+const buildPool = ({ labware, included, barcodeAttribute, libraryOptions }) => {
   // The sample metadata can be assumed to be the same from any sample_metadata object
   const sample_metadata = included.find((item) => item.type === 'sample_metadata')
   // The aliquot metadata can be assumed to be the same from any aliquot object
@@ -220,7 +229,7 @@ const buildPool = ({ labware, included, barcodeAttribute }) => {
     volume: sample_metadata.attributes.volume,
     concentration: sample_metadata.attributes.concentration,
     insert_size: aliquot.attributes.insert_size_to,
-    kit_barcode: 'kit_barcode',
+    kit_barcode: libraryOptions.kit_barcode,
   }
 }
 
@@ -252,7 +261,12 @@ const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) 
   }
 }
 
-const transformMultiplexedLibraryTube = ({ included, requestOptions, barcodeAttribute }) => {
+const transformMultiplexedLibraryTube = ({
+  included,
+  requestOptions,
+  barcodeAttribute,
+  libraryOptions,
+}) => {
   const included_labware = included.filter((item) => item.type === 'labware')
   const child_library_tubes = included_labware.map((child_library_tube) => {
     const receptacle = findIncluded({
@@ -270,7 +284,7 @@ const transformMultiplexedLibraryTube = ({ included, requestOptions, barcodeAttr
       barcode: child_library_tube.attributes.labware_barcode[barcodeAttribute],
       // build the request and sample objects
       ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
-      ...buildLibrary({ aliquot, sample_metadata }),
+      ...buildLibrary({ aliquot, sample_metadata, libraryOptions }),
     }
   })
 

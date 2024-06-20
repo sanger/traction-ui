@@ -30,11 +30,12 @@ const labwareRequestConfig = {
  * @returns { Object } Reception object ready for import into traction includes attributes and foundBarcodes
  *
  */
-const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) => {
+const fetchLabwareForReception = async ({ requests, barcodes, requestOptions, libraryOptions }) => {
   return fetchLabwareFromSequencescape({
     requests,
     barcodes,
     requestOptions,
+    libraryOptions,
     labwareTypes: { tubes: { ...labwareTypes.multiplexed_library_tubes } },
     labwareRequestConfig,
   })

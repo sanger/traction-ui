@@ -19,7 +19,7 @@
       />
     </traction-field-group>
   </div>
-  <div v-if="enablePrinting" id="print" class="p-2 bg-gray-100 rounded p-3">
+  <div v-if="enablePrinting" id="print" class="bg-gray-100 rounded p-3">
     <traction-heading level="4" :show-border="true">Print labels</traction-heading>
     <div class="flex flex-row space-x-4 w-full">
       <div class="flex flex-col w-1/2 text-left space-y-2">
@@ -136,7 +136,7 @@ let labwareData = ref({
   foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
   attributes: [], // attributes is used to store the attributes that have been found in sequencescape
 })
-let debounceTimer = ref(null) // debounce timer for barcode deletion
+let debounceTimer = null // debounce timer for barcode deletion
 
 // printBarcodes is used to display the barcodes that will be printed
 const printBarcodes = computed(() => Array.from(labwareData.value.foundBarcodes).join('\n'))
@@ -154,9 +154,7 @@ const presentRequestOptions = computed(() =>
   Object.fromEntries(Object.entries(props.requestOptions).filter(([, v]) => v)),
 )
 //displayPrintOptions is used to decide whether print options should be displayed or not
-const enablePrinting = computed(() =>
-  ['SequencescapeTubes', 'SequencescapeMultiplexedLibraries'].includes(props.reception.value),
-)
+const enablePrinting = computed(() => ['SequencescapeTubes'].includes(props.reception.value))
 
 watch(barcodes, debounceBarcodeFetch, { immediate: true })
 watch(() => props.requestOptions, debounceBarcodeFetch, { deep: true, immediate: true })
@@ -212,7 +210,7 @@ async function printLabels() {
 
 //Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
 function debounceBarcodeFetch() {
-  if (debounceTimer.value) {
+  if (debounceTimer) {
     clearTimeout(debounceTimer)
   }
   if (barcodeArray.value.length === 0) {
@@ -221,7 +219,7 @@ function debounceBarcodeFetch() {
     return
   }
   isFetching.value = true
-  debounceTimer.value = setTimeout(async () => {
+  debounceTimer = setTimeout(async () => {
     await fetchLabware()
     isFetching.value = false
   }, 500)

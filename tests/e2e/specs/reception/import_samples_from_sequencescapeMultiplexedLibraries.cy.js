@@ -8,6 +8,10 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     cy.intercept('/v1/printers', {
       fixture: 'tractionPrinters.json',
     })
+
+    cy.intercept('/v1/ont/tag_sets', {
+      fixture: 'tractionOntTagSets.json',
+    })
   })
 
   it('Successfully - V2', () => {
@@ -48,7 +52,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         },
       },
     })
-    cy.get('#barcodes').type('3980000042705\n')
+    cy.get('#barcode').type('3980000042705\n')
+    cy.get('[data-type=tag-set-list').select('ONT_native')
     cy.contains('Import 1 labware into PacBio from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('NT42F imported from Sequencescape')
@@ -79,7 +84,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         body: { data: [] },
       },
     )
-    cy.get('#barcodes').type('NT42F\n')
+    cy.get('#barcode').type('NT42F\n')
+    cy.get('[data-type=tag-set-list').select('ONT_native')
     cy.contains('Import 0 labware into PacBio from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('No labware to import')
@@ -114,7 +120,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
       statusCode: 422,
       body: { errors: [{ title: 'receptions', detail: 'There was an error.' }] },
     })
-    cy.get('#barcodes').type('3980000042705\n')
+    cy.get('#barcode').type('3980000042705\n')
+    cy.get('[data-type=tag-set-list').select('ONT_native')
     cy.contains('Import 1 labware into PacBio from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')

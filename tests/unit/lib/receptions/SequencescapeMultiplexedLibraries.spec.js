@@ -27,6 +27,9 @@ describe('SequencescapeMultiplexedLibraries', () => {
           library_type: 'Example',
           cost_code: 'aCostCodeExample',
         },
+        libraryOptions: {
+          kit_barcode: 'SQK-NBD114.96',
+        },
       })
 
       expect(request).toHaveBeenCalledWith({
@@ -65,7 +68,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               concentration: '20',
               insert_size: 100,
               tag_sequence: 'AATCGTTA',
-              kit_barcode: 'kit_barcode',
+              kit_barcode: 'SQK-NBD114.96',
             },
           },
           {
@@ -85,7 +88,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               concentration: '20',
               insert_size: 100,
               tag_sequence: 'AATCGGCG',
-              kit_barcode: 'kit_barcode',
+              kit_barcode: 'SQK-NBD114.96',
             },
           },
           {
@@ -105,7 +108,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               concentration: '20',
               insert_size: 100,
               tag_sequence: 'AATCCGTT',
-              kit_barcode: 'kit_barcode',
+              kit_barcode: 'SQK-NBD114.96',
             },
           },
         ],
@@ -114,7 +117,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
           volume: '10',
           concentration: '20',
           insert_size: 100,
-          kit_barcode: 'kit_barcode',
+          kit_barcode: 'SQK-NBD114.96',
         },
       })
     })
