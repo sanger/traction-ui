@@ -12,20 +12,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
-
-vi.mock('swrv', () => ({
-  default: vi.fn(() => ({
-    data: {
-      features: {
-        dpl_1076_check_library_volume_in_runs: { enabled: true },
-      },
-    },
-  })),
-}))
-
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
   1: {

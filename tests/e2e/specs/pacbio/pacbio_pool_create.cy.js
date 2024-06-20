@@ -18,14 +18,6 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request', {
       fixture: 'tractionPacbioTubeWithLibrary.json',
     })
-
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        multiplexing_phase_2_add_libraries_to_pool: { enabled: true },
-        dpl_1072_check_library_volume_in_pools: { enabled: true },
-      },
-    })
   })
 
   it('Creates a pool successfully', () => {
