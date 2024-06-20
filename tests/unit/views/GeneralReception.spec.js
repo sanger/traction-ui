@@ -57,12 +57,29 @@ describe('GeneralReception', () => {
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
 
-  it('has a pipeline selector', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
-    expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
-    expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[1].text()).toBe('ONT')
-    // It defaults to PacBio
-    expect(wrapper.find('[data-type=pipeline-list]').element.value).toEqual('PacBio')
+  describe('pipeline selector', () => {
+    it('has a pipeline selector', () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[1].text()).toBe('ONT')
+      // It defaults to PacBio
+      expect(wrapper.find('[data-type=pipeline-list]').element.value).toEqual('PacBio')
+    })
+
+    it('only shows ONT for SequencescapeMultiplexedLibraries', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
+    })
+
+    it('sets pipeline to the first available pipeline if the source changes and the pipeline is no longer valid', async () => {
+      // This example sets source to SequencescapeMultiplexedLibraries which only has ONT as a pipeline
+      const { wrapperObj: wrapper } = buildWrapper()
+      expect(wrapper.vm.pipeline).toEqual('PacBio')
+      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      expect(wrapper.vm.pipeline).toEqual('ONT')
+    })
   })
 
   describe('request options', () => {

@@ -20,21 +20,25 @@ const ReceptionTypes = {
     name: 'sequencescape',
     text: 'Sequencescape',
     value: 'Sequencescape',
+    pipelines: ['PacBio', 'ONT'],
   },
   SamplesExtraction: {
     name: 'samples-extraction',
     text: 'Samples Extraction',
     value: 'SamplesExtraction',
+    pipelines: ['PacBio', 'ONT'],
   },
   SequencescapeTubes: {
     name: 'sequencescape-tubes',
     text: 'Sequencescape Tubes',
     value: 'SequencescapeTubes',
+    pipelines: ['PacBio', 'ONT'],
   },
   SequencescapeMultiplexedLibraries: {
     name: 'sequencescape-multiplexed-libraries',
     text: 'Sequencescape Multiplexed Libraries',
     value: 'SequencescapeMultiplexedLibraries',
+    pipelines: ['ONT'],
   },
 }
 

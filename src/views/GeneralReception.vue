@@ -17,6 +17,7 @@
             class="inline-block w-full"
             :options="Receptions.options"
             data-type="source-list"
+            @update:model-value="updatePipeline()"
           />
         </traction-field-group>
       </div>
@@ -157,16 +158,22 @@ const defaultModal = () => ({ visible: false, message: stuckModal })
 
 // Default source to sequencescape
 const source = ref('Sequencescape')
-// Default pipeline to PacBio
-const pipeline = ref('PacBio')
-const pipelineOptions = ref([
-  { value: 'PacBio', text: 'PacBio' },
-  { value: 'ONT', text: 'ONT' },
-])
 const requestOptions = ref(defaultRequestOptions())
 const modalState = ref(defaultModal())
 
 const reception = computed(() => Receptions[source.value])
+// Default pipeline to PacBio
+const pipeline = ref(reception.value.pipelines[0])
+const pipelineOptions = computed(() =>
+  reception.value.pipelines.map((pipeline) => ({ value: pipeline, text: pipeline })),
+)
+
+function updatePipeline() {
+  // If the current reception doesn't include the current pipeline then update the pipeline to a valid one
+  if (!reception.value.pipelines.includes(pipeline.value)) {
+    pipeline.value = reception.value.pipelines[0]
+  }
+}
 
 function clearModal() {
   modalState.value = defaultModal()

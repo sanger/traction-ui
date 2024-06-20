@@ -12,6 +12,10 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     cy.intercept('/v1/ont/tag_sets', {
       fixture: 'tractionOntTagSets.json',
     })
+
+    cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
+      fixture: 'tractionDataTypes.json',
+    })
   })
 
   it('Successfully - V2', () => {
@@ -19,7 +23,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
     cy.contains('Scan barcodes')
     cy.get('#cost_code').type('aCostCodeExample')
-    cy.get('[data-attribute=estimate_of_gb_required]').type('3')
+    cy.get('[data-attribute=number-of-flowcells-input]').type('3')
     cy.intercept(
       {
         url: '/api/v2/labware*',
@@ -54,7 +58,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     })
     cy.get('#barcode').type('3980000042705\n')
     cy.get('[data-type=tag-set-list').select('ONT_native')
-    cy.contains('Import 1 labware into PacBio from Sequencescape Multiplexed Libraries')
+    cy.contains('Import 1 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('NT42F imported from Sequencescape')
   })
@@ -86,7 +90,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     )
     cy.get('#barcode').type('NT42F\n')
     cy.get('[data-type=tag-set-list').select('ONT_native')
-    cy.contains('Import 0 labware into PacBio from Sequencescape Multiplexed Libraries')
+    cy.contains('Import 0 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('No labware to import')
   })
@@ -122,7 +126,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     })
     cy.get('#barcode').type('3980000042705\n')
     cy.get('[data-type=tag-set-list').select('ONT_native')
-    cy.contains('Import 1 labware into PacBio from Sequencescape Multiplexed Libraries')
+    cy.contains('Import 1 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
   })

@@ -271,7 +271,6 @@ async function importLabware() {
       labwareData.value.foundBarcodes,
       labwareData.value.attributes,
     )
-    console.log(labwareData.value.attributes)
 
     const messages = createMessages({
       barcodes: Array.from(labwareData.value.foundBarcodes),
