@@ -10,14 +10,8 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import {
-  newRun,
-  createRunType,
-  RunTypeEnum,
-  newWell,
-  defaultWellAttributes,
-  newPlate,
-} from '@/stores/utilities/run'
+import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -238,7 +232,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchSmrtLinkVersions() {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.smrt_link_versions
+      const request = rootStore.api.v1.traction.pacbio.smrt_link_versions
       const promise = request.get({})
       const response = await handleResponse(promise)
 
@@ -261,7 +255,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
 
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.tubes
+      const request = rootStore.api.v1.traction.pacbio.tubes
       // used_aliquots could have a library instead of a request in the future but for the time being its just requests
       // so we only look for request in the includes
       const promise = request.get({
@@ -303,7 +297,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchRun({ id }) {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.runs
+      const request = rootStore.api.v1.traction.pacbio.runs
       const promise = request.find({
         id,
         include:
@@ -388,7 +382,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async saveRun() {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.runs
+      const request = rootStore.api.v1.traction.pacbio.runs
 
       // based on the runType create the payload and the promise
       const payload = this.runType.payload({
@@ -476,7 +470,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Sets the defaultWellAttributes
      */
     setDefaultWellAttributes() {
-      this.defaultWellAttributes = defaultWellAttributes()
+      this.defaultWellAttributes = { ...PacbioRunWellSmrtLinkOptions.defaultAttributes }
     },
 
     /**

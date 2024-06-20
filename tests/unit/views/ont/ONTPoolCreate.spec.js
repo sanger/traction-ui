@@ -7,8 +7,10 @@ describe('OntPoolCreate', () => {
     const {
       state: {
         api: {
-          traction: {
-            ont: { tag_sets: tagSetsRequest, pools: poolsRequest },
+          v1: {
+            traction: {
+              ont: { tag_sets: tagSetsRequest, pools: poolsRequest },
+            },
           },
         },
       },
@@ -46,8 +48,10 @@ describe('OntPoolCreate', () => {
     const {
       state: {
         api: {
-          traction: {
-            ont: { tag_sets: tagSetsRequest, pools: poolsRequest },
+          v1: {
+            traction: {
+              ont: { tag_sets: tagSetsRequest, pools: poolsRequest },
+            },
           },
         },
       },

@@ -74,7 +74,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(Data.OntRuns)
-        rootStore.api = { traction: { ont: { runs: { get } } } }
+        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()
@@ -97,7 +97,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
-        rootStore.api = { traction: { ont: { runs: { get } } } }
+        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
 
@@ -113,7 +113,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(Data.OntInstruments)
-        rootStore.api = { traction: { ont: { instruments: { get } } } }
+        rootStore.api.v1 = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.setInstruments()
@@ -131,7 +131,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
-        rootStore.api = { traction: { ont: { instruments: { get } } } }
+        rootStore.api.v1 = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRootStore()
 

@@ -151,7 +151,7 @@ export default {
       return { success: true, errors: [] }
     }
 
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.find({
       id: id,
       include:
@@ -204,7 +204,7 @@ export default {
       }
     }
 
-    const request = rootState.api.traction.ont.plates
+    const request = rootState.api.v1.traction.ont.plates
     const promise = request.get({ filter: filter, include: 'wells.requests' })
     const response = await handleResponse(promise)
     let { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -244,7 +244,7 @@ export default {
       }
     }
 
-    const request = rootState.api.traction.ont.tubes
+    const request = rootState.api.v1.traction.ont.tubes
     const promise = request.get({ filter: filter, include: 'requests' })
     const response = await handleResponse(promise)
     let { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -290,7 +290,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntRequests: async ({ commit, rootState }, filter, page) => {
-    const request = rootState.api.traction.ont.requests
+    const request = rootState.api.v1.traction.ont.requests
     const promise = request.get({ page, filter })
     const response = await handleResponse(promise)
 
@@ -317,7 +317,7 @@ export default {
       }
     }
 
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.get({ filter: { barcode } })
     const response = await handleResponse(promise)
     let { success, data: { data } = {} } = response
@@ -336,7 +336,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntPools: async ({ commit, rootState }, filter, page) => {
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.get({
       page,
       filter,
@@ -367,7 +367,7 @@ export default {
   // For the component, the included relationships are not required
   // However, the functionality does not appear to work without them
   populateOntPools: async ({ commit, rootState }, filter) => {
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.get({
       filter: filter,
       include: 'tube,libraries.tag,libraries.request',
@@ -394,7 +394,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntTagSets: async ({ commit, rootState }) => {
-    const request = rootState.api.traction.ont.tag_sets
+    const request = rootState.api.v1.traction.ont.tag_sets
     const promise = request.get({ include: 'tags' })
     const response = await handleResponse(promise)
 
@@ -420,7 +420,7 @@ export default {
   }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.create({ data: payload({ libraries, pool }), include: 'tube' })
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
     const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
@@ -439,7 +439,7 @@ export default {
   }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
-    const request = rootState.api.traction.ont.pools
+    const request = rootState.api.v1.traction.ont.pools
     const promise = request.update(payload({ libraries, pool }))
     const { success, errors } = await handleResponse(promise)
     return { success, errors }

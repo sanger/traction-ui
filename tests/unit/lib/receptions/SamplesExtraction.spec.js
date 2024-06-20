@@ -10,7 +10,7 @@ describe('SamplesExtraction', () => {
       statusText: 'Internal Server Error',
     }
     let request
-    const requests = store.getters.api
+    const requests = store.getters.api.v1
 
     beforeEach(() => {
       request = vi.spyOn(requests.sampleExtraction.assets, 'get')

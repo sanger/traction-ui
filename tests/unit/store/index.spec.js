@@ -9,8 +9,10 @@ describe('index', () => {
 
     describe('api', () => {
       it('contains multiple resources', () => {
-        expect(Store.state.api.traction).toBeDefined()
-        expect(Store.state.api.printMyBarcode).toBeDefined()
+        expect(Store.state.api.v1.traction).toBeDefined()
+        expect(Store.state.api.v1.printMyBarcode).toBeDefined()
+        expect(Store.state.api.v2.traction).toBeDefined()
+        expect(Store.state.api.v2.printMyBarcode).toBeDefined()
       })
     })
 

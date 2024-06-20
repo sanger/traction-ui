@@ -6,7 +6,7 @@ describe('OntPoolIndex', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
+    const get = vi.spyOn(store.state.api.v1.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
     wrapper = mount(ONTPoolIndex, {
       store,
