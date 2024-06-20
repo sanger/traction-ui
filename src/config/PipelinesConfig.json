@@ -4,7 +4,7 @@
     "title": "Saphyr",
     "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instrument",
     "routes": ["samples", "libraries", "runs"],
-    "active": false
+    "active": true
   },
   {
     "name": "pacbio",
