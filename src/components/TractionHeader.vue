@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      environment: import.meta.env['VITE_ENVIRONMENT']
+      environment: import.meta.env['VITE_ENVIRONMENT'],
     }
   },
   computed: {
