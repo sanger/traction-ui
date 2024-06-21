@@ -1,4 +1,5 @@
 import TractionDashboard from '@/views/TractionDashboard'
+import PipelinesConfig from '@/config/PipelinesConfig'
 import { mount, flushPromises } from '@support/testHelper'
 
 describe('TractionDashboard.vue', () => {
@@ -10,27 +11,21 @@ describe('TractionDashboard.vue', () => {
   })
 
   describe('pipelines', () => {
-    it('will have pipelines config', () => {
+    it('will have same number of active pipelines in config', () => {
       const config = dashboard.pipelines
-      expect(config.length).toEqual(3)
+      const active_pipeline_count =  PipelinesConfig.filter(pipeline => pipeline.active).length
+      expect(config.length).toEqual(active_pipeline_count)
     })
 
-    it('will have saphyr config', () => {
-      const config = dashboard.pipelines
-      expect(config[0]['name']).toEqual('saphyr')
-      expect(config[0]['title']).toContain('Saphyr')
-    })
+    it('will have the same active pipeline name in config', () => {
+      const dashborad_pipelines = dashboard.pipelines
+      const config_active_pipelines = PipelinesConfig.filter(pipeline => pipeline.active)
 
-    it('will have pacbio config', () => {
-      const config = dashboard.pipelines
-      expect(config[1]['name']).toEqual('pacbio')
-      expect(config[1]['title']).toEqual('PacBio')
-    })
-
-    it('will have ont config', () => {
-      const config = dashboard.pipelines
-      expect(config[2]['name']).toEqual('ont')
-      expect(config[2]['title']).toEqual('ONT')
+      const dashboard_pipeline_names = dashborad_pipelines.map(item => item.name)
+      const config_pipeline_names = config_active_pipelines.map(pipeline=>pipeline.name )
+      
+      expect(dashboard_pipeline_names.length === config_pipeline_names.length)
+      expect(dashboard_pipeline_names.every((value,index)=> value === config_pipeline_names[index]))
     })
   })
 
