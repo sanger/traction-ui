@@ -97,7 +97,7 @@
    Used by lib/receptions/index.js when defining the method of importing barcodes in the reception.  
 -->
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import useAlert from '@/composables/useAlert.js'
 import useRootStore from '@/stores'
@@ -124,14 +124,14 @@ const emit = defineEmits(['importStarted', 'importFinished', 'reset'])
 
 const { showAlert } = useAlert()
 const { createPrintJob, printers } = usePrintingStore()
-const api = useRootStore().api.v1
+const api = useRootStore().api.v2
 const receptionRequest = api.traction.receptions.create
 
 const barcodes = ref('')
 const isFetching = ref(false)
 const printerName = ref('')
 // labwareData is used to store the input barcodes as well as the data fetched from sequencescape which is then imported into traction
-let labwareData = ref({
+let labwareData = reactive({
   inputBarcodes: [], // inputBarcodes is used to store the barcodes that the user has inputted
   foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
   attributes: [], // attributes is used to store the attributes that have been found in sequencescape
@@ -139,7 +139,7 @@ let labwareData = ref({
 let debounceTimer = null // debounce timer for barcode deletion
 
 // printBarcodes is used to display the barcodes that will be printed
-const printBarcodes = computed(() => Array.from(labwareData.value.foundBarcodes).join('\n'))
+const printBarcodes = computed(() => Array.from(labwareData.foundBarcodes).join('\n'))
 // printerOptions is used to display the printers that are available to print to
 const printerOptions = computed(() =>
   printers('tube').map(({ name }) => ({
@@ -170,11 +170,7 @@ function reset() {
   Resets the labwareData
 */
 function resetLabwareData() {
-  labwareData.value = {
-    foundBarcodes: new Set(),
-    attributes: [],
-    inputBarcodes: [],
-  }
+  Object.assign(labwareData, { foundBarcode: new Set(), attributes: [], inputBarcodes: [] })
 }
 
 // Function to fetch the printers
@@ -201,7 +197,7 @@ function createLabels(foundBarcodes, date) {
 async function printLabels() {
   const { success, message = {} } = await createPrintJob({
     printerName: printerName,
-    labels: createLabels(labwareData.value.foundBarcodes, getCurrentDate()),
+    labels: createLabels(labwareData.foundBarcodes, getCurrentDate()),
     copies: 1,
   })
 
@@ -214,7 +210,7 @@ function debounceBarcodeFetch() {
     clearTimeout(debounceTimer)
   }
   if (barcodeArray.value.length === 0) {
-    labwareData.value.foundBarcodes.clear()
+    labwareData.foundBarcodes.clear()
     isFetching.value = false
     return
   }
@@ -231,18 +227,18 @@ function debounceBarcodeFetch() {
 */
 async function importLabware() {
   emit('importStarted', {
-    barcodes: labwareData.value.foundBarcodes.size,
+    barcodes: labwareData.foundBarcodes.size,
   })
   //Creates the reception resource and shows a success or failure alert
   try {
     const response = await createReceptionResource(
       receptionRequest,
-      labwareData.value.foundBarcodes,
-      labwareData.value.attributes,
+      labwareData.foundBarcodes,
+      labwareData.attributes,
     )
 
     const messages = createMessages({
-      barcodes: Array.from(labwareData.value.foundBarcodes),
+      barcodes: Array.from(labwareData.foundBarcodes),
       response,
       reception: props.reception,
     })
@@ -271,7 +267,7 @@ async function fetchLabware() {
       barcodes: barcodeArray.value,
       requestOptions: presentRequestOptions.value,
     })
-    labwareData.value = { foundBarcodes, attributes, inputBarcodes: barcodeArray.value }
+    Object.assign(labwareData, { foundBarcodes, attributes, inputBarcodes: barcodeArray.value })
     emit('importFinished')
   } catch (e) {
     console.error(e)

@@ -1,8 +1,8 @@
 import BaseFactory from './BaseFactory.js'
 
 /*
- * Factory for creating a list of runs
- * @returns a base factory object with the runs data
+ * Factory for creating a sequencescape multiplexed library
+ * @returns a base factory object with the lawbare data
  */
 const SequencescapeMultiplexedLibraryFactory = () => {
   const data = {

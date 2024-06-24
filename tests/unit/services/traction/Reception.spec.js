@@ -23,15 +23,19 @@ const requestAttributes = [
 const failedResponse = {
   status: 422,
   statusText: 'Record not found',
+  json: () => Promise.resolve({ errors: [{ title: 'error1', detail: 'There was an error.' }] }),
   data: {
     errors: [{ title: 'error1', detail: 'There was an error.' }],
   },
+  ok: false,
 }
 
 const createdReceptionResponse = {
   status: 201,
   statusText: 'created',
   data: {},
+  json: () => Promise.resolve({ data: {} }),
+  ok: true,
 }
 
 const reception = {
@@ -51,7 +55,7 @@ describe('Traction', () => {
 
       const response = await createReceptionResource(createReceptionRequest, attributes)
 
-      expect(response).toEqual(createdReceptionResponse.data)
+      expect(response).toEqual({ data: createdReceptionResponse.data })
     })
 
     it('does not import labware if none are present', async () => {
@@ -73,17 +77,13 @@ describe('Traction', () => {
       await createReceptionResource(createReceptionRequest, foundBarcodes, attributes)
 
       expect(createReceptionRequest).toHaveBeenCalledWith({
-        data: {
-          data: {
-            type: 'receptions',
-            attributes,
-          },
-        },
+        type: 'receptions',
+        attributes,
       })
     })
 
     it('when the reception could not be created', async () => {
-      createReceptionRequest.mockRejectedValue({ response: failedResponse })
+      createReceptionRequest.mockResolvedValue(failedResponse)
 
       const attributes = { source, request_attributes: requestAttributes }
       const foundBarcodes = new Set(['NT1'])

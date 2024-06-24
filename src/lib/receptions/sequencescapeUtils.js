@@ -2,7 +2,7 @@
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
 // new paths, greatly simplifying the removal.
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware
@@ -70,7 +70,7 @@ const fetchLabwareFromSequencescape = async ({
 const getLabware = async (request, barcodes, labwareRequestConfig) => {
   const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
 
-  const { success, data: { data, included = [] } = {}, errors } = await handleResponse(promise)
+  const { success, body: { data, included = [] } = {}, errors } = await handleResponse(promise)
 
   if (success) {
     return { data, included }

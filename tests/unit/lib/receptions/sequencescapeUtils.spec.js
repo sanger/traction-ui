@@ -1,6 +1,7 @@
-import { Data, store } from '@support/testHelper.js'
+import { store } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import { fetchLabwareFromSequencescape, findIncluded } from '@/lib/receptions/sequencescapeUtils.js'
+import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
 const retAttributes = {
   plates_attributes: [
@@ -55,11 +56,6 @@ const retAttributes = {
 describe('sequencescapeUtils', () => {
   describe('#fetchLabwareFromSequencescape', () => {
     const barcodes = ['DN9000002A', '3980000001795']
-    const failedResponse = {
-      data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
     const labwareRequestConfig = {
       include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
       fields: {
@@ -88,7 +84,7 @@ describe('sequencescapeUtils', () => {
       },
     }
 
-    const requests = store.getters.api.v1
+    const requests = store.getters.api.v2
     let request
 
     beforeEach(() => {
@@ -96,7 +92,7 @@ describe('sequencescapeUtils', () => {
     })
 
     it('fetches successfully', async () => {
-      request.mockResolvedValue(Data.SequencescapeLabware)
+      request.mockResolvedValue(SequencescapeLabwareFactory().responses.fetch)
       const { attributes, foundBarcodes } = await fetchLabwareFromSequencescape({
         requests,
         barcodes,
@@ -118,7 +114,17 @@ describe('sequencescapeUtils', () => {
       })
     })
     it('runs unsuccessfully', async () => {
-      request.mockRejectedValue({ response: failedResponse })
+      const failedResponse = {
+        data: {},
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
+          }),
+        ok: false,
+        statusText: 'Internal Server Error',
+      }
+      request.mockResolvedValue(failedResponse)
       expect(() => fetchLabwareFromSequencescape({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
@@ -127,7 +133,7 @@ describe('sequencescapeUtils', () => {
 
   describe('#findIncluded', () => {
     it('returns the included item', () => {
-      const { data } = Data.SequencescapeLabware
+      const data = SequencescapeLabwareFactory().content
       const receptacle = data.data[0].relationships.receptacles.data[0]
       const res = findIncluded({ included: data.included, data: receptacle, type: 'wells' })
       const expected = data.included.find((item) => item.id === receptacle.id)
