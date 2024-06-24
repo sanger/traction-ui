@@ -17,7 +17,7 @@
 
 <script>
 import TractionLink from '@/components/TractionLink'
-import { bgColorClass } from '@/lib/BackgroundColor'
+import { BgColorClass } from '@/lib/BgColorClass'
 
 export default {
   name: 'TractionHeader',
@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     headerClasses() {
-      return ['relative from-sdb to-sdb-400', bgColorClass[this.environment]]
+      return ['relative from-sdb to-sdb-400', BgColorClass[this.environment]]
     },
   },
 }

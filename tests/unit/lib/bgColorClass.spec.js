@@ -1,7 +1,9 @@
-import { bgColorClass } from '@/lib/BackgroundColor'
+import { BgColorClass } from '@/lib/BgColorClass'
 
-describe('bgColorClass'), () => {
-    expect(bgColorClass.development).toEqual('bg-blue-600')
-    expect(bgColorClass.uat).toEqual('bg-purple-600')
-    expect(bgColorClass.production).toEqual('bg-gradient-to-tr')    
-}
+describe('bgColorClass', () => {
+    it('contains 3 color classes', () => {
+        expect(BgColorClass.development).toEqual('bg-blue-600')
+        expect(BgColorClass.uat).toEqual('bg-purple-600')
+        expect(BgColorClass.production).toEqual('bg-gradient-to-tr')  
+    })  
+})
