@@ -39,7 +39,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I,SE108533J', {
-      fixture: 'sampleExtractionTubesWithSample.json',
+      statusCode: 200,
+      body: SamplesExtractionLabwareFactory().content,
     })
     cy.intercept('POST', '/v1/receptions', {
       body: {

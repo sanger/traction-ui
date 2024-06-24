@@ -45,7 +45,6 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
-import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
 import TractionPacbioTagSets from './tractionPacbioTagSets.json'
@@ -118,7 +117,6 @@ export default {
   PacbioWells,
   PacbioWellLibrary,
   TractionTags,
-  SequencescapePlates,
   tractionOntLibraries,
   TractionOntRequests,
   TractionOntTagSets,
