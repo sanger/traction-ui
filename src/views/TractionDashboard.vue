@@ -31,7 +31,7 @@ export default {
     TractionLink,
   },
   computed: {
-    pipelines: () => PipelinesConfig.filter(({active}) => active),
+    pipelines: () => PipelinesConfig.filter(({ active }) => active),
   },
   methods: {
     humanise,
