@@ -355,6 +355,8 @@ export {
   fetchLabwareFromSequencescape,
   getIncludedData,
   buildRequestAndSample,
+  buildLibrary,
+  buildPool,
   findIncluded,
   labwareTypes,
 }
