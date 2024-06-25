@@ -16,7 +16,7 @@ const createReceptionResource = async (request, foundBarcodes, attributes) => {
     success,
     body: { data },
     errors,
-  } = await handleResponse(request({ type: 'receptions', attributes }))
+  } = await handleResponse(request({ data: { data: { type: 'receptions', attributes } } }))
 
   if (success) {
     return { data }

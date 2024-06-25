@@ -127,4 +127,35 @@ describe('GeneralReception', () => {
       expect(wrapper.find('[data-attribute=number-of-flowcells-input]').exists()).toBe(false)
     })
   })
+
+  describe('loading modal', () => {
+    it('shows the modal when showModal is called', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const message = 'show modal message'
+      wrapper.vm.showModal(message)
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').text()).toBe(message)
+    })
+
+    it('hides the modal when clearModal is called', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      wrapper.vm.showModal('show modal message')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      wrapper.vm.clearModal()
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(false)
+    })
+
+    it('shows the correct data when importStarted is called', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      wrapper.vm.importStarted({ barcode_count: 1 })
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').text()).toBe(
+        'Creating 1 labware(s) for Sequencescape',
+      )
+    })
+  })
 })

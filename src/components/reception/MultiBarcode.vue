@@ -165,7 +165,6 @@ watch(() => props.reception, resetLabwareData, { immediate: true })
  */
 function reset() {
   emit('reset')
-  barcodes.value = ''
   resetLabwareData()
 }
 
@@ -173,6 +172,7 @@ function reset() {
  * Resets the labwareData
  */
 function resetLabwareData() {
+  barcodes.value = ''
   Object.assign(labwareData, { foundBarcode: new Set(), attributes: [], inputBarcodes: [] })
 }
 
@@ -204,7 +204,7 @@ function createLabels(foundBarcodes, date) {
  */
 async function printLabels() {
   const { success, message = {} } = await createPrintJob({
-    printerName: printerName,
+    printerName: printerName.value,
     labels: createLabels(labwareData.foundBarcodes, getCurrentDate()),
     copies: 1,
   })
@@ -238,7 +238,7 @@ function debounceBarcodeFetch() {
  */
 async function importLabware() {
   emit('importStarted', {
-    barcodes: labwareData.foundBarcodes.size,
+    barcode_count: labwareData.foundBarcodes.size,
   })
   //Creates the reception resource and shows a success or failure alert
   try {

@@ -183,8 +183,8 @@ function showModal(message) {
   modalState.value = { visible: true, message }
 }
 
-function importStarted({ barcodes }) {
-  showModal(`Creating ${barcodes.length} labware(s) for ${reception.value.text}`)
+function importStarted({ barcode_count }) {
+  showModal(`Creating ${barcode_count} labware(s) for ${reception.value.text}`)
 }
 
 function reset() {

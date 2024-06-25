@@ -77,8 +77,12 @@ describe('Traction', () => {
       await createReceptionResource(createReceptionRequest, foundBarcodes, attributes)
 
       expect(createReceptionRequest).toHaveBeenCalledWith({
-        type: 'receptions',
-        attributes,
+        data: {
+          data: {
+            type: 'receptions',
+            attributes,
+          },
+        },
       })
     })
 
