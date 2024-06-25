@@ -1,5 +1,5 @@
 import { store } from '@support/testHelper.js'
-import { describe, vi } from 'vitest'
+import { vi } from 'vitest'
 import {
   fetchLabwareFromSequencescape,
   findIncluded,

@@ -191,20 +191,26 @@ watch(tagSet, debounceBarcodeFetch, { immediate: true })
 watch(() => props.requestOptions, debounceBarcodeFetch, { deep: true, immediate: true })
 watch(() => props.reception, resetLabwareData, { immediate: true })
 
+/**
+ * Resets the component data and emits a reset event
+ */
 function reset() {
   emit('reset')
   barcode.value = ''
   resetLabwareData()
 }
 
-/*
-    Resets the labwareData
-  */
+/**
+ * Resets the labwareData
+ */
 function resetLabwareData() {
   Object.assign(labwareData, { foundBarcodes: new Set(), attributes: [], inputBarcodes: [] })
 }
 
-// Function to fetch the printers
+/**
+ * Fetches the printers to populate the printing store
+ * @returns {Object} { success: boolean } - whether the fetch was successful
+ */
 async function fetchPrinters() {
   if (usePrintingStore().printers().length === 0) {
     return await usePrintingStore().fetchPrinters()
@@ -213,18 +219,20 @@ async function fetchPrinters() {
   }
 }
 
-/*
-    create the labels needed for the print job
-  */
+/**
+ * Creates the labels for the barcodes found in the source
+ * @param {Set} foundBarcodes - Set of barcodes found from the source
+ * @param {Date} date - Date to be printed on the label
+ */
 function createLabels(foundBarcodes, date) {
   const sourceBarcodeList = Array.from(foundBarcodes)
   const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
   return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
 }
 
-/*
-    Creates the print job and shows a success or failure alert
-  */
+/**
+ * Creates a print job and shows a success or failure alert
+ */
 async function printLabels() {
   const { success, message = {} } = await createPrintJob({
     printerName: printerName,
@@ -235,7 +243,10 @@ async function printLabels() {
   showAlert(message, success ? 'success' : 'danger')
 }
 
-//Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
+/**
+ * A debounce function for fetching barcodes
+ * Debounce of 500ms proivded the barcode array is not empty and a fetch is not already in progress
+ */
 function debounceBarcodeFetch() {
   if (debounceTimer) {
     clearTimeout(debounceTimer)
@@ -252,10 +263,10 @@ function debounceBarcodeFetch() {
   }, 500)
 }
 
-/*
-    Imports the labware into traction.
-    This function is called when the user presses 'import'
-  */
+/**
+ * Imports the labware into traction
+ * Creates the reception resource and shows a success or failure alert
+ */
 async function importLabware() {
   emit('importStarted', {
     barcodes: labwareData.foundBarcodes.size,
@@ -286,10 +297,10 @@ async function importLabware() {
   }
 }
 
-/*
-    Fetches the labware from sequencescape and updates the labwareData
-    This function is called when the user presses 'enter' in the barcodes field
-  */
+/**
+ * Fetches the labware from sequencescape and updates the labwareData
+ * Shows an alert if there is an error
+ */
 async function fetchLabware() {
   try {
     //Fetch barcodes from sequencescape
@@ -308,6 +319,10 @@ async function fetchLabware() {
   }
 }
 
+/**
+ * Fetches the data required for the component
+ * Fetches the printers and the tag sets
+ */
 async function fetchData() {
   await fetchPrinters()
   return await rootStore.fetchTagSets('ont')
