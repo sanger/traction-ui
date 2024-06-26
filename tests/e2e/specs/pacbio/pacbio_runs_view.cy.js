@@ -1,10 +1,13 @@
+import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory'
+
 describe('Pacbio Runs view', () => {
   it('Visits the pacbio runs url', () => {
     cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
-    cy.intercept('/v1/pacbio/smrt_link_versions', {
-      fixture: 'tractionPacbioSmrtLinkVersions.json',
+    cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
+      statusCode: 200,
+      body: PacbioSmrtLinkVersionFactory().content,
     })
     cy.visit('#/pacbio/runs')
     // Check filters are visible

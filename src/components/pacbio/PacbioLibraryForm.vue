@@ -26,53 +26,37 @@
         />
       </fieldset>
 
-      <flagged-feature name="dpl_1070_check_primary_aliquot_library_volume">
-        <fieldset id="input-group-volume">
-          <div class="relative flex flex-row">
-            <traction-label class="ml-1 w-full">Initial Volume</traction-label>
-            <traction-tooltip
-              v-if="formLibrary.used_volume != null"
-              :tooltip-text="'Used volume is ' + formLibrary.used_volume"
-            >
-              <traction-badge id="library-used-volume" colour="sanger-pink"
-                ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
-              >
-            </traction-tooltip>
-          </div>
-          <traction-field-error
-            data-attribute="volume-error"
-            :error="formLibrary.error"
-            :with-icon="formLibrary.error?.length > 0"
+      <fieldset id="input-group-volume">
+        <div class="relative flex flex-row">
+          <traction-label class="ml-1 w-full">Initial Volume</traction-label>
+          <traction-tooltip
+            v-if="formLibrary.used_volume != null"
+            :tooltip-text="'Used volume is ' + formLibrary.used_volume"
           >
-            <traction-input
-              id="library-volume"
-              v-model="formLibrary.volume"
-              type="number"
-              :min="formLibrary.used_volume"
-              step="any"
-              placeholder="Example: 1.0"
-              :class="formLibrary.volume < formLibrary.used_volume"
-              class="w-full"
-              @update:model-value="errorForVolume"
+            <traction-badge id="library-used-volume" colour="sanger-pink"
+              ><TractionInfoIcon class="mr-2" />{{ formLibrary.used_volume }}</traction-badge
             >
-            </traction-input>
-          </traction-field-error>
-        </fieldset>
-        <template #disabled
-          ><fieldset id="input-group-volume">
-            <traction-label class="ml-1 w-full">Volume</traction-label>
-            <traction-input
-              id="library-volume"
-              v-model="formLibrary.volume"
-              type="number"
-              step="any"
-              placeholder="Example: 1.0"
-              :class="inputBorderClass('volume')"
-              class="w-full"
-            >
-            </traction-input></fieldset
-        ></template>
-      </flagged-feature>
+          </traction-tooltip>
+        </div>
+        <traction-field-error
+          data-attribute="volume-error"
+          :error="formLibrary.error"
+          :with-icon="formLibrary.error?.length > 0"
+        >
+          <traction-input
+            id="library-volume"
+            v-model="formLibrary.volume"
+            type="number"
+            :min="formLibrary.used_volume"
+            step="any"
+            placeholder="Example: 1.0"
+            :class="formLibrary.volume < formLibrary.used_volume"
+            class="w-full"
+            @update:model-value="errorForVolume"
+          >
+          </traction-input>
+        </traction-field-error>
+      </fieldset>
 
       <fieldset id="input-group-concentration">
         <traction-label class="ml-1">Concentration</traction-label>
@@ -125,7 +109,7 @@
 <script setup>
 /**
  * Following are new Vue 3 features used in this component:
- * 
+ *
  * script setup : is a Vue 3 function that allows you to define props, reactive variables, and computed properties in the setup function.
  *
  * ref:  is a Vue 3 function that allows you to create a reactive object which is a replacement for the data option in Vue 2
@@ -133,7 +117,7 @@
  * e.g : ref(0) returns { value: 0 }
  * To access the value, you use the .value property in setup function, but in the template, you can use the variable directly.
  * {@link} https://v3.vuejs.org/guide/reactivity-fundamentals.html#ref
- 
+
  * Composables: are a new Vue 3 feature that allows you to create reusable logic.
  * {@link} https://vuejs.org/guide/reusability/composables
  *
@@ -189,7 +173,7 @@ so that the parent component can access the formLibrary and its properties
 defineExpose({ formLibrary })
 
 /*
-selectedTagSetId is a reactive variable, so it will be initialised with an empty string 
+selectedTagSetId is a reactive variable, so it will be initialised with an empty string
 This will be updated When the component is created with a library having tag_id or when the user selects a tag set
 */
 const selectedTagSetId = ref('')

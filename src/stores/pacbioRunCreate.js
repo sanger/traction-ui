@@ -10,14 +10,8 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import {
-  newRun,
-  createRunType,
-  RunTypeEnum,
-  newWell,
-  defaultWellAttributes,
-  newPlate,
-} from '@/stores/utilities/run'
+import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -476,7 +470,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Sets the defaultWellAttributes
      */
     setDefaultWellAttributes() {
-      this.defaultWellAttributes = defaultWellAttributes()
+      this.defaultWellAttributes = { ...PacbioRunWellSmrtLinkOptions.defaultAttributes }
     },
 
     /**

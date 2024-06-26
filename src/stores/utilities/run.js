@@ -1,3 +1,5 @@
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+
 /**
  *
  * @param {String} plateNumber The number of the plate e.g. 1
@@ -33,28 +35,6 @@ const newRun = () => {
   }
 }
 
-const defaultWellAttributes = () => {
-  const onInstrument = 'On Instrument'
-
-  return {
-    movie_time: null,
-    ccs_analysis_output: 'Yes',
-    pre_extension_time: 2,
-    loading_target_p1_plus_p2: 0.85,
-    generate_hifi: onInstrument,
-    binding_kit_box_barcode: null,
-    on_plate_loading_concentration: null,
-    ccs_analysis_output_include_kinetics_information: 'Yes',
-    ccs_analysis_output_include_low_quality_reads: 'No',
-    demultiplex_barcodes: onInstrument,
-    include_fivemc_calls_in_cpg_motifs: 'Yes',
-    movie_acquisition_time: '24.0',
-    include_base_kinetics: 'False',
-    library_concentration: null,
-    polymerase_kit: null,
-  }
-}
-
 /**
  *
  * @param {String} position e.g. A1
@@ -74,7 +54,7 @@ const splitPosition = (position) => {
 const newWell = ({ position, ...attributes }) => {
   const [row, column] = splitPosition(position)
   return {
-    ...defaultWellAttributes(),
+    ...PacbioRunWellSmrtLinkOptions.defaultAttributes,
     used_aliquots: [],
     ...attributes,
     position,
@@ -209,7 +189,6 @@ const createWellsPayload = (wells) => {
 
 export {
   newRun,
-  defaultWellAttributes,
   newWell,
   newPlate,
   RunTypeEnum,
