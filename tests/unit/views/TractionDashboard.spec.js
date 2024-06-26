@@ -4,30 +4,31 @@ import { mount, flushPromises } from '@support/testHelper'
 
 vi.mock('@/config/PipelinesConfig', () => {
   return {
-    default:[
+    default: [
       {
-        "name": "saphyr",
-        "title": "Saphyr",
-        "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instrument",
-        "routes": ["samples", "libraries", "runs"],
-        "active": false
+        name: 'saphyr',
+        title: 'Saphyr',
+        description: 'A LIMS pipeline to support tracking for the Bionano Saphyr instrument',
+        routes: ['samples', 'libraries', 'runs'],
+        active: false,
       },
       {
-        "name": "pacbio",
-        "title": "PacBio",
-        "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
-        "routes": ["plates", "samples", "libraries", "pools", "runs", "pool/new"],
-        "active": true
+        name: 'pacbio',
+        title: 'PacBio',
+        description: 'A LIMS pipeline to support tracking for PacBio Long-Read Sequencing',
+        routes: ['plates', 'samples', 'libraries', 'pools', 'runs', 'pool/new'],
+        active: true,
       },
       {
-        "name": "ont",
-        "title": "ONT",
-        "description": "A LIMS pipeline to support tracking for ONT Long-Read Sequencing",
-        "routes": ["samples", "pools", "pool/new", "runs"],
-        "active": true
-      }
-    ]
-}})
+        name: 'ont',
+        title: 'ONT',
+        description: 'A LIMS pipeline to support tracking for ONT Long-Read Sequencing',
+        routes: ['samples', 'pools', 'pool/new', 'runs'],
+        active: true,
+      },
+    ],
+  }
+})
 
 describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
@@ -52,14 +53,14 @@ describe('TractionDashboard.vue', () => {
         dashboard_pipeline_names.every((value, index) => value === active_pipeline_names[index]),
       )
     })
-  
+
     it('will exclude inactive pipelines', () => {
       const dashborad_pipelines_names = dashboard.pipelines.map((pipeline) => pipeline.name)
       const inactive_pipelines = PipelinesConfig.filter((pipeline) => !pipeline.active)
-      const inactive_pipeline_names = inactive_pipelines.map((pipeline)=> pipeline.name)
+      const inactive_pipeline_names = inactive_pipelines.map((pipeline) => pipeline.name)
 
-      inactive_pipeline_names.forEach(name=>{
-         expect(dashborad_pipelines_names).not.toContain(name)
+      inactive_pipeline_names.forEach((name) => {
+        expect(dashborad_pipelines_names).not.toContain(name)
       })
     })
   })
