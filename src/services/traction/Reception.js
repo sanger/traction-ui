@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/v1/ResponseHelper'
+import { handleResponse } from '@/api/v2/ResponseHelper'
 /**
  * Generates a reception resource in traction
  * @param request: {Function} Function to make a request to the Traction
@@ -12,16 +12,14 @@ const createReceptionResource = async (request, foundBarcodes, attributes) => {
     throw 'No labware to import'
   }
 
-  const { success, data, errors } = await handleResponse(
-    request({
-      data: {
-        data: { type: 'receptions', attributes },
-      },
-    }),
-  )
+  const {
+    success,
+    body: { data },
+    errors,
+  } = await handleResponse(request({ data: { data: { type: 'receptions', attributes } } }))
 
   if (success) {
-    return data
+    return { data }
   } else {
     throw errors
   }

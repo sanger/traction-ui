@@ -1,3 +1,5 @@
+import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+
 describe('Import samples from Sequencescape Tubes', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
@@ -30,7 +32,8 @@ describe('Import samples from Sequencescape Tubes', () => {
         },
       },
       {
-        fixture: 'sequencescapeLabware.json',
+        statusCode: 200,
+        body: SequencescapeLabwareFactory().content,
       },
     )
     cy.intercept('POST', '/v1/receptions', {
@@ -100,7 +103,8 @@ describe('Import samples from Sequencescape Tubes', () => {
         },
       },
       {
-        fixture: 'sequencescapeLabware.json',
+        statusCode: 200,
+        body: SequencescapeLabwareFactory().content,
       },
     )
     cy.intercept('/v1/receptions', {

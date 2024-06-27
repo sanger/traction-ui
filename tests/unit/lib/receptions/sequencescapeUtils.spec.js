@@ -1,6 +1,12 @@
-import { Data, store } from '@support/testHelper.js'
+import { store } from '@support/testHelper.js'
 import { vi } from 'vitest'
-import { fetchLabwareFromSequencescape, findIncluded } from '@/lib/receptions/sequencescapeUtils.js'
+import {
+  fetchLabwareFromSequencescape,
+  findIncluded,
+  buildLibrary,
+  buildPool,
+} from '@/lib/receptions/sequencescapeUtils.js'
+import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
 const retAttributes = {
   plates_attributes: [
@@ -55,11 +61,6 @@ const retAttributes = {
 describe('sequencescapeUtils', () => {
   describe('#fetchLabwareFromSequencescape', () => {
     const barcodes = ['DN9000002A', '3980000001795']
-    const failedResponse = {
-      data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
     const labwareRequestConfig = {
       include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
       fields: {
@@ -88,7 +89,7 @@ describe('sequencescapeUtils', () => {
       },
     }
 
-    const requests = store.getters.api.v1
+    const requests = store.getters.api.v2
     let request
 
     beforeEach(() => {
@@ -96,7 +97,7 @@ describe('sequencescapeUtils', () => {
     })
 
     it('fetches successfully', async () => {
-      request.mockResolvedValue(Data.SequencescapeLabware)
+      request.mockResolvedValue(SequencescapeLabwareFactory().responses.fetch)
       const { attributes, foundBarcodes } = await fetchLabwareFromSequencescape({
         requests,
         barcodes,
@@ -118,7 +119,17 @@ describe('sequencescapeUtils', () => {
       })
     })
     it('runs unsuccessfully', async () => {
-      request.mockRejectedValue({ response: failedResponse })
+      const failedResponse = {
+        data: {},
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
+          }),
+        ok: false,
+        statusText: 'Internal Server Error',
+      }
+      request.mockResolvedValue(failedResponse)
       expect(() => fetchLabwareFromSequencescape({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
@@ -127,11 +138,84 @@ describe('sequencescapeUtils', () => {
 
   describe('#findIncluded', () => {
     it('returns the included item', () => {
-      const { data } = Data.SequencescapeLabware
+      const data = SequencescapeLabwareFactory().content
       const receptacle = data.data[0].relationships.receptacles.data[0]
       const res = findIncluded({ included: data.included, data: receptacle, type: 'wells' })
       const expected = data.included.find((item) => item.id === receptacle.id)
       expect(res).toEqual(expected)
+    })
+  })
+
+  describe('#buildLibrary', () => {
+    it('returns a library object', () => {
+      const aliquot = {
+        attributes: {
+          tag_oligo: 'tagOligoExample',
+          insert_size_to: 100,
+        },
+      }
+      const sample_metadata = {
+        attributes: {
+          volume: 10,
+          concentration: 10,
+        },
+      }
+      const libraryOptions = {
+        kit_barcode: 'kitBarcodeExample',
+      }
+      const res = buildLibrary({ aliquot, sample_metadata, libraryOptions })
+      expect(res).toEqual({
+        library: {
+          volume: sample_metadata.attributes.volume,
+          concentration: sample_metadata.attributes.concentration,
+          tag_sequence: aliquot.attributes.tag_oligo,
+          insert_size: aliquot.attributes.insert_size_to,
+          kit_barcode: libraryOptions.kit_barcode,
+        },
+      })
+    })
+  })
+
+  describe('#buildPool', () => {
+    it('returns a pool object', () => {
+      const included = [
+        {
+          id: '1',
+          type: 'aliquots',
+          attributes: {
+            tag_oligo: 'tagOligoExample',
+            insert_size_to: 100,
+          },
+        },
+        {
+          id: '2',
+          type: 'sample_metadata',
+          attributes: {
+            volume: 10,
+            concentration: 10,
+          },
+        },
+      ]
+      const barcodeAttribute = 'human_barcode'
+      const labware = {
+        attributes: {
+          labware_barcode: {
+            human_barcode: 'DN9000002A',
+            machine_barcode: '123123123',
+          },
+        },
+      }
+      const libraryOptions = {
+        kit_barcode: 'kitBarcodeExample',
+      }
+      const res = buildPool({ labware, included, barcodeAttribute, libraryOptions })
+      expect(res).toEqual({
+        barcode: labware.attributes.labware_barcode.human_barcode,
+        volume: included[1].attributes.volume,
+        concentration: included[1].attributes.concentration,
+        insert_size: included[0].attributes.insert_size_to,
+        kit_barcode: libraryOptions.kit_barcode,
+      })
     })
   })
 })

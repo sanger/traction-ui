@@ -27,7 +27,14 @@ const useRootStore = defineStore('root', {
      * and the message as the value
      */
     messages: {},
+    /*
+     * tagSets: A dictionary of tagSets fetched from the service
+     */
+    tagSets: {},
   }),
+  getters: {
+    tagSetsArray: (state) => Object.values(state.tagSets),
+  },
   actions: {
     /**
      * Asynchronously sets tractionTags in store using tags fetched from service (/traction/tags).
@@ -42,6 +49,23 @@ const useRootStore = defineStore('root', {
 
       if (success && data) {
         this.tractionTags = dataToObjectById({ data })
+      }
+      return { success, errors }
+    },
+
+    /**
+     * Asynchronously sets tagSets in store using tagSets fetched from service (/traction/tag_sets).
+     */
+    async fetchTagSets(pipeline = 'pacbio') {
+      if (!['ont', 'pacbio'].includes(pipeline)) {
+        return { success: false, errors: [`Tag sets cannot be retrieved for pipeline ${pipeline}`] }
+      }
+      const request = this.api.v1.traction[pipeline].tag_sets
+      const promise = request.get()
+      const { success, data: { data } = {}, errors = [] } = await handleResponse(promise)
+
+      if (success && data) {
+        this.tagSets = dataToObjectById({ data })
       }
       return { success, errors }
     },

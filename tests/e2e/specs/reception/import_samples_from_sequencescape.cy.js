@@ -1,3 +1,5 @@
+import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+
 const sequencescapeRequest =
   '/api/v2/labware?filter[barcode]=DN9000002A,NT1O&include=receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study&fields[plates]=labware_barcode,receptacles&fields[tubes]=labware_barcode,receptacles&fields[wells]=position,aliquots&fields[receptacles]=aliquots&fields[samples]=sample_metadata,name,uuid&fields[sample_metadata]=sample_common_name&fields[studies]=uuid&fields[aliquots]=study,library_type,sample'
 
@@ -31,7 +33,8 @@ describe('Import samples from Sequencescape', () => {
         },
       },
       {
-        fixture: 'sequencescapeLabware.json',
+        statusCode: 200,
+        body: SequencescapeLabwareFactory().content,
       },
     )
     cy.intercept('POST', '/v1/receptions', {
@@ -72,7 +75,8 @@ describe('Import samples from Sequencescape', () => {
     cy.visit('#/reception')
     cy.contains('Scan barcodes')
     cy.intercept(sequencescapeRequest, {
-      fixture: 'sequencescapeLabware.json',
+      statusCode: 200,
+      body: SequencescapeLabwareFactory().content,
     })
     cy.intercept('/v1/receptions', {
       statusCode: 422,

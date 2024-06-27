@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 /*
   return a set of labware by their barcodes
@@ -11,7 +11,7 @@ const getLabware = async (request, barcodes) => {
 
   const {
     success,
-    data: { data },
+    body: { data },
     errors,
   } = await handleResponse(promise)
 
