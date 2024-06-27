@@ -1,6 +1,5 @@
 import {
   newRun,
-  defaultWellAttributes,
   newWell,
   RunTypeEnum,
   createRunType,
@@ -11,6 +10,7 @@ import {
 } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import PacbioRunWellSmrtlLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 
 const smrtLinkVersions = {
   1: {
@@ -101,7 +101,7 @@ describe('run.js', () => {
   describe('newWell', () => {
     it('will have the default well attributes if nothing is changed', () => {
       expect(newWell({ position: 'A1' })).toEqual({
-        ...defaultWellAttributes(),
+        ...PacbioRunWellSmrtlLinkOptions.defaultAttributes,
         position: 'A1',
         row: 'A',
         column: '1',
@@ -116,7 +116,7 @@ describe('run.js', () => {
         on_plate_loading_concentration: 3.5,
       }
       expect(newWell({ position: 'A1', ...attributes })).toEqual({
-        ...defaultWellAttributes(),
+        ...PacbioRunWellSmrtlLinkOptions.defaultAttributes,
         ...attributes,
         position: 'A1',
         row: 'A',

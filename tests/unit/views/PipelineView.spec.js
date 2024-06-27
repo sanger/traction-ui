@@ -19,7 +19,13 @@ describe('PipelineView', () => {
   describe('#pipelineInfo', () => {
     it('has config for a pipeline', () => {
       const pipelineInfo = pipelineView.pipelineInfo
-      expect(Object.keys(pipelineInfo)).toEqual(['name', 'title', 'description', 'routes'])
+      expect(Object.keys(pipelineInfo)).toEqual([
+        'name',
+        'title',
+        'description',
+        'routes',
+        'active',
+      ])
     })
   })
 

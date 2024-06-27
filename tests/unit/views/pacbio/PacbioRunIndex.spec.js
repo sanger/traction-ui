@@ -11,6 +11,8 @@ import {
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { vi } from 'vitest'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -19,7 +21,10 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
+const pacbioRunFactory = PacbioRunFactory()
+const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
+
+const mockRuns = new Response(pacbioRunFactory.responses.axios).deserialize.runs
 /**
  * Helper method for mounting a component 'dataProps' if any and with a mock instance of pinia, with the given 'options'.
  * 'options' allows to define initial state while instantiating the component.
@@ -29,8 +34,9 @@ const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
  * @param {*} dataProps - data to be passed to the component while mounting
  */
 function factory(options, dataProps) {
-  const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
-  const spy2 = vi.fn().mockResolvedValue(Data.TractionPacbioSmrtLinkVersions)
+  const spy = vi.fn().mockResolvedValue({ success: true, data: pacbioRunFactory.content })
+  // TODO: Move this to the newly created SmrtLinkVersion factory.
+  const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.axios)
 
   const wrapperObj = mount(PacbioRunIndex, {
     global: {
@@ -42,8 +48,8 @@ function factory(options, dataProps) {
             },
             pacbioRunCreate: {
               resources: {
-                smrtLinkVersions: new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
-                  .smrt_link_versions[0],
+                smrtLinkVersions: new Response(pacbioSmrtLinkVersionFactory.responses.axios)
+                  .deserialize.smrt_link_versions[0],
               },
             },
             root: {},
@@ -55,8 +61,10 @@ function factory(options, dataProps) {
                 store.runRequest.get = spy
               }
               if (store.$id === 'root') {
-                store.api.traction.pacbio.smrt_link_versions.get = spy2
-                store.api.traction.pacbio.runs = vi.fn().mockReturnValue(Data.PacbioRuns)
+                store.api.v1.traction.pacbio.smrt_link_versions.get = spy2
+                store.api.v1.traction.pacbio.runs = vi
+                  .fn()
+                  .mockReturnValue(pacbioRunFactory.responses.axios)
               }
             },
           ],

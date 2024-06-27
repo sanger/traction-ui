@@ -4,8 +4,10 @@ describe('getters', () => {
   it('"printJobRequest" returns "rootState.api.printMyBarcode.print_jobs"', () => {
     const rootState = {
       api: {
-        printMyBarcode: {
-          print_jobs: 'aPrintJobsRequestURL',
+        v1: {
+          printMyBarcode: {
+            print_jobs: 'aPrintJobsRequestURL',
+          },
         },
       },
     }

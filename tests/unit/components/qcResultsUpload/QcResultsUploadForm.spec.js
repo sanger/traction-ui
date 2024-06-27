@@ -68,7 +68,7 @@ describe('QcResultsUploadForm.vue', () => {
   describe('#computed', () => {
     it('gets the api request', () => {
       expect(form.qcResultUploadsRequest).toEqual(
-        store.getters.api.traction.qc_results_uploads.create,
+        store.getters.api.v1.traction.qc_results_uploads.create,
       )
     })
 
@@ -106,7 +106,7 @@ describe('QcResultsUploadForm.vue', () => {
       })
       form.showAlert = vi.fn()
 
-      create = store.getters.api.traction.qc_results_uploads.create
+      create = store.getters.api.v1.traction.qc_results_uploads.create
     })
 
     it('handles a successful import', async () => {

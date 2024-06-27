@@ -27,7 +27,6 @@ import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
 import TractionPacbioSamples from './tractionPacbioSamples'
 import TractionPacbioSample from './tractionPacbioSample'
-import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
@@ -46,10 +45,6 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
-import SequencescapeLabware from './sequencescapeLabware'
-import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
-import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
-import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
 import TractionPacbioTagSets from './tractionPacbioTagSets.json'
@@ -70,10 +65,8 @@ import OntRuns from './ontRuns.json'
 import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
-import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
-import Printers from './printers.json'
 
 export default {
   CreateChip,
@@ -88,7 +81,6 @@ export default {
   Runs,
   RunWithLibrary,
   Samples,
-  SampleExtractionTubesWithSample,
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
@@ -125,10 +117,6 @@ export default {
   PacbioWells,
   PacbioWellLibrary,
   TractionTags,
-  SequencescapeLabware,
-  SequencescapeLabwarePlateOnly,
-  SequencescapeLabwareTubeOnly,
-  SequencescapePlates,
   tractionOntLibraries,
   TractionOntRequests,
   TractionOntTagSets,
@@ -148,8 +136,6 @@ export default {
   OntRuns,
   OntTubeRequest,
   OntTubesRequest,
-  TractionPacbioSmrtLinkVersions,
   PacbioRunWithWellDefaults,
   StorePools,
-  Printers,
 }

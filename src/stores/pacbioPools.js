@@ -84,7 +84,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      */
     async fetchPools(filter, page) {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.pools
+      const request = rootStore.api.v1.traction.pacbio.pools
       const promise = request.get({
         page,
         filter,

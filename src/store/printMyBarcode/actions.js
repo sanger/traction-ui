@@ -20,7 +20,7 @@ const createPrintJob = async (
   { printerName, labels, copies },
 ) => {
   // extract the request from the rootState
-  const request = rootState.api.printMyBarcode.print_jobs
+  const request = rootState.api.v1.printMyBarcode.print_jobs
 
   const payload = {
     printer_name: printerName,

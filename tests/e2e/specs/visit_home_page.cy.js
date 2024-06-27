@@ -13,7 +13,6 @@ describe('Visit Home Page', () => {
     cy.contains('Label Printing')
     cy.contains('QC Results Upload')
     cy.contains('Dashboard')
-    cy.contains('Saphyr')
     cy.contains('PacBio')
     cy.contains('ONT')
   })

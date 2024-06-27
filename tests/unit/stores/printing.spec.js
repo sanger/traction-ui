@@ -1,17 +1,11 @@
-import { createPinia, setActivePinia, RequestFactory } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
-const storePrinters = {
-  1: { id: 1, name: 'printer1', labware_type: 'tube' },
-  2: { id: 2, name: 'printer2', labware_type: 'tube' },
-  3: { id: 3, name: 'printer3', labware_type: 'tube' },
-  4: { id: 4, name: 'printer4', labware_type: 'tube' },
-  5: { id: 5, name: 'printer5', labware_type: 'plate' },
-  6: { id: 6, name: 'printer6', labware_type: 'plate' },
-}
+const printerFactory = PrinterFactory()
 
 describe('usePrintingStore', () => {
   beforeEach(() => {
@@ -28,13 +22,13 @@ describe('usePrintingStore', () => {
     describe('#printers', () => {
       it('should return printers', async () => {
         const store = usePrintingStore()
-        store.resources.printers = storePrinters
+        store.resources.printers = printerFactory.storeData
         expect(store.printers()).toEqual(Object.values(store.resources.printers))
       })
 
       it('can return printers by laware type', async () => {
         const store = usePrintingStore()
-        store.resources.printers = storePrinters
+        store.resources.printers = printerFactory.storeData
         expect(store.printers('tube').length).toEqual(4)
       })
     })
@@ -47,17 +41,16 @@ describe('usePrintingStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        const printerRequestFactory = RequestFactory('printers', false)
 
-        get.mockResolvedValue(printerRequestFactory.response)
-        rootStore.api = { traction: { printers: { get } } }
+        get.mockResolvedValue(printerFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
         const { success } = await store.fetchPrinters()
 
         expect(store.resources.printers).toEqual(
-          jsonapi.dataToObjectById({ data: printerRequestFactory.content.data }),
+          jsonapi.dataToObjectById({ ...printerFactory.content }),
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
@@ -68,7 +61,7 @@ describe('usePrintingStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue('Internal Server Error')
-        rootStore.api = { traction: { printers: { get } } }
+        rootStore.api.v2 = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
@@ -107,7 +100,7 @@ describe('usePrintingStore', () => {
 
         const rootStore = useRootStore()
         const create = vi.fn()
-        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         const { success, message } = await store.createPrintJob({ ...printJobOptions })
@@ -140,7 +133,7 @@ describe('usePrintingStore', () => {
 
         const create = vi.fn()
         const rootStore = useRootStore()
-        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         // eslint-disable-next-line no-unused-vars
