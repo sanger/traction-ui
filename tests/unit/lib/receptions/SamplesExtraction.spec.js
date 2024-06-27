@@ -1,23 +1,19 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SamplesExtraction'
-import { Data, store } from '@support/testHelper'
+import { store } from '@support/testHelper'
+import SamplesExtractionLabwareFactory from '@tests/factories/SamplesExtractionLabwareFactory.js'
 
 describe('SamplesExtraction', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['SE108532I']
-    const failedResponse = {
-      data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
     let request
-    const requests = store.getters.api
+    const requests = store.getters.api.v2
 
     beforeEach(() => {
       request = vi.spyOn(requests.sampleExtraction.assets, 'get')
     })
 
     it('successfully', async () => {
-      request.mockResolvedValue(Data.SampleExtractionTubesWithSample)
+      request.mockResolvedValue(SamplesExtractionLabwareFactory().responses.fetch)
 
       const { foundBarcodes, attributes } = await fetchLabwareForReception({
         requests,
@@ -55,7 +51,17 @@ describe('SamplesExtraction', () => {
     })
 
     it('unsuccessfully', async () => {
-      request.mockRejectedValue({ response: failedResponse })
+      const failedResponse = {
+        data: {},
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
+          }),
+        ok: false,
+        statusText: 'Internal Server Error',
+      }
+      request.mockResolvedValue(failedResponse)
 
       expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',

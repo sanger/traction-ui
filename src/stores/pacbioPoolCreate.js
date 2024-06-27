@@ -6,7 +6,6 @@ import useRootStore from '@/stores'
 import { validate, payload } from '@/stores/utilities/pool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 /**
  * Merge together two representations of the same object.
@@ -157,9 +156,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
        */
       tubes: {},
     },
-    /* used_aliquots. Indexed by source_id. 
+    /* used_aliquots. Indexed by source_id.
      When a used aliquot is selected, it is added to this object with the key being the source_id prefixed by '_'.
-     The '_' ensures keys are maintained in insertion order, not numeric order. 
+     The '_' ensures keys are maintained in insertion order, not numeric order.
      This allow maintain the order in which they were selected'*/
     used_aliquots: {},
     // Pool: The current pool being edited or created
@@ -538,7 +537,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.pools
+      const request = rootStore.api.v1.traction.pacbio.pools
       const promise = request.create({
         data: payload({ used_aliquots, pool }),
         include: 'tube',
@@ -570,7 +569,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.pools
+      const request = rootStore.api.v1.traction.pacbio.pools
       const promise = request.update(payload({ used_aliquots, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
@@ -593,7 +592,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async populateUsedAliquotsFromPool(poolId) {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.pools
+      const request = rootStore.api.v1.traction.pacbio.pools
       const promise = request.find({
         id: poolId,
         include:
@@ -816,7 +815,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.plates
+      const request = rootStore.api.v1.traction.pacbio.plates
       const promise = request.get({ filter: filter, include: 'wells.requests' })
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -877,7 +876,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.tubes
+      const request = rootStore.api.v1.traction.pacbio.tubes
       const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
       let {
         success,
@@ -885,18 +884,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         errors = [],
       } = await handleResponse(promise)
       const { requests, libraries } = groupIncludedByResource(included)
-
-      //TODO: Remove the followingcheck once the feature flag multiplexing_phase_2_add_libraries_to_pool is removed
-      const featureFlagEnabled = await checkFeatureFlag(
-        'multiplexing_phase_2_add_libraries_to_pool',
-      )
-      if (!featureFlagEnabled && libraries && libraries.length > 0) {
-        //If the feature flag is not enabled, we shouldn't allow adding libraries to the pool
-        return {
-          success: false,
-          errors: [`Please provide a tube barcode`],
-        }
-      }
 
       // We will be return a successful empty list if no tubes match the filter
       // Therefore we want to return an error if we don't have any tubes
@@ -995,7 +982,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
     selectRequestInSource({ request, source_id, selected = true }) {
       if (selected) {
-        /*If the request is associated with a library, fill the used_aliquot values with the library attributes values 
+        /*If the request is associated with a library, fill the used_aliquot values with the library attributes values
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
 
         const autoFillLibraryAttributes = [
@@ -1017,7 +1004,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             }, {})
           : {}
 
-        /* 
+        /*
           if the library has a tag id we want to select the tag_set if its not already selected
           unless the tag doesn't match the existing selected tag_set
         */

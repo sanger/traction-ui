@@ -2,6 +2,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
 import rootVuexStore from '@/store/index.js'
 import PlateMap from '@/config/PlateMap.json'
+import { expect } from 'vitest'
 
 describe('index', () => {
   beforeEach(() => {
@@ -14,13 +15,17 @@ describe('index', () => {
     it('has api state', () => {
       const store = useRootStore()
       expect(store.api).toBeDefined()
+      expect(store.api.v1).toBeDefined()
+      expect(store.api.v2).toBeDefined()
     })
 
     describe('api', () => {
       it('contains multiple resources', () => {
         const store = useRootStore()
-        expect(store.api.traction).toBeDefined()
-        expect(store.api.printMyBarcode).toBeDefined()
+        expect(store.api.v1.traction).toBeDefined()
+        expect(store.api.v1.printMyBarcode).toBeDefined()
+        expect(store.api.v2.traction).toBeDefined()
+        expect(store.api.v2.printMyBarcode).toBeDefined()
       })
     })
 
@@ -82,6 +87,37 @@ describe('index', () => {
         store.removeMessage(1)
         expect(store.messages).toEqual({
           2: { type: 'danger', message: 'bar' },
+        })
+      })
+    })
+
+    describe('fetchTagSets', () => {
+      it('fetches pacbio tag sets by default', async () => {
+        const store = useRootStore()
+        store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
+          success: true,
+          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        })
+        await store.fetchTagSets()
+        expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
+      })
+
+      it('fetches ont tag sets when called with ont', async () => {
+        const store = useRootStore()
+        store.api.v1.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
+          success: true,
+          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        })
+        await store.fetchTagSets('ont')
+        expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
+      })
+
+      it('returns an error if an invalid pipeline is passed', async () => {
+        const store = useRootStore()
+        const result = await store.fetchTagSets('foo')
+        expect(result).toEqual({
+          success: false,
+          errors: ['Tag sets cannot be retrieved for pipeline foo'],
         })
       })
     })

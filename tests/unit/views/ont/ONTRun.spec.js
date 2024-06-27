@@ -12,7 +12,7 @@ import { useOntRunsStore } from '@/stores/ontRuns'
  * props - props to pass to the component
  */
 function mountWithStore(props) {
-  vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
+  vi.spyOn(store.state.api.v1.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
   const wrapperObj = mount(ONTRun, {
     global: {
       plugins: [
@@ -21,7 +21,7 @@ function mountWithStore(props) {
           plugins: [
             ({ store }) => {
               if (store.$id === 'root') {
-                store.api.traction.ont.instruments.get = vi
+                store.api.v1.traction.ont.instruments.get = vi
                   .fn()
                   .mockReturnValue(Data.OntInstruments)
               }

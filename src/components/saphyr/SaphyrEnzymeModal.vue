@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     api() {
-      return this.$store.getters.api
+      return this.$store.getters.api.v1
     },
     enzymeRequest() {
       return this.api.traction.saphyr.enzymes

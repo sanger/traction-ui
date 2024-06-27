@@ -11,16 +11,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-vi.mock('swrv', () => ({
-  default: vi.fn(() => ({
-    data: {
-      features: {
-        dpl_1070_check_primary_aliquot_library_volume: { enabled: true },
-      },
-    },
-  })),
-}))
-
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
  * This method also returns the wrapper and the store object for further testing.
@@ -62,7 +52,7 @@ describe('PacbioLibraryForm.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+          store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
         }
       },
     ]
@@ -124,7 +114,7 @@ describe('PacbioLibraryForm.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
+          store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
         }
       },
     ]
@@ -141,7 +131,7 @@ describe('PacbioLibraryForm.vue', () => {
       const plugins = [
         ({ store }) => {
           if (store.$id === 'root') {
-            store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+            store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
           }
         },
       ]

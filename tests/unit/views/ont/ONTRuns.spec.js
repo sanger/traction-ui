@@ -8,7 +8,7 @@ describe('ONTRuns.vue', () => {
   beforeEach(async () => {
     mockRuns = new Response(Data.OntRuns).deserialize.runs
 
-    const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
+    const get = vi.spyOn(store.state.api.v1.traction.ont.runs, 'get')
     get.mockResolvedValue(Data.OntRuns)
 
     wrapper = await mount(ONTRuns, { store, router })

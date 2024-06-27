@@ -32,7 +32,6 @@ import TractionMessage from '@/components/TractionMessage'
 import TractionHeading from '@/components/TractionHeading'
 import TractionHeader from '@/components/TractionHeader'
 
-import PipelinesConfig from '@/config/PipelinesConfig'
 export default {
   components: {
     InfoFooter,
@@ -44,7 +43,6 @@ export default {
     mergedRoute() {
       return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
     },
-    pipelines: () => PipelinesConfig,
     pipeline() {
       // Merge the route meta attributes and pull out the pipeline
       return this.mergedRoute.pipeline

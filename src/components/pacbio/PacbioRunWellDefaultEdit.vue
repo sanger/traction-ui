@@ -20,10 +20,10 @@
 /**
  * PacbioRunWellDefaultEdit component
  * This component displays a list of default well components for the current SMRT Link version.
- * It uses the PacbioRunWellComponents config to get the default well components.
+ * It uses the PacbioRunWellSmrtLinkOptions config to get the default well components.
  * It uses the usePacbioRunCreateStore store to get the SMRT Link version and default well attributes.
  */
-import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { computed } from 'vue'
 
@@ -32,7 +32,7 @@ const store = usePacbioRunCreateStore()
 
 // Get the default well components for the current SMRT Link version
 const smrtLinkWellDefaults = computed(() => {
-  return PacbioRunWellComponents[store.smrtLinkVersion.name]?.filter(
+  return PacbioRunWellSmrtLinkOptions[store.smrtLinkVersion.name]?.filter(
     (component) => component.default,
   )
 })

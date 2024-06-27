@@ -1,58 +1,23 @@
 import config from '@/api/Config.js'
-import build from '@/api/v1/ApiBuilder.js'
+import buildV1 from '@/api/v1/ApiBuilder.js'
+import buildV2 from '@/api/v2/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
-import { createRequest } from '@/api/v2/createRequest.js'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
 
-/**
- *
- * @param {*} api
- * @returns {Object} api
- * Currently, we are using fetch for traction printing and printMyBarcode.
- * We are using axios for everything else.
- * When the api is created we create requests up front as axios request.
- * We need to create requests for traction and printMyBarcode as fetch requests.
- * This function merges the traction and printMyBarcode apis with the rest of the api.
- * TODO: We need to v1 and v2 the api in the config so we can slowly move from axios.
- */
-const mergeApis = (api) => {
-  // Destructure the api object to get the traction object
-  const { traction } = api
-  // Create the printMyBarcode object as a fetch request
-  const printMyBarcode = {
-    print_jobs: createRequest({
-      rootURL: import.meta.env['VITE_PRINTMYBARCODE_BASE_URL'],
-      apiNamespace: 'v2',
-      resource: 'print_jobs',
-    }),
-  }
-  // Create the printers object as a fetch request
-  const printers = createRequest({
-    rootURL: import.meta.env['VITE_TRACTION_BASE_URL'],
-    apiNamespace: 'v1',
-    resource: 'printers',
-  })
-  // merge the api object with the traction object and the printMyBarcode object
-  return {
-    ...api,
-    traction: {
-      ...traction,
-      printers,
-    },
-    printMyBarcode,
-  }
-}
-
 const useRootStore = defineStore('root', {
   state: () => ({
     //Build an API instance using the config
-    api: mergeApis(build({ config })),
+    // api: mergeApis(build({ config })),
+    api: {
+      v1: buildV1({ config }),
+      v2: buildV2({ config }),
+    },
 
     //Get plateMap state from the PlateMap.json file
     plateMap: PlateMap,
@@ -62,7 +27,14 @@ const useRootStore = defineStore('root', {
      * and the message as the value
      */
     messages: {},
+    /*
+     * tagSets: A dictionary of tagSets fetched from the service
+     */
+    tagSets: {},
   }),
+  getters: {
+    tagSetsArray: (state) => Object.values(state.tagSets),
+  },
   actions: {
     /**
      * Asynchronously sets tractionTags in store using tags fetched from service (/traction/tags).
@@ -77,6 +49,23 @@ const useRootStore = defineStore('root', {
 
       if (success && data) {
         this.tractionTags = dataToObjectById({ data })
+      }
+      return { success, errors }
+    },
+
+    /**
+     * Asynchronously sets tagSets in store using tagSets fetched from service (/traction/tag_sets).
+     */
+    async fetchTagSets(pipeline = 'pacbio') {
+      if (!['ont', 'pacbio'].includes(pipeline)) {
+        return { success: false, errors: [`Tag sets cannot be retrieved for pipeline ${pipeline}`] }
+      }
+      const request = this.api.v1.traction[pipeline].tag_sets
+      const promise = request.get()
+      const { success, data: { data } = {}, errors = [] } = await handleResponse(promise)
+
+      if (success && data) {
+        this.tagSets = dataToObjectById({ data })
       }
       return { success, errors }
     },

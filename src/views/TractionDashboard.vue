@@ -7,6 +7,7 @@
         :title="pipeline.title"
         :description="pipeline.description"
       >
+        <!-- Links ordered by user workflow, specified in pipelines config -->
         <TractionLink
           v-for="(route, inner_index) in pipeline.routes"
           :key="inner_index"
@@ -31,7 +32,7 @@ export default {
     TractionLink,
   },
   computed: {
-    pipelines: () => PipelinesConfig,
+    pipelines: () => PipelinesConfig.filter(({ active }) => active),
   },
   methods: {
     humanise,

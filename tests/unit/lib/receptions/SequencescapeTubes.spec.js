@@ -1,15 +1,11 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeTubes'
-import { Data, store } from '@support/testHelper'
+import { store } from '@support/testHelper'
+import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
 describe('SequencescapeTubes', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['3980000001795']
-    const failedResponse = {
-      data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
-    const requests = store.getters.api
+    const requests = store.getters.api.v2
     let request
 
     beforeEach(() => {
@@ -17,7 +13,7 @@ describe('SequencescapeTubes', () => {
     })
 
     it('successfully', async () => {
-      request.mockResolvedValue(Data.SequencescapeLabware)
+      request.mockResolvedValue(SequencescapeLabwareFactory().responses.fetch)
 
       const { attributes, foundBarcodes } = await fetchLabwareForReception({
         requests,
@@ -63,7 +59,17 @@ describe('SequencescapeTubes', () => {
     })
 
     it('unsuccessfully', async () => {
-      request.mockRejectedValue({ response: failedResponse })
+      const failedResponse = {
+        data: {},
+        status: 500,
+        json: () =>
+          Promise.resolve({
+            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
+          }),
+        ok: false,
+        statusText: 'Internal Server Error',
+      }
+      request.mockResolvedValue(failedResponse)
 
       expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',

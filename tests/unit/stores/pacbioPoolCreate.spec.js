@@ -557,7 +557,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         create = vi.fn()
-        rootStore.api = { traction: { pacbio: { pools: { create } } } }
+        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
       })
 
       const used_aliquot1 = createUsedAliquot({
@@ -686,7 +686,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         update = vi.fn()
-        rootStore.api = { traction: { pacbio: { pools: { update } } } }
+        rootStore.api.v1 = { traction: { pacbio: { pools: { update } } } }
         used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.used_aliquots = used_aliquots
         store.pool = pool
@@ -745,7 +745,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         find = vi.fn()
-        rootStore.api = { traction: { pacbio: { pools: { find } } } }
+        rootStore.api.v1 = { traction: { pacbio: { pools: { find } } } }
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = Data.TractionPacbioTagSets.data.data
         pacbioRootStore.tags = Data.TractionPacbioTagSets.data.included
@@ -1060,7 +1060,7 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api = { traction: { pacbio: { plates: { get } } } }
+        rootStore.api.v1 = { traction: { pacbio: { plates: { get } } } }
         store.selectPlate = vi.fn()
       })
 
@@ -1107,7 +1107,7 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
+        rootStore.api.v1 = { traction: { pacbio: { tubes: { get } } } }
         store.selectPlate = vi.fn()
       })
 
@@ -1221,7 +1221,7 @@ describe('usePacbioPoolCreateStore', () => {
       ]
       beforeEach(() => {
         const create = vi.fn()
-        rootStore.api = { traction: { pacbio: { pools: { create } } } }
+        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
       })
       it('selects a request by default', () => {
         store.used_aliquots = {
