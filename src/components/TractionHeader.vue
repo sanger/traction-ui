@@ -15,24 +15,14 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import TractionLink from '@/components/TractionLink'
 import { BgColorClass } from '@/lib/BgColorClass'
 
-export default {
-  name: 'TractionHeader',
-  components: {
-    TractionLink,
-  },
-  data() {
-    return {
-      environment: import.meta.env['VITE_ENVIRONMENT'],
-    }
-  },
-  computed: {
-    headerClasses() {
-      return ['relative from-sdb to-sdb-400', BgColorClass[this.environment]]
-    },
-  },
-}
+const environment = import.meta.env['VITE_ENVIRONMENT']
+
+const headerClasses = computed (() => {
+  return ['relative from-sdb to-sdb-400', BgColorClass[environment]]
+})
 </script>
