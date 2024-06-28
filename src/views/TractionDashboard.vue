@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-3 px-4 gap-x-8">
+    <div :class="`grid grid-cols-${pipelines.length} px-4 gap-x-8`">
       <LabelledCard
         v-for="(pipeline, index) in pipelines"
         :key="index"
