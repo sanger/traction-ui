@@ -98,6 +98,11 @@ describe('ONTFlowcell', () => {
         ontFlowcell.setPoolTubeBarcode({ barcode: 'TRAC-1-B', position: 1 })
         expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-B')
       })
+
+      it('#setNewFlowCell', () => {
+        ontFlowcell.setNewFlowCell(2)
+        expect(ontFlowcell.position).toEqual(2)
+      })
     })
 
     describe('formatter', () => {
