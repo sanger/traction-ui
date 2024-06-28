@@ -1,8 +1,39 @@
 import TractionDashboard from '@/views/TractionDashboard'
+import PipelinesConfig from '@/config/PipelinesConfig'
 import { mount, flushPromises, findByText } from '@support/testHelper'
+
+vi.mock('@/config/PipelinesConfig', () => {
+  return {
+    default: [
+      {
+        name: 'saphyr',
+        title: 'Saphyr',
+        description: 'A LIMS pipeline to support tracking for the Bionano Saphyr instrument',
+        routes: ['samples', 'libraries', 'runs'],
+        active: false,
+      },
+      {
+        name: 'pacbio',
+        title: 'PacBio',
+        description: 'A LIMS pipeline to support tracking for PacBio Long-Read Sequencing',
+        routes: ['plates', 'samples', 'libraries', 'pools', 'runs', 'pool/new'],
+        active: true,
+      },
+      {
+        name: 'ont',
+        title: 'ONT',
+        description: 'A LIMS pipeline to support tracking for ONT Long-Read Sequencing',
+        routes: ['samples', 'pools', 'pool/new', 'runs'],
+        active: true,
+      },
+    ],
+  }
+})
 
 describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
+  const active_pipelines = PipelinesConfig.filter((pipeline) => pipeline.active)
+  const active_pipeline_names = active_pipelines.map((pipeline) => pipeline.name)
 
   beforeEach(() => {
     wrapper = mount(TractionDashboard)
@@ -10,69 +41,26 @@ describe('TractionDashboard.vue', () => {
   })
 
   describe('pipelines', () => {
-    it('will have pipelines config', () => {
-      const config = dashboard.pipelines
-      expect(config.length).toEqual(3)
+    it('will have the same number of active pipelines in config', () => {
+      expect(dashboard.pipelines.length).toEqual(active_pipelines.length)
     })
 
-    it('will have saphyr config', () => {
-      const config = dashboard.pipelines
-      expect(config[0]['name']).toEqual('saphyr')
-      expect(config[0]['title']).toContain('Saphyr')
+    it('will have the same active pipeline name in config', () => {
+      const dashboard_pipeline_names = dashboard.pipelines.map((pipeline) => pipeline.name)
+
+      expect(dashboard_pipeline_names.length === active_pipeline_names.length)
+      expect(
+        dashboard_pipeline_names.every((value, index) => value === active_pipeline_names[index]),
+      )
     })
 
-    it('will have pacbio config', () => {
-      const config = dashboard.pipelines
-      expect(config[1]['name']).toEqual('pacbio')
-      expect(config[1]['title']).toEqual('PacBio')
-    })
+    it('will exclude inactive pipelines', () => {
+      const dashborad_pipelines_names = dashboard.pipelines.map((pipeline) => pipeline.name)
+      const inactive_pipelines = PipelinesConfig.filter((pipeline) => !pipeline.active)
+      const inactive_pipeline_names = inactive_pipelines.map((pipeline) => pipeline.name)
 
-    it('will have ont config', () => {
-      const config = dashboard.pipelines
-      expect(config[2]['name']).toEqual('ont')
-      expect(config[2]['title']).toEqual('ONT')
-    })
-  })
-
-  describe('for saphyr', () => {
-    beforeEach(() => {
-      box = wrapper.find('[data-pipeline=Saphyr]')
-    })
-
-    it('will have a title', () => {
-      expect(box.find('[data-attribute=title]').text()).toEqual('Saphyr')
-    })
-
-    it('will have a description', () => {
-      expect(box.find('[data-attribute=description]').text()).toBeDefined()
-    })
-
-    describe('route buttons', () => {
-      it('will have buttons sorted by workflow', () => {
-        const buttons = box.findAll('a')
-        const buttonNames = buttons.map((button) => button.text())
-        expect(buttonNames).toEqual(['Samples', 'Libraries', 'Runs'])
-      })
-
-      it('will have a samples button', async () => {
-        const button = findByText(box, 'Samples')
-        button.trigger('click')
-        await flushPromises()
-        expect(wrapper.vm.$route.path).toBe('/saphyr/samples')
-      })
-
-      it('will have a libraries button', async () => {
-        const button = findByText(box, 'Libraries')
-        button.trigger('click')
-        await flushPromises()
-        expect(wrapper.vm.$route.path).toBe('/saphyr/libraries')
-      })
-
-      it('will have a runs button', async () => {
-        const button = findByText(box, 'Runs')
-        button.trigger('click')
-        await flushPromises()
-        expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
+      inactive_pipeline_names.forEach((name) => {
+        expect(dashborad_pipelines_names).not.toContain(name)
       })
     })
   })

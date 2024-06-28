@@ -27,7 +27,6 @@ import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
 import TractionPacbioSamples from './tractionPacbioSamples'
 import TractionPacbioSample from './tractionPacbioSample'
-import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
@@ -46,10 +45,6 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
-import SequencescapeLabware from './sequencescapeLabware'
-import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
-import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
-import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
 import TractionPacbioTagSets from './tractionPacbioTagSets.json'
@@ -86,7 +81,6 @@ export default {
   Runs,
   RunWithLibrary,
   Samples,
-  SampleExtractionTubesWithSample,
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
@@ -123,10 +117,6 @@ export default {
   PacbioWells,
   PacbioWellLibrary,
   TractionTags,
-  SequencescapeLabware,
-  SequencescapeLabwarePlateOnly,
-  SequencescapeLabwareTubeOnly,
-  SequencescapePlates,
   tractionOntLibraries,
   TractionOntRequests,
   TractionOntTagSets,
