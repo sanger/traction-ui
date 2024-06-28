@@ -1,5 +1,5 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { Data, createPinia, setActivePinia } from '@support/testHelper'
+import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
 import { newResponse } from '@/api/v1/ResponseHelper'
@@ -67,7 +67,7 @@ describe('usePacbioRunsStore', () => {
     describe('updateRun', () => {
       let updatedRun
       beforeEach(() => {
-        updatedRun = Data.PacbioRun.data.data
+        updatedRun = pacbioRunsFactory.content.data
       })
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
