@@ -94,10 +94,13 @@ export default {
       }
     },
   },
-  computed:{
+  computed: {
     footerClasses() {
-      return ['border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100', bgColorClass[this.environment] ]
-    }
-  }
+      return [
+        'border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100',
+        bgColorClass[this.environment],
+      ]
+    },
+  },
 }
 </script>
