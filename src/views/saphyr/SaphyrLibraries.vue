@@ -49,7 +49,8 @@
 <script>
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { getCurrentDate } from '@/lib/DateHelpers'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
+import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
   name: 'SaphyrLibraries',
@@ -80,6 +81,9 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/tubes', ['libraries']),
+    printingStore() {
+      return usePrintingStore()
+    },
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
@@ -134,7 +138,7 @@ export default {
       @param {String} printerName The name of the printer to send the print job to
     */
     async printLabels(printerName) {
-      const { success, message = {} } = await this.createPrintJob({
+      const { success, message = {} } = await this.printingStore.createPrintJob({
         printerName,
         labels: this.createLabels(),
         copies: 1,
@@ -143,7 +147,7 @@ export default {
       this.showAlert(message, success ? 'success' : 'danger')
     },
     ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),
-    ...mapActions('printMyBarcode', ['createPrintJob']),
+    // ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

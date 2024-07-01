@@ -126,7 +126,7 @@ describe('PacbioSamples.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        samples.createPrintJob = vi.fn().mockImplementation(() => {
+        samples.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -135,7 +135,7 @@ describe('PacbioSamples.vue', () => {
       })
 
       it('should create a print job', () => {
-        expect(samples.createPrintJob).toBeCalledWith({
+        expect(samples.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: samples.createLabels(),
           copies: 1,

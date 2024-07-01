@@ -1,6 +1,32 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, store, Data } from '@support/testHelper'
+import { mount, store, Data, createTestingPinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ props } = {}) {
+  const wrapperObj = mount(Libraries, {
+    global: {
+      plugins: [createTestingPinia({})],
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+      },
+    },
+    store,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
@@ -42,16 +68,9 @@ describe('Libraries.vue', () => {
       Data.TractionSaphyrLibraries,
     )
 
-    wrapper = mount(Libraries, {
-      store,
-      global: {
-        stubs: {
-          PrinterModal: {
-            template: '<div ref="printerModal"></div>',
-          },
-        },
-      },
-    })
+    const { wrapperObj } = mountWithStore()
+
+    wrapper = wrapperObj
     libraries = wrapper.vm
   })
 
@@ -138,7 +157,7 @@ describe('Libraries.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        libraries.createPrintJob = vi.fn().mockImplementation(() => {
+        libraries.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -147,7 +166,7 @@ describe('Libraries.vue', () => {
       })
 
       it('should create a print job', () => {
-        expect(libraries.createPrintJob).toBeCalledWith({
+        expect(libraries.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: libraries.createLabels(),
           copies: 1,

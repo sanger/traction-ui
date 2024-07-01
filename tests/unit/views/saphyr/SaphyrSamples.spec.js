@@ -1,6 +1,35 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, store, Data, router } from '@support/testHelper'
+import { mount, store, Data, router, createTestingPinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ props } = {}) {
+  const wrapperObj = mount(Samples, {
+    global: {
+      plugins: [createTestingPinia({})],
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+        Modal: true,
+        EnzymeModal: true,
+      },
+    },
+    store,
+    router,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('Samples.vue', () => {
   let wrapper, samples
@@ -18,20 +47,8 @@ describe('Samples.vue', () => {
     vi.spyOn(store.getters.api.v1.traction.saphyr.enzymes, 'get').mockResolvedValue({
       data: Data.Enzymes,
     })
-    wrapper = mount(Samples, {
-      store,
-      router,
-      global: {
-        stubs: {
-          PrinterModal: {
-            template: '<div ref="printerModal"></div>',
-          },
-          Modal: true,
-          EnzymeModal: true,
-        },
-      },
-    })
-
+    const { wrapperObj } = mountWithStore()
+    wrapper = wrapperObj
     samples = wrapper.vm
   })
 
@@ -153,7 +170,7 @@ describe('Samples.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        samples.createPrintJob = vi.fn().mockImplementation(() => {
+        samples.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -162,7 +179,7 @@ describe('Samples.vue', () => {
       })
 
       it('should create a print job', () => {
-        expect(samples.createPrintJob).toBeCalledWith({
+        expect(samples.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: samples.createLabels(),
           copies: 1,
