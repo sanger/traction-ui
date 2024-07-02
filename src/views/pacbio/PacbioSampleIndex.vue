@@ -81,6 +81,7 @@ import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 import { mapActions, mapGetters } from 'vuex'
+import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
   name: 'PacbioSampleIndex',
@@ -128,6 +129,10 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
+    // makes it testable. We can get rid of this when we move over to pinia.
+    printingStore() {
+      return usePrintingStore()
+    },
   },
   methods: {
     /*
@@ -154,7 +159,7 @@ export default {
       @param {String} printerName The name of the printer to send the print job to
     */
     async printLabels(printerName) {
-      const { success, message = {} } = await this.createPrintJob({
+      const { success, message = {} } = await this.printingStore.createPrintJob({
         printerName,
         labels: this.createLabels(),
         copies: 1,
@@ -171,7 +176,6 @@ export default {
       return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
-    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
