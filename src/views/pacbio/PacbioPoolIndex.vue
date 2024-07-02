@@ -89,7 +89,7 @@ import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { ref, reactive, computed } from 'vue'
-import { useStore } from 'vuex'
+import { usePrintingStore } from '@/stores/printing.js'
 /**
  * Following are new Vue 3 features used in this component:
  * 
@@ -172,8 +172,8 @@ const { fetchWithQueryParams } = useQueryParams()
 const poolsStore = usePacbioPoolsStore()
 const pools = computed(() => poolsStore.poolsArray)
 
-//Create VueX store
-const vuexStore = useStore()
+//create printing store
+const printingStore = usePrintingStore()
 
 //methods
 const createLabels = () => {
@@ -202,7 +202,7 @@ const createLabels = () => {
  * @returns {Promise<void>} A promise that resolves when the action has been dispatched and the alert has been shown.
  */
 const printLabels = async (printerName) => {
-  const { success, message = {} } = await vuexStore.dispatch('printMyBarcode/createPrintJob', {
+  const { success, message = {} } = await printingStore.createPrintJob({
     printerName,
     labels: createLabels(),
     copies: 1,

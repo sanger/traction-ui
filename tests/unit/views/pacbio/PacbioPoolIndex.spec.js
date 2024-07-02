@@ -1,5 +1,5 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import { mount, Data, router, flushPromises, store, createTestingPinia } from '@support/testHelper'
+import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 
 const mockShowAlert = vi.fn()
@@ -121,13 +121,13 @@ describe('PacbioPoolIndex.vue', () => {
     describe('#printLabels', () => {
       beforeEach(() => {
         const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
-        store.dispatch = mockPrintJob
+        wrapper.vm.printingStore.createPrintJob = mockPrintJob
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
       })
 
       it('should create a print job', () => {
-        expect(store.dispatch).toBeCalledWith('printMyBarcode/createPrintJob', {
+        expect(wrapper.vm.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: pools.createLabels(),
           copies: 1,

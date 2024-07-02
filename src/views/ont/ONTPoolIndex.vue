@@ -75,8 +75,9 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { getCurrentDate } from '@/lib/DateHelpers'
-import useQueryParams from '@/composables/useQueryParams'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
+import useQueryParams from '@/composables/useQueryParams.js'
+import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
   name: 'OntPoolIndex',
@@ -127,6 +128,9 @@ export default {
   },
   computed: {
     ...mapGetters('traction/ont/pools', ['pools']),
+    printingStore() {
+      return usePrintingStore()
+    },
   },
   methods: {
     /* 
@@ -153,7 +157,7 @@ export default {
       @param {String} printerName The name of the printer to send the print job to
     */
     async printLabels(printerName) {
-      const { success, message = {} } = await this.createPrintJob({
+      const { success, message = {} } = await this.printingStore.createPrintJob({
         printerName,
         labels: this.createLabels(),
         copies: 1,
@@ -165,7 +169,6 @@ export default {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
-    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
