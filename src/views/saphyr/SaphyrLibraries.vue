@@ -147,7 +147,6 @@ export default {
       this.showAlert(message, success ? 'success' : 'danger')
     },
     ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),
-    // ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

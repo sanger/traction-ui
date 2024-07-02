@@ -2,16 +2,6 @@ import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, store, Data, createTestingPinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(Libraries, {
     global: {
