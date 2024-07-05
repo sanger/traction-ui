@@ -15,7 +15,7 @@ describe('addMessage', () => {
 })
 
 describe('clearMessages', () => {
-  it('clears all messages but keeps tractionTags', () => {
+  it('clears all messages', () => {
     const state = {
       messages: {
         1: { type: 'Alert', message: 'Existing' },
