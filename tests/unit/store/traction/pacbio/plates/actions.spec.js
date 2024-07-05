@@ -1,5 +1,7 @@
-import { Data } from '@support/testHelper'
 import * as Actions from '@/store/traction/pacbio/plates/actions'
+import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+
+const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
 
 describe('Pacbio plates actions', () => {
   let commit, get, getters, failedResponse, expectedPlates
@@ -9,7 +11,7 @@ describe('Pacbio plates actions', () => {
     get = vi.fn()
     getters = { getPlates: { get: get } }
 
-    expectedPlates = Data.PacbioPlatesRequest.data.data
+    expectedPlates = pacbioPlatesRequestFactory.content.data
 
     failedResponse = {
       data: { data: { errors: { error1: ['There was an error'] } } },
@@ -20,7 +22,7 @@ describe('Pacbio plates actions', () => {
 
   describe('setPlates', () => {
     it('fetches the plates from the service, and commits them', async () => {
-      get.mockReturnValue(Data.PacbioPlatesRequest)
+      get.mockReturnValue(pacbioPlatesRequestFactory.responses.axios)
       const { success, errors } = await Actions.setPlates({ commit, getters })
 
       expect(commit).toHaveBeenCalledWith('setPlates', expectedPlates)
@@ -41,7 +43,7 @@ describe('Pacbio plates actions', () => {
 
   describe('findPlate', () => {
     it('fetches the plate from the service, and returns it with wells and requests', async () => {
-      get.mockReturnValue(Data.PacbioPlatesRequest)
+      get.mockReturnValue(pacbioPlatesRequestFactory.responses.axios)
       const expectedPlate = {
         id: '61',
         barcode: 'DN814327C',
