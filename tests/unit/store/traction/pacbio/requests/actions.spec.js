@@ -1,14 +1,15 @@
-import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
-import { Data } from '@support/testHelper'
 import { expect } from 'vitest'
 import { newResponse } from '@/api/v1/ResponseHelper'
+import PacbioSamplesFactory from '@tests/factories/PacbioSamplesFactory.js'
 
 let requests
 
+const pacbioSamplesFactory = PacbioSamplesFactory()
+
 describe('actions', () => {
   beforeEach(() => {
-    requests = new Response(Data.TractionPacbioSamples).deserialize.requests
+    requests =  pacbioSamplesFactory.content.data.data
   })
 
   describe('setRequests', () => {
@@ -16,7 +17,7 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
-      const requests = Data.TractionPacbioSamples
+      const requests = pacbioSamplesFactory.content
       requests.data.data.splice(2, 11)
       get.mockReturnValue(requests)
 
@@ -68,13 +69,13 @@ describe('actions', () => {
       const commit = vi.fn()
       const getters = { requestsRequest: { update: update } }
 
-      update.mockReturnValue(Data.TractionPacbioSample)
+      update.mockReturnValue(pacbioSamplesFactory.content)
 
       const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
       const expectedPayload = Actions.createRequestPayload(sample)
 
       expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
-      expect(commit).toHaveBeenCalledWith('updateRequest', Data.TractionPacbioSample.data.data)
+      expect(commit).toHaveBeenCalledWith('updateRequest', pacbioSamplesFactory.content.data.data)
       expect(success).toEqual(true)
       expect(errors).toEqual([])
     })
@@ -101,7 +102,7 @@ describe('actions', () => {
 
   describe('createRequestPayload', () => {
     it('creates the payload for the sample', async () => {
-      const sample = new Response(Data.TractionPacbioSamples).deserialize.requests[0]
+      const sample = pacbioSamplesFactory.content.data.data[0]
       const result = Actions.createRequestPayload(sample)
 
       expect(result.data.id).toEqual(sample.id)
