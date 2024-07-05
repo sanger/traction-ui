@@ -37,23 +37,6 @@ const useRootStore = defineStore('root', {
   },
   actions: {
     /**
-     * Asynchronously sets tractionTags in store using tags fetched from service (/traction/tags).
-     *
-     * @async
-     * @returns {Promise<Object>} An object containing the success status and any errors.
-     */
-    async setTags() {
-      const request = this.api.traction.tags
-      const promise = request.get()
-      const { success, data, errors } = await handleResponse(promise)
-
-      if (success && data) {
-        this.tractionTags = dataToObjectById({ data })
-      }
-      return { success, errors }
-    },
-
-    /**
      * Asynchronously sets tagSets in store using tagSets fetched from service (/traction/tag_sets).
      */
     async fetchTagSets(pipeline = 'pacbio') {
