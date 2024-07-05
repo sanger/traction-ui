@@ -9,7 +9,7 @@ const pacbioSamplesFactory = PacbioSamplesFactory()
 
 describe('actions', () => {
   beforeEach(() => {
-    requests =  pacbioSamplesFactory.content.data.data
+    requests = pacbioSamplesFactory.content.data.data
   })
 
   describe('setRequests', () => {
