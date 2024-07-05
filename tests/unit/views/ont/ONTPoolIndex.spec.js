@@ -1,6 +1,22 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, flushPromises, createTestingPinia } from '@support/testHelper'
 import { vi } from 'vitest'
+
+function mountWithStore({ props } = {}) {
+  const wrapperObj = mount(ONTPoolIndex, {
+    global: {
+      plugins: [createTestingPinia({})],
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+      },
+    },
+    store,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('OntPoolIndex', () => {
   let wrapper, pools
@@ -8,17 +24,8 @@ describe('OntPoolIndex', () => {
   beforeEach(async () => {
     const get = vi.spyOn(store.state.api.v1.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
-    wrapper = mount(ONTPoolIndex, {
-      store,
-      router,
-      global: {
-        stubs: {
-          PrinterModal: {
-            template: '<div ref="printerModal"></div>',
-          },
-        },
-      },
-    })
+    const { wrapperObj } = mountWithStore()
+    wrapper = wrapperObj
     await flushPromises()
   })
 
@@ -64,7 +71,7 @@ describe('OntPoolIndex', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        pools.createPrintJob = vi.fn().mockImplementation(() => {
+        pools.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -73,7 +80,7 @@ describe('OntPoolIndex', () => {
       })
 
       it('should create a print job', () => {
-        expect(pools.createPrintJob).toBeCalledWith({
+        expect(pools.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: pools.createLabels(),
           copies: 1,

@@ -48,6 +48,7 @@ import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
+import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
   name: 'SaphyrSamples',
@@ -72,6 +73,9 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/requests', ['requests']),
+    printingStore() {
+      return usePrintingStore()
+    },
   },
   created() {
     this.provider()
@@ -118,7 +122,7 @@ export default {
       @param {String} printerName The name of the printer to send the print job to
     */
     async printLabels(printerName) {
-      const { success, message = {} } = await this.createPrintJob({
+      const { success, message = {} } = await this.printingStore.createPrintJob({
         printerName,
         labels: this.createLabels(),
         copies: 1,
@@ -129,7 +133,6 @@ export default {
 
     ...mapActions('traction/saphyr/tubes', ['createLibrariesInTraction']),
     ...mapActions('traction/saphyr/requests', ['setRequests']),
-    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

@@ -1,5 +1,5 @@
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import { mount, Data, store, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { mount, Data, flushPromises, createTestingPinia } from '@support/testHelper.js'
 import { expect, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 
@@ -10,16 +10,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(PacbioLibraryIndex, {
     global: {
@@ -145,13 +135,13 @@ describe('Libraries.vue', () => {
     describe('#printLabels', () => {
       beforeEach(() => {
         const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
-        store.dispatch = mockPrintJob
+        wrapper.vm.printingStore.createPrintJob = mockPrintJob
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
       })
 
       it('should create a print job', () => {
-        expect(store.dispatch).toBeCalledWith('printMyBarcode/createPrintJob', {
+        expect(wrapper.vm.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: libraries.createLabels(),
           copies: 1,
