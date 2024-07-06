@@ -26,7 +26,6 @@
           >
             Remove
           </traction-button>
-
         </template>
       </traction-table>
     </traction-section>
@@ -73,8 +72,8 @@ export default {
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },
-    addTubeToPool(id){
-      this.selectRequest({id})
+    addTubeToPool(id) {
+      this.selectRequest({ id })
     },
     rowClass(item) {
       if (item && item.selected) {
