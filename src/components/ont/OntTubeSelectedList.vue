@@ -9,6 +9,15 @@
       >
         <template #cell(action)="row">
           <traction-button
+            :id="'add-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="addTubeToPool(row.item.id)"
+          >
+            Add
+          </traction-button>
+          <traction-button
             :id="'remove-btn-' + row.item.id"
             size="sm"
             class="mr-2"
@@ -17,6 +26,7 @@
           >
             Remove
           </traction-button>
+
         </template>
       </traction-table>
     </traction-section>
@@ -62,6 +72,9 @@ export default {
     ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
+    },
+    addTubeToPool(id){
+      this.selectRequest({id})
     },
     rowClass(item) {
       if (item && item.selected) {
