@@ -13,6 +13,7 @@
             size="sm"
             class="mr-2"
             theme="default"
+            :disabled="disabledButtons[row.item.id]"
             @click="addTubeToPool(row.item.id)"
           >
             Add
@@ -56,6 +57,7 @@ export default {
         { key: 'number_of_flowcells', label: 'Number of flowcells' },
         { key: 'action', label: 'Action' },
       ],
+      disabledButtons: {},
     }
   },
   computed: {
@@ -72,8 +74,13 @@ export default {
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },
+
     addTubeToPool(id) {
       this.selectRequest({ id })
+      this.disabledButtons = {
+        ...this.disabledButtons,
+        [id]: true,
+      }
     },
     rowClass(item) {
       if (item && item.selected) {
