@@ -90,5 +90,36 @@ describe('index', () => {
         })
       })
     })
+
+    describe('fetchTagSets', () => {
+      it('fetches pacbio tag sets by default', async () => {
+        const store = useRootStore()
+        store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
+          success: true,
+          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        })
+        await store.fetchTagSets()
+        expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
+      })
+
+      it('fetches ont tag sets when called with ont', async () => {
+        const store = useRootStore()
+        store.api.v1.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
+          success: true,
+          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        })
+        await store.fetchTagSets('ont')
+        expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
+      })
+
+      it('returns an error if an invalid pipeline is passed', async () => {
+        const store = useRootStore()
+        const result = await store.fetchTagSets('foo')
+        expect(result).toEqual({
+          success: false,
+          errors: ['Tag sets cannot be retrieved for pipeline foo'],
+        })
+      })
+    })
   })
 })

@@ -2,7 +2,7 @@
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
 // new paths, greatly simplifying the removal.
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware
@@ -22,6 +22,7 @@ const fetchLabwareFromSequencescape = async ({
   requests,
   barcodes,
   requestOptions,
+  libraryOptions,
   labwareTypes,
   labwareRequestConfig,
 }) => {
@@ -32,15 +33,22 @@ const fetchLabwareFromSequencescape = async ({
     data,
     included,
     requestOptions,
+    libraryOptions,
     labwareTypes,
   })
 
-  // find all the barcodes in the containerAttributes by type - plates or tubes
-  const foundBarcodes = new Set(
-    Object.keys(containerAttributes).reduce((result, type) => {
-      return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
-    }, []),
-  )
+  let foundBarcodes = new Set()
+  if (containerAttributes['pool_attributes']) {
+    // If we have a pool we only want to show the pool barcode
+    foundBarcodes = new Set([containerAttributes['pool_attributes']['barcode']])
+  } else {
+    // find all the barcodes in the containerAttributes by type - plates or tubes
+    foundBarcodes = new Set(
+      Object.keys(containerAttributes).reduce((result, type) => {
+        return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
+      }, []),
+    )
+  }
 
   return {
     attributes: { source: 'traction-ui.sequencescape', ...containerAttributes },
@@ -62,7 +70,7 @@ const fetchLabwareFromSequencescape = async ({
 const getLabware = async (request, barcodes, labwareRequestConfig) => {
   const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
 
-  const { success, data: { data, included = [] } = {}, errors } = await handleResponse(promise)
+  const { success, body: { data, included = [] } = {}, errors } = await handleResponse(promise)
 
   if (success) {
     return { data, included }
@@ -80,7 +88,13 @@ const getLabware = async (request, barcodes, labwareRequestConfig) => {
  * @param { Object } labwareTypes Object containing the labware types and their attributes
  * @returns { Object } Object of containerAttributes for import into traction
  */
-const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = {}) => {
+const transformAllLabware = ({
+  data,
+  included,
+  requestOptions,
+  libraryOptions,
+  labwareTypes,
+} = {}) => {
   return data.reduce((result, labware) => {
     // find the labware type
     const labwareType = labwareTypes[labware.type]
@@ -94,14 +108,24 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
       result[labwareType.attributes] = []
     }
     // add the transformed labware to the attributes object
-    result[labwareType.attributes].push(
+    result[labwareType.attributes] = result[labwareType.attributes].concat(
       labwareType.transformFunction({
         labware,
         included,
         requestOptions,
+        libraryOptions,
         barcodeAttribute: labwareType.barcodeAttribute,
       }),
     )
+
+    if (labwareType.pool) {
+      result['pool_attributes'] = buildPool({
+        labware,
+        included,
+        libraryOptions,
+        barcodeAttribute: labwareType.barcodeAttribute,
+      })
+    }
 
     return result
   }, {})
@@ -169,6 +193,47 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
 }
 
 /**
+ * A function to build a reception library Object
+ * Currently only includes data for ONT Libraries
+ * @param {Object}  aliquot Aliquot object from Sequencescape
+ * @param {Object} sample_metadata Sample metadata object from Sequencescape
+ * @returns {Object} Object containing the library object
+ */
+const buildLibrary = ({ aliquot, sample_metadata, libraryOptions }) => {
+  return {
+    library: {
+      volume: sample_metadata.attributes.volume,
+      concentration: sample_metadata.attributes.concentration,
+      insert_size: aliquot.attributes.insert_size_to,
+      tag_sequence: aliquot.attributes.tag_oligo,
+      kit_barcode: libraryOptions.kit_barcode,
+    },
+  }
+}
+
+/**
+ * A function to build a reception pool Object
+ * Currently only includes data for ONT pools
+ * @param {Object}  aliquot Aliquot object from Sequencescape
+ * @param {Object} sample_metadata Sample metadata object from Sequencescape
+ * @returns {Object} Object containing the library object
+ */
+const buildPool = ({ labware, included, barcodeAttribute, libraryOptions }) => {
+  // The sample metadata can be assumed to be the same from any sample_metadata object
+  const sample_metadata = included.find((item) => item.type === 'sample_metadata')
+  // The aliquot metadata can be assumed to be the same from any aliquot object
+  const aliquot = included.find((item) => item.type === 'aliquots')
+
+  return {
+    barcode: labware.attributes.labware_barcode[barcodeAttribute],
+    volume: sample_metadata.attributes.volume,
+    concentration: sample_metadata.attributes.concentration,
+    insert_size: aliquot.attributes.insert_size_to,
+    kit_barcode: libraryOptions.kit_barcode,
+  }
+}
+
+/**
  *
  * @param {Object} labware Labware object from Sequencescape
  * @param {Array<Object>} included Included objects from Sequencescape
@@ -194,6 +259,36 @@ const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) 
     // build the request and sample objects
     ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
   }
+}
+
+const transformMultiplexedLibraryTube = ({
+  included,
+  requestOptions,
+  barcodeAttribute,
+  libraryOptions,
+}) => {
+  const included_labware = included.filter((item) => item.type === 'labware')
+  const child_library_tubes = included_labware.map((child_library_tube) => {
+    const receptacle = findIncluded({
+      included,
+      data: child_library_tube.relationships.receptacles.data[0],
+      type: 'receptacles',
+    })
+
+    const { aliquot, study, sample, sample_metadata } = getIncludedData({
+      labware: receptacle,
+      included,
+    })
+
+    return {
+      barcode: child_library_tube.attributes.labware_barcode[barcodeAttribute],
+      // build the request and sample objects
+      ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+      ...buildLibrary({ aliquot, sample_metadata, libraryOptions }),
+    }
+  })
+
+  return child_library_tubes
 }
 
 /**
@@ -238,8 +333,15 @@ const labwareTypes = {
   tubes: {
     type: 'tubes',
     attributes: 'tubes_attributes',
-    barcodeAttribute: 'machine_barcode',
     transformFunction: transformTube,
+    barcodeAttribute: 'machine_barcode',
+  },
+  multiplexed_library_tubes: {
+    type: 'tubes',
+    attributes: 'tubes_attributes',
+    pool: true,
+    transformFunction: transformMultiplexedLibraryTube,
+    barcodeAttribute: 'human_barcode',
   },
   plates: {
     type: 'plates',
@@ -253,6 +355,8 @@ export {
   fetchLabwareFromSequencescape,
   getIncludedData,
   buildRequestAndSample,
+  buildLibrary,
+  buildPool,
   findIncluded,
   labwareTypes,
 }

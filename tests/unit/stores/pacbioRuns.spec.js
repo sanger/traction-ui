@@ -1,10 +1,12 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { Data, createPinia, setActivePinia } from '@support/testHelper'
-import Response from '@/api/v1/Response'
+import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
 import { newResponse } from '@/api/v1/ResponseHelper'
 import { extractAttributes } from '@/api/JsonApi'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+
+const pacbioRunsFactory = PacbioRunFactory()
 
 describe('usePacbioRunsStore', () => {
   beforeEach(() => {
@@ -23,7 +25,7 @@ describe('usePacbioRunsStore', () => {
   describe('getters', () => {
     it('returns "runsArray" the given runs state', () => {
       const store = usePacbioRunsStore()
-      const runs = new Response(Data.PacbioRuns).deserialize.runs
+      const runs = pacbioRunsFactory.content.data
       store.runs = {
         runs: runs,
       }
@@ -35,8 +37,8 @@ describe('usePacbioRunsStore', () => {
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
         store.runs = []
-        store.runRequest.get = vi.fn().mockReturnValue(Data.PacbioRuns)
-        const data = Data.PacbioRuns.data.data
+        store.runRequest.get = vi.fn().mockReturnValue(pacbioRunsFactory.responses.axios)
+        const data = pacbioRunsFactory.content.data
         api.dataToObjectById = vi.fn().mockReturnValue(data)
         const { success, errors } = await store.fetchPacbioRuns()
         expect(store.runsArray.length).toEqual(data.length)
@@ -65,13 +67,13 @@ describe('usePacbioRunsStore', () => {
     describe('updateRun', () => {
       let updatedRun
       beforeEach(() => {
-        updatedRun = Data.PacbioRun.data.data
+        updatedRun = pacbioRunsFactory.content.data
       })
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
         store.runs = []
-        store.runRequest.update = vi.fn().mockReturnValue(Data.PacbioRun)
-        const updatedRun = Data.PacbioRun.data.data
+        store.runRequest.update = vi.fn().mockReturnValue(pacbioRunsFactory.responses.axios)
+        const updatedRun = pacbioRunsFactory.content.data
 
         const { success, errors } = await store.updateRun({ ...updatedRun })
         expect(store.runs[updatedRun.id]).toEqual(extractAttributes(updatedRun))

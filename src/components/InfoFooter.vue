@@ -1,5 +1,5 @@
 <template>
-  <footer class="border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100 bg-sdb-400">
+  <footer :class="footerClasses">
     <div class="max-w-sm mx-auto px-4 sm:px-6">
       <ul class="flex flex-row items-center justify-between my-2 text-xs text-gray-500 space-x-4">
         <li>
@@ -56,11 +56,13 @@
 </template>
 
 <script>
+import { bgColorClass } from '@/lib/BgColorClass'
+
 export default {
   name: 'InfoFooter',
   data() {
     return {
-      environment: import.meta.env.MODE,
+      environment: import.meta.env['VITE_ENVIRONMENT'],
       repo: '',
       linkSlice: 51, //length needed for to slice github URL down to release name
       defaultRelease: 'https://github.com/sanger/traction-ui/releases',
@@ -90,6 +92,14 @@ export default {
       } catch (err) {
         console.error(err)
       }
+    },
+  },
+  computed: {
+    footerClasses() {
+      return [
+        'border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100',
+        bgColorClass[this.environment],
+      ]
     },
   },
 }

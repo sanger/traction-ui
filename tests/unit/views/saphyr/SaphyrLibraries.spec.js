@@ -1,6 +1,22 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, store, Data } from '@support/testHelper'
+import { mount, store, Data, createTestingPinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
+
+function mountWithStore({ props } = {}) {
+  const wrapperObj = mount(Libraries, {
+    global: {
+      plugins: [createTestingPinia({})],
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+      },
+    },
+    store,
+    props,
+  })
+  return { wrapperObj }
+}
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
@@ -42,16 +58,9 @@ describe('Libraries.vue', () => {
       Data.TractionSaphyrLibraries,
     )
 
-    wrapper = mount(Libraries, {
-      store,
-      global: {
-        stubs: {
-          PrinterModal: {
-            template: '<div ref="printerModal"></div>',
-          },
-        },
-      },
-    })
+    const { wrapperObj } = mountWithStore()
+
+    wrapper = wrapperObj
     libraries = wrapper.vm
   })
 
@@ -138,7 +147,7 @@ describe('Libraries.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        libraries.createPrintJob = vi.fn().mockImplementation(() => {
+        libraries.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -147,7 +156,7 @@ describe('Libraries.vue', () => {
       })
 
       it('should create a print job', () => {
-        expect(libraries.createPrintJob).toBeCalledWith({
+        expect(libraries.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: libraries.createLabels(),
           copies: 1,

@@ -97,8 +97,8 @@ import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
-import { useStore } from 'vuex'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
+import { usePrintingStore } from '@/stores/printing.js'
 
 /**
  * Following are new Vue 3 features used in this component:
@@ -182,8 +182,8 @@ const { fetchWithQueryParams } = useQueryParams()
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
 
-//Create VueX store
-const store = useStore()
+// Create printing store
+const printingStore = usePrintingStore()
 
 //computed
 const libraries = computed(() => librariesStore.librariesArray)
@@ -227,7 +227,7 @@ const createLabels = () => {
 }
 
 const printLabels = async (printerName) => {
-  const { success, message = {} } = await store.dispatch('printMyBarcode/createPrintJob', {
+  const { success, message = {} } = await printingStore.createPrintJob({
     printerName,
     labels: createLabels(),
     copies: 1,

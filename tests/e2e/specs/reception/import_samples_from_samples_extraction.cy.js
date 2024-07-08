@@ -1,4 +1,4 @@
-// https://docs.cypress.io/api/introduction/api.html
+import SamplesExtractionLabwareFactory from '../../../factories/SamplesExtractionLabwareFactory.js'
 
 describe('Import samples from Samples extraction, for Pacbio', () => {
   beforeEach(() => {
@@ -14,7 +14,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
-      fixture: 'sampleExtractionTubesWithSample.json',
+      statusCode: 200,
+      body: SamplesExtractionLabwareFactory().content,
     })
     cy.intercept('POST', '/v1/receptions', {
       body: {
@@ -38,7 +39,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I,SE108533J', {
-      fixture: 'sampleExtractionTubesWithSample.json',
+      statusCode: 200,
+      body: SamplesExtractionLabwareFactory().content,
     })
     cy.intercept('POST', '/v1/receptions', {
       body: {
@@ -51,9 +53,7 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
         },
       },
     })
-    // cy.intercept('POST', '/v1/receptions', { fixture: 'tractionPacbioRequest.json' }).as(
-    //   'postPayload',
-    // )
+
     cy.get('#barcodes').type('SE108532I\nSE108533J\n')
     cy.contains('Import 1 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
@@ -67,7 +67,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.contains('Scan barcodes')
     cy.get('[data-type="pipeline-list"]').select('ONT')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
-      fixture: 'sampleExtractionTubesWithSample.json',
+      statusCode: 200,
+      body: SamplesExtractionLabwareFactory().content,
     })
     cy.intercept('/v1/receptions', {
       statusCode: 422,
