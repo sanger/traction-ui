@@ -10,6 +10,6 @@ describe('TractionHeader.vue', () => {
   })
 
   it('has headerClasses', () => {
-    expect(wrapper.vm.headerClasses).toEqual(['relative from-sdb to-sdb-400 bg-gradient-to-tr'])
+    expect(wrapper.vm.headerClasses).toEqual(['bg-gradient-to-tr from-sdb to-sdb-400'])
   })
 })
