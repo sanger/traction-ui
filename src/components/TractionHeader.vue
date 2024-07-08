@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import TractionLink from '@/components/TractionLink'
 import { bgColorClass } from '@/lib/BgColorClass'
 
