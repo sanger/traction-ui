@@ -23,6 +23,6 @@ import { bgColorClass } from '@/lib/BgColorClass'
 const environment = import.meta.env['VITE_ENVIRONMENT']
 
 const headerClasses = computed(() => {
-  return ['relative from-sdb to-sdb-400', bgColorClass[environment]]
+  return [bgColorClass[environment]]
 })
 </script>
