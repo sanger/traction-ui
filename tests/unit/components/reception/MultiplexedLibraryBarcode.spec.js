@@ -6,7 +6,7 @@ import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import { flushPromises } from '@vue/test-utils'
-import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -18,7 +18,7 @@ vi.mock('@/composables/useAlert', () => ({
 const printerFactory = PrinterFactory()
 
 // TODO: tests are brittle as they are using actual ids related to data.
-const pacbioTagSetFactory = PacbioTagSetFactory()
+const ontTagSetFactory = OntTagSetFactory()
 
 async function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(MultiplexedLibraryBarcode, {
@@ -45,7 +45,7 @@ describe('MultiplexedLibraryBarcode', () => {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        store.api.v2.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
+        store.api.v2.traction.ont.tag_sets.get = vi.fn(() => ontTagSetFactory.responses.fetch)
       }
     },
   ]
@@ -53,7 +53,7 @@ describe('MultiplexedLibraryBarcode', () => {
   const buildWrapper = async (props = {}) => {
     return await mountWithStore({
       props: {
-        pipeline: 'PacBio',
+        pipeline: 'ONT',
         reception: Receptions['SequencescapeMultiplexedLibraries'],
         requestOptions: {
           costCode: '1234',
@@ -77,7 +77,7 @@ describe('MultiplexedLibraryBarcode', () => {
         await wrapper.find('#barcode').setValue('DN1')
         expect(wrapper.vm.barcode).toEqual('DN1')
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 0 labware into PacBio from Sequencescape Multiplexed Libraries',
+          'Import 0 labware into ONT from Sequencescape Multiplexed Libraries',
         )
       })
 
@@ -93,7 +93,7 @@ describe('MultiplexedLibraryBarcode', () => {
         expect(mockedFetchFunction).toBeCalled()
         expect(wrapper.vm.labwareData.foundBarcodes).toEqual(new Set(['DN1']))
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 1 labware into PacBio from Sequencescape Multiplexed Libraries',
+          'Import 1 labware into ONT from Sequencescape Multiplexed Libraries',
         )
       })
     })
@@ -164,7 +164,7 @@ describe('MultiplexedLibraryBarcode', () => {
     const { wrapperObj: wrapper } = await buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
-      'Import 0 labware into PacBio from Sequencescape Multiplexed Libraries',
+      'Import 0 labware into ONT from Sequencescape Multiplexed Libraries',
     )
     expect(wrapper.find('[data-action=reset-form]').text()).toEqual('Reset')
     expect(wrapper.find('[data-action=import-labware]').text()).toEqual('Import')
