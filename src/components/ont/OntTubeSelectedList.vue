@@ -5,7 +5,6 @@
         :items="selectedTubeRequests"
         :fields="requestFields"
         empty-text="No tubes selected"
-        @row-clicked="requestClicked"
       >
         <template #cell(action)="row">
           <traction-button
@@ -16,16 +15,16 @@
             :disabled="disabledButtons[row.item.id]"
             @click="addTubeToPool(row.item.id)"
           >
-            Add
+            +
           </traction-button>
           <traction-button
             :id="'remove-btn-' + row.item.id"
             size="sm"
             class="mr-2"
             theme="default"
-            @click="deselectTubeAndContents(row.item.source_identifier)"
+            @click="removeTubeFromPool(row.item.id, row.item.source_identifier)"
           >
-            Remove
+            -
           </traction-button>
         </template>
       </traction-table>
@@ -82,6 +81,15 @@ export default {
         [id]: true,
       }
     },
+
+    removeTubeFromPool(id, barcode) {
+      this.deselectTubeAndContents(barcode)
+      this.disabledButtons = {
+        ...this.disabledButtons,
+        [id]: false,
+      }
+    },
+
     rowClass(item) {
       if (item && item.selected) {
         return 'bg-gray-400'
