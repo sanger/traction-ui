@@ -1,8 +1,12 @@
-import { mount, nextTick, createTestingPinia, Data } from '@support/testHelper.js'
+import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+
+// TODO: tests are brittle as they are using actual ids related to data.
+const pacbioTagSetFactory = PacbioTagSetFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -52,7 +56,9 @@ describe('PacbioLibraryForm.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+          store.api.v2.traction.pacbio.tag_sets.get = vi.fn(
+            () => pacbioTagSetFactory.responses.fetch,
+          )
         }
       },
     ]
@@ -91,11 +97,11 @@ describe('PacbioLibraryForm.vue', () => {
       { value: '', text: 'Please select a tag set' },
       {
         text: 'Sequel_16_barcodes_v3',
-        value: '3',
+        value: '1',
       },
       {
         text: 'IsoSeq_v1',
-        value: '4',
+        value: '6',
       },
     ])
   })
@@ -106,15 +112,15 @@ describe('PacbioLibraryForm.vue', () => {
 
   it('should update tagOptions when tagSet is selected', async () => {
     expect(modal.tagOptions).toHaveLength(1)
-    modal.selectedTagSetId = '3'
+    modal.selectedTagSetId = '1'
     await nextTick()
-    expect(modal.tagOptions).toHaveLength(17)
+    expect(modal.tagOptions).toHaveLength(3)
   })
   it('shows an alert when fetcPaclbioTagSets fails', async () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
+          store.api.v2.traction.pacbio.tag_sets.get = vi.fn().mockRejectedValue('Error')
         }
       },
     ]
@@ -131,7 +137,9 @@ describe('PacbioLibraryForm.vue', () => {
       const plugins = [
         ({ store }) => {
           if (store.$id === 'root') {
-            store.api.v1.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+            store.api.v2.traction.pacbio.tag_sets.get = vi.fn(
+              () => pacbioTagSetFactory.responses.fetch,
+            )
           }
         },
       ]
@@ -140,7 +148,7 @@ describe('PacbioLibraryForm.vue', () => {
         disabled: true,
         isStatic: true,
         library: {
-          tag_id: '113',
+          tag_id: '3',
           volume: 15,
           concentration: '1',
           template_prep_kit_box_barcode: 'barcode',
@@ -161,11 +169,11 @@ describe('PacbioLibraryForm.vue', () => {
       expect(wrapper.find('#library-concentration').element.value).toBe('1')
       expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('barcode')
       expect(wrapper.find('#library-insertSize').element.value).toBe('1')
-      expect(wrapper.find('#tag-set-input').element.value).toBe('3')
+      expect(wrapper.find('#tag-set-input').element.value).toBe('1')
       expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
       expect(wrapper.find('#library-used-volume').text()).toContain('10.42')
       expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
-      expect(modal.selectedTagSetId).toBe('3')
+      expect(modal.selectedTagSetId).toBe('1')
     })
 
     it('shows error when new value when entered volume is less than used_volume', async () => {

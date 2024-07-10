@@ -3,7 +3,7 @@ import buildV1 from '@/api/v1/ApiBuilder.js'
 import buildV2 from '@/api/v2/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
 
@@ -43,9 +43,13 @@ const useRootStore = defineStore('root', {
       if (!['ont', 'pacbio'].includes(pipeline)) {
         return { success: false, errors: [`Tag sets cannot be retrieved for pipeline ${pipeline}`] }
       }
-      const request = this.api.v1.traction[pipeline].tag_sets
+      const request = this.api.v2.traction[pipeline].tag_sets
       const promise = request.get()
-      const { success, data: { data } = {}, errors = [] } = await handleResponse(promise)
+      const {
+        success,
+        body: { data },
+        errors = [],
+      } = await handleResponse(promise)
 
       if (success && data) {
         this.tagSets = dataToObjectById({ data })

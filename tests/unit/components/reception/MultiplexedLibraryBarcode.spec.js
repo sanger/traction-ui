@@ -6,6 +6,7 @@ import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import { flushPromises } from '@vue/test-utils'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -15,6 +16,9 @@ vi.mock('@/composables/useAlert', () => ({
 }))
 
 const printerFactory = PrinterFactory()
+
+// TODO: tests are brittle as they are using actual ids related to data.
+const pacbioTagSetFactory = PacbioTagSetFactory()
 
 async function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
   const wrapperObj = mount(MultiplexedLibraryBarcode, {
@@ -38,6 +42,14 @@ async function mountWithStore({ state = {}, stubActions = false, plugins = [], p
 }
 
 describe('MultiplexedLibraryBarcode', () => {
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        store.api.v2.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
+      }
+    },
+  ]
+
   const buildWrapper = async (props = {}) => {
     return await mountWithStore({
       props: {
@@ -48,6 +60,7 @@ describe('MultiplexedLibraryBarcode', () => {
         },
         ...props,
       },
+      plugins,
       state: { resources: { printers: printerFactory.storeData } },
     })
   }

@@ -94,9 +94,12 @@ describe('index', () => {
     describe('fetchTagSets', () => {
       it('fetches pacbio tag sets by default', async () => {
         const store = useRootStore()
-        store.api.v1.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
-          success: true,
-          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        store.api.v2.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
+          status: '200',
+          statusText: 'OK',
+          json: () =>
+            Promise.resolve({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
+          ok: true,
         })
         await store.fetchTagSets()
         expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
@@ -104,9 +107,12 @@ describe('index', () => {
 
       it('fetches ont tag sets when called with ont', async () => {
         const store = useRootStore()
-        store.api.v1.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
-          success: true,
-          data: { data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] },
+        store.api.v2.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
+          status: '200',
+          statusText: 'OK',
+          json: () =>
+            Promise.resolve({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
+          ok: true,
         })
         await store.fetchTagSets('ont')
         expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
