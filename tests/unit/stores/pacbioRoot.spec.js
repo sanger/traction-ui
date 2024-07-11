@@ -7,21 +7,6 @@ import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
-const tagSets = {
-  1: {
-    id: '1',
-    name: 'tagSet1',
-    pipeline: 'pipeline1',
-    tags: [],
-  },
-  2: {
-    id: '2',
-    name: 'tagSet2',
-    pipeline: 'pipeline1',
-    tags: [],
-  },
-}
-
 describe('usePacbioRootStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -36,56 +21,46 @@ describe('usePacbioRootStore', () => {
     })
     describe('tagSetList', () => {
       it('returns a list of all fetched tagSet', () => {
-        store.tagSets = tagSets
-        expect(store.tagSetList).toEqual(Object.values(tagSets))
+        store.tagSets = pacbioTagSetFactory.storeData.tagSets
+        expect(store.tagSetList).toEqual(Object.values(pacbioTagSetFactory.storeData.tagSets))
       })
     })
 
     describe('tagList', () => {
-      const tags = {
-        1: { id: '1', name: 'tag1' },
-        2: { id: '2', name: 'tag2' },
-        3: { id: '3', name: 'tag3' },
-        4: { id: '4', name: 'tag4' },
-        5: { id: '5', name: 'tag5' },
-      }
       it('returns a list of all fetched tagSet', () => {
-        store.tags = tags
-        expect(store.tagList()).toEqual(tags.values)
+        store.tags = pacbioTagSetFactory.storeData.tags
+        expect(store.tagList()).toEqual(pacbioTagSetFactory.storeData.tags.values)
       })
       it('when ids are included', () => {
-        store.tags = tags
-        const ids = ['1', '2', '3']
+        store.tags = pacbioTagSetFactory.storeData.tags
+        const ids = Object.keys(pacbioTagSetFactory.storeData.tags)
         expect(store.tagList(ids).length).toEqual(ids.length)
       })
     })
     it('returns tagSetChoicesArray and tagChoicesForId from state.tagSetChoices', async () => {
-      const data = dataToObjectById({
-        data: pacbioTagSetFactory.content.data,
-        includeRelationships: true,
-      })
       store.$state = {
-        tagSets: { ...data },
-        tags: { ...dataToObjectById({ data: pacbioTagSetFactory.content.included }) },
+        tagSets: pacbioTagSetFactory.storeData.tagSets,
+        tags: pacbioTagSetFactory.storeData.tags,
       }
-      const expectedTagSetChoices = [
-        {
-          text: 'Sequel_16_barcodes_v3',
-          value: '1',
-        },
-        {
-          text: 'IsoSeq_v1',
-          value: '6',
-        },
-      ]
-      expect(store.tagSetChoices).toEqual(Object.values(expectedTagSetChoices))
-      expect(store.tagChoicesForId('1')).toHaveLength(2)
+
+      // This is an improvement as we are not using hard coded ids but might be better as an object from store data.
+      const selectedTagSetId = Object.keys(pacbioTagSetFactory.storeData.tagSets)[0]
+      const selectedTagSet = pacbioTagSetFactory.storeData.tagSets[selectedTagSetId]
+      const selectedTagId = pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags[0]
+      const selectedTag = pacbioTagSetFactory.storeData.tags[selectedTagId]
+
+      expect(store.tagSetChoices.length).toEqual(
+        Object.values(pacbioTagSetFactory.storeData.tagSets).length,
+      )
+      expect(store.tagChoicesForId(selectedTagSetId)).toHaveLength(
+        pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags.length,
+      )
       expect(
         store
-          .tagChoicesForId('1')
-          .some((tag) => tag.text === 'bc1001_BAK8A_OA' && tag.value === '3'),
+          .tagChoicesForId(selectedTagSetId)
+          .some((tag) => tag.text === selectedTag.group_id && tag.value === selectedTag.id),
       ).toBe(true)
-      expect(store.tagsetForTagId('3').name).toEqual('Sequel_16_barcodes_v3')
+      expect(store.tagsetForTagId(selectedTagId).name).toEqual(selectedTagSet.name)
     })
   })
   describe('actions', () => {
