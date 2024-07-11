@@ -88,16 +88,25 @@ describe('OntTubeSelectedList', () => {
       expect(del_button.element.disabled).toBe(false)
     })
 
-    it('deselects the tube and request when the remove button is clicked', async () => {
-      const dispatch = vi.fn()
-      store.dispatch = dispatch
-      await nextTick()
-      const button = wrapper.find('#remove-btn-191')
-      button.trigger('click')
-      expect(dispatch).toHaveBeenCalledWith(
-        'traction/ont/pools/deselectTubeAndContents',
-        'GEN-1668092750-3',
-      )
-    })
+    it('call addTubeToPool when the + button is clicked', async () => {
+      const addTubeToPoolSpy = vi.spyOn(wrapper.vm, 'addTubeToPool')
+      const button = wrapper.find('#add-btn-191')
+      await button.trigger('click')
+
+      expect(addTubeToPoolSpy).toHaveBeenCalledWith('191')
+      expect(wrapper.vm.disabledButtons[191]).toBe(true)
+      addTubeToPoolSpy.mockRestore()
+    }),
+      it('deselects the tube and request when the remove button is clicked', async () => {
+        const dispatch = vi.fn()
+        store.dispatch = dispatch
+        await nextTick()
+        const button = wrapper.find('#remove-btn-191')
+        button.trigger('click')
+        expect(dispatch).toHaveBeenCalledWith(
+          'traction/ont/pools/deselectTubeAndContents',
+          'GEN-1668092750-3',
+        )
+      })
   })
 })
