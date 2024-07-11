@@ -78,6 +78,16 @@ describe('OntTubeSelectedList', () => {
       expect(button.element.disabled).toBe(false)
     })
 
+    it('disable + button, enable - button after + is clicked', async () => {
+      const add_button = wrapper.find('#add-btn-191')
+      const del_button = wrapper.find('#del-btn-191')
+      expect(add_button.element).toBeTruthy()
+      expect(del_button.element).toBeTruthy()
+      await add_button.trigger('click')
+      expect(add_button.element.disabled).toBe(true)
+      expect(del_button.element.disabled).toBe(false)
+    })
+
     it('deselects the tube and request when the remove button is clicked', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
