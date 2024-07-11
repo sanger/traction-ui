@@ -16,8 +16,6 @@ vi.mock('@/composables/useAlert', () => ({
 }))
 
 const printerFactory = PrinterFactory()
-
-// TODO: tests are brittle as they are using actual ids related to data.
 const ontTagSetFactory = OntTagSetFactory()
 
 async function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
