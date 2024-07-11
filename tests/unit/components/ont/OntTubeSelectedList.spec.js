@@ -58,7 +58,24 @@ describe('OntTubeSelectedList', () => {
       expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('basecalls')
       expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('ONT_PromethIon')
       expect(wrapper.find('tbody').findAll('td')[5].text()).toEqual('1')
-      expect(wrapper.find('tbody').findAll('td')[6].text()).toEqual('+   -')
+    })
+
+    it('it has a + button', () => {
+      const button = wrapper.findComponent('#add-btn-191')
+      expect(button.element).toBeTruthy()
+      expect(button.element.disabled).toBe(false)
+    })
+
+    it('it has a - button', () => {
+      const button = wrapper.findComponent('#del-btn-191')
+      expect(button.element).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
+    })
+
+    it('it has a Remove button', () => {
+      const button = wrapper.findComponent('#remove-btn-191')
+      expect(button.element).toBeTruthy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('deselects the tube and request when the remove button is clicked', async () => {

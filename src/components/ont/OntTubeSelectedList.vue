@@ -18,13 +18,23 @@
             +
           </traction-button>
           <traction-button
+            :id="'del-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            :disabled="!disabledButtons[row.item.id]"
+            @click="removeTubeFromPool(row.item.id)"
+          >
+            -
+          </traction-button>
+          <traction-button
             :id="'remove-btn-' + row.item.id"
             size="sm"
             class="mr-2"
             theme="default"
-            @click="removeTubeFromPool(row.item.id, row.item.source_identifier)"
+            @click="DeselectTube(row.item.id, row.item.source_identifier)"
           >
-            -
+            Remove
           </traction-button>
         </template>
       </traction-table>
@@ -82,12 +92,17 @@ export default {
       }
     },
 
-    removeTubeFromPool(id, barcode) {
-      this.deselectTubeAndContents(barcode)
+    removeTubeFromPool(id) {
+      this.selectRequest({ id, selected: false })
       this.disabledButtons = {
         ...this.disabledButtons,
         [id]: false,
       }
+    },
+
+    DeselectTube(id, barcode) {
+      this.deselectTubeAndContents(barcode)
+      delete this.disabledButtons[id]
     },
 
     rowClass(item) {
