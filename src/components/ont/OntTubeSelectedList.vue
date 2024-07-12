@@ -79,7 +79,6 @@ export default {
   methods: {
     ...mapMutations(['selectTube', 'selectRequest']),
     ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
-    ...mapGetters(['selectedTubes', 'requestList', 'selectedRequests']),
 
     isButtonDisabled(id){     
       return this.selectedRequests.find( (request) => request.id === id )
