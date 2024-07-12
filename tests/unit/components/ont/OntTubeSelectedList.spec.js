@@ -96,8 +96,7 @@ describe('OntTubeSelectedList', () => {
       expect(removeTubeFromPoolSpy).toHaveBeenCalledWith('191')
       removeTubeFromPoolSpy.mockRestore()
     }),
-      
-    it('deselects the tube and request when the remove button is clicked', async () => {
+      it('deselects the tube and request when the remove button is clicked', async () => {
         const dispatch = vi.fn()
         store.dispatch = dispatch
         await nextTick()
