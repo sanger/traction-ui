@@ -1,10 +1,18 @@
+import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Pacbio Libraries view', () => {
   beforeEach(() => {
     cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
       fixture: 'tractionPacbioLibraries.json',
     })
-    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
-      fixture: 'tractionPacbioTagSets.json',
+    cy.intercept('GET', '/v1/printers', {
+      statusCode: 200,
+      body: PrinterFactory().content,
+    })
+    cy.intercept('GET', '/v1/pacbio/tag_sets?include=tags', {
+      statusCode: 200,
+      body: PacbioTagSetFactory().content,
     })
   })
   it('Visits the pacbio libraries url', () => {

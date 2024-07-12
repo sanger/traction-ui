@@ -43,24 +43,24 @@ describe('usePacbioRootStore', () => {
         tags: pacbioTagSetFactory.storeData.tags,
       }
 
-      // This is an improvement as we are not using hard coded ids but might be better as an object from store data.
-      const selectedTagSetId = Object.keys(pacbioTagSetFactory.storeData.tagSets)[0]
-      const selectedTagSet = pacbioTagSetFactory.storeData.tagSets[selectedTagSetId]
-      const selectedTagId = pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags[0]
-      const selectedTag = pacbioTagSetFactory.storeData.tags[selectedTagId]
-
       expect(store.tagSetChoices.length).toEqual(
         Object.values(pacbioTagSetFactory.storeData.tagSets).length,
       )
-      expect(store.tagChoicesForId(selectedTagSetId)).toHaveLength(
-        pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags.length,
+      expect(store.tagChoicesForId(pacbioTagSetFactory.storeData.selected.tagSet.id)).toHaveLength(
+        pacbioTagSetFactory.storeData.selected.tagSet.tags.length,
       )
       expect(
         store
-          .tagChoicesForId(selectedTagSetId)
-          .some((tag) => tag.text === selectedTag.group_id && tag.value === selectedTag.id),
+          .tagChoicesForId(pacbioTagSetFactory.storeData.selected.tagSet.id)
+          .some(
+            (tag) =>
+              tag.text === pacbioTagSetFactory.storeData.selected.tag.group_id &&
+              tag.value === pacbioTagSetFactory.storeData.selected.tag.id,
+          ),
       ).toBe(true)
-      expect(store.tagsetForTagId(selectedTagId).name).toEqual(selectedTagSet.name)
+      expect(store.tagsetForTagId(pacbioTagSetFactory.storeData.selected.tag.id).name).toEqual(
+        pacbioTagSetFactory.storeData.selected.tagSet.name,
+      )
     })
   })
   describe('actions', () => {
