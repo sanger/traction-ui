@@ -30,7 +30,7 @@ describe('PacbioSamples.vue', () => {
     PacbioRequestsRequest.data.included = []
 
     // DataFetcher calls requests get on render so we need to mock the call
-    const requestGet = vi.spyOn(store.state.api.v1.traction.pacbio.requests, 'get')
+    const requestGet = vi.spyOn(store.state.api.v2.traction.pacbio.requests, 'get')
     requestGet.mockReturnValue(PacbioRequestsRequest)
 
     // PacbioLibraryCreate calls tags get on render so we need to mock the call
