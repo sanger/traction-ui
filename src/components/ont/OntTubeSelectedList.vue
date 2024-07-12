@@ -32,7 +32,7 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="DeselectTube(row.item.source_identifier)"
+            @click="deselectTubeAndContents(row.item.source_identifier)"
           >
             Remove
           </traction-button>
@@ -94,10 +94,6 @@ export default {
 
     removeTubeFromPool(id) {
       this.selectRequest({ id, selected: false })
-    },
-
-    DeselectTube(barcode) {
-      this.deselectTubeAndContents(barcode)
     },
 
     rowClass(item) {
