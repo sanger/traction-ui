@@ -1,4 +1,4 @@
-import BaseFactory from '@tests/factories/BaseFactory.js'
+import BaseFactory from './BaseFactory.js'
 
 const TractionPacbioSamplesFactory = () => {
   const data = {
