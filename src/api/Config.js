@@ -155,6 +155,125 @@ const config = [
       },
     ],
   },
+  {
+    name: 'tractionv2',
+    apiNamespace: 'v2',
+    rootURL: import.meta.env['VITE_TRACTION_BASE_URL'],
+    resources: [
+      {
+        name: 'samples',
+      },
+      {
+        name: 'tags',
+      },
+      {
+        name: 'receptions',
+      },
+      {
+        name: 'qc_results_uploads',
+      },
+      {
+        name: 'printers',
+      },
+    ],
+    pipelines: [
+      {
+        name: 'saphyr',
+        resources: [
+          {
+            name: 'libraries',
+          },
+          {
+            name: 'enzymes',
+          },
+          {
+            name: 'runs',
+          },
+          {
+            name: 'chips',
+          },
+          {
+            name: 'flowcells',
+          },
+          {
+            name: 'requests',
+          },
+          {
+            name: 'tubes',
+          },
+        ],
+      },
+      {
+        name: 'pacbio',
+        resources: [
+          {
+            name: 'libraries',
+          },
+          {
+            name: 'request_library',
+          },
+          {
+            name: 'requests',
+          },
+          {
+            name: 'tubes',
+          },
+          {
+            name: 'runs',
+            resources: [
+              {
+                name: 'plates',
+              },
+              {
+                name: 'wells',
+              },
+            ],
+          },
+          {
+            name: 'plates',
+          },
+          {
+            name: 'wells',
+          },
+          {
+            name: 'tag_sets',
+          },
+          {
+            name: 'pools',
+          },
+          {
+            name: 'smrt_link_versions',
+          },
+        ],
+      },
+      {
+        name: 'ont',
+        resources: [
+          {
+            name: 'requests',
+          },
+          {
+            name: 'plates',
+          },
+          {
+            name: 'tubes',
+          },
+          {
+            name: 'tag_sets',
+          },
+          {
+            name: 'pools',
+          },
+          {
+            name: 'instruments',
+          },
+          {
+            name: 'runs',
+          },
+        ],
+      },
+    ],
+  }
 ]
 
 export default config
