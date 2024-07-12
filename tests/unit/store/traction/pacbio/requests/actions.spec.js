@@ -75,7 +75,10 @@ describe('actions', () => {
       const expectedPayload = Actions.createRequestPayload(sample)
 
       expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
-      expect(commit).toHaveBeenCalledWith('updateRequest', tractionPacbioSamplesFactory.content.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'updateRequest',
+        tractionPacbioSamplesFactory.content.data.data,
+      )
       expect(success).toEqual(true)
       expect(errors).toEqual([])
     })
