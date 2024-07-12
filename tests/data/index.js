@@ -45,8 +45,6 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionOntRequests from './tractionOntRequests'
-import TractionOntTagSets from './tractionOntTagSets.json'
-import TractionPacbioTagSets from './tractionPacbioTagSets.json'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
@@ -97,7 +95,6 @@ export default {
   TractionPacbioLibrary,
   TractionPacbioSamples,
   TractionPacbioSample,
-  TractionPacbioTagSets,
   PacbioRuns,
   PacbioRun,
   PacbioPlates,
@@ -117,7 +114,6 @@ export default {
   PacbioWellLibrary,
   tractionOntLibraries,
   TractionOntRequests,
-  TractionOntTagSets,
   TractionOntPool,
   TractionOntPools,
   TractionTubeWithContainerMaterials,

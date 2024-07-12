@@ -1,4 +1,5 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from './../../src/api/JsonApi'
 
 const OntTagSetFactory = () => {
   const data = {
@@ -3895,7 +3896,12 @@ const OntTagSetFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  const storeData = {
+    tagSets: dataToObjectById({ data: data.data, includeRelationships: true }),
+    tags: dataToObjectById({ data: data.included }),
+  }
+
+  return { ...BaseFactory(data), storeData }
 }
 
 export default OntTagSetFactory

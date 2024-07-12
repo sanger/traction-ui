@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+
+const ontTagSetFactory = OntTagSetFactory()
 
 describe('mutations', () => {
   const {
@@ -591,7 +594,7 @@ describe('mutations', () => {
   describe('populateTagSets', () => {
     it('updates the state', () => {
       // mock state
-      const tagSets = Data.TractionOntTagSets.data.data
+      const tagSets = ontTagSetFactory.content.data
       const state = defaultState()
       // apply mutation
       populateTagSets(state, tagSets)
