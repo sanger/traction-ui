@@ -1,6 +1,6 @@
 import BaseFactory from '@tests/factories/BaseFactory.js'
 
-const PacbioSamplesFactory = () => {
+const TractionPacbioSamplesFactory = () => {
   const data = {
     data: {
       data: [
@@ -205,4 +205,4 @@ const PacbioSamplesFactory = () => {
   return BaseFactory(data)
 }
 
-export default PacbioSamplesFactory
+export default TractionPacbioSamplesFactory
