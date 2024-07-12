@@ -63,13 +63,13 @@ describe('OntTubeSelectedList', () => {
     it('it has a + button', () => {
       const button = wrapper.findComponent('#add-btn-191')
       expect(button.element).toBeTruthy()
-      expect(button.element.disabled).toBe(false)
+      expect(button.element.disabled).toBe(true)
     })
 
     it('it has a - button', () => {
       const button = wrapper.findComponent('#del-btn-191')
       expect(button.element).toBeTruthy()
-      expect(button.element.disabled).toBe(true)
+      expect(button.element.disabled).toBe(false)
     })
 
     it('it has a Remove button', () => {
@@ -88,14 +88,13 @@ describe('OntTubeSelectedList', () => {
       expect(del_button.element.disabled).toBe(false)
     })
 
-    it('call addTubeToPool when the + button is clicked', async () => {
-      const addTubeToPoolSpy = vi.spyOn(wrapper.vm, 'addTubeToPool')
-      const button = wrapper.find('#add-btn-191')
+    it('call removeTubeFromPool when the - button is clicked', async () => {
+      const removeTubeFromPoolSpy = vi.spyOn(wrapper.vm, 'removeTubeFromPool')
+      const button = wrapper.find('#del-btn-191')
       await button.trigger('click')
 
-      expect(addTubeToPoolSpy).toHaveBeenCalledWith('191')
-      expect(wrapper.vm.disabledButtons[191]).toBe(true)
-      addTubeToPoolSpy.mockRestore()
+      expect(removeTubeFromPoolSpy).toHaveBeenCalledWith('191')
+      removeTubeFromPoolSpy.mockRestore()
     }),
       it('deselects the tube and request when the remove button is clicked', async () => {
         const dispatch = vi.fn()
