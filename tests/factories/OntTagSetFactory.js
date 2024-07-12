@@ -4,7 +4,7 @@ const OntTagSetFactory = () => {
   const data = {
     data: [
       {
-        id: '11',
+        id: '7',
         type: 'tag_sets',
         links: {
           self: 'https://traction.psd.sanger.ac.uk/v1/ont/tag_sets/11',
@@ -410,7 +410,7 @@ const OntTagSetFactory = () => {
         },
       },
       {
-        id: '12',
+        id: '8',
         type: 'tag_sets',
         links: {
           self: 'https://traction.psd.sanger.ac.uk/v1/ont/tag_sets/12',
