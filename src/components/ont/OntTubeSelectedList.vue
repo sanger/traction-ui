@@ -12,7 +12,7 @@
             size="sm"
             class="mr-2"
             theme="default"
-            :disabled="disabledButtons[row.item.id]"
+            :disabled="isButtonDisabled(row.item.id)"
             @click="addTubeToPool(row.item.id)"
           >
             +
@@ -22,7 +22,7 @@
             size="sm"
             class="mr-2"
             theme="default"
-            :disabled="!disabledButtons[row.item.id]"
+            :disabled="!isButtonDisabled(row.item.id)"
             @click="removeTubeFromPool(row.item.id)"
           >
             -
@@ -32,7 +32,7 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="DeselectTube(row.item.id, row.item.source_identifier)"
+            @click="DeselectTube(row.item.source_identifier)"
           >
             Remove
           </traction-button>
@@ -66,11 +66,10 @@ export default {
         { key: 'number_of_flowcells', label: 'Number of flowcells' },
         { key: 'action', label: 'Action' },
       ],
-      disabledButtons: {},
     }
   },
   computed: {
-    ...mapGetters(['selectedTubes', 'requestList']),
+    ...mapGetters(['selectedTubes', 'requestList', 'selectedRequests']),
     selectedTubeRequests() {
       return this.selectedTubes.flatMap((tube) => {
         return this.requestList(tube.requests || [])
@@ -80,29 +79,26 @@ export default {
   methods: {
     ...mapMutations(['selectTube', 'selectRequest']),
     ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
+    ...mapGetters(['selectedTubes', 'requestList', 'selectedRequests']),
+
+    isButtonDisabled(id){     
+      return this.selectedRequests.find( (request) => request.id === id )
+    },
+
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },
 
     addTubeToPool(id) {
       this.selectRequest({ id })
-      this.disabledButtons = {
-        ...this.disabledButtons,
-        [id]: true,
-      }
     },
 
     removeTubeFromPool(id) {
       this.selectRequest({ id, selected: false })
-      this.disabledButtons = {
-        ...this.disabledButtons,
-        [id]: false,
-      }
     },
 
-    DeselectTube(id, barcode) {
+    DeselectTube(barcode) {
       this.deselectTubeAndContents(barcode)
-      delete this.disabledButtons[id]
     },
 
     rowClass(item) {
