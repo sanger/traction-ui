@@ -84,10 +84,6 @@ export default {
       return this.selectedRequests.find((request) => request.id === id)
     },
 
-    requestClicked({ id, selected }) {
-      this.selectRequest({ id, selected: !selected })
-    },
-
     addTubeToPool(id) {
       this.selectRequest({ id })
     },
