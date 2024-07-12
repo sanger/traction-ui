@@ -97,17 +97,16 @@ describe('OntTubeSelectedList', () => {
       expect(wrapper.vm.disabledButtons[191]).toBe(true)
       addTubeToPoolSpy.mockRestore()
     }),
-
-    it('deselects the tube and request when the remove button is clicked', async () => {
-      const dispatch = vi.fn()
-      store.dispatch = dispatch
-      await nextTick()
-      const button = wrapper.find('#remove-btn-191')
-      button.trigger('click')
-      expect(dispatch).toHaveBeenCalledWith(
-        'traction/ont/pools/deselectTubeAndContents',
-        'GEN-1668092750-3',
-      )
-    })
+      it('deselects the tube and request when the remove button is clicked', async () => {
+        const dispatch = vi.fn()
+        store.dispatch = dispatch
+        await nextTick()
+        const button = wrapper.find('#remove-btn-191')
+        button.trigger('click')
+        expect(dispatch).toHaveBeenCalledWith(
+          'traction/ont/pools/deselectTubeAndContents',
+          'GEN-1668092750-3',
+        )
+      })
   })
 })
