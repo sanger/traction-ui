@@ -4,11 +4,12 @@ import PrinterFactory from '../../../factories/PrinterFactory.js'
 describe('Pacbio Libraries view', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
+    cy.wrap(PrinterFactory()).as('printerFactory')
 
     cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
       fixture: 'tractionPacbioLibraries.json',
     })
-    cy.get(PrinterFactory()).then((printerFactory) => {
+    cy.get('@printerFactory').then((printerFactory) => {
       cy.intercept('GET', '/v1/printers', {
         statusCode: 200,
         body: printerFactory.content,

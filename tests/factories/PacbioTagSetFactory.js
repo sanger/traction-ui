@@ -18,6 +18,7 @@ const createStoreData = (data) => {
     selected: {
       tagSet,
       tag: tags[tagSet.tags[0]],
+      tagCount: tagSet.tags.length,
     },
   }
 }
