@@ -4,8 +4,6 @@ describe('Pacbio Pool Create', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
 
-    cy.wrap
-
     cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
       cy.intercept('GET', '/v1/pacbio/tag_sets?include=tags', {
         statusCode: 200,
