@@ -1,5 +1,24 @@
+import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('ONT Pool Edit', () => {
   beforeEach(() => {
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
+    })
+
+    cy.wrap(OntTagSetFactory()).as('ontTagSetFactory')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.intercept('GET', '/v1/ont/tag_sets?include=tags', {
+        statusCode: 200,
+        body: ontTagSetFactory.content,
+      })
+    })
+
     cy.intercept(
       'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
       {

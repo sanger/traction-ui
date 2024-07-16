@@ -1,6 +1,30 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from './../../src/api/JsonApi'
 
+/**
+ * @param {Object} data
+ * @returns {Object} { tagSets, tags, selected { tagSet, tag}}
+ * creates some store data for use in tests
+ */
+const createStoreData = (data) => {
+  const tagSets = dataToObjectById({ data: data.data, includeRelationships: true })
+  const tags = dataToObjectById({ data: data.included })
+  const tagSet = Object.values(tagSets)[0]
+
+  return {
+    tagSets,
+    tags,
+    // useful for select tagSets and an associated tag
+    selected: {
+      tagSet,
+      tag: tags[tagSet.tags[0]],
+      tags: {
+        first: (n = 1) => tagSet.tags.slice(0, n).map((id) => tags[id]),
+      },
+    },
+  }
+}
+
 const OntTagSetFactory = () => {
   const data = {
     data: [
@@ -3896,12 +3920,12 @@ const OntTagSetFactory = () => {
     },
   }
 
-  const storeData = {
-    tagSets: dataToObjectById({ data: data.data, includeRelationships: true }),
-    tags: dataToObjectById({ data: data.included }),
-  }
+  // const storeData = {
+  //   tagSets: dataToObjectById({ data: data.data, includeRelationships: true }),
+  //   tags: dataToObjectById({ data: data.included }),
+  // }
 
-  return { ...BaseFactory(data), storeData }
+  return { ...BaseFactory(data), storeData: createStoreData({ ...data }) }
 }
 
 export default OntTagSetFactory
