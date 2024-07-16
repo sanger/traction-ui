@@ -19,6 +19,8 @@ describe('Pacbio Pool Edit', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
+
+    // move to factory as it calls tag set data.
     cy.intercept(
       'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
       {

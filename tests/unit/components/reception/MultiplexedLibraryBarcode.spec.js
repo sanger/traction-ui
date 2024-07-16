@@ -59,7 +59,7 @@ describe('MultiplexedLibraryBarcode', () => {
         ...props,
       },
       plugins,
-      state: { resources: { printers: printerFactory.storeData } },
+      state: { resources: { printers: printerFactory.storeData.printers } },
     })
   }
 

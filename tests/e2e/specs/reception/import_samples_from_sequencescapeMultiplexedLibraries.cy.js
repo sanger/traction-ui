@@ -1,12 +1,18 @@
 import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
     })
 
-    cy.intercept('/v1/printers', {
-      fixture: 'tractionPrinters.json',
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
 
     cy.intercept('/v1/ont/tag_sets', {
