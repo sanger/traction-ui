@@ -31,9 +31,6 @@ describe('ONT Pool Edit', () => {
         fixture: 'tractionOntPoolWithIncludes.json',
       },
     )
-    cy.intercept('/v1/ont/tag_sets?include=tags', {
-      fixture: 'tractionOntTagSets.json',
-    })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
     })
