@@ -41,7 +41,7 @@ describe('Pacbio plates actions', () => {
   })
 
   describe('findPlate', () => {
-    it.only('fetches the plate from the service, and returns it with wells and requests', async () => {
+    it('fetches the plate from the service, and returns it with wells and requests', async () => {
       get.mockReturnValue(successResponse)
 
       // Barcode provided is first plate in Data.PacbioPlatesRequest
