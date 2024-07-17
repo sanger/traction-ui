@@ -129,7 +129,7 @@ describe('Pacbio Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'error1 There was a problem')
   })
 
-  it.only('can automate creation of large pools', () => {
+  it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
