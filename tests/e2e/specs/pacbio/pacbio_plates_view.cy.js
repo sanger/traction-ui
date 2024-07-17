@@ -12,6 +12,10 @@ describe('Pacbio plates view', () => {
         statusCode: 200,
         body: pacbioPlateRequestFactory.content,
       })
+      cy.intercept('/v1/pacbio/plates?page[size]=25&page[number]=1', {
+        statusCode: 200,
+        body: pacbioPlateRequestFactory.content,
+      })
     })
 
     cy.visit('#/pacbio/plates')
