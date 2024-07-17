@@ -1,12 +1,13 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, router, flushPromises } from '@support/testHelper'
+import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
 
 describe('PacbioPlates.vue', () => {
   let wrapper, plates
-
+  const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.v1.traction.pacbio.plates, 'get')
-    get.mockResolvedValue(Data.PacbioPlatesRequest)
+    const get = vi.spyOn(store.state.api.v2.traction.pacbio.plates, 'get')
+    get.mockResolvedValue(pacbioPlatesRequestFactory.responses.fetch)
 
     wrapper = mount(PacbioPlates, {
       store,
@@ -34,7 +35,7 @@ describe('PacbioPlates.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
     })
   })
 
@@ -42,13 +43,15 @@ describe('PacbioPlates.vue', () => {
     let button
 
     it('is present for each plate', () => {
-      // btn-61 because that is the first plate ID in the mocked data
-      button = wrapper.find('#details-btn-61')
+      const id = pacbioPlatesRequestFactory.content.data[0].id
+      // first plate ID in the mocked data
+      button = wrapper.find(`#details-btn-${id}`)
       expect(button.text()).toEqual('Show Plate')
     })
 
     it('has a plate component on button click', async () => {
-      button = wrapper.find('#details-btn-61')
+      const id = pacbioPlatesRequestFactory.content.data[0].id
+      button = wrapper.find(`#details-btn-${id}`)
       await button.trigger('click')
       // Here we flush promises because the getPlate promise needs to be resolved to see the plate
       await flushPromises()

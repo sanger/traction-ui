@@ -1,8 +1,5 @@
 const getters = {
-  getPlates: (state, getters, rootState) => {
-    debugger
-    return rootState.api.v2.tractionv2.pacbio.plates
-  },
+  getPlates: (state, getters, rootState) => rootState.api.v2.traction.pacbio.plates,
   plates: (state) => Object.values(state.plates),
 }
 

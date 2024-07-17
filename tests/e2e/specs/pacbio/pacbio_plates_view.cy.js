@@ -1,29 +1,19 @@
+import PacbioPlatesRequestFactory from '../../../factories/PacbioPlatesRequestFactory.js'
+
 describe('Pacbio plates view', () => {
   it('Visits the pacbio plates url', () => {
     cy.intercept('v1/pacbio/plates?filter[barcode]=DN1&include=wells.requests', {
       fixture: 'pacbioPlateWithWellsRequest.json',
     })
-    cy.intercept('/v1/pacbio/plates?page[size]=25&page[number]=1', {
-      fixture: 'pacbioPlatesRequest.json',
-    })
-    // When we clear input per page we search for page size 0
-    cy.intercept('/v1/pacbio/plates?page[size]=0&page[number]=1', {
-      statusCode: 400,
-      body: {
-        errors: [
-          {
-            title: 'Invalid page value',
-            detail: '0 is not a valid value for size page parameter.',
-            code: '118',
-            status: '400',
-          },
-        ],
-      },
-    })
     // When we type 1 into input per page we search for page size 1
-    cy.intercept('/v1/pacbio/plates?page[size]=1&page[number]=1', {
-      fixture: 'pacbioPlatesRequest.json',
+    cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
+    cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
+      cy.intercept('GET', '/v1/pacbio/plates?page[size]=1&page[number]=1', {
+        statusCode: 200,
+        body: pacbioPlateRequestFactory.content,
+      })
     })
+
     cy.visit('#/pacbio/plates')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')

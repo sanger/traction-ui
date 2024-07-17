@@ -1,3 +1,5 @@
+import PacbioPlatesRequestFactory from '../../../factories/PacbioPlatesRequestFactory.js'
+
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
     cy.intercept(
@@ -16,8 +18,12 @@ describe('Pacbio Pool Edit', () => {
       fixture: 'tractionPacbioTagSets.json',
     })
 
-    cy.intercept('/v1/pacbio/plates?include=wells.requests', {
-      fixture: 'pacbioPlatesRequest.json',
+    cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
+    cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
+      cy.intercept('GET', '/v1/pacbio/plates?include=wells.requests', {
+        statusCode: 200,
+        body: pacbioPlateRequestFactory.content,
+      })
     })
   })
 

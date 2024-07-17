@@ -8,6 +8,33 @@ const PacbioPlatesRequestFactory = () => {
   const data = {
     data: [
       {
+        id: '1',
+        type: 'plates',
+        links: { self: 'http://localhost:3100/v1/pacbio/plates/1' },
+        attributes: {
+          barcode: 'DN1',
+          created_at: '2023/02/07 15:33',
+        },
+        relationships: {
+          wells: {
+            links: {
+              self: 'http://localhost:3100/v1/pacbio/plates/1/relationships/wells',
+              related: 'http://localhost:3100/v1/pacbio/plates/1/wells',
+            },
+            data: [
+              {
+                type: 'wells',
+                id: '4722',
+              },
+              {
+                type: 'wells',
+                id: '4723',
+              },
+            ],
+          },
+        },
+      },
+      {
         id: '61',
         type: 'plates',
         links: {
@@ -326,11 +353,10 @@ const PacbioPlatesRequestFactory = () => {
     },
   ]
 
-  //
   const expectedPlates = {
-    id: '61',
-    barcode: 'DN814327C',
-    created_at: '2021/06/03 06:59',
+    id: '1',
+    barcode: 'DN1',
+    created_at: '2023/02/07 15:33',
     wells: [
       {
         position: 'A1',
@@ -371,7 +397,7 @@ const PacbioPlatesRequestFactory = () => {
     ],
   }
 
-  return { ...BaseFactory(data), storeData,expectedPlates }
+  return { ...BaseFactory(data), storeData, expectedPlates }
 }
 
 export default PacbioPlatesRequestFactory
