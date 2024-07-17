@@ -19,7 +19,7 @@ function createPayload(run) {
   const existingInstruments = ontRootStore.instruments
   const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
-  //TODO: This need to be refactored to use the Pinia once ont/ppols is migrated
+  //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
   const existingPools = store.getters['traction/ont/pools/pools']
 
   const flowcell_attributes = run.flowcell_attributes
@@ -99,7 +99,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
           (i) => i.id == data.attributes.ont_instrument_id,
         ).name
 
-        //TODO: This need to be refactored to use the Pinia once ont/ppols is migrated
+        //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
         const existingPools = store.getters['traction/ont/pools/pools']
 
         const currentRun = {

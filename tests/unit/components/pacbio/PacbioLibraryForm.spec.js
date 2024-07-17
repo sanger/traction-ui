@@ -5,12 +5,9 @@ import { beforeEach, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
-// TODO: tests are brittle as they are using actual ids related to data.
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
 // This is an improvement as we are not using hard coded ids but might be better as an object from store data.
-const selectedTagSetId = Object.keys(pacbioTagSetFactory.storeData.tagSets)[0]
-const selectedTagId = pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags[0]
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -55,7 +52,7 @@ describe('PacbioLibraryForm.vue', () => {
     props = {
       disabled: true,
       isStatic: true,
-      library: { sample: {}, tag_id: selectedTagId },
+      library: { sample: {}, tag_id: pacbioTagSetFactory.storeData.selected.tag.id },
     }
     const plugins = [
       ({ store }) => {
@@ -109,10 +106,10 @@ describe('PacbioLibraryForm.vue', () => {
 
   it('should update tagOptions when tagSet is selected', async () => {
     expect(modal.tagOptions).toHaveLength(1)
-    modal.selectedTagSetId = selectedTagSetId
+    modal.selectedTagSetId = pacbioTagSetFactory.storeData.selected.tagSet.id
     await nextTick()
     expect(modal.tagOptions).toHaveLength(
-      pacbioTagSetFactory.storeData.tagSets[selectedTagSetId].tags.length + 1,
+      pacbioTagSetFactory.storeData.selected.tagSet.tags.length + 1,
     )
   })
   it('shows an alert when fetcPaclbioTagSets fails', async () => {
@@ -147,7 +144,7 @@ describe('PacbioLibraryForm.vue', () => {
         disabled: true,
         isStatic: true,
         library: {
-          tag_id: selectedTagId,
+          tag_id: pacbioTagSetFactory.storeData.selected.tag.id,
           volume: 15,
           concentration: '1',
           template_prep_kit_box_barcode: 'barcode',
@@ -168,11 +165,13 @@ describe('PacbioLibraryForm.vue', () => {
       expect(wrapper.find('#library-concentration').element.value).toBe('1')
       expect(wrapper.find('#library-templatePrepKitBoxBarcode').element.value).toBe('barcode')
       expect(wrapper.find('#library-insertSize').element.value).toBe('1')
-      expect(wrapper.find('#tag-set-input').element.value).toBe(selectedTagSetId)
+      expect(wrapper.find('#tag-set-input').element.value).toBe(
+        pacbioTagSetFactory.storeData.selected.tagSet.id,
+      )
       expect(wrapper.find('#library-used-volume').element).exist.toBeTruthy()
       expect(wrapper.find('#library-used-volume').text()).toContain('10.42')
       expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
-      expect(modal.selectedTagSetId).toBe(selectedTagSetId)
+      expect(modal.selectedTagSetId).toBe(pacbioTagSetFactory.storeData.selected.tagSet.id)
     })
 
     it('shows error when new value when entered volume is less than used_volume', async () => {

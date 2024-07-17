@@ -4,7 +4,6 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { expect } from 'vitest'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
-// TODO: tests are brittle as they are using actual ids related to data.
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
 const mockShowAlert = vi.fn()
