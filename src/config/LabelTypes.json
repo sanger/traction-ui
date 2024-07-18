@@ -17,11 +17,10 @@
     "labwareType": "plate96",
     "labelTemplateName": "traction_plate_label_template_2d"
   },
-
-  "plate2d_384": {
+  "plate_384_2d": {
     "text": "384-Well Plate - 2d",
-    "value": "plate2d_384",
+    "value": "plate_384_2d",
     "labwareType": "plate384",
-    "labelTemplateName": "traction_plate_label_template_2d"
+    "labelTemplateName": "traction_plate_384_label_template_2d"
   }
 }
