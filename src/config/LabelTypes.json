@@ -5,21 +5,21 @@
     "labwareType": "tube",
     "labelTemplateName": "traction_tube_label_template"
   },
-  "plate1d": {
+  "plate961d": {
     "text": "96-Well Plate - 1d",
-    "value": "plate1d",
+    "value": "plate961d",
     "labwareType": "plate96",
     "labelTemplateName": "traction_plate_label_template_1d"
   },
-  "plate2d": {
+  "plate962d": {
     "text": "96-Well Plate - 2d",
-    "value": "plate2d",
+    "value": "plate962d",
     "labwareType": "plate96",
     "labelTemplateName": "traction_plate_label_template_2d"
   },
-  "plate_384_2d": {
+  "plate3842d": {
     "text": "384-Well Plate - 2d",
-    "value": "plate_384_2d",
+    "value": "plate3842d",
     "labwareType": "plate384",
     "labelTemplateName": "traction_plate_384_label_template_2d"
   }
