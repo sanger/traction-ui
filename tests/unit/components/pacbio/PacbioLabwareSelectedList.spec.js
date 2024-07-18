@@ -42,18 +42,10 @@ const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
 
 describe('PacbioLabwareSelectedList', () => {
   let wrapper, store
-  const plates = dataToObjectById({
-    data: pacbioPlatesRequestFactory.content.data,
-    includeRelationships: true,
-  })
-  const wells = dataToObjectById({
-    data: pacbioPlatesRequestFactory.content.included.slice(0, 4),
-    includeRelationships: true,
-  })
-  const plateRequests = dataToObjectById({
-    data: pacbioPlatesRequestFactory.content.included.slice(4, 7),
-    includeRelationships: true,
-  })
+  const plates = pacbioPlatesRequestFactory.storeData.plates
+  const wells = pacbioPlatesRequestFactory.storeData.wells
+  const plateRequests = pacbioPlatesRequestFactory.storeData.plateRequests
+
   const tubesData = dataToObjectById({
     data: Data.PacbioTubesRequest.data.data,
     includeRelationships: true,

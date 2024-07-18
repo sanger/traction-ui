@@ -69,17 +69,11 @@ describe('PacbioPoolCreate', () => {
       }
     },
   ]
-  const plates = dataToObjectById({
-    data: pacbioPlatesRequestFactory.content.data,
-    includeRelationships: true,
-  })
+  const plates = pacbioPlatesRequestFactory.storeData.plates
+  const wells = pacbioPlatesRequestFactory.storeData.wells
+
   const tubes = dataToObjectById({
     data: Data.PacbioTubesRequest.data.data,
-    includeRelationships: true,
-  })
-
-  const wells = dataToObjectById({
-    data: pacbioPlatesRequestFactory.content.included.slice(0, 4),
     includeRelationships: true,
   })
 

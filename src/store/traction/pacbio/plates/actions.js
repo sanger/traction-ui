@@ -3,7 +3,7 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPlates = async ({ commit, getters }, options) => {
   const request = getters.getPlates
-  const promise = request.get({ page: options?.page, filter: options?.filter })
+  const promise = request.get({ ...options })
   const response = await handleResponse(promise)
 
   const {
@@ -22,10 +22,13 @@ const findPlate = async ({ getters }, filter) => {
   const request = getters.getPlates
   const promise = request.get({ filter, include: 'wells.requests' })
   const response = await handleResponse(promise)
-  const { data, included = [] } = response.body
+  const {
+    success,
+    body: { data, included = [] },
+  } = response
   const { wells, requests } = groupIncludedByResource(included)
 
-  if (response.success && data.length) {
+  if (success && data.length) {
     const plate = data[0]
     return {
       id: plate.id,

@@ -8,11 +8,7 @@ describe('Pacbio plates view', () => {
     // When we type 1 into input per page we search for page size 1
     cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
     cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
-      cy.intercept('GET', '/v1/pacbio/plates?page[size]=1&page[number]=1', {
-        statusCode: 200,
-        body: pacbioPlateRequestFactory.content,
-      })
-      cy.intercept('/v1/pacbio/plates?page[size]=25&page[number]=1', {
+      cy.intercept('GET', /\/v1\/pacbio\/plates\?page\[size\]=\d+&page\[number\]=\d+/, {
         statusCode: 200,
         body: pacbioPlateRequestFactory.content,
       })

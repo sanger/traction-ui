@@ -6,8 +6,10 @@ const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
 describe('getters', () => {
   it('"plates" returns "state.plates"', () => {
     const state = {
-      plates: pacbioPlatesRequestFactory.storeData,
+      plates: pacbioPlatesRequestFactory.storeData.plates,
     }
-    expect(getters.plates(state)).toStrictEqual(Object.values(pacbioPlatesRequestFactory.storeData))
+    expect(getters.plates(state)).toStrictEqual(
+      Object.values(pacbioPlatesRequestFactory.storeData.plates),
+    )
   })
 })

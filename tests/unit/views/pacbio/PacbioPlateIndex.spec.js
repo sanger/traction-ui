@@ -43,15 +43,17 @@ describe('PacbioPlates.vue', () => {
     let button
 
     it('is present for each plate', () => {
-      const id = pacbioPlatesRequestFactory.content.data[0].id
       // first plate ID in the mocked data
-      button = wrapper.find(`#details-btn-${id}`)
+      button = wrapper.find(
+        `#details-btn-${pacbioPlatesRequestFactory.storeData.selected.plate.id}`,
+      )
       expect(button.text()).toEqual('Show Plate')
     })
 
     it('has a plate component on button click', async () => {
-      const id = pacbioPlatesRequestFactory.content.data[0].id
-      button = wrapper.find(`#details-btn-${id}`)
+      button = wrapper.find(
+        `#details-btn-${pacbioPlatesRequestFactory.storeData.selected.plate.id}`,
+      )
       await button.trigger('click')
       // Here we flush promises because the getPlate promise needs to be resolved to see the plate
       await flushPromises()

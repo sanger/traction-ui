@@ -45,9 +45,9 @@ describe('Pacbio plates actions', () => {
       get.mockReturnValue(successResponse)
 
       // Barcode provided is first plate in Data.PacbioPlatesRequest
-      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
+      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN1' })
 
-      expect(plate).toEqual(pacbioPlatesRequestFactory.expectedPlates)
+      expect(plate).toEqual(pacbioPlatesRequestFactory.storeData.findPlatesData)
     })
 
     it('errors fetching the plate', async () => {

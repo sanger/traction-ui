@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-
+import { dataToObjectById } from '../../src/api/JsonApi.js'
 /*
  * Factory for creating a list of runs
  * @returns a base factory object with the runs data
@@ -340,64 +340,81 @@ const PacbioPlatesRequestFactory = () => {
     },
   }
 
-  const storeData = [
-    {
-      barcode: 'DN814327C',
-      created_at: '2021/06/03 06:59',
-      id: '61',
-    },
-    {
-      barcode: 'DN814567Q',
-      created_at: '2021/06/03 14:57',
-      id: '62',
-    },
-  ]
+  /**
+   * @param {Object} data
+   * @returns {Object} { printers, selected { printer } }
+   * creates some store data for use in tests
+   */
+  const createStoreData = (data) => {
+    const plates = dataToObjectById({
+      data: data.data,
+      includeRelationships: true,
+    })
+    const wells = dataToObjectById({
+      data: data.included.slice(0, 4),
+      includeRelationships: true,
+    })
+    const plateRequests = dataToObjectById({
+      data: data.included.slice(4, 7),
+      includeRelationships: true,
+    })
 
-  const expectedPlates = {
-    id: '1',
-    barcode: 'DN1',
-    created_at: '2023/02/07 15:33',
-    wells: [
-      {
-        position: 'A1',
-        requests: [
-          {
-            id: '40',
-            library_type: null,
-            estimate_of_gb_required: null,
-            number_of_smrt_cells: null,
-            cost_code: null,
-            external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-            sample_name: 'sample_DN814327C_A1',
-            barcode: null,
-            sample_species: 'human',
-            created_at: '2021/06/03 06:59',
-            source_identifier: 'DN814327C:A1',
-          },
-        ],
+    const findPlatesData = {
+      id: '1',
+      barcode: 'DN1',
+      created_at: '2023/02/07 15:33',
+      wells: [
+        {
+          position: 'A1',
+          requests: [
+            {
+              id: '40',
+              library_type: null,
+              estimate_of_gb_required: null,
+              number_of_smrt_cells: null,
+              cost_code: null,
+              external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
+              sample_name: 'sample_DN814327C_A1',
+              barcode: null,
+              sample_species: 'human',
+              created_at: '2021/06/03 06:59',
+              source_identifier: 'DN814327C:A1',
+            },
+          ],
+        },
+        {
+          position: 'A2',
+          requests: [
+            {
+              id: '41',
+              library_type: null,
+              estimate_of_gb_required: null,
+              number_of_smrt_cells: null,
+              cost_code: null,
+              external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
+              sample_name: 'sample_DN814327C_A2',
+              barcode: null,
+              sample_species: 'human',
+              created_at: '2021/06/03 06:59',
+              source_identifier: 'DN814327C:A2',
+            },
+          ],
+        },
+      ],
+    }
+
+    return {
+      plates,
+      wells,
+      plateRequests,
+      selected: {
+        plate: plates['1'], // first plate
       },
-      {
-        position: 'A2',
-        requests: [
-          {
-            id: '41',
-            library_type: null,
-            estimate_of_gb_required: null,
-            number_of_smrt_cells: null,
-            cost_code: null,
-            external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-            sample_name: 'sample_DN814327C_A2',
-            barcode: null,
-            sample_species: 'human',
-            created_at: '2021/06/03 06:59',
-            source_identifier: 'DN814327C:A2',
-          },
-        ],
-      },
-    ],
+      findPlatesData,
+    }
   }
 
-  return { ...BaseFactory(data), storeData, expectedPlates }
+  return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
 export default PacbioPlatesRequestFactory
