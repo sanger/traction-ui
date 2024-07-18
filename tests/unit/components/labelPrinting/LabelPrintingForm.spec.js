@@ -226,7 +226,7 @@ describe('LabelPrintingForm.vue', () => {
       })
 
       it('should list printers if selected label type is changed', async () => {
-        labelPrintingForm.labelOptions.labelTypeKey = 'plate1d'
+        labelPrintingForm.labelOptions.labelTypeKey = 'plate961d'
         await nextTick()
         expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
           store.printers(labelPrintingForm.labelType.labwareType).length,
