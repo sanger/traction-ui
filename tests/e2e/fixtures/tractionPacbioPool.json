@@ -210,62 +210,62 @@
       }
     },
     {
-      "id": "251",
+      "id": "289",
       "type": "tags",
       "attributes": {
-        "oligo": "ACACATCTCGTGAGAG",
-        "group_id": "bc1003"
+        "oligo": "ATCGTGCGACGAGTAT",
+        "group_id": "bc2001"
       },
       "relationships": {
         "tag_set": {
           "data": {
             "type": "tag_sets",
-            "id": "6"
+            "id": "7"
           }
         }
       }
     },
     {
-      "id": "252",
+      "id": "290",
       "type": "tags",
       "attributes": {
-        "oligo": "ACACATCTCGTGAACTG",
-        "group_id": "bc1008"
+        "oligo": "TGCATGTCATGAGTAT",
+        "group_id": "bc2002"
       },
       "relationships": {
         "tag_set": {
           "data": {
             "type": "tag_sets",
-            "id": "6"
+            "id": "7"
           }
         }
       }
     },
     {
-      "id": "6",
+      "id": "7",
       "type": "tag_sets",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tag_sets/6"
+        "self": "http://localhost:3100/v1/pacbio/tag_sets/7"
       },
       "attributes": {
-        "name": "IsoSeq_v1",
-        "uuid": "0ed94509-779b-4ba8-babc-7240ab6e30fd",
+        "name": "Pacbio_96_barcode_plate_v3",
+        "uuid": "7a7f33e6-4912-4505-0d1e-3ceef7c93695",
         "pipeline": "pacbio"
       },
       "relationships": {
         "tags": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tag_sets/6/relationships/tags",
-            "related": "http://localhost:3100/v1/pacbio/tag_sets/6/tags"
+            "self": "http://localhost:3100/v1/pacbio/tag_sets/7/relationships/tags",
+            "related": "http://localhost:3100/v1/pacbio/tag_sets/7/tags"
           },
           "data": [
             {
               "type": "tags",
-              "id": "251"
+              "id": "289"
             },
             {
               "type": "tags",
-              "id": "252"
+              "id": "290"
             }
           ]
         }

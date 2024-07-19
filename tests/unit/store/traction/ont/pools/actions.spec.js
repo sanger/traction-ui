@@ -5,6 +5,9 @@ import Contracts from './contracts'
 import defaultState from '@/store/traction/ont/pools/state'
 import { payload } from '@/store/traction/ont/pools/pool'
 import { newResponse } from '@/api/v1/ResponseHelper'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+
+const ontTagSetFactory = OntTagSetFactory()
 
 describe('actions.js', () => {
   const {
@@ -115,16 +118,13 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { tag_sets: { get } } } } } }
-      get.mockResolvedValue(Data.TractionOntTagSets)
+      const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
+      get.mockResolvedValue(ontTagSetFactory.responses.fetch)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
       // assert result
-      expect(commit).toHaveBeenCalledWith(
-        'populateTagSets',
-        Contracts.tagSets.populateTagSetParameters,
-      )
-      expect(commit).toHaveBeenCalledWith('populateTags', Contracts.tags.populateTagParameters)
+      expect(commit).toHaveBeenCalledWith('populateTagSets', ontTagSetFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateTags', ontTagSetFactory.content.included)
       expect(success).toEqual(true)
     })
 
@@ -133,7 +133,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { tag_sets: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,

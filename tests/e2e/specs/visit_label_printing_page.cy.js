@@ -1,16 +1,23 @@
 // https://docs.cypress.io/api/introduction/api.html
+import PrinterFactory from '../../factories/PrinterFactory.js'
 
 describe('Label Printing page', () => {
   beforeEach(() => {
-    cy.intercept('/v1/printers', {
-      fixture: 'tractionPrinters.json',
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
 
     cy.visit('#/label-printing')
     cy.get('#barcode-input').type('aBarcode')
     cy.get('#suffix-selection').select('OPLX - Pool')
     cy.get('#number-of-labels').type(3)
-    cy.get('#printer-choice').select('stub')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.get('#printer-choice').select(printerFactory.storeData.selected.printer.name)
+    })
   })
 
   it('Shows the correct information', () => {

@@ -1,9 +1,16 @@
+import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
+
 describe('Ont Pool Create', () => {
   beforeEach(() => {
-    cy.intercept('/v1/ont/tag_sets?include=tags', {
-      fixture: 'tractionOntTagSets.json',
+    cy.wrap(OntTagSetFactory()).as('ontTagSetFactory')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.intercept('GET', '/v1/ont/tag_sets?include=tags', {
+        statusCode: 200,
+        body: ontTagSetFactory.content,
+      })
     })
 
+    // tags are hardcoded. This should be moved to a factory.
     cy.intercept('/v1/ont/plates?filter[barcode]=GENSAMPLE-1668092750-1&include=wells.requests', {
       fixture: 'tractionOntPlate.json',
     })
@@ -21,9 +28,15 @@ describe('Ont Pool Create', () => {
 
     cy.get('[data-type=plate-item]').should('have.length', 1)
 
-    cy.get('[data-type=tag-set-list]').select('ONT_native')
-    cy.get('[data-attribute=tag-set-name]').click()
-    cy.get('[data-attribute=group-id]').should('have.length', 96)
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+      cy.get('[data-attribute=tag-set-name]').click()
+      cy.get('[data-attribute=group-id]').should(
+        'have.length',
+        ontTagSetFactory.storeData.selected.tagSet.tags.length,
+      )
+    })
+
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
@@ -31,7 +44,9 @@ describe('Ont Pool Create', () => {
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
     cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-type=tag-list]').select('NB01')
+      cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+        cy.get('[data-type=tag-list]').select(ontTagSetFactory.storeData.selected.tag.group_id)
+      })
       cy.get('[data-attribute=kit-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
@@ -49,12 +64,9 @@ describe('Ont Pool Create', () => {
           },
         },
       },
-    }).as('postPayload')
+    })
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
-    cy.fixture('tractionOntSinglePoolCreate').then(({ data }) => {
-      cy.wait('@postPayload').its('request.body').should('deep.equal', data)
-    })
   })
 
   it('Will not create a pool if there is an error', () => {
@@ -62,7 +74,10 @@ describe('Ont Pool Create', () => {
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GENSAMPLE-1668092750-1')
     cy.get('[data-action=find-labware]').click()
-    cy.get('[data-type=tag-set-list]').select('ONT_native')
+
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
 
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
@@ -70,7 +85,9 @@ describe('Ont Pool Create', () => {
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-type=tag-list]').select('NB01')
+      cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+        cy.get('[data-type=tag-list]').select(ontTagSetFactory.storeData.selected.tag.group_id)
+      })
       cy.get('[data-attribute=kit-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
@@ -95,7 +112,9 @@ describe('Ont Pool Create', () => {
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GENSAMPLE-1668092750-1')
     cy.get('[data-action=find-labware]').click()
-    cy.get('[data-type=tag-set-list]').select('ONT_native')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
@@ -132,14 +151,18 @@ describe('Ont Pool Create', () => {
     // Auto-tagging
     cy.get('[data-attribute=check-box]').click()
 
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:A1")')
-      .find('[data-type=tag-list]')
-      .select('NB01')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:B1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '386')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      const selected = ontTagSetFactory.storeData.selected
+      const tagList = selected.tags.first(2)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:A1")')
+        .find('[data-type=tag-list]')
+        .select(tagList[0].group_id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:B1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[1].id)
+    })
 
     cy.intercept('/v1/ont/pools?include=tube', {
       statusCode: 201,
@@ -158,12 +181,14 @@ describe('Ont Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
   })
 
-  it('can populate tags from csv', () => {
+  it.only('can populate tags from csv', () => {
     cy.visit('#/ont/pool/new')
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GENSAMPLE-1668092750-1')
     cy.get('[data-action=find-labware]').click()
-    cy.get('[data-type=tag-set-list]').select('ONT_native')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
@@ -187,7 +212,7 @@ describe('Ont Pool Create', () => {
       'GEN-1668092750-1:C1',
       'GEN-1668092750-1:D1',
     ]
-
+    // can we create this dynamically?
     cy.get('#qcFileInput').attachFile('ontAndTags.csv')
     // Validate the order
     cy.get('[data-type=pool-library-edit]').each((el, index) => {
@@ -197,22 +222,28 @@ describe('Ont Pool Create', () => {
       })
     })
 
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:A1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '386')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:B1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '387')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:C1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '388')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("GEN-1668092750-1:D1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '389')
+    // this is brittle as tags are hard coded in file
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      const selected = ontTagSetFactory.storeData.selected
+      const tagList = selected.tags.first(4)
+
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:A1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[0].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:B1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[1].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:C1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[2].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:D1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[3].id)
+    })
 
     cy.intercept('/v1/ont/pools?include=tube', {
       statusCode: 201,

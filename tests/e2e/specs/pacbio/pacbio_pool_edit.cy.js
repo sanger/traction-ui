@@ -1,23 +1,42 @@
+import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
+    cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
+    cy.wrap(PrinterFactory()).as('printerFactory')
+
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.intercept('GET', '/v1/pacbio/tag_sets?include=tags', {
+        statusCode: 200,
+        body: pacbioTagSetFactory.content,
+      })
+    })
+
     cy.intercept(
       'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
       {
         fixture: 'tractionPacbioPools.json',
       },
     )
+
+    // move to factory as it calls tag set data.
     cy.intercept(
       'v1/pacbio/pools/1?include=used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
       {
         fixture: 'tractionPacbioPool.json',
       },
     )
-    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
-      fixture: 'tractionPacbioTagSets.json',
-    })
 
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
+    })
+
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
   })
 

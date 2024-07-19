@@ -2,6 +2,22 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '../../src/api/JsonApi.js'
 
+/**
+ * @param {Object} data
+ * @returns {Object} { printers, selected { printer } }
+ * creates some store data for use in tests
+ */
+const createStoreData = (data) => {
+  const printers = dataToObjectById({ ...data })
+
+  return {
+    printers,
+    selected: {
+      printer: printers['1'],
+    },
+  }
+}
+
 /*
  * Factory for creating a list of printers
  * @returns a base factory object with the printers data
@@ -110,9 +126,7 @@ const PrinterFactory = () => {
     },
   }
 
-  const storeData = dataToObjectById({ ...data })
-
-  return { ...BaseFactory(data), storeData }
+  return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
 export default PrinterFactory

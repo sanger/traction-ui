@@ -1,7 +1,6 @@
 import { handleResponse, newResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
 import { it } from 'vitest'
 
-// TODO: we have left this in a broken state as we still need to work out how errors are handled
 describe('ResponseHelper', () => {
   describe('createResponse', () => {
     describe('successful', () => {

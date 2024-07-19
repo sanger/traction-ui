@@ -1,4 +1,5 @@
 import { handleResponse } from '@/api/v1/ResponseHelper'
+import { handleResponse as handleResponseV2 } from '@/api/v2/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { wellFor, wellToIndex } from './wellHelpers'
 import { validate, valid, payload } from './pool'
@@ -394,11 +395,11 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntTagSets: async ({ commit, rootState }) => {
-    const request = rootState.api.v1.traction.ont.tag_sets
+    const request = rootState.api.v2.traction.ont.tag_sets
     const promise = request.get({ include: 'tags' })
-    const response = await handleResponse(promise)
+    const response = await handleResponseV2(promise)
 
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, body: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
       commit('populateTagSets', data)

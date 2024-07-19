@@ -1,6 +1,10 @@
-import { mount, nextTick, createTestingPinia, flushPromises, Data } from '@support/testHelper.js'
+import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+
+const pacbioTagSetFactory = PacbioTagSetFactory()
+
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -55,7 +59,10 @@ describe('PacbioLibraryEdit.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+          // this was api. but didn't fail so is it needed?
+          store.api.v2.traction.pacbio.tag_sets.get = vi.fn(
+            () => pacbioTagSetFactory.responses.fetch,
+          )
         }
       },
     ]

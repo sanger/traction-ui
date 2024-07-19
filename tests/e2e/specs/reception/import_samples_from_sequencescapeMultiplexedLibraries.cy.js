@@ -1,16 +1,27 @@
 import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
+
 describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
     })
 
-    cy.intercept('/v1/printers', {
-      fixture: 'tractionPrinters.json',
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
 
-    cy.intercept('/v1/ont/tag_sets', {
-      fixture: 'tractionOntTagSets.json',
+    cy.wrap(OntTagSetFactory()).as('ontTagSetFactory')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.intercept('GET', '/v1/ont/tag_sets', {
+        statusCode: 200,
+        body: ontTagSetFactory.content,
+      })
     })
 
     cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
@@ -57,7 +68,9 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
       },
     })
     cy.get('#barcode').type('3980000042705\n')
-    cy.get('[data-type=tag-set-list').select('ONT_native')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
     cy.contains('Import 1 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('NT42F imported from Sequencescape')
@@ -89,7 +102,9 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
       },
     )
     cy.get('#barcode').type('NT42F\n')
-    cy.get('[data-type=tag-set-list').select('ONT_native')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
     cy.contains('Import 0 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('No labware to import')
@@ -125,7 +140,9 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
       body: { errors: [{ title: 'receptions', detail: 'There was an error.' }] },
     })
     cy.get('#barcode').type('3980000042705\n')
-    cy.get('[data-type=tag-set-list').select('ONT_native')
+    cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
+      cy.get('[data-type=tag-set-list').select(ontTagSetFactory.storeData.selected.tagSet.name)
+    })
     cy.contains('Import 1 labware into ONT from Sequencescape Multiplexed Libraries')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
