@@ -360,47 +360,30 @@ const PacbioPlatesRequestFactory = () => {
     })
 
     const findPlatesData = {
-      id: '1',
-      barcode: 'DN1',
-      created_at: '2023/02/07 15:33',
-      wells: [
-        {
-          position: 'A1',
-          requests: [
-            {
-              id: '40',
-              library_type: null,
-              estimate_of_gb_required: null,
-              number_of_smrt_cells: null,
-              cost_code: null,
-              external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-              sample_name: 'sample_DN814327C_A1',
-              barcode: null,
-              sample_species: 'human',
-              created_at: '2021/06/03 06:59',
-              source_identifier: 'DN814327C:A1',
-            },
-          ],
-        },
-        {
-          position: 'A2',
-          requests: [
-            {
-              id: '41',
-              library_type: null,
-              estimate_of_gb_required: null,
-              number_of_smrt_cells: null,
-              cost_code: null,
-              external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-              sample_name: 'sample_DN814327C_A2',
-              barcode: null,
-              sample_species: 'human',
-              created_at: '2021/06/03 06:59',
-              source_identifier: 'DN814327C:A2',
-            },
-          ],
-        },
-      ],
+      id: data.data[0].id,
+      barcode: data.data[0].attributes.barcode,
+      created_at: data.data[0].attributes.created_at,
+      wells: Object.values(wells)
+        .slice(0, 2)
+        .map((well) => ({
+          position: well.position,
+          requests: well.requests.map((wr) => {
+            const request = plateRequests[wr]
+            return {
+              id: request.id,
+              library_type: request.library_type,
+              estimate_of_gb_required: request.estimate_of_gb_required,
+              number_of_smrt_cells: request.number_of_smrt_cells,
+              cost_code: request.cost_code,
+              external_study_id: request.external_study_id,
+              sample_name: request.sample_name,
+              barcode: request.barcode,
+              sample_species: request.sample_species,
+              created_at: request.created_at,
+              source_identifier: request.source_identifier,
+            }
+          }),
+        })),
     }
 
     return {
