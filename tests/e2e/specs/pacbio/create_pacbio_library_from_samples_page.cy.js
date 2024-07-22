@@ -1,10 +1,29 @@
+import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Pacbio library creation from sample', () => {
+  beforeEach(() => {
+    cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
+    cy.wrap(PrinterFactory()).as('printerFactory')
+  })
+
   it('Visits the pacbio samples url', () => {
     cy.intercept('/v1/pacbio/requests?page[size]=25&page[number]=1', {
       fixture: 'tractionPacbioSamples.json',
     })
-    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
-      fixture: 'tractionPacbioTagSets.json',
+
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.intercept('/v1/pacbio/tag_sets?include=tags', {
+        statusCode: 200,
+        body: pacbioTagSetFactory.content,
+      })
+    })
+
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
     cy.intercept('/v1/pacbio/libraries?include=tube,primary_aliquot', {
       fixture: 'tractionPacbioLibrary.json',
@@ -14,8 +33,11 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#samples-table').first().click()
     cy.get('#pacbioLibraryCreate').click()
     cy.get('#libraryForm').should('be.visible')
-    cy.get('#tag-set-input').select('Sequel_16_barcodes_v3')
-    cy.get('#tag-input').select('bc1001_BAK8A_OA')
+
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.get('#tag-set-input').select(pacbioTagSetFactory.storeData.selected.tagSet.name)
+      cy.get('#tag-input').select(pacbioTagSetFactory.storeData.selected.tag.group_id)
+    })
     cy.get('#library-volume').type(1)
     cy.get('#library-concentration').type(1)
     cy.get('#library-templatePrepKitBoxBarcode').type('012345678901234567890')

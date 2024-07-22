@@ -1,3 +1,5 @@
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Pacbio Pools view', () => {
   it('Visits the pacbio pools url', () => {
     cy.intercept(
@@ -6,6 +8,15 @@ describe('Pacbio Pools view', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
+
+    cy.wrap(PrinterFactory()).as('printerFactory')
+
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
+    })
 
     cy.visit('#/pacbio/pools')
 

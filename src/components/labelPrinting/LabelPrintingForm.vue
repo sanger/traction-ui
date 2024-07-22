@@ -159,6 +159,7 @@ const workflowDropdownOptions = reactive(createWorkflowDropdownOptions(WorkflowL
 const createLabelFns = {
   tube: createWorkflowTubeBarcodeLabel,
   plate96: createWorkflowPlateBarcodeLabel,
+  plate384: createWorkflowPlateBarcodeLabel,
 }
 
 /**
@@ -177,6 +178,7 @@ const labelTypeOptions = computed(() => {
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
+  console.log(labelType)
   return printingStore.printers(labelType.value.labwareType).map(({ name }) => ({
     text: name,
   }))

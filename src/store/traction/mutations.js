@@ -1,9 +1,6 @@
 import defaultState from './state'
 
 const mutations = {
-  setTags(state, tags) {
-    state.tractionTags = tags
-  },
   addMessage(state, message) {
     const messageId = Object.keys(state.messages).pop()
     state.messages[messageId + 1] = message
@@ -17,8 +14,8 @@ const mutations = {
    */
   clearMessages(state) {
     const new_state = defaultState()
-    // Keep tractionTags but clear messages
-    Object.assign(state, new_state, { tractionTags: state.tractionTags })
+    // clear messages
+    Object.assign(state, new_state)
   },
 }
 

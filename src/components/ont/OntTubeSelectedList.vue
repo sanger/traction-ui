@@ -5,9 +5,28 @@
         :items="selectedTubeRequests"
         :fields="requestFields"
         empty-text="No tubes selected"
-        @row-clicked="requestClicked"
       >
         <template #cell(action)="row">
+          <traction-button
+            :id="'add-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            :disabled="isButtonDisabled(row.item.id)"
+            @click="addTubeToPool(row.item.id)"
+          >
+            +
+          </traction-button>
+          <traction-button
+            :id="'del-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            :disabled="!isButtonDisabled(row.item.id)"
+            @click="removeTubeFromPool(row.item.id)"
+          >
+            -
+          </traction-button>
           <traction-button
             :id="'remove-btn-' + row.item.id"
             size="sm"
@@ -50,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['selectedTubes', 'requestList']),
+    ...mapGetters(['selectedTubes', 'requestList', 'selectedRequests']),
     selectedTubeRequests() {
       return this.selectedTubes.flatMap((tube) => {
         return this.requestList(tube.requests || [])
@@ -60,9 +79,19 @@ export default {
   methods: {
     ...mapMutations(['selectTube', 'selectRequest']),
     ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
-    requestClicked({ id, selected }) {
-      this.selectRequest({ id, selected: !selected })
+
+    isButtonDisabled(id) {
+      return this.selectedRequests.find((request) => request.id === id)
     },
+
+    addTubeToPool(id) {
+      this.selectRequest({ id })
+    },
+
+    removeTubeFromPool(id) {
+      this.selectRequest({ id, selected: false })
+    },
+
     rowClass(item) {
       if (item && item.selected) {
         return 'bg-gray-400'

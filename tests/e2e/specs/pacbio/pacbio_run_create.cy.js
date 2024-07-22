@@ -1,4 +1,4 @@
-import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory'
+import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
 
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {

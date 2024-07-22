@@ -108,7 +108,6 @@ describe('usePacbioLibrariesStore', () => {
             pacbio: {
               libraries: { create },
             },
-            tractionTags: [{ id: 1, group_id: '123abc1' }],
           },
         }
 
