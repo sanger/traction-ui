@@ -29,9 +29,6 @@ describe('Pacbio Pool Edit', () => {
         fixture: 'tractionPacbioPool.json',
       },
     )
-    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
-      fixture: 'tractionPacbioTagSets.json',
-    })
 
     cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
     cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
