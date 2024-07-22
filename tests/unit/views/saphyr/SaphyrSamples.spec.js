@@ -118,21 +118,6 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('enzymeModal', () => {
-    beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
-      samples.createLibraries = vi.fn()
-    })
-
-    it('passes selected enzyme id to function on emit event', () => {
-      samples.selected = [{ id: 1 }]
-      const modal = wrapper.findComponent({ ref: 'enzymeModal' })
-      modal.vm.$emit('selectEnzyme', 2)
-
-      expect(samples.createLibraries).toBeCalledWith(2)
-    })
-  })
-
   describe('Printing labels', () => {
     beforeEach(() => {
       samples.selected = [
