@@ -62,7 +62,8 @@
         "insert_size": 100,
         "created_at": "2024/03/18 15:03",
         "updated_at": "2024/03/18 15:03",
-        "source_identifier": "GEN-1710774222-1:H4-C5"
+        "source_identifier": "GEN-1710774222-1:H4-C5",
+        "available_volume": 20
       },
       "relationships": {
         "tube": {

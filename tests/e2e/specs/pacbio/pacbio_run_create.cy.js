@@ -114,6 +114,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {
@@ -140,6 +141,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
     cy.get('#update').click()
 
@@ -180,6 +182,8 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {
@@ -206,6 +210,8 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+
     cy.get('#update').click()
 
     cy.get('button').contains('Create').click()
