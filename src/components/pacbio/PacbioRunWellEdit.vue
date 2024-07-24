@@ -274,8 +274,9 @@ const updateUsedAliquotSource = async (row, barcode) => {
         template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
       },
       () =>
-        store.getAvailableVolumeForLibraryAliquot({
-          libraryId: tubeContent.id,
+        store.getAvailableVolumeForAliquot({
+          sourceId: tubeContent.id,
+          sourceType: type,
           volume: 0,
         }),
     )

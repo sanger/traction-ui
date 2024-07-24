@@ -356,9 +356,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
               return aliquot.source_type === 'Pacbio::Library'
                 ? {
                     ...aliquot,
-                    available_volume: this.getAvailableVolumeForLibraryAliquot({
+                    available_volume: this.getAvailableVolumeForAliquot({
                       aliquotId,
-                      libraryId: aliquot.source_id,
+                      sourceType: aliquot.source_type,
+                      sourceId: aliquot.source_id,
                       volume: aliquot.volume,
                     }),
                   }
@@ -520,53 +521,57 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       this.resources = resources
     },
     /**
-     * Returns the available volume for a library aliquot
-     * @param {Object} libraryId The id of the library
+     * Returns the available volume for an aliquot
+     * @param {Object} sourceId The id of the library or pool
+     * @param {Object} source_type The type of the source (Pacbio::Library or Pacbio::Pool)
      * @param {Object} aliquotId The id of the aliquot
      * @param {Object} volume The volume of the aliquot
      *
      * @returns {Number} The available volume for the aliquot
      */
-    getAvailableVolumeForLibraryAliquot({ libraryId = null, aliquotId = null, volume = null }) {
-      if (!libraryId) {
+    getAvailableVolumeForAliquot({
+      sourceId = null,
+      sourceType = null,
+      aliquotId = null,
+      volume = null,
+    }) {
+      if (!sourceId || !sourceType) {
         return null
       }
 
       // Get the original aliquot if it exists
       const original_aliquot = this.aliquots[aliquotId]
-      // Get the available volume for the library
-      const library_available_volume = this.libraries[libraryId]?.available_volume || 0
 
-      // Calculate the sum of the volume of all the new aliquots used in wells that are from the library
-      let library_used_aliquots_volume = 0
+      // Get the correct store location based off the sourceType
+      const sourceStore = sourceType === 'Pacbio::Library' ? this.libraries : this.pools
+      // Get the available volume for the source
+      const available_volume = sourceStore[sourceId]?.available_volume || 0
+
+      // Calculate the sum of the volume of all the new aliquots used in wells that are from the source
+      let used_aliquots_volume = 0
       Object.values(this.wells).forEach((plate) => {
         Object.values(plate).forEach((well) => {
           well.used_aliquots?.forEach((aliquot) => {
-            // Existing aliquots should not be counted as they are already taken into account in the library available volume
+            // Existing aliquots should not be counted as they are already taken into account in the source available volume
             // This has the issue that if an existing aliquots volume is changed it will not be reflected in the available volume
             if (aliquot.id) {
               return
             }
 
-            // For each aliquot used in wells, check if the source is the library and if so add the volume used
-            if (
-              aliquot &&
-              aliquot.source_id === libraryId &&
-              aliquot.source_type === 'Pacbio::Library'
-            ) {
-              library_used_aliquots_volume =
-                parseFloat(library_used_aliquots_volume) + parseFloat(aliquot.volume)
+            // For each aliquot used in wells, check if the source is the required source and if so add the volume used
+            if (aliquot && aliquot.source_id === sourceId && aliquot.source_type === sourceType) {
+              used_aliquots_volume = parseFloat(used_aliquots_volume) + parseFloat(aliquot.volume)
             }
           })
         })
       })
 
-      // Calculate the total available volume for the library
+      // Calculate the total available volume for the source
       // Subtract the used aliquots volume from the available volume
-      let total_available_volume = library_available_volume - library_used_aliquots_volume
+      let total_available_volume = available_volume - used_aliquots_volume
 
       // If its an existing aliquot we need to add the original volume back
-      // Because its taken into account in the library_available_volume
+      // Because its taken into account in the available_volume
       // Unless the volume is 0 as that won't affect the available volume
       if (original_aliquot && original_aliquot.volume != 0) {
         total_available_volume = total_available_volume + original_aliquot.volume
