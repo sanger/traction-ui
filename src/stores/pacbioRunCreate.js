@@ -353,17 +353,15 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           Object.entries(plate).forEach(([_position, well]) => {
             well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
               const aliquot = this.aliquots[aliquotId]
-              return aliquot.source_type === 'Pacbio::Library'
-                ? {
-                    ...aliquot,
-                    available_volume: this.getAvailableVolumeForAliquot({
-                      aliquotId,
-                      sourceType: aliquot.source_type,
-                      sourceId: aliquot.source_id,
-                      volume: aliquot.volume,
-                    }),
-                  }
-                : { ...aliquot }
+              return {
+                ...aliquot,
+                available_volume: this.getAvailableVolumeForAliquot({
+                  aliquotId,
+                  sourceType: aliquot.source_type,
+                  sourceId: aliquot.source_id,
+                  volume: aliquot.volume,
+                }),
+              }
             })
           })
         })
