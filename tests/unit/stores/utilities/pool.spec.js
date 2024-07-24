@@ -4,7 +4,7 @@ import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 describe('pool', () => {
   describe('createUsedAliquot', () => {
-    it('createUsedAliquot with default values', () => {
+    it('builds the corrrect default values', () => {
       const usedAliquot = createUsedAliquot()
       expect(usedAliquot.source_id).toBe(null)
       expect(usedAliquot.template_prep_kit_box_barcode).toBe(null)
@@ -13,7 +13,7 @@ describe('pool', () => {
       expect(usedAliquot.concentration).toBe(null)
       expect(usedAliquot.insert_size).toBe(null)
     })
-    it('createUsedAliquot with custom values', () => {
+    it('builds with the correct given values', () => {
       const usedAliquot = createUsedAliquot({
         source_id: '1',
         template_prep_kit_box_barcode: 'barcode1',
@@ -28,6 +28,11 @@ describe('pool', () => {
       expect(usedAliquot.volume).toBe(10)
       expect(usedAliquot.concentration).toBe(5)
       expect(usedAliquot.insert_size).toBe(1)
+    })
+    it('correctly sets the default volume when initialiseToAvailableVolume is provided', () => {
+      const initialiseToAvailableVolume = () => '20'
+      const usedAliquot = createUsedAliquot({ volume: 10 }, initialiseToAvailableVolume)
+      expect(usedAliquot.volume).toBe(20)
     })
   })
 

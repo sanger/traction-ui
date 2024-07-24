@@ -477,18 +477,20 @@ describe('PacbioRunWellEdit', () => {
               tube: 1,
               used_aliquots: [],
               type: 'pools',
-              volume: 5,
+              volume: 10,
               concentration: 10,
               template_prep_kit_box_barcode: 'tpkbb1',
+              available_volume: 10,
             },
             2: {
               id: 2,
               tube: 2,
               used_aliquots: [],
               type: 'pools',
-              volume: 6,
+              volume: 10,
               concentration: 11,
               template_prep_kit_box_barcode: 'tpkbb1',
+              available_volume: 10,
             },
           },
           libraries: {
@@ -617,7 +619,7 @@ describe('PacbioRunWellEdit', () => {
     })
 
     describe('updateUsedAliquotSource', () => {
-      it('updates the source of the used aliquot at the given index', async () => {
+      it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a pool', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
         store.tubeContentByBarcode = vi.fn().mockReturnValue({
           id: 1,
@@ -635,15 +637,15 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Pool',
-            volume: 5,
+            volume: 10,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: null,
+            available_volume: 10,
           }),
         )
       })
 
-      it('updates the source, available_volume and volume of the used aliquot at the given index if the source is a library', async () => {
+      it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a library', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
         store.tubeContentByBarcode = vi.fn().mockReturnValue({
           id: 1,
