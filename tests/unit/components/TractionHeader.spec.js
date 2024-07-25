@@ -1,6 +1,6 @@
 import TractionHeader from '@/components/TractionHeader'
 import { mount } from '@support/testHelper'
-import.meta.env.VITE_ENVIRONMENT = 'uat'
+import.meta.env.VITE_ENVIRONMENT = 'production'
 
 describe('TractionHeader.vue', () => {
   let wrapper
@@ -10,9 +10,6 @@ describe('TractionHeader.vue', () => {
   })
 
   it('has headerClasses', () => {
-    expect(wrapper.vm.headerClasses).toStrictEqual([
-      'relative from-sdb to-sdb-400',
-      'bg-purple-600',
-    ])
+    expect(wrapper.vm.headerClasses).toEqual(['relative', 'bg-gradient-to-tr from-sdb to-sdb-400'])
   })
 })

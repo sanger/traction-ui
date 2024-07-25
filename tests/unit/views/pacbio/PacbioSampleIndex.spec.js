@@ -30,10 +30,6 @@ describe('PacbioSamples.vue', () => {
     const requestGet = vi.spyOn(store.state.api.v1.traction.pacbio.requests, 'get')
     requestGet.mockReturnValue(PacbioRequestsRequest)
 
-    // PacbioLibraryCreate calls tags get on render so we need to mock the call
-    const tagGet = vi.spyOn(store.state.api.v1.traction.tags, 'get')
-    tagGet.mockReturnValue(Data.TactionTags)
-
     const { wrapperObj } = mountWithStore()
     wrapper = wrapperObj
     samples = wrapper.vm

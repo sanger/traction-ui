@@ -1,10 +1,25 @@
+import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
+
 describe('Pacbio Libraries view', () => {
   beforeEach(() => {
+    cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
+    cy.wrap(PrinterFactory()).as('printerFactory')
+
     cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
       fixture: 'tractionPacbioLibraries.json',
     })
-    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
-      fixture: 'tractionPacbioTagSets.json',
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
+    })
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.intercept('GET', '/v1/pacbio/tag_sets?include=tags', {
+        statusCode: 200,
+        body: pacbioTagSetFactory.content,
+      })
     })
   })
   it('Visits the pacbio libraries url', () => {
@@ -55,8 +70,10 @@ describe('Pacbio Libraries view', () => {
     cy.get('#library-concentration').clear().type('2')
     cy.get('#library-insertSize').clear().type('200')
     cy.get('#library-templatePrepKitBoxBarcode').clear().type('LK54321')
-    cy.get('#tag-set-input').select('IsoSeq_v1')
-    cy.get('#tag-input').select('bc1001')
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.get('#tag-set-input').select(pacbioTagSetFactory.storeData.selected.tagSet.name)
+      cy.get('#tag-input').select(pacbioTagSetFactory.storeData.selected.tag.group_id)
+    })
     cy.get('#update-btn').click()
     cy.contains('Updated library with barcode TRAC-2-1465')
     cy.get('#libraryForm').should('not.exist')
@@ -66,6 +83,10 @@ describe('Pacbio Libraries view', () => {
     cy.get('#concentration').first().should('have.text', '2')
     cy.get('#template_prep_kit_box_barcode').first().should('have.text', 'LK54321')
     cy.get('#insert_size').first().should('have.text', '200')
-    cy.get('#tag_group_id').first().should('have.text', 'bc1001')
+    cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
+      cy.get('#tag_group_id')
+        .first()
+        .should('have.text', pacbioTagSetFactory.storeData.selected.tag.group_id)
+    })
   })
 })

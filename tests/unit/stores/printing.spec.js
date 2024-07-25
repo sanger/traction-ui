@@ -28,7 +28,7 @@ describe('usePrintingStore', () => {
 
       it('can return printers by laware type', async () => {
         const store = usePrintingStore()
-        store.resources.printers = printerFactory.storeData
+        store.resources.printers = printerFactory.storeData.printers
         expect(store.printers('tube').length).toEqual(4)
       })
     })

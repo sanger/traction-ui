@@ -8,6 +8,10 @@ import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/v1/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+
+const pacbioTagSetFactory = PacbioTagSetFactory()
+
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))
@@ -747,8 +751,8 @@ describe('usePacbioPoolCreateStore', () => {
         find = vi.fn()
         rootStore.api.v1 = { traction: { pacbio: { pools: { find } } } }
         const pacbioRootStore = usePacbioRootStore()
-        pacbioRootStore.tagSets = Data.TractionPacbioTagSets.data.data
-        pacbioRootStore.tags = Data.TractionPacbioTagSets.data.included
+        pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
+        pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
         store.selected = { tagset: {}, plates: {}, tubes: {} }
       })
 
