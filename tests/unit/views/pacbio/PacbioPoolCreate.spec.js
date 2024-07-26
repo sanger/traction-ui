@@ -3,7 +3,6 @@ import { mount, createTestingPinia, Data, router, flushPromises } from '@support
 import { expect } from 'vitest'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -54,7 +53,6 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
 
 describe('PacbioPoolCreate', () => {
   const mockFetchPacbioTagSets = vi.fn()
@@ -69,11 +67,17 @@ describe('PacbioPoolCreate', () => {
       }
     },
   ]
-  const plates = pacbioPlatesRequestFactory.storeData.plates
-  const wells = pacbioPlatesRequestFactory.storeData.wells
-
+  const plates = dataToObjectById({
+    data: Data.PacbioPlatesRequest.data.data,
+    includeRelationships: true,
+  })
   const tubes = dataToObjectById({
     data: Data.PacbioTubesRequest.data.data,
+    includeRelationships: true,
+  })
+
+  const wells = dataToObjectById({
+    data: Data.PacbioPlatesRequest.data.included.slice(0, 4),
     includeRelationships: true,
   })
 
