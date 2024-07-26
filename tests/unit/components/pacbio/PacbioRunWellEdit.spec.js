@@ -12,6 +12,10 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
+}))
+
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
   1: {
@@ -563,11 +567,15 @@ describe('PacbioRunWellEdit', () => {
         expect(wrapper.find('[data-action=remove-row]').exists()).toBeTruthy()
       })
 
-      it('does not have an available volume badge if it does not have an available_volume attribute', () => {
+      it('does not have an available volume badge if it is a pool aliquot and showAvailableVolume returns false', async () => {
+        wrapper.vm.showAvailableVolume = vi.fn().mockReturnValue(false)
+        // Refresh the component
+        await wrapper.vm.showModalForPositionAndPlate('A1', 1)
+
         expect(wrapper.find('[data-attribute=available-volume-div]').exists()).toBeFalsy()
       })
 
-      it('has an available volume badge if it has an available_volume attribute', async () => {
+      it('has an available volume badge if it is a pool and showAvailableVolume returns true', async () => {
         wrapper.vm.localUsedAliquots[0].available_volume = 5
         await nextTick()
         expect(wrapper.find('[data-attribute=available-volume-div]').exists()).toBeTruthy()

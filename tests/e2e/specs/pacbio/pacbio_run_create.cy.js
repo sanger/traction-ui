@@ -34,6 +34,10 @@ describe('Pacbio Run Create view', () => {
         data: {},
       },
     })
+
+    cy.withFlags({
+      y24_155_pacbio_run_pool_volume_validation: { enabled: true },
+    })
   })
 
   it('Creates a Sequel IIe run successfully - v11', () => {
