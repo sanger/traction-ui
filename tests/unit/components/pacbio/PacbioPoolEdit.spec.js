@@ -48,6 +48,15 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
+vi.mock('swrv', () => ({
+  default: vi.fn(() => ({
+    data: {
+      features: {
+        y24_154_enable_used_volume_display_pool_edit: { enabled: true },
+      },
+    },
+  })),
+}))
 
 describe('pacbioPoolEdit#new', () => {
   const pool = {
@@ -208,6 +217,7 @@ describe('pacbioPoolEdit#edit', () => {
     volume: 10,
     concentration: 2.4,
     insert_size: 100,
+    used_volume: 2,
   }
 
   const tube = {
@@ -244,6 +254,10 @@ describe('pacbioPoolEdit#edit', () => {
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       expect(input.element.value).toEqual('100')
+    })
+    it('used volume', async () => {
+      expect(wrapper.find('#pool-used-volume').text()).toContain('2')
+      expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
     })
   })
 
