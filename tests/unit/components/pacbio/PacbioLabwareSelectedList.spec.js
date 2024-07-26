@@ -3,7 +3,6 @@ import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelected
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -38,14 +37,21 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
 
 describe('PacbioLabwareSelectedList', () => {
   let wrapper, store
-  const plates = pacbioPlatesRequestFactory.storeData.plates
-  const wells = pacbioPlatesRequestFactory.storeData.wells
-  const plateRequests = pacbioPlatesRequestFactory.storeData.plateRequests
-
+  const plates = dataToObjectById({
+    data: Data.PacbioPlatesRequest.data.data,
+    includeRelationships: true,
+  })
+  const wells = dataToObjectById({
+    data: Data.PacbioPlatesRequest.data.included.slice(0, 4),
+    includeRelationships: true,
+  })
+  const plateRequests = dataToObjectById({
+    data: Data.PacbioPlatesRequest.data.included.slice(4, 7),
+    includeRelationships: true,
+  })
   const tubesData = dataToObjectById({
     data: Data.PacbioTubesRequest.data.data,
     includeRelationships: true,

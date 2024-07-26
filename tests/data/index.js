@@ -31,6 +31,7 @@ import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlateRequest from './pacbioPlateRequest'
+import PacbioPlatesRequest from './pacbioPlatesRequest'
 import PacbioTubeRequest from './pacbioTubeRequest'
 import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioTubeWithPool from './pacbioTubeWithPool.json'
@@ -98,6 +99,7 @@ export default {
   PacbioRun,
   PacbioPlates,
   PacbioPlateRequest,
+  PacbioPlatesRequest,
   PacbioTubeRequest,
   PacbioTubesRequest,
   PacbioTubeWithPool,
