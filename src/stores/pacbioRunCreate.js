@@ -527,12 +527,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      *
      * @returns {Number} The available volume for the aliquot
      */
-    getAvailableVolumeForAliquot({
-      sourceId = null,
-      sourceType = null,
-      aliquotId = null,
-      volume = null,
-    }) {
+    getAvailableVolumeForAliquot({ sourceId, sourceType, aliquotId = null, volume = null }) {
       if (!sourceId || !sourceType) {
         return null
       }

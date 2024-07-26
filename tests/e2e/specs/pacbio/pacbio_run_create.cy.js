@@ -366,7 +366,7 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the library in this context
-    cy.get('#available-volume').contains('20')
+    cy.get('[data-attribute=available-volume-badge]').contains('20')
     //Initialises the volume to available volume
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', 20)
     cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
@@ -386,7 +386,7 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the library in this context
-    cy.get('#available-volume').contains(15)
+    cy.get('[data-attribute=available-volume-badge]').contains(15)
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
     cy.get('#update').click()
 
@@ -397,7 +397,7 @@ describe('Pacbio Run Create view', () => {
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
-    cy.get('#available-volume').contains(20)
+    cy.get('[data-attribute=available-volume-badge]').contains(20)
     //Once updated, the volume field displays the edited value
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
@@ -405,7 +405,7 @@ describe('Pacbio Run Create view', () => {
     //Open the second well
     cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
     //It should update the availble volume with the volume used in the first well
-    cy.get('#available-volume').contains('15')
+    cy.get('[data-attribute=available-volume-badge]').contains('15')
   })
 
   it('Correctly displays the available volume information for a pool in a well', () => {
@@ -426,7 +426,7 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the pool in this context
-    cy.get('#available-volume').contains('20')
+    cy.get('[data-attribute=available-volume-badge]').contains('20')
     //Initialises the volume to available volume
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', 20)
     cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
@@ -446,7 +446,7 @@ describe('Pacbio Run Create view', () => {
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
     //It displays the correct volume information for the pool in this context
-    cy.get('#available-volume').contains(15)
+    cy.get('[data-attribute=available-volume-badge]').contains(15)
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
     cy.get('#update').click()
 
@@ -457,7 +457,7 @@ describe('Pacbio Run Create view', () => {
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
-    cy.get('#available-volume').contains(20)
+    cy.get('[data-attribute=available-volume-badge]').contains(20)
     //Once updated, the volume field displays the edited value
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
@@ -465,6 +465,6 @@ describe('Pacbio Run Create view', () => {
     //Open the second well
     cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
     //It should update the availble volume with the volume used in the first well
-    cy.get('#available-volume').contains('15')
+    cy.get('[data-attribute=available-volume-badge]').contains('15')
   })
 })
