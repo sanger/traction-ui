@@ -1,8 +1,8 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '../../src/api/JsonApi.js'
 /*
- * Factory for creating a list of runs
- * @returns a base factory object with the runs data
+ * Factory for creating a list of plates
+ * @returns a base factory object with the plates data
  */
 const PacbioPlatesRequestFactory = () => {
   const data = {
@@ -342,7 +342,7 @@ const PacbioPlatesRequestFactory = () => {
 
   /**
    * @param {Object} data
-   * @returns {Object} { printers, selected { printer } }
+   * @returns {Object} { plates, wells, plateRequests, selected { plate }, findPlatesData }
    * creates some store data for use in tests
    */
   const createStoreData = (data) => {
