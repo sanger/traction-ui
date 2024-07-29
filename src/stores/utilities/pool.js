@@ -41,6 +41,14 @@ const validate = ({ used_aliquots, pool }) => {
       pool.errors[field] = 'must be present'
       isValid = false
     }
+    if (
+      field === 'volume' &&
+      pool.used_volume != null &&
+      parseFloat(pool[field]) < parseFloat(pool.used_volume)
+    ) {
+      pool.errors[field] = 'must be greater than used volume'
+      isValid = false
+    }
   })
   return isValid
 }
