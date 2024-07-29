@@ -296,7 +296,7 @@ describe('pacbioPoolEdit#edit', () => {
         wrapper.find('[data-attribute=pool-template-prep-kit-box-barcode-error]').text(),
       ).toContain('must be present')
     })
-    it('displays an error when insert size is not present', async () => {
+    it('displays an error when concentration is not present', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('')
       await nextTick()
@@ -312,7 +312,7 @@ describe('pacbioPoolEdit#edit', () => {
         'must be present',
       )
     })
-    it('displays an error when insert size is not present', async () => {
+    it('displays an error when volume is not present', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('')
       await nextTick()
