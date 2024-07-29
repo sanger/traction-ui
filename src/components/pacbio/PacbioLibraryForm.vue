@@ -138,9 +138,6 @@
 import { computed, ref } from 'vue'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useAlert from '@/composables/useAlert.js'
-import TractionBadge from '@/components/shared/TractionBadge.vue'
-import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
-import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 
 // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 const { showAlert } = useAlert()

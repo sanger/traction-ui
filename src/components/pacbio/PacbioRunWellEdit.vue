@@ -94,10 +94,7 @@ import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
-import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
-import TractionBadge from '@/components/shared/TractionBadge.vue'
-import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
-import TractionTooltip from '@/components/shared/TractionTooltip.vue'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
