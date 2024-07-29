@@ -46,7 +46,7 @@
                   :with-icon="!!pool.errors?.template_prep_kit_box_barcode"
                 >
                   <traction-input
-                    v-model="pool.template_prep_kit_box_barcode"
+                    v-model="template_prep_kit_box_barcode"
                     data-attribute="template-prep-kit-box-barcode"
                   />
                 </traction-field-error>
@@ -60,7 +60,7 @@
                       :error="poolErrorsFor('volume')"
                       :with-icon="!!pool.errors?.volume"
                     >
-                      <traction-input v-model="pool.volume" data-attribute="volume" />
+                      <traction-input v-model="volume" data-attribute="volume" />
                     </traction-field-error>
                   </fieldset>
                 </template>
@@ -81,7 +81,7 @@
                     :error="poolErrorsFor('volume')"
                     :with-icon="!!pool.errors?.volume"
                   >
-                    <traction-input v-model="pool.volume" data-attribute="volume" />
+                    <traction-input v-model="volume" data-attribute="volume" />
                   </traction-field-error>
                 </fieldset>
               </flagged-feature>
@@ -92,7 +92,7 @@
                   :error="poolErrorsFor('concentration')"
                   :with-icon="!!pool.errors?.concentration"
                 >
-                  <traction-input v-model="pool.concentration" data-attribute="concentration" />
+                  <traction-input v-model="concentration" data-attribute="concentration" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -102,7 +102,7 @@
                   :error="poolErrorsFor('insert_size')"
                   :with-icon="!!pool.errors?.insert_size"
                 >
-                  <traction-input v-model="pool.insert_size" data-attribute="insert-size" />
+                  <traction-input v-model="insert_size" data-attribute="insert-size" />
                 </traction-field-error>
               </fieldset>
             </div>
@@ -151,9 +151,6 @@ import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
-import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
-import TractionTooltip from '@/components/shared/TractionTooltip.vue'
-import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 //refs
 const busy = ref(false) // Flag to indicate if the form is busy processing a request
@@ -190,10 +187,6 @@ const border = computed(() => {
 })
 // Checks if the pool attribute should be displayed with an error
 const poolErrorsFor = (attribute) => {
-  if (pool?.[attribute]?.length) {
-    delete pool?.errors?.[attribute]
-    return ''
-  }
   return pool?.errors?.[attribute]
 }
 
@@ -239,6 +232,24 @@ const uploadFile = async (evt) => {
     return
   }
 }
+
+const poolSetter = (attr) => {
+  return computed({
+    get() {
+      return pool[attr]
+    },
+    set(newValue) {
+      pool[attr] = newValue
+      updatePool(pool, attr)
+    },
+  })
+}
+
+//The setter function for each attribute - volume, insert_size, concentration and template_prep_kit_box_barcode
+const volume = poolSetter('volume')
+const insert_size = poolSetter('insert_size')
+const concentration = poolSetter('concentration')
+const template_prep_kit_box_barcode = poolSetter('template_prep_kit_box_barcode')
 
 // Function passed to child components in notify prop, to be used when any attribute
 // in the child component is changed. The validated flag is reset to true when the user
