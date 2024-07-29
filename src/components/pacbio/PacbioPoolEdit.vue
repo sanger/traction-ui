@@ -233,6 +233,10 @@ const uploadFile = async (evt) => {
   }
 }
 
+/**
+ * A function to set the pool attributes
+ * @param {String} attr - The attribute to set
+ * */
 const poolSetter = (attr) => {
   return computed({
     get() {

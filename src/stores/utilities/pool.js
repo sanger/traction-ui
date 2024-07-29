@@ -41,6 +41,9 @@ const validate = ({ used_aliquots, pool }) => {
       pool.errors[field] = 'must be present'
       isValid = false
     }
+    // Check if the 'volume' field in the pool object is less than the 'used_volume'.
+    // If so, add an error message to the pool.errors object and set isValid to false.
+
     if (
       field === 'volume' &&
       pool.used_volume != null &&
