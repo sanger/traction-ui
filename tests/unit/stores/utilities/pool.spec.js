@@ -164,6 +164,23 @@ describe('pool', () => {
       })
     })
 
+    it('returns false when the pool volume is less than used volume', () => {
+      const pool = {
+        insert_size: '',
+        concentration: '',
+        volume: '5',
+        used_volume: '10',
+        template_prep_kit_box_barcode: '',
+      }
+      expect(validate({ used_aliquots: {}, pool })).toBe(false)
+      expect(pool.errors).toEqual({
+        insert_size: 'must be present',
+        concentration: 'must be present',
+        volume: 'must be greater than used volume',
+        template_prep_kit_box_barcode: 'must be present',
+      })
+    })
+
     it('returns true when the pool and used_aliquots are valid', () => {
       const used_aliquots = {
         1: createUsedAliquot({
@@ -189,6 +206,7 @@ describe('pool', () => {
         insert_size: 100,
         concentration: 10,
         volume: 10,
+        used_volume: 5,
         template_prep_kit_box_barcode: 'ABC1',
       }
       validate({ used_aliquots, pool })

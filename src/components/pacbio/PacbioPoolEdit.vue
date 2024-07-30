@@ -46,21 +46,45 @@
                   :with-icon="!!pool.errors?.template_prep_kit_box_barcode"
                 >
                   <traction-input
-                    v-model="pool.template_prep_kit_box_barcode"
+                    v-model="template_prep_kit_box_barcode"
                     data-attribute="template-prep-kit-box-barcode"
                   />
                 </traction-field-error>
               </fieldset>
-              <fieldset class="flex flex-col">
-                <traction-label class="h-full">Volume</traction-label>
-                <traction-field-error
-                  data-attribute="pool-volume-error"
-                  :error="poolErrorsFor('volume')"
-                  :with-icon="!!pool.errors?.volume"
-                >
-                  <traction-input v-model="pool.volume" data-attribute="volume" />
-                </traction-field-error>
-              </fieldset>
+              <flagged-feature name="y24_154_enable_used_volume_display_pool_edit">
+                <template #disabled>
+                  <fieldset class="flex flex-col">
+                    <traction-label class="h-full">Volume</traction-label>
+                    <traction-field-error
+                      data-attribute="pool-volume-error"
+                      :error="poolErrorsFor('volume')"
+                      :with-icon="!!pool.errors?.volume"
+                    >
+                      <traction-input v-model="volume" data-attribute="volume" />
+                    </traction-field-error>
+                  </fieldset>
+                </template>
+                <fieldset class="flex flex-col">
+                  <div class="flex flex-row pb-6">
+                    <traction-label class="h-full">Volume</traction-label>
+                    <traction-tooltip
+                      v-if="pool.used_volume != null && persisted"
+                      :tooltip-text="'Used volume is ' + pool.used_volume"
+                    >
+                      <traction-badge id="pool-used-volume" colour="sanger-pink"
+                        ><TractionInfoIcon class="mr-2" />{{ pool.used_volume }}</traction-badge
+                      >
+                    </traction-tooltip>
+                  </div>
+                  <traction-field-error
+                    data-attribute="pool-volume-error"
+                    :error="poolErrorsFor('volume')"
+                    :with-icon="!!pool.errors?.volume"
+                  >
+                    <traction-input v-model="volume" data-attribute="volume" />
+                  </traction-field-error>
+                </fieldset>
+              </flagged-feature>
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Concentration</traction-label>
                 <traction-field-error
@@ -68,7 +92,7 @@
                   :error="poolErrorsFor('concentration')"
                   :with-icon="!!pool.errors?.concentration"
                 >
-                  <traction-input v-model="pool.concentration" data-attribute="concentration" />
+                  <traction-input v-model="concentration" data-attribute="concentration" />
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -78,7 +102,7 @@
                   :error="poolErrorsFor('insert_size')"
                   :with-icon="!!pool.errors?.insert_size"
                 >
-                  <traction-input v-model="pool.insert_size" data-attribute="insert-size" />
+                  <traction-input v-model="insert_size" data-attribute="insert-size" />
                 </traction-field-error>
               </fieldset>
             </div>
@@ -163,10 +187,6 @@ const border = computed(() => {
 })
 // Checks if the pool attribute should be displayed with an error
 const poolErrorsFor = (attribute) => {
-  if (pool?.[attribute]?.length) {
-    delete pool?.errors?.[attribute]
-    return ''
-  }
   return pool?.errors?.[attribute]
 }
 
@@ -212,6 +232,28 @@ const uploadFile = async (evt) => {
     return
   }
 }
+
+/**
+ * A function to set the pool attributes
+ * @param {String} attr - The attribute to set
+ * */
+const poolSetter = (attr) => {
+  return computed({
+    get() {
+      return pool[attr]
+    },
+    set(newValue) {
+      pool[attr] = newValue
+      updatePool(pool, attr)
+    },
+  })
+}
+
+//The setter function for each attribute - volume, insert_size, concentration and template_prep_kit_box_barcode
+const volume = poolSetter('volume')
+const insert_size = poolSetter('insert_size')
+const concentration = poolSetter('concentration')
+const template_prep_kit_box_barcode = poolSetter('template_prep_kit_box_barcode')
 
 // Function passed to child components in notify prop, to be used when any attribute
 // in the child component is changed. The validated flag is reset to true when the user

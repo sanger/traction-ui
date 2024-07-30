@@ -48,6 +48,15 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
+vi.mock('swrv', () => ({
+  default: vi.fn(() => ({
+    data: {
+      features: {
+        y24_154_enable_used_volume_display_pool_edit: { enabled: true },
+      },
+    },
+  })),
+}))
 
 describe('pacbioPoolEdit#new', () => {
   const pool = {
@@ -71,24 +80,28 @@ describe('pacbioPoolEdit#new', () => {
       await input.setValue('017865101789500022821')
       await wrapper.vm.$nextTick()
       expect(store.pool.template_prep_kit_box_barcode).toEqual('017865101789500022821')
+      expect(store.updatePool).toBeCalled()
     })
 
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
       expect(store.pool.volume).toEqual('10.0')
+      expect(store.updatePool).toBeCalled()
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
       expect(store.pool.concentration).toEqual('2.4')
+      expect(store.updatePool).toBeCalled()
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
       expect(store.pool.insert_size).toEqual('100')
+      expect(store.updatePool).toBeCalled()
     })
   })
 
@@ -109,6 +122,26 @@ describe('pacbioPoolEdit#new', () => {
 
       expect(wrapperObj.find('[data-attribute=pool-volume-error]').text()).toEqual(
         'must be present',
+      )
+    })
+
+    it('volume', async () => {
+      const { wrapperObj } = mountWithStore({
+        state: {
+          pool: {
+            ...pool,
+            volume: 5,
+            used_volume: 10,
+            errors: {
+              volume: 'must be greater than used volume',
+            },
+          },
+        },
+      })
+      await nextTick()
+
+      expect(wrapperObj.find('[data-attribute=pool-volume-error]').text()).toEqual(
+        'must be greater than used volume',
       )
     })
 
@@ -172,7 +205,8 @@ describe('pacbioPoolEdit#new', () => {
   describe('when inputs are valid', () => {
     it('no errors are displayed', async () => {
       store.pool = {
-        volume: 0,
+        volume: 10,
+        used_volume: 5,
         insert_size: 100,
         concentration: 2.4,
         template_prep_kit_box_barcode: '017865101789500022821',
@@ -208,6 +242,7 @@ describe('pacbioPoolEdit#edit', () => {
     volume: 10,
     concentration: 2.4,
     insert_size: 100,
+    used_volume: 2,
   }
 
   const tube = {
@@ -244,6 +279,52 @@ describe('pacbioPoolEdit#edit', () => {
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       expect(input.element.value).toEqual('100')
+    })
+
+    it('used volume', async () => {
+      expect(wrapper.find('#pool-used-volume').text()).toContain('2')
+      expect(wrapper.find('#tooltip-div').exists()).toBeTruthy()
+    })
+  })
+
+  describe('when inputs are invalid', () => {
+    it('displays an error when itemplate prep kit box barcode is not present', async () => {
+      const input = wrapper.find('[data-attribute=template-prep-kit-box-barcode]')
+      await input.setValue('')
+      await nextTick()
+      expect(
+        wrapper.find('[data-attribute=pool-template-prep-kit-box-barcode-error]').text(),
+      ).toContain('must be present')
+    })
+    it('displays an error when concentration is not present', async () => {
+      const input = wrapper.find('[data-attribute=concentration]')
+      await input.setValue('')
+      await nextTick()
+      expect(wrapper.find('[data-attribute=pool-concentration-error]').text()).toContain(
+        'must be present',
+      )
+    })
+    it('displays an error when insert size is not present', async () => {
+      const input = wrapper.find('[data-attribute=insert-size]')
+      await input.setValue('')
+      await nextTick()
+      expect(wrapper.find('[data-attribute=pool-insert_size-error]').text()).toContain(
+        'must be present',
+      )
+    })
+    it('displays an error when volume is not present', async () => {
+      const input = wrapper.find('[data-attribute=volume]')
+      await input.setValue('')
+      await nextTick()
+      expect(wrapper.find('[data-attribute=pool-volume-error]').text()).toContain('must be present')
+    })
+    it('displays an error when the volume is less than the used volume', async () => {
+      const input = wrapper.find('[data-attribute=volume]')
+      await input.setValue('1')
+      await nextTick()
+      expect(wrapper.find('[data-attribute=pool-volume-error]').text()).toContain(
+        'must be greater than used volume',
+      )
     })
   })
 

@@ -27,6 +27,8 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 import TractionTooltip from '@/components/shared/TractionTooltip'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 const components = {
   FlaggedFeature,
@@ -58,6 +60,8 @@ const components = {
   TractionModal,
   TractionCloseIcon,
   TractionTooltip,
+  TractionInfoIcon,
+  TractionBadge,
 }
 
 const registerGlobal = (vue) => {
