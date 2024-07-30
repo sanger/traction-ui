@@ -45,7 +45,7 @@
             @update:model-value="updateUsedAliquotVolume(row, $event)"
           ></traction-input>
           <div
-            v-if="row.item.available_volume != null"
+            v-if="showAvailableVolume(row.item)"
             class="flex items-center"
             data-attribute="available-volume-div"
           >
@@ -53,7 +53,7 @@
               :tooltip-text="'Available volume is ' + row.item.available_volume"
               class="flex max-w-xs"
             >
-              <traction-badge id="library-available-volume" colour="sanger-yellow"
+              <traction-badge data-attribute="available-volume-badge" colour="sanger-yellow"
                 ><TractionInfoIcon class="mr-1" />{{ row.item.available_volume }}</traction-badge
               >
             </traction-tooltip>
@@ -98,6 +98,7 @@ import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 import TractionTooltip from '@/components/shared/TractionTooltip.vue'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -130,6 +131,8 @@ const isShow = ref(false)
 const position = ref('')
 // plateNumber ref to store the plate number of the well
 const plateNumber = ref('')
+// Feature flag to enable volume validation for pools
+const pool_volume_validation_flag = ref(false)
 
 /* Define a regex to validate the loading target value for the well
  * The regex validates the loading target value to be a decimal percentage with a maximum of 2 decimal places
@@ -150,6 +153,14 @@ const newWell = computed(() => {
 const validLocalUsedAliquots = computed(() => {
   return localUsedAliquots.filter((aliquot) => !aliquot['_destroy'])
 })
+
+// Computed property to show the available volume badge unless the aliquot is a pool and the feature flag is disabled
+const showAvailableVolume = (aliquot) => {
+  return (
+    aliquot.source_type == 'Pacbio::Library' ||
+    (aliquot.source_type == 'Pacbio::Pool' && pool_volume_validation_flag.value)
+  )
+}
 
 // Define a computed property to determine the action for the modal which is either create or update
 const action = computed(() => {
@@ -274,8 +285,9 @@ const updateUsedAliquotSource = async (row, barcode) => {
         template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
       },
       () =>
-        store.getAvailableVolumeForLibraryAliquot({
-          libraryId: tubeContent.id,
+        store.getAvailableVolumeForAliquot({
+          sourceId: tubeContent.id,
+          sourceType: type,
           volume: 0,
         }),
     )
@@ -291,6 +303,9 @@ const updateUsedAliquotSource = async (row, barcode) => {
  * This function is called when the modal is shown for a specific position and plate number.
  */
 const setupWell = async () => {
+  pool_volume_validation_flag.value = await checkFeatureFlag(
+    'y24_155_pacbio_run_pool_volume_validation',
+  )
   // We clone the well as it gets binded to the form and we don't want to change the original object
   // without a confirmation action like the 'update' button
   Object.assign(well, await store.getOrCreateWell(position.value, plateNumber.value))
@@ -315,6 +330,10 @@ const setupWell = async () => {
  */
 const errorsFor = (aliquot, attribute) => {
   if (aliquot && attribute) {
+    // If we aren't showing available volume we also don't need to validate the volume
+    if (!showAvailableVolume(aliquot)) {
+      return
+    }
     aliquot.validateField(attribute, aliquot[attribute])
     return aliquot.errors?.[attribute]
   }
