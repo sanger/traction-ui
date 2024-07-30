@@ -265,6 +265,7 @@
           "errors": []
         },
         "volume": 1.0,
+        "available_volume": 15.0,
         "concentration": 1.0,
         "template_prep_kit_box_barcode": "029979102141700063023",
         "insert_size": 100,

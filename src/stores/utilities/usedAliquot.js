@@ -27,9 +27,8 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
     attributes?.source_type ||
     (attributes?.type ? (attributes.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library') : null)
 
-  //Initialise the volume to the available volume of the aliquot if the source type is 'Pacbio::Library' and a function is provided to initialise the volume.
-  const isInitialiseVolume =
-    initialiseToAvailableVolume != null && source_type === 'Pacbio::Library'
+  //Initialise the volume to the available volume of the aliquot
+  const isInitialiseVolume = initialiseToAvailableVolume != null
 
   const availableVolume = formatValue(
     isInitialiseVolume ? initialiseToAvailableVolume() : attributes?.available_volume,
