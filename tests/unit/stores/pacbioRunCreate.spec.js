@@ -814,7 +814,6 @@ describe('usePacbioRunCreateStore', () => {
           const available_volume = store.getAvailableVolumeForAliquot({
             sourceId: '1',
             sourceType: 'Pacbio::Library',
-            aliquotId: '',
             volume: 5,
           })
           expect(available_volume).toEqual(library.available_volume.toFixed(2))
@@ -878,7 +877,6 @@ describe('usePacbioRunCreateStore', () => {
           const available_volume = store.getAvailableVolumeForAliquot({
             sourceId: '1',
             sourceType: 'Pacbio::Library',
-            aliquotId: '',
             volume: 5,
           })
           expect(available_volume).toEqual(expected_available_volume)
@@ -922,6 +920,7 @@ describe('usePacbioRunCreateStore', () => {
                 volume: 5,
                 source_type: 'Pacbio::Library',
                 source_id: '1',
+                used_by_type: 'Pacbio::Well',
               },
             },
           }
@@ -929,7 +928,6 @@ describe('usePacbioRunCreateStore', () => {
           const available_volume = store.getAvailableVolumeForAliquot({
             sourceId: '1',
             sourceType: 'Pacbio::Library',
-            aliquotId: 1,
             volume: 5,
           })
           expect(available_volume).toEqual(expected_volume)
@@ -971,6 +969,7 @@ describe('usePacbioRunCreateStore', () => {
                 volume: 5,
                 source_type: 'Pacbio::Pool',
                 source_id: '1',
+                used_by_type: 'Pacbio::Well',
               },
             },
           }
@@ -978,7 +977,6 @@ describe('usePacbioRunCreateStore', () => {
           const available_volume = store.getAvailableVolumeForAliquot({
             sourceId: '1',
             sourceType: 'Pacbio::Pool',
-            aliquotId: 1,
             volume: 5,
           })
           expect(available_volume).toEqual(expected_volume)
@@ -1020,6 +1018,7 @@ describe('usePacbioRunCreateStore', () => {
                 volume: 5,
                 source_type: 'Pacbio::Library',
                 source_id: '1',
+                used_by_type: 'Pacbio::Well',
               },
             },
           }
@@ -1027,8 +1026,7 @@ describe('usePacbioRunCreateStore', () => {
           const available_volume = store.getAvailableVolumeForAliquot({
             sourceId: '1',
             sourceType: 'Pacbio::Library',
-            aliquotId: '1',
-            volume: 5,
+            volume: 10,
           })
           expect(available_volume).toEqual(expected_available_volume)
         })

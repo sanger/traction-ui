@@ -317,6 +317,13 @@ const setupWell = async () => {
         ...aliquot,
         barcode: poolOrLibrary.barcode,
       })
+      // We don't want to initalise the volume to the available volume
+      // But we want a way to show the available volume
+      used_aliquot.available_volume = store.getAvailableVolumeForAliquot({
+        sourceId: poolOrLibrary.id,
+        sourceType: aliquot.source_type,
+        volume: aliquot.volume,
+      })
       localUsedAliquots.push(used_aliquot)
     }
   })

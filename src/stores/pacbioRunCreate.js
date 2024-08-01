@@ -352,16 +352,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           // eslint-disable-next-line no-unused-vars
           Object.entries(plate).forEach(([_position, well]) => {
             well.used_aliquots = well.used_aliquots?.map((aliquotId) => {
-              const aliquot = this.aliquots[aliquotId]
-              return {
-                ...aliquot,
-                available_volume: this.getAvailableVolumeForAliquot({
-                  aliquotId,
-                  sourceType: aliquot.source_type,
-                  sourceId: aliquot.source_id,
-                  volume: aliquot.volume,
-                }),
-              }
+              return { ...this.aliquots[aliquotId] }
             })
           })
         })
@@ -527,30 +518,34 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      *
      * @returns {Number} The available volume for the aliquot
      */
-    getAvailableVolumeForAliquot({ sourceId, sourceType, aliquotId = null, volume = null }) {
+    getAvailableVolumeForAliquot({ sourceId, sourceType, volume = null }) {
       if (!sourceId || !sourceType) {
         return null
       }
-
-      // Get the original aliquot if it exists
-      const original_aliquot = this.aliquots[aliquotId]
 
       // Get the correct store location based off the sourceType
       const sourceStore = sourceType === 'Pacbio::Library' ? this.libraries : this.pools
       // Get the available volume for the source
       const available_volume = sourceStore[sourceId]?.available_volume || 0
 
+      // Calculate the sum of the initial volume of all existing aliquots used in wells that are from the source
+      let original_aliquot_volume = 0
+      Object.values(this.aliquots).forEach((aliquot) => {
+        if (
+          aliquot &&
+          aliquot.source_id === sourceId &&
+          aliquot.source_type === sourceType &&
+          aliquot.used_by_type === 'Pacbio::Well'
+        ) {
+          original_aliquot_volume = parseFloat(original_aliquot_volume) + parseFloat(aliquot.volume)
+        }
+      })
+
       // Calculate the sum of the volume of all the new aliquots used in wells that are from the source
       let used_aliquots_volume = 0
       Object.values(this.wells).forEach((plate) => {
         Object.values(plate).forEach((well) => {
           well.used_aliquots?.forEach((aliquot) => {
-            // Existing aliquots should not be counted as they are already taken into account in the source available volume
-            // This has the issue that if an existing aliquots volume is changed it will not be reflected in the available volume
-            if (aliquot.id) {
-              return
-            }
-
             // For each aliquot used in wells, check if the source is the required source and if so add the volume used
             if (aliquot && aliquot.source_id === sourceId && aliquot.source_type === sourceType) {
               used_aliquots_volume = parseFloat(used_aliquots_volume) + parseFloat(aliquot.volume)
@@ -561,18 +556,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Calculate the total available volume for the source
       // Subtract the used aliquots volume from the available volume
-      let total_available_volume = available_volume - used_aliquots_volume
+      let total_available_volume = available_volume + original_aliquot_volume - used_aliquots_volume
 
-      // If its an existing aliquot we need to add the original volume back
-      // Because its taken into account in the available_volume
-      // Unless the volume is 0 as that won't affect the available volume
-      if (original_aliquot && original_aliquot.volume != 0) {
-        total_available_volume = total_available_volume + original_aliquot.volume
-      } else {
-        // If its a new aliquot we need to add the volume back in to the total available volume
-        // because it was removed as part of the library_used_aliquots volume but it should be available in this instance of aliquot
-        total_available_volume = parseFloat(total_available_volume) + parseFloat(volume)
-      }
+      total_available_volume = parseFloat(total_available_volume) + parseFloat(volume)
 
       // Return the total available volume rounded to 2 decimal places
       return total_available_volume.toFixed(2)
