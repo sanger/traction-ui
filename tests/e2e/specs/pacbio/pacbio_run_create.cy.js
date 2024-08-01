@@ -401,7 +401,7 @@ describe('Pacbio Run Create view', () => {
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
-    cy.get('[data-attribute=available-volume-badge]').contains(20)
+    cy.get('[data-attribute=available-volume-badge]').contains(10)
     //Once updated, the volume field displays the edited value
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
@@ -461,7 +461,7 @@ describe('Pacbio Run Create view', () => {
     //Open the first well
     cy.get('[data-attribute=pacbio-run-well]').eq(0).trigger('click')
     //It should update the availble volume with the volume used in the second well
-    cy.get('[data-attribute=available-volume-badge]').contains(20)
+    cy.get('[data-attribute=available-volume-badge]').contains(10)
     //Once updated, the volume field displays the edited value
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', '5')
     cy.get('#update').click()
