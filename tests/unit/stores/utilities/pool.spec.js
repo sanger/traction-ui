@@ -12,6 +12,7 @@ describe('pool', () => {
       expect(usedAliquot.volume).toBe(null)
       expect(usedAliquot.concentration).toBe(null)
       expect(usedAliquot.insert_size).toBe(null)
+      expect(usedAliquot.available_volume).toBe(null)
     })
     it('builds with the correct given values', () => {
       const usedAliquot = createUsedAliquot({
@@ -19,6 +20,7 @@ describe('pool', () => {
         template_prep_kit_box_barcode: 'barcode1',
         tag_id: 'tag1',
         volume: 10,
+        available_volume: 10,
         concentration: 5,
         insert_size: 1,
       })
@@ -28,11 +30,7 @@ describe('pool', () => {
       expect(usedAliquot.volume).toBe(10)
       expect(usedAliquot.concentration).toBe(5)
       expect(usedAliquot.insert_size).toBe(1)
-    })
-    it('correctly sets the default volume when initialiseToAvailableVolume is provided', () => {
-      const initialiseToAvailableVolume = () => '20'
-      const usedAliquot = createUsedAliquot({ volume: 10 }, initialiseToAvailableVolume)
-      expect(usedAliquot.volume).toBe(20)
+      expect(usedAliquot.available_volume).toBe(10)
     })
   })
 

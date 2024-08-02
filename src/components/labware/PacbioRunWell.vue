@@ -196,17 +196,20 @@ const updateUsedAliquotSource = async (barcode) => {
   const tubeContent = store.tubeContentByBarcode(barcode)
   // Determine the source type for the used aliquot
   const source_type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+  const available_volume = store.getAvailableVolumeForAliquot({
+    sourceId: tubeContent.id,
+    sourceType: source_type,
+    volume: 0,
+  })
   /*id set to null because we are creating a new used aliquot. This is very important for calculating 
   the available volume where it checks for existing aliquots using id*/
-  const used_aliquot = createUsedAliquot(
-    { ...tubeContent, source_id: tubeContent.id, id: null },
-    () =>
-      store.getAvailableVolumeForAliquot({
-        sourceId: tubeContent.id,
-        sourceType: source_type,
-        volume: 0,
-      }),
-  )
+  const used_aliquot = createUsedAliquot({
+    ...tubeContent,
+    source_id: tubeContent.id,
+    id: null,
+    volume: available_volume,
+    available_volume,
+  })
   well.used_aliquots.push(used_aliquot)
   store.updateWell({ well, plateNumber: props.plateNumber })
 }

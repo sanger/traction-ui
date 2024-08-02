@@ -533,7 +533,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       Object.values(this.aliquots).forEach((aliquot) => {
         if (
           aliquot &&
-          aliquot.source_id === sourceId &&
+          aliquot.source_id == sourceId &&
           aliquot.source_type === sourceType &&
           aliquot.used_by_type === 'Pacbio::Well'
         ) {
@@ -547,7 +547,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         Object.values(plate).forEach((well) => {
           well.used_aliquots?.forEach((aliquot) => {
             // For each aliquot used in wells, check if the source is the required source and if so add the volume used
-            if (aliquot && aliquot.source_id === sourceId && aliquot.source_type === sourceType) {
+            if (aliquot && aliquot.source_id == sourceId && aliquot.source_type === sourceType) {
               used_aliquots_volume = parseFloat(used_aliquots_volume) + parseFloat(aliquot.volume)
             }
           })
@@ -555,13 +555,15 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       })
 
       // Calculate the total available volume for the source
-      // Subtract the used aliquots volume from the available volume
-      let total_available_volume = available_volume + original_aliquot_volume - used_aliquots_volume
-
-      total_available_volume = parseFloat(total_available_volume) + parseFloat(volume)
+      let total_available_volume = (
+        available_volume +
+        original_aliquot_volume -
+        used_aliquots_volume +
+        parseFloat(volume)
+      ).toFixed(2)
 
       // Return the total available volume rounded to 2 decimal places
-      return total_available_volume.toFixed(2)
+      return parseFloat(total_available_volume)
     },
   },
 })
