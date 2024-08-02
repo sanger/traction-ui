@@ -1,12 +1,17 @@
-import handlePromise from '@/api/v1/PromiseHelper'
+import { dataToObjectById } from '@/api/JsonApi'
+import handleResponse from '@/api/v2/ResponseHelper.js'
 
 const setRequests = async ({ commit, getters }) => {
   const request = getters.requestsRequest
   const promise = request.get()
-  const response = await handlePromise(promise)
+  const response = await handleResponse(promise)
+  const {
+    body: { data = {} },
+    success,
+  } = response
 
-  if (response.successful && !response.empty) {
-    const requests = response.deserialize.requests
+  if (success) {
+    const requests = dataToObjectById({ data, includeRelationships: true })
     commit('setRequests', requests)
   }
 }
