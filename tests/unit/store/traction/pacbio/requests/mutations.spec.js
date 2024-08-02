@@ -6,7 +6,7 @@ const pacbioRequestsFactory = PacbioRequestsFactory()
 
 describe('mutations', () => {
   it('"setRequests" sets "state.requests" to the given requests', () => {
-    const requests = pacbioRequestsFactory.content.data.data
+    const requests = pacbioRequestsFactory.content.data
     const state = {
       requests: {},
     }
@@ -17,7 +17,7 @@ describe('mutations', () => {
   })
 
   it('"updateRequest" updates "state.requests" to the include the updated request', () => {
-    const requests = pacbioRequestsFactory.content.data.data
+    const requests = pacbioRequestsFactory.content.data
     const state = {
       requests: dataToObjectById({ data: requests, includeRelationships: false }),
     }

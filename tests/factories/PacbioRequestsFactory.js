@@ -2,7 +2,6 @@ import BaseFactory from './BaseFactory.js'
 
 const PacbioRequestsFactory = () => {
   const data = {
-    data: {
       data: [
         {
           id: '40',
@@ -388,7 +387,6 @@ const PacbioRequestsFactory = () => {
       meta: {
         page_count: 1,
       },
-    },
     status: 200,
     statusText: 'Success',
   }
