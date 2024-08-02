@@ -13,7 +13,7 @@ describe('Pacbio library creation from sample', () => {
     cy.get('@tractionPacbioSamplesFactory').then((tractionPacbioSamplesFactory) => {
       cy.intercept('/v1/pacbio/requests?page[size]=25&page[number]=1', {
         statusCode: 200,
-        body: tractionPacbioSamplesFactory.content,
+        body: tractionPacbioSamplesFactory.content.data,
       })
     })
 

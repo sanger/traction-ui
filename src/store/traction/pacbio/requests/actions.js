@@ -1,11 +1,15 @@
-import handleResponse from '@/api/v1/ResponseHelper'
+import handleResponse from '@/api/v2/ResponseHelper'
 
-const setRequests = async ({ commit, getters }, filter, page) => {
+const setRequests = async ({ commit, getters }, options) => {
   const request = getters.requestsRequest
-  const promise = request.get({ page, filter })
+  const promise = request.get({ ...options })
   const response = await handleResponse(promise)
 
-  const { success, data: { data, meta = {} } = {}, errors = [] } = response
+  const {
+    body: { data = {}, meta = {} },
+    success,
+    errors = {},
+  } = response
 
   if (success) {
     commit('setRequests', data)
