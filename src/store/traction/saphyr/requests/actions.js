@@ -1,4 +1,4 @@
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById } from '@/api/JsonApi.js'
 import handleResponse from '@/api/v2/ResponseHelper.js'
 
 const setRequests = async ({ commit, getters }) => {
