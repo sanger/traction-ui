@@ -25,7 +25,7 @@ const updateRequest = async ({ commit, getters }, payload) => {
   const response = await handleResponse(promise)
 
   const {
-    body: { data = {}, meta = {} },
+    body: { data = {} },
     success,
     errors = {},
   } = response

@@ -1,5 +1,5 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex.vue'
-import { createTestingPinia, flushPromises, Data, mount, store } from '@support/testHelper.js'
+import { createTestingPinia, flushPromises, mount, store } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 
