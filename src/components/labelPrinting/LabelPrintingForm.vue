@@ -159,6 +159,7 @@ const workflowDropdownOptions = reactive(createWorkflowDropdownOptions(WorkflowL
 const createLabelFns = {
   tube: createWorkflowTubeBarcodeLabel,
   plate96: createWorkflowPlateBarcodeLabel,
+  plate384: createWorkflowPlateBarcodeLabel,
 }
 
 /**

@@ -139,7 +139,6 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @param {Object} data - data to send for update
    * @return AxiosPromise
    * Execute a patch
-   * TODO: Update should have same signature as create
    */
   const update = (payload) => {
     return execute('patch', `${resource}/${payload.data.id}`, payload)

@@ -68,6 +68,14 @@ export default {
       defaultRelease: 'https://github.com/sanger/traction-ui/releases',
     }
   },
+  computed: {
+    footerClasses() {
+      return [
+        'border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100',
+        bgColorClass[this.environment],
+      ]
+    },
+  },
   created() {
     this.provider()
   },
@@ -92,14 +100,6 @@ export default {
       } catch (err) {
         console.error(err)
       }
-    },
-  },
-  computed: {
-    footerClasses() {
-      return [
-        'border border-t-2 pt-5 pb-3 flex-shrink-0 border-sdb-100',
-        bgColorClass[this.environment],
-      ]
     },
   },
 }

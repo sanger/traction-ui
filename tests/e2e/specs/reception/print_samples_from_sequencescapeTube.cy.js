@@ -1,4 +1,5 @@
 import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
 
 describe('Print samples from Sequencescape Tubes', () => {
   beforeEach(() => {
@@ -6,8 +7,12 @@ describe('Print samples from Sequencescape Tubes', () => {
       fixture: 'tractionLibraryTypes.json',
     })
 
-    cy.intercept('/v1/printers', {
-      fixture: 'tractionPrinters.json',
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
 
     cy.visit('#/reception')
@@ -37,7 +42,9 @@ describe('Print samples from Sequencescape Tubes', () => {
 
     cy.get('#barcodes').type('3980000001795\n')
     cy.get('#print-barcodes').should('have.value', 'NT1O')
-    cy.get('#printer-choice').select('g216bc')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.get('#printer-choice').select(printerFactory.storeData.selected.printer.name)
+    })
   })
   it('successfully prints', () => {
     cy.intercept('/v2/print_jobs', {

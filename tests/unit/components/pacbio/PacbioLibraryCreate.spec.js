@@ -1,7 +1,11 @@
-import { mount, nextTick, createTestingPinia, flushPromises, Data } from '@support/testHelper.js'
+import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { expect } from 'vitest'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+
+const pacbioTagSetFactory = PacbioTagSetFactory()
+
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -42,7 +46,7 @@ describe('PacbioLibraryCreate.vue', () => {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        store.api.traction.pacbio.tag_sets.get = vi.fn(() => Data.TractionPacbioTagSets)
+        store.api.v2.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
       }
     },
   ]

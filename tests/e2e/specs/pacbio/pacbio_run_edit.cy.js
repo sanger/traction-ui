@@ -1,4 +1,4 @@
-import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory'
+import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
 
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
@@ -8,6 +8,9 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
       statusCode: 200,
       body: PacbioSmrtLinkVersionFactory().content,
+    })
+    cy.withFlags({
+      y24_155_pacbio_run_pool_volume_validation: { enabled: true },
     })
   })
 

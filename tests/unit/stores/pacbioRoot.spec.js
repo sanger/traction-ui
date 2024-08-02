@@ -1,23 +1,11 @@
-import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import { beforeEach } from 'vitest'
 import useRootStore from '@/stores'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
-const tagSets = {
-  1: {
-    id: '1',
-    name: 'tagSet1',
-    pipeline: 'pipeline1',
-    tags: [],
-  },
-  2: {
-    id: '2',
-    name: 'tagSet2',
-    pipeline: 'pipeline1',
-    tags: [],
-  },
-}
+const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('usePacbioRootStore', () => {
   beforeEach(() => {
@@ -33,56 +21,46 @@ describe('usePacbioRootStore', () => {
     })
     describe('tagSetList', () => {
       it('returns a list of all fetched tagSet', () => {
-        store.tagSets = tagSets
-        expect(store.tagSetList).toEqual(Object.values(tagSets))
+        store.tagSets = pacbioTagSetFactory.storeData.tagSets
+        expect(store.tagSetList).toEqual(Object.values(pacbioTagSetFactory.storeData.tagSets))
       })
     })
 
     describe('tagList', () => {
-      const tags = {
-        1: { id: '1', name: 'tag1' },
-        2: { id: '2', name: 'tag2' },
-        3: { id: '3', name: 'tag3' },
-        4: { id: '4', name: 'tag4' },
-        5: { id: '5', name: 'tag5' },
-      }
       it('returns a list of all fetched tagSet', () => {
-        store.tags = tags
-        expect(store.tagList()).toEqual(tags.values)
+        store.tags = pacbioTagSetFactory.storeData.tags
+        expect(store.tagList()).toEqual(pacbioTagSetFactory.storeData.tags.values)
       })
       it('when ids are included', () => {
-        store.tags = tags
-        const ids = ['1', '2', '3']
+        store.tags = pacbioTagSetFactory.storeData.tags
+        const ids = Object.keys(pacbioTagSetFactory.storeData.tags)
         expect(store.tagList(ids).length).toEqual(ids.length)
       })
     })
     it('returns tagSetChoicesArray and tagChoicesForId from state.tagSetChoices', async () => {
-      const data = dataToObjectById({
-        data: Data.TractionPacbioTagSets.data.data,
-        includeRelationships: true,
-      })
       store.$state = {
-        tagSets: { ...data },
-        tags: { ...dataToObjectById({ data: Data.TractionPacbioTagSets.data.included }) },
+        tagSets: pacbioTagSetFactory.storeData.tagSets,
+        tags: pacbioTagSetFactory.storeData.tags,
       }
-      const expectedTagSetChoices = [
-        {
-          text: 'Sequel_16_barcodes_v3',
-          value: '3',
-        },
-        {
-          text: 'IsoSeq_v1',
-          value: '4',
-        },
-      ]
-      expect(store.tagSetChoices).toEqual(Object.values(expectedTagSetChoices))
-      expect(store.tagChoicesForId('3')).toHaveLength(16)
+
+      expect(store.tagSetChoices.length).toEqual(
+        Object.values(pacbioTagSetFactory.storeData.tagSets).length,
+      )
+      expect(store.tagChoicesForId(pacbioTagSetFactory.storeData.selected.tagSet.id)).toHaveLength(
+        pacbioTagSetFactory.storeData.selected.tagSet.tags.length,
+      )
       expect(
         store
-          .tagChoicesForId('3')
-          .some((tag) => tag.text === 'bc1001_BAK8A_OA' && tag.value === '113'),
+          .tagChoicesForId(pacbioTagSetFactory.storeData.selected.tagSet.id)
+          .some(
+            (tag) =>
+              tag.text === pacbioTagSetFactory.storeData.selected.tag.group_id &&
+              tag.value === pacbioTagSetFactory.storeData.selected.tag.id,
+          ),
       ).toBe(true)
-      expect(store.tagsetForTagId('113').name).toEqual('Sequel_16_barcodes_v3')
+      expect(store.tagsetForTagId(pacbioTagSetFactory.storeData.selected.tag.id).name).toEqual(
+        pacbioTagSetFactory.storeData.selected.tagSet.name,
+      )
     })
   })
   describe('actions', () => {
@@ -92,16 +70,16 @@ describe('usePacbioRootStore', () => {
       beforeEach(() => {
         rootStore = useRootStore()
         store = usePacbioRootStore()
-        rootStore.api.v1.traction.pacbio.tag_sets = { get }
+        rootStore.api.v2.traction.pacbio.tag_sets = { get }
       })
       it('handles success', async () => {
         // mock dependencies
-        get.mockResolvedValue(Data.TractionPacbioTagSets)
+        get.mockResolvedValue(pacbioTagSetFactory.responses.fetch)
         // apply action
         const { success } = await store.fetchPacbioTagSets()
         // assert result
         const data = dataToObjectById({
-          data: Data.TractionPacbioTagSets.data.data,
+          data: pacbioTagSetFactory.content.data,
           includeRelationships: true,
         })
         expect(store.tagSets).toEqual(data)
@@ -111,7 +89,7 @@ describe('usePacbioRootStore', () => {
       it('handles failure', async () => {
         // mock dependencies
         const get = vi.fn()
-        rootStore.api.v1.traction.pacbio.tag_sets = { get }
+        rootStore.api.v2.traction.pacbio.tag_sets = { get }
         get.mockRejectedValue({
           data: { data: [] },
           status: 500,

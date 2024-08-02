@@ -44,7 +44,7 @@ describe('MultiBarcode', () => {
         },
         ...props,
       },
-      state: { resources: { printers: printerFactory.storeData } },
+      state: { resources: { printers: printerFactory.storeData.printers } },
     })
   }
 

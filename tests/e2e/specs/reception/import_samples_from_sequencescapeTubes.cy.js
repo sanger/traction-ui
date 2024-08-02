@@ -1,4 +1,5 @@
 import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+import PrinterFactory from '../../../factories/PrinterFactory.js'
 
 describe('Import samples from Sequencescape Tubes', () => {
   beforeEach(() => {
@@ -6,8 +7,12 @@ describe('Import samples from Sequencescape Tubes', () => {
       fixture: 'tractionLibraryTypes.json',
     })
 
-    cy.intercept('/v1/printers', {
-      fixture: 'tractionPrinters.json',
+    cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.get('@printerFactory').then((printerFactory) => {
+      cy.intercept('GET', '/v1/printers', {
+        statusCode: 200,
+        body: printerFactory.content,
+      })
     })
   })
 
