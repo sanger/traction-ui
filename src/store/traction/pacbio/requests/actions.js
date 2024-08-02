@@ -24,7 +24,11 @@ const updateRequest = async ({ commit, getters }, payload) => {
   const promise = request.update(requestPayload)
   const response = await handleResponse(promise)
 
-  const { success, data: { data } = {}, errors = [] } = response
+  const {
+    body: { data = {}, meta = {} },
+    success,
+    errors = {},
+  } = response
 
   if (success) {
     commit('updateRequest', data)
