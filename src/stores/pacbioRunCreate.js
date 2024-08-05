@@ -510,13 +510,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       this.resources = resources
     },
     /**
-     * Returns the available volume for an aliquot
+     * Returns the available volume for a library or pool
      * @param {Object} sourceId The id of the library or pool
      * @param {Object} source_type The type of the source (Pacbio::Library or Pacbio::Pool)
-     * @param {Object} aliquotId The id of the aliquot
-     * @param {Object} volume The volume of the aliquot
+     * @param {Object} volume The volume of the current aliquot being calculated for
      *
-     * @returns {Number} The available volume for the aliquot
+     * @returns {Number} The available volume for that library
      */
     getAvailableVolumeForAliquot({ sourceId, sourceType, volume = null }) {
       if (!sourceId || !sourceType) {
@@ -529,19 +528,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const available_volume = sourceStore[sourceId]?.available_volume || 0
 
       // Calculate the sum of the initial volume of all existing aliquots used in wells that are from the source
+      // This is required because there may be additionally available volume if an existing aliquot has been reduced in volume
       let original_aliquot_volume = 0
       Object.values(this.aliquots).forEach((aliquot) => {
         if (
           aliquot &&
           aliquot.source_id == sourceId &&
           aliquot.source_type === sourceType &&
+          // We check it is a well because we have may have used_aliquots from a pool
           aliquot.used_by_type === 'Pacbio::Well'
         ) {
           original_aliquot_volume = parseFloat(original_aliquot_volume) + parseFloat(aliquot.volume)
         }
       })
 
-      // Calculate the sum of the volume of all the new aliquots used in wells that are from the source
+      // Calculate the sum of the volume of all the current aliquots used in wells that are from the source
       let used_aliquots_volume = 0
       Object.values(this.wells).forEach((plate) => {
         Object.values(plate).forEach((well) => {
@@ -555,6 +556,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       })
 
       // Calculate the total available volume for the source
+      // This is the sum of the available volume, the original aliquot volume, the current aliquot volume and the given volume
+      // We parse volume as it may be a string if entered by the user
       let total_available_volume = (
         available_volume +
         original_aliquot_volume -
