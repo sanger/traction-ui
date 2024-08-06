@@ -1,19 +1,14 @@
-import Response from '@/api/v1/Response'
-import { Data } from '@support/testHelper'
-import mutations from '@/store/traction/saphyr/requests/mutations'
+import mutations from '@/store/traction/saphyr/requests/mutations.js'
+import SaphyrRequestsFactory from '@tests/factories/SaphyrRequestsFactory.js'
 
-let requests
+const saphyrRequestsFactory = SaphyrRequestsFactory()
 
 describe('mutations', () => {
-  beforeEach(() => {
-    requests = new Response(Data.TractionSaphyrRequests).deserialize.requests
-  })
-
   it('"setRequests" sets "state.requests" to the given requests', () => {
     const state = {
       requests: [],
     }
-    mutations.setRequests(state, requests)
-    expect(state.requests).toEqual(requests)
+    mutations.setRequests(state, saphyrRequestsFactory.storeData.requests)
+    expect(state.requests).toEqual(saphyrRequestsFactory.storeData.requests)
   })
 })
