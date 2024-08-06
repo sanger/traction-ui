@@ -153,6 +153,8 @@ To create the documentation using jsdoc run:
 
 The documentation will appear in the docs folder. Currently this does not work for .vue files.
 
+To view them open the docs/index.html file.
+
 ## Miscellaneous
 
  #### Custom traction table implementation
