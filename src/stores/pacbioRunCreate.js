@@ -228,7 +228,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
   actions: {
     /**
      * Retrieves a list of pacbio smrt_link_versions and populates the store.
-     * @returns { success, errors }. Was the request successful? were there any errors?
+     * @returns {Object} { success, errors }. Was the request successful? were there any errors?
      */
     async fetchSmrtLinkVersions() {
       const rootStore = useRootStore()
@@ -293,7 +293,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Retrieves a pacbio run and populates the store.
      * @param id the id of the run to retrieve
-     * @returns { success, errors }. Was the request successful? were there any errors?
+     * @returns { object } { success, errors }. Was the request successful? were there any errors?
      */
     async fetchRun({ id }) {
       const rootStore = useRootStore()
@@ -377,7 +377,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Saves (persists) the existing run. If it is a new run it will be created.
      * If it is an existing run it will be updated.
-     * @returns { success, errors }. Was the request successful? were there any errors?
+     * @returns { Object } { success, errors }. Was the request successful? were there any errors?
      */
     async saveRun() {
       const rootStore = useRootStore()
@@ -403,7 +403,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Sets the current run. If it is a new run it will be created.
      * If it is an existing run it will be updated.
      * @param id The id of the run. It will be new or existing
-     * @returns { success, errors }. Was the action successful? were there any errors?
+     * @returns { Object } { success, errors }. Was the action successful? were there any errors?
      *
      */
     async setRun({ id }) {

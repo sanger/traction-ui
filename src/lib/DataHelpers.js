@@ -57,7 +57,7 @@ export const alphaNumericSortDefault = (a, b, alphaFirst) => {
  * @param {*} obj - object to flatten
  * @param {*} parentKey = the key of the parent object
  * @param {*} result - result/flattened object in progress which can be used in recursive calls
- * @returns
+ * @returns {Array} - flattened object
  */
 export const flattenObject = (obj, parentKey) => {
   if (!obj) {
