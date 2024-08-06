@@ -145,6 +145,14 @@ This project is built into a static archive for deployment. To trigger the creat
 
 [style guide](style_guide.md)
 
+## Dcoumentation
+
+To create the documentation using jsdoc run:
+
+    npm run jsdoc
+
+The documentation will appear in the docs folder. Currently this does not work for .vue files.
+
 ## Miscellaneous
 
  #### Custom traction table implementation
@@ -156,3 +164,5 @@ To update the table of contents after adding things to this README you can use t
 node module. To run:
 
     npx markdown-toc -i README.md
+
+
