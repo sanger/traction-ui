@@ -9,7 +9,7 @@ import { handleResponse } from '@/api/v2/ResponseHelper.js'
  * associated with the provided barcodes. Uses the provided requestOptions to
  * construct a reception object that can be posted to the traction receptions
  * endpoint
- * @param { sequencescape: { labware: { get: Function } } } requests The API requests store ($store.getters.api)
+ * @param { Object } { sequencescape: { labware: { get: Function } } } requests The API requests store ($store.getters.api)
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * @param { Object } labwareTypes Object containing the labware types and their attributes
@@ -62,7 +62,7 @@ const fetchLabwareFromSequencescape = async ({
  *
  * The labware will be converted from json api to nested structure labware: { receptacles: ... }
  * will throw any errors returned from the API
- * @param { get: Function } request Request object for the Sequencescape V2 labware API
+ * @param { Function } request Request object for the Sequencescape V2 labware API
  * @param { String } barcodes List of comma separated barcodes to look up
  * @param { Object } labwareRequestConfig Request parameters for retrieval of labware from Sequencescape v2 API
  * @returns { Array<Object> } Array of normalized labware objects

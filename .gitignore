@@ -46,3 +46,6 @@ coverage
 
 # vscode
 .vscode
+
+# jsdoc documentation
+/docs

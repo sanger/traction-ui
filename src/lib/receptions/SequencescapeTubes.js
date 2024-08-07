@@ -24,7 +24,7 @@ const labwareRequestConfig = {
  * associated with the provided barcodes. Uses the provided requestOptions to
  * construct a reception object that can be posted to the traction receptions
  * endpoint
- * @param { sequencescape: { labware: { get: Function } } } requests The API requests store ($store.getters.api)
+ * @param { Object } { sequencescape: { labware: { get: Function } } } requests The API requests store ($store.getters.api)
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * imported from Sequencescape if present
