@@ -13,7 +13,6 @@ import Samples from './samples'
 import SuccessfulDestroy from './successfulDestroy'
 import TestResponse from './testResponse'
 import TractionSaphyrLibraries from './tractionSaphyrLibraries'
-import TractionSaphyrRequests from './tractionSaphyrRequests'
 import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
 import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
@@ -80,7 +79,6 @@ export default {
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
-  TractionSaphyrRequests,
   TractionSaphyrTubesWithRequest,
   TractionTubesWithSample,
   TubeWithLibrary,

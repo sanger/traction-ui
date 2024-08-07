@@ -1,6 +1,7 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, store, Data, createTestingPinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
+import SaphyrRequestsFactory from '@tests/factories/SaphyrRequestsFactory.js'
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(Samples, {
@@ -22,6 +23,7 @@ function mountWithStore({ props } = {}) {
 
 describe('Samples.vue', () => {
   let wrapper, samples
+  const saphyrRequestsFactory = SaphyrRequestsFactory()
 
   beforeEach(() => {
     // We mock the request response, to allow the provider to trigger our
@@ -29,14 +31,20 @@ describe('Samples.vue', () => {
     // that gets surprisingly tricky as the store gets heavily modularised.
     // Before we used to inject the state directly, but that caused issues
     // when the component triggered the set requests action itself.
+
+    // const get = vi.spyOn(store.state.api.v2.traction.saphyr.requests, 'get')
+    // get.mockReturnValue(saphyrRequestsFactory.storeData.requests)
+
     vi.spyOn(store.getters['traction/saphyr/requests/requestsRequest'], 'get').mockResolvedValue(
-      Data.TractionSaphyrRequests,
+      saphyrRequestsFactory.responses.fetch,
     )
+
     // Here we mock enzymes as they are loaded in the modal
     vi.spyOn(store.getters.api.v1.traction.saphyr.enzymes, 'get').mockResolvedValue({
       data: Data.Enzymes,
     })
     const { wrapperObj } = mountWithStore()
+    store.state.requests = saphyrRequestsFactory.storeData.requests
     wrapper = wrapperObj
     samples = wrapper.vm
   })
@@ -68,7 +76,7 @@ describe('Samples.vue', () => {
     let selectedEnzymeId, payload, mockSamples
 
     beforeEach(() => {
-      mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
+      mockSamples = Object.values(saphyrRequestsFactory.storeData.requests)
 
       selectedEnzymeId = 123
       samples.createLibrariesInTraction = vi.fn()

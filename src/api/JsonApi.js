@@ -254,7 +254,7 @@ const populateById =
  * @param {string} resource name of the resource to populate in the store
  * @param {bool} includeRelationships indicates if related resource ids should
  * be extracted and included in the resulting object.
- * @return {Function} A mutation function for populating the resource
+ * @returns {Function} A mutation function for populating the resource
  */
 const populateBy =
   (
@@ -281,7 +281,7 @@ const populateBy =
  * @param {Function} fn The function to populate the child data
  * @param {Boolean} includeRelationships indicates if related resource ids should be extracted and included in the resulting object.
  * @param {Array} parent The parent array includes the data, children and key to use for the resulting object
- * @returns
+ * @returns {Array}
  */
 const splitDataByParent = ({
   data,

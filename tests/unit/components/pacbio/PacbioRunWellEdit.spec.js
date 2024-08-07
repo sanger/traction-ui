@@ -464,6 +464,7 @@ describe('PacbioRunWellEdit', () => {
               id: 1,
               source_id: 1,
               source_type: 'Pacbio::Pool',
+              used_by_type: 'Pacbio::Well',
               barcode: 'TRAC-1',
               volume: 5,
               concentration: 10,
@@ -508,19 +509,21 @@ describe('PacbioRunWellEdit', () => {
               template_prep_kit_box_barcode: 'tpkbb1',
               available_volume: 10,
             },
-            2: { id: 2, tube: 2, request: 2, type: 'libraries' },
+            2: { id: 2, tube: 2, used_aliquots: [], request: 2, type: 'libraries' },
           },
           aliquots: {
             1: {
               id: 1,
               source_id: 1,
               source_type: 'Pacbio::Pool',
+              used_by_type: 'Pacbio::Well',
               volume: 5,
             },
             2: {
               id: 2,
               source_id: 1,
               source_type: 'Pacbio::Library',
+              used_by_type: 'Pacbio::Well',
               volume: 5,
             },
           },
@@ -671,10 +674,10 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: 10,
+            volume: 15,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: 10,
+            available_volume: 15,
             errors: {},
           }),
         )
@@ -698,13 +701,13 @@ describe('PacbioRunWellEdit', () => {
             barcode: 'TRAC-2-1',
             source_id: 1,
             source_type: 'Pacbio::Library',
-            volume: 10,
+            volume: 15,
             concentration: 10,
             template_prep_kit_box_barcode: 'tpkbb1',
-            available_volume: 10,
+            available_volume: 15,
           }),
         )
-        await wrapper.vm.updateUsedAliquotVolume({ index: 1 }, 11)
+        await wrapper.vm.updateUsedAliquotVolume({ index: 1 }, 16)
         // Check the error is added to the aliquot
         expect(wrapper.vm.localUsedAliquots[1].errors.volume).toEqual(
           'must be less or equal to available volume',

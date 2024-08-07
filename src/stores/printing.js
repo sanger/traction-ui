@@ -32,7 +32,7 @@ export const usePrintingStore = defineStore('printing', {
      * @param {String} printerName The name of the printer to send the print job to
      * @param {Array} labels Should be of a standard structure. See relevant components.
      * @param {Integer} copies Number of copies of labels
-     * @returns {Object {success: Boolean, message: String}} Is the print job successful? With a success or failure message
+     * @returns {Object}  {success: Boolean, message: String}} Is the print job successful? With a success or failure message
      * we should probably move this to the PrintJobType. Need to work out how to make payload reactive.
      **/
     async createPrintJob({
@@ -68,7 +68,7 @@ export const usePrintingStore = defineStore('printing', {
 
     /**
      * fetches the list of printers from traction
-     * @returns {Object {success: Boolean, data: Object, errors: Array}} Is the fetch successful? The data and any errors
+     * @returns {Object}  {success: Boolean, data: Object, errors: Array}} Is the fetch successful? The data and any errors
      */
     async fetchPrinters() {
       const rootStore = useRootStore()
