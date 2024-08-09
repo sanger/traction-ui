@@ -1,12 +1,13 @@
 import mutations from '@/store/traction/ont/pools/mutations'
 import defaultState from '@/store/traction/ont/pools/state'
 import { describe, expect, it } from 'vitest'
-import Contracts from './contracts'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
+const ontRequestFactory = OntRequestFactory()
 
 describe('mutations', () => {
   const {
@@ -34,12 +35,12 @@ describe('mutations', () => {
   describe('populateRequests', () => {
     it('updates the state', () => {
       // mock state
-      const requests = Contracts.requests.populateRequestsParameters
+      const requests = ontRequestFactory.content.data
       const state = defaultState()
       // apply mutation
       populateRequests(state, requests)
       // assert result
-      expect(state.resources.requests).toEqual(Contracts.requests.storeData)
+      expect(state.resources.requests).toEqual(ontRequestFactory.storeData)
     })
   })
 

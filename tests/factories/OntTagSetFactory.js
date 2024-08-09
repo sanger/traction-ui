@@ -3920,11 +3920,6 @@ const OntTagSetFactory = () => {
     },
   }
 
-  // const storeData = {
-  //   tagSets: dataToObjectById({ data: data.data, includeRelationships: true }),
-  //   tags: dataToObjectById({ data: data.included }),
-  // }
-
   return { ...BaseFactory(data), storeData: createStoreData({ ...data }) }
 }
 

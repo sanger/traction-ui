@@ -2,14 +2,16 @@ import getters from '@/store/traction/ont/pools/getters'
 import defaultState from '@/store/traction/ont/pools/state'
 import merge from 'lodash-es/merge'
 import { describe, expect, it } from 'vitest'
-import Contracts from './contracts'
 import { Data } from '@support/testHelper'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
+import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+
+const ontRequestFactory = OntRequestFactory()
 
 describe('getters.js', () => {
   const state = merge(defaultState(), {
     resources: {
-      requests: Contracts.requests.storeData,
+      requests: ontRequestFactory.storeData,
     },
   })
   const {
@@ -44,7 +46,7 @@ describe('getters.js', () => {
 
   describe('requests', () => {
     it('returns a list of requests', () => {
-      expect(getters.requests(state)).toEqual(Contracts.requests.getterRequestReturn)
+      expect(getters.requests(state)).toEqual(Object.values(ontRequestFactory.storeData))
     })
   })
 
