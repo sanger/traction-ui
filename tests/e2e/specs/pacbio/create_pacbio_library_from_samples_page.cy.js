@@ -1,12 +1,12 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
-import TractionPacbioSamplesFactory from '../../../factories/TractionPacbioSamplesFactory.js'
+import PacbioSamplesFactory from '../../../factories/PacbioSamplesFactory.js'
 
 describe('Pacbio library creation from sample', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
-    cy.wrap(TractionPacbioSamplesFactory()).as('tractionPacbioSamplesFactory')
+    cy.wrap(PacbioSamplesFactory()).as('tractionPacbioSamplesFactory')
   })
 
   it('Visits the pacbio samples url', () => {

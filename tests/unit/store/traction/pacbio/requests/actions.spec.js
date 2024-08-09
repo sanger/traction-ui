@@ -1,11 +1,11 @@
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { expect } from 'vitest'
 import { newResponse } from '@/api/v1/ResponseHelper'
-import TractionPacbioSamplesFactory from '@tests/factories/TractionPacbioSamplesFactory.js'
+import PacbioSamplesFactory from '@tests/factories/PacbioSamplesFactory.js'
 
 let requests
 
-const tractionPacbioSamplesFactory = TractionPacbioSamplesFactory()
+const tractionPacbioSamplesFactory = PacbioSamplesFactory()
 
 describe('actions', () => {
   beforeEach(() => {
