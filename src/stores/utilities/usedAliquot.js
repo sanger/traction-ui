@@ -4,7 +4,7 @@
  * @param {Object} attributes - The attributes to set on the used aliquot.
  * @returns {Object} The created used aliquot object.
  */
-function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
+function createUsedAliquot(attributes) {
   /**
    * The default attributes for a used aliquot.
    */
@@ -27,14 +27,6 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
     attributes?.source_type ||
     (attributes?.type ? (attributes.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library') : null)
 
-  //Initialise the volume to the available volume of the aliquot if the source type is 'Pacbio::Library' and a function is provided to initialise the volume.
-  const isInitialiseVolume =
-    initialiseToAvailableVolume != null && source_type === 'Pacbio::Library'
-
-  const availableVolume = formatValue(
-    isInitialiseVolume ? initialiseToAvailableVolume() : attributes?.available_volume,
-  )
-
   /**
    * The used aliquot object.
    * This object is created by merging the default attributes with the given attributes.
@@ -47,8 +39,6 @@ function createUsedAliquot(attributes, initialiseToAvailableVolume = null) {
     ...attributes,
     source_type,
     tag_id: (attributes && (attributes.tag || attributes.tag_id)) ?? null,
-    volume: isInitialiseVolume ? availableVolume : formatValue(attributes?.volume),
-    available_volume: availableVolume,
 
     /**
      * Sets the request and available volume of the used aliquot based on the source type and libraries.
@@ -231,16 +221,6 @@ function isValidUsedAliquot(used_aliquot, fields = ['request']) {
     }
   }
   return true
-}
-
-/**
- * This function formats the value to a float with 2 decimal places. If the value is not a number, it returns null.
- * @param  value  The value to be formatted.
- * @returns  The formatted value.
- */
-const formatValue = (value) => {
-  const floatValue = parseFloat(value)
-  return isNaN(floatValue) ? null : parseFloat(floatValue.toFixed(2))
 }
 
 export { createUsedAliquot, isValidUsedAliquot }

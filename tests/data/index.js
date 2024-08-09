@@ -13,7 +13,6 @@ import Samples from './samples'
 import SuccessfulDestroy from './successfulDestroy'
 import TestResponse from './testResponse'
 import TractionSaphyrLibraries from './tractionSaphyrLibraries'
-import TractionSaphyrRequests from './tractionSaphyrRequests'
 import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
 import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
@@ -31,7 +30,6 @@ import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlateRequest from './pacbioPlateRequest'
-import PacbioPlatesRequest from './pacbioPlatesRequest'
 import PacbioTubeRequest from './pacbioTubeRequest'
 import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioTubeWithPool from './pacbioTubeWithPool.json'
@@ -81,7 +79,6 @@ export default {
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
-  TractionSaphyrRequests,
   TractionSaphyrTubesWithRequest,
   TractionTubesWithSample,
   TubeWithLibrary,
@@ -99,7 +96,6 @@ export default {
   PacbioRun,
   PacbioPlates,
   PacbioPlateRequest,
-  PacbioPlatesRequest,
   PacbioTubeRequest,
   PacbioTubesRequest,
   PacbioTubeWithPool,

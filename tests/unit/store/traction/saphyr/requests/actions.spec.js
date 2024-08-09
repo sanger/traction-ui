@@ -1,12 +1,12 @@
-import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/requests/actions'
-import { Data } from '@support/testHelper'
+import SaphyrRequestsFactory from '@tests/factories/SaphyrRequestsFactory.js'
 
-let requests
+const saphyrRequestsFactory = SaphyrRequestsFactory()
 
 describe('actions', () => {
+  let successResponse
   beforeEach(() => {
-    requests = new Response(Data.TractionSaphyrRequests).deserialize.requests
+    successResponse = saphyrRequestsFactory.responses.fetch
   })
 
   describe('setRequests', () => {
@@ -15,11 +15,11 @@ describe('actions', () => {
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
 
-      get.mockReturnValue(Data.TractionSaphyrRequests)
+      get.mockReturnValue(successResponse)
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setRequests', requests)
+      expect(commit).toHaveBeenCalledWith('setRequests', saphyrRequestsFactory.storeData.requests)
     })
   })
 })

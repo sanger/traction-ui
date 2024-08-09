@@ -178,7 +178,6 @@ const labelTypeOptions = computed(() => {
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
-  console.log(labelType)
   return printingStore.printers(labelType.value.labwareType).map(({ name }) => ({
     text: name,
   }))

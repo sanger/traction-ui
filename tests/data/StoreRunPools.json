@@ -14,7 +14,8 @@
       "tube": "22",
       "libraries": null,
       "used_aliquots": ["319", "320", "321", "322"],
-      "primary_aliquot": null
+      "primary_aliquot": null,
+      "available_volume": 1
     },
     "14": {
       "id": "14",
@@ -30,7 +31,8 @@
       "tube": "24",
       "libraries": null,
       "used_aliquots": ["331", "332", "333", "334"],
-      "primary_aliquot": null
+      "primary_aliquot": null,
+      "available_volume": 1
     }
   },
   "libraries": {

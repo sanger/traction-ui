@@ -9,6 +9,9 @@ describe('Pacbio Run Edit view', () => {
       statusCode: 200,
       body: PacbioSmrtLinkVersionFactory().content,
     })
+    cy.withFlags({
+      y24_155_pacbio_run_pool_volume_validation: { enabled: true },
+    })
   })
 
   it('Updates a Revio run successfully', () => {
