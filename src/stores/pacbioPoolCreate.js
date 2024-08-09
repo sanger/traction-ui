@@ -31,7 +31,7 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
  * If a request does not have a well in `resources.wells`, it defaults to a well with a position of 'A1'.
  *
  * @param {*} resources
- * @returns
+ * @returns {Array} sorted requests
  */
 const sortRequestByWellColumnIndex = (resources) => (a, b) =>
   wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
@@ -41,7 +41,7 @@ const sortRequestByWellColumnIndex = (resources) => (a, b) =>
  * Sort the requests based on their labware. Tubes will be sorted after plates,
  * and then each labware is sorted in id order
  * @param {*} resources  The resources object
- * @returns  sorted requests
+ * @returns  {Array} sorted requests
  */
 const sortRequestByLabware = (resources) => (a, b) => {
   if (a.tube && b.tube) {

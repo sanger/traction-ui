@@ -61,7 +61,7 @@ export default {
   /**
    * Updates the library with the corresponding data
    * @param {Object} state The VueXState object
-   * @param {Object.{}} library The library data to update
+   * @param {Object} library The library data to update
    */
   updatePoolingLibrary: (state, library) => {
     state.pooling.libraries[`${library.ont_request_id}`] = Object.assign(
@@ -100,7 +100,7 @@ export default {
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
-   * @param {Object.{}} tube The tube resource to populate the store
+   * @param {Object} tube The tube resource to populate the store
    */
   populatePoolingTube: (state, { id, attributes }) => {
     state.pooling.tube = {
@@ -123,7 +123,7 @@ export default {
    * Remove specific resource given the store resource location and resource id
    * @param {Object} state The VueXState object
    * @param {String} resource The name of the resource from the store
-   * @param {Object.{}} resourceId The resource id to remove from the store
+   * @param {Object} resourceId The resource id to remove from the store
    */
   removeResource: (state, { resource, id }) => {
     delete state.resources[resource][id]

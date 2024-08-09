@@ -8,9 +8,30 @@ import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 const usedAliquots = {
-  1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '12' },
-  2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '14' },
-  3: { id: '3', type: 'aliquots', source_type: 'Pacbio::Library', source_id: '30' },
+  1: {
+    id: '1',
+    type: 'aliquots',
+    source_type: 'Pacbio::Pool',
+    source_id: '12',
+    used_by_type: 'Pacbio::Well',
+    volume: 0,
+  },
+  2: {
+    id: '2',
+    type: 'aliquots',
+    source_type: 'Pacbio::Pool',
+    source_id: '14',
+    used_by_type: 'Pacbio::Well',
+    volume: 0,
+  },
+  3: {
+    id: '3',
+    type: 'aliquots',
+    source_type: 'Pacbio::Library',
+    source_id: '30',
+    used_by_type: 'Pacbio::Well',
+    volume: 0,
+  },
 }
 const storeWell = {
   position: 'A1',

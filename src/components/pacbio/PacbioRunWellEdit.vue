@@ -270,24 +270,22 @@ const updateUsedAliquotSource = async (row, barcode) => {
   const tubeContent = await store.tubeContentByBarcode(barcode)
   if (tubeContent) {
     const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
-    const used_aliquot = createUsedAliquot(
-      {
-        id: row.item.id || '',
-        source_id: tubeContent.id,
-        source_type: type,
-        barcode,
-        volume: tubeContent.volume,
-        concentration: tubeContent.concentration,
-        insert_size: tubeContent.insert_size,
-        template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
-      },
-      () =>
-        store.getAvailableVolumeForAliquot({
-          sourceId: tubeContent.id,
-          sourceType: type,
-          volume: 0,
-        }),
-    )
+    const available_volume = store.getAvailableVolumeForAliquot({
+      sourceId: tubeContent.id,
+      sourceType: type,
+      volume: 0,
+    })
+    const used_aliquot = createUsedAliquot({
+      id: row.item.id || '',
+      source_id: tubeContent.id,
+      source_type: type,
+      barcode,
+      volume: available_volume,
+      available_volume,
+      concentration: tubeContent.concentration,
+      insert_size: tubeContent.insert_size,
+      template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
+    })
     localUsedAliquots[index] = used_aliquot
   } else {
     showAlert('Pool is not valid', 'danger')
@@ -313,8 +311,14 @@ const setupWell = async () => {
       (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
     )
     if (poolOrLibrary) {
+      const available_volume = store.getAvailableVolumeForAliquot({
+        sourceId: poolOrLibrary.id,
+        sourceType: aliquot.source_type,
+        volume: aliquot.volume,
+      })
       const used_aliquot = createUsedAliquot({
         ...aliquot,
+        available_volume,
         barcode: poolOrLibrary.barcode,
       })
       localUsedAliquots.push(used_aliquot)

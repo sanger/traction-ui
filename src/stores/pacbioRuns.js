@@ -40,7 +40,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
 
     /**
      * Updates an existing run
-     * @returns { success, errors }. Was the request successful? were there any errors?
+     * @returns {Object} { success, errors }. Was the request successful? were there any errors?
      */
     async updateRun({ id, ...attributes }) {
       const payload = {
