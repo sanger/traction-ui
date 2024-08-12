@@ -4,7 +4,7 @@ import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 describe('pool', () => {
   describe('createUsedAliquot', () => {
-    it('createUsedAliquot with default values', () => {
+    it('builds the corrrect default values', () => {
       const usedAliquot = createUsedAliquot()
       expect(usedAliquot.source_id).toBe(null)
       expect(usedAliquot.template_prep_kit_box_barcode).toBe(null)
@@ -12,13 +12,15 @@ describe('pool', () => {
       expect(usedAliquot.volume).toBe(null)
       expect(usedAliquot.concentration).toBe(null)
       expect(usedAliquot.insert_size).toBe(null)
+      expect(usedAliquot.available_volume).toBe(null)
     })
-    it('createUsedAliquot with custom values', () => {
+    it('builds with the correct given values', () => {
       const usedAliquot = createUsedAliquot({
         source_id: '1',
         template_prep_kit_box_barcode: 'barcode1',
         tag_id: 'tag1',
         volume: 10,
+        available_volume: 10,
         concentration: 5,
         insert_size: 1,
       })
@@ -28,6 +30,7 @@ describe('pool', () => {
       expect(usedAliquot.volume).toBe(10)
       expect(usedAliquot.concentration).toBe(5)
       expect(usedAliquot.insert_size).toBe(1)
+      expect(usedAliquot.available_volume).toBe(10)
     })
   })
 
@@ -159,6 +162,23 @@ describe('pool', () => {
       })
     })
 
+    it('returns false when the pool volume is less than used volume', () => {
+      const pool = {
+        insert_size: '',
+        concentration: '',
+        volume: '5',
+        used_volume: '10',
+        template_prep_kit_box_barcode: '',
+      }
+      expect(validate({ used_aliquots: {}, pool })).toBe(false)
+      expect(pool.errors).toEqual({
+        insert_size: 'must be present',
+        concentration: 'must be present',
+        volume: 'must be greater than used volume',
+        template_prep_kit_box_barcode: 'must be present',
+      })
+    })
+
     it('returns true when the pool and used_aliquots are valid', () => {
       const used_aliquots = {
         1: createUsedAliquot({
@@ -184,6 +204,7 @@ describe('pool', () => {
         insert_size: 100,
         concentration: 10,
         volume: 10,
+        used_volume: 5,
         template_prep_kit_box_barcode: 'ABC1',
       }
       validate({ used_aliquots, pool })

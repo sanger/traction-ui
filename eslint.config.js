@@ -22,7 +22,7 @@ export default [
     },
   },
   {
-    ignores: ['dist/**/*.js'],
+    ignores: ['dist/**/*.js', 'docs/**/*.js'],
   },
   {
     languageOptions: {
