@@ -11,7 +11,7 @@ const createIncludedData = (included) => {
   }
 }
 
-const OntTagSetFactory = () => {
+const OntPoolFactory = () => {
   const data = {
     data: [
       {
@@ -1785,4 +1785,4 @@ const OntTagSetFactory = () => {
   return { ...BaseFactory(data), includedData: createIncludedData(data.included) }
 }
 
-export default OntTagSetFactory
+export default OntPoolFactory
