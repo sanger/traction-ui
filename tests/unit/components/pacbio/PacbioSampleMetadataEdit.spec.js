@@ -1,4 +1,4 @@
-import { mount, Data, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PacbioSamplesFactory from '@tests/factories/PacbioSamplesFactory.js'
 
