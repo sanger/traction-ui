@@ -24,7 +24,6 @@ import TractionPacbioPool from './tractionPacbioPool.json'
 import TractionPacbioPoolsWithAliquots from './tractionPacbioPools.json'
 import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
-import TractionPacbioSamples from './tractionPacbioSamples'
 import TractionPacbioSample from './tractionPacbioSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
@@ -90,7 +89,6 @@ export default {
   TractionPacbioPoolsNoRelationships,
   TractionPacbioPoolsWithAliquots,
   TractionPacbioLibrary,
-  TractionPacbioSamples,
   TractionPacbioSample,
   PacbioRuns,
   PacbioRun,
