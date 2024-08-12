@@ -17,8 +17,7 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
-      const requests = tractionPacbioSamplesFactory.responses.fetch
-      get.mockReturnValue(requests)
+      get.mockReturnValue(tractionPacbioSamplesFactory.responses.fetch)
 
       await Actions.setRequests({ commit, getters })
 
