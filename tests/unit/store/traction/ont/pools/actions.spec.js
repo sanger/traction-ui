@@ -1,13 +1,16 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/ont/pools/actions'
 import { describe, expect, it } from 'vitest'
-import Contracts from './contracts'
 import defaultState from '@/store/traction/ont/pools/state'
 import { payload } from '@/store/traction/ont/pools/pool'
 import { newResponse } from '@/api/v1/ResponseHelper'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
+const ontRequestFactory = OntRequestFactory()
+const ontPoolFactory = OntPoolFactory()
 
 describe('actions.js', () => {
   const {
@@ -32,14 +35,11 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { requests: { get } } } } } }
-      get.mockResolvedValue(Data.TractionOntRequests)
+      get.mockResolvedValue(ontRequestFactory.responses.axios)
       // apply action
       const { success } = await actions.fetchOntRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith(
-        'setRequests',
-        Contracts.requests.populateRequestsParameters,
-      )
+      expect(commit).toHaveBeenCalledWith('setRequests', ontRequestFactory.content.data)
       expect(success).toEqual(true)
     })
 
@@ -69,27 +69,19 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { pools: { get } } } } } }
-      get.mockResolvedValue(Data.TractionOntPools)
+      get.mockResolvedValue(ontPoolFactory.responses.axios)
       // apply action
       const { success } = await actions.fetchOntPools({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith('setPools', Data.TractionOntPools.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateTubes',
-        Data.TractionOntPools.data.included.slice(0, 3),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateTags',
-        Data.TractionOntPools.data.included.slice(22, 29),
-      )
+      expect(commit).toHaveBeenCalledWith('setPools', ontPoolFactory.content.data)
+
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.includedData.tubes)
+      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.includedData.tags)
       expect(commit).toHaveBeenCalledWith(
         'populateLibraries',
-        Data.TractionOntPools.data.included.slice(3, 22),
+        ontPoolFactory.includedData.libraries,
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.TractionOntPools.data.included.slice(29, 39),
-      )
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.includedData.requests)
       expect(success).toEqual(true)
     })
 

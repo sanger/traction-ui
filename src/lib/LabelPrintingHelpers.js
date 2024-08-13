@@ -3,22 +3,23 @@
  * It is now in the state that it can be used ny multiple components / views
  * I also think we could create a composables ... but that is for another day
  * A bit more workand this could be a truly reusable library
+ * @module LabelPrintingHelpers
  */
 
-/*
- * @param {Array [Object, ...]} WorkflowList
+/**
+ * @param {Array} {[Object, ...]} WorkflowList
  * @param {String} the attribute to extract from each object
- * @returns [Array] e.g. [attribute, attribute ...]
+ * @returns {Array} e.g. [attribute, attribute ...]
  * for each object return the named attribute
  */
 const byAttribute = (objects, attribute) => {
   return objects.map((object) => object[attribute])
 }
 
-/*
- * @param {Array [Object, ...]} WorkflowList
+/**
+ * @param {Array}: {[Object, ...]} WorkflowList
  * @returns {Array} A list which can be used as a drop-down in the format
- * example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
+ * @example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
  */
 const createWorkflowDropdownOptions = (WorkflowList) => {
@@ -31,8 +32,8 @@ const createWorkflowDropdownOptions = (WorkflowList) => {
   })).concat([{ text: 'No suffix', value: null }])
 }
 
-/*
- * @param {Array [Object, ...]} WorkflowList
+/**
+ * @param {Array}  {[Object, ...]} WorkflowList
  * @returns {Object} e.g. { suffix: {options}, ...}
  */
 const workflowByOptions = (options) => {
@@ -44,8 +45,8 @@ const workflowByOptions = (options) => {
   }, {})
 }
 
-/*
- * @param {Array [Object, ...]} WorkflowList
+/**
+ * @param {Array} {[Object, ...]} WorkflowList
  * @returns {Object} A list with the suffix as the key and the option as the value.
  * For each item Ignores the workflow and flattens all options into a single object
  * This allows for searching by suffix
@@ -60,7 +61,9 @@ const createWorkflowOptions = (WorkflowList) => {
   }, {})
 }
 
-// @returns {Object} - An empty WorkflowOptions with all attributes set to null
+/**
+ * @returns {Object} - An empty WorkflowOptions with all attributes set to null
+ */
 const NullWorkflowItem = {
   stage: '',
   suffix: null,
