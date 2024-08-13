@@ -1,14 +1,15 @@
-import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
-import { Data } from '@support/testHelper'
 import { expect } from 'vitest'
 import { newResponse } from '@/api/v1/ResponseHelper'
+import PacbioSamplesFactory from '@tests/factories/PacbioSamplesFactory.js'
 
 let requests
 
+const tractionPacbioSamplesFactory = PacbioSamplesFactory()
+
 describe('actions', () => {
   beforeEach(() => {
-    requests = new Response(Data.TractionPacbioSamples).deserialize.requests
+    requests = tractionPacbioSamplesFactory.content.data.data
   })
 
   describe('setRequests', () => {
@@ -16,48 +17,11 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
-      const requests = Data.TractionPacbioSamples
-      requests.data.data.splice(2, 11)
-      get.mockReturnValue(requests)
-
-      const expectedRequests = [
-        {
-          id: '1',
-          type: 'requests',
-          attributes: {
-            library_type: 'library_type_1',
-            estimate_of_gb_required: 100,
-            number_of_smrt_cells: 3,
-            cost_code: 'PSD1234',
-            external_study_id: 'mockStudy-ID',
-            sample_name: 'mockName3',
-            barcode: 'TRAC-82',
-            sample_species: 'mockSpecies',
-            source_identifier: 'NT127Q',
-            created_at: '10/14/2019 10:56',
-          },
-        },
-        {
-          id: '2',
-          type: 'requests',
-          attributes: {
-            library_type: 'library_type_1',
-            estimate_of_gb_required: 100,
-            number_of_smrt_cells: 3,
-            cost_code: 'PSD1234',
-            external_study_id: 'mockStudy-ID',
-            sample_name: 'mockName3',
-            barcode: 'TRAC-83',
-            sample_species: 'mockSpecies',
-            source_identifier: 'NT127Q',
-            created_at: '10/14/2019 10:56',
-          },
-        },
-      ]
+      get.mockReturnValue(tractionPacbioSamplesFactory.responses.fetch)
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setRequests', expectedRequests)
+      expect(commit).toHaveBeenCalledWith('setRequests', tractionPacbioSamplesFactory.content.data)
     })
   })
 
@@ -68,15 +32,18 @@ describe('actions', () => {
       const commit = vi.fn()
       const getters = { requestsRequest: { update: update } }
 
-      update.mockReturnValue(Data.TractionPacbioSample)
+      update.mockReturnValue(tractionPacbioSamplesFactory.responses.fetch)
 
       const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
       const expectedPayload = Actions.createRequestPayload(sample)
 
       expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
-      expect(commit).toHaveBeenCalledWith('updateRequest', Data.TractionPacbioSample.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'updateRequest',
+        tractionPacbioSamplesFactory.content.data,
+      )
       expect(success).toEqual(true)
-      expect(errors).toEqual([])
+      expect(errors).toEqual({})
     })
 
     it('unsuccessful', async () => {
@@ -85,23 +52,24 @@ describe('actions', () => {
       const commit = vi.fn()
       const getters = { requestsRequest: { update: update } }
       const mockResponse = {
-        status: '422',
-        data: { data: { errors: { error1: ['There was an error'] } } },
+        error: ['There was an error'],
+        status: 500,
+        ok: false,
       }
 
-      update.mockRejectedValue({ response: mockResponse })
+      update.mockRejectedValue({ ...mockResponse })
       const expectedResponse = newResponse({ ...mockResponse, success: false })
 
       const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
 
       expect(success).toEqual(false)
-      expect(errors).toEqual(expectedResponse.errors)
+      expect(errors.error).toEqual(expectedResponse.errors)
     })
   })
 
   describe('createRequestPayload', () => {
     it('creates the payload for the sample', async () => {
-      const sample = new Response(Data.TractionPacbioSamples).deserialize.requests[0]
+      const sample = tractionPacbioSamplesFactory.content.data.data[0]
       const result = Actions.createRequestPayload(sample)
 
       expect(result.data.id).toEqual(sample.id)

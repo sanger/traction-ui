@@ -1,6 +1,7 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex.vue'
-import { mount, store, Data, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { createTestingPinia, flushPromises, mount, store } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
+import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(PacbioSamples, {
@@ -18,17 +19,18 @@ function mountWithStore({ props } = {}) {
   return { wrapperObj }
 }
 
+const pacbioRequestsFactory = PacbioRequestsFactory()
+
 describe('PacbioSamples.vue', () => {
   let wrapper, samples
 
   beforeEach(async () => {
     // Remove the included data in the dummy response as its not needed
-    const PacbioRequestsRequest = Data.PacbioRequestsRequest
-    PacbioRequestsRequest.data.included = []
+    pacbioRequestsFactory.content.data.included = []
 
     // DataFetcher calls requests get on render so we need to mock the call
-    const requestGet = vi.spyOn(store.state.api.v1.traction.pacbio.requests, 'get')
-    requestGet.mockReturnValue(PacbioRequestsRequest)
+    const requestGet = vi.spyOn(store.state.api.v2.traction.pacbio.requests, 'get')
+    requestGet.mockReturnValue(pacbioRequestsFactory.responses.fetch)
 
     const { wrapperObj } = mountWithStore()
     wrapper = wrapperObj
