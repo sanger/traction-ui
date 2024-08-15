@@ -98,16 +98,9 @@
       },
       {
         "stage": "Post SPRI",
-        "suffix": "PSSHR",
-        "text": "PSSHR - Post SPRI",
-        "value": "PSSHR",
-        "workflow": "Pacbio Standard"
-      },
-      {
-        "stage": "Post SPRI",
-        "suffix": "PSSHR",
-        "text": "PSSHR - Post SPRI",
-        "value": "PSSHR",
+        "suffix": "PSSPR",
+        "text": "PSSPR - Post SPRI",
+        "value": "PSSPR",
         "workflow": "Pacbio Standard"
       },
       {
