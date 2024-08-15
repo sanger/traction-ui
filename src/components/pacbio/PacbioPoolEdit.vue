@@ -51,40 +51,26 @@
                   />
                 </traction-field-error>
               </fieldset>
-              <flagged-feature name="y24_154_enable_used_volume_display_pool_edit">
-                <template #disabled>
-                  <fieldset class="flex flex-col">
-                    <traction-label class="h-full">Volume</traction-label>
-                    <traction-field-error
-                      data-attribute="pool-volume-error"
-                      :error="poolErrorsFor('volume')"
-                      :with-icon="!!pool.errors?.volume"
-                    >
-                      <traction-input v-model="volume" data-attribute="volume" />
-                    </traction-field-error>
-                  </fieldset>
-                </template>
-                <fieldset class="flex flex-col">
-                  <div class="flex flex-row pb-6">
-                    <traction-label class="h-full">Volume</traction-label>
-                    <traction-tooltip
-                      v-if="pool.used_volume != null && persisted"
-                      :tooltip-text="'Used volume is ' + pool.used_volume"
-                    >
-                      <traction-badge id="pool-used-volume" colour="sanger-pink"
-                        ><TractionInfoIcon class="mr-2" />{{ pool.used_volume }}</traction-badge
-                      >
-                    </traction-tooltip>
-                  </div>
-                  <traction-field-error
-                    data-attribute="pool-volume-error"
-                    :error="poolErrorsFor('volume')"
-                    :with-icon="!!pool.errors?.volume"
+              <fieldset class="flex flex-col">
+                <div class="flex flex-row pb-6">
+                  <traction-label class="h-full">Volume</traction-label>
+                  <traction-tooltip
+                    v-if="pool.used_volume != null && persisted"
+                    :tooltip-text="'Used volume is ' + pool.used_volume"
                   >
-                    <traction-input v-model="volume" data-attribute="volume" />
-                  </traction-field-error>
-                </fieldset>
-              </flagged-feature>
+                    <traction-badge id="pool-used-volume" colour="sanger-pink"
+                      ><TractionInfoIcon class="mr-2" />{{ pool.used_volume }}</traction-badge
+                    >
+                  </traction-tooltip>
+                </div>
+                <traction-field-error
+                  data-attribute="pool-volume-error"
+                  :error="poolErrorsFor('volume')"
+                  :with-icon="!!pool.errors?.volume"
+                >
+                  <traction-input v-model="volume" data-attribute="volume" />
+                </traction-field-error>
+              </fieldset>
               <fieldset class="flex flex-col">
                 <traction-label class="h-full">Concentration</traction-label>
                 <traction-field-error
