@@ -167,12 +167,12 @@ const fields = ref([
   - `value`: The value to be used for the filter.
   - `text`: The text to be displayed for the filter option.
 */
-const filterOptions = ref([
+const filterOptions = [
   { value: '', text: '' },
   { value: 'name', text: 'Name' },
   { value: 'state', text: 'State' },
   // Need to specify filters in json api resources if we want more filters
-])
+]
 
 /*
   The `sortBy` variable is a reference to a string that defines the default sorting column for the table.
