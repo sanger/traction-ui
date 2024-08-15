@@ -3,7 +3,7 @@ name: Deploy JSDoc to GitHub Pages
 on:
   push:
     branches:
-      - 'jsdoc-gh-pages'
+      - 'master'
 
 permissions:
   pages: write      # Allow writing to the GitHub Pages
