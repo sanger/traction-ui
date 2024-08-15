@@ -44,10 +44,7 @@
             placeholder="Pool/Library volume"
             @update:model-value="updateUsedAliquotVolume(row, $event)"
           ></traction-input>
-          <div
-            class="flex items-center"
-            data-attribute="available-volume-div"
-          >
+          <div class="flex items-center" data-attribute="available-volume-div">
             <traction-tooltip
               :tooltip-text="'Available volume is ' + row.item.available_volume"
               class="flex max-w-xs"
