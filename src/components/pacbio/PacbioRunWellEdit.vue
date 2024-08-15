@@ -45,7 +45,6 @@
             @update:model-value="updateUsedAliquotVolume(row, $event)"
           ></traction-input>
           <div
-            v-if="showAvailableVolume(row.item)"
             class="flex items-center"
             data-attribute="available-volume-div"
           >
@@ -149,9 +148,6 @@ const validLocalUsedAliquots = computed(() => {
 })
 
 // Computed property to show the available volume badge unless the aliquot is a pool and the feature flag is disabled
-const showAvailableVolume = (aliquot) => {
-  return aliquot.source_type == 'Pacbio::Library' || aliquot.source_type == 'Pacbio::Pool'
-}
 
 // Define a computed property to determine the action for the modal which is either create or update
 const action = computed(() => {
@@ -323,9 +319,6 @@ const setupWell = async () => {
 const errorsFor = (aliquot, attribute) => {
   if (aliquot && attribute) {
     // If we aren't showing available volume we also don't need to validate the volume
-    if (!showAvailableVolume(aliquot)) {
-      return
-    }
     aliquot.validateField(attribute, aliquot[attribute])
     return aliquot.errors?.[attribute]
   }
