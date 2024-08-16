@@ -9,6 +9,7 @@
     "template": "node_modules/@pixi/jsdoc-template"
   },
   "templates": {
-    "applicationName": "Traction"
+    "applicationName": "Traction",
+    "linenums": true
   }
 }
