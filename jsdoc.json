@@ -1,8 +1,8 @@
 {
   "source": {
-    "include": ["src", "style_guide.md"],
+    "include": ["src", "public", "style_guide.md"],
     "plugins": ["plugins/markdown"],
-    "includePattern": ".+\\.(js)$"
+    "includePattern": ".+\\.(js|svg|png|jpg)$"
   },
   "opts": {
     "readme": "./README.md"
