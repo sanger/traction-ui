@@ -1,4 +1,4 @@
-# ![logo](/public/traction-logo.svg) Traction UI
+# ![logo](./public/traction-logo.svg) Traction UI
 
 A Vue front-end app to interact with the [Traction API](https://github.com/sanger/traction-service).
 
