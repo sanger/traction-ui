@@ -6,10 +6,6 @@
   },
   "opts": {
     "readme": "./README.md",
-    "template": "node_modules/@pixi/jsdoc-template"
-  },
-  "templates": {
-    "applicationName": "Traction",
-    "linenums": true
+    "template": "node_modules/better-docs"
   }
 }
