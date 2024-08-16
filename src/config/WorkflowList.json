@@ -184,9 +184,9 @@
         "workflow": "Sample QC"
       },
       {
-        "stage": "Shear + SPRI",
+        "stage": "Sheared + SPRI",
         "suffix": "SQCSHS",
-        "text": "SQCSHS - Shear + SPRI",
+        "text": "SQCSHS - Sheared + SPRI",
         "value": "SQCSHS",
         "workflow": "Sample QC"
       },
