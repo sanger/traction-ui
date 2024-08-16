@@ -6,6 +6,9 @@
   },
   "opts": {
     "readme": "./README.md",
-    "template": "node_modules/better-docs"
+    "template": "node_modules/@pixi/jsdoc-template"
+  },
+  "templates": {
+    "applicationName": "Traction"
   }
 }
