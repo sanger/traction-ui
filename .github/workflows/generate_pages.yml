@@ -33,7 +33,7 @@ jobs:
             npm run jsdoc
             cp -r public docs/public
             cp -r style_guide.md docs/style_guide.md
-            sed -i '/<h1 class="page-title">Home<\/h1>/d' docs/index.html
+            sed -i '/<h1>Home<\/h1>/d' docs/index.html
 
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v1
