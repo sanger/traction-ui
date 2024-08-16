@@ -5,8 +5,6 @@
     "includePattern": ".+\\.(js)$"
   },
   "opts": {
-    "readme": "./README.md",
-    "template": "default",
-    "destination": "./docs"
+    "readme": "./README.md"
   }
 }
