@@ -32,7 +32,7 @@ jobs:
         run: |
             npm run jsdoc
             cp -r public docs/public
-            cp favicon.ico docs/
+            cp public/favicon.ico docs/
             cp -r style_guide.md docs/style_guide.md
             sed -i '/<h1>Home<\/h1>/d' docs/index.html
 
