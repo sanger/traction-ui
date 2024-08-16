@@ -31,7 +31,7 @@ jobs:
       - name: Run npm pretty
         run: |
             npm run jsdoc
-            sed -i '' '/<h1 class="page-title">Home<\/h1>/d' docs/index.html
+            sed -i '/<h1 class="page-title">Home<\/h1>/d' docs/index.html
 
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v1
