@@ -32,7 +32,7 @@ jobs:
         run: |
             npm run jsdoc
             sed -i '/<h1 class="page-title">Home<\/h1>/d' docs/index.html
-            sed -i 's|<img src="/public/traction-logo.svg" alt="logo">||' docs/index.html
+            sed -i 's|<img src="./public/traction-logo.svg" alt="logo">||' docs/index.html
 
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v1
