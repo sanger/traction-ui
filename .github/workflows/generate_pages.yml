@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencides
         run: >-
             npm ci --legacy-peer-deps
-      - name: Run npm pretty
+      - name: Run jsdoc
         run: |
             npm run jsdoc
             sed -i '/<h1 class="page-title">Home<\/h1>/d' docs/index.html
