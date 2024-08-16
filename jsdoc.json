@@ -1,6 +1,6 @@
 {
   "source": {
-    "include": ["src", "public"],
+    "include": ["src", "style_guide.md"],
     "plugins": ["plugins/markdown"],
     "includePattern": ".+\\.(js)$"
   },
