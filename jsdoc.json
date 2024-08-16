@@ -1,10 +1,11 @@
 {
   "source": {
     "include": ["src", "public", "style_guide.md"],
-    "plugins": ["plugins/markdown"],
+    "plugins": ["plugins/markdown", "node_modules/better-docs/component"],
     "includePattern": ".+\\.(js|svg)$"
   },
   "opts": {
-    "readme": "./README.md"
+    "readme": "./README.md",
+    "template": "node_modules/better-docs"
   }
 }
