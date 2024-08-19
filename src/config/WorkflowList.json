@@ -1,48 +1,128 @@
 [
   {
-    "workflow": "PacBio UltraLow",
+    "workflow": "Pacbio ULI LP",
     "options": [
       {
         "stage": "PreLibrary",
-        "suffix": "UPRL",
-        "text": "UPRL - PreLibrary",
-        "value": "UPRL",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULPRL",
+        "text": "PULPRL - PreLibrary",
+        "value": "PULPRL",
+        "workflow": "Pacbio ULI LP"
       },
       {
         "stage": "Pre PCR Amplification",
-        "suffix": "UPPA",
-        "text": "UPPA - Pre PCR Amplification",
-        "value": "UPPA",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULPPA",
+        "text": "PULPPA - Pre PCR Amplification",
+        "value": "PULPPA",
+        "workflow": "Pacbio ULI LP"
       },
       {
         "stage": "Post Amplification A",
-        "suffix": "UPAA",
-        "text": "UPAA - Post Amplification A",
-        "value": "UPAA",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULPAA",
+        "text": "PULPAA - Post Amplification A",
+        "value": "PULPAA",
+        "workflow": "Pacbio ULI LP"
       },
       {
         "stage": "Post Amplification B",
-        "suffix": "UPAB",
-        "text": "UPAB - Post Amplification B",
-        "value": "UPAB",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULPAB",
+        "text": "PULPAB - Post Amplification B",
+        "value": "PULPAB",
+        "workflow": "Pacbio ULI LP"
       },
       {
         "stage": "Post Pool pre-Size Selection",
-        "suffix": "UPPS",
-        "text": "UPPS - Post Pool pre-Size Selection",
-        "value": "UPPS",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULPPS",
+        "text": "PULPPS - Post Pool pre-Size Selection",
+        "value": "PULPPS",
+        "workflow": "Pacbio ULI LP"
       },
       {
         "stage": "Final Library",
-        "suffix": "USBT",
-        "text": "USBT - Final Library",
-        "value": "USBT",
-        "workflow": "PacBio UltraLow"
+        "suffix": "PULSBT",
+        "text": "PULSBT - Final Library",
+        "value": "PULSBT",
+        "workflow": "Pacbio ULI LP"
+      }
+    ]
+  },
+  {
+    "workflow": "Pacbio ULI SP",
+    "options": [
+      {
+        "stage": "Sheared + 3.1xSPRI",
+        "suffix": "PUSSHS",
+        "text": "PUSSHS - Sheared + 3.1xSPRI",
+        "value": "PUSSHS",
+        "workflow": "Pacbio ULI SP"
+      },
+      {
+        "stage": " 3.1xSPRI",
+        "suffix": "PUSSPR",
+        "text": "PUSSPR - 3.1xSPRI",
+        "value": "PUSSPR",
+        "workflow": "Pacbio ULI SP"
+      },
+      {
+        "stage": "Sheared",
+        "suffix": "PUSSHR",
+        "text": "PUSSHR - Sheared",
+        "value": "PUSSHR",
+        "workflow": "Pacbio ULI SP"
+      },
+      {
+        "stage": "Excess",
+        "suffix": "PUSEXC",
+        "text": "PUSEXC - Excess",
+        "value": "PUSEXC",
+        "workflow": "Pacbio ULI SP"
+      }
+    ]
+  },
+  {
+    "workflow": "Pacbio Standard",
+    "options": [
+      {
+        "stage": "Supernatant",
+        "suffix": "PSSUP",
+        "text": "PSSUP - Supernatant",
+        "value": "PSSUP",
+        "workflow": "Pacbio Standard"
+      },
+      {
+        "stage": "Sheared",
+        "suffix": "PSSHR",
+        "text": "PSSHR - Sheared",
+        "value": "PSSHR",
+        "workflow": "Pacbio Standard"
+      },
+      {
+        "stage": "Post SPRI",
+        "suffix": "PSSPR",
+        "text": "PSSPR - Post SPRI",
+        "value": "PSSPR",
+        "workflow": "Pacbio Standard"
+      },
+      {
+        "stage": "Pre-Nuclease",
+        "suffix": "PSPNU",
+        "text": "PSPNU - Pre-Nuclease",
+        "value": "PSPNU",
+        "workflow": "Pacbio Standard"
+      },
+      {
+        "stage": "Pre-Size Selection",
+        "suffix": "PSPSS",
+        "text": "PSPSS - Pre-Size Selection",
+        "value": "PSPSS",
+        "workflow": "Pacbio Standard"
+      },
+      {
+        "stage": "Pre-Norm",
+        "suffix": "PSPNO",
+        "text": "PSPNO - Pre-Norm",
+        "value": "PSPNO",
+        "workflow": "Pacbio Standard"
       }
     ]
   },
@@ -90,6 +170,46 @@
         "text": "ESN2 - Supernatant",
         "value": "ESN2",
         "workflow": "Extraction"
+      }
+    ]
+  },
+  {
+    "workflow": "Sample QC",
+    "options": [
+      {
+        "stage": "Sheared",
+        "suffix": "SQCSHR",
+        "text": "SQCSHR - Sheared",
+        "value": "SQCSHR",
+        "workflow": "Sample QC"
+      },
+      {
+        "stage": "Sheared + SPRI",
+        "suffix": "SQCSHS",
+        "text": "SQCSHS - Sheared + SPRI",
+        "value": "SQCSHS",
+        "workflow": "Sample QC"
+      },
+      {
+        "stage": "SPRI",
+        "suffix": "SQCSPR",
+        "text": "SQCSPR - SPRI",
+        "value": "SQCSPR",
+        "workflow": "Sample QC"
+      },
+      {
+        "stage": "PreLib",
+        "suffix": "SQCPRL",
+        "text": "SQCPRL - PreLib",
+        "value": "SQCPRL",
+        "workflow": "Sample QC"
+      },
+      {
+        "stage": "Excess",
+        "suffix": "SQCEXC",
+        "text": "SQCEXC - Excess",
+        "value": "SQCEXC",
+        "workflow": "Sample QC"
       }
     ]
   },
