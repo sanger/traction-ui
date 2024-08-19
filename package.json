@@ -50,7 +50,7 @@
     "dotenv": "^16.4.5",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-cypress": "^3.4.0",
+    "eslint-plugin-cypress": "^3.5.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
     "jsdoc": "^4.0.3",
