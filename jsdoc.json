@@ -7,5 +7,12 @@
   "opts": {
     "readme": "./README.md",
     "template": "node_modules/better-docs"
+  },
+  "templates": {
+    "better-docs": {
+      "name": "Traction UI",
+      "title": "Traction UI",
+      "hideGenerator": true
+    }
   }
 }
