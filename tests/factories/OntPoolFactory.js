@@ -11,6 +11,12 @@ const createIncludedData = (included) => {
   }
 }
 
+/**
+ *
+ * @param {null | integer} numberOfRecords if number of records is null, it will return all the records otherwise it will return the number of records specified
+ * @returns { BaseFactory }
+ * pull out the attributes and relationships from the data and create a factory
+ */
 const OntPoolFactory = () => {
   const data = {
     data: [
