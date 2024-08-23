@@ -5,7 +5,6 @@ on:
     branches:
       - 'master'
       - 'develop'
-      - 'jsdoc-gh-pages'
   workflow_dispatch:
 
 permissions:
@@ -37,7 +36,7 @@ jobs:
             sed -i '/<h1>Home<\/h1>/d' docs/index.html
 
       - name: Upload artifact to GitHub Pages
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: docs  # Path to the folder containing the Yard documentation (default is 'doc')
 
@@ -47,4 +46,4 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4.0.5
