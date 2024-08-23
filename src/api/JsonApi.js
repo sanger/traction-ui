@@ -305,6 +305,10 @@ const splitDataByParent = ({
   }, {})
 }
 
+const find = ({ data, first = 1 } = {}) => {
+  return data.data.slice(0, first)
+}
+
 export {
   extractAttributes,
   mapRelationships,
@@ -324,6 +328,7 @@ export {
   populateBy,
   splitDataByParent,
   dataToObjectByPlateNumber,
+  find,
 }
 
 export default deserialize

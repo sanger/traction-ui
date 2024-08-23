@@ -25,6 +25,7 @@ describe('JsonApi', () => {
     populateBy,
     splitDataByParent,
     dataToObjectByPlateNumber,
+    find,
   } = JsonApi
 
   let data, included, dataItem
@@ -387,6 +388,117 @@ describe('JsonApi', () => {
       expect(result[plateNumbers[1]]).toEqual(
         dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
       )
+    })
+  })
+
+  describe('find', () => {
+    const data = {
+      data: [
+        {
+          id: '1',
+          type: 'cheeses',
+          attrA: 'you caught me',
+          attrB: 'luv dancing',
+          relationships: {
+            bean: { id: '1', type: 'beans' },
+            pickle: { id: '2', type: 'pickles' },
+            chocolates: [{ id: '3', type: 'chocolates' }],
+          },
+        },
+        {
+          id: '2',
+          type: 'cheeses',
+          attrA: 'wild horses',
+          attrB: 'could not drag me away',
+          relationships: {
+            bean: { id: '4', type: 'beans' },
+            pickle: { id: '5', type: 'pickles' },
+            chocolates: [{ id: '6', type: 'chocolates' }],
+          },
+        },
+        {
+          id: '3',
+          type: 'cheeses',
+          attrA: 'bish',
+          attrB: 'bash',
+          relationships: {
+            bean: { id: '7', type: 'beans' },
+            pickle: { id: '8', type: 'pickles' },
+            chocolates: [{ id: '9', type: 'chocolates' }],
+          },
+        },
+      ],
+      included: [
+        {
+          id: '1',
+          type: 'beans',
+          attrC: 'I just keep',
+        },
+        {
+          id: '2',
+          type: 'pickles',
+          attrD: 'rolling on',
+        },
+        {
+          id: '3',
+          type: 'chocolates',
+          attrE: 'Cyber Insekt',
+          relationships: {
+            crisps: { id: '100', type: 'crisps' },
+          },
+        },
+        {
+          id: '4',
+          type: 'beans',
+          attrC: 'I just keep',
+        },
+        {
+          id: '5',
+          type: 'pickles',
+          attrD: 'rolling on',
+        },
+        {
+          id: '6',
+          type: 'chocolates',
+          attrE: 'Cyber Insekt',
+          relationships: {
+            crisps: { id: '100', type: 'crisps' },
+          },
+        },
+        {
+          id: '7',
+          type: 'beans',
+          attrC: 'I just keep',
+        },
+        {
+          id: '8',
+          type: 'pickles',
+          attrD: 'rolling on',
+        },
+        {
+          id: '9',
+          type: 'chocolates',
+          attrE: 'Cyber Insekt',
+          relationships: {
+            crisps: { id: '100', type: 'crisps' },
+          },
+        },
+        {
+          id: '100',
+          type: 'crisps',
+          attrE: 'Cyber Insekt',
+        },
+      ],
+    }
+
+    it('will find the first record by default', () => {
+      const found = find({ data })
+      expect(found).toEqual(data.data.slice(0, 1))
+    })
+
+    it('will find the first 2 records with an argument', () => {
+      const found = find({ data, first: 2 })
+      expect(found).toEqual(data.data.slice(0, 2))
     })
   })
 })
