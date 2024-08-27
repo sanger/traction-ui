@@ -7,7 +7,7 @@
   "opts": {
     "readme": "./README.md",
     "template": "node_modules/better-docs",
-    "destination": "./doc" 
+    "destination": "./doc"
   },
   "templates": {
     "better-docs": {
