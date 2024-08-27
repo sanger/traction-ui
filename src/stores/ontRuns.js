@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v1/ResponseHelper'
+import { handleResponse } from '@/api/v2/ResponseHelper'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'
@@ -55,7 +55,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
   getters: {
     runRequest: () => {
       const rootStore = useRootStore()
-      return rootStore.api.v1.traction.ont.runs
+      return rootStore.api.v2.traction.ont.runs
     },
     getFlowCell: (state) => (position) => {
       return state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
@@ -90,7 +90,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const promise = request.find({ id: runId, include: 'flowcells' })
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
 
       if (success && !data.empty) {
         const ontRootStore = useOntRootStore()

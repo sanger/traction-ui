@@ -69,12 +69,13 @@ const useOntRootStore = defineStore('ontRoot', {
      */
     async fetchOntRuns(filter, page) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.ont.runs
+      const request = rootStore.api.v2.traction.ont.runs
       const promise = request.get({ page, filter, include: 'instrument' })
+      debugger
 
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
+      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
       const { instruments } = groupIncludedByResource(included)
 
       if (success) {
@@ -86,10 +87,10 @@ const useOntRootStore = defineStore('ontRoot', {
     },
     async setInstruments() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.ont.instruments
+      const request = rootStore.api.v2.traction.ont.instruments
       const promise = request.get()
       const response = await handleResponse(promise)
-      const { success, data: { data } = {}, errors = [] } = response
+      const { success, body: { data } = {}, errors = [] } = response
 
       if (success) {
         this.resources.instruments = formatById(this.resources.instruments, data)
