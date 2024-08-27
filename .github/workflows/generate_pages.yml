@@ -1,10 +1,10 @@
 name: Deploy JSDoc to GitHub Pages
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop
-      - master
+      - 'master'
+      - 'develop'
   workflow_dispatch:
 
 permissions:
