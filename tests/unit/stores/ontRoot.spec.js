@@ -5,6 +5,11 @@ import { Data, createPinia, setActivePinia } from '@support/testHelper'
 import Response from '@/api/v1/Response'
 import { beforeEach, describe } from 'vitest'
 import * as jsonapi from '@/api/JsonApi'
+import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+
+const ontInstrumentsFactory =  OntInstrumentsFactory()
+const ontRunsFactory =  OntRunsFactory()
 
 describe('useOntRootStore', () => {
   beforeEach(() => {
@@ -24,8 +29,8 @@ describe('useOntRootStore', () => {
   describe('getters', () => {
     let resources
     beforeEach(() => {
-      const instruments = new Response(Data.OntInstruments).deserialize.instruments
-      const runs = new Response(Data.OntRuns).deserialize.runs
+      const instruments =  ontInstrumentsFactory.storeData.instruments
+      const runs = ontRunsFactory.storeData.runs
       resources = {
         instruments,
         runs,
@@ -70,24 +75,17 @@ describe('useOntRootStore', () => {
     }
 
     describe('fetchOntRuns', () => {
-      it('runs successfully', async () => {
+      it.only('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(Data.OntRuns)
-        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
+        get.mockResolvedValue(ontRunsFactory.responses.fetch) 
+        rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()
 
-        expect(store.resources.runs).toEqual(
-          jsonapi.dataToObjectById({ data: Data.OntRuns.data.data, includeRelationships: true }),
-        )
-        expect(store.resources.instruments).toEqual(
-          jsonapi.dataToObjectById({
-            data: Data.OntInstruments.data.data,
-            includeRelationships: true,
-          }),
-        )
+        expect(store.resources.runs).toEqual(ontRunsFactory.storeData.runs)
+        expect(store.resources.instruments).toEqual(ontInstrumentsFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })

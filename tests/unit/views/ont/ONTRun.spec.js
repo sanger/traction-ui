@@ -2,6 +2,10 @@ import ONTRun from '@/views/ont/ONTRun'
 import { mount, store, router, flushPromises, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
+import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+
+const ontRunsFactory =  OntRunsFactory()
+
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -21,9 +25,9 @@ function mountWithStore(props) {
           plugins: [
             ({ store }) => {
               if (store.$id === 'root') {
-                store.api.v1.traction.ont.instruments.get = vi
+                store.api.v2.traction.ont.instruments.get = vi
                   .fn()
-                  .mockReturnValue(Data.OntInstruments)
+                  .mockReturnValue(ontRunsFactory.responses.fetch)
               }
             },
           ],
