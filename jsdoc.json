@@ -6,7 +6,8 @@
   },
   "opts": {
     "readme": "./README.md",
-    "template": "node_modules/better-docs"
+    "template": "node_modules/better-docs",
+    "destination": "./doc" 
   },
   "templates": {
     "better-docs": {
