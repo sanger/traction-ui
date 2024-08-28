@@ -5,10 +5,12 @@ Volume Tracking is the process of monitoring the volume of each aliquot created 
 The following are the contexts where the Traction allows users to record the volume associated with aliquots:
 
 ###### Recording an Initial Sample Volume
+
 - When creating or editing a library
 - When creating or editing a pool
 
 ###### Recording a Used Volume
+
 - When a library is used in a pool
 - When a library is used in a run
 - When a pool is used in a run
