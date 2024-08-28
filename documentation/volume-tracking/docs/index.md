@@ -4,22 +4,16 @@ Volume Tracking is the process of monitoring the volume of each aliquot created 
 
 The following are the contexts where the Traction allows users to record the volume associated with aliquots:
 
-## 1. Recording an Initial Sample Volume
-
-The initial sample volume is recorded:
-
+###### Recording an Initial Sample Volume
 - When creating or editing a library
 - When creating or editing a pool
 
-## 2. Recording a Used Volume
-
-The used sample volume is recorded:
-
+###### Recording a Used Volume
 - When a library is used in a pool
 - When a library is used in a run
 - When a pool is used in a run
 
-## When editing an existing library
+## 1. When editing an existing library
 
 #### Displayed Information:
 
@@ -37,7 +31,7 @@ If the user enters a value less than already used volume for the library, an err
   ![process](img/library-edit-error.png)
 </figure>
 
-## When editing an existing pool
+## 2. When editing an existing pool
 
 #### Displayed Information:
 
@@ -55,7 +49,7 @@ If the user enters a value less than already used volume for the pool, an error 
   ![process](img/pool-edit-error.png)
 </figure>
 
-## When a library is used in a pool
+## 3. When a library is used in a pool
 
 #### Displayed Information:
 
@@ -73,7 +67,7 @@ If the user enters a value greater than the available volume for the library, an
   ![process](img/library-in-pool-error.png)
 </figure>
 
-## When a library is used in a run
+## 4. When a library is used in a run
 
 #### Displayed Information:
 
@@ -91,7 +85,7 @@ If the user enters a value greater than the available volume for the library, an
   ![process](img/library-in-run-error.png)
 </figure>
 
-## When a pool is used in a run
+## 5. When a pool is used in a run
 
 #### Displayed Information:
 
