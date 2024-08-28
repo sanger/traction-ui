@@ -1,6 +1,6 @@
 site_name: Volume Tracking Documentation
 nav:
-  - Process Flow: index.md
+  - Displaying volume tracking information: index.md
 theme:
     name: material
     font: false
@@ -46,8 +46,8 @@ theme:
         repo: material/github
 extra:
     generator: false
-repo_url: https://github.com/sanger/traction-service
-repo_name: sanger/traction-service
+repo_url: https://github.com/sanger/traction-ui
+repo_name: sanger/traction-ui
 extra_javascript:
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
