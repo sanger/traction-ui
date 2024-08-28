@@ -20,7 +20,7 @@ if [ -d "documentation" ]; then
             target_doc=$(basename "$dir")
             
             # Define the target directory where the built documentation will be copied
-            target_directory="doc/$target_doc"
+            target_directory="docs/$target_doc"
             
             # Create the target directory if it doesn't exist
             mkdir -p $target_directory
