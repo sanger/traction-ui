@@ -35,6 +35,8 @@ jobs:
             cp public/favicon.ico doc/
             cp -r style_guide.md doc/style_guide.md
             sed -i '/<h1>Home<\/h1>/d' doc/index.html
+      - name: List files in doc directory
+        run: ls -R doc
 
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3.0.1
