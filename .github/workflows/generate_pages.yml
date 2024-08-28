@@ -30,6 +30,7 @@ jobs:
       - name: Run jsdoc
         run: |
             npm run jsdoc
+            mkdir -p doc/public
             cp -r public doc/public
             cp public/favicon.ico doc/
             cp -r style_guide.md doc/style_guide.md
