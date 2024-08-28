@@ -77,7 +77,7 @@ If the user enters a value greater than the available volume for the library, an
 
 #### Displayed Information:
 
-When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover in the 'Add Pool or Library to Well' dialog invoked from of the pool run edit page.
+When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover in the 'Add Pool or Library to Well' dialog invoked from of the run edit page.
 
 <figure markdown="span">
   ![process](img/library-in-run.png)
@@ -85,7 +85,25 @@ When adding a library to a run, or when editing a run used in an existing run, t
 
 #### Volume check:
 
-If the user enters a value greater than the available volume for the library, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the pool.
+If the user enters a value greater than the available volume for the library, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the run.
+
+<figure markdown="span">
+  ![process](img/library-in-run-error.png)
+</figure>
+
+## When a pool is used in a run
+
+#### Displayed Information:
+
+When adding a pool to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover in the 'Add Pool or Library to Well' dialog invoked from of the run edit page.
+
+<figure markdown="span">
+  ![process](img/library-in-run.png)
+</figure>
+
+#### Volume check:
+
+If the user enters a value greater than the available volume for the pool, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the run.
 
 <figure markdown="span">
   ![process](img/library-in-run-error.png)
