@@ -34,7 +34,23 @@ jobs:
             cp -r public doc/public
             cp public/favicon.ico doc/
             cp -r style_guide.md doc/style_guide.md
-     
+            
+      - name: Create placeholder index.html if missing
+        run: |
+          if [ ! -f doc/index.html ]; then
+            echo "<html><body><h1>Documentation</h1></body></html>" > doc/index.html
+          fi 
+      - name: Install Python Dependencies
+        run: |
+          pip install mkdocs
+          pip install mkdocs-material
+          pip install mkdocs-glightbox
+          pip install mkdocs-git-revision-date-localized-plugin
+
+      - name: Generate docs
+        run: |
+          ./generate-docs.sh
+
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3.0.1
         with:
