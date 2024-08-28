@@ -30,16 +30,11 @@ jobs:
       - name: Run jsdoc
         run: |
             npm run jsdoc
-            mkdir -p doc/public
-            cp -r public doc/public
-            cp public/favicon.ico doc/
-            cp -r style_guide.md doc/style_guide.md
+            mkdir -p docs/public
+            cp -r public docs/public
+            cp public/favicon.ico docs/
+            cp -r style_guide.md docs/style_guide.md
             
-      - name: Create placeholder index.html if missing
-        run: |
-          if [ ! -f doc/index.html ]; then
-            echo "<html><body><h1>Documentation</h1></body></html>" > doc/index.html
-          fi 
       - name: Install Python Dependencies
         run: |
           pip install mkdocs
@@ -54,7 +49,7 @@ jobs:
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          path: doc  # Path to the folder containing the JS documentation (default is 'docs')
+          path: docs  # Path to the folder containing the JS documentation (default is 'docs')
 
   deploy:
     runs-on: ubuntu-latest
