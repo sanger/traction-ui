@@ -21,9 +21,13 @@ The following are the contexts where the Traction UI allows users to record the 
 
 ## When editing an existing library
 
-When editing an existing library library, the used volume of the library is displayed as a badge (pink in colour as shown in the figure below), with a tooltip that appears on hover.
+Displayed Information:
 
-Validation: If the user enters a value less than already used volume for the library, an error will be displayed on the page, and the user will not be allowed to update the library.
+When editing an existing library, the used volume is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover in the library edit page.
+
+Volume check:
+
+If the user enters a value less than already used volume for the library, an error will be displayed on the page, and the user will not be allowed to update the library.
 
 <figure markdown="span">
   ![process](img/library-edit.png)
@@ -31,9 +35,13 @@ Validation: If the user enters a value less than already used volume for the lib
 
 ## When editing an existing pool
 
-When editing an existing pool, the used volume of the library is displayed as a badge (pink in colour as shown in the figure below), with a tooltip that appears on hover.
+Displayed Information:
 
-Validation: If the user enters a value less than already used volume for the pool, an error will be displayed on the page, and the user will not be allowed to update the pool.
+When editing an existing pool, the used volume of the library is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover in the 'Pooled Samples' -> 'Pooled Information' section of the pool edit page.
+
+Volume check: 
+
+If the user enters a value less than already used volume for the pool, an error will be displayed on the page, and the user will not be allowed to update the pool.
 
 <figure markdown="span">
   ![process](img/pool-edit.png)
