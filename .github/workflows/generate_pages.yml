@@ -34,10 +34,12 @@ jobs:
             cp -r public doc/public
             cp public/favicon.ico doc/
             cp -r style_guide.md doc/style_guide.md
-            sed -i '/<h1>Home<\/h1>/d' doc/index.html
-      - name: List files in doc directory
-        run: ls -R doc
 
+      - name: Create placeholder index.html if missing
+        run: |
+          if [ ! -f doc/index.html ]; then
+            echo "<html><body><h1>Documentation</h1></body></html>" > doc/index.html
+          fi      
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3.0.1
         with:
