@@ -23,14 +23,18 @@ The following are the contexts where the Traction UI allows users to record the 
 
 Displayed Information:
 
-When editing an existing library, the used volume is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover in the library edit page.
+When editing an existing library, the used volume is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover in the library edit section.
+
+<figure markdown="span">
+  ![process](img/library-edit.png)
+</figure>
 
 Volume check:
 
 If the user enters a value less than already used volume for the library, an error will be displayed on the page, and the user will not be allowed to update the library.
 
 <figure markdown="span">
-  ![process](img/library-edit.png)
+  ![process](img/library-edit-error.png)
 </figure>
 
 ## When editing an existing pool
@@ -39,10 +43,32 @@ Displayed Information:
 
 When editing an existing pool, the used volume of the library is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover in the 'Pooled Samples' -> 'Pooled Information' section of the pool edit page.
 
-Volume check: 
+<figure markdown="span">
+  ![process](img/pool-edit.png)
+</figure>
+
+Volume check:
 
 If the user enters a value less than already used volume for the pool, an error will be displayed on the page, and the user will not be allowed to update the pool.
 
 <figure markdown="span">
-  ![process](img/pool-edit.png)
+  ![process](img/pool-edit-error.png)
+</figure>
+
+## When a library is used in a pool
+
+Displayed Information:
+
+When adding a library to a pool, or when editing a library used in an existing pool, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover in the 'Pooled Samples' -> 'Pooled Information' section of the pool edit page.
+
+<figure markdown="span">
+  ![process](img/library-in-pool.png)
+</figure>
+
+Volume check:
+
+If the user enters a value greater than the available volume for the library, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the pool.
+
+<figure markdown="span">
+  ![process](img/library-in-pool-error.png)
 </figure>
