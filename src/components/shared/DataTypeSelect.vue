@@ -40,7 +40,7 @@ export default {
     filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
     filteredDataTypes() {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters).filter(
-        (dataType) => dataType.attributes.name !== 'basecalls',
+        (data) => data.attributes.name !== 'basecalls',
       )
     },
     dataTypes() {
