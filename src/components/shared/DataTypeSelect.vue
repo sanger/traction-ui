@@ -42,7 +42,9 @@ export default {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
     },
     dataTypes() {
-      return mapAttribute(this.filteredDataTypes, 'name').filter(dataType => dataType !== 'basecalls')
+      return mapAttribute(this.filteredDataTypes, 'name').filter(
+        (dataType) => dataType !== 'basecalls',
+      )
     },
   },
   methods: {
