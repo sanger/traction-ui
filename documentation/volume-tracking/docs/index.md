@@ -39,7 +39,7 @@ If the user enters a value less than already used volume for the library, an err
 
 #### Recording initial volume:
 
-The 'Volume' field (as shown in the figure below) in the 'Pooled Samples' -> 'Pooled Information' section of the pool creation/edit page indicates the original volume allocated to the pool at the time of creation. It can be edited or updated to a different value later as needed. 
+The 'Volume' field (as shown in the figure below) in the 'Pooled Samples' -> 'Pooled Information' section of the pool creation/edit page indicates the original volume allocated to the pool at the time of creation. It can be edited or updated to a different value later as needed.
 
 When editing an existing pool, the used volume for the pool so far is displayed as a pink badge (as shown in the figure below), with a tooltip that appears on hover. This allows the user to understand how much of the pool's volume has been used so far, ensuring that the initial volume can be edited but never set to less than the already used volume.
 
@@ -68,11 +68,11 @@ $$
 $$
 
 where
-- *V_{availble_volume_library} represents the total volume of the library that is available to be allocated or used in the pool, as shown in the yellow badge. This is the value being displayed to the user.*
-- *V_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet.*
-- *V_{used_volume_for_library_in_given_pool} represents the volume of the library that has already been used or assigned in the specific pool being edited.*
-This way, the user can see how much library volume is available to allocate to the pool without exceeding the total available volume for the library.
 
+- _V\_{availble_volume_library} represents the total volume of the library that is available to be allocated or used in the pool, as shown in the yellow badge. This is the value being displayed to the user._
+- _V\_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _V\_{used_volume_for_library_in_given_pool} represents the volume of the library that has already been used or assigned in the specific pool being edited._
+  This way, the user can see how much library volume is available to allocate to the pool without exceeding the total available volume for the library.
 
 <figure markdown="span">
   ![process](img/library-in-pool.png)
@@ -99,12 +99,12 @@ $$
 $$
 
 where
-- *V_{availble_volume_library} represents the total volume of the library that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user.*
-- *V_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet.*
-- *V_{used_volume_for_library_in_given_run} represents the volume of the library that has already been used or assigned in the specific run being edited.*
+
+- _V\_{availble_volume_library} represents the total volume of the library that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
+- _V\_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _V\_{used_volume_for_library_in_given_run} represents the volume of the library that has already been used or assigned in the specific run being edited._
 
 This way, the user can see how much library volume is available to allocate to the run without exceeding the total available volume for the library.
-
 
 <figure markdown="span">
   ![process](img/library-in-run.png)
@@ -131,12 +131,12 @@ $$
 $$
 
 where
-- *V_{availble_volume_pool} represents the total volume of the pool that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user.*
-- *V_{actual_available_volume} is the current actual available volume of the pool, meaning the remaining amount of volume that has not been allocated or used anywhere yet.*
-- *V_{used_volume_for_pool_in_given_run} represents the volume of the pool that has already been used or assigned in the specific run being edited.*
+
+- _V\_{availble_volume_pool} represents the total volume of the pool that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
+- _V\_{actual_available_volume} is the current actual available volume of the pool, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _V\_{used_volume_for_pool_in_given_run} represents the volume of the pool that has already been used or assigned in the specific run being edited._
 
 This way, the user can see how much pool volume is available to allocate to the run without exceeding the total available volume for the pool.
-
 
 <figure markdown="span">
   ![process](img/library-in-run.png)
