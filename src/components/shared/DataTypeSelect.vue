@@ -39,7 +39,9 @@ export default {
   computed: {
     filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
     filteredDataTypes() {
-      return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
+      return filterByAttribute(this.remoteDataTypes?.data || [], this.filters).filter(
+        (dataType) => dataType.attributes.name !== 'basecalls',
+      )
     },
     dataTypes() {
       return mapAttribute(this.filteredDataTypes, 'name')
