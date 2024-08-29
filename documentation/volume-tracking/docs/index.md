@@ -93,17 +93,7 @@ If the user enters a value greater than the available volume for the library, an
 
 The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to Well' dialog invoked from of the run edit page indicates the volume allocated to the library in the run, or the used volume of the library in the run. It can be edited or updated to a different value later as needed.
 
-When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the library displayed in this context will be
-
-$$
-- V_{availble\_volume\_library} = V_{actual\_available\_volume} + V_{used\_volume\_for\_library\_in\_given\_run}
-$$
-
-where
-
-- _\(V_{availble\_volume\_library}\) represents the total volume of the library that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
-- _\(V_{actual\_available\_volume}\) is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
-- _\(V_{used\_volume\_for\_library\_in\_given\_run}\) represents the volume of the library that has already been used or assigned in the specific run being edited._
+When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the library displayed in this context will be calculated as described in the [Available Volume Calculation](available_volume_calculation.md) page.
 
 This way, the user can see how much library volume is available to allocate to the run without exceeding the total available volume for the library.
 
@@ -125,17 +115,7 @@ If the user enters a value greater than the available volume for the library, an
 
 The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to Well' dialog invoked from of the run edit page indicates the volume allocated to the pool in the run, or the used volume of the pool in the run. It can be edited or updated to a different value later as needed.
 
-When adding a pool to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the pool displayed in this context will be
-
-$$
-- V_{availble\_volume\_pool} = V_{actual\_available\_volume} + V_{used\_volume\_for\_pool\_in\_given\_run}
-$$
-
-where
-
-- _\(V_{availble\_volume\_pool}\) represents the total volume of the pool that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
-- _\(V_{actual\_available\_volume}\) is the current actual available volume of the pool, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
-- _\(V_{used\_volume\_for\_pool\_in\_given\_run}\) represents the volume of the pool that has already been used or assigned in the specific run being edited._
+When adding a pool to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the pool displayed in this context will be calculated as described in the [Available Volume Calculation](available_volume_calculation.md) page.
 
 This way, the user can see how much pool volume is available to allocate to the run without exceeding the total available volume for the pool.
 
