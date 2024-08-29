@@ -69,7 +69,7 @@ $$
 
 where
 
-- _\(V_{availble_volume_library}\) represents the total volume of the library that is available to be allocated or used in the pool, as shown in the yellow badge. This is the value being displayed to the user.\_
+- _\(V_{available_volume_library}\) represents the total volume of the library that is available to be allocated or used in the pool, as shown in the yellow badge. This is the value being displayed to the user.\_
 
 - _V\_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
 - _V\_{used_volume_for_library_in_given_pool} represents the volume of the library that has already been used or assigned in the specific pool being edited._
