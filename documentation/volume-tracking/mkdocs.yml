@@ -1,6 +1,7 @@
-site_name: Volume Tracking Documentation
+site_name: Volume Tracking
 nav:
-  - Displaying volume tracking information: index.md
+  - Recording volume tracking information: index.md
+  - Available volume calculations: available_volume_calculation.md
 theme:
   name: material
   font: false

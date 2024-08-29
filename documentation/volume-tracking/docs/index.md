@@ -4,12 +4,12 @@ Volume Tracking is the process of monitoring the volume of each aliquot created 
 
 The following are the contexts where the Traction allows users to record the volume associated with aliquots:
 
-###### Recording an Initial Sample Volume
+**Recording an Initial Volume**
 
 - When creating or editing a library
 - When creating or editing a pool
 
-###### Recording a Used Volume
+**Recording a Used Volume**
 
 - When a library is used in a pool
 - When a library is used in a run
@@ -64,15 +64,14 @@ The 'Volume' field (as shown in the figure below) in the 'Pooled Samples' sectio
 When adding a library to a pool, or when editing a library used in an existing pool, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the library displayed in this context will be
 
 $$
- V_{availble\_volume\_library} = V_{actual\_available|_volume} + V_{used\_volume\_for\_library\_in\_given\_pool}
+ V_{availble\_volume\_library} = V_{actual\_available\_volume} + V_{used\_volume\_for\_library\_in\_given\_pool}
 $$
 
 where
 
 - _\(V_{available\_volume\_library}\) represents the total volume of the library that is available to be allocated or used in the pool, as shown in the yellow badge. This is the value being displayed to the user._
-
-- _V\_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
-- _V\_{used_volume_for_library_in_given_pool} represents the volume of the library that has already been used or assigned in the specific pool being edited._
+- _\(V_{actual\_available\_volume}\) is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _\(V_{used\_volume\_for\_library\_in\_given\_pool}\) represents the volume of the library that has already been used or assigned in the specific pool being edited._
 
   This way, the user can see how much library volume is available to allocate to the pool without exceeding the total available volume for the library.
 
@@ -97,14 +96,14 @@ The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to
 When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the library displayed in this context will be
 
 $$
-- V_{availble_volume_library} = V_{actual_available_volume} + V_{used_volume_for_library_in_given_run}
+- V_{availble\_volume\_library} = V_{actual\_available\_volume} + V_{used\_volume\_for\_library\_in\_given\_run}
 $$
 
 where
 
-- _V\_{availble_volume_library} represents the total volume of the library that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
-- _V\_{actual_available_volume} is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
-- _V\_{used_volume_for_library_in_given_run} represents the volume of the library that has already been used or assigned in the specific run being edited._
+- _\(V_{availble\_volume\_library}\) represents the total volume of the library that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
+- _\(V_{actual\_available\_volume}\) is the current actual available volume of the library, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _\(V_{used\_volume\_for\_library\_in\_given\_run}\) represents the volume of the library that has already been used or assigned in the specific run being edited._
 
 This way, the user can see how much library volume is available to allocate to the run without exceeding the total available volume for the library.
 
@@ -129,14 +128,14 @@ The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to
 When adding a pool to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. The available volume for the pool displayed in this context will be
 
 $$
-- V_{availble_volume_pool} = V_{actual_available_volume} + V_{used_volume_for_pool_in_given_run}
+- V_{availble\_volume\_pool} = V_{actual\_available\_volume} + V_{used\_volume\_for\_pool\_in\_given\_run}
 $$
 
 where
 
-- _V\_{availble_volume_pool} represents the total volume of the pool that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
-- _V\_{actual_available_volume} is the current actual available volume of the pool, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
-- _V\_{used_volume_for_pool_in_given_run} represents the volume of the pool that has already been used or assigned in the specific run being edited._
+- _\(V_{availble\_volume\_pool}\) represents the total volume of the pool that is available to be allocated or used in the run, as shown in the yellow badge. This is the value being displayed to the user._
+- _\(V_{actual\_available\_volume}\) is the current actual available volume of the pool, meaning the remaining amount of volume that has not been allocated or used anywhere yet._
+- _\(V_{used\_volume\_for\_pool\_in\_given\_run}\) represents the volume of the pool that has already been used or assigned in the specific run being edited._
 
 This way, the user can see how much pool volume is available to allocate to the run without exceeding the total available volume for the pool.
 
