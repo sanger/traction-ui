@@ -1035,7 +1035,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             request,
             ...libraryAttributes,
             source_type: this.sourceTypeForRequest(this.resources.requests[request]),
-            volume: library ? library.available_volume ?? library.volume : null,
+            volume: library ? (library.available_volume ?? library.volume) : null,
           }),
         }
         // Validate the used aliquot if the request is from library
