@@ -1,3 +1,4 @@
+/* global document$, MathJax */
 window.MathJax = {
     tex: {
       inlineMath: [["\\(", "\\)"]],
