@@ -10,16 +10,16 @@ theme:
     # Palette toggle for automatic mode
     - media: '(prefers-color-scheme)'
       toggle:
-        primary: lime
-        accent: lime
+        primary: purple
+        accent: purple
         icon: material/brightness-auto
         name: Switch to light mode
 
     # Palette toggle for light mode
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: lime
-      accent: lime
+      primary: purple
+      accent: purple
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -27,8 +27,8 @@ theme:
     # Palette toggle for dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
-      primary: lime
-      accent: lime
+      primary: purple
+      accent: purple
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
