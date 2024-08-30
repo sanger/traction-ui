@@ -82,4 +82,6 @@ The `getAvailableVolumeForAliquot` method calculates the available volume for a 
 
 - used_aliquots_volume: Calculates the sum of the volumes of all current aliquots used in wells in current run that originate from the source.This value is subtracted because it represents the volume that has already been used
 
-- The total available volume is then calculated as The expression `total_available_volume = available_volume + original_aliquot_volume - used_aliquots_volume + given_volume` calculates the total available volume for a library or pool by combining several components. 
+- The total available volume is then calculated as: `total_available_volume = available_volume + original_aliquot_volume - used_aliquots_volume + given_volume` 
+
+This expression combines several components to provide an accurate total available volume for a library or pool.
