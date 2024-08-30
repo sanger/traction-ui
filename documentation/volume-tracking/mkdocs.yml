@@ -1,25 +1,25 @@
 site_name: Volume Tracking
 nav:
   - Recording volume tracking information: index.md
-  - Available volume calculations: available_volume_calculation.md
+  - Available volume calculation: available_volume_calculation.md
 theme:
   name: material
   font: false
-  favicon: img/favicon.ico
+  favicon: docs/img/favicon.ico
   palette:
     # Palette toggle for automatic mode
     - media: '(prefers-color-scheme)'
       toggle:
-        primary: teal
-        accent: teal
+        primary: lime
+        accent: lime
         icon: material/brightness-auto
         name: Switch to light mode
 
     # Palette toggle for light mode
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: teal
-      accent: teal
+      primary: lime
+      accent: lime
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -27,8 +27,8 @@ theme:
     # Palette toggle for dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
-      primary: teal
-      accent: teal
+      primary: lime
+      accent: lime
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
