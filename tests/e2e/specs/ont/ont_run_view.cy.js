@@ -1,14 +1,26 @@
+import ONTRunsFactory from '../../../factories/OntRunsFactory.js'
+import ONTInstrumentsFactory from '../../../factories/OntInstrumentsFactory.js'
+
 describe('ONT Run page', () => {
   beforeEach(() => {
-    cy.intercept('/v1/ont/instruments', {
-      fixture: 'tractionOntInstruments.json',
+    cy.wrap(ONTRunsFactory()).as('ontRunsFactory')
+    cy.wrap(ONTInstrumentsFactory()).as('ontInstrumentsFactory')
+
+    cy.get('@ontInstrumentsFactory').then((ontInstrumentsFactory) => {
+      cy.intercept('GET', '/v1/ont/instruments', {
+        statusCode: 200,
+        body: ontInstrumentsFactory.content,
+      })
+    })
+    cy.get('@ontRunsFactory').then((ontRunsFactory) => {
+      cy.intercept('GET', '/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
+        statusCode: 200,
+        body: ontRunsFactory.content,
+      })
     })
     cy.intercept('v1/ont/pools?filter[barcode]=TRAC-1-2', {
       statusCode: 200,
       fixture: 'tractionOntPool.json',
-    })
-    cy.intercept('/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
-      fixture: 'tractionOntRuns.json',
     })
     cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',

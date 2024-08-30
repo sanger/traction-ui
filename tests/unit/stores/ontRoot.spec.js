@@ -2,7 +2,6 @@ import useOntRootStore from '@/stores/ontRoot'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
-import Response from '@/api/v1/Response'
 import { beforeEach, describe } from 'vitest'
 import * as jsonapi from '@/api/JsonApi'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
@@ -75,11 +74,11 @@ describe('useOntRootStore', () => {
     }
 
     describe('fetchOntRuns', () => {
-      it.only('runs successfully', async () => {
+      it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(ontRunsFactory.responses.fetch) 
-        rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
+        get.mockResolvedValue(ontRunsFactory.responses.axios) 
+        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()

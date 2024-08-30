@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById } from '../../src/api/JsonApi.js'
 /*
  * Factory for creating a instruments
  * @returns a base factory object with the instruments data
