@@ -37,14 +37,12 @@ export default {
     return { remoteDataTypes }
   },
   computed: {
-    filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
+    filters: ({ pipeline }) => (pipeline ? { pipeline, name: 'basecalls and raw data' } : {}),
     filteredDataTypes() {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
     },
     dataTypes() {
-      return mapAttribute(this.filteredDataTypes, 'name').filter(
-        (dataType) => dataType !== 'basecalls',
-      )
+      return mapAttribute(this.filteredDataTypes, 'name')
     },
   },
   methods: {
