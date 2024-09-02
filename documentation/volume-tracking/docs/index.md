@@ -93,17 +93,17 @@ If the user enters a value greater than the available volume for the library, an
   ![process](img/library-in-pool-error.png)
 </figure>
 
-## 4. When a library is used in a run
+## 4. When a library or pool is used in a run
 
 #### Recording used volume:
 
-The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to Well' dialog invoked from of the run edit page indicates the volume allocated to the library in the run, or the used volume of the library in the run. 
+The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to Well' dialog invoked from of the run edit page indicates the volume allocated to the library or pool in the run, or the used volume of the library or pool in the run. 
 It can be edited or updated to a different value later as needed.
 
-When adding a library to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. 
-The available volume for the library displayed in this context will be calculated as described in the [Available Volume Calculation](available_volume_calculation.md) page.
+When adding a library or pool to a run, or when editing a library or pool used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover. 
+The available volume for the library or pool displayed in this context will be calculated as described in the [Available Volume Calculation](available_volume_calculation.md) page.
 
-This way, the user can see how much library volume is available to allocate to the run without exceeding the total available volume for the library.
+This way, the user can see how much library or pool volume is available to allocate to the run without exceeding the total available volume for the library or pool, respectively.
 
 <figure markdown="span">
   ![process](img/library-in-run.png)
@@ -111,31 +111,7 @@ This way, the user can see how much library volume is available to allocate to t
 
 #### Volume check:
 
-If the user enters a value greater than the available volume for the library, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the run.
-
-<figure markdown="span">
-  ![process](img/library-in-run-error.png)
-</figure>
-
-## 5. When a pool is used in a run
-
-#### Recording used volume:
-
-The 'Volume' field (as shown in the figure below) in the 'Add Pool or Library to Well' dialog invoked from of the run edit page indicates the volume allocated to the pool in the run, or the used volume of the pool in the run. 
-It can be edited or updated to a different value later as needed.
-
-When adding a pool to a run, or when editing a run used in an existing run, the available volume is displayed as a yellow badge (as shown in the figure below), with a tooltip that appears on hover.
-The available volume for the pool displayed in this context will be calculated as described in the [Available Volume Calculation](available_volume_calculation.md) page.
-
-This way, the user can see how much pool volume is available to allocate to the run without exceeding the total available volume for the pool.
-
-<figure markdown="span">
-  ![process](img/library-in-run.png)
-</figure>
-
-#### Volume check:
-
-If the user enters a value greater than the available volume for the pool, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the run.
+If the user enters a value greater than the available volume for the library or pool, an error will be displayed on the page (as shown in the figure below), and the user will not be allowed to create or update the run.
 
 <figure markdown="span">
   ![process](img/library-in-run-error.png)
