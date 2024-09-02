@@ -1,6 +1,7 @@
 # Available volume calculation
 
-In the context of managing libraries and pools for sequencing runs, it is crucial to accurately track and calculate the available volume of each library or pool. This ensures that there is sufficient volume for the sequencing process and helps in managing resources efficiently.
+In the context of managing libraries and pools for sequencing runs, it is crucial to accurately track and calculate the available volume of each library or pool. 
+This ensures that there is sufficient volume for the sequencing process and helps in managing resources efficiently.
 
 ## JavaScript Implementation
 The following JavaScript function `getAvailableVolumeForAliquot` calculates the available volume for a library or pool:
