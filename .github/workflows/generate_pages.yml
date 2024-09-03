@@ -30,15 +30,26 @@ jobs:
       - name: Run jsdoc
         run: |
             npm run jsdoc
+            mkdir -p docs/public
             cp -r public docs/public
             cp public/favicon.ico docs/
             cp -r style_guide.md docs/style_guide.md
-            sed -i '/<h1>Home<\/h1>/d' docs/index.html
+            
+      - name: Install Python Dependencies
+        run: |
+          pip install mkdocs
+          pip install mkdocs-material
+          pip install mkdocs-glightbox
+          pip install mkdocs-git-revision-date-localized-plugin
+
+      - name: Generate docs
+        run: |
+          ./generate-docs.sh
 
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          path: docs  # Path to the folder containing the Yard documentation (default is 'doc')
+          path: docs  # Path to the folder containing the JS documentation (default is 'docs')
 
   deploy:
     runs-on: ubuntu-latest
