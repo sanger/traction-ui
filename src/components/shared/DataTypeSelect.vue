@@ -1,7 +1,7 @@
 <template>
   <traction-select
     id="data-type"
-    :model-value="value"
+    :model-value="dataType"
     data-attribute="data-type-list"
     :options="dataTypes"
     @update:model-value="handleInput"
@@ -12,18 +12,16 @@
 import useSWRV from 'swrv'
 import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
 
+const encode = (value) => (value === undefined ? 'basecalls and raw data' : value)
 export default {
   name: 'DataTypeSelect',
   props: {
     pipeline: {
-      // Filter to only list data_types for a given pipeline, leave null
-      // to apply no filters
       type: String,
       required: false,
       default: null,
     },
-    value: {
-      // The data type, we use value to allow us to simply bind it with v-model
+    modelValue: {
       type: String,
       default: undefined,
     },
@@ -37,12 +35,18 @@ export default {
     return { remoteDataTypes }
   },
   computed: {
+    // Same approach as src/components/shared/LibraryTypeSelect.vue
+    dataType() {
+      return encode(this.modelValue)
+    },
     filters: ({ pipeline }) => (pipeline ? { pipeline, name: 'basecalls and raw data' } : {}),
     filteredDataTypes() {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
     },
     dataTypes() {
-      return mapAttribute(this.filteredDataTypes, 'name')
+      return [
+        ...mapAttribute(this.filteredDataTypes, 'name'),
+      ]
     },
   },
   methods: {

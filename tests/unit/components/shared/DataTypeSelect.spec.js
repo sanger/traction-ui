@@ -36,11 +36,14 @@ describe('DataTypeSelect.vue', () => {
       expect(findOption('dummy type', { from: select })).toBeTruthy()
     })
 
+    // 'basecalls and raw data' is the default type.
+    // This test checks whether if the default type is changed to 'dummy type',
+    // the component will emit 'dummy type' when the user selects it.
     it('can emit a data type', async () => {
-      const wrapper = buildWrapper()
+      const wrapper = buildWrapper({})
       const select = wrapper.find('select')
-      await findOption('basecalls and raw data', { from: select }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([['basecalls and raw data']])
+      await findOption('dummy type', { from: select }).setSelected()
+      expect(wrapper.emitted('input')).toEqual([['dummy type']])
     })
   })
 })
