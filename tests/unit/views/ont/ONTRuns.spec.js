@@ -2,7 +2,6 @@ import ONTRuns from '@/views/ont/ONTRunIndex'
 import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 import useOntRootStore from '@/stores/ontRoot.js'
-import useRootStore from '@/stores'
 
 const ontRunsFactory = OntRunsFactory()
 
@@ -37,7 +36,7 @@ function mountWithStore({ state = {}, plugins = [], props } = {}) {
 }
 
 describe('ONTRuns.vue', () => {
-  let wrapper, runs, mockRuns,store
+  let wrapper, runs, mockRuns
 
   beforeEach(async () => {
     mockRuns = ontRunsFactory.storeData.runs
@@ -134,8 +133,8 @@ describe('ONTRuns.vue', () => {
   })
 
   describe('#mapGetters', () => {
-    it.only('sets the runs data', () => {
-      expect(runs.runs.length).toEqual(mockRuns.length)
+    it('sets the runs data', () => {
+      expect(runs.runs.length).toEqual(Object.values(mockRuns).length)
     })
   })
 
