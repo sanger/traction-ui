@@ -12,6 +12,7 @@ const defaultRequestOptions = () => ({
   estimate_of_gb_required: null,
   number_of_smrt_cells: null,
   number_of_flowcells: null,
+  data_type: null,
 })
 
 const ReceptionTypes = {
