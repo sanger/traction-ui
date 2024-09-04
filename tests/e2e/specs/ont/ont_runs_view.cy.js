@@ -1,7 +1,6 @@
-import ONTRunsFactory from '../../../factories/OntRunsFactory.js'
+import ONTRunsFactory from '../../../factories/ONTRunsFactory.js'
 
 describe('ONT Runs view', () => {
-
   it('Visits the ont runs url', () => {
     cy.wrap(ONTRunsFactory()).as('ontRunsFactory')
     cy.get('@ontRunsFactory').then((ontRunsFactory) => {

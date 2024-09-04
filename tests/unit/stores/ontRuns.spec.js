@@ -8,8 +8,8 @@ import { flowCellType } from '@/stores/utilities/flowCell.js'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontInstrumentsFactory =  OntInstrumentsFactory()
-const ontRunsFactory =  OntRunsFactory()
+const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontRunsFactory = OntRunsFactory()
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -70,7 +70,8 @@ describe('useOntRunsStore', () => {
       it('runs successfully', () => {
         const store = useOntRunsStore()
         store.currentRun = ontRunsFactory.storeData.validRun
-        const newRun = {...ontRunsFactory.storeData.newRun,
+        const newRun = {
+          ...ontRunsFactory.storeData.newRun,
           flowcell_attributes: [{ ...flowCellType }],
         }
         store.newRun()
@@ -184,7 +185,7 @@ describe('useOntRunsStore', () => {
         mockRun = ontRunsFactory.storeData.validRun
       })
 
-      it.only('runs successfully', async () => {
+      it('runs successfully', async () => {
         const find = vi.fn().mockReturnValue(ontRunsFactory.findData.responses.fetch)
         store.runRequest.find = find
         const response = await store.fetchRun(mockRun.id)
