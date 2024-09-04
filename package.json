@@ -53,7 +53,7 @@
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-cypress": "^3.5.0",
-    "eslint-plugin-vue": "^9.27.0",
+    "eslint-plugin-vue": "^9.28.0",
     "globals": "^15.9.0",
     "jsdoc": "^4.0.3",
     "jsdom": "^24.1.1",
