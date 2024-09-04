@@ -1,9 +1,8 @@
 import useOntRootStore from '@/stores/ontRoot'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { Data, createPinia, setActivePinia } from '@support/testHelper'
+import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
-import * as jsonapi from '@/api/JsonApi'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
@@ -77,8 +76,8 @@ describe('useOntRootStore', () => {
       it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(ontRunsFactory.responses.axios) 
-        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
+        get.mockResolvedValue(ontRunsFactory.responses.fetch) 
+        rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()
@@ -94,7 +93,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
-        rootStore.api.v1 = { traction: { ont: { runs: { get } } } }
+        rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
 
@@ -109,17 +108,12 @@ describe('useOntRootStore', () => {
       it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(Data.OntInstruments)
-        rootStore.api.v1 = { traction: { ont: { instruments: { get } } } }
+        get.mockResolvedValue(ontInstrumentsFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.setInstruments()
-        expect(store.resources.instruments).toEqual(
-          jsonapi.dataToObjectById({
-            data: Data.OntInstruments.data.data,
-            includeRelationships: false,
-          }),
-        )
+        expect(store.resources.instruments).toEqual(ontInstrumentsFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
