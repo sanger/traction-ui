@@ -44,9 +44,7 @@ export default {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
     },
     dataTypes() {
-      return [
-        ...mapAttribute(this.filteredDataTypes, 'name'),
-      ]
+      return [...mapAttribute(this.filteredDataTypes, 'name')]
     },
   },
   methods: {
