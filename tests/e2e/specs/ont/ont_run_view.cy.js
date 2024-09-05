@@ -1,10 +1,10 @@
-import ONTRunsFactory from '../../../factories/OntRunsFactory.js'
-import ONTInstrumentsFactory from '../../../factories/OntInstrumentsFactory.js'
+import OntRunsFactory from '../../../factories/OntRunsFactory.js'
+import OntInstrumentsFactory from '../../../factories/OntInstrumentsFactory.js'
 
 describe('ONT Run page', () => {
   beforeEach(() => {
-    cy.wrap(ONTRunsFactory()).as('ontRunsFactory')
-    cy.wrap(ONTInstrumentsFactory()).as('ontInstrumentsFactory')
+    cy.wrap(OntRunsFactory()).as('ontRunsFactory')
+    cy.wrap(OntInstrumentsFactory()).as('ontInstrumentsFactory')
 
     cy.get('@ontInstrumentsFactory').then((ontInstrumentsFactory) => {
       cy.intercept('GET', '/v1/ont/instruments', {
