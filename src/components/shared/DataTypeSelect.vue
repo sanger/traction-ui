@@ -7,7 +7,7 @@
       :options="dataTypes"
       @update:model-value="handleInput"
     ></traction-select
-    ></traction-field-group>
+  ></traction-field-group>
 </template>
 
 <script>
@@ -19,11 +19,6 @@ const decode = (value) => (value === '' ? null : value)
 
 export default {
   name: 'DataTypeSelect',
-  data() {
-    return {
-      dataType: encode(this.modelValue),
-    }
-  },
   props: {
     pipeline: {
       type: String,
@@ -42,6 +37,11 @@ export default {
       `${baseURL}/v1/data_types?fields[data_types]=name,pipeline`,
     )
     return { remoteDataTypes }
+  },
+  data() {
+    return {
+      dataType: encode(this.modelValue),
+    }
   },
   computed: {
     // Same approach as src/components/shared/LibraryTypeSelect.vue
