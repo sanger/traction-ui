@@ -90,7 +90,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const promise = request.find({ id: runId, include: 'flowcells' })
       const response = await handleResponse(promise)
 
-      const { success, body: { data, included = [] } = {}, errors = [] } = response
+      const { success, body: { data, included = [] } = {}, errors = {} } = response
 
       if (success && !data.empty) {
         const ontRootStore = useOntRootStore()
