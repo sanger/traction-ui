@@ -43,7 +43,7 @@ describe('DataTypeSelect.vue', () => {
       const wrapper = buildWrapper({})
       const select = wrapper.find('select')
       await findOption('dummy type', { from: select }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([['dummy type']])
+      expect(wrapper.emitted('update:modelValue')).toEqual([['dummy type']])
     })
   })
 })
