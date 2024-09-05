@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     // Same approach as src/components/shared/LibraryTypeSelect.vue
-    filters: ({ pipeline }) => (pipeline ? { pipeline, name: 'basecalls and raw data' } : {}),
+    filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
     filteredDataTypes() {
       return filterByAttribute(this.remoteDataTypes?.data || [], this.filters)
     },
