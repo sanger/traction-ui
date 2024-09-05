@@ -48,7 +48,7 @@ describe('ONTRuns.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore({
+    const { wrapperObj } = mountWithStore({
       state: { runs: mockRuns },
       plugins,
     })

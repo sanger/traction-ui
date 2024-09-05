@@ -42,7 +42,7 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
-import useOntRootStore  from '@/stores/ontRoot.js'
+import useOntRootStore from '@/stores/ontRoot.js'
 
 export default {
   name: 'ONTRuns',
@@ -54,7 +54,7 @@ export default {
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
     const ontRootStore = useOntRootStore() // Initialize the store here
-    return { fetchWithQueryParams,ontRootStore }
+    return { fetchWithQueryParams, ontRootStore }
   },
   data() {
     return {

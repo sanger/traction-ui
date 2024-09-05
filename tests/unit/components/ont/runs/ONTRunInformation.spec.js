@@ -3,9 +3,7 @@ import { mount, router, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { useOntRunsStore } from '@/stores/ontRuns'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
-
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
 /**

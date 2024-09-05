@@ -4,8 +4,7 @@ import { beforeEach, describe, it } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontRunsFactory =  OntRunsFactory()
-
+const ontRunsFactory = OntRunsFactory()
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.

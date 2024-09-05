@@ -6,8 +6,8 @@ import { beforeEach, describe } from 'vitest'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontInstrumentsFactory =  OntInstrumentsFactory()
-const ontRunsFactory =  OntRunsFactory()
+const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontRunsFactory = OntRunsFactory()
 
 describe('useOntRootStore', () => {
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('useOntRootStore', () => {
   describe('getters', () => {
     let resources
     beforeEach(() => {
-      const instruments =  ontInstrumentsFactory.storeData.instruments
+      const instruments = ontInstrumentsFactory.storeData.instruments
       const runs = ontRunsFactory.storeData.runs
       resources = {
         instruments,
@@ -76,7 +76,7 @@ describe('useOntRootStore', () => {
       it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(ontRunsFactory.responses.fetch) 
+        get.mockResolvedValue(ontRunsFactory.responses.fetch)
         rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()

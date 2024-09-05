@@ -1,11 +1,8 @@
 import { expect, it } from 'vitest'
-import Response from '@/api/v1/Response'
-import { Data } from '@support/testHelper'
 import getters from '@/store/traction/ont/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import ONTRunsFactory from '@tests/factories/ONTRunsFactory.js'
-
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
 const ontRunsFactory = ONTRunsFactory()

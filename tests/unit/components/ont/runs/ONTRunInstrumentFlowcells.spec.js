@@ -5,7 +5,6 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 
-
 const ontInstrumentsFactory = OntInstrumentsFactory()
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
