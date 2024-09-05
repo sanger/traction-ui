@@ -2,7 +2,7 @@ import { expect, it } from 'vitest'
 import getters from '@/store/traction/ont/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
-import OntRunsFactory from '@tests/factories/ONTRunsFactory.js'
+import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
 const ontRunsFactory = OntRunsFactory()
