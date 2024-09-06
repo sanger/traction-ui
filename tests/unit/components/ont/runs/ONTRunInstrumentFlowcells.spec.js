@@ -70,7 +70,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     })
 
     it('must have instruments', () => {
-      const expected = Object.values(mockInstruments).map((i) => {
+      const expected = ontInstrumentsFactory.storeData.instrumentsArray.map((i) => {
         const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
           ...i,
@@ -81,7 +81,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     })
 
     it('must have instrumentByName', () => {
-      const expected = Object.values(mockInstruments)
+      const expected = ontInstrumentsFactory.storeData.instrumentsArray
         .map((i) => {
           const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
           return {

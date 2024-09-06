@@ -1,8 +1,9 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '../../src/api/JsonApi.js'
-/*
- * Factory for creating a instruments
- * @returns a base factory object with the instruments data
+/**
+ * Factory for creating ONT runs data.
+ *
+ * @returns {Object} An object containing the base factory data, find data, and store data.
  */
 const OntRunsFactory = () => {
   const findRun = {
@@ -102,6 +103,12 @@ const OntRunsFactory = () => {
     },
   }
 
+  /**
+   * Creates store data from the provided data.
+   *
+   * @param {Object} data - The data to be processed.
+   * @returns {Object} An object containing the runs, runsArray, validRun, newRun, and findRun.
+   */
   const createStoreData = (data) => {
     const runs = dataToObjectById({
       data: data.data,
@@ -109,6 +116,7 @@ const OntRunsFactory = () => {
     })
     return {
       runs,
+      runsArray: Object.values(runs),
       validRun: {
         id: 1,
         instrument_name: 'GXB02004',

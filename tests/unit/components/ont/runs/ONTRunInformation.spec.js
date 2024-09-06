@@ -86,7 +86,7 @@ describe('ONTRunInformation.vue', () => {
       expect(ontRunInfomation.currentRun).toEqual(mockRun)
     })
     it('must have instruments', () => {
-      const expected = Object.values(mockInstruments).map((i) => {
+      const expected = ontInstrumentsFactory.storeData.instrumentsArray.map((i) => {
         const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
           ...i,
@@ -104,7 +104,7 @@ describe('ONTRunInformation.vue', () => {
   })
   describe('#instrumentOptions', () => {
     it('must format instrumentOptions', () => {
-      const options = Object.values(mockInstruments).map((instrument) => ({
+      const options = ontInstrumentsFactory.storeData.instrumentsArray.map((instrument) => ({
         value: instrument.name,
         text: instrument.name,
       }))

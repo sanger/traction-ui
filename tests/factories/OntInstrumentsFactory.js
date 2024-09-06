@@ -1,8 +1,9 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '../../src/api/JsonApi.js'
-/*
- * Factory for creating a instruments
- * @returns a base factory object with the instruments data
+/**
+ * Factory function to create ONT instruments data.
+ *
+ * @returns {Object} An object containing the base factory data and store data.
  */
 const OntInstrumentsFactory = () => {
   const data = {
@@ -34,13 +35,21 @@ const OntInstrumentsFactory = () => {
     ],
   }
 
+  /**
+   * Creates store data from the provided data.
+   *
+   * @param {Object} data - The data to be processed.
+   * @returns {Object} An object containing the instruments, instrumentsArray.
+   */
   const createStoreData = (data) => {
     const instruments = dataToObjectById({
       data: data.data,
       includeRelationships: false,
     })
+    const instrumentsArray = Object.values(instruments)
     return {
       instruments,
+      instrumentsArray,
     }
   }
 
