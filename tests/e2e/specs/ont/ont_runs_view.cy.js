@@ -1,7 +1,13 @@
+import OntRunsFactory from '../../../factories/OntRunsFactory.js'
+
 describe('ONT Runs view', () => {
   it('Visits the ont runs url', () => {
-    cy.intercept('/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
-      fixture: 'tractionOntRuns.json',
+    cy.wrap(OntRunsFactory()).as('ontRunsFactory')
+    cy.get('@ontRunsFactory').then((ontRunsFactory) => {
+      cy.intercept('GET', '/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
+        statusCode: 200,
+        body: ontRunsFactory.content,
+      })
     })
     cy.visit('#/ont/runs')
     // Check filters are visible

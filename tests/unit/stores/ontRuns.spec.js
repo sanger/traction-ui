@@ -1,11 +1,15 @@
-import { useOntRunsStore } from '@/stores/ontRuns'
-import useOntRootStore from '@/stores/ontRoot'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
+import useOntRootStore from '@/stores/ontRoot.js'
 import useRootStore from '@/stores'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { Data, createPinia, setActivePinia } from '@support/testHelper'
-import Response from '@/api/v1/Response'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
-import { flowCellType } from '@/stores/utilities/flowCell'
+import { flowCellType } from '@/stores/utilities/flowCell.js'
+import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+
+const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontRunsFactory = OntRunsFactory()
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -33,15 +37,15 @@ describe('useOntRunsStore', () => {
       store.currentRun = {
         id: 1,
       }
-      store.instruments = new Response(Data.OntInstruments).deserialize.instruments
+      store.instruments = ontInstrumentsFactory.storeData.instruments
       store.instrumentFlowcellLayout = InstrumentFlowcellLayout
     })
 
     it('"runRequest" returns "state.runRequest"', () => {
       const rootStore = useRootStore()
       const get = vi.fn()
-      get.mockResolvedValue(Data.OntRuns)
-      rootStore.api.v1 = {
+      get.mockResolvedValue(ontRunsFactory.responses.fetch)
+      rootStore.api.v2 = {
         traction: { ont: { runs: 'aRunRequest' } },
       }
       const actual = store.runRequest
@@ -65,16 +69,9 @@ describe('useOntRunsStore', () => {
     describe('#newRun', () => {
       it('runs successfully', () => {
         const store = useOntRunsStore()
-        store.currentRun = {
-          id: 1,
-          instrument_name: 'GXB02004',
-          state: 'pending',
-          flowcell_attributes: [{ tube_barcode: 'TRAC-A-1' }],
-        }
+        store.currentRun = ontRunsFactory.storeData.validRun
         const newRun = {
-          id: 'new',
-          instrument_name: null,
-          state: null,
+          ...ontRunsFactory.storeData.newRun,
           flowcell_attributes: [{ ...flowCellType }],
         }
         store.newRun()
@@ -88,19 +85,13 @@ describe('useOntRunsStore', () => {
       beforeEach(() => {
         create = vi.fn()
         store = useOntRunsStore()
-        store.currentRun = {
-          id: 1,
-          instrument_name: 'GXB02004',
-          state: 'pending',
-          flowcell_attributes: [{ tube_barcode: 'TRAC-A-1' }],
-        }
+        store.currentRun = ontRunsFactory.storeData.validRun
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
       it('runs successfully', async () => {
-        const promise = Promise.resolve(Data.OntRun)
-        create.mockReturnValue(promise)
+        create.mockReturnValue(ontRunsFactory.responses.fetch)
         store.runRequest.create = create
 
         const response = await store.createRun()
@@ -160,8 +151,7 @@ describe('useOntRunsStore', () => {
       })
 
       it('successfully', async () => {
-        const promise = Promise.resolve(Data.OntRun)
-        update.mockReturnValue(promise)
+        update.mockReturnValue(ontRunsFactory.responses.fetch)
 
         store.runRequest.update = update
         const response = await store.updateRun()
@@ -188,41 +178,18 @@ describe('useOntRunsStore', () => {
 
       beforeEach(() => {
         store = useOntRunsStore()
-        store.currentRun = {
-          id: 1,
-          instrument_name: 'GXB02004',
-          state: 'pending',
-          flowcell_attributes: [{ tube_barcode: 'TRAC-A-1' }],
-        }
+        store.currentRun = ontRunsFactory.storeData.validRun
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
 
-        mockRun = {
-          id: 1,
-          instrument_name: 'GXB02004',
-          state: 'pending',
-          flowcell_attributes: [],
-        }
+        mockRun = ontRunsFactory.storeData.validRun
       })
 
       it('runs successfully', async () => {
-        const find = vi.fn().mockReturnValue({
-          success: true,
-          data: {
-            data: {
-              id: mockRun.id,
-              attributes: {
-                state: mockRun.state,
-                ont_instrument_id: 1,
-              },
-            },
-            flowcell_attributes: mockRun.flowcell_attributes,
-          },
-          errors: [],
-        })
+        const find = vi.fn().mockReturnValue(ontRunsFactory.findData.responses.fetch)
         store.runRequest.find = find
         const response = await store.fetchRun(mockRun.id)
-        expect(store.currentRun).toEqual(mockRun)
+        expect(store.currentRun).toEqual(ontRunsFactory.storeData.findRun)
         expect(response.success).toBeTruthy()
       })
     })
@@ -308,7 +275,7 @@ describe('useOntRunsStore', () => {
         expect(store.currentRun.instrument_name).toEqual('Instrument1')
       })
     })
-    describe('#setCurrenttRun', () => {
+    describe('#setCurrentRun', () => {
       it('sets current run', () => {
         const store = useOntRunsStore()
         store.currentRun = {
