@@ -5,7 +5,7 @@
  * A bit more workand this could be a truly reusable library
  * @module LabelPrintingHelpers
  */
-import { dataToObjectById, extractRelationshipsAndGroupById } from '@/api/JsonApi.js'
+import { dataToObjectById, extractRelationshipsAndGroupById } from '../../src/api/JsonApi.js'
 
 /**
  * Maps workflows with their corresponding steps and generates options for each step.

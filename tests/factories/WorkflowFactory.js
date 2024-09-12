@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { mapWorkflowsWithSteps } from '@/lib/LabelPrintingHelpers.js'
+import { mapWorkflowsWithSteps } from '../../src/lib/LabelPrintingHelpers.js'
 
 /**
  * Factory for creating a list of workflows
