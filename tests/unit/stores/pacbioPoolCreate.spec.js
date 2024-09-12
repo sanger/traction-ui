@@ -545,7 +545,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.selectRequestInSource).toBeCalledWith({
           selected: false,
           request: '98',
-          source_id: '2',
+          source_id: '98',
         })
       })
 
