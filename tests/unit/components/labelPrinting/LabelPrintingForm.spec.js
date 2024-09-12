@@ -1,10 +1,10 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
-import WorkflowList from '@/config/WorkflowList.json'
 import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
 import { mount, createTestingPinia, flushPromises, nextTick } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
+import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
 
 const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
@@ -20,6 +20,7 @@ const evt = {
 }
 
 const printersFactory = PrinterFactory()
+const workflowFactory = WorkflowFactory()
 
 const plugins = [
   ({ store }) => {
@@ -27,6 +28,10 @@ const plugins = [
       store.api.v2.traction.printers.get = vi
         .fn()
         .mockResolvedValue(printersFactory.responses.fetch)
+
+      store.api.v1.traction.workflows.get = vi
+        .fn()
+        .mockResolvedValue(workflowFactory.responses.axios)
     }
   },
 ]
@@ -79,7 +84,7 @@ describe('LabelPrintingForm.vue', () => {
 
     it('has the correct Workflow Dropdown Options', () => {
       expect(wrapper.vm.workflowDropdownOptions).toEqual(
-        createWorkflowDropdownOptions(WorkflowList),
+        createWorkflowDropdownOptions(store.workflows),
       )
     })
   })

@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
+import { handleResponse as handleV1Response } from '@/api/v1/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
+import { mapWorkflowsWithSteps } from '@/lib/LabelPrintingHelpers.js'
 
 export const usePrintingStore = defineStore('printing', {
   state: () => ({
     resources: {
+      workflows: [],
       printers: {},
     },
   }),
@@ -23,12 +26,19 @@ export const usePrintingStore = defineStore('printing', {
       }
       return printerValues
     },
+    /**
+     *
+     * @param {Object} resources
+     * @returns {Array} Array of workflows
+     */
+    workflows: ({ resources }) => {
+      return resources.workflows
+    },
   },
   actions: {
     /**
      * Creates a print job in PrintMyBarcode
      * @param rootState the vuex rootState object. Provides access to current state
-     * @param state Provides access to local state
      * @param {String} printerName The name of the printer to send the print job to
      * @param {Array} labels Should be of a standard structure. See relevant components.
      * @param {Integer} copies Number of copies of labels
@@ -89,6 +99,21 @@ export const usePrintingStore = defineStore('printing', {
         this.resources.printers = dataToObjectById({ data })
       }
       return { success, data, errors }
+    },
+
+    /**
+     * fetches the list of workflows from traction
+     * @returns {Object}  {success: Boolean, data: Object, errors: Array} Is the fetch successful? The data and any errors
+     */
+    async fetchWorkflows() {
+      const rootStore = useRootStore()
+      const request = rootStore.api.v1.traction.workflows
+      const response = await handleV1Response(request.get({ include: 'workflow_steps' }))
+      const { success, data = [] } = response
+      if (success) {
+        this.resources.workflows = mapWorkflowsWithSteps(data)
+      }
+      return response
     },
   },
 })

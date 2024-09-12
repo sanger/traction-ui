@@ -5,6 +5,35 @@
  * A bit more workand this could be a truly reusable library
  * @module LabelPrintingHelpers
  */
+import { dataToObjectById, extractRelationshipsAndGroupById } from '@/api/JsonApi.js'
+
+/**
+ * Maps workflows with their corresponding steps and generates options for each step.
+ * @param {Object} data - The API response data containing workflows and related steps.
+ * {Array} data.data - Array of workflow objects, each representing a workflow.
+ * {Array} data.included - Array of related resources, including workflow steps, which are referenced by the workflows.
+ * @returns {Array} - Returns an array of objects where each object contains:
+ *  - `workflow` (string): The name of the workflow.
+ *  - `options` (Array): An array of step options, each containing:
+ *      - `stage` (string): The stage of the workflow step.
+ *      - `suffix` (string): The code representing the step suffix.
+ */
+const mapWorkflowsWithSteps = (data) => {
+  const workflowSteps = dataToObjectById({ data: data.included })
+  return data.data.map((workflow) => {
+    const steps = extractRelationshipsAndGroupById(workflow.relationships).workflow_steps
+    const options = steps.map((step) => {
+      return {
+        stage: workflowSteps[step].stage,
+        suffix: workflowSteps[step].code,
+      }
+    })
+    return {
+      workflow: workflow.attributes.name,
+      options,
+    }
+  })
+}
 
 /**
  * @param {Array} {[Object, ...]} WorkflowList
@@ -22,14 +51,16 @@ const byAttribute = (objects, attribute) => {
  * @example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
  */
-const createWorkflowDropdownOptions = (WorkflowList) => {
-  return WorkflowList.map((item) => ({
-    label: item.workflow,
-    options: item.options.map(({ text, value }) => ({
-      text,
-      value,
-    })),
-  })).concat([{ text: 'No suffix', value: null }])
+const createWorkflowDropdownOptions = (workflows) => {
+  return workflows
+    .map((item) => ({
+      label: item.workflow,
+      options: item.options.map(({ suffix, stage }) => ({
+        text: suffix + ' - ' + stage,
+        value: suffix,
+      })),
+    }))
+    .concat([{ text: 'No suffix', value: null }])
 }
 
 /**
@@ -300,4 +331,5 @@ export {
   PrintJobType,
   createPayload,
   NullWorkflowItem,
+  mapWorkflowsWithSteps,
 }
