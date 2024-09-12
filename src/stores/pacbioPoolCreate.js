@@ -442,8 +442,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const { requests } = this.resources.wells[well_id]
       const selectedUsedAliquotRequests = this.used_aliquots
       for (const id of requests) {
-        const selected = !!selectedUsedAliquotRequests[`_${well_id}`]
-        this.selectRequestInSource({ request: id, source_id: String(well_id), selected: !selected })
+        const selected = !!selectedUsedAliquotRequests[`_${id}`]
+        this.selectRequestInSource({ request: id, source_id: id, selected: !selected })
       }
     },
 
