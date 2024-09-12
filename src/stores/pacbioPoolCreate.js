@@ -263,11 +263,15 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const selectedUsedAliquots = state.used_aliquots
       let val = []
       if (source_obj) {
-        const source_id = source_obj.source_id ?? source_obj.id
-        const used_aliquot = state.used_aliquots[`_${source_id}`]
-        const selected = !!used_aliquot
+        const source_type = source_obj.libraries ? 'Pacbio::Library' : 'Pacbio::Request'
+        const source_obj_id = source_obj.source_id ?? source_obj.id
+
         val = source_obj['requests']?.map((id) => {
-          return { ...requests[id], selected, source_id }
+          const source_id =
+            source_type === 'Pacbio::Library' ? source_obj_id : source_obj['requests'][0]
+          const used_aliquot = state.used_aliquots[`_${source_id}`]
+          const selected = !!used_aliquot
+          return { ...requests[id], selected, source_id, source_type }
         })
       } else {
         val = Object.values(requests).map((request) => {
@@ -484,7 +488,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         for (const requestId of requests) {
           this.selectRequestInSource({
             request: requestId,
-            source_id: String(wellId),
+            source_id: requestId,
             selected: false,
           })
         }
@@ -511,7 +515,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       for (const requestId of requests) {
         this.selectRequestInSource({
           request: requestId,
-          source_id: String(tube.source_id),
+          source_id: tube.libraries? String(tube.source_id): requestId,
           selected: false,
         })
       }
@@ -981,6 +985,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
 
     selectRequestInSource({ request, source_id, selected = true }) {
+      const library = Object.values(this.resources.libraries).find(
+        (library) => library.id == source_id,
+      )
+      // Just to make sure the aliquot source id is library id if the request is from library otherwise request id
+      const aliquot_source_id = library ? source_id : request
+
       if (selected) {
         /*If the request is associated with a library, fill the used_aliquot values with the library attributes values
         for template_prep_kit_box_barcode, volume, concentration, and insert_size*/
@@ -993,9 +1003,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           'available_volume',
           'tag_id',
         ]
-        const library = Object.values(this.resources.libraries).find(
-          (library) => library.id == source_id,
-        )
 
         const libraryAttributes = library
           ? autoFillLibraryAttributes.reduce((result, key) => {
@@ -1029,9 +1036,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             libraryAttributes.tag_id = null
           }
         }
-        this.used_aliquots[`_${source_id}`] = {
+        this.used_aliquots[`_${aliquot_source_id}`] = {
           ...createUsedAliquot({
-            source_id,
+            source_id: aliquot_source_id,
             request,
             ...libraryAttributes,
             source_type: this.sourceTypeForRequest(this.resources.requests[request]),
@@ -1039,9 +1046,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           }),
         }
         // Validate the used aliquot if the request is from library
-        library && this.validateUsedAliquot(this.used_aliquots[`_${source_id}`], 'volume')
+        library && this.validateUsedAliquot(this.used_aliquots[`_${aliquot_source_id}`], 'volume')
       } else {
-        delete this.used_aliquots[`_${source_id}`]
+        delete this.used_aliquots[`_${aliquot_source_id}`]
       }
     },
 
