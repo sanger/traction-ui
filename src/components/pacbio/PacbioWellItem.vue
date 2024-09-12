@@ -100,14 +100,14 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 
-const getRequest = computed(() => {
-  return props.requests.length
+const getRequest = computed(() =>
+  props.requests.length
     ? pacbioPoolCreateStore.requestList({
         requests: props.requests,
         source_id: props.sourceId,
       })[0]
-    : ''
-})
+    : '',
+)
 
 const checkRequest = computed(() => {
   return getRequest.value ? 'filled' : 'empty'
