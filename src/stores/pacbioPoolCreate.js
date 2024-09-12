@@ -515,7 +515,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       for (const requestId of requests) {
         this.selectRequestInSource({
           request: requestId,
-          source_id: tube.libraries? String(tube.source_id): requestId,
+          source_id: tube.libraries ? String(tube.source_id) : requestId,
           selected: false,
         })
       }
@@ -988,7 +988,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const library = Object.values(this.resources.libraries).find(
         (library) => library.id == source_id,
       )
-      // Just to make sure the aliquot source id is library id if the request is from library otherwise request id
+      // Ensure the aliquot source id is library id if the request is from library otherwise request id
       const aliquot_source_id = library ? source_id : request
 
       if (selected) {

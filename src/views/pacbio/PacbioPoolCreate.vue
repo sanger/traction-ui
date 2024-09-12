@@ -165,10 +165,11 @@ const handleAliquotSelection = (aliquot) => {
     aliquotSelectionHighlightLabware.value = null
     return
   }
-  let labware = pacbioPoolCreateStore.selectedTubes.find((tube) =>
-    aliquot.source_type === 'Pacbio::Request'
-      ? tube.requests[0] === aliquot.source_id //this is a sample tube
-      : tube.source_id === aliquot.source_id, //this is a library tube
+  let labware = pacbioPoolCreateStore.selectedTubes.find(
+    (tube) =>
+      aliquot.source_type === 'Pacbio::Request'
+        ? tube.requests[0] === aliquot.source_id //this is a sample tube
+        : tube.source_id === aliquot.source_id, //this is a library tube
   )
   if (!labware) {
     labware = pacbioPoolCreateStore.selectedPlates.find((plate) =>
