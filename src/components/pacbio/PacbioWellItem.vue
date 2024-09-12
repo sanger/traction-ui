@@ -104,7 +104,7 @@ const getRequest = computed(() => {
   return props.requests.length
     ? pacbioPoolCreateStore.requestList({
         requests: props.requests,
-        source_id: props.requests[0],
+        source_id: props.sourceId,
       })[0]
     : ''
 })
