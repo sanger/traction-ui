@@ -13,62 +13,9 @@ import {
   createPayload,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
+import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
 
-const workflowList = [
-  {
-    workflow: 'Workflow 1',
-    options: [
-      {
-        stage: 'Stage 1',
-        suffix: 'ST1',
-        text: 'ST1 - Stage 1',
-        value: 'ST1',
-        workflow: 'Workflow 1',
-      },
-      {
-        stage: 'Stage 2',
-        suffix: 'ST2',
-        text: 'ST2 - Stage 2',
-        value: 'ST2',
-        workflow: 'Workflow 1',
-      },
-      {
-        stage: 'Stage 3',
-        suffix: 'ST3',
-        text: 'ST3 - Stage 1',
-        value: 'ST3',
-        workflow: 'Workflow 1',
-      },
-    ],
-  },
-  {
-    workflow: 'Workflow 2',
-    options: [
-      {
-        stage: 'Stage 10',
-        suffix: 'ST10',
-        text: 'ST10 - Stage 10',
-        value: 'ST10',
-        workflow: 'Workflow 2',
-      },
-      {
-        stage: 'Stage 11',
-        suffix: 'ST11',
-        text: 'ST11 - Stage 11',
-        value: 'ST11',
-        workflow: 'Workflow 2',
-      },
-      {
-        stage: 'Stage 12',
-        suffix: 'ST12',
-        text: 'ST1 - Stage 12',
-        value: 'ST12',
-        workflow: 'Workflow 2',
-      },
-    ],
-  },
-]
-
+const workflowList = WorkflowFactory().storeData
 const labelTypes = {
   tube2d: {
     text: 'Tube - 2d',
@@ -111,16 +58,16 @@ describe('LabelPrintingHelpers.js', () => {
 
     it('creates a label for each workflow', () => {
       const items = createWorkflowDropdownOptions(workflowList)
-      expect(items[0].label).toEqual('Workflow 1')
-      expect(items[1].label).toEqual('Workflow 2')
+      expect(items[0].label).toEqual('pacbio')
+      expect(items[1].label).toEqual('bioNano')
     })
 
     it('creates an option for each stage', () => {
       const items = createWorkflowDropdownOptions(workflowList)
       expect(items[0].options.length).toEqual(3)
       const { text, value } = items[0].options[0]
-      expect(text).toEqual('ST1 - Stage 1')
-      expect(value).toEqual('ST1')
+      expect(text).toEqual('step1 - initial')
+      expect(value).toEqual('step1')
     })
 
     it('creates a no suffix option', () => {
@@ -134,12 +81,12 @@ describe('LabelPrintingHelpers.js', () => {
   describe('#createWorkflowOptions', () => {
     it('creates a key for each suffix', () => {
       const items = createWorkflowOptions(workflowList)
-      expect(Object.keys(items)).toEqual(['ST1', 'ST2', 'ST3', 'ST10', 'ST11', 'ST12'])
+      expect(Object.keys(items)).toEqual(['step1', 'step2', 'FINAL', 'BDLE', 'BEXT'])
     })
 
     it('creates a list of options for each suffix', () => {
       const items = createWorkflowOptions(workflowList)
-      expect(Object.values(items)[0]).toEqual(workflowList[0].options[0])
+      expect(Object.values(items)[0]).toEqual(workflowList[0].workflow_steps[0])
     })
   })
 
@@ -234,7 +181,7 @@ describe('LabelPrintingHelpers.js', () => {
     const date = getCurrentDate()
     const workflowItem = {
       stage: 'Stage1',
-      suffix: 'ST1',
+      code: 'ST1',
       text: 'ST1 - Stage1',
       value: 'ST1',
       workflow: 'Worflow 1',
@@ -268,7 +215,7 @@ describe('LabelPrintingHelpers.js', () => {
           sourceBarcode: sourceBarcodeList[0],
           date,
           stage: workflowItem.stage,
-          suffixes: [workflowItem.suffix],
+          suffixes: [workflowItem.code],
         }),
       )
       expect(workflowBarcodeItems[4]).toEqual(
@@ -276,7 +223,7 @@ describe('LabelPrintingHelpers.js', () => {
           sourceBarcode: sourceBarcodeList[4],
           date,
           stage: workflowItem.stage,
-          suffixes: [workflowItem.suffix],
+          suffixes: [workflowItem.code],
         }),
       )
     })
@@ -295,7 +242,7 @@ describe('LabelPrintingHelpers.js', () => {
           sourceBarcode: sourceBarcodeList[0],
           date,
           stage: workflowItem.stage,
-          suffixes: [workflowItem.suffix],
+          suffixes: [workflowItem.code],
           number: 1,
         }),
       )
@@ -304,7 +251,7 @@ describe('LabelPrintingHelpers.js', () => {
           sourceBarcode: sourceBarcodeList[4],
           date,
           stage: workflowItem.stage,
-          suffixes: [workflowItem.suffix],
+          suffixes: [workflowItem.code],
           number: 3,
         }),
       )
