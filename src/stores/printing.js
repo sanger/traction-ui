@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
-import { handleResponse as handleV1Response } from '@/api/v1/ResponseHelper'
-import { dataToObjectById } from '@/api/JsonApi'
+import { includesRelationshipAttributes, dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
-import { mapWorkflowsWithSteps } from '@/lib/LabelPrintingHelpers.js'
 
 export const usePrintingStore = defineStore('printing', {
   state: () => ({
@@ -107,11 +105,11 @@ export const usePrintingStore = defineStore('printing', {
      */
     async fetchWorkflows() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.workflows
-      const response = await handleV1Response(request.get({ include: 'workflow_steps' }))
-      const { success, data = [] } = response
+      const request = rootStore.api.v2.traction.workflows
+      const response = await handleResponse(request.get({ include: 'workflow_steps' }))
+      const { success, body } = response
       if (success) {
-        this.resources.workflows = mapWorkflowsWithSteps(data)
+        this.resources.workflows = includesRelationshipAttributes(body)
       }
       return response
     },

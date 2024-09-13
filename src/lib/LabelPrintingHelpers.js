@@ -5,35 +5,6 @@
  * A bit more workand this could be a truly reusable library
  * @module LabelPrintingHelpers
  */
-import { dataToObjectById, extractRelationshipsAndGroupById } from '../../src/api/JsonApi.js'
-
-/**
- * Maps workflows with their corresponding steps and generates options for each step.
- * @param {Object} data - The API response data containing workflows and related steps.
- * {Array} data.data - Array of workflow objects, each representing a workflow.
- * {Array} data.included - Array of related resources, including workflow steps, which are referenced by the workflows.
- * @returns {Array} - Returns an array of objects where each object contains:
- *  - `workflow` (string): The name of the workflow.
- *  - `options` (Array): An array of step options, each containing:
- *      - `stage` (string): The stage of the workflow step.
- *      - `suffix` (string): The code representing the step suffix.
- */
-const mapWorkflowsWithSteps = (data) => {
-  const workflowSteps = dataToObjectById({ data: data.included })
-  return data.data.map((workflow) => {
-    const steps = extractRelationshipsAndGroupById(workflow.relationships).workflow_steps
-    const options = steps.map((step) => {
-      return {
-        stage: workflowSteps[step].stage,
-        suffix: workflowSteps[step].code,
-      }
-    })
-    return {
-      workflow: workflow.attributes.name,
-      options,
-    }
-  })
-}
 
 /**
  * @param {Array} {[Object, ...]} WorkflowList
@@ -53,11 +24,11 @@ const byAttribute = (objects, attribute) => {
  */
 const createWorkflowDropdownOptions = (workflows) => {
   return workflows
-    .map((item) => ({
-      label: item.workflow,
-      options: item.options.map(({ suffix, stage }) => ({
-        text: suffix + ' - ' + stage,
-        value: suffix,
+    .map((workflow) => ({
+      label: workflow.name,
+      options: workflow.workflow_steps.map(({ code, stage }) => ({
+        text: code + ' - ' + stage,
+        value: code,
       })),
     }))
     .concat([{ text: 'No suffix', value: null }])
@@ -71,7 +42,7 @@ const workflowByOptions = (options) => {
   return options.reduce((result, options) => {
     return {
       ...result,
-      [options.suffix]: options,
+      [options.code]: options,
     }
   }, {})
 }
@@ -83,11 +54,11 @@ const workflowByOptions = (options) => {
  * This allows for searching by suffix
  * example: { SF1: { ...option }, ...}
  */
-const createWorkflowOptions = (WorkflowList) => {
-  return WorkflowList.reduce((result, { options }) => {
+const createWorkflowOptions = (workflowList) => {
+  return workflowList.reduce((result, { workflow_steps }) => {
     return {
       ...result,
-      ...workflowByOptions(options),
+      ...workflowByOptions(workflow_steps),
     }
   }, {})
 }
@@ -97,7 +68,7 @@ const createWorkflowOptions = (WorkflowList) => {
  */
 const NullWorkflowItem = {
   stage: '',
-  suffix: null,
+  code: null,
   text: null,
   value: null,
   workflow: null,
@@ -148,7 +119,7 @@ const createWorkflowBarcodeItemList = (workflowListType) => {
   const {
     sourceBarcodeList,
     date,
-    workflowItem: { stage, suffix },
+    workflowItem: { stage, code },
     numberOfLabels,
   } = workflowListType
 
@@ -160,11 +131,11 @@ const createWorkflowBarcodeItemList = (workflowListType) => {
   return sourceBarcodeList.flatMap((sourceBarcode) => {
     // if numberOfLabels is empty we just want to return a single item with suffix
     if (numberList.length === 0) {
-      return WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix] })
+      return WorkflowItemType({ sourceBarcode, date, stage, suffixes: [code] })
     } else {
       // if numberList is filled return a WorkflowItemType for each one
       return numberList.map((number) =>
-        WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix], number }),
+        WorkflowItemType({ sourceBarcode, date, stage, suffixes: [code], number }),
       )
     }
   })
@@ -331,5 +302,4 @@ export {
   PrintJobType,
   createPayload,
   NullWorkflowItem,
-  mapWorkflowsWithSteps,
 }

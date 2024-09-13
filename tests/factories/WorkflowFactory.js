@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { mapWorkflowsWithSteps } from '../../src/lib/LabelPrintingHelpers.js'
+import { includesRelationshipAttributes } from '../../src/api/JsonApi.js'
 
 /**
  * Factory for creating a list of workflows
@@ -86,7 +86,7 @@ const WorkflowFactory = () => {
     ],
   }
 
-  return { ...BaseFactory(data), storeData: mapWorkflowsWithSteps(data) }
+  return { ...BaseFactory(data), storeData: includesRelationshipAttributes(data) }
 }
 
 export default WorkflowFactory

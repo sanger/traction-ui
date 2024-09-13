@@ -29,9 +29,9 @@ const plugins = [
         .fn()
         .mockResolvedValue(printersFactory.responses.fetch)
 
-      store.api.v1.traction.workflows.get = vi
+      store.api.v2.traction.workflows.get = vi
         .fn()
-        .mockResolvedValue(workflowFactory.responses.axios)
+        .mockResolvedValue(workflowFactory.responses.fetch)
     }
   },
 ]

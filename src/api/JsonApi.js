@@ -305,6 +305,49 @@ const splitDataByParent = ({
   }, {})
 }
 
+/**
+ * Extracts the relationship keys from the given data.
+ *
+ * @param {Object} data - The data object containing JSON API resources.
+ * @returns {Set<string>} A set of relationship keys.
+ */
+const getRelationshipKeys = (data) => {
+  return new Set(
+    Object.values(data).flatMap((item) =>
+      item.relationships ? Object.keys(item.relationships) : [],
+    ),
+  )
+}
+
+/**
+ * Includes relationship attributes to the data object.
+ * @param {Object} data - The data object containing JSON API resources, including the included resources.
+ * @param {Array} data.included - The included resources.
+ * @param {Array} data.data - The primary data resources.
+ * @returns {Array} An array of objects with included attributes added to their relationships.
+ * example data = {
+ *   data: [ { id: '3', type: 'type1', relationships: { relationship1: ['1', '2'] } } ],
+ *   included: [
+ *     { id: '1', type: 'relationship1', attributes: { att1 : '123', att2: 'ABC' } },
+ *     { id: '2', type: 'relationship1', attributes: { att1: '456', att2: 'DEF' } }
+ *   ]
+ *   return [ { id: '3', type: 'type1', relationships: { relationship1: [{ id: '1', att1: '456', att2: 'DEF' }, {id: '2',  att1: '456', att2: 'DEF' }] } }]
+ */
+const includesRelationshipAttributes = (data) => {
+  const includedMap = dataToObjectById({ data: data.included })
+  const includeRelationships = dataToObjectById({ data: data.data, includeRelationships: true })
+  const relationshipNames = getRelationshipKeys(data.data)
+
+  Object.values(includeRelationships).forEach((toMap) => {
+    relationshipNames.forEach((relationshipName) => {
+      toMap[relationshipName] = toMap[relationshipName].map((relationshipId) => ({
+        ...includedMap[relationshipId],
+      }))
+    })
+  })
+  return Object.values(includeRelationships)
+}
+
 export {
   extractAttributes,
   mapRelationships,
@@ -324,6 +367,8 @@ export {
   populateBy,
   splitDataByParent,
   dataToObjectByPlateNumber,
+  includesRelationshipAttributes,
+  getRelationshipKeys,
 }
 
 export default deserialize

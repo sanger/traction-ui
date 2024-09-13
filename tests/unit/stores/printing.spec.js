@@ -86,8 +86,8 @@ describe('usePrintingStore', () => {
         const store = usePrintingStore()
         const get = vi.fn()
 
-        get.mockResolvedValue(workflowFactory.responses.axios)
-        rootStore.api.v1 = { traction: { workflows: { get } } }
+        get.mockResolvedValue(workflowFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
         expect(store.resources.workflows).toEqual(workflowFactory.storeData)
@@ -104,7 +104,7 @@ describe('usePrintingStore', () => {
           status: 500,
           ok: false,
         })
-        rootStore.api.v1 = { traction: { workflows: { get } } }
+        rootStore.api.v2 = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
         expect(store.resources.workflows).toEqual([])
