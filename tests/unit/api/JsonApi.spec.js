@@ -26,7 +26,7 @@ describe('JsonApi', () => {
     splitDataByParent,
     dataToObjectByPlateNumber,
     includesRelationshipAttributes,
-    getRelationshipKeys
+    getRelationshipKeys,
   } = JsonApi
 
   let data, included, dataItem
