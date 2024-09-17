@@ -150,12 +150,12 @@ let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
 //Create a review for the barcode to be printed
 const workflowOptions = computed(() => {
-  return createWorkflowOptions(printingStore.workflows)
+  return createWorkflowOptions(Object.values(printingStore.pipelines.steps))
 })
 
 //Create the workflow dropdown options
 const workflowDropdownOptions = computed(() => {
-  return createWorkflowDropdownOptions(printingStore.workflows)
+  return createWorkflowDropdownOptions(printingStore.pipelines)
 })
 
 /**
@@ -259,15 +259,17 @@ const onReset = () => {
 // if there are printers in the store, return success prevents error in DataFetcher
 // @returns {Promise} - Promise
 const fetchResources = async () => {
-  const printers = printingStore.printers()
-  const workflows = printingStore.workflows
+  const { printers, fetchPrinters, fetchWorkflows, pipelines } = printingStore
+  const responses = await Promise.all([
+    printers.length === 0 ? fetchPrinters() : { success: true, errors: [] },
+    pipelines.workflows.length === 0 || pipelines.steps.length === 0
+      ? fetchWorkflows()
+      : { success: true, errors: [] },
+  ])
 
-  if (printers.length === 0) {
-    await printingStore.fetchPrinters()
-  }
-  if (workflows.length === 0) {
-    await printingStore.fetchWorkflows()
-  }
-  return { success: true }
+  const success = responses.every((response) => response.success)
+  const errors = responses.flatMap((response) => response.errors)
+
+  return { success, errors }
 }
 </script>

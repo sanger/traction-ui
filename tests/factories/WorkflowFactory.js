@@ -1,6 +1,12 @@
 import BaseFactory from './BaseFactory.js'
-import { includesRelationshipAttributes } from '../../src/api/JsonApi.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
+const createStoreData = (data) => {
+  return {
+    workflows: Object.values(dataToObjectById({ data: data.data, includeRelationships: true })),
+    steps: dataToObjectById({ data: data.included }),
+  }
+}
 /**
  * Factory for creating a list of workflows
  * @returns {Object} { workflows, storeData }
@@ -86,7 +92,7 @@ const WorkflowFactory = () => {
     ],
   }
 
-  return { ...BaseFactory(data), storeData: includesRelationshipAttributes(data) }
+  return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
 export default WorkflowFactory

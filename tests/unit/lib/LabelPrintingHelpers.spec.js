@@ -53,7 +53,7 @@ describe('LabelPrintingHelpers.js', () => {
   describe('createWorkflowDropdownOptions', () => {
     it('creates an item for each workflow', () => {
       const items = createWorkflowDropdownOptions(workflowList)
-      expect(items.length).toEqual(workflowList.length + 1)
+      expect(items.length).toEqual(workflowList.workflows.length + 1)
     })
 
     it('creates a label for each workflow', () => {
@@ -80,13 +80,17 @@ describe('LabelPrintingHelpers.js', () => {
 
   describe('#createWorkflowOptions', () => {
     it('creates a key for each suffix', () => {
-      const items = createWorkflowOptions(workflowList)
-      expect(Object.keys(items)).toEqual(['step1', 'step2', 'FINAL', 'BDLE', 'BEXT'])
+      const items = createWorkflowOptions(Object.values(workflowList.steps))
+      expect(Object.keys(items)).toEqual(['step1', 'step2', 'BDLE', 'BEXT', 'FINAL'])
     })
 
     it('creates a list of options for each suffix', () => {
-      const items = createWorkflowOptions(workflowList)
-      expect(Object.values(items)[0]).toEqual(workflowList[0].workflow_steps[0])
+      const items = createWorkflowOptions(Object.values(workflowList.steps))
+      const itemValues = Object.values(items)[0]
+      const stepValues = Object.values(workflowList.steps)[0]
+      Object.keys(itemValues).forEach((key) => {
+        expect(stepValues[key]).toEqual(itemValues[key])
+      })
     })
   })
 

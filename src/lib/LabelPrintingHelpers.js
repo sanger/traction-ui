@@ -22,45 +22,33 @@ const byAttribute = (objects, attribute) => {
  * @example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
  */
-const createWorkflowDropdownOptions = (workflows) => {
-  return workflows
+const createWorkflowDropdownOptions = (pipelines) => {
+  return pipelines.workflows
     .map((workflow) => ({
       label: workflow.name,
-      options: workflow.workflow_steps.map(({ code, stage }) => ({
-        text: code + ' - ' + stage,
-        value: code,
-      })),
+      options: workflow.workflow_steps.map((stepId) => {
+        const { code, stage } = pipelines.steps[stepId]
+        return {
+          text: code + ' - ' + stage,
+          value: code,
+        }
+      }),
     }))
     .concat([{ text: 'No suffix', value: null }])
 }
 
 /**
- * @param {Array}  {[Object, ...]} WorkflowList
- * @returns {Object} e.g. { suffix: {options}, ...}
- */
-const workflowByOptions = (options) => {
-  return options.reduce((result, options) => {
-    return {
-      ...result,
-      [options.code]: options,
-    }
-  }, {})
-}
-
-/**
- * @param {Array} {[Object, ...]} WorkflowList
+ * @param {Array} {[Object, ...]} workflowSteps
  * @returns {Object} A list with the suffix as the key and the option as the value.
  * For each item Ignores the workflow and flattens all options into a single object
  * This allows for searching by suffix
- * example: { SF1: { ...option }, ...}
+ * example: { SF1: {stage: 'stage x', code: 'SF1' }, ...}
  */
-const createWorkflowOptions = (workflowList) => {
-  return workflowList.reduce((result, { workflow_steps }) => {
-    return {
-      ...result,
-      ...workflowByOptions(workflow_steps),
-    }
-  }, {})
+const createWorkflowOptions = (workflowSteps) => {
+  return workflowSteps.reduce((options, step) => {
+    options[step.code] = { stage: step.stage, code: step.code };
+    return options;
+  }, {});
 }
 
 /**

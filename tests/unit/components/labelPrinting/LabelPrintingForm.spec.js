@@ -84,7 +84,7 @@ describe('LabelPrintingForm.vue', () => {
 
     it('has the correct Workflow Dropdown Options', () => {
       expect(wrapper.vm.workflowDropdownOptions).toEqual(
-        createWorkflowDropdownOptions(store.workflows),
+        createWorkflowDropdownOptions(store.pipelines),
       )
     })
   })

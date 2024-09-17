@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia'
 import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
-import { includesRelationshipAttributes, dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
 export const usePrintingStore = defineStore('printing', {
   state: () => ({
     resources: {
-      workflows: [],
+      pipelines: {
+        workflows: [],
+        steps: {},
+      },
       printers: {},
     },
   }),
@@ -27,10 +30,10 @@ export const usePrintingStore = defineStore('printing', {
     /**
      *
      * @param {Object} resources
-     * @returns {Array} Array of workflows
+     * @returns {Object} The workflows {Array} and steps {Object mapped by id}
      */
-    workflows: ({ resources }) => {
-      return resources.workflows
+    pipelines: ({ resources }) => {
+      return resources.pipelines
     },
   },
   actions: {
@@ -109,7 +112,12 @@ export const usePrintingStore = defineStore('printing', {
       const response = await handleResponse(request.get({ include: 'workflow_steps' }))
       const { success, body } = response
       if (success) {
-        this.resources.workflows = includesRelationshipAttributes(body)
+        this.resources.pipelines = {
+          workflows: Object.values(
+            dataToObjectById({ data: body.data, includeRelationships: true }),
+          ),
+          steps: dataToObjectById({ data: body.included }),
+        }
       }
       return response
     },

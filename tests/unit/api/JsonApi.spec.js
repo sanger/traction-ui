@@ -25,8 +25,6 @@ describe('JsonApi', () => {
     populateBy,
     splitDataByParent,
     dataToObjectByPlateNumber,
-    includesRelationshipAttributes,
-    getRelationshipKeys,
   } = JsonApi
 
   let data, included, dataItem
@@ -389,33 +387,6 @@ describe('JsonApi', () => {
       expect(result[plateNumbers[1]]).toEqual(
         dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
       )
-    })
-  })
-
-  describe('getRelationshipNames', () => {
-    it('returns a set of relationship names, if the relationship exists', () => {
-      const result = getRelationshipKeys(Data.PacbioRuns.data.data)
-      expect(result).toEqual(new Set(['plates']))
-    })
-
-    it('return an empty object, if the relationship does not exist', () => {
-      const result = getRelationshipKeys({ data: { id: '1', type: 'cheeses', attributes: {} } })
-      expect(result).toEqual(new Set([]))
-    })
-  })
-
-  describe('includesRelationshipAttributes', () => {
-    it('properties defined in included are added to the relationship  object accordingly', () => {
-      const result = includesRelationshipAttributes(Data.PacbioRuns.data)
-      expect(result.some((item) => Array.isArray(item.plates))).toBeTruthy()
-      expect(
-        result.some((item) =>
-          item.plates.some(
-            (plate) =>
-              plate.pacbio_run_id && plate.plate_number && plate.sequencing_kit_box_barcode,
-          ),
-        ),
-      ).toBeTruthy()
     })
   })
 })
