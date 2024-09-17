@@ -46,9 +46,9 @@ const createWorkflowDropdownOptions = (pipelines) => {
  */
 const createWorkflowOptions = (workflowSteps) => {
   return workflowSteps.reduce((options, step) => {
-    options[step.code] = { stage: step.stage, code: step.code };
-    return options;
-  }, {});
+    options[step.code] = { stage: step.stage, code: step.code }
+    return options
+  }, {})
 }
 
 /**
