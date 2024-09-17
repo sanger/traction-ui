@@ -261,7 +261,7 @@ const onReset = () => {
 const fetchResources = async () => {
   const { printers, fetchPrinters, fetchWorkflows, pipelines } = printingStore
   const responses = await Promise.all([
-    printers.length === 0 ? fetchPrinters() : { success: true, errors: [] },
+    Object.keys(printers).length === 0 ? fetchPrinters() : { success: true, errors: [] },
     pipelines.workflows.length === 0 || pipelines.steps.length === 0
       ? fetchWorkflows()
       : { success: true, errors: [] },

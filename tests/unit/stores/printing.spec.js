@@ -37,8 +37,8 @@ describe('usePrintingStore', () => {
     describe('#workflows', () => {
       it('should return workflows', async () => {
         const store = usePrintingStore()
-        store.resources.workflows = workflowFactory.storeData
-        expect(store.workflows).toEqual(Object.values(store.resources.workflows))
+        store.resources.pipelines = workflowFactory.storeData
+        expect(store.pipelines).toEqual(workflowFactory.storeData)
       })
     })
   })
@@ -90,7 +90,7 @@ describe('usePrintingStore', () => {
         rootStore.api.v2 = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
-        expect(store.resources.workflows).toEqual(workflowFactory.storeData)
+        expect(store.resources.pipelines).toEqual(workflowFactory.storeData)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
@@ -107,7 +107,7 @@ describe('usePrintingStore', () => {
         rootStore.api.v2 = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
-        expect(store.resources.workflows).toEqual([])
+        expect(store.resources.pipelines).toEqual({ workflows: [], steps: {} })
         expect(success).toBeFalsy()
       })
     })
