@@ -22,42 +22,32 @@ const byAttribute = (objects, attribute) => {
  * @example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
  */
-const createWorkflowDropdownOptions = (WorkflowList) => {
-  return WorkflowList.map((item) => ({
-    label: item.workflow,
-    options: item.options.map(({ text, value }) => ({
-      text,
-      value,
-    })),
-  })).concat([{ text: 'No suffix', value: null }])
+const createWorkflowDropdownOptions = (pipelines) => {
+  return pipelines.workflows
+    .map((workflow) => ({
+      label: workflow.name,
+      options: workflow.workflow_steps.map((stepId) => {
+        const { code, stage } = pipelines.steps[stepId]
+        return {
+          text: code + ' - ' + stage,
+          value: code,
+        }
+      }),
+    }))
+    .concat([{ text: 'No suffix', value: null }])
 }
 
 /**
- * @param {Array}  {[Object, ...]} WorkflowList
- * @returns {Object} e.g. { suffix: {options}, ...}
- */
-const workflowByOptions = (options) => {
-  return options.reduce((result, options) => {
-    return {
-      ...result,
-      [options.suffix]: options,
-    }
-  }, {})
-}
-
-/**
- * @param {Array} {[Object, ...]} WorkflowList
+ * @param {Array} {[Object, ...]} workflowSteps
  * @returns {Object} A list with the suffix as the key and the option as the value.
  * For each item Ignores the workflow and flattens all options into a single object
  * This allows for searching by suffix
- * example: { SF1: { ...option }, ...}
+ * example: { SF1: {stage: 'stage x', code: 'SF1' }, ...}
  */
-const createWorkflowOptions = (WorkflowList) => {
-  return WorkflowList.reduce((result, { options }) => {
-    return {
-      ...result,
-      ...workflowByOptions(options),
-    }
+const createWorkflowOptions = (workflowSteps) => {
+  return workflowSteps.reduce((options, step) => {
+    options[step.code] = { stage: step.stage, code: step.code }
+    return options
   }, {})
 }
 
@@ -66,7 +56,7 @@ const createWorkflowOptions = (WorkflowList) => {
  */
 const NullWorkflowItem = {
   stage: '',
-  suffix: null,
+  code: null,
   text: null,
   value: null,
   workflow: null,
@@ -117,7 +107,7 @@ const createWorkflowBarcodeItemList = (workflowListType) => {
   const {
     sourceBarcodeList,
     date,
-    workflowItem: { stage, suffix },
+    workflowItem: { stage, code },
     numberOfLabels,
   } = workflowListType
 
@@ -129,11 +119,11 @@ const createWorkflowBarcodeItemList = (workflowListType) => {
   return sourceBarcodeList.flatMap((sourceBarcode) => {
     // if numberOfLabels is empty we just want to return a single item with suffix
     if (numberList.length === 0) {
-      return WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix] })
+      return WorkflowItemType({ sourceBarcode, date, stage, suffixes: [code] })
     } else {
       // if numberList is filled return a WorkflowItemType for each one
       return numberList.map((number) =>
-        WorkflowItemType({ sourceBarcode, date, stage, suffixes: [suffix], number }),
+        WorkflowItemType({ sourceBarcode, date, stage, suffixes: [code], number }),
       )
     }
   })

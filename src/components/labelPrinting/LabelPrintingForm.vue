@@ -53,7 +53,7 @@
             </div>
           </fieldset>
 
-          <DataFetcher :fetcher="fetchPrinters">
+          <DataFetcher :fetcher="fetchResources">
             <fieldset>
               <traction-heading level="3" show-border>Choice of Printer</traction-heading>
               <traction-heading level="5">Select label type</traction-heading>
@@ -131,7 +131,6 @@ import {
   createWorkflowPlateBarcodeLabel,
   NullWorkflowItem,
 } from '@/lib/LabelPrintingHelpers.js'
-import WorkflowList from '@/config/WorkflowList.json'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
 
@@ -149,9 +148,15 @@ const labelOptions = reactive({ suffix: '', labelTypeKey: 'tube2d' }) // label o
 
 let printJob = reactive(PrintJobType()) // Create a reactive for the print job
 
-const workflowOptions = reactive(createWorkflowOptions(WorkflowList)) // Create a reactive for the workflow options
+//Create a review for the barcode to be printed
+const workflowOptions = computed(() => {
+  return createWorkflowOptions(Object.values(printingStore.pipelines.steps))
+})
 
-const workflowDropdownOptions = reactive(createWorkflowDropdownOptions(WorkflowList)) // Create a reactive for the workflow dropdown options
+//Create the workflow dropdown options
+const workflowDropdownOptions = computed(() => {
+  return createWorkflowDropdownOptions(printingStore.pipelines)
+})
 
 /**
  * Creates a map of functions to create labels
@@ -200,7 +205,7 @@ const labelType = computed(() => {
 const workflowBarcodeItems = computed(() => {
   const date = getCurrentDate()
   // without this we get an undefined error
-  const workflowItem = workflowOptions[labelOptions.suffix] || NullWorkflowItem
+  const workflowItem = workflowOptions.value[labelOptions.suffix] || NullWorkflowItem
 
   // it is possible for there to be no barcodes so we need to add a guard
   // we filter to remove any nulls
@@ -250,15 +255,21 @@ const onReset = () => {
   })
 }
 
-// fetch printers
-// if no printers are in the store, fetch them
+// if no printers or workflows in the store, fetch them
 // if there are printers in the store, return success prevents error in DataFetcher
 // @returns {Promise} - Promise
-const fetchPrinters = async () => {
-  if (printingStore.printers().length === 0) {
-    return await printingStore.fetchPrinters()
-  } else {
-    return { success: true }
-  }
+const fetchResources = async () => {
+  const { printers, fetchPrinters, fetchWorkflows, pipelines } = printingStore
+  const responses = await Promise.all([
+    Object.keys(printers).length === 0 ? fetchPrinters() : { success: true, errors: [] },
+    pipelines.workflows.length === 0 || pipelines.steps.length === 0
+      ? fetchWorkflows()
+      : { success: true, errors: [] },
+  ])
+
+  const success = responses.every((response) => response.success)
+  const errors = responses.flatMap((response) => response.errors)
+
+  return { success, errors }
 }
 </script>
