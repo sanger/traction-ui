@@ -1,5 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 import PrinterFactory from '../../factories/PrinterFactory.js'
+import WorkflowFactory from '../../factories/WorkflowFactory.js'
 
 describe('Label Printing page', () => {
   beforeEach(() => {
@@ -11,9 +12,17 @@ describe('Label Printing page', () => {
       })
     })
 
+    cy.wrap(WorkflowFactory()).as('workflowFactory')
+    cy.get('@workflowFactory').then((workflowFactory) => {
+      cy.intercept('GET', '/v1/workflows?include=workflow_steps', {
+        statusCode: 200,
+        body: workflowFactory.content,
+      })
+    })
+
     cy.visit('#/label-printing')
     cy.get('#barcode-input').type('aBarcode')
-    cy.get('#suffix-selection').select('OPLX - Pool')
+    cy.get('#suffix-selection').select('BEXT - Labelling')
     cy.get('#number-of-labels').type(3)
     cy.get('@printerFactory').then((printerFactory) => {
       cy.get('#printer-choice').select(printerFactory.storeData.selected.printer.name)
@@ -31,9 +40,9 @@ describe('Label Printing page', () => {
     cy.get('#submit-button').click()
 
     cy.contains('Preview Barcodes')
-    cy.contains('aBarcode-OPLX-1')
-    cy.contains('aBarcode-OPLX-2')
-    cy.contains('aBarcode-OPLX-3')
+    cy.contains('aBarcode-BEXT-1')
+    cy.contains('aBarcode-BEXT-2')
+    cy.contains('aBarcode-BEXT-3')
   })
 
   it('PMB request is successful', () => {

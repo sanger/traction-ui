@@ -19,6 +19,9 @@ const config = [
       {
         name: 'printers',
       },
+      {
+        name: 'workflows',
+      },
     ],
     pipelines: [
       {
