@@ -209,14 +209,14 @@ describe('createRequest', () => {
     describe('delete', () => {
       it('single', async () => {
         const request = createRequest({ ...attributes })
-        const response = await request.destroy(1)
+        const response = await request.destroy(['1'])
         expect(axios.delete).toBeCalled()
         expect(response).toEqual([mockResponse])
       })
 
       it('multiple', async () => {
         const request = createRequest({ ...attributes })
-        const promises = await request.destroy(1, 2, 3, 4, 5)
+        const promises = await request.destroy(['1', '2', '3', '4', '5'])
         for (const promise of promises) {
           const response = await promise
           expect(axios.delete).toBeCalled()
