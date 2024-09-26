@@ -131,7 +131,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @param Array or String or Integer ids - ids of records to destroy
    * @return [AxiosPromise] - array of promises
    */
-  const destroy = (...ids) => {
+  const destroy = (ids) => {
     return ids.map((id) => execute('delete', `${resource}/${id}`))
   }
 
