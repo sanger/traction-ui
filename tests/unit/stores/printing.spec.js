@@ -4,8 +4,10 @@ import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
+import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
 
 const printerFactory = PrinterFactory()
+const workflowFactory = WorkflowFactory()
 
 describe('usePrintingStore', () => {
   beforeEach(() => {
@@ -30,6 +32,13 @@ describe('usePrintingStore', () => {
         const store = usePrintingStore()
         store.resources.printers = printerFactory.storeData.printers
         expect(store.printers('tube').length).toEqual(4)
+      })
+    })
+    describe('#workflows', () => {
+      it('should return workflows', async () => {
+        const store = usePrintingStore()
+        store.resources.pipelines = workflowFactory.storeData
+        expect(store.pipelines).toEqual(workflowFactory.storeData)
       })
     })
   })
@@ -67,6 +76,38 @@ describe('usePrintingStore', () => {
 
         const { success } = await store.fetchPrinters()
         expect(store.resources.printers).toEqual({})
+        expect(success).toBeFalsy()
+      })
+    })
+
+    describe('#fetchWorkflows', () => {
+      it('successful', async () => {
+        const rootStore = useRootStore()
+        const store = usePrintingStore()
+        const get = vi.fn()
+
+        get.mockResolvedValue(workflowFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { workflows: { get } } }
+        const { success } = await store.fetchWorkflows()
+
+        expect(store.resources.pipelines).toEqual(workflowFactory.storeData)
+        expect(success).toBeTruthy()
+        expect(get).toHaveBeenCalled()
+      })
+
+      it('unsuccessful', async () => {
+        const rootStore = useRootStore()
+        const store = usePrintingStore()
+        const get = vi.fn()
+        get.mockRejectedValue({
+          error: ['Internal Server Error'],
+          status: 500,
+          ok: false,
+        })
+        rootStore.api.v2 = { traction: { workflows: { get } } }
+        const { success } = await store.fetchWorkflows()
+
+        expect(store.resources.pipelines).toEqual({ workflows: [], steps: {} })
         expect(success).toBeFalsy()
       })
     })

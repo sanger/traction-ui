@@ -1,0 +1,60 @@
+name: Deploy JSDoc to GitHub Pages
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'develop'
+  workflow_dispatch:
+
+permissions:
+  pages: write      # Allow writing to the GitHub Pages
+  id-token: write   # Allow OIDC token to be issued
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+            node-version-file: '.nvmrc'
+            cache: 'npm'
+      - name: Install dependencides
+        run: >-
+            npm ci --legacy-peer-deps
+      - name: Run jsdoc
+        run: |
+            npm run jsdoc
+            mkdir -p docs/public
+            cp -r public docs/public
+            cp public/favicon.ico docs/
+            cp -r style_guide.md docs/style_guide.md
+            
+      - name: Install Python Dependencies
+        run: |
+          pip install mkdocs
+          pip install mkdocs-material
+          pip install mkdocs-glightbox
+          pip install mkdocs-git-revision-date-localized-plugin
+
+      - name: Generate docs
+        run: |
+          ./generate-docs.sh
+
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: docs  # Path to the folder containing the JS documentation (default is 'docs')
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # The deploy job will only run if the build job is successful
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4.0.5

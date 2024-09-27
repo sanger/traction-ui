@@ -51,9 +51,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 vi.mock('swrv', () => ({
   default: vi.fn(() => ({
     data: {
-      features: {
-        y24_154_enable_used_volume_display_pool_edit: { enabled: true },
-      },
+      features: {},
     },
   })),
 }))

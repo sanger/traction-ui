@@ -291,7 +291,7 @@ describe('PacbioLabwareSelectedList', () => {
           expect.objectContaining({
             request: '241',
             selected: false,
-            source_id: '1',
+            source_id: '241',
           }),
         )
       })
@@ -301,7 +301,7 @@ describe('PacbioLabwareSelectedList', () => {
         expect(store.selectRequestInSource).toHaveBeenCalledWith(
           expect.objectContaining({
             request: '40',
-            source_id: '4722',
+            source_id: '40',
             selected: true,
           }),
         )

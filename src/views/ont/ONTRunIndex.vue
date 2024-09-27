@@ -41,10 +41,8 @@
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
-import useQueryParams from '@/composables/useQueryParams'
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
+import useQueryParams from '@/composables/useQueryParams.js'
+import useOntRootStore from '@/stores/ontRoot.js'
 
 export default {
   name: 'ONTRuns',
@@ -55,7 +53,8 @@ export default {
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const ontRootStore = useOntRootStore() // Initialize the store here
+    return { fetchWithQueryParams, ontRootStore }
   },
   data() {
     return {
@@ -88,7 +87,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['runs']),
+    runs() {
+      return this.ontRootStore.runs
+    },
   },
   methods: {
     generateId(text, id) {
@@ -100,9 +101,8 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
-    ...mapActions(['fetchOntRuns']),
     async fetchRuns() {
-      return await this.fetchWithQueryParams(this.fetchOntRuns, this.filterOptions)
+      return await this.fetchWithQueryParams(this.ontRootStore.fetchOntRuns, this.filterOptions)
     },
   },
 }
