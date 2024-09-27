@@ -200,7 +200,7 @@ const handleLibraryDelete = async () => {
       showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
       // Refetch the updated libraries
       try {
-        await librariesStore.fetchLibraries()
+        await fetchLibraries()
       } catch (error) {
         showAlert('Failed to get libraries: ' + error.message, 'danger')
       }
