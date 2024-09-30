@@ -204,8 +204,7 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockCreate })
 
         const request = createRequest({ ...attributes })
-        const queryParametersType = QueryParametersType({ include: 'tube' })
-        const response = await request.create({ data, queryParametersType })
+        const response = await request.create({ data, include: 'tube' })
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests?include=tube', {
           method: 'POST',
@@ -240,8 +239,7 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
-        const queryParametersType = QueryParametersType({ include: 'sample' })
-        const response = await request.find({ ...data, queryParametersType })
+        const response = await request.find({ ...data, include: 'sample' })
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1?include=sample', {
           method: 'GET',
