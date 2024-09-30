@@ -1,5 +1,7 @@
 import { extractLocationsForLabwares } from './helpers.js'
+import { FetchWrapper } from '@/api/FetchWrapper.js'
 
+const labwhereFetch = new FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
  *
@@ -21,31 +23,14 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
   if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
     return { success: false, errors: ['No barcodes provided'], data: {} }
   }
-  try {
-    const rawResponse = await fetch(
-      `${import.meta.env['VITE_LABWHERE_BASE_URL']}/api/labwares/searches`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          barcodes: [...labwhereBarcodes],
-        }),
-      },
-    )
-    const response = await rawResponse.json()
-
-    if (!rawResponse.ok) {
-      return { success: false, errors: response.errors, data: {} }
-    }
-
-    const locations = extractLocationsForLabwares(response, labwhereBarcodes)
-    return { success: true, errors: [], data: locations }
-  } catch (error) {
-    // If there is a failure when accessing LabWhere, return a failed response.
-    return { success: false, errors: [`Failed to access LabWhere: ${error.message}`], data: {} }
+  const response = await labwhereFetch.post(
+    '/api/labwares/searches',
+    JSON.stringify({ barcodes: [...labwhereBarcodes] }),
+  )
+  if (response.success) {
+    response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
   }
+  return response
 }
 
 export { getLabwhereLocations }
