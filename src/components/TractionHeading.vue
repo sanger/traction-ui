@@ -5,6 +5,7 @@
         <slot />
       </div>
     </div>
+    <traction-muted-text class="flex justify-left">{{ description }}</traction-muted-text>
   </header>
 </template>
 <script>
@@ -21,6 +22,11 @@ export default {
     },
     showBorder: Boolean,
     shadow: Boolean,
+    description : {
+      type: String,
+      required: false,
+      default: '',
+    },
     className: {
       type: String,
       required: false,
