@@ -115,8 +115,11 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @return Promise
    * Execute a get query with an id
    */
-  const find = ({ id = '', include='', queryParametersType = QueryParametersType({include}) } = {}) => {
-    debugger
+  const find = ({
+    id = '',
+    include = '',
+    queryParametersType = QueryParametersType({ include }),
+  } = {}) => {
     return execute('GET', `${resource}/${id}${buildQuery(queryParametersType)}`)
   }
 
@@ -126,7 +129,11 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @return Promise
    * Execute a create
    */
-  const create = ({ data,  include='', queryParametersType = QueryParametersType({include}) }) => {
+  const create = ({
+    data,
+    include = '',
+    queryParametersType = QueryParametersType({ include }),
+  }) => {
     return execute('POST', `${resource}${buildQuery(queryParametersType)}`, data)
   }
 
