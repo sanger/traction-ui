@@ -42,7 +42,7 @@ describe('ONT Runs view', () => {
         body: ontRunFactory.content,
       })
     })
-  
+
     cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',
     })
