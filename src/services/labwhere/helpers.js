@@ -10,7 +10,9 @@
 const extractLocationsForLabwares = (labwares, labwareBarcodes) => {
   const locationMap = {}
   labwareBarcodes.forEach((barcode) => {
-    locationMap[barcode] = labwares.find((labware) => labware.barcode === barcode)?.location || {}
+    locationMap[barcode] = labwares.length
+      ? labwares.find((labware) => labware.barcode === barcode)?.location || {}
+      : {}
   })
   return locationMap
 }
