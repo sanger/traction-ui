@@ -1,7 +1,9 @@
 import { getLabwhereLocations } from '@/services/labwhere/client.js'
+import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 
 describe('getLabwhereLocations', () => {
   const mockFetch = vi.fn()
+  const labwhereLocationsFactory = LabwhereLocationsFactory()
 
   beforeEach(() => {
     global.fetch = mockFetch
@@ -39,19 +41,11 @@ describe('getLabwhereLocations', () => {
     const mockResponse = [
       {
         barcode: 'barcode1',
-        location: {
-          id: '1',
-          name: 'Location 1',
-          barcode: 'location-1-1',
-        },
+        location: labwhereLocationsFactory.content[0],
       },
       {
         barcode: 'barcode2',
-        location: {
-          id: '2',
-          name: 'Location 2',
-          barcode: 'location-2-1',
-        },
+        location: labwhereLocationsFactory.content[1],
       },
     ]
     const expectedData = {
