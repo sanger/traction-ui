@@ -9,6 +9,7 @@
           <TractionLink name="Label Printing" link="/label-printing" view-type="2" />
           <TractionLink name="QC Results Upload" link="/qc-results-upload" view-type="2" />
           <TractionLink name="Reception" link="/reception" view-type="2" />
+          <TractionLink name="Labwhere Reception" link="/labwhere-reception" view-type="2" />
         </div>
       </div>
     </div>
