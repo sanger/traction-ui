@@ -34,7 +34,7 @@
     "pinia": "^2.2.2",
     "postcss": "^8.4.47",
     "swrv": "^1.0.4",
-    "tailwindcss": "3.4.12",
+    "tailwindcss": "3.4.13",
     "vite": "^5.4.7",
     "vue": "^3.5.8",
     "vue-router": "^4.4.5",
