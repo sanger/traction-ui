@@ -306,7 +306,13 @@ const splitDataByParent = ({
 }
 
 const find = ({ data, first = 1 } = {}) => {
-  return data.data.slice(0, first)
+  const foundData = data.data.slice(0, first)
+
+  const included = foundData.map(({ relationships }) => {
+    return extractRelationships(relationships, data.included)
+  })
+
+  return { data: foundData, included }
 }
 
 export {
