@@ -42,10 +42,7 @@ describe('ONT Runs view', () => {
         body: ontRunFactory.content,
       })
     })
-    cy.intercept('v1/ont/pools?filter[barcode]=TRAC-1-2', {
-      statusCode: 200,
-      fixture: 'tractionOntPool.json',
-    })
+  
     cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',
     })
