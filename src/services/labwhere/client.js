@@ -1,5 +1,5 @@
 import { extractLocationsForLabwares } from './helpers.js'
-import { FetchWrapper } from '@/api/fetchWrapper.js'
+import { FetchWrapper } from '@/api/FetchWrapper.js'
 
 const labwhereFetch = new FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
 /**
