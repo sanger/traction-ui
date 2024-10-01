@@ -97,7 +97,7 @@ describe('client', () => {
       expect(result).toEqual({ success: false, errors: ['Some error'] })
     })
 
-    it.only('should return success if fetch is successful', async () => {
+    it('should return success if fetch is successful', async () => {
       const mockResponse = { success: true, errors: [], message: 'Labware stored to location 1' }
       mockFetch.mockResolvedValue({
         ok: true,
