@@ -9,8 +9,13 @@
   </header>
 </template>
 <script>
+
+import TractionMutedText from '@/components/shared/TractionMutedText.vue'
 export default {
   name: 'TractionHeading',
+  components: {
+    TractionMutedText,
+  },
   props: {
     /**
      * Level specifies the size of the heading text displayed.
