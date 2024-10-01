@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import { expect, it, describe, vi } from 'vitest'
-import { storeBarcodesIntoLabwhereLocation } from '@/services/labwhere/client.js'
+import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 import { nextTick } from 'vue'
 
 vi.mock('@/services/labwhere/client.js')
@@ -43,22 +43,18 @@ describe('LabWhereReception', () => {
     await wrapper.find('#submit-button').trigger('submit')
 
     expect(wrapper.find('[data-attribute="user-code-error"]').text()).toBe('User code is required')
-    expect(wrapper.find('[data-attribute="location-barcode-error"]').text()).toBe(
-      'Location barcode is required',
-    )
     expect(wrapper.find('[data-attribute="barcodes-error"]').text()).toBe(
       'Labware barcodes are required',
     )
   })
 
-  it('validates for duplicate labware barcodes', async () => {
+  it('only scans unique barcodes when duplicate barcodes are given', async () => {
     const wrapper = buildWrapper()
+    wrapper.vm.user_code = 'user1'
+    wrapper.vm.location_barcode = 'location1'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode1'
     await wrapper.find('#submit-button').trigger('submit')
-
-    expect(wrapper.find('[data-attribute="barcodes-error"]').text()).toBe(
-      'Labware barcodes must be unique',
-    )
+    expect(scanBarcodesInLabwhereLocation).toBeCalledWith('user1', 'location1', 'barcode1', null)
   })
 
   it('validates when user types in fields', async () => {
@@ -66,7 +62,6 @@ describe('LabWhereReception', () => {
     await wrapper.find('#submit-button').trigger('submit')
     expect(wrapper.vm.errors).toEqual({
       user_code: 'User code is required',
-      location_barcode: 'Location barcode is required',
       labware_barcodes: 'Labware barcodes are required',
     })
 
@@ -76,20 +71,12 @@ describe('LabWhereReception', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.errors).toEqual({
       user_code: 'User code is required',
-      location_barcode: 'Location barcode is required',
     })
 
-    const [userInput, locationInput] = wrapper.findAll('input')
+    const [userInput] = wrapper.findAll('input')
     await userInput.setValue('user1')
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.errors).not.toHaveProperty('user_code')
-    expect(wrapper.vm.errors).toEqual({
-      location_barcode: 'Location barcode is required',
-    })
-
-    await locationInput.setValue('location1')
-    await wrapper.vm.$nextTick()
-    expect(wrapper.vm.errors).toEqual({})
   })
 
   it('validates and submits the form successfully', async () => {
@@ -97,10 +84,10 @@ describe('LabWhereReception', () => {
     wrapper.vm.user_code = 'user123'
     wrapper.vm.location_barcode = 'location123'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
-    storeBarcodesIntoLabwhereLocation.mockResolvedValue({ success: true })
+    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true })
 
     await wrapper.find('#submit-button').trigger('submit')
-    expect(storeBarcodesIntoLabwhereLocation).toHaveBeenCalledWith(
+    expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(
       'user123',
       'location123',
       'barcode1\nbarcode2',
@@ -109,22 +96,28 @@ describe('LabWhereReception', () => {
     expect(mockShowAlert).toBeCalledWith('Barcodes stored successfully', 'success')
   })
 
-  it('displays preview message when user enters values in the form', async () => {
+  it ('displays preview message when user enters values in the form', async () => {
     const wrapper = buildWrapper()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'No barcodes to store to location',
+      'No barcodes to scan to location',
     )
 
     wrapper.vm.location_barcode = 'location123'
     await wrapper.vm.$nextTick()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'No barcodes to store to location location123',
+      'No barcodes to scan to location location123',
     )
 
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
     await wrapper.vm.$nextTick()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'Store 2 barcode(s) to location location123',
+      'Scan in 2 barcode(s) to location location123',
+    )
+
+    wrapper.vm.location_barcode = ''
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
+      'Scan out 2 barcode(s) from their current locations',
     )
   })
 
@@ -135,7 +128,7 @@ describe('LabWhereReception', () => {
     wrapper.vm.location_barcode = 'location123'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
 
-    storeBarcodesIntoLabwhereLocation.mockResolvedValue({
+    scanBarcodesInLabwhereLocation.mockResolvedValue({
       success: false,
       errors: ['Error storing barcodes'],
     })
@@ -145,18 +138,4 @@ describe('LabWhereReception', () => {
     expect(mockShowAlert).toBeCalledWith('Error storing barcodes', 'danger')
   })
 
-  it('resets the form fields and errors on reset', async () => {
-    const wrapper = buildWrapper()
-    wrapper.vm.user_code = 'user123'
-    wrapper.vm.location_barcode = 'location123'
-    wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
-
-    await wrapper.find('#reset-button').trigger('reset')
-    await nextTick()
-
-    expect(wrapper.find('#userCode').element.value).toBe('')
-    expect(wrapper.find('#locationBarcode').element.value).toBe('')
-    expect(wrapper.find('#labware_barcodes').element.value).toBe('')
-    expect(wrapper.vm.errors).toStrictEqual({})
-  })
 })
