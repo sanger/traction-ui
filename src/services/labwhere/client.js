@@ -35,6 +35,11 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
 
 /**
  * Stores labware barcodes into a specified location in LabWhere.
+ * 
+ * The content type is set to 'application/x-www-form-urlencoded' to use 'safe' headers for the cross-origin request instead of 'application/json'.
+ * This is necessary for the POST request to be successful; otherwise, it will be blocked by CORS policy due to the pre-flight request check performed on non-safe content types.
+ * Refer to https://javascript.info/fetch-crossorigin for more information.
+
  *
  * @param {string} userCode - The user code or swipecard.
  * @param {string} locationBarcode - The barcode of the location where labware will be stored.

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import LabWhereReception from '@/views/LabWhereReception.vue'
+import LabwhereReception from '@/views/LabwhereReception.vue'
 import { expect, it, describe, vi } from 'vitest'
 import { storeBarcodesIntoLabwhereLocation } from '@/services/labwhere/client.js'
 import { nextTick } from 'vue'
@@ -15,7 +15,7 @@ vi.mock('@/composables/useAlert', () => ({
 
 describe('LabWhereReception', () => {
   const buildWrapper = () => {
-    return mount(LabWhereReception)
+    return mount(LabwhereReception)
   }
 
   it('has a user code input field', () => {
