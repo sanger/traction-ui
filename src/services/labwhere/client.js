@@ -34,7 +34,7 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
 }
 
 /**
- * Stores labware barcodes into a specified location in LabWhere.
+ * Scan labware barcodes into a specified location in LabWhere.
  * 
  * The content type is set to 'application/x-www-form-urlencoded' to use 'safe' headers for the cross-origin request instead of 'application/json'.
  * This is necessary for the POST request to be successful; otherwise, it will be blocked by CORS policy due to the pre-flight request check performed on non-safe content types.
@@ -52,7 +52,7 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
  * const locationBarcode = 'location123';
  * const labwareBarcodes = 'barcode1\nbarcode2';
  * const startPosition = 1;
- * storeBarcodesIntoLabwhereLocation(userCode, locationBarcode, labwareBarcodes, startPosition).then(response => {
+ * scanBarcodesInLabwhereLocation(userCode, locationBarcode, labwareBarcodes, startPosition).then(response => {
  *   if (response.success) {
  *     console.log('Barcodes stored successfully');
  *   } else {
@@ -60,13 +60,13 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
  *   }
  * });
  */
-const storeBarcodesIntoLabwhereLocation = async (
+const scanBarcodesInLabwhereLocation = async (
   userCode,
   locationBarcode,
   labwareBarcodes,
   startPosition,
 ) => {
-  if (!userCode || !labwareBarcodes || !locationBarcode) {
+  if (!userCode || !labwareBarcodes ) {
     return { success: false, errors: ['Missing required parameters'] }
   }
 
@@ -84,7 +84,8 @@ const storeBarcodesIntoLabwhereLocation = async (
     new URLSearchParams(params).toString(),
     'application/x-www-form-urlencoded',
   )
-  return { success: response.success, errors: response.errors }
+  debugger
+  return { success: response.success, errors: response.errors , message:response.data.message}
 }
 
-export { getLabwhereLocations, storeBarcodesIntoLabwhereLocation }
+export { getLabwhereLocations, scanBarcodesInLabwhereLocation }
