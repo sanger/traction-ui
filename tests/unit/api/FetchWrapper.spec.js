@@ -35,6 +35,29 @@ describe('FetchWrapper', () => {
     expect(result).toEqual({ success: true, errors: [], data: mockResponse })
   })
 
+  it('should send a POST request with custom content type and return success response', async () => {
+    const endpoint = '/test-endpoint'
+    const body = 'key=value'
+    const contentType = 'application/x-www-form-urlencoded'
+    const mockResponse = { data: 'test data' }
+
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => mockResponse,
+    })
+
+    const result = await fetchWrapper.post(endpoint, body, contentType)
+
+    expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': contentType,
+      },
+      body,
+    })
+    expect(result).toEqual({ success: true, errors: [], data: mockResponse })
+  })
+
   it('should return error response when fetch fails', async () => {
     const endpoint = '/test-endpoint'
     const body = JSON.stringify({ key: 'value' })
