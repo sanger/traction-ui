@@ -24,7 +24,7 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRun from '@/views/ont/ONTRun.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import LabwhereReception from './views/LabwhereReception.vue'
+import LabWhereReception from '@/views/LabWhereReception.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -58,7 +58,7 @@ const router = createRouter({
       path: '/labwhere-reception',
       name: 'LabwhereReception',
       meta: { page: 'Labwhere Reception' },
-      component: LabwhereReception,
+      component: LabWhereReception,
     },
     {
       path: '/label-printing',
