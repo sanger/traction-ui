@@ -66,7 +66,7 @@ const scanBarcodesInLabwhereLocation = async (
   labwareBarcodes,
   startPosition,
 ) => {
-  if (!userCode || !labwareBarcodes ) {
+  if (!userCode || !labwareBarcodes) {
     return { success: false, errors: ['Missing required parameters'] }
   }
 
@@ -84,8 +84,7 @@ const scanBarcodesInLabwhereLocation = async (
     new URLSearchParams(params).toString(),
     'application/x-www-form-urlencoded',
   )
-  debugger
-  return { success: response.success, errors: response.errors , message:response.data.message}
+  return { success: response.success, errors: response.errors, message: response.data.message }
 }
 
 export { getLabwhereLocations, scanBarcodesInLabwhereLocation }

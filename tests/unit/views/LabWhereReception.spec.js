@@ -2,7 +2,6 @@ import { mount } from '@vue/test-utils'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import { expect, it, describe, vi } from 'vitest'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
-import { nextTick } from 'vue'
 
 vi.mock('@/services/labwhere/client.js')
 
@@ -96,7 +95,7 @@ describe('LabWhereReception', () => {
     expect(mockShowAlert).toBeCalledWith('Barcodes stored successfully', 'success')
   })
 
-  it ('displays preview message when user enters values in the form', async () => {
+  it('displays preview message when user enters values in the form', async () => {
     const wrapper = buildWrapper()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
       'No barcodes to scan to location',
@@ -137,5 +136,4 @@ describe('LabWhereReception', () => {
 
     expect(mockShowAlert).toBeCalledWith('Error storing barcodes', 'danger')
   })
-
 })

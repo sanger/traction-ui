@@ -1,7 +1,4 @@
-import {
-  getLabwhereLocations,
-  scanBarcodesInLabwhereLocation,
-} from '@/services/labwhere/client.js'
+import { getLabwhereLocations, scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 
 describe('client', () => {
@@ -101,7 +98,7 @@ describe('client', () => {
     })
 
     it.only('should return success if fetch is successful', async () => {
-      const mockResponse = { success: true, errors: [], message:"Labware stored to location 1" }
+      const mockResponse = { success: true, errors: [], message: 'Labware stored to location 1' }
       mockFetch.mockResolvedValue({
         ok: true,
         json: async () => mockResponse,
@@ -123,12 +120,7 @@ describe('client', () => {
         json: async () => mockResponse,
       })
 
-      const result = await scanBarcodesInLabwhereLocation(
-        'user123',
-        'location123',
-        'barcode1',
-        1,
-      )
+      const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1)
       expect(result).toEqual(mockResponse)
     })
   })

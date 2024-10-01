@@ -2,7 +2,9 @@
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
     <traction-form @submit="scanBarcodesToLabwhere">
       <fieldset>
-        <traction-heading level="4" show-border description="Enter user barcode/swipecard">User barcode or swipecard</traction-heading>
+        <traction-heading level="4" show-border description="Enter user barcode/swipecard"
+          >User barcode or swipecard</traction-heading
+        >
         <traction-field-error data-attribute="user-code-error" :error="errors.user_code">
           <traction-input
             id="userCode"
@@ -14,22 +16,27 @@
       </fieldset>
 
       <fieldset>
-        <traction-heading level="4" show-border description="Scan location barcode (Leave blank to scan out)"
+        <traction-heading
+          level="4"
+          show-border
+          description="Scan location barcode (Leave blank to scan out)"
           >Location barcode</traction-heading
         >
         <traction-field-error
           data-attribute="location-barcode-error"
           :error="errors.location_barcode"
         >
-          <traction-input
-            id="locationBarcode"
-            v-model="location_barcode"
-            class="flex w-full"
+          <traction-input id="locationBarcode" v-model="location_barcode" class="flex w-full"
         /></traction-field-error>
       </fieldset>
 
       <fieldset>
-        <traction-heading level="4" show-border description="Enter position (Only necessary for locations with coordinates)">Start position</traction-heading>
+        <traction-heading
+          level="4"
+          show-border
+          description="Enter position (Only necessary for locations with coordinates)"
+          >Start position</traction-heading
+        >
         <traction-input id="startPosition" v-model="start_position" type="number" />
       </fieldset>
 
@@ -73,7 +80,7 @@
  * This component provides a form interface for users to scan labware barcodes into a specified location or to scan barcodes out of their parent location in Labwhere.
  * Scanning in requires a user barcode, location barcode, and labware barcodes.
  * For scanning out, the location barcode should be blank and it requires a user barcode and labware barcodes only.
- * 
+ *
  * The form includes fields for:
  * - User barcode or swipecard
  * - Location barcode
@@ -118,7 +125,6 @@ const validateUserCode = () => {
   }
 }
 
-
 /**
  * Validate labware barcodes
  */
@@ -146,19 +152,19 @@ const validateForm = () => {
 /**
  * Computed property to get the array of unique labware barcodes.
  */
- const uniqueBarcodesArray = computed(() => {
+const uniqueBarcodesArray = computed(() => {
   return Array.from(
     new Set(
       labware_barcodes.value
         .split('\n')
         .map((barcode) => barcode.trim())
-        .filter((barcode) => barcode !== '')
-    )
+        .filter((barcode) => barcode !== ''),
+    ),
   )
 })
 
 /**
- * Store barcodes into labwhere location
+ * Scan barcodes into labwhere location
  *
  */
 const scanBarcodesToLabwhere = async () => {
@@ -171,8 +177,8 @@ const scanBarcodesToLabwhere = async () => {
         start_position.value,
       )
       if (response.success) {
-        const message = response.message??'Barcodes stored successfully'
-        showAlert( message, 'success')
+        const message = response.message ?? 'Barcodes stored successfully'
+        showAlert(message, 'success')
       } else {
         showAlert(response.errors.join('\n'), 'danger')
       }
@@ -188,10 +194,10 @@ const scanBarcodesToLabwhere = async () => {
 const confirmationText = computed(() => {
   const barcodeCount = uniqueBarcodesArray.value.length
   let text = ''
-  if(barcodeCount ===0) {
+  if (barcodeCount === 0) {
     text = `No barcodes to scan to location ${location_barcode.value}`
   } else {
-    if(location_barcode.value) {
+    if (location_barcode.value) {
       text = `Scan in ${barcodeCount} barcode(s) to location ${location_barcode.value}`
     } else {
       text = `Scan out ${barcodeCount} barcode(s) from their current locations`
