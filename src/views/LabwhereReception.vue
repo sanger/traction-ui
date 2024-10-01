@@ -83,6 +83,27 @@
 </template>
 
 <script setup>
+/**
+ * LabwhereReception Component
+ * 
+ * This component provides a form interface for users to store labware barcodes into a specified location in Labwhere.
+ * 
+ * The form includes fields for:
+ * - User barcode or swipecard
+ * - Location barcode
+ * - Start position (optional)
+ * - Labware barcodes
+ * 
+ * The component validates the input fields for 'User barcode', 'Location barcode' and 'Labware barcodes'
+ * and displays error messages for any invalid or missing data when the form is submitted or when the input fields are updated.
+ * The 'Start position' field is optional and does not require validation.
+ * 
+ * The form also provides a reset button to clear the form fields.
+ * The component also provides a preview section where users can review the barcodes to be stored before submission.
+ * 
+ * Upon successful validation, the form data is submitted to the Labwhere API to store the barcodes in the specified location.
+ * It displays a success message if the barcodes are stored successfully, or an error message if the submission fails.
+ */
 import { ref, reactive, computed } from 'vue'
 import { storeBarcodesIntoLabwhereLocation } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
@@ -93,14 +114,17 @@ import TractionInput from '@/components/shared/TractionInput.vue'
 import TractionButton from '@/components/shared/TractionButton.vue'
 import TractionLabel from '@/components/shared/TractionLabel.vue'
 
-const user_code = ref('')
-const location_barcode = ref('')
-const labware_barcodes = ref('')
-const start_position = ref(null)
+const user_code = ref('') // User code or swipecard
+const location_barcode = ref('') // Location barcode
+const labware_barcodes = ref('') // Labware barcodes which are scanned
+const start_position = ref(null) // Start position of the labware wwhich is optional
 const errors = reactive({}) // Object to store form validation errors
 
 const { showAlert } = useAlert()
 
+/**
+ * Validate user code
+ */
 const validateUserCode = () => {
   if (!user_code.value) {
     errors.user_code = 'User code is required'
@@ -109,6 +133,9 @@ const validateUserCode = () => {
   }
 }
 
+/**
+ * Validate location barcode
+ */
 const validateLocationBarcode = () => {
   if (!location_barcode.value) {
     errors.location_barcode = 'Location barcode is required'
@@ -117,6 +144,9 @@ const validateLocationBarcode = () => {
   }
 }
 
+/**
+ * Validate labware barcodes
+ */
 const validateLabwareBarcodes = () => {
   if (!labware_barcodes.value) {
     errors.labware_barcodes = 'Labware barcodes are required'
@@ -130,6 +160,10 @@ const validateLabwareBarcodes = () => {
   }
 }
 
+/**
+ * Validates the entire form.
+ * @returns {boolean} True if the form is valid, false otherwise.
+ */
 const validateForm = () => {
   resetErrors() // Clear previous errors
 
@@ -140,6 +174,9 @@ const validateForm = () => {
   return Object.keys(errors).length === 0
 }
 
+/**
+ * Computed property to get the array of labware barcodes.
+ */
 const barcodeArray = computed(() => {
   return labware_barcodes.value
     .split('\n')
@@ -147,6 +184,10 @@ const barcodeArray = computed(() => {
     .filter((barcode) => barcode !== '')
 })
 
+/**
+ * Store barcodes into labwhere location
+ * 
+ */
 const storeBarcodes = async () => {
   if (validateForm()) {
     try {
@@ -168,6 +209,9 @@ const storeBarcodes = async () => {
   }
 }
 
+/**
+ * Computed property to get the confirmation text.
+ */
 const confirmationText = computed(() => {
   const barcodeCount = barcodeArray.value.length
   return barcodeCount === 0
@@ -175,9 +219,16 @@ const confirmationText = computed(() => {
     : `Store ${barcodeCount} barcode(s) to location ${location_barcode.value}`
 })
 
+/**
+ * Reset the form errors.
+ */
 const resetErrors = () => {
   Object.keys(errors).forEach((key) => delete errors[key])
 }
+
+/**
+ * Reset the form fields and errors.
+ */
 const onReset = () => {
   user_code.value = ''
   location_barcode.value = ''

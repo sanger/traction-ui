@@ -33,6 +33,28 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
   return response
 }
 
+/**
+ * Stores labware barcodes into a specified location in LabWhere.
+ *
+ * @param {string} userCode - The user code or swipecard.
+ * @param {string} locationBarcode - The barcode of the location where labware will be stored.
+ * @param {string} labwareBarcodes - The barcodes of the labware to be stored, separated by newlines.
+ * @param {number|null} [startPosition=null] - The starting position for storing the labware (optional).
+ * @returns {Promise<{success: boolean, errors: string[]}>} - A promise that resolves to an object containing the success status, any errors, and the data.
+ *
+ * @example
+ * const userCode = 'user123';
+ * const locationBarcode = 'location123';
+ * const labwareBarcodes = 'barcode1\nbarcode2';
+ * const startPosition = 1;
+ * storeBarcodesIntoLabwhereLocation(userCode, locationBarcode, labwareBarcodes, startPosition).then(response => {
+ *   if (response.success) {
+ *     console.log('Barcodes stored successfully');
+ *   } else {
+ *     console.error('Errors:', response.errors);
+ *   }
+ * });
+ */
 const storeBarcodesIntoLabwhereLocation = async (userCode,locationBarcode,labwareBarcodes, startPosition) => {
 
   if(!userCode || !labwareBarcodes || !locationBarcode) {
