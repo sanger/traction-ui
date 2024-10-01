@@ -14,7 +14,7 @@
                 id="userCode"
                 v-model="user_code"
                 class="flex w-full"
-                @update:modelValue="validateUserCode"
+                @update:model-value="validateUserCode"
               />
             </traction-field-error>
           </fieldset>
@@ -31,9 +31,8 @@
                 id="locationBarcode"
                 v-model="location_barcode"
                 class="flex w-full"
-                @update:modelValue="validateLocationBarcode"
-              /></traction-field-error
-            >
+                @update:model-value="validateLocationBarcode"
+            /></traction-field-error>
           </fieldset>
 
           <fieldset>
@@ -85,22 +84,22 @@
 <script setup>
 /**
  * LabwhereReception Component
- * 
+ *
  * This component provides a form interface for users to store labware barcodes into a specified location in Labwhere.
- * 
+ *
  * The form includes fields for:
  * - User barcode or swipecard
  * - Location barcode
  * - Start position (optional)
  * - Labware barcodes
- * 
+ *
  * The component validates the input fields for 'User barcode', 'Location barcode' and 'Labware barcodes'
  * and displays error messages for any invalid or missing data when the form is submitted or when the input fields are updated.
  * The 'Start position' field is optional and does not require validation.
- * 
+ *
  * The form also provides a reset button to clear the form fields.
  * The component also provides a preview section where users can review the barcodes to be stored before submission.
- * 
+ *
  * Upon successful validation, the form data is submitted to the Labwhere API to store the barcodes in the specified location.
  * It displays a success message if the barcodes are stored successfully, or an error message if the submission fails.
  */
@@ -129,7 +128,7 @@ const validateUserCode = () => {
   if (!user_code.value) {
     errors.user_code = 'User code is required'
   } else {
-    delete errors.user_code 
+    delete errors.user_code
   }
 }
 
@@ -186,12 +185,11 @@ const barcodeArray = computed(() => {
 
 /**
  * Store barcodes into labwhere location
- * 
+ *
  */
 const storeBarcodes = async () => {
   if (validateForm()) {
     try {
-       debugger
       const response = await storeBarcodesIntoLabwhereLocation(
         user_code.value,
         location_barcode.value,

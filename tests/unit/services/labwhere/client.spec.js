@@ -1,4 +1,7 @@
-import { getLabwhereLocations,storeBarcodesIntoLabwhereLocation } from '@/services/labwhere/client.js'
+import {
+  getLabwhereLocations,
+  storeBarcodesIntoLabwhereLocation,
+} from '@/services/labwhere/client.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 
 describe('client', () => {
@@ -71,10 +74,15 @@ describe('client', () => {
 
     it('should return an error if fetch fails', async () => {
       mockFetch.mockRejectedValue(new Error('Network error'))
-      const result = await storeBarcodesIntoLabwhereLocation('user123', 'location123', 'barcode1', null)
+      const result = await storeBarcodesIntoLabwhereLocation(
+        'user123',
+        'location123',
+        'barcode1',
+        null,
+      )
       expect(result).toEqual({
         success: false,
-        errors: ['Failed to access LabWhere: Network error']
+        errors: ['Failed to access LabWhere: Network error'],
       })
     })
 
@@ -83,8 +91,13 @@ describe('client', () => {
         ok: false,
         json: async () => ({ errors: ['Some error'] }),
       })
-      const result = await storeBarcodesIntoLabwhereLocation('user123', 'location123', 'barcode1', null)
-      expect(result).toEqual({ success: false, errors: ['Some error']})
+      const result = await storeBarcodesIntoLabwhereLocation(
+        'user123',
+        'location123',
+        'barcode1',
+        null,
+      )
+      expect(result).toEqual({ success: false, errors: ['Some error'] })
     })
 
     it('should return success if fetch is successful', async () => {
@@ -94,7 +107,12 @@ describe('client', () => {
         json: async () => mockResponse,
       })
 
-      const result = await storeBarcodesIntoLabwhereLocation('user123', 'location123', 'barcode1', null)
+      const result = await storeBarcodesIntoLabwhereLocation(
+        'user123',
+        'location123',
+        'barcode1',
+        null,
+      )
       expect(result).toEqual(mockResponse)
     })
 
@@ -105,7 +123,12 @@ describe('client', () => {
         json: async () => mockResponse,
       })
 
-      const result = await storeBarcodesIntoLabwhereLocation('user123', 'location123', 'barcode1', 1)
+      const result = await storeBarcodesIntoLabwhereLocation(
+        'user123',
+        'location123',
+        'barcode1',
+        1,
+      )
       expect(result).toEqual(mockResponse)
     })
   })

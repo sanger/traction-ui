@@ -55,9 +55,13 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
  *   }
  * });
  */
-const storeBarcodesIntoLabwhereLocation = async (userCode,locationBarcode,labwareBarcodes, startPosition) => {
-
-  if(!userCode || !labwareBarcodes || !locationBarcode) {
+const storeBarcodesIntoLabwhereLocation = async (
+  userCode,
+  locationBarcode,
+  labwareBarcodes,
+  startPosition,
+) => {
+  if (!userCode || !labwareBarcodes || !locationBarcode) {
     return { success: false, errors: ['Missing required parameters'] }
   }
 
@@ -73,10 +77,9 @@ const storeBarcodesIntoLabwhereLocation = async (userCode,locationBarcode,labwar
   const response = await labwhereFetch.post(
     '/api/scans',
     new URLSearchParams(params).toString(),
-    'application/x-www-form-urlencoded'
+    'application/x-www-form-urlencoded',
   )
-  return {success: response.success, errors: response.errors};
+  return { success: response.success, errors: response.errors }
 }
 
-
-export { getLabwhereLocations,storeBarcodesIntoLabwhereLocation }
+export { getLabwhereLocations, storeBarcodesIntoLabwhereLocation }

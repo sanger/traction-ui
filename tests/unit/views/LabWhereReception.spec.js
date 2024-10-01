@@ -1,8 +1,7 @@
-import { mount, flushPromises } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import LabWhereReception from '@/views/LabWhereReception.vue'
 import { expect, it, describe, vi } from 'vitest'
 import { storeBarcodesIntoLabwhereLocation } from '@/services/labwhere/client.js'
-import useAlert from '@/composables/useAlert.js'
 import { nextTick } from 'vue'
 
 vi.mock('@/services/labwhere/client.js')
@@ -113,20 +112,19 @@ describe('LabWhereReception', () => {
   it('displays preview message when user enters values in the form', async () => {
     const wrapper = buildWrapper()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'No barcodes to store to location'
+      'No barcodes to store to location',
     )
-
 
     wrapper.vm.location_barcode = 'location123'
     await wrapper.vm.$nextTick()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'No barcodes to store to location location123'
+      'No barcodes to store to location location123',
     )
 
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
     await wrapper.vm.$nextTick()
     expect(wrapper.find('[data-attribute="preview-message"]').text()).toBe(
-      'Store 2 barcode(s) to location location123'
+      'Store 2 barcode(s) to location location123',
     )
   })
 

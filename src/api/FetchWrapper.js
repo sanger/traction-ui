@@ -31,7 +31,7 @@ class FetchWrapper {
       const url = `${this.baseUrl}${endpoint}`
       const rawResponse = await fetch(url, {
         method: 'POST',
-        headers :{
+        headers: {
           'Content-Type': content_type,
         },
         body,
@@ -51,7 +51,6 @@ class FetchWrapper {
       }
     }
   }
-
 }
 
 export { FetchWrapper }

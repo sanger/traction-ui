@@ -9,7 +9,6 @@
   </header>
 </template>
 <script>
-
 import TractionMutedText from '@/components/shared/TractionMutedText.vue'
 export default {
   name: 'TractionHeading',
@@ -27,7 +26,7 @@ export default {
     },
     showBorder: Boolean,
     shadow: Boolean,
-    description : {
+    description: {
       type: String,
       required: false,
       default: '',
