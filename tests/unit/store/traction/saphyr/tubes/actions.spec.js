@@ -1,10 +1,12 @@
 import { Data } from '@support/testHelper'
 import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
+import SaphyrTubesFactory from '@tests/factories/SaphyrTubesFactory.js'
+
+const saphyrTubesFactory = SaphyrTubesFactory()
 
 describe('#getTractionTubesForBarcodes', () => {
   let commit, get, getters, barcodeList, failedResponse, emptyResponse
-
   beforeEach(() => {
     commit = vi.fn()
     get = vi.fn()
@@ -16,9 +18,9 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('successfully for samples', async () => {
-    get.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
+    get.mockReturnValue(saphyrTubesFactory.responses.axios)
 
-    const expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
+    const expectedResponse = new Response(saphyrTubesFactory.responses.axios)
     const expectedTubes = expectedResponse.deserialize.tubes
 
     const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
