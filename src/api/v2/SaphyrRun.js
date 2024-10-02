@@ -1,4 +1,4 @@
-import handlePromise from '@/api/v1/PromiseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 const isObject = (item) => {
   return item !== undefined && item instanceof Object
@@ -47,29 +47,35 @@ const create = async (run, request) => {
   try {
     const runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
     const runResponse = await createResource(runPayload, request.runs)
-    id = runResponse.deserialize.runs[0].id
-    responses.push(runResponse)
+    const { success, body: { data } = {} } = runResponse
+    if (success) {
+      id = data[0].id
+      responses.push(runResponse)
 
-    const chipPayload = {
-      data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
-    }
-    const chipResponse = await createResource(chipPayload, request.chips)
-    id = chipResponse.deserialize.chips[0].id
-    responses.push(chipResponse)
-
-    for (const flowcell of run.chip.flowcells) {
-      const flowcellPayload = {
-        data: {
-          type: 'flowcells',
-          attributes: {
-            position: flowcell.position,
-            saphyr_library_id: flowcell.library.id,
-            saphyr_chip_id: id,
-          },
-        },
+      const chipPayload = {
+        data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
       }
-      const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
-      responses.push(flowcellResponse)
+      const chipResponse = await createResource(chipPayload, request.chips)
+      const { success, body: { data } = {} } = chipResponse
+      if (success) {
+        id = data[0].id
+        responses.push(chipResponse)
+
+        for (const flowcell of run.chip.flowcells) {
+          const flowcellPayload = {
+            data: {
+              type: 'flowcells',
+              attributes: {
+                position: flowcell.position,
+                saphyr_library_id: flowcell.library.id,
+                saphyr_chip_id: id,
+              },
+            },
+          }
+          const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
+          responses.push(flowcellResponse)
+        }
+      }
     }
   } catch {
     rollback(responses, request)
@@ -79,9 +85,9 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  const response = await handlePromise(request.create({ data: payload }))
+  const response = await handleResponse(request.create({ data: payload }))
 
-  if (response.successful) {
+  if (response.success) {
     return response
   } else {
     throw response.errors
@@ -122,9 +128,9 @@ const update = async (run, request) => {
 
 const updateResource = async (payload, request) => {
   const promise = await request.update(payload)
-  const response = await handlePromise(promise)
+  const response = await handleResponse(promise)
 
-  if (response.successful) {
+  if (response.success) {
     return response
   } else {
     throw response.errors
@@ -145,7 +151,7 @@ const rollback = (responses, request) => {
 const destroy = async (id, request) => {
   const promise = request.destroy(id)
 
-  return await handlePromise(promise)
+  return await handleResponse(promise)
 }
 
 export { build, createResource, create, update, rollback, destroy, assign, updateResource }

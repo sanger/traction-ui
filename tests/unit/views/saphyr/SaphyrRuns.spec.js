@@ -1,13 +1,17 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, store, Data, flushPromises } from '@support/testHelper'
-import Response from '@/api/v1/Response'
+import { mount, store, flushPromises } from '@support/testHelper'
+import SaphyrRunFactory from '@tests/factories/SaphyrRunFactory.js'
+import { extractAttributes } from '@/api/JsonApi.js'
 
 describe('Runs.vue', () => {
   const pipeline = 'saphyr'
-  let wrapper, runs, mockRuns
+  let wrapper, response, runs, mockRuns
+  const saphyrRunFactory = SaphyrRunFactory()
 
   beforeEach(async () => {
-    mockRuns = new Response(Data.Runs).deserialize.runs
+    mockRuns = saphyrRunFactory.content.data.map((run) => {
+      return extractAttributes(run)
+    })
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
     vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(mockRuns)
     wrapper = mount(Runs, { store })
@@ -28,7 +32,7 @@ describe('Runs.vue', () => {
     })
 
     it('contains the correct data', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
   })
 
@@ -52,7 +56,7 @@ describe('Runs.vue', () => {
       const button = wrapper.find('#startRun-1')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[4].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[0].findAll('td')[0].text()
       expect(runs.startRun).toBeCalledWith({ id, pipeline })
     })
   })

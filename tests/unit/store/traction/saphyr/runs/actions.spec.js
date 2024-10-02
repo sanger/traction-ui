@@ -2,6 +2,9 @@ import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/runs/actions'
 import { Data } from '@support/testHelper'
 import * as Run from '@/api/v1/SaphyrRun.js'
+import SaphyrRunFactory from '@tests/factories/SaphyrRunFactory'
+
+const saphyrRunFactory = SaphyrRunFactory()
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
@@ -15,10 +18,10 @@ describe('#setRuns', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.Runs)
+    get.mockResolvedValue(saphyrRunFactory.responses.fetch)
 
-    const expectedResponse = new Response(Data.Runs)
-    const expectedRuns = expectedResponse.deserialize.runs
+    const expectedResponse = new Response(saphyrRunFactory)
+    const expectedRuns = saphyrRunFactory.content.data
 
     const response = await Actions.setRuns({ commit, getters })
 
