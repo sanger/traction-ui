@@ -9,41 +9,41 @@ const SaphyrRequestsFactory = () => {
   const data = {
     data: [
       {
-        id: "1",
-        type: "tubes",
+        id: '1',
+        type: 'tubes',
         links: {
-          self: "http://localhost:3100/v1/saphyr/tubes/1"
+          self: 'http://localhost:3100/v1/saphyr/tubes/1',
         },
         attributes: {
-          barcode: "TRAC-1"
+          barcode: 'TRAC-1',
         },
         relationships: {
           materials: {
             links: {
-              self: "http://localhost:3100/v1/saphyr/tubes/1/relationships/material",
-              related: "http://localhost:3100/v1/saphyr/tubes/1/material"
+              self: 'http://localhost:3100/v1/saphyr/tubes/1/relationships/material',
+              related: 'http://localhost:3100/v1/saphyr/tubes/1/material',
             },
             data: [
               {
-                type: "requests",
-                id: "1"
-              }
-            ]
-          }
-        }
-      }
+                type: 'requests',
+                id: '1',
+              },
+            ],
+          },
+        },
+      },
     ],
     included: [
       {
-        id: "1",
-        type: "requests",
+        id: '1',
+        type: 'requests',
         attributes: {
-          external_study_id: "1",
-          sample_name: "Sample1",
-          barcode: "TRAC-1"
-        }
-      }
-    ]
+          external_study_id: '1',
+          sample_name: 'Sample1',
+          barcode: 'TRAC-1',
+        },
+      },
+    ],
   }
   const createStoreData = (data) => {
     const requests = dataToObjectById({
@@ -51,7 +51,7 @@ const SaphyrRequestsFactory = () => {
       includeRelationships: true,
     })
     return {
-      requests: requests['1']
+      requests: requests['1'],
     }
   }
   return { ...BaseFactory(data), storeData: createStoreData(data) }
