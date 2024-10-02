@@ -1,4 +1,3 @@
-import { Data } from '@support/testHelper'
 import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
 import SaphyrTubesFactory from '@tests/factories/SaphyrTubesFactory.js'
@@ -101,8 +100,8 @@ describe('#createLibrariesInTraction', () => {
   })
 
   it('successfully', async () => {
-    const expectedResponse = new Response(Data.TubeWithLibrary)
-    create.mockReturnValue(Data.TubeWithLibrary)
+    const expectedResponse = new Response(tubeWithLibraryFactory.responses.axios)
+    create.mockReturnValue(tubeWithLibraryFactory.responses.axios)
 
     const response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
@@ -175,7 +174,7 @@ describe('#setLibraries', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.TractionSaphyrLibraries)
+    get.mockReturnValue(saphyrTubesFactory.responses.axios)
 
     const libraries = await Actions.setLibraries({ commit, getters })
 
