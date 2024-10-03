@@ -305,14 +305,54 @@ const splitDataByParent = ({
   }, {})
 }
 
+/**
+ * Extract the includes from the relationships
+ * If the relationship is an array, then extract all the includes
+ * If the relationship is an object, then extract the include
+ * If the includes have their own relationships, then extract those
+ * @param {Object} relationships - the list of relationships to be extracted
+ * @param {Array} included - the list of included resources
+ * @returns {Array} - the list of extracted includes
+ */
+const extractIncludes = (relationships, included) => {
+  const rawIncludes = Object.values(relationships).reduce((result, relationship) => {
+    if (Array.isArray(relationship)) {
+      return [...result, ...relationship.map((item) => findIncluded(item, included))]
+    } else {
+      return [...result, findIncluded(relationship, included)]
+    }
+  }, [])
+
+  // we need to run through it again as includes can also have relationships
+  // this is a recursive function
+  // we could do this in findIncluded but that is used elsewhere
+  const includes = rawIncludes.flatMap((includes) => {
+    if (includes.relationships) {
+      return [includes, ...extractIncludes(includes.relationships, included)]
+    } else {
+      return includes
+    }
+  })
+
+  return includes
+}
+
+/**
+ * Find the first n items in the data and return them
+ * @param {Object} data - the data object to be searched
+ * @param {Number} first - the number of items to return
+ * @returns {Object} - the found data and the included resources
+ */
 const find = ({ data, first = 1 } = {}) => {
   const foundData = data.data.slice(0, first)
 
-  const included = foundData.map(({ relationships }) => {
-    return extractRelationships(relationships, data.included)
+  // we need to extract the includes from the found data
+  const included = foundData.flatMap(({ relationships }) => {
+    return extractIncludes(relationships, data.included)
   })
 
-  return { data: foundData, included }
+  // we need to remove the duplicates from included
+  return { data: foundData, included: [...new Set(included)] }
 }
 
 export {
@@ -334,6 +374,7 @@ export {
   populateBy,
   splitDataByParent,
   dataToObjectByPlateNumber,
+  extractIncludes,
   find,
 }
 
