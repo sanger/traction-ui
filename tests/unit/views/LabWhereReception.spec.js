@@ -145,4 +145,20 @@ describe('LabWhereReception', () => {
 
     expect(mockShowAlert).toBeCalledWith('Error storing barcodes', 'danger')
   })
+
+  it('resets the fields when reset button is clicked', async () => {
+    const wrapper = buildWrapper()
+    wrapper.vm.user_code = 'user123'
+    wrapper.vm.location_barcode = 'location123'
+    wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
+    wrapper.vm.start_position = 1
+
+    await wrapper.find('#reset').trigger('reset')
+
+    // We don't reset user code as its likely to be the same user
+    expect(wrapper.vm.user_code).toBe('user123')
+    expect(wrapper.vm.location_barcode).toBe('')
+    expect(wrapper.vm.labware_barcodes).toBe('')
+    expect(wrapper.vm.start_position).toBe(null)
+  })
 })

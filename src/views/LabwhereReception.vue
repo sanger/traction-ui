@@ -1,6 +1,6 @@
 <template>
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
-    <traction-form @submit="scanBarcodesToLabwhere">
+    <traction-form @submit="scanBarcodesToLabwhere" @reset="reset">
       <fieldset>
         <traction-heading level="4" show-border>User barcode or swipecard</traction-heading>
         <traction-muted-text class="flex justify-left"
@@ -55,18 +55,19 @@
           />
         </traction-field-error>
       </fieldset>
-      <div class="flex flex-col w-full py-3 gap-y-3">
-        <fieldset class="border border-2 border-gray-400 p-3 bg-gray-300 rounded-md">
-          <legend class="text-md text-gray-500 font-semibold px-2">Preview</legend>
-          <traction-label data-attribute="preview-message" class="text-blue-700">
-            {{ ` ${confirmationText} ` }}
-          </traction-label>
-        </fieldset>
-      </div>
-      <div class="flex w-full py-4 gap-y-3">
-        <traction-button id="submit-button" class="h-15 py-3" type="submit" theme="printRed">
-          Scan In/Out
-        </traction-button>
+      <div class="flex flex-col w-full">
+        <traction-heading level="4" show-border>Summary</traction-heading>
+        <span id="importText" class="text-left" data-attribute="preview-message">
+          {{ confirmationText }}
+        </span>
+        <div class="flex flex-row space-x-2 mt-5">
+          <traction-button id="reset" theme="reset" class="py-3" type="reset">
+            Reset
+          </traction-button>
+          <traction-button id="submit-button" class="h-15 py-3" type="submit" theme="printRed">
+            <span class="button-text">Scan In/Out</span>
+          </traction-button>
+        </div>
       </div>
     </traction-form>
   </div>
@@ -199,5 +200,16 @@ const confirmationText = computed(() => {
  */
 const resetErrors = () => {
   Object.keys(errors).forEach((key) => delete errors[key])
+}
+
+/**
+ * Reset the form fields and errors.
+ * We do not reset the user code field as it is more likely the same user will be scanning multiple times.
+ */
+const reset = () => {
+  location_barcode.value = ''
+  labware_barcodes.value = ''
+  start_position.value = null
+  resetErrors()
 }
 </script>
