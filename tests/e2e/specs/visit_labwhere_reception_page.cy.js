@@ -8,11 +8,12 @@ describe('Labware Reception page', () => {
     cy.contains('Location barcode')
     cy.contains('Start position')
     cy.contains('Barcodes')
-    cy.contains('Preview')
+    cy.contains('Summary')
     cy.get('#userCode').should('exist')
     cy.get('#locationBarcode').should('exist')
     cy.get('#labware_barcodes').should('exist')
     cy.get('#submit-button').should('exist')
+    cy.get('#reset-button').should('exist')
   })
 
   it('displays success when POST request is successful', () => {

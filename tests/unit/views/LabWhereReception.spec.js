@@ -153,7 +153,7 @@ describe('LabWhereReception', () => {
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
     wrapper.vm.start_position = 1
 
-    await wrapper.find('#reset').trigger('reset')
+    await wrapper.find('#reset-button').trigger('reset')
 
     // We don't reset user code as its likely to be the same user
     expect(wrapper.vm.user_code).toBe('user123')

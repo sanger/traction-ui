@@ -61,7 +61,7 @@
           {{ confirmationText }}
         </span>
         <div class="flex flex-row space-x-2 mt-5">
-          <traction-button id="reset" theme="reset" class="py-3" type="reset">
+          <traction-button id="reset-button" theme="reset" class="py-3" type="reset">
             Reset
           </traction-button>
           <traction-button id="submit-button" class="h-15 py-3" type="submit" theme="printRed">
