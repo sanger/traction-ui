@@ -23,7 +23,7 @@ describe('Labware Reception page', () => {
     cy.intercept('POST', '/api/scans', {
       statusCode: 201,
       body: {
-        message: 'barcode1, barcode2 successfully stored in location123'
+        message: 'barcode1, barcode2 successfully stored in location123',
       },
     }).as('storeBarcodes')
 

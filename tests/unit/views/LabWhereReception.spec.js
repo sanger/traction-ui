@@ -51,7 +51,10 @@ describe('LabWhereReception', () => {
     wrapper.vm.user_code = 'user1'
     wrapper.vm.location_barcode = 'location1'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode1'
-    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true, message: 'barcode1 successfully stored in location123' })
+    scanBarcodesInLabwhereLocation.mockResolvedValue({
+      success: true,
+      message: 'barcode1 successfully stored in location123',
+    })
 
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toBeCalledWith('user1', 'location1', 'barcode1', null)
@@ -83,7 +86,10 @@ describe('LabWhereReception', () => {
     wrapper.vm.user_code = 'user123'
     wrapper.vm.location_barcode = 'location123'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
-    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true, message: 'barcode1, barcode2 successfully stored in location123' })
+    scanBarcodesInLabwhereLocation.mockResolvedValue({
+      success: true,
+      message: 'barcode1, barcode2 successfully stored in location123',
+    })
 
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(
@@ -92,7 +98,10 @@ describe('LabWhereReception', () => {
       'barcode1\nbarcode2',
       null,
     )
-    expect(mockShowAlert).toBeCalledWith('barcode1, barcode2 successfully stored in location123', 'success')
+    expect(mockShowAlert).toBeCalledWith(
+      'barcode1, barcode2 successfully stored in location123',
+      'success',
+    )
   })
 
   it('displays preview message when user enters values in the form', async () => {
