@@ -47,35 +47,29 @@ const create = async (run, request) => {
   try {
     const runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
     const runResponse = await createResource(runPayload, request.runs)
-    const { success, body: { data } = {} } = runResponse
-    if (success) {
-      id = data[0].id
-      responses.push(runResponse)
+    id = runResponse.body.data.id
+    responses.push(runResponse)
 
-      const chipPayload = {
-        data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
-      }
-      const chipResponse = await createResource(chipPayload, request.chips)
-      const { success, body: { data } = {} } = chipResponse
-      if (success) {
-        id = data[0].id
-        responses.push(chipResponse)
+    const chipPayload = {
+      data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
+    }
+    const chipResponse = await createResource(chipPayload, request.chips)
+    id = chipResponse.body.data.id
+    responses.push(chipResponse)
 
-        for (const flowcell of run.chip.flowcells) {
-          const flowcellPayload = {
-            data: {
-              type: 'flowcells',
-              attributes: {
-                position: flowcell.position,
-                saphyr_library_id: flowcell.library.id,
-                saphyr_chip_id: id,
-              },
-            },
-          }
-          const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
-          responses.push(flowcellResponse)
-        }
+    for (const flowcell of run.chip.flowcells) {
+      const flowcellPayload = {
+        data: {
+          type: 'flowcells',
+          attributes: {
+            position: flowcell.position,
+            saphyr_library_id: flowcell.library.id,
+            saphyr_chip_id: id,
+          },
+        },
       }
+      const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
+      responses.push(flowcellResponse)
     }
   } catch {
     rollback(responses, request)
@@ -139,9 +133,8 @@ const updateResource = async (payload, request) => {
 
 const rollback = (responses, request) => {
   for (const response of responses) {
-    const deserializedResponse = response.deserialize
-    const type = Object.keys(deserializedResponse)[0]
-    const id = deserializedResponse[type][0].id
+    const type = response.body.data.type
+    const id = response.body.data.id
     destroy(id, request[type])
   }
 

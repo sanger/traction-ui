@@ -42,9 +42,8 @@ export default {
 
       if (isValid) {
         const libraryTube = await this.getTubeForBarcode(barcode)
-        const container_material = libraryTube.materials[0]
         const payload = {
-          library: { id: container_material.material_id, barcode: container_material.barcode },
+          library: { id: libraryTube.material_id, barcode: libraryTube.barcode },
           flowcellIndex: this.index,
         }
 

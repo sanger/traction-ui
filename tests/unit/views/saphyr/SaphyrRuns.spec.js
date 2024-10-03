@@ -1,17 +1,14 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
 import { mount, store, flushPromises } from '@support/testHelper'
 import SaphyrRunFactory from '@tests/factories/SaphyrRunFactory.js'
-import { extractAttributes } from '@/api/JsonApi.js'
 
 describe('Runs.vue', () => {
   const pipeline = 'saphyr'
-  let wrapper, response, runs, mockRuns
   const saphyrRunFactory = SaphyrRunFactory()
+  let wrapper, runs, mockRuns
 
   beforeEach(async () => {
-    mockRuns = saphyrRunFactory.content.data.map((run) => {
-      return extractAttributes(run)
-    })
+    mockRuns = saphyrRunFactory.storeData
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
     vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(mockRuns)
     wrapper = mount(Runs, { store })
@@ -63,13 +60,13 @@ describe('Runs.vue', () => {
 
   describe('complete button', () => {
     it('is enabled when the run state is pending', () => {
-      // run at(0) is in state pending
+      // run at(1) is in state pending
       const button = wrapper.find('#completeRun-1')
       expect(button.element.disabled).toBe(false)
     })
 
     it('is enabled when the run state is started', () => {
-      // run at(4) is in state started
+      // run at(2) is in state started
       const button = wrapper.find('#completeRun-2')
       expect(button.element.disabled).toBe(false)
     })
@@ -81,7 +78,7 @@ describe('Runs.vue', () => {
     })
 
     it('is disabled is the run state is cancelled', () => {
-      // run at(2) is in state cancelled
+      // run at(4) is in state cancelled
       const button = wrapper.find('#completeRun-4')
       expect(button.element.disabled).toBe(true)
     })
@@ -93,15 +90,15 @@ describe('Runs.vue', () => {
       const button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[3].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[1].findAll('td')[0].text()
       expect(runs.completeRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('cancel button', () => {
     it('is enabled when the run state is pending', () => {
-      // run at(0) is in state pending
-      const button = wrapper.find('#cancelRun-6')
+      // run at(5) is in state pending
+      const button = wrapper.find('#cancelRun-5')
       expect(button.element.disabled).toBe(false)
     })
 
@@ -130,7 +127,7 @@ describe('Runs.vue', () => {
       const button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[3].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[1].findAll('td')[0].text()
       expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
   })

@@ -1,8 +1,9 @@
-import { populateById } from '@/api/JsonApi.js'
-
 const mutations = {
   setRuns(state, runs) {
     state.runs = runs
+  },
+  setCurrentRun(state, run) {
+    state.currentRun = run
   },
   setRunName(state, name) {
     state.currentRun.name = name

@@ -1,8 +1,13 @@
 import BaseFactory from './BaseFactory.js'
+import { extractAttributes } from '@/api/JsonApi.js'
 
-/*
- * Factory for creating a list of runs
- * @returns a base factory object with the runs data
+const createStoreData = (data) => {
+  return data.data.map((run) => extractAttributes(run))
+}
+/**
+ * Factory for creating a Saphyr Pipeline Run
+ * @returns a base factory object with the run data
+ * store data object is for simulating the stored data in tests
  */
 const SaphyrRunFactory = () => {
   const data = {
@@ -64,7 +69,7 @@ const SaphyrRunFactory = () => {
           self: 'http://localhost:3100/v1/saphyr/runs/8',
         },
         attributes: {
-          state: 'pending',
+          state: 'completed',
           chip_barcode: 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX',
           created_at: '2024/10/01 11:03',
           name: 3,
@@ -89,7 +94,7 @@ const SaphyrRunFactory = () => {
           self: 'http://localhost:3100/v1/saphyr/runs/9',
         },
         attributes: {
-          state: 'pending',
+          state: 'cancelled',
           chip_barcode: 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX',
           created_at: '2024/10/01 11:03',
           name: 4,
@@ -650,7 +655,10 @@ const SaphyrRunFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  return {
+    ...BaseFactory(data),
+    storeData: createStoreData({ ...data }),
+  }
 }
 
 export default SaphyrRunFactory

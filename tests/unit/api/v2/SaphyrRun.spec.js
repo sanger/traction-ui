@@ -1,17 +1,73 @@
-import { Data } from '@support/testHelper'
-import Response from '@/api/v1/Response'
 import * as Run from '@/api/v2/SaphyrRun'
 import build from '@/api/v2/ApiBuilder'
 import config from '@/api/Config'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 describe('Run', () => {
   let failedResponse, chipBarcode, run
+
+  const CreatedRunResponse = {
+    status: '200',
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data: {
+          id: '1',
+          type: 'runs',
+          attributes: {
+            name: 'run1',
+          },
+        },
+      }),
+    ok: true,
+  }
+  const CreatedFlowcellResponse = {
+    status: '200',
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data: {
+          id: '1',
+          type: 'flowcells',
+          attributes: {
+            chip_id: 1,
+            library_id: 1,
+            position: 1,
+          },
+        },
+      }),
+    ok: true,
+  }
+
+  const CreatedChipResponse = {
+    status: '200',
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data: { id: '1', type: 'chips', attributes: { barcode: 'barcodebarcodebarcode' } },
+      }),
+    ok: true,
+  }
+
+  const SuccessfulDestroyResponse = {
+    status: '200',
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data: {},
+      }),
+    ok: true,
+  }
 
   beforeEach(() => {
     failedResponse = {
       status: 404,
       statusText: 'Record not found',
-      data: { errors: { title: ['The record identified by 100 could not be found.'] } },
+      json: () =>
+        Promise.resolve({
+          errors: { title: ['The record identified by 100 could not be found.'] },
+        }),
+      ok: false,
     }
 
     chipBarcode = 'XYZ1234567891012'
@@ -104,9 +160,9 @@ describe('Run', () => {
     describe('createRun', () => {
       it('success', async () => {
         const request = { create: vi.fn() }
-        request.create.mockResolvedValue(Data.CreateRun)
+        request.create.mockResolvedValue(CreatedRunResponse)
 
-        const mockResponse = new Response(Data.CreateRun)
+        const mockResponse = await handleResponse(CreatedRunResponse)
         const response = await Run.createResource(
           { data: { type: 'runs', attributes: { name: run.name } } },
           request,
@@ -117,8 +173,7 @@ describe('Run', () => {
 
       it('failure', async () => {
         const request = { create: vi.fn() }
-        request.create.mockReturnValue(failedResponse)
-
+        request.create.mockResolvedValue(failedResponse)
         let message
         try {
           await Run.createResource(
@@ -126,7 +181,7 @@ describe('Run', () => {
             request,
           )
         } catch (err) {
-          message = err.message
+          message = err
         }
         expect(message).toEqual('title The record identified by 100 could not be found.')
       })
@@ -141,9 +196,9 @@ describe('Run', () => {
 
       it('will create a chip and return a response', async () => {
         const request = { create: vi.fn() }
-        request.create.mockResolvedValue(Data.CreateChip)
+        request.create.mockResolvedValue(CreatedChipResponse)
 
-        const mockResponse = new Response(Data.CreateChip)
+        const mockResponse = await handleResponse(CreatedChipResponse)
         const response = await Run.createResource(
           { data: { type: 'chips', attributes: { barcode: run.chip.barcode, run_id: runId } } },
           request,
@@ -162,7 +217,7 @@ describe('Run', () => {
             request,
           )
         } catch (err) {
-          message = err.message
+          message = err
         }
         expect(message).toEqual('title The record identified by 100 could not be found.')
       })
@@ -178,9 +233,9 @@ describe('Run', () => {
 
       it('will create a flowcell and return a response', async () => {
         const request = { create: vi.fn() }
-        request.create.mockResolvedValue(Data.CreateFlowcell)
+        request.create.mockResolvedValue(CreatedFlowcellResponse)
 
-        const mockResponse = new Response(Data.CreateFlowcell)
+        const mockResponse = await handleResponse(CreatedFlowcellResponse)
         const response = await Run.createResource(
           {
             data: {
@@ -217,7 +272,7 @@ describe('Run', () => {
             request,
           )
         } catch (err) {
-          message = err.message
+          message = err
         }
         expect(message).toEqual('title The record identified by 100 could not be found.')
       })
@@ -236,9 +291,9 @@ describe('Run', () => {
       })
 
       it('returns true', async () => {
-        api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
-        api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
-        api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
+        api.traction.saphyr.runs.create.mockResolvedValue(CreatedRunResponse)
+        api.traction.saphyr.chips.create.mockResolvedValue(CreatedChipResponse)
+        api.traction.saphyr.flowcells.create.mockResolvedValue(CreatedFlowcellResponse)
         expect(await Run.create(run, api.traction.saphyr)).toBeTruthy()
       })
 
@@ -250,13 +305,13 @@ describe('Run', () => {
       })
 
       it('returns false and rollsback if the chip cannot be created', async () => {
-        api.traction.saphyr.runs.create.mockReturnValue(Data.CreateRun)
+        api.traction.saphyr.runs.create.mockResolvedValue(CreatedRunResponse)
         api.traction.saphyr.chips.create.mockResolvedValue(failedResponse)
 
-        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(SuccessfulDestroyResponse)
 
-        const runResponse = new Response(Data.CreateRun)
-        const runId = runResponse.deserialize.runs[0].id
+        const runResponse = await handleResponse(CreatedRunResponse)
+        const runId = runResponse.body.data.id
 
         const resp = await Run.create(run, api.traction.saphyr)
 
@@ -267,18 +322,18 @@ describe('Run', () => {
       })
 
       it('returns false and rollsback if the flowcells cannot be created', async () => {
-        api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
-        api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
+        api.traction.saphyr.runs.create.mockResolvedValue(CreatedRunResponse)
+        api.traction.saphyr.chips.create.mockResolvedValue(CreatedChipResponse)
         api.traction.saphyr.flowcells.create.mockResolvedValue(failedResponse)
 
-        api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(SuccessfulDestroyResponse)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(SuccessfulDestroyResponse)
 
-        const runResponse = new Response(Data.CreateRun)
-        const runId = runResponse.deserialize.runs[0].id
+        const runResponse = await handleResponse(CreatedRunResponse)
+        const runId = runResponse.body.data.id
 
-        const chipResponse = new Response(Data.CreateChip)
-        const chipId = chipResponse.deserialize.chips[0].id
+        const chipResponse = await handleResponse(CreatedChipResponse)
+        const chipId = chipResponse.body.data.id
 
         const resp = await Run.create(run, api.traction.saphyr)
 
@@ -292,10 +347,10 @@ describe('Run', () => {
     describe('rollback', () => {
       let responses, api, runResponse, chipResponse
 
-      beforeEach(() => {
+      beforeEach(async () => {
         api = build({ config })
-        runResponse = new Response(Data.CreateRun)
-        chipResponse = new Response(Data.CreateChip)
+        runResponse = await handleResponse(CreatedRunResponse)
+        chipResponse = await handleResponse(CreatedChipResponse)
         responses = [runResponse, chipResponse]
 
         api.traction.saphyr.runs.destroy = vi.fn()
@@ -303,14 +358,12 @@ describe('Run', () => {
       })
 
       it('gets a list of responses', () => {
-        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-        api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(SuccessfulDestroyResponse)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(SuccessfulDestroyResponse)
 
         Run.rollback(responses, api.traction.saphyr)
-        expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
-        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(
-          chipResponse.deserialize.chips[0].id,
-        )
+        expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runResponse.body.data.id)
+        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(chipResponse.body.data.id)
       })
     })
 
@@ -323,10 +376,10 @@ describe('Run', () => {
       })
 
       it('rolls back the request', async () => {
-        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-        const expected = new Response(Data.SuccessfulDestroy)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(SuccessfulDestroyResponse)
+        const expected = await handleResponse(SuccessfulDestroyResponse)
 
-        const runResponse = new Response(Data.CreateRun)
+        const runResponse = await handleResponse(CreatedRunResponse)
         const response = await Run.destroy(runResponse, api.traction.saphyr.runs)
 
         expect(response).toEqual(expected)
@@ -346,22 +399,26 @@ describe('Run', () => {
     })
 
     it('successful', async () => {
-      request.update.mockResolvedValue(Data.CreateRun)
-      const mockResponse = new Response(Data.CreateRun)
+      request.update.mockResolvedValue(CreatedRunResponse)
+      const mockResponse = await handleResponse(CreatedRunResponse)
 
       const response = await Run.updateResource(payload, request)
       expect(response).toEqual(mockResponse)
     })
 
     it('unsuccessful', async () => {
-      const failedResponse = {
+      failedResponse = {
         status: 404,
         statusText: 'Record not found',
-        data: { errors: { run: ['Failed to update.'] } },
+        json: () =>
+          Promise.resolve({
+            errors: { run: ['Failed to update.'] },
+          }),
+        ok: false,
       }
 
       request.update.mockReturnValue(failedResponse)
-      const mockResponse = new Response(failedResponse)
+      const mockResponse = await handleResponse(failedResponse)
 
       await expect(Run.updateResource(payload, request)).rejects.toEqual(mockResponse.errors)
     })
@@ -390,38 +447,38 @@ describe('Run', () => {
     })
 
     it('returns true', async () => {
-      request.runs.update.mockResolvedValue(Data.CreateRun)
-      request.chips.update.mockResolvedValue(Data.CreateChip)
-      request.flowcells.update.mockResolvedValue(Data.CreateFlowcell)
+      request.runs.update.mockResolvedValue(CreatedRunResponse)
+      request.chips.update.mockResolvedValue(CreatedChipResponse)
+      request.flowcells.update.mockResolvedValue(CreatedFlowcellResponse)
 
       expect(await Run.update(run, request)).toBeTruthy()
     })
 
     it('returns false if the run cannot be created', async () => {
       request.runs.update.mockReturnValue(failedResponse)
-      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.runs.destroy.mockReturnValue(SuccessfulDestroyResponse)
 
       expect(await Run.update(run, request)).toBeFalsy()
     })
 
     it('returns false and rollsback if the chip cannot be created', async () => {
-      request.runs.update.mockResolvedValue(Data.CreateRun)
+      request.runs.update.mockResolvedValue(CreatedRunResponse)
       request.chips.update.mockReturnValue(failedResponse)
 
-      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
-      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.runs.destroy.mockReturnValue(SuccessfulDestroyResponse)
+      request.chips.destroy.mockReturnValue(SuccessfulDestroyResponse)
 
       expect(await Run.update(run, request)).toBeFalsy()
     })
 
     it('returns false and rollsback if the flowcells cannot be created', async () => {
-      request.runs.update.mockResolvedValue(Data.CreateRun)
-      request.chips.update.mockResolvedValue(Data.CreateRun)
+      request.runs.update.mockResolvedValue(CreatedRunResponse)
+      request.chips.update.mockResolvedValue(CreatedRunResponse)
       request.flowcells.update.mockReturnValue(failedResponse)
 
-      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
-      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
-      request.flowcells.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.runs.destroy.mockReturnValue(SuccessfulDestroyResponse)
+      request.chips.destroy.mockReturnValue(SuccessfulDestroyResponse)
+      request.flowcells.destroy.mockReturnValue(SuccessfulDestroyResponse)
 
       expect(await Run.update(run, request)).toBeFalsy()
     })

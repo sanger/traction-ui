@@ -1,16 +1,9 @@
-import CreateChip from './createChip'
-import CreateFlowcell from './createFlowcell'
-import CreateRun from './createRun'
-import UpdateRun from './updateRun'
 import Enzymes from './enzymes'
 import Libraries from './libraries'
 import Requests from './requests'
-import Run from './run'
 import RunNoLibrary from './runNoLibrary'
-import Runs from './runs'
 import RunWithLibrary from './runWithLibrary'
 import Samples from './samples'
-import SuccessfulDestroy from './successfulDestroy'
 import TestResponse from './testResponse'
 import TractionSaphyrLibraries from './tractionSaphyrLibraries'
 import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
@@ -61,19 +54,12 @@ import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
 
 export default {
-  CreateChip,
-  CreateFlowcell,
-  CreateRun,
-  UpdateRun,
   Enzymes,
   Libraries,
   Requests,
-  Run,
   RunNoLibrary,
-  Runs,
   RunWithLibrary,
   Samples,
-  SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
   TractionSaphyrTubesWithRequest,
