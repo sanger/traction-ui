@@ -5,16 +5,11 @@
         <slot />
       </div>
     </div>
-    <traction-muted-text class="flex justify-left">{{ description }}</traction-muted-text>
   </header>
 </template>
 <script>
-import TractionMutedText from '@/components/shared/TractionMutedText.vue'
 export default {
   name: 'TractionHeading',
-  components: {
-    TractionMutedText,
-  },
   props: {
     /**
      * Level specifies the size of the heading text displayed.
@@ -26,11 +21,6 @@ export default {
     },
     showBorder: Boolean,
     shadow: Boolean,
-    description: {
-      type: String,
-      required: false,
-      default: '',
-    },
     className: {
       type: String,
       required: false,

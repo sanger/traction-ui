@@ -1,6 +1,5 @@
-import { mount } from '@vue/test-utils'
+import { mount } from '@support/testHelper'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import { expect, it, describe, vi } from 'vitest'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 
 vi.mock('@/services/labwhere/client.js')
@@ -52,6 +51,8 @@ describe('LabWhereReception', () => {
     wrapper.vm.user_code = 'user1'
     wrapper.vm.location_barcode = 'location1'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode1'
+    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true, message: 'barcode1 successfully stored in location123' })
+
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toBeCalledWith('user1', 'location1', 'barcode1', null)
   })
@@ -72,8 +73,7 @@ describe('LabWhereReception', () => {
       user_code: 'User code is required',
     })
 
-    const [userInput] = wrapper.findAll('input')
-    await userInput.setValue('user1')
+    wrapper.find('[data-attribute="user-code-input"]').setValue('user1')
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.errors).not.toHaveProperty('user_code')
   })
@@ -83,7 +83,7 @@ describe('LabWhereReception', () => {
     wrapper.vm.user_code = 'user123'
     wrapper.vm.location_barcode = 'location123'
     wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
-    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true })
+    scanBarcodesInLabwhereLocation.mockResolvedValue({ success: true, message: 'barcode1, barcode2 successfully stored in location123' })
 
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(
@@ -92,7 +92,7 @@ describe('LabWhereReception', () => {
       'barcode1\nbarcode2',
       null,
     )
-    expect(mockShowAlert).toBeCalledWith('Barcodes stored successfully', 'success')
+    expect(mockShowAlert).toBeCalledWith('barcode1, barcode2 successfully stored in location123', 'success')
   })
 
   it('displays preview message when user enters values in the form', async () => {

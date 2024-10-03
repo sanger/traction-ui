@@ -2,13 +2,15 @@
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
     <traction-form @submit="scanBarcodesToLabwhere">
       <fieldset>
-        <traction-heading level="4" show-border description="Enter user barcode/swipecard"
-          >User barcode or swipecard</traction-heading
+        <traction-heading level="4" show-border>User barcode or swipecard</traction-heading>
+        <traction-muted-text class="flex justify-left"
+          >Enter user barcode/swipecard</traction-muted-text
         >
         <traction-field-error data-attribute="user-code-error" :error="errors.user_code">
           <traction-input
             id="userCode"
             v-model="user_code"
+            data-attribute="user-code-input"
             class="flex w-full"
             @update:model-value="validateUserCode"
           />
@@ -16,11 +18,9 @@
       </fieldset>
 
       <fieldset>
-        <traction-heading
-          level="4"
-          show-border
-          description="Scan location barcode (Leave blank to scan out)"
-          >Location barcode</traction-heading
+        <traction-heading level="4" show-border>Location barcode</traction-heading>
+        <traction-muted-text class="flex justify-left"
+          >Scan location barcode (Leave blank to scan out)</traction-muted-text
         >
         <traction-field-error
           data-attribute="location-barcode-error"
@@ -31,18 +31,17 @@
       </fieldset>
 
       <fieldset>
-        <traction-heading
-          level="4"
-          show-border
-          description="Enter position (Only necessary for locations with coordinates)"
-          >Start position</traction-heading
+        <traction-heading level="4" show-border>Start position</traction-heading>
+        <traction-muted-text class="flex justify-left"
+          >Enter position (Only necessary for locations with coordinates)</traction-muted-text
         >
         <traction-input id="startPosition" v-model="start_position" type="number" />
       </fieldset>
 
       <fieldset>
-        <traction-heading level="4" show-border description="Scan barcodes to save to location"
-          >Barcodes</traction-heading
+        <traction-heading level="4" show-border>Barcodes</traction-heading>
+        <traction-muted-text class="flex justify-left"
+          >Scan barcodes to save to location</traction-muted-text
         >
         <traction-field-error data-attribute="barcodes-error" :error="errors.labware_barcodes">
           <textarea
@@ -99,12 +98,6 @@
 import { ref, reactive, computed } from 'vue'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
-import TractionForm from '@/components/shared/TractionForm.vue'
-import TractionHeading from '@/components/TractionHeading.vue'
-import TractionFieldError from '@/components/shared/TractionFieldError.vue'
-import TractionInput from '@/components/shared/TractionInput.vue'
-import TractionButton from '@/components/shared/TractionButton.vue'
-import TractionLabel from '@/components/shared/TractionLabel.vue'
 
 const user_code = ref('') // User code or swipecard
 const location_barcode = ref('') // Location barcode
@@ -169,21 +162,16 @@ const uniqueBarcodesArray = computed(() => {
  */
 const scanBarcodesToLabwhere = async () => {
   if (validateForm()) {
-    try {
-      const response = await scanBarcodesInLabwhereLocation(
-        user_code.value,
-        location_barcode.value,
-        uniqueBarcodesArray.value.join('\n'),
-        start_position.value,
-      )
-      if (response.success) {
-        const message = response.message ?? 'Barcodes stored successfully'
-        showAlert(message, 'success')
-      } else {
-        showAlert(response.errors.join('\n'), 'danger')
-      }
-    } catch (error) {
-      showAlert('Failed to store: ' + error, 'danger')
+    const response = await scanBarcodesInLabwhereLocation(
+      user_code.value,
+      location_barcode.value,
+      uniqueBarcodesArray.value.join('\n'),
+      start_position.value,
+    )
+    if (response.success) {
+      showAlert(response.message, 'success')
+    } else {
+      showAlert(response.errors.join('\n'), 'danger')
     }
   }
 }

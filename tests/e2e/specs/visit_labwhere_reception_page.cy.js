@@ -23,16 +23,14 @@ describe('Labware Reception page', () => {
     cy.intercept('POST', '/api/scans', {
       statusCode: 201,
       body: {
-        success: true,
-        errors: [],
-        data: {},
+        message: 'barcode1, barcode2 successfully stored in location123'
       },
     }).as('storeBarcodes')
 
     cy.get('#submit-button').click()
 
     cy.wait('@storeBarcodes').its('response.statusCode').should('eq', 201)
-    cy.contains('Barcodes stored successfully')
+    cy.contains('barcode1, barcode2 successfully stored in location123')
   })
 
   it('displays error when POST is unsuccessful', () => {

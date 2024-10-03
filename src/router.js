@@ -56,8 +56,8 @@ const router = createRouter({
     },
     {
       path: '/labwhere-reception',
-      name: 'LabwhereReception',
-      meta: { page: 'Labwhere Reception - Scan In/Out' },
+      name: 'LabWhereReception',
+      meta: { page: 'LabWhere Reception - Scan In/Out' },
       component: LabwhereReception,
     },
     {

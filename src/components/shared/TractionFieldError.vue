@@ -21,12 +21,8 @@
 </template>
 
 <script>
-import TractionResultIcon from '@/components/shared/icons/TractionResultIcon.vue'
 export default {
   name: 'TractionFieldError',
-  components: {
-    TractionResultIcon,
-  },
   props: {
     error: {
       type: String,
