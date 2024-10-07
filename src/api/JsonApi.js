@@ -315,11 +315,12 @@ const splitDataByParent = ({
  * @returns {Array} - the list of extracted includes
  */
 const extractIncludes = (relationships, included) => {
-  const rawIncludes = Object.values(relationships).reduce((result, relationship) => {
-    if (Array.isArray(relationship)) {
-      return [...result, ...relationship.map((item) => findIncluded(item, included))]
+  // we are only interested in the data for the relationship
+  const rawIncludes = Object.values(relationships).reduce((result, { data }) => {
+    if (Array.isArray(data)) {
+      return [...result, ...data.map((item) => findIncluded(item, included))]
     } else {
-      return [...result, findIncluded(relationship, included)]
+      return [...result, findIncluded(data, included)]
     }
   }, [])
 
@@ -339,12 +340,14 @@ const extractIncludes = (relationships, included) => {
 
 /**
  * Find the first n items in the data and return them
+ * Also extract the includes related to the found data
  * @param {Object} data - the data object to be searched
  * @param {Number} first - the number of items to return
+ * @param {Boolean} all - return all the data
  * @returns {Object} - the found data and the included resources
  */
-const find = ({ data, first = 1 } = {}) => {
-  const foundData = data.data.slice(0, first)
+const find = ({ data, all = false, first = 1 } = {}) => {
+  const foundData = all ? data.data : data.data.slice(0, first)
 
   // we need to extract the includes from the found data
   const included = foundData.flatMap(({ relationships }) => {
@@ -352,7 +355,11 @@ const find = ({ data, first = 1 } = {}) => {
   })
 
   // we need to remove the duplicates from included
-  return { data: foundData, included: [...new Set(included)] }
+  // if we are only extracting a single record data needs to be an object
+  return {
+    data: foundData.length === 1 ? foundData[0] : foundData,
+    included: [...new Set(included)],
+  }
 }
 
 export {

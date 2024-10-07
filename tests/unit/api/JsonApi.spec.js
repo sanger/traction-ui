@@ -397,24 +397,94 @@ describe('JsonApi', () => {
       {
         id: '1',
         type: 'cheeses',
-        attrA: 'you caught me',
-        attrB: 'luv dancing',
+        links: {
+          self: 'http://example.com/cheeses/1',
+        },
+        attributes: {
+          attrA: 'you caught me',
+          attrB: 'luv dancing',
+        },
         relationships: {
-          bean: { id: '1', type: 'beans' },
-          pickle: { id: '2', type: 'pickles' },
-          chocolates: [{ id: '3', type: 'chocolates' }],
+          bean: {
+            links: {
+              self: 'http://example.com/beans/1/relationships/bean',
+              related: 'http://example.com/beans/1/bean',
+            },
+            data: {
+              type: 'beans',
+              id: '1',
+            },
+          },
+          pickle: {
+            links: {
+              self: 'http://example.com/pickles/2/relationships/pickle',
+              related: 'http://example.com/pickles/2/pickle',
+            },
+            data: {
+              type: 'pickles',
+              id: '2',
+            },
+          },
+          chocolates: {
+            links: {
+              self: 'http://example.com/chocolates/3/relationships/chocolates',
+              related: 'http://example.com/chocolates/3/chocolates',
+            },
+            data: [{ type: 'chocolates', id: '3' }],
+          },
         },
       },
       {
         id: '2',
         type: 'cheeses',
-        attrA: 'wild horses',
-        attrB: 'could not drag me away',
-        relationships: {
-          bean: { id: '4', type: 'beans' },
-          pickle: { id: '5', type: 'pickles' },
-          chocolates: [{ id: '6', type: 'chocolates' }],
+        links: {
+          self: 'http://example.com/cheeses/2',
         },
+        attributes: {
+          attrA: 'wild horses',
+          attrB: 'could not drag me away',
+        },
+        relationships: {
+          bean: {
+            links: {
+              self: 'http://example.com/beans/4/relationships/bean',
+              related: 'http://example.com/beans/4/bean',
+            },
+            data: {
+              id: '4',
+              type: 'beans',
+            },
+          },
+          pickle: {
+            links: {
+              self: 'http://example.com/pickles/5/relationships/pickle',
+              related: 'http://example.com/pickles/5/pickle',
+            },
+            data: {
+              id: '5',
+              type: 'pickles',
+            },
+          },
+          chocolates: {
+            links: {
+              self: 'http://example.com/chocolates/6/relationships/chocolates',
+              related: 'http://example.com/chocolates/6/chocolates',
+            },
+            data: [{ type: 'chocolates', id: '6' }],
+          },
+        },
+      },
+      {
+        id: '3',
+        type: 'chips',
+        links: {
+          self: 'http://example.com/chips/3',
+        },
+        attributes: {
+          attrE: 'skinny',
+          attrF: 'salty',
+        },
+        relationships: {},
       },
     ],
     included: [
@@ -433,7 +503,16 @@ describe('JsonApi', () => {
         type: 'chocolates',
         attrE: 'Cyber Insekt',
         relationships: {
-          crisps: { id: '100', type: 'crisps' },
+          crisps: {
+            links: {
+              self: 'http://example.com/crisps/100/relationships/crisps',
+              related: 'http://example.com/crisps/100/crisps',
+            },
+            data: {
+              id: '100',
+              type: 'crisps',
+            },
+          },
         },
       },
       {
@@ -451,7 +530,16 @@ describe('JsonApi', () => {
         type: 'chocolates',
         attrE: 'Cyber Insekt',
         relationships: {
-          crisps: { id: '100', type: 'crisps' },
+          crisps: {
+            links: {
+              self: 'http://example.com/crisps/100/relationships/crisps',
+              related: 'http://example.com/crisps/100/crisps',
+            },
+            data: {
+              id: '100',
+              type: 'crisps',
+            },
+          },
         },
       },
       {
@@ -479,7 +567,7 @@ describe('JsonApi', () => {
     it('will find the first record by default', () => {
       const found = find({ data })
       expect(found).toEqual({
-        data: data.data.slice(0, 1),
+        data: data.data[0],
         included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
       })
     })
@@ -488,6 +576,12 @@ describe('JsonApi', () => {
       const found = find({ data, first: 2 })
       // another problem with ordering which is whye we are comparing keys
       // probably need a method to sort the keys
+      expect(Object.keys(found.data)).toEqual(Object.keys(data.data.slice(0, 2)))
+      expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
+    })
+
+    it('will fins all the records with an argument', () => {
+      const found = find({ data, all: true })
       expect(Object.keys(found.data)).toEqual(Object.keys(data.data))
       expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
     })

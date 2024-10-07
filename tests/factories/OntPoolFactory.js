@@ -1,7 +1,30 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find } from './../../src/api/JsonApi'
 
-const createIncludedData = (included) => {
+const createIncludedDataForSinglePool = (included, poolingTubeId) => {
+  const {
+    libraries,
+    requests,
+    wells,
+    plates = [],
+    tag_sets: [tag_set] = [{}],
+    tubes,
+  } = groupIncludedByResource(included)
+
+  // We need to find the pool tube in the list of returned tubes
+  const poolingTube = tubes.find((tube) => tube.id === poolingTubeId)
+  return {
+    libraries,
+    requests,
+    wells,
+    plates,
+    tag_set,
+    poolingTube,
+    tubes,
+  }
+}
+
+const createIncludedDataForMultiplePools = (included) => {
   const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
   return {
     tubes,
@@ -13,11 +36,25 @@ const createIncludedData = (included) => {
 
 /**
  *
- * @param {null | integer} numberOfRecords if number of records is null, it will return all the records otherwise it will return the number of records specified
+ * @param {Object} data - the data from the json api response
+ * @param {null | integer} first - the first n records or null for all records
+ * @returns - the included data for the pools
+ */
+const createIncludedData = (data, first) => {
+  if (first === 1) {
+    return createIncludedDataForSinglePool(data.included, data.data.relationships.tube.data.id)
+  } else {
+    return createIncludedDataForMultiplePools(data.included)
+  }
+}
+
+/**
+ *
+ * @param {null | integer} first if first is null, it will return all the records otherwise it will return the number of records specified
  * @returns { BaseFactory }
  * pull out the attributes and relationships from the data and create a factory
  */
-const OntPoolFactory = () => {
+const OntPoolFactory = (first = null) => {
   const data = {
     data: [
       {
@@ -10483,7 +10520,10 @@ const OntPoolFactory = () => {
     },
   }
 
-  return { ...BaseFactory(data), includedData: createIncludedData(data.included) }
+  // if first is completed find the data otherwise return all data
+  const foundData = first ? find({ data, first }) : data
+
+  return { ...BaseFactory(foundData), includedData: createIncludedData(foundData, first) }
 }
 
 export default OntPoolFactory

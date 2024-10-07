@@ -247,7 +247,6 @@ describe('actions.js', () => {
       volume: 1,
       concentration: 1,
       insert_size: 100,
-      //final_library_amount: 100
     }
 
     // pool should be successfully created
