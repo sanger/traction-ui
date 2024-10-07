@@ -20,13 +20,13 @@ const FetchWrapper = (baseUrl, serviceName) => {
      *   - {Array<string>} errors - An array of error messages, if any.
      *   - {Object} data - The response data from the server.
      */
-    post: async function (endpoint, body) {
+    post: async function (endpoint, body, content_type = 'application/json') {
       try {
         const url = `${this.baseUrl}${endpoint}`
         const rawResponse = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': content_type,
           },
           body,
         })
