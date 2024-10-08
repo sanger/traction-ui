@@ -348,9 +348,10 @@ const extractIncludes = (relationships, included) => {
  * @param {Object} data - the data object to be searched
  * @param {Number} first - the number of items to return
  * @param {Boolean} all - return all the data
+ * @param {Boolean} get - is this a get request? find returns data as an object and get returns an array
  * @returns {Object} - the found data and the included resources
  */
-const find = ({ data, all = false, first = 1 } = {}) => {
+const find = ({ data, all = false, first = 1, get = false } = {}) => {
   const foundData = all ? data.data : data.data.slice(0, first)
 
   // we need to extract the includes from the found data
@@ -359,9 +360,9 @@ const find = ({ data, all = false, first = 1 } = {}) => {
   })
 
   // we need to remove the duplicates from included
-  // if we are only extracting a single record data needs to be an object
+  // if we are only extracting a single record and find is used data needs to be an object
   return {
-    data: foundData.length === 1 ? foundData[0] : foundData,
+    data: foundData.length === 1 && !get ? foundData[0] : foundData,
     included: [...new Set(included)],
   }
 }

@@ -1,7 +1,12 @@
 import BaseFactory from './BaseFactory.js'
 import { groupIncludedByResource, find } from './../../src/api/JsonApi'
 
-const createIncludedDataForSinglePool = (included, poolingTubeId) => {
+/**
+ *
+ * @param {Array} included - the included data from the json api response
+ * @returns {Object} - { tubes, libraries, tags, requests, plates, tag_set } the included data for a single pools
+ */
+const createStoreDataForSinglePool = (included, poolingTubeId) => {
   const {
     libraries,
     requests,
@@ -24,7 +29,12 @@ const createIncludedDataForSinglePool = (included, poolingTubeId) => {
   }
 }
 
-const createIncludedDataForMultiplePools = (included) => {
+/**
+ *
+ * @param {Array} included - the included data from the json api response
+ * @returns {Object} - { tubes, libraries, tags, requests } the included data for multiple pools
+ */
+const createStoreDataForMultiplePools = (included) => {
   const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
   return {
     tubes,
@@ -40,11 +50,11 @@ const createIncludedDataForMultiplePools = (included) => {
  * @param {null | integer} first - the first n records or null for all records
  * @returns - the included data for the pools
  */
-const createIncludedData = (data, first) => {
+const createStoreData = (data, first) => {
   if (first === 1) {
-    return createIncludedDataForSinglePool(data.included, data.data.relationships.tube.data.id)
+    return createStoreDataForSinglePool(data.included, data.data.relationships.tube.data.id)
   } else {
-    return createIncludedDataForMultiplePools(data.included)
+    return createStoreDataForMultiplePools(data.included)
   }
 }
 
@@ -10523,7 +10533,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
   // if first is completed find the data otherwise return all data
   const foundData = all ? data : find({ data, all, first })
 
-  return { ...BaseFactory(foundData), includedData: createIncludedData(foundData, first) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, first) }
 }
 
 export default OntPoolFactory

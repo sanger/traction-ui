@@ -7,11 +7,18 @@ import { newResponse } from '@/api/v1/ResponseHelper'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
+
+// could we join these so we only need 1 factory?
 const ontPoolFactory = OntPoolFactory()
 const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+
+const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
+const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
 
 describe('actions.js', () => {
   const {
@@ -76,13 +83,10 @@ describe('actions.js', () => {
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith('setPools', ontPoolFactory.content.data)
 
-      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.includedData.tubes)
-      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.includedData.tags)
-      expect(commit).toHaveBeenCalledWith(
-        'populateLibraries',
-        ontPoolFactory.includedData.libraries,
-      )
-      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.includedData.requests)
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.storeData.tags)
+      expect(commit).toHaveBeenCalledWith('populateLibraries', ontPoolFactory.storeData.libraries)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.storeData.requests)
       expect(success).toEqual(true)
     })
 
@@ -771,23 +775,20 @@ describe('actions.js', () => {
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingLibraries',
-        singleOntPoolFactory.includedData.libraries,
+        singleOntPoolFactory.storeData.libraries,
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingTube',
-        singleOntPoolFactory.includedData.poolingTube,
+        singleOntPoolFactory.storeData.poolingTube,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        singleOntPoolFactory.includedData.requests,
+        singleOntPoolFactory.storeData.requests,
       )
-      expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.includedData.wells)
-      expect(commit).toHaveBeenCalledWith(
-        'populatePlates',
-        singleOntPoolFactory.includedData.plates,
-      )
-      expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.includedData.tubes)
-      expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.includedData.tag_set)
+      expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populatePlates', singleOntPoolFactory.storeData.plates)
+      expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.storeData.tag_set)
 
       expect(success).toEqual(true)
     })
@@ -816,20 +817,22 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntPlateRequest)
+      get.mockResolvedValue(ontPlateFactory.responses.axios)
 
-      const { success } = await findOntPlate({ commit, rootState }, { barcode: 'GEN-1668092750-1' })
+      const { success, errors } = await findOntPlate(
+        { commit, rootState },
+        { barcode: ontPlateFactory.content.data[0].attributes.barcode },
+      )
 
-      expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
-      expect(commit).toHaveBeenCalledWith('populatePlates', Data.OntPlateRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.OntPlateRequest.data.included.slice(0, 8),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntPlateRequest.data.included.slice(8, 16),
-      )
+      console.log(errors)
+
+      expect(commit).toHaveBeenCalledWith('selectPlate', {
+        id: ontPlateFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populatePlates', ontPlateFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateWells', ontPlateFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPlateFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })
@@ -871,16 +874,19 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntTubeRequest)
+      get.mockResolvedValue(ontTubeFactory.responses.axios)
 
-      const { success } = await findOntTube({ commit, rootState }, { barcode: 'GEN-1668092750-4' })
-
-      expect(commit).toHaveBeenCalledWith('selectTube', { id: '2', selected: true })
-      expect(commit).toHaveBeenCalledWith('populateTubes', Data.OntTubeRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntTubeRequest.data.included.slice(0, 1),
+      const { success } = await findOntTube(
+        { commit, rootState },
+        { barcode: ontTubeFactory.content.data[0].attributes.barcode },
       )
+
+      expect(commit).toHaveBeenCalledWith('selectTube', {
+        id: ontTubeFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontTubeFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontTubeFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })

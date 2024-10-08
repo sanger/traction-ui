@@ -585,10 +585,18 @@ describe('JsonApi', () => {
       expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
     })
 
-    it('will fins all the records with an argument', () => {
+    it('will find all the records with an argument', () => {
       const found = find({ data, all: true })
       expect(Object.keys(found.data)).toEqual(Object.keys(data.data))
       expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
+    })
+
+    it('data will be an array if it is using get rather than find', () => {
+      const found = find({ data, get: true })
+      expect(found).toEqual({
+        data: data.data.slice(0, 1),
+        included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
+      })
     })
   })
 })
