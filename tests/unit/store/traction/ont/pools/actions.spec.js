@@ -11,6 +11,7 @@ import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
 const ontPoolFactory = OntPoolFactory()
+const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
 
 describe('actions.js', () => {
   const {
@@ -758,41 +759,35 @@ describe('actions.js', () => {
       // mock dependencies
       const find = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      find.mockResolvedValue(singleOntPoolFactory.responses.axios)
       // apply action
       const { success } = await setPoolData({ commit, rootState }, 3)
 
       // assert result
       expect(commit).toHaveBeenCalledWith('clearPoolData')
-      expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPool.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolAttributes',
+        singleOntPoolFactory.content.data,
+      )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingLibraries',
-        Data.TractionOntPool.data.included.slice(0, 2),
+        singleOntPoolFactory.includedData.libraries,
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingTube',
-        Data.TractionOntPool.data.included.slice(-1)[0],
+        singleOntPoolFactory.includedData.poolingTube,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionOntPool.data.included.slice(101, 196),
+        singleOntPoolFactory.includedData.requests,
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.TractionOntPool.data.included.slice(6, 101),
-      )
+      expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.includedData.wells)
       expect(commit).toHaveBeenCalledWith(
         'populatePlates',
-        Data.TractionOntPool.data.included.slice(5, 6),
+        singleOntPoolFactory.includedData.plates,
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateTubes',
-        Data.TractionOntPool.data.included.slice(-1),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'selectTagSet',
-        Data.TractionOntPool.data.included.slice(4, 5)[0],
-      )
+      expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.includedData.tubes)
+      expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.includedData.tag_set)
 
       expect(success).toEqual(true)
     })
@@ -803,7 +798,7 @@ describe('actions.js', () => {
       // mock dependencies
       const find = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      find.mockResolvedValue(singleOntPoolFactory.responses.axios)
 
       const { success, errors } = await setPoolData({ commit, rootState }, 'new')
       expect(commit).toHaveBeenLastCalledWith('clearPoolData')

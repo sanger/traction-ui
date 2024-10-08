@@ -484,7 +484,12 @@ describe('JsonApi', () => {
           attrE: 'skinny',
           attrF: 'salty',
         },
-        relationships: {},
+        relationships: {
+          links: {
+            self: 'http://example.com/chips/3/relationships/chips',
+            related: 'http://example.com/chips/3/chips',
+          },
+        },
       },
     ],
     included: [

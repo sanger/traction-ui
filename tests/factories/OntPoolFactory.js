@@ -54,7 +54,7 @@ const createIncludedData = (data, first) => {
  * @returns { BaseFactory }
  * pull out the attributes and relationships from the data and create a factory
  */
-const OntPoolFactory = (first = null) => {
+const OntPoolFactory = ({ all = true, first = null } = {}) => {
   const data = {
     data: [
       {
@@ -10521,7 +10521,7 @@ const OntPoolFactory = (first = null) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = first ? find({ data, first }) : data
+  const foundData = all ? data : find({ data, all, first })
 
   return { ...BaseFactory(foundData), includedData: createIncludedData(foundData, first) }
 }

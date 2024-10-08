@@ -315,8 +315,12 @@ const splitDataByParent = ({
  * @returns {Array} - the list of extracted includes
  */
 const extractIncludes = (relationships, included) => {
-  // we are only interested in the data for the relationship
   const rawIncludes = Object.values(relationships).reduce((result, { data }) => {
+    // prevents failure with empty relationships
+    if (!data) {
+      return []
+    }
+
     if (Array.isArray(data)) {
       return [...result, ...data.map((item) => findIncluded(item, included))]
     } else {
