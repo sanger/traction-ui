@@ -1,4 +1,4 @@
-import handlePromise from '@/api/v1/PromiseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 
 const isObject = (item) => {
   return item !== undefined && item instanceof Object
@@ -47,14 +47,14 @@ const create = async (run, request) => {
   try {
     const runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
     const runResponse = await createResource(runPayload, request.runs)
-    id = runResponse.deserialize.runs[0].id
+    id = runResponse.body.data.id
     responses.push(runResponse)
 
     const chipPayload = {
       data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
     }
     const chipResponse = await createResource(chipPayload, request.chips)
-    id = chipResponse.deserialize.chips[0].id
+    id = chipResponse.body.data.id
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
@@ -79,9 +79,9 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  const response = await handlePromise(request.create({ data: payload }))
+  const response = await handleResponse(request.create({ data: payload }))
 
-  if (response.successful) {
+  if (response.success) {
     return response
   } else {
     throw response.errors
@@ -122,9 +122,9 @@ const update = async (run, request) => {
 
 const updateResource = async (payload, request) => {
   const promise = await request.update(payload)
-  const response = await handlePromise(promise)
+  const response = await handleResponse(promise)
 
-  if (response.successful) {
+  if (response.success) {
     return response
   } else {
     throw response.errors
@@ -133,9 +133,8 @@ const updateResource = async (payload, request) => {
 
 const rollback = (responses, request) => {
   for (const response of responses) {
-    const deserializedResponse = response.deserialize
-    const type = Object.keys(deserializedResponse)[0]
-    const id = deserializedResponse[type][0].id
+    const type = response.body.data.type
+    const id = response.body.data.id
     destroy(id, request[type])
   }
 
@@ -145,7 +144,7 @@ const rollback = (responses, request) => {
 const destroy = async (id, request) => {
   const promise = request.destroy(id)
 
-  return await handlePromise(promise)
+  return await handleResponse(promise)
 }
 
 export { build, createResource, create, update, rollback, destroy, assign, updateResource }
