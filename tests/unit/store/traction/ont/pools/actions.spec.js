@@ -7,10 +7,18 @@ import { newResponse } from '@/api/v1/ResponseHelper'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
+
+// could we join these so we only need 1 factory?
 const ontPoolFactory = OntPoolFactory()
+const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+
+const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
+const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
 
 describe('actions.js', () => {
   const {
@@ -75,13 +83,10 @@ describe('actions.js', () => {
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith('setPools', ontPoolFactory.content.data)
 
-      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.includedData.tubes)
-      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.includedData.tags)
-      expect(commit).toHaveBeenCalledWith(
-        'populateLibraries',
-        ontPoolFactory.includedData.libraries,
-      )
-      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.includedData.requests)
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.storeData.tags)
+      expect(commit).toHaveBeenCalledWith('populateLibraries', ontPoolFactory.storeData.libraries)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.storeData.requests)
       expect(success).toEqual(true)
     })
 
@@ -247,7 +252,6 @@ describe('actions.js', () => {
       volume: 1,
       concentration: 1,
       insert_size: 100,
-      //final_library_amount: 100
     }
 
     // pool should be successfully created
@@ -759,41 +763,32 @@ describe('actions.js', () => {
       // mock dependencies
       const find = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      find.mockResolvedValue(singleOntPoolFactory.responses.axios)
       // apply action
       const { success } = await setPoolData({ commit, rootState }, 3)
 
       // assert result
       expect(commit).toHaveBeenCalledWith('clearPoolData')
-      expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPool.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolAttributes',
+        singleOntPoolFactory.content.data,
+      )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingLibraries',
-        Data.TractionOntPool.data.included.slice(0, 2),
+        singleOntPoolFactory.storeData.libraries,
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingTube',
-        Data.TractionOntPool.data.included.slice(-1)[0],
+        singleOntPoolFactory.storeData.poolingTube,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionOntPool.data.included.slice(101, 196),
+        singleOntPoolFactory.storeData.requests,
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.TractionOntPool.data.included.slice(6, 101),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populatePlates',
-        Data.TractionOntPool.data.included.slice(5, 6),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateTubes',
-        Data.TractionOntPool.data.included.slice(-1),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'selectTagSet',
-        Data.TractionOntPool.data.included.slice(4, 5)[0],
-      )
+      expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populatePlates', singleOntPoolFactory.storeData.plates)
+      expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.storeData.tag_set)
 
       expect(success).toEqual(true)
     })
@@ -804,7 +799,7 @@ describe('actions.js', () => {
       // mock dependencies
       const find = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      find.mockResolvedValue(singleOntPoolFactory.responses.axios)
 
       const { success, errors } = await setPoolData({ commit, rootState }, 'new')
       expect(commit).toHaveBeenLastCalledWith('clearPoolData')
@@ -822,20 +817,22 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntPlateRequest)
+      get.mockResolvedValue(ontPlateFactory.responses.axios)
 
-      const { success } = await findOntPlate({ commit, rootState }, { barcode: 'GEN-1668092750-1' })
+      const { success, errors } = await findOntPlate(
+        { commit, rootState },
+        { barcode: ontPlateFactory.content.data[0].attributes.barcode },
+      )
 
-      expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
-      expect(commit).toHaveBeenCalledWith('populatePlates', Data.OntPlateRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.OntPlateRequest.data.included.slice(0, 8),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntPlateRequest.data.included.slice(8, 16),
-      )
+      console.log(errors)
+
+      expect(commit).toHaveBeenCalledWith('selectPlate', {
+        id: ontPlateFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populatePlates', ontPlateFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateWells', ontPlateFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPlateFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })
@@ -877,16 +874,19 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntTubeRequest)
+      get.mockResolvedValue(ontTubeFactory.responses.axios)
 
-      const { success } = await findOntTube({ commit, rootState }, { barcode: 'GEN-1668092750-4' })
-
-      expect(commit).toHaveBeenCalledWith('selectTube', { id: '2', selected: true })
-      expect(commit).toHaveBeenCalledWith('populateTubes', Data.OntTubeRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntTubeRequest.data.included.slice(0, 1),
+      const { success } = await findOntTube(
+        { commit, rootState },
+        { barcode: ontTubeFactory.content.data[0].attributes.barcode },
       )
+
+      expect(commit).toHaveBeenCalledWith('selectTube', {
+        id: ontTubeFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontTubeFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontTubeFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })
