@@ -1,10 +1,13 @@
-import { Data } from '@support/testHelper'
 import Response from '@/api/v1/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
+import SaphyrTubesFactory from '@tests/factories/SaphyrTubesFactory.js'
+import TubeWithLibraryFactory from '@tests/factories/TubeWithLibraryFactory.js'
+
+const saphyrTubesFactory = SaphyrTubesFactory()
+const tubeWithLibraryFactory = TubeWithLibraryFactory()
 
 describe('#getTractionTubesForBarcodes', () => {
   let commit, get, getters, barcodeList, failedResponse, emptyResponse
-
   beforeEach(() => {
     commit = vi.fn()
     get = vi.fn()
@@ -16,9 +19,9 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('successfully for samples', async () => {
-    get.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
+    get.mockReturnValue(saphyrTubesFactory.responses.axios)
 
-    const expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
+    const expectedResponse = new Response(saphyrTubesFactory.responses.axios)
     const expectedTubes = expectedResponse.deserialize.tubes
 
     const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
@@ -28,9 +31,9 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('successfully for libraries', async () => {
-    get.mockReturnValue(Data.TubeWithLibrary)
+    get.mockReturnValue(tubeWithLibraryFactory.responses.axios)
 
-    const expectedResponse = new Response(Data.TubeWithLibrary)
+    const expectedResponse = new Response(tubeWithLibraryFactory.responses.axios)
     const expectedTubes = expectedResponse.deserialize.tubes
 
     const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
@@ -97,8 +100,8 @@ describe('#createLibrariesInTraction', () => {
   })
 
   it('successfully', async () => {
-    const expectedResponse = new Response(Data.TubeWithLibrary)
-    create.mockReturnValue(Data.TubeWithLibrary)
+    const expectedResponse = new Response(tubeWithLibraryFactory.responses.axios)
+    create.mockReturnValue(tubeWithLibraryFactory.responses.axios)
 
     const response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
@@ -171,7 +174,7 @@ describe('#setLibraries', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.TractionSaphyrLibraries)
+    get.mockReturnValue(saphyrTubesFactory.responses.axios)
 
     const libraries = await Actions.setLibraries({ commit, getters })
 
