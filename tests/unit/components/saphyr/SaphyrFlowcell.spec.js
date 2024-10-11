@@ -1,7 +1,9 @@
-import { mount, Data, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
-import * as Run from '@/api/v1/SaphyrRun.js'
-import Response from '@/api/v1/Response'
+import * as Run from '@/api/v2/SaphyrRun.js'
+import { TubeWithLibrary } from '@tests/unit/store/traction/saphyr/runs/actions.spec.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
 describe('Flowcell', () => {
   let wrapper, flowcell, props
@@ -51,9 +53,10 @@ describe('Flowcell', () => {
     })
 
     it('successful when barcode is valid', async () => {
-      const libraryTube = Data.TubeWithLibrary
-      const successfulResponse = new Response(libraryTube)
-      const tube = successfulResponse.deserialize.tubes[0]
+      const successfulResponse = await handleResponse(TubeWithLibrary)
+      const tube = Object.values(
+        dataToObjectById({ data: successfulResponse.body.data.included }),
+      )[0]
 
       flowcell.isLibraryBarcodeValid.mockReturnValue(true)
       flowcell.getTubeForBarcode.mockReturnValue(tube)
