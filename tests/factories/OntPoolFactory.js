@@ -6,7 +6,7 @@ import { groupIncludedByResource, find } from './../../src/api/JsonApi'
  * @param {Array} included - the included data from the json api response
  * @returns {Object} - { tubes, libraries, tags, requests, plates, tag_set } the included data for a single pools
  */
-const createStoreDataForSinglePool = (included, poolingTubeId) => {
+const createStoreDataForSinglePool = (data) => {
   const {
     libraries,
     requests,
@@ -14,10 +14,11 @@ const createStoreDataForSinglePool = (included, poolingTubeId) => {
     plates = [],
     tag_sets: [tag_set] = [{}],
     tubes,
-  } = groupIncludedByResource(included)
+  } = groupIncludedByResource(data.included)
 
   // We need to find the pool tube in the list of returned tubes
-  const poolingTube = tubes.find((tube) => tube.id === poolingTubeId)
+  const poolingTube = tubes.find((tube) => tube.id === data.data.relationships.tube.data.id)
+  const pool = { id: data.data.id, ...data.data.attributes }
   return {
     libraries,
     requests,
@@ -26,6 +27,7 @@ const createStoreDataForSinglePool = (included, poolingTubeId) => {
     tag_set,
     poolingTube,
     tubes,
+    pooling: { pool },
   }
 }
 
@@ -52,7 +54,7 @@ const createStoreDataForMultiplePools = (included) => {
  */
 const createStoreData = (data, first) => {
   if (first === 1) {
-    return createStoreDataForSinglePool(data.included, data.data.relationships.tube.data.id)
+    return createStoreDataForSinglePool(data)
   } else {
     return createStoreDataForMultiplePools(data.included)
   }

@@ -209,7 +209,6 @@ export default {
     const promise = request.get({ filter: filter, include: 'wells.requests' })
     const response = await handleResponse(promise)
 
-    console.log(response)
     let { success, data: { data, included = [] } = {}, errors = [] } = response
     const { wells, requests } = groupIncludedByResource(included)
 

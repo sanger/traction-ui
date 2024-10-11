@@ -1,4 +1,3 @@
-import { Data } from '@support/testHelper'
 import actions from '@/store/traction/ont/pools/actions'
 import { describe, expect, it } from 'vitest'
 import defaultState from '@/store/traction/ont/pools/state'
@@ -9,6 +8,7 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
+import OntAutoTagFactory from '../../../../../factories/OntAutoTagFactory'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
@@ -19,6 +19,7 @@ const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
 
 const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
 const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
+const ontAutoTagFactory = OntAutoTagFactory()
 
 describe('actions.js', () => {
   const {
@@ -404,8 +405,10 @@ describe('actions.js', () => {
     })
   })
 
+  // TODO: This needs some work. Autotagging is na bit of a mess
+  // and the tests are unweildy.
   describe('applyTags', () => {
-    const state = Data.OntAutoTagStore
+    const state = ontAutoTagFactory.storeData
     const library = { ont_request_id: '13', tag_id: '385' } // Starting in E2
 
     it('applies a single tag when autoTag is false', async () => {
@@ -550,7 +553,7 @@ describe('actions.js', () => {
   })
 
   describe('updateLibraryFromCsvRecord', () => {
-    const state = Data.OntAutoTagStore
+    const state = ontAutoTagFactory.storeData
     const info = {
       lines: 3,
       records: 2,
@@ -819,12 +822,10 @@ describe('actions.js', () => {
 
       get.mockResolvedValue(ontPlateFactory.responses.axios)
 
-      const { success, errors } = await findOntPlate(
+      const { success } = await findOntPlate(
         { commit, rootState },
         { barcode: ontPlateFactory.content.data[0].attributes.barcode },
       )
-
-      console.log(errors)
 
       expect(commit).toHaveBeenCalledWith('selectPlate', {
         id: ontPlateFactory.content.data[0].id,
