@@ -2,7 +2,6 @@ import getters from '@/store/traction/ont/pools/getters'
 import defaultState from '@/store/traction/ont/pools/state'
 import merge from 'lodash-es/merge'
 import { describe, expect, it } from 'vitest'
-// import { Data } from '@support/testHelper'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
@@ -341,6 +340,8 @@ describe('getters.js', () => {
         ).attributes.barcode,
       )
 
+      // I degraded this test as to not have to deal with the nested data
+      // this is a good candidate for a refactor
       expect(poolState[0].libraries[0].id).toEqual(poolData[0].relationships.libraries.data[0].id)
     })
   })
