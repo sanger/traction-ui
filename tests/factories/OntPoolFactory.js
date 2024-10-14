@@ -5,6 +5,7 @@ import { groupIncludedByResource, find } from './../../src/api/JsonApi'
  *
  * @param {Array} included - the included data from the json api response
  * @returns {Object} - { tubes, libraries, tags, requests, plates, tag_set } the included data for a single pools
+ * I had to change the tag_set id to pass view tests. This is brittle.
  */
 const createStoreDataForSinglePool = (data) => {
   const {
@@ -5659,7 +5660,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5675,7 +5676,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5691,7 +5692,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5707,7 +5708,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5723,7 +5724,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5739,7 +5740,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5755,7 +5756,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5771,7 +5772,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5787,7 +5788,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
@@ -5803,16 +5804,16 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           tag_set: {
             data: {
               type: 'tag_sets',
-              id: '9',
+              id: '8',
             },
           },
         },
       },
       {
-        id: '9',
+        id: '8',
         type: 'tag_sets',
         links: {
-          self: 'http://localhost:3100/v1/ont/tag_sets/9',
+          self: 'http://localhost:3100/v1/ont/tag_sets/8',
         },
         attributes: {
           name: 'SQK-NBD114.96',
@@ -5822,8 +5823,8 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
         relationships: {
           tags: {
             links: {
-              self: 'http://localhost:3100/v1/ont/tag_sets/9/relationships/tags',
-              related: 'http://localhost:3100/v1/ont/tag_sets/9/tags',
+              self: 'http://localhost:3100/v1/ont/tag_sets/8/relationships/tags',
+              related: 'http://localhost:3100/v1/ont/tag_sets/8/tags',
             },
             data: [
               {

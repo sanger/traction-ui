@@ -39,7 +39,6 @@ import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMater
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore.json'
-import OntAutoTagStore from './ontAutoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import OntTubesRequest from './ontTubesRequest.json'
 import OntPlates from './ontPlates.json'
@@ -48,7 +47,6 @@ import OntRequestsRequest from './ontRequestsRequest'
 import OntTubeRequest from './ontTubeRequest.json'
 import OntRun from './ontRun.json'
 import tractionOntLibraries from './tractionOntLibraries'
-import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
@@ -92,13 +90,11 @@ export default {
   PacbioWellLibrary,
   tractionOntLibraries,
   TractionOntRequests,
-  TractionOntPool,
   TractionOntPools,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
-  OntAutoTagStore,
   OntPlatesRequest,
   OntPlates,
   OntPlateRequest,

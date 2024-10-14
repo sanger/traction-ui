@@ -312,13 +312,20 @@ const splitDataByParent = ({
  * If the includes have their own relationships, then extract those
  * @param {Object} relationships - the list of relationships to be extracted
  * @param {Array} included - the list of included resources
+ * @param {Number} depth - the depth of the extraction
  * @returns {Array} - the list of extracted includes
  */
-const extractIncludes = (relationships, included) => {
+const extractIncludes = (relationships, included, depth = 1) => {
+  // if we don't set a depth we get a stack overflow
+  // we may need to set this dynamically if we have a large number of relationships
+  if (depth > 3) {
+    return []
+  }
+
   const rawIncludes = Object.values(relationships).reduce((result, { data }) => {
     // prevents failure with empty relationships
     if (!data) {
-      return []
+      return [...result]
     }
 
     if (Array.isArray(data)) {
@@ -333,13 +340,14 @@ const extractIncludes = (relationships, included) => {
   // we could do this in findIncluded but that is used elsewhere
   const includes = rawIncludes.flatMap((includes) => {
     if (includes.relationships) {
-      return [includes, ...extractIncludes(includes.relationships, included)]
+      return [includes, ...extractIncludes(includes.relationships, included, depth + 1)]
     } else {
       return includes
     }
   })
 
-  return includes
+  // we need to remove includes with no id as this indicates it is part of the data
+  return includes.filter((item) => item.id)
 }
 
 /**

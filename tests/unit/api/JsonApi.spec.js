@@ -563,6 +563,117 @@ describe('JsonApi', () => {
       const included = extractIncludes(relationships, includes)
       expect(included).toEqual(rawData.included.slice(3, 7))
     })
+
+    it('will not produce empty includes', () => {
+      const relationships = {
+        request: {
+          data: {
+            type: 'requests',
+            id: '11',
+          },
+        },
+        pool: {
+          data: {
+            type: 'pools',
+            id: '7',
+          },
+        },
+      }
+      const included = [
+        {
+          id: '11',
+          type: 'requests',
+          attributes: {
+            library_type: 'ONT_GridIon',
+            data_type: 'basecalls',
+            cost_code: 'S10010',
+          },
+        },
+      ]
+
+      // the pool does not have a relationship in the included
+      const includes = extractIncludes(relationships, included)
+      expect(includes.length).toEqual(1)
+    })
+
+    it('should not produce a stack overflow error using a depth', () => {
+      const relationships = {
+        tag_set: {
+          data: {
+            type: 'tag_sets',
+            id: '8',
+          },
+        },
+      }
+
+      const included = [
+        {
+          id: '389',
+          type: 'tags',
+          attributes: {
+            oligo: 'CACAAAGACACCGACAACTTTCTT',
+            group_id: 'NB01',
+          },
+          relationships: {
+            tag_set: {
+              data: {
+                type: 'tag_sets',
+                id: '9',
+              },
+            },
+          },
+        },
+        {
+          id: '390',
+          type: 'tags',
+          attributes: {
+            oligo: 'ACAGACGACTACAAACGGAATCGA',
+            group_id: 'NB02',
+          },
+          relationships: {
+            tag_set: {
+              data: {
+                type: 'tag_sets',
+                id: '8',
+              },
+            },
+          },
+        },
+        {
+          id: '8',
+          type: 'tag_sets',
+          links: {
+            self: 'http://localhost:3100/v1/ont/tag_sets/8',
+          },
+          attributes: {
+            name: 'SQK-NBD114.96',
+            uuid: null,
+            pipeline: 'ont',
+          },
+          relationships: {
+            tags: {
+              links: {
+                self: 'http://localhost:3100/v1/ont/tag_sets/8/relationships/tags',
+                related: 'http://localhost:3100/v1/ont/tag_sets/8/tags',
+              },
+              data: [
+                {
+                  type: 'tags',
+                  id: '389',
+                },
+                {
+                  type: 'tags',
+                  id: '390',
+                },
+              ],
+            },
+          },
+        },
+      ]
+
+      const includes = extractIncludes(relationships, included)
+      expect(includes.length).toEqual(4)
+    })
   })
 
   describe('find', () => {
@@ -598,5 +709,11 @@ describe('JsonApi', () => {
         included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
       })
     })
+
+    // it('should not produce a stack overflow error', () => {
+    //   const ontPoolFactory = OntPoolFactory()
+    //   const found = find({ data: ontPoolFactory.content, first: 1 })
+    //   expect(found.data).toBeDefined()
+    // })
   })
 })

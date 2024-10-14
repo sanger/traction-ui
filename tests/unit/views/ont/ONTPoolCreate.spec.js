@@ -1,9 +1,11 @@
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, router, flushPromises } from '@support/testHelper'
 import { expect } from 'vitest'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
+const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
 
 describe('OntPoolCreate', () => {
   it('will fetch all of the data', async () => {
@@ -75,9 +77,9 @@ describe('OntPoolCreate', () => {
     // The pool has the id of the tag set so I had to change it.
     // it might be worth passing in the id of the tag set to the pool
     // factory to make it less brittle
-    poolsRequest.find = vi.fn(() => Data.TractionOntPool)
+    poolsRequest.find = vi.fn(() => singleOntPoolFactory.responses.axios)
 
-    await router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
+    await router.push({ name: 'ONTPoolCreate', params: { id: 15 } })
     mount(ONTPoolCreate, {
       store,
       router,
