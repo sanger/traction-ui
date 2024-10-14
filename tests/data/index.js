@@ -1,4 +1,3 @@
-import Enzymes from './enzymes'
 import Libraries from './libraries'
 import Requests from './requests'
 import RunNoLibrary from './runNoLibrary'
@@ -34,25 +33,17 @@ import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
-import TractionOntRequests from './tractionOntRequests'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
-import OntTubesRequest from './ontTubesRequest.json'
-import OntPlates from './ontPlates.json'
-import OntPlateRequest from './ontPlateRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
-import OntTubeRequest from './ontTubeRequest.json'
 import OntRun from './ontRun.json'
-import tractionOntLibraries from './tractionOntLibraries'
-import TractionOntPools from './tractionOntPools.json'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
 
 export default {
-  Enzymes,
   Libraries,
   Requests,
   RunNoLibrary,
@@ -88,20 +79,13 @@ export default {
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
-  tractionOntLibraries,
-  TractionOntRequests,
-  TractionOntPools,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
   OntPlatesRequest,
-  OntPlates,
-  OntPlateRequest,
   OntRequestsRequest,
   OntRun,
-  OntTubeRequest,
-  OntTubesRequest,
   PacbioRunWithWellDefaults,
   StorePools,
 }

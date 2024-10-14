@@ -1,13 +1,16 @@
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import { mount, store, Data, flushPromises } from '@support/testHelper'
+import { mount, store, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
+import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+
+const ontRequestFactory = OntRequestFactory()
 
 describe('OntSampleIndex', () => {
   let wrapper
 
   beforeEach(async () => {
     const get = vi.spyOn(store.state.api.v1.traction.ont.requests, 'get')
-    get.mockReturnValue(Data.TractionOntRequests)
+    get.mockReturnValue(ontRequestFactory.responses.axios)
 
     wrapper = mount(ONTSampleIndex, {
       store,
@@ -24,7 +27,7 @@ describe('OntSampleIndex', () => {
     })
 
     it('displays each of the requests', async () => {
-      const expectedRequests = Data.TractionOntRequests.data.data.length
+      const expectedRequests = ontRequestFactory.content.data.length
       expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
     })
   })

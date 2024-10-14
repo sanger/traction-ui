@@ -79,7 +79,10 @@ describe('OntPoolCreate', () => {
     // factory to make it less brittle
     poolsRequest.find = vi.fn(() => singleOntPoolFactory.responses.axios)
 
-    await router.push({ name: 'ONTPoolCreate', params: { id: 15 } })
+    await router.push({
+      name: 'ONTPoolCreate',
+      params: { id: singleOntPoolFactory.content.data.id },
+    })
     mount(ONTPoolCreate, {
       store,
       router,
