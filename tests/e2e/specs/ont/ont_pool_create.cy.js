@@ -194,7 +194,7 @@ describe('Ont Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
   })
 
-  it.only('can populate tags from csv', () => {
+  it('can populate tags from csv', () => {
     cy.visit('#/ont/pool/new')
     cy.contains('Pool')
     cy.get('#labware-finder-input').type('GENSAMPLE-1668092750-1')

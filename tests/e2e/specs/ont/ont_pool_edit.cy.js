@@ -43,7 +43,7 @@ describe('ONT Pool Edit', () => {
       flipper_id: 'User',
     })
   })
-  it.only('updates pool information on clicking requests table rows', () => {
+  it('updates pool information on clicking requests table rows', () => {
     cy.visit('#/ont/pools')
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()

@@ -337,7 +337,7 @@ export default {
    * @param rootState the vuex rootState object. Provides access to the current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchOntPools: async ({ commit, rootState }, filter, page) => {
+  fetchOntPools: async ({ commit, rootState }, filter = {}, page = {}) => {
     const request = rootState.api.v2.traction.ont.pools
     const promise = request.get({
       page,
