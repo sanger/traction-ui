@@ -1,5 +1,4 @@
-import { handleResponse } from '@/api/v1/ResponseHelper'
-import { handleResponse as handleResponseV2 } from '@/api/v2/ResponseHelper'
+import { handleResponse } from '@/api/v2/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { wellFor, wellToIndex } from './wellHelpers'
 import { validate, valid, payload } from './pool'
@@ -152,7 +151,7 @@ export default {
       return { success: true, errors: [] }
     }
 
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.find({
       id: id,
       include:
@@ -160,7 +159,7 @@ export default {
     })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, body: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
       const {
@@ -205,11 +204,11 @@ export default {
       }
     }
 
-    const request = rootState.api.v1.traction.ont.plates
-    const promise = request.get({ filter: filter, include: 'wells.requests' })
+    const request = rootState.api.v2.traction.ont.plates
+    const promise = request.get({ filter, include: 'wells.requests' })
     const response = await handleResponse(promise)
 
-    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    let { success, body: { data, included = [] } = {}, errors = [] } = response
     const { wells, requests } = groupIncludedByResource(included)
 
     // We will be return a successful empty list if no plates match the filter
@@ -246,10 +245,10 @@ export default {
       }
     }
 
-    const request = rootState.api.v1.traction.ont.tubes
-    const promise = request.get({ filter: filter, include: 'requests' })
+    const request = rootState.api.v2.traction.ont.tubes
+    const promise = request.get({ filter, include: 'requests' })
     const response = await handleResponse(promise)
-    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    let { success, body: { data, included = [] } = {}, errors = [] } = response
     const { requests } = groupIncludedByResource(included)
 
     // We will be return a successful empty list if no tubes match the filter
@@ -292,11 +291,11 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntRequests: async ({ commit, rootState }, filter, page) => {
-    const request = rootState.api.v1.traction.ont.requests
+    const request = rootState.api.v2.traction.ont.requests
     const promise = request.get({ page, filter })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, meta = {} } = {}, errors = [] } = response
+    const { success, body: { data, meta = {} } = {}, errors = [] } = response
 
     if (success) {
       commit('setRequests', data)
@@ -309,6 +308,7 @@ export default {
    * Validate a pool for the given barcode exists
    * @param rootState the vuex state object. Provides access to current state
    * @param barcode the barcode applied to the pool search
+   * There doesn't seem to be a test for this. Maybe e2e?
    */
   validatePoolBarcode: async ({ rootState }, barcode) => {
     // Here we want to make sure the barcode exists
@@ -319,10 +319,10 @@ export default {
       }
     }
 
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.get({ filter: { barcode } })
     const response = await handleResponse(promise)
-    let { success, data: { data } = {} } = response
+    let { success, body: { data } = {} } = response
 
     // We will be returned a successful empty list if no pools match the barcode
     // Therefore we want to return success false, if we don't have any pools
@@ -338,7 +338,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntPools: async ({ commit, rootState }, filter, page) => {
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.get({
       page,
       filter,
@@ -346,7 +346,7 @@ export default {
     })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
+    const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
@@ -368,15 +368,16 @@ export default {
    */
   // For the component, the included relationships are not required
   // However, the functionality does not appear to work without them
+  // no unit tests?
   populateOntPools: async ({ commit, rootState }, filter) => {
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.get({
       filter: filter,
       include: 'tube,libraries.tag,libraries.request',
     })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, body: { data, included = [] } = {}, errors = [] } = response
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
@@ -398,7 +399,7 @@ export default {
   fetchOntTagSets: async ({ commit, rootState }) => {
     const request = rootState.api.v2.traction.ont.tag_sets
     const promise = request.get({ include: 'tags' })
-    const response = await handleResponseV2(promise)
+    const response = await handleResponse(promise)
 
     const { success, body: { data, included = [] } = {}, errors = [] } = response
 
@@ -422,9 +423,9 @@ export default {
   }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.create({ data: payload({ libraries, pool }), include: 'tube' })
-    const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
+    const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
     const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
     const { attributes: { barcode = '' } = {} } = tube
     return { success, barcode, errors }
@@ -441,7 +442,7 @@ export default {
   }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
-    const request = rootState.api.v1.traction.ont.pools
+    const request = rootState.api.v2.traction.ont.pools
     const promise = request.update(payload({ libraries, pool }))
     const { success, errors } = await handleResponse(promise)
     return { success, errors }

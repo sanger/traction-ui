@@ -58,7 +58,7 @@ describe('OntPoolCreate', () => {
     const {
       state: {
         api: {
-          v1: {
+          v2: {
             traction: {
               ont: { pools: poolsRequest },
             },
@@ -77,7 +77,7 @@ describe('OntPoolCreate', () => {
     // The pool has the id of the tag set so I had to change it.
     // it might be worth passing in the id of the tag set to the pool
     // factory to make it less brittle
-    poolsRequest.find = vi.fn(() => singleOntPoolFactory.responses.axios)
+    poolsRequest.find = vi.fn(() => singleOntPoolFactory.responses.fetch)
 
     await router.push({
       name: 'ONTPoolCreate',

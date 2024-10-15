@@ -25,8 +25,8 @@ describe('OntPoolIndex', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.v1.traction.ont.pools, 'get')
-    get.mockResolvedValue(ontPoolFactory.responses.axios)
+    const get = vi.spyOn(store.state.api.v2.traction.ont.pools, 'get')
+    get.mockResolvedValue(ontPoolFactory.responses.fetch)
     const { wrapperObj } = mountWithStore()
     wrapper = wrapperObj
     await flushPromises()
