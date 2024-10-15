@@ -709,11 +709,5 @@ describe('JsonApi', () => {
         included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
       })
     })
-
-    // it('should not produce a stack overflow error', () => {
-    //   const ontPoolFactory = OntPoolFactory()
-    //   const found = find({ data: ontPoolFactory.content, first: 1 })
-    //   expect(found.data).toBeDefined()
-    // })
   })
 })

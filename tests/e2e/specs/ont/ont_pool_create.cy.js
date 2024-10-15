@@ -1,5 +1,9 @@
 import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
+import OntPlateFactory from '../../../factories/OntPlateFactory.js'
 
+// TODO: A lot of this is still brittle
+// The tags and tags in plates need to be the same
+// The tags in the csv need to be the same
 describe('Ont Pool Create', () => {
   beforeEach(() => {
     cy.wrap(OntTagSetFactory()).as('ontTagSetFactory')
@@ -10,9 +14,14 @@ describe('Ont Pool Create', () => {
       })
     })
 
+    cy.wrap(OntPlateFactory({ all: false, first: 1 })).as('ontPlateFactory')
+
     // tags are hardcoded. This should be moved to a factory.
-    cy.intercept('/v1/ont/plates?filter[barcode]=GENSAMPLE-1668092750-1&include=wells.requests', {
-      fixture: 'tractionOntPlate.json',
+    cy.get('@ontPlateFactory').then((ontPlateFactory) => {
+      cy.intercept('/v1/ont/plates?filter[barcode]=GENSAMPLE-1668092750-1&include=wells.requests', {
+        statusCode: 200,
+        body: ontPlateFactory.content,
+      })
     })
 
     cy.intercept('flipper/api/actors/User', {
@@ -130,13 +139,17 @@ describe('Ont Pool Create', () => {
           position: 'bottomRight',
         })
     })
-    cy.get('[data-type=pool-library-edit]').should('have.length', 4)
+    cy.get('[data-type=pool-library-edit]').should('have.length', 8)
 
     const orderedElements = [
       'GEN-1668092750-1:A1',
       'GEN-1668092750-1:B1',
       'GEN-1668092750-1:C1',
       'GEN-1668092750-1:D1',
+      'GEN-1668092750-1:E1',
+      'GEN-1668092750-1:F1',
+      'GEN-1668092750-1:G1',
+      'GEN-1668092750-1:H1',
     ]
 
     cy.get('#qcFileInput').attachFile('ont.csv')
@@ -204,13 +217,17 @@ describe('Ont Pool Create', () => {
           position: 'bottomRight',
         })
     })
-    cy.get('[data-type=pool-library-edit]').should('have.length', 4)
+    cy.get('[data-type=pool-library-edit]').should('have.length', 8)
 
     const orderedElements = [
       'GEN-1668092750-1:A1',
       'GEN-1668092750-1:B1',
       'GEN-1668092750-1:C1',
       'GEN-1668092750-1:D1',
+      'GEN-1668092750-1:E1',
+      'GEN-1668092750-1:F1',
+      'GEN-1668092750-1:G1',
+      'GEN-1668092750-1:H1',
     ]
     // can we create this dynamically?
     cy.get('#qcFileInput').attachFile('ontAndTags.csv')
@@ -225,7 +242,7 @@ describe('Ont Pool Create', () => {
     // this is brittle as tags are hard coded in file
     cy.get('@ontTagSetFactory').then((ontTagSetFactory) => {
       const selected = ontTagSetFactory.storeData.selected
-      const tagList = selected.tags.first(4)
+      const tagList = selected.tags.first(8)
 
       cy.get('[data-type=pool-library-edit]')
         .filter(':contains("GEN-1668092750-1:A1")')
@@ -243,6 +260,22 @@ describe('Ont Pool Create', () => {
         .filter(':contains("GEN-1668092750-1:D1")')
         .find('[data-type=tag-list]')
         .should('have.value', tagList[3].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:E1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[4].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:F1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[5].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:G1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[6].id)
+      cy.get('[data-type=pool-library-edit]')
+        .filter(':contains("GEN-1668092750-1:H1")')
+        .find('[data-type=tag-list]')
+        .should('have.value', tagList[7].id)
     })
 
     cy.intercept('/v1/ont/pools?include=tube', {

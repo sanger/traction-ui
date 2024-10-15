@@ -26,14 +26,38 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
               related: 'http://localhost:3100/v1/ont/plates/1/wells',
             },
             data: [
-              { type: 'wells', id: '1' },
-              { type: 'wells', id: '2' },
-              { type: 'wells', id: '3' },
-              { type: 'wells', id: '4' },
-              { type: 'wells', id: '5' },
-              { type: 'wells', id: '6' },
-              { type: 'wells', id: '7' },
-              { type: 'wells', id: '8' },
+              {
+                type: 'wells',
+                id: '1',
+              },
+              {
+                type: 'wells',
+                id: '2',
+              },
+              {
+                type: 'wells',
+                id: '3',
+              },
+              {
+                type: 'wells',
+                id: '4',
+              },
+              {
+                type: 'wells',
+                id: '5',
+              },
+              {
+                type: 'wells',
+                id: '6',
+              },
+              {
+                type: 'wells',
+                id: '7',
+              },
+              {
+                type: 'wells',
+                id: '8',
+              },
             ],
           },
         },
@@ -55,14 +79,38 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
               related: 'http://localhost:3100/v1/ont/plates/2/wells',
             },
             data: [
-              { type: 'wells', id: '96' },
-              { type: 'wells', id: '97' },
-              { type: 'wells', id: '98' },
-              { type: 'wells', id: '99' },
-              { type: 'wells', id: '100' },
-              { type: 'wells', id: '101' },
-              { type: 'wells', id: '102' },
-              { type: 'wells', id: '103' },
+              {
+                type: 'wells',
+                id: '96',
+              },
+              {
+                type: 'wells',
+                id: '97',
+              },
+              {
+                type: 'wells',
+                id: '98',
+              },
+              {
+                type: 'wells',
+                id: '99',
+              },
+              {
+                type: 'wells',
+                id: '100',
+              },
+              {
+                type: 'wells',
+                id: '101',
+              },
+              {
+                type: 'wells',
+                id: '102',
+              },
+              {
+                type: 'wells',
+                id: '103',
+              },
             ],
           },
         },
@@ -77,10 +125,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '1' }],
+            data: [
+              {
+                type: 'requests',
+                id: '1',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -92,10 +148,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '2' }],
+            data: [
+              {
+                type: 'requests',
+                id: '2',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -107,10 +171,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '3' }],
+            data: [
+              {
+                type: 'requests',
+                id: '3',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -122,10 +194,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '4' }],
+            data: [
+              {
+                type: 'requests',
+                id: '4',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -137,10 +217,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '5' }],
+            data: [
+              {
+                type: 'requests',
+                id: '5',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -152,10 +240,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '6' }],
+            data: [
+              {
+                type: 'requests',
+                id: '6',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -167,10 +263,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '7' }],
+            data: [
+              {
+                type: 'requests',
+                id: '7',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -182,10 +286,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '8' }],
+            data: [
+              {
+                type: 'requests',
+                id: '8',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '1' },
+            data: {
+              type: 'plates',
+              id: '1',
+            },
           },
         },
       },
@@ -197,10 +309,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '96' }],
+            data: [
+              {
+                type: 'requests',
+                id: '96',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -212,10 +332,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '97' }],
+            data: [
+              {
+                type: 'requests',
+                id: '97',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -227,10 +355,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '98' }],
+            data: [
+              {
+                type: 'requests',
+                id: '98',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -242,10 +378,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '99' }],
+            data: [
+              {
+                type: 'requests',
+                id: '99',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -257,10 +401,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '100' }],
+            data: [
+              {
+                type: 'requests',
+                id: '100',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -272,10 +424,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '101' }],
+            data: [
+              {
+                type: 'requests',
+                id: '101',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -287,10 +447,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '102' }],
+            data: [
+              {
+                type: 'requests',
+                id: '102',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
@@ -302,10 +470,18 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
         },
         relationships: {
           requests: {
-            data: [{ type: 'requests', id: '103' }],
+            data: [
+              {
+                type: 'requests',
+                id: '103',
+              },
+            ],
           },
           plate: {
-            data: { type: 'plates', id: '2' },
+            data: {
+              type: 'plates',
+              id: '2',
+            },
           },
         },
       },
