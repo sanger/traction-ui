@@ -74,7 +74,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
         id: '1',
         type: 'pools',
         links: {
-          self: 'http://localhost:3100/v1/ont/pools/15',
+          self: 'http://localhost:3100/v1/ont/pools/1',
         },
         attributes: {
           volume: 6.0,
@@ -90,8 +90,8 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
         relationships: {
           tube: {
             links: {
-              self: 'http://localhost:3100/v1/ont/pools/15/relationships/tube',
-              related: 'http://localhost:3100/v1/ont/pools/15/tube',
+              self: 'http://localhost:3100/v1/ont/pools/1/relationships/tube',
+              related: 'http://localhost:3100/v1/ont/pools/1/tube',
             },
             data: {
               type: 'tubes',
@@ -100,8 +100,8 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           },
           libraries: {
             links: {
-              self: 'http://localhost:3100/v1/ont/pools/15/relationships/libraries',
-              related: 'http://localhost:3100/v1/ont/pools/15/libraries',
+              self: 'http://localhost:3100/v1/ont/pools/1/relationships/libraries',
+              related: 'http://localhost:3100/v1/ont/pools/1/libraries',
             },
             data: [
               {
@@ -850,7 +850,7 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
         id: '15',
         type: 'pools',
         links: {
-          self: 'http://localhost:3100/v1/ont/pools/1',
+          self: 'http://localhost:3100/v1/ont/pools/15',
         },
         attributes: {
           volume: 7.0,
@@ -866,8 +866,8 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
         relationships: {
           tube: {
             links: {
-              self: 'http://localhost:3100/v1/ont/pools/1/relationships/tube',
-              related: 'http://localhost:3100/v1/ont/pools/1/tube',
+              self: 'http://localhost:3100/v1/ont/pools/15/relationships/tube',
+              related: 'http://localhost:3100/v1/ont/pools/15/tube',
             },
             data: {
               type: 'tubes',
@@ -876,8 +876,8 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
           },
           libraries: {
             links: {
-              self: 'http://localhost:3100/v1/ont/pools/1/relationships/libraries',
-              related: 'http://localhost:3100/v1/ont/pools/1/libraries',
+              self: 'http://localhost:3100/v1/ont/pools/15/relationships/libraries',
+              related: 'http://localhost:3100/v1/ont/pools/15/libraries',
             },
             data: [
               {

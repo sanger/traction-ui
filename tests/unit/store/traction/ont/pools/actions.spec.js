@@ -20,6 +20,35 @@ const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
 const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
 const ontAutoTagFactory = OntAutoTagFactory()
 
+const successResponse = ({ status = '201', data = {}, included = [] } = {}) => {
+  return {
+    status,
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data,
+        included,
+      }),
+    ok: true,
+  }
+}
+
+const failureResponse = (statusCode = 500) => {
+  const statusTypes = {
+    422: { status: 422, statusText: 'Unprocessable Entity' },
+    500: { status: 500, statusText: 'Internal Server Error' },
+  }
+  return {
+    ...statusTypes[statusCode],
+    json: () =>
+      Promise.resolve({
+        errors: [{ title: 'error1', detail: 'There was an error.' }],
+      }),
+    ok: false,
+    errorSummary: 'error1 There was an error.',
+  }
+}
+
 describe('actions.js', () => {
   const {
     fetchOntRequests,
@@ -57,16 +86,7 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { requests: { get } } } } } }
-      get.mockRejectedValue({
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      })
+      get.mockRejectedValue(failureResponse)
 
       // apply action
       const { success } = await fetchOntRequests({ commit, rootState })
@@ -102,16 +122,7 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { pools: { get } } } } } }
-      get.mockRejectedValue({
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      })
+      get.mockRejectedValue(failureResponse)
       // apply action
       const { success } = await fetchOntPools({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
@@ -142,16 +153,7 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
-      get.mockRejectedValue({
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      })
+      get.mockRejectedValue(failureResponse)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
       // assert result
@@ -272,17 +274,10 @@ describe('actions.js', () => {
 
     // pool should be successfully created
     it('when the pool is valid', async () => {
-      // mock response
-      const mockResponse = {
-        status: '201',
-        statusText: 'OK',
-        json: () =>
-          Promise.resolve({
-            data: {},
-            included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
-          }),
-        ok: true,
-      }
+      const mockResponse = successResponse({
+        data: {},
+        included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+      })
 
       // mock dependencies
       const create = vi.fn()
@@ -302,17 +297,7 @@ describe('actions.js', () => {
     })
 
     it('when there is an error', async () => {
-      // mock response
-      const mockResponse = {
-        status: 422,
-        statusText: 'Record not found',
-        json: () =>
-          Promise.resolve({ errors: [{ title: 'error1', detail: 'There was an error.' }] }),
-        data: {
-          errors: { error1: ['There was an error'] },
-        },
-        ok: false,
-      }
+      const mockResponse = failureResponse(422)
 
       // mock dependencies
       const update = vi.fn(() => Promise.resolve(mockResponse))
@@ -323,7 +308,7 @@ describe('actions.js', () => {
         state: { pooling: { libraries, pool } },
       })
       expect(success).toBeFalsy
-      expect(errors).toEqual('error1 There was an error.')
+      expect(errors).toEqual(mockResponse.errorSummary)
     })
 
     // validate libraries fails
@@ -380,16 +365,11 @@ describe('actions.js', () => {
     // pool should be successfully created
     it('when the pool is valid', async () => {
       // mock response
-      const mockResponse = {
-        status: '201',
-        statusText: 'OK',
-        json: () =>
-          Promise.resolve({
-            data: {},
-            included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
-          }),
-        ok: true,
-      }
+      const mockResponse = successResponse({
+        data: {},
+        included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+      })
+
       // mock dependencies
       const update = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
@@ -402,16 +382,7 @@ describe('actions.js', () => {
 
     it('when there is an error', async () => {
       // mock response
-      const mockResponse = {
-        status: 422,
-        statusText: 'Record not found',
-        json: () =>
-          Promise.resolve({ errors: [{ title: 'error1', detail: 'There was an error.' }] }),
-        data: {
-          errors: { error1: ['There was an error'] },
-        },
-        ok: false,
-      }
+      const mockResponse = failureResponse(422)
       // mock dependencies
       const update = vi.fn(() => Promise.resolve(mockResponse))
       const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
@@ -421,7 +392,7 @@ describe('actions.js', () => {
         state: { pooling: { libraries, pool } },
       })
       expect(success).toBeFalsy
-      expect(errors).toEqual('error1 There was an error.')
+      expect(errors).toEqual(mockResponse.errorSummary)
     })
 
     // validate libraries fails
@@ -885,12 +856,7 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
 
-      get.mockResolvedValue({
-        status: '200',
-        statusText: 'OK',
-        json: () => Promise.resolve({ data: [] }),
-        ok: true,
-      })
+      get.mockResolvedValue(successResponse({ status: '200' }))
 
       const { success, errors } = await findOntPlate(
         { commit, rootState },
@@ -944,12 +910,7 @@ describe('actions.js', () => {
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { tubes: { get } } } } } }
 
-      get.mockResolvedValue({
-        status: '200',
-        statusText: 'OK',
-        json: () => Promise.resolve({ data: [] }),
-        ok: true,
-      })
+      get.mockResolvedValue(successResponse({ status: '200' }))
 
       const { success, errors } = await findOntTube(
         { commit, rootState },

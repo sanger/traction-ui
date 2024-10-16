@@ -74,7 +74,7 @@ describe('ONT Pool Edit', () => {
     })
   })
 
-  it('Updates a pool successfully', () => {
+  it.only('Updates a pool successfully', () => {
     cy.visit('#/ont/pools')
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()
@@ -88,8 +88,9 @@ describe('ONT Pool Edit', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('/v1/ont/pools/9', {
+    cy.intercept('/v1/ont/pools/1', {
       statusCode: 200,
+      body: {},
     })
     cy.get('[data-action=update-pool]').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
