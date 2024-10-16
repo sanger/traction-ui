@@ -313,12 +313,11 @@ const splitDataByParent = ({
  * @param {Object} relationships - the list of relationships to be extracted
  * @param {Array} included - the list of included resources
  * @param {Number} depth - the depth of the extraction
+ * @param {Number} maximumDepth - the maximum depth of the extraction. This is to prevent stack overflow error. Default is 3 (enough to get all data out for standard response). Othwerwise it gets stuck in an endless loop e.g. tags and tag sets.
  * @returns {Array} - the list of extracted includes
  */
-const extractIncludes = (relationships, included, depth = 1) => {
-  // if we don't set a depth we get a stack overflow
-  // we may need to set this dynamically if we have a large number of relationships
-  if (depth > 3) {
+const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 }) => {
+  if (depth > maximumDepth) {
     return []
   }
 
@@ -340,7 +339,10 @@ const extractIncludes = (relationships, included, depth = 1) => {
   // we could do this in findIncluded but that is used elsewhere
   const includes = rawIncludes.flatMap((includes) => {
     if (includes.relationships) {
-      return [includes, ...extractIncludes(includes.relationships, included, depth + 1)]
+      return [
+        includes,
+        ...extractIncludes({ relationships: includes.relationships, included, depth: depth + 1 }),
+      ]
     } else {
       return includes
     }
@@ -364,7 +366,7 @@ const find = ({ data, all = false, first = 1, get = false } = {}) => {
 
   // we need to extract the includes from the found data
   const included = foundData.flatMap(({ relationships }) => {
-    return extractIncludes(relationships, data.included)
+    return extractIncludes({ relationships, included: data.included })
   })
 
   // we need to remove the duplicates from included

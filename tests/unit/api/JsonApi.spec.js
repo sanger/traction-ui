@@ -560,7 +560,7 @@ describe('JsonApi', () => {
       const includes = rawData.included
       const relationships = rawData.data[1].relationships
 
-      const included = extractIncludes(relationships, includes)
+      const included = extractIncludes({ relationships, included: includes })
       expect(included).toEqual(rawData.included.slice(3, 7))
     })
 
@@ -592,7 +592,7 @@ describe('JsonApi', () => {
       ]
 
       // the pool does not have a relationship in the included
-      const includes = extractIncludes(relationships, included)
+      const includes = extractIncludes({ relationships, included })
       expect(includes.length).toEqual(1)
     })
 
@@ -671,7 +671,7 @@ describe('JsonApi', () => {
         },
       ]
 
-      const includes = extractIncludes(relationships, included)
+      const includes = extractIncludes({ relationships, included })
       expect(includes.length).toEqual(4)
     })
   })
