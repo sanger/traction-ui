@@ -97,7 +97,7 @@ export default {
         const selectedBarcodes = this.selected.map((s) => s.barcode)
         const responses = await this.deleteLibraries(selectedIds)
 
-        if (responses.every((r) => r.successful)) {
+        if (responses.every((r) => r.success)) {
           const keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
           this.showAlert(
             `${keyword} ${selectedBarcodes.join(', ')} successfully deleted`,
