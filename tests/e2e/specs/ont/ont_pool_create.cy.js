@@ -64,14 +64,16 @@ describe('Ont Pool Create', () => {
     cy.intercept('/v1/ont/pools?include=tube', {
       statusCode: 201,
       body: {
-        data: {
-          pool: {
+        data: {},
+        included: [
+          {
             id: '1',
-            tube: {
+            type: 'tubes',
+            attributes: {
               barcode: 'TRAC-1',
             },
           },
-        },
+        ],
       },
     })
     cy.get('[data-action=create-pool').click()
@@ -178,14 +180,16 @@ describe('Ont Pool Create', () => {
     cy.intercept('/v1/ont/pools?include=tube', {
       statusCode: 201,
       body: {
-        data: {
-          pool: {
+        data: {},
+        included: [
+          {
             id: '1',
-            tube: {
+            type: 'tubes',
+            attributes: {
               barcode: 'TRAC-1',
             },
           },
-        },
+        ],
       },
     })
     cy.get('[data-action=create-pool').click()
@@ -279,14 +283,16 @@ describe('Ont Pool Create', () => {
     cy.intercept('/v1/ont/pools?include=tube', {
       statusCode: 201,
       body: {
-        data: {
-          pool: {
+        data: {},
+        included: [
+          {
             id: '1',
-            tube: {
+            type: 'tubes',
+            attributes: {
               barcode: 'TRAC-1',
             },
           },
-        },
+        ],
       },
     })
     cy.get('[data-action=create-pool').click()
