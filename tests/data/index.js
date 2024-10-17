@@ -4,9 +4,6 @@ import RunNoLibrary from './runNoLibrary'
 import RunWithLibrary from './runWithLibrary'
 import Samples from './samples'
 import TestResponse from './testResponse'
-import TractionSaphyrLibraries from './tractionSaphyrLibraries'
-import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
-import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
@@ -50,9 +47,6 @@ export default {
   RunWithLibrary,
   Samples,
   TestResponse,
-  TractionSaphyrLibraries,
-  TractionSaphyrTubesWithRequest,
-  TractionTubesWithSample,
   TubeWithLibrary,
   CreatePacbioRequest,
   TractionPacbioLibraries,
