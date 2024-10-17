@@ -173,7 +173,8 @@ const state = reactive({
 })
 
 //Define refs
-const sortBy = ref('created_at')
+// Sort By id descending by default
+const sortBy = ref('id')
 
 //Composables
 const { showAlert } = useAlert()

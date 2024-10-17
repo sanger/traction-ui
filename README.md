@@ -24,6 +24,8 @@ config required:
     VITE_SAMPLEEXTRACTION_BASE_URL=<url>
     VITE_LOG=false
 
+Replace `<url>` with relevant URLs
+
 ### Setup Steps
 
 Install the require dependencies:
