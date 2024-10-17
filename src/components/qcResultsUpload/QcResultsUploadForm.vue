@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     api() {
-      return this.$store.getters.api.v1
+      return this.$store.getters.api.v2
     },
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
@@ -113,17 +113,18 @@ export default {
       this.busy = true
       this.disableUpload = true
 
-      try {
-        const csv = await this.file.text()
-        const data = { csv: csv, usedBySelected: this.usedBySelected }
-        await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
-        this.uploadSuccessful = true
+      const csv = await this.file.text()
+      const data = { csv: csv, usedBySelected: this.usedBySelected }
+      const { success, errors } = await createQcResultsUploadResource(
+        this.qcResultUploadsRequest,
+        data,
+      )
+      this.uploadSuccessful = success
 
+      if (success) {
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
-      } catch (e) {
-        this.uploadSuccessful = false
-
-        this.showAlert(e, 'danger')
+      } else {
+        this.showAlert(errors || 'Unable to upload QC File', 'danger')
       }
       this.busy = false
     },

@@ -1,10 +1,21 @@
-import { handleResponse } from '@/api/v1/ResponseHelper'
-/*
-  UPDATE
-*/
+import { handleResponse } from '@/api/v2/ResponseHelper'
 
+/**
+ * Creates a QC results upload resource.
+ *
+ * @param {Function} request - The request function to be called.
+ * @param {Object} params - The parameters for the request.
+ * @param {string} params.csv - The CSV data to be uploaded.
+ * @param {boolean} params.usedBySelected - Indicates if the resource is used by the selected entity.
+ * @returns {Promise<Object>} The data from the response if successful.
+ * @throws {Object} The errors from the response if unsuccessful.
+ */
 const createQcResultsUploadResource = async (request, { csv, usedBySelected }) => {
-  const { success, data, errors } = await handleResponse(
+  const {
+    success,
+    body: { data = {} },
+    errors = [],
+  } = await handleResponse(
     request({
       data: {
         data: {
@@ -18,10 +29,6 @@ const createQcResultsUploadResource = async (request, { csv, usedBySelected }) =
     }),
   )
 
-  if (success) {
-    return data
-  } else {
-    throw errors
-  }
+  return { success, data, errors }
 }
 export { createQcResultsUploadResource }
