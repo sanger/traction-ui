@@ -1,6 +1,9 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, store, Data, flushPromises, createTestingPinia } from '@support/testHelper'
+import { mount, store, flushPromises, createTestingPinia } from '@support/testHelper'
 import { vi } from 'vitest'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+
+const ontPoolFactory = OntPoolFactory()
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(ONTPoolIndex, {
@@ -22,8 +25,8 @@ describe('OntPoolIndex', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.v1.traction.ont.pools, 'get')
-    get.mockResolvedValue(Data.TractionOntPools)
+    const get = vi.spyOn(store.state.api.v2.traction.ont.pools, 'get')
+    get.mockResolvedValue(ontPoolFactory.responses.fetch)
     const { wrapperObj } = mountWithStore()
     wrapper = wrapperObj
     await flushPromises()
@@ -38,7 +41,7 @@ describe('OntPoolIndex', () => {
     })
 
     it('displays each of the requests', async () => {
-      const expectedPools = Data.TractionOntPools.data.data.length
+      const expectedPools = ontPoolFactory.content.data.length
       expect(wrapper.findAll('tr').length).toEqual(expectedPools + 1)
     })
   })

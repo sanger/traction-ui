@@ -74,6 +74,7 @@ export default {
    * Populated the result with the response
    * @param {Object} state The VueXState object
    * @param {Object} Response A response object
+   * I am wondering why we need to do this. Refactor needed.
    **/
   populatePoolingLibraries: (state, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })

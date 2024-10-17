@@ -1,14 +1,17 @@
-import { mount, store, Data, nextTick } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
 import Response from '@/api/v1/Response'
 import { expect } from 'vitest'
+import OntTubeFactory from '@tests/factories/OntTubeFactory'
+
+const ontTubeFactory = OntTubeFactory()
 
 describe('OntTubeSelectedList', () => {
   let wrapper, mockTubes
 
   describe('building the table', () => {
     beforeEach(() => {
-      const responseBody = new Response(Data.OntTubesRequest)._body
+      const responseBody = new Response(ontTubeFactory.responses.axios)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
       store.commit('traction/ont/pools/populateTubes', mockTubes)
@@ -34,7 +37,7 @@ describe('OntTubeSelectedList', () => {
 
   describe('with a selected tube', () => {
     beforeEach(() => {
-      const responseBody = new Response(Data.OntTubesRequest)._body
+      const responseBody = new Response(ontTubeFactory.responses.axios)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
       store.commit('traction/ont/pools/populateTubes', mockTubes)

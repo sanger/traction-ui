@@ -3,8 +3,10 @@ import { mount, store, router, flushPromises, Data, createTestingPinia } from '@
 import { beforeEach, describe, it } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontRunsFactory = OntRunsFactory()
+const ontPoolFactory = OntPoolFactory()
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -15,7 +17,9 @@ const ontRunsFactory = OntRunsFactory()
  * props - props to pass to the component
  */
 function mountWithStore(props) {
-  vi.spyOn(store.state.api.v1.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
+  vi.spyOn(store.state.api.v2.traction.ont.pools, 'get').mockResolvedValue(
+    ontPoolFactory.responses.fetch,
+  )
   const wrapperObj = mount(ONTRun, {
     global: {
       plugins: [

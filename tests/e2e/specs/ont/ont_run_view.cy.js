@@ -1,10 +1,13 @@
 import OntRunsFactory from '../../../factories/OntRunsFactory.js'
 import OntInstrumentsFactory from '../../../factories/OntInstrumentsFactory.js'
+import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Run page', () => {
   beforeEach(() => {
     cy.wrap(OntRunsFactory()).as('ontRunsFactory')
     cy.wrap(OntInstrumentsFactory()).as('ontInstrumentsFactory')
+    cy.wrap(OntPoolFactory()).as('ontPoolFactory')
+    cy.wrap(OntPoolFactory({ all: false, first: 1 })).as('singleOntPoolFactory')
 
     cy.get('@ontInstrumentsFactory').then((ontInstrumentsFactory) => {
       cy.intercept('GET', '/v1/ont/instruments', {
@@ -18,12 +21,17 @@ describe('ONT Run page', () => {
         body: ontRunsFactory.content,
       })
     })
-    cy.intercept('v1/ont/pools?filter[barcode]=TRAC-1-2', {
-      statusCode: 200,
-      fixture: 'tractionOntPool.json',
+    cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {
+      cy.intercept('v1/ont/pools?filter[barcode]=TRAC-2-42', {
+        statusCode: 200,
+        body: singleOntPoolFactory.content,
+      })
     })
-    cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-      fixture: 'tractionOntPools.json',
+    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+      cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
+        statusCode: 200,
+        body: ontPoolFactory.content,
+      })
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
@@ -52,7 +60,7 @@ describe('ONT Run page', () => {
     cy.get('#state-selection').select('Pending')
 
     cy.get('#flowcell-id-1').type('ABC123')
-    cy.get('#pool-id-1').type('TRAC-1-2')
+    cy.get('#pool-id-1').type('TRAC-2-42')
     // Wait 500ms to allow debounce function to be called and validate input
     cy.wait(500)
 
@@ -99,12 +107,12 @@ describe('ONT Run page', () => {
     cy.get('#state-selection').select('Pending')
 
     cy.get('#flowcell-id-1').type('ABC123')
-    cy.get('#pool-id-1').type('TRAC-1-2')
+    cy.get('#pool-id-1').type('TRAC-2-42')
     // Wait 500ms to allow debounce function to be called and validate input
     cy.wait(500)
 
     cy.get('#flowcell-id-2').type('ABC123')
-    cy.get('#pool-id-2').type('TRAC-1-2')
+    cy.get('#pool-id-2').type('TRAC-2-42')
     // Wait 500ms to allow debounce function to be called and validate input
     cy.wait(500)
 

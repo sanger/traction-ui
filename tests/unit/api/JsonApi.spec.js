@@ -25,6 +25,8 @@ describe('JsonApi', () => {
     populateBy,
     splitDataByParent,
     dataToObjectByPlateNumber,
+    find,
+    extractIncludes,
   } = JsonApi
 
   let data, included, dataItem
@@ -387,6 +389,325 @@ describe('JsonApi', () => {
       expect(result[plateNumbers[1]]).toEqual(
         dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
       )
+    })
+  })
+
+  const rawData = {
+    data: [
+      {
+        id: '1',
+        type: 'cheeses',
+        links: {
+          self: 'http://example.com/cheeses/1',
+        },
+        attributes: {
+          attrA: 'you caught me',
+          attrB: 'luv dancing',
+        },
+        relationships: {
+          bean: {
+            links: {
+              self: 'http://example.com/beans/1/relationships/bean',
+              related: 'http://example.com/beans/1/bean',
+            },
+            data: {
+              type: 'beans',
+              id: '1',
+            },
+          },
+          pickle: {
+            links: {
+              self: 'http://example.com/pickles/2/relationships/pickle',
+              related: 'http://example.com/pickles/2/pickle',
+            },
+            data: {
+              type: 'pickles',
+              id: '2',
+            },
+          },
+          chocolates: {
+            links: {
+              self: 'http://example.com/chocolates/3/relationships/chocolates',
+              related: 'http://example.com/chocolates/3/chocolates',
+            },
+            data: [{ type: 'chocolates', id: '3' }],
+          },
+        },
+      },
+      {
+        id: '2',
+        type: 'cheeses',
+        links: {
+          self: 'http://example.com/cheeses/2',
+        },
+        attributes: {
+          attrA: 'wild horses',
+          attrB: 'could not drag me away',
+        },
+        relationships: {
+          bean: {
+            links: {
+              self: 'http://example.com/beans/4/relationships/bean',
+              related: 'http://example.com/beans/4/bean',
+            },
+            data: {
+              id: '4',
+              type: 'beans',
+            },
+          },
+          pickle: {
+            links: {
+              self: 'http://example.com/pickles/5/relationships/pickle',
+              related: 'http://example.com/pickles/5/pickle',
+            },
+            data: {
+              id: '5',
+              type: 'pickles',
+            },
+          },
+          chocolates: {
+            links: {
+              self: 'http://example.com/chocolates/6/relationships/chocolates',
+              related: 'http://example.com/chocolates/6/chocolates',
+            },
+            data: [{ type: 'chocolates', id: '6' }],
+          },
+        },
+      },
+      {
+        id: '3',
+        type: 'chips',
+        links: {
+          self: 'http://example.com/chips/3',
+        },
+        attributes: {
+          attrE: 'skinny',
+          attrF: 'salty',
+        },
+        relationships: {
+          links: {
+            self: 'http://example.com/chips/3/relationships/chips',
+            related: 'http://example.com/chips/3/chips',
+          },
+        },
+      },
+    ],
+    included: [
+      {
+        id: '1',
+        type: 'beans',
+        attrC: 'I just keep',
+      },
+      {
+        id: '2',
+        type: 'pickles',
+        attrD: 'rolling on',
+      },
+      {
+        id: '3',
+        type: 'chocolates',
+        attrE: 'Cyber Insekt',
+        relationships: {
+          crisps: {
+            links: {
+              self: 'http://example.com/crisps/100/relationships/crisps',
+              related: 'http://example.com/crisps/100/crisps',
+            },
+            data: {
+              id: '100',
+              type: 'crisps',
+            },
+          },
+        },
+      },
+      {
+        id: '4',
+        type: 'beans',
+        attrC: 'I just keep',
+      },
+      {
+        id: '5',
+        type: 'pickles',
+        attrD: 'rolling on',
+      },
+      {
+        id: '6',
+        type: 'chocolates',
+        attrE: 'Cyber Insekt',
+        relationships: {
+          crisps: {
+            links: {
+              self: 'http://example.com/crisps/100/relationships/crisps',
+              related: 'http://example.com/crisps/100/crisps',
+            },
+            data: {
+              id: '100',
+              type: 'crisps',
+            },
+          },
+        },
+      },
+      {
+        id: '100',
+        type: 'crisps',
+        attrE: 'Cyber Insekt',
+      },
+    ],
+  }
+
+  describe('extractIncludes', () => {
+    it('will extract the included', () => {
+      const includes = rawData.included
+      const relationships = rawData.data[1].relationships
+
+      const included = extractIncludes({ relationships, included: includes })
+      expect(included).toEqual(rawData.included.slice(3, 7))
+    })
+
+    it('will not produce empty includes', () => {
+      const relationships = {
+        request: {
+          data: {
+            type: 'requests',
+            id: '11',
+          },
+        },
+        pool: {
+          data: {
+            type: 'pools',
+            id: '7',
+          },
+        },
+      }
+      const included = [
+        {
+          id: '11',
+          type: 'requests',
+          attributes: {
+            library_type: 'ONT_GridIon',
+            data_type: 'basecalls',
+            cost_code: 'S10010',
+          },
+        },
+      ]
+
+      // the pool does not have a relationship in the included
+      const includes = extractIncludes({ relationships, included })
+      expect(includes.length).toEqual(1)
+    })
+
+    it('should not produce a stack overflow error using a depth', () => {
+      const relationships = {
+        tag_set: {
+          data: {
+            type: 'tag_sets',
+            id: '8',
+          },
+        },
+      }
+
+      const included = [
+        {
+          id: '389',
+          type: 'tags',
+          attributes: {
+            oligo: 'CACAAAGACACCGACAACTTTCTT',
+            group_id: 'NB01',
+          },
+          relationships: {
+            tag_set: {
+              data: {
+                type: 'tag_sets',
+                id: '9',
+              },
+            },
+          },
+        },
+        {
+          id: '390',
+          type: 'tags',
+          attributes: {
+            oligo: 'ACAGACGACTACAAACGGAATCGA',
+            group_id: 'NB02',
+          },
+          relationships: {
+            tag_set: {
+              data: {
+                type: 'tag_sets',
+                id: '8',
+              },
+            },
+          },
+        },
+        {
+          id: '8',
+          type: 'tag_sets',
+          links: {
+            self: 'http://localhost:3100/v1/ont/tag_sets/8',
+          },
+          attributes: {
+            name: 'SQK-NBD114.96',
+            uuid: null,
+            pipeline: 'ont',
+          },
+          relationships: {
+            tags: {
+              links: {
+                self: 'http://localhost:3100/v1/ont/tag_sets/8/relationships/tags',
+                related: 'http://localhost:3100/v1/ont/tag_sets/8/tags',
+              },
+              data: [
+                {
+                  type: 'tags',
+                  id: '389',
+                },
+                {
+                  type: 'tags',
+                  id: '390',
+                },
+              ],
+            },
+          },
+        },
+      ]
+
+      const includes = extractIncludes({ relationships, included })
+      expect(includes.length).toEqual(4)
+    })
+  })
+
+  describe('find', () => {
+    beforeEach(() => {
+      data = rawData
+    })
+    it('will find the first record by default', () => {
+      const found = find({ data })
+      expect(found).toEqual({
+        data: data.data[0],
+        included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
+      })
+    })
+
+    it('will find the first 2 records with an argument', () => {
+      const found = find({ data, first: 2 })
+      // another problem with ordering which is whye we are comparing keys
+      // probably need a method to sort the keys
+      expect(Object.keys(found.data)).toEqual(Object.keys(data.data.slice(0, 2)))
+      expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
+    })
+
+    it('will find all the records with an argument', () => {
+      const found = find({ data, all: true })
+      expect(Object.keys(found.data)).toEqual(Object.keys(data.data))
+      expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
+    })
+
+    it('data will be an array if it is using get rather than find', () => {
+      const found = find({ data, get: true })
+      expect(found).toEqual({
+        data: data.data.slice(0, 1),
+        included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
+      })
     })
   })
 })
