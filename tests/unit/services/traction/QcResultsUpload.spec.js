@@ -1,45 +1,37 @@
 import fs from 'fs'
-import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
+import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload.js'
+import QcResultUploadFactory from '@tests/factories/QcResultUploadFactory.js'
+
+const csv = fs.readFileSync('./tests/data/csv/qc-results-upload.csv', 'utf8')
+const used_by = 'extraction'
+const QcResultsUploadFactory = QcResultUploadFactory(csv, used_by)
 
 describe('QcResultsUpload', () => {
   describe('#createQcResultsUploadResource', () => {
-    const csv = fs.readFileSync('./tests/data/csv/pacbio-missing-source.csv', 'utf8')
-
-    const usedBySelected = 'extraction'
-
-    const createdReceptionResponse = {
-      status: 201,
-      statusText: 'Created',
-      data: {
-        id: '69',
-        type: 'qc_results_uploads',
-        links: {
-          self: 'http://localhost:3100/v1/qc_results_uploads/69',
-        },
-        attributes: {
-          csv_data: csv,
-          used_by: usedBySelected,
-        },
-      },
-    }
-
     const createQcResultsUploadRequest = vi.fn()
 
     it('successfully', async () => {
-      createQcResultsUploadRequest.mockResolvedValue(createdReceptionResponse)
+      createQcResultsUploadRequest.mockResolvedValue(QcResultsUploadFactory.responses.fetch)
 
       const response = await createQcResultsUploadResource(createQcResultsUploadRequest, {
         csv,
-        usedBySelected,
+        usedBySelected: used_by,
       })
 
-      expect(response).toEqual(createdReceptionResponse.data)
+      expect(response).toEqual({
+        success: true,
+        ...QcResultsUploadFactory.content,
+        errors: [],
+      })
     })
 
     it('generates a valid payload', async () => {
-      createQcResultsUploadRequest.mockResolvedValue(createdReceptionResponse)
+      createQcResultsUploadRequest.mockResolvedValue(QcResultsUploadFactory.responses.fetch)
 
-      await createQcResultsUploadResource(createQcResultsUploadRequest, { csv, usedBySelected })
+      await createQcResultsUploadResource(createQcResultsUploadRequest, {
+        csv,
+        usedBySelected: used_by,
+      })
 
       expect(createQcResultsUploadRequest).toHaveBeenCalledWith({
         data: {
@@ -47,7 +39,7 @@ describe('QcResultsUpload', () => {
             type: 'qc_results_uploads',
             attributes: {
               csv_data: csv,
-              used_by: usedBySelected,
+              used_by: used_by,
             },
           },
         },
@@ -55,19 +47,18 @@ describe('QcResultsUpload', () => {
     })
 
     it('when the QcResultsUpload could not be created', async () => {
-      const failedResponse = {
-        status: 422,
-        statusText: 'Record not found',
-        data: {
-          errors: [{ title: 'error1', detail: 'There was an error.' }],
-        },
-      }
-
-      createQcResultsUploadRequest.mockRejectedValue({ response: failedResponse })
+      createQcResultsUploadRequest.mockRejectedValue('There was an error')
 
       expect(
-        createQcResultsUploadResource(createQcResultsUploadRequest, { csv, usedBySelected }),
-      ).rejects.toThrow('error1 There was an error.')
+        await createQcResultsUploadResource(createQcResultsUploadRequest, {
+          csv,
+          usedBySelected: used_by,
+        }),
+      ).toEqual({
+        success: false,
+        data: {},
+        errors: 'There was an error',
+      })
     })
   })
 })
