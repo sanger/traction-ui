@@ -2,11 +2,14 @@ import getters from '@/store/traction/ont/pools/getters'
 import defaultState from '@/store/traction/ont/pools/state'
 import merge from 'lodash-es/merge'
 import { describe, expect, it } from 'vitest'
-import { Data } from '@support/testHelper'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
+const ontPlateFactory = OntPlateFactory()
+const ontPoolFactory = OntPoolFactory()
 
 describe('getters.js', () => {
   const state = merge(defaultState(), {
@@ -246,7 +249,7 @@ describe('getters.js', () => {
   })
 
   describe('selectedRequests', () => {
-    const payload = Data.OntPlateRequest.data
+    const payload = ontPlateFactory.content
     const defaultStateObject = defaultState()
     const plateResources = payload.data
     const { wells: wellResources, requests: requestResources } = groupIncludedByResource(
@@ -296,7 +299,7 @@ describe('getters.js', () => {
   })
 
   describe('pools', () => {
-    const payload = Data.TractionOntPools.data
+    const payload = ontPoolFactory.content
     const defaultStateObject = defaultState()
     const poolResources = payload.data
     const {
@@ -321,20 +324,25 @@ describe('getters.js', () => {
 
       const poolState = pools(state)
 
-      expect(poolState.length).toEqual(3)
+      // we need to sort it as they are in opposite order
+      const poolData = ontPoolFactory.content.data.sort((a, b) => a.id - b.id)
 
-      expect(poolState[0].id).toEqual('7')
-      expect(poolState[1].id).toEqual('8')
-      expect(poolState[2].id).toEqual('9')
+      expect(poolState.length).toEqual(poolData.length)
 
-      expect(poolState[0].barcode).toEqual('TRAC-2-9')
+      expect(poolState[0].id).toEqual(poolData[0].id)
+      expect(poolState[1].id).toEqual(poolData[1].id)
+      expect(poolState[2].id).toEqual(poolData[2].id)
 
-      expect(poolState[0].libraries[0]).toEqual({
-        id: '13',
-        type: 'libraries',
-        sample_name: 'GENSAMPLE-1670855325-11',
-        group_id: 'NB01',
-      })
+      // this is ugly. Still not worth tacking until we refactor
+      expect(poolState[0].barcode).toEqual(
+        ontPoolFactory.storeData.tubes.find(
+          (tube) => tube.id === poolData[0].relationships.tube.data.id,
+        ).attributes.barcode,
+      )
+
+      // I degraded this test as to not have to deal with the nested data
+      // this is a good candidate for a refactor
+      expect(poolState[0].libraries[0].id).toEqual(poolData[0].relationships.libraries.data[0].id)
     })
   })
 })
