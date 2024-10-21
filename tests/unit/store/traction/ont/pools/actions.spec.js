@@ -1,16 +1,53 @@
-import { Data } from '@support/testHelper'
 import actions from '@/store/traction/ont/pools/actions'
 import { describe, expect, it } from 'vitest'
 import defaultState from '@/store/traction/ont/pools/state'
 import { payload } from '@/store/traction/ont/pools/pool'
-import { newResponse } from '@/api/v1/ResponseHelper'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
+import OntAutoTagFactory from '../../../../../factories/OntAutoTagFactory'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
+
+// could we join these so we only need 1 factory?
 const ontPoolFactory = OntPoolFactory()
+const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+
+const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
+const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
+const ontAutoTagFactory = OntAutoTagFactory()
+
+const successResponse = ({ status = '201', data = {}, included = [] } = {}) => {
+  return {
+    status,
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data,
+        included,
+      }),
+    ok: true,
+  }
+}
+
+const failureResponse = (statusCode = 500) => {
+  const statusTypes = {
+    422: { status: 422, statusText: 'Unprocessable Entity' },
+    500: { status: 500, statusText: 'Internal Server Error' },
+  }
+  return {
+    ...statusTypes[statusCode],
+    json: () =>
+      Promise.resolve({
+        errors: [{ title: 'error1', detail: 'There was an error.' }],
+      }),
+    ok: false,
+    errorSummary: 'error1 There was an error.',
+  }
+}
 
 describe('actions.js', () => {
   const {
@@ -34,8 +71,8 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { requests: { get } } } } } }
-      get.mockResolvedValue(ontRequestFactory.responses.axios)
+      const rootState = { api: { v2: { traction: { ont: { requests: { get } } } } } }
+      get.mockResolvedValue(ontRequestFactory.responses.fetch)
       // apply action
       const { success } = await actions.fetchOntRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
@@ -48,12 +85,9 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { requests: { get } } } } } }
-      get.mockRejectedValue({
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      })
+      const rootState = { api: { v2: { traction: { ont: { requests: { get } } } } } }
+      get.mockRejectedValue(failureResponse)
+
       // apply action
       const { success } = await fetchOntRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
@@ -68,20 +102,17 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { get } } } } } }
-      get.mockResolvedValue(ontPoolFactory.responses.axios)
+      const rootState = { api: { v2: { traction: { ont: { pools: { get } } } } } }
+      get.mockResolvedValue(ontPoolFactory.responses.fetch)
       // apply action
       const { success } = await actions.fetchOntPools({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith('setPools', ontPoolFactory.content.data)
 
-      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.includedData.tubes)
-      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.includedData.tags)
-      expect(commit).toHaveBeenCalledWith(
-        'populateLibraries',
-        ontPoolFactory.includedData.libraries,
-      )
-      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.includedData.requests)
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('populateTags', ontPoolFactory.storeData.tags)
+      expect(commit).toHaveBeenCalledWith('populateLibraries', ontPoolFactory.storeData.libraries)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPoolFactory.storeData.requests)
       expect(success).toEqual(true)
     })
 
@@ -90,12 +121,8 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { get } } } } } }
-      get.mockRejectedValue({
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      })
+      const rootState = { api: { v2: { traction: { ont: { pools: { get } } } } } }
+      get.mockRejectedValue(failureResponse)
       // apply action
       const { success } = await fetchOntPools({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
@@ -126,11 +153,7 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
-      get.mockRejectedValue({
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      })
+      get.mockRejectedValue(failureResponse)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
       // assert result
@@ -247,19 +270,18 @@ describe('actions.js', () => {
       volume: 1,
       concentration: 1,
       insert_size: 100,
-      //final_library_amount: 100
     }
 
     // pool should be successfully created
     it('when the pool is valid', async () => {
-      // mock response
-      const mockResponse = {
-        status: '201',
-        data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-      }
+      const mockResponse = successResponse({
+        data: {},
+        included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+      })
+
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { create } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { pools: { create } } } } } }
       const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
@@ -275,22 +297,18 @@ describe('actions.js', () => {
     })
 
     it('when there is an error', async () => {
-      // mock response
-      const mockResponse = {
-        status: '422',
-        data: { data: { errors: { error1: ['There was an error'] } } },
-      }
+      const mockResponse = failureResponse(422)
+
       // mock dependencies
-      const update = vi.fn(() => Promise.reject({ response: mockResponse }))
-      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
+      const update = vi.fn(() => Promise.resolve(mockResponse))
+      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
-      const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
         state: { pooling: { libraries, pool } },
       })
       expect(success).toBeFalsy
-      expect(errors).toEqual(expectedResponse.errors)
+      expect(errors).toEqual(mockResponse.errorSummary)
     })
 
     // validate libraries fails
@@ -301,7 +319,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { create } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { pools: { create } } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
         commit,
@@ -310,6 +328,7 @@ describe('actions.js', () => {
       })
       expect(create).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
+      console.Conso
       expect(errors).toEqual('The pool is invalid')
     })
   })
@@ -346,13 +365,14 @@ describe('actions.js', () => {
     // pool should be successfully created
     it('when the pool is valid', async () => {
       // mock response
-      const mockResponse = {
-        status: '201',
-        data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-      }
+      const mockResponse = successResponse({
+        data: {},
+        included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+      })
+
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { pooling: { libraries, pool } } })
@@ -362,21 +382,17 @@ describe('actions.js', () => {
 
     it('when there is an error', async () => {
       // mock response
-      const mockResponse = {
-        status: '422',
-        data: { data: { errors: { error1: ['There was an error'] } } },
-      }
+      const mockResponse = failureResponse(422)
       // mock dependencies
-      const update = vi.fn(() => Promise.reject({ response: mockResponse }))
-      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
+      const update = vi.fn(() => Promise.resolve(mockResponse))
+      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: library2 }
-      const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
         state: { pooling: { libraries, pool } },
       })
       expect(success).toBeFalsy
-      expect(errors).toEqual(expectedResponse.errors)
+      expect(errors).toEqual(mockResponse.errorSummary)
     })
 
     // validate libraries fails
@@ -387,7 +403,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
         commit,
@@ -400,8 +416,10 @@ describe('actions.js', () => {
     })
   })
 
+  // TODO: This needs some work. Autotagging is na bit of a mess
+  // and the tests are unweildy.
   describe('applyTags', () => {
-    const state = Data.OntAutoTagStore
+    const state = ontAutoTagFactory.storeData
     const library = { ont_request_id: '13', tag_id: '385' } // Starting in E2
 
     it('applies a single tag when autoTag is false', async () => {
@@ -546,7 +564,7 @@ describe('actions.js', () => {
   })
 
   describe('updateLibraryFromCsvRecord', () => {
-    const state = Data.OntAutoTagStore
+    const state = ontAutoTagFactory.storeData
     const info = {
       lines: 3,
       records: 2,
@@ -758,42 +776,33 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      const rootState = { api: { v2: { traction: { ont: { pools: { find } } } } } }
+      find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
       // apply action
       const { success } = await setPoolData({ commit, rootState }, 3)
 
       // assert result
       expect(commit).toHaveBeenCalledWith('clearPoolData')
-      expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPool.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolAttributes',
+        singleOntPoolFactory.content.data,
+      )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingLibraries',
-        Data.TractionOntPool.data.included.slice(0, 2),
+        singleOntPoolFactory.storeData.libraries,
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingTube',
-        Data.TractionOntPool.data.included.slice(-1)[0],
+        singleOntPoolFactory.storeData.poolingTube,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionOntPool.data.included.slice(101, 196),
+        singleOntPoolFactory.storeData.requests,
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.TractionOntPool.data.included.slice(6, 101),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populatePlates',
-        Data.TractionOntPool.data.included.slice(5, 6),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateTubes',
-        Data.TractionOntPool.data.included.slice(-1),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'selectTagSet',
-        Data.TractionOntPool.data.included.slice(4, 5)[0],
-      )
+      expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populatePlates', singleOntPoolFactory.storeData.plates)
+      expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.storeData.tubes)
+      expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.storeData.tag_set)
 
       expect(success).toEqual(true)
     })
@@ -803,8 +812,8 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { pools: { find } } } } } }
-      find.mockResolvedValue(Data.TractionOntPool)
+      const rootState = { api: { v2: { traction: { ont: { pools: { find } } } } } }
+      find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
 
       const { success, errors } = await setPoolData({ commit, rootState }, 'new')
       expect(commit).toHaveBeenLastCalledWith('clearPoolData')
@@ -820,22 +829,22 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntPlateRequest)
+      get.mockResolvedValue(ontPlateFactory.responses.fetch)
 
-      const { success } = await findOntPlate({ commit, rootState }, { barcode: 'GEN-1668092750-1' })
-
-      expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
-      expect(commit).toHaveBeenCalledWith('populatePlates', Data.OntPlateRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.OntPlateRequest.data.included.slice(0, 8),
+      const { success } = await findOntPlate(
+        { commit, rootState },
+        { barcode: ontPlateFactory.content.data[0].attributes.barcode },
       )
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntPlateRequest.data.included.slice(8, 16),
-      )
+
+      expect(commit).toHaveBeenCalledWith('selectPlate', {
+        id: ontPlateFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populatePlates', ontPlateFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateWells', ontPlateFactory.storeData.wells)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontPlateFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })
@@ -845,9 +854,9 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
 
-      get.mockResolvedValue({ data: { data: [] } })
+      get.mockResolvedValue(successResponse({ status: '200' }))
 
       const { success, errors } = await findOntPlate(
         { commit, rootState },
@@ -861,7 +870,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
 
       const { success, errors } = await findOntPlate({ commit, rootState }, { barcode: '' })
       expect(errors).toEqual(['Please provide a plate barcode'])
@@ -875,18 +884,21 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { tubes: { get } } } } } }
 
-      get.mockResolvedValue(Data.OntTubeRequest)
+      get.mockResolvedValue(ontTubeFactory.responses.fetch)
 
-      const { success } = await findOntTube({ commit, rootState }, { barcode: 'GEN-1668092750-4' })
-
-      expect(commit).toHaveBeenCalledWith('selectTube', { id: '2', selected: true })
-      expect(commit).toHaveBeenCalledWith('populateTubes', Data.OntTubeRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.OntTubeRequest.data.included.slice(0, 1),
+      const { success } = await findOntTube(
+        { commit, rootState },
+        { barcode: ontTubeFactory.content.data[0].attributes.barcode },
       )
+
+      expect(commit).toHaveBeenCalledWith('selectTube', {
+        id: ontTubeFactory.content.data[0].id,
+        selected: true,
+      })
+      expect(commit).toHaveBeenCalledWith('populateTubes', ontTubeFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('populateRequests', ontTubeFactory.storeData.requests)
 
       expect(success).toEqual(true)
     })
@@ -896,9 +908,9 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v1: { traction: { ont: { tubes: { get } } } } } }
+      const rootState = { api: { v2: { traction: { ont: { tubes: { get } } } } } }
 
-      get.mockResolvedValue({ data: { data: [] } })
+      get.mockResolvedValue(successResponse({ status: '200' }))
 
       const { success, errors } = await findOntTube(
         { commit, rootState },

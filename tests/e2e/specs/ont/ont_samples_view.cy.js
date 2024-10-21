@@ -1,7 +1,13 @@
+import OntRequestFactory from '../../../factories/OntRequestFactory.js'
+
 describe('Ont samples view', () => {
   it('Visits the ont samples url', () => {
-    cy.intercept('/v1/ont/requests?page[size]=25&page[number]=1', {
-      fixture: 'tractionOntRequests.json',
+    cy.wrap(OntRequestFactory()).as('ontRequestFactory')
+    cy.get('@ontRequestFactory').then((ontRequestFactory) => {
+      cy.intercept('/v1/ont/requests?page[size]=25&page[number]=1', {
+        statusCode: 200,
+        body: ontRequestFactory.content,
+      })
     })
     cy.visit('#/ont/samples')
     // Check filters are visible
@@ -13,7 +19,11 @@ describe('Ont samples view', () => {
       .and('contain', 'Sample name')
       .and('contain', 'Source barcode')
 
-    cy.get('#samples-table').find('tr').should('have.length', '7')
+    cy.get('@ontRequestFactory').then((ontRequestFactory) => {
+      cy.get('#samples-table')
+        .find('tr')
+        .should('have.length', ontRequestFactory.content.data.length + 1)
+    })
     cy.get('#id').should('have.length.greaterThan', 0)
     cy.get('#source_identifier').should('have.length.greaterThan', 0)
     cy.get('#sample_name').should('have.length.greaterThan', 0)
