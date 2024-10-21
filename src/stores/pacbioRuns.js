@@ -15,7 +15,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
   },
 
   actions: {
-    async fetchPacbioRuns(filter, page) {
+    async fetchPacbioRuns(filter = {}, page = {}) {
       const promise = this.runRequest.get({ page, filter, include: 'plates' })
       const response = await handleResponse(promise)
       const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
