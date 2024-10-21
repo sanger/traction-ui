@@ -1,4 +1,9 @@
 import BaseFactory from './BaseFactory.js'
+import { extractAttributes } from './../../src/api/JsonApi'
+
+const createStoreData = (data) => {
+  return data.map((item) => extractAttributes(item))
+}
 
 /*
  * Factory for creating a list of runs
@@ -255,7 +260,9 @@ const PacbioRunFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  // return BaseFactory(data)
+
+  return { ...BaseFactory(data), storeData: createStoreData(data.data) }
 }
 
 export default PacbioRunFactory
