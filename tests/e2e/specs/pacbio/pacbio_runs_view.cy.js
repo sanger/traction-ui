@@ -14,11 +14,6 @@ describe('Pacbio Runs view', () => {
         body: pacbioRunFactory.content,
       })
     })
-    // cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
-    //   // has a record which has a run with no smrt link version
-    //   // probably best to fix when moving to factory
-    //   fixture: 'tractionPacbioRuns.json',
-    // })
     cy.get('@pacbioSmrtLinkVersionFactory').then((pacbioSmrtLinkVersionFactory) => {
       cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
         statusCode: 200,
