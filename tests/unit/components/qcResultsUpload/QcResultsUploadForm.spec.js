@@ -68,7 +68,7 @@ describe('QcResultsUploadForm.vue', () => {
   describe('#computed', () => {
     it('gets the api request', () => {
       expect(form.qcResultUploadsRequest).toEqual(
-        store.getters.api.v1.traction.qc_results_uploads.create,
+        store.getters.api.v2.traction.qc_results_uploads.create,
       )
     })
 
@@ -106,13 +106,13 @@ describe('QcResultsUploadForm.vue', () => {
       })
       form.showAlert = vi.fn()
 
-      create = store.getters.api.v1.traction.qc_results_uploads.create
+      create = store.getters.api.v2.traction.qc_results_uploads.create
     })
 
     it('handles a successful import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
-        .mockImplementation(() => {})
+        .mockReturnValue({ success: true, errors: [] })
 
       await form.postCSV()
 
@@ -129,7 +129,7 @@ describe('QcResultsUploadForm.vue', () => {
     it('handles a failed import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
-        .mockRejectedValue('This is an error msg')
+        .mockReturnValue({ success: false, errors: 'This is an error msg' })
 
       await form.postCSV()
 
@@ -145,7 +145,10 @@ describe('QcResultsUploadForm.vue', () => {
 
     describe('#reEnable', () => {
       it('resets the file input and other data values', async () => {
-        vi.spyOn(QcResultsUpload, 'createQcResultsUploadResource').mockImplementation(() => {})
+        vi.spyOn(QcResultsUpload, 'createQcResultsUploadResource').mockReturnValue({
+          success: true,
+          errors: [],
+        })
 
         await form.postCSV()
 

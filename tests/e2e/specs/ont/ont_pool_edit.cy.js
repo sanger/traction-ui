@@ -1,5 +1,6 @@
 import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
+import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Pool Edit', () => {
   beforeEach(() => {
@@ -18,19 +19,26 @@ describe('ONT Pool Edit', () => {
         body: ontTagSetFactory.content,
       })
     })
-
-    cy.intercept(
-      'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
-      {
-        fixture: 'tractionOntPools.json',
-      },
-    )
-    cy.intercept(
-      'v1/ont/pools/7?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
-      {
-        fixture: 'tractionOntPoolWithIncludes.json',
-      },
-    )
+    cy.wrap(OntPoolFactory()).as('ontPoolFactory')
+    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+      cy.intercept(
+        'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
+        {
+          statusCode: 200,
+          body: ontPoolFactory.content,
+        },
+      )
+    })
+    cy.wrap(OntPoolFactory({ all: false, first: 1 })).as('singleOntPoolFactory')
+    cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {
+      cy.intercept(
+        'v1/ont/pools/1?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
+        {
+          statusCode: 200,
+          body: singleOntPoolFactory.content,
+        },
+      )
+    })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
     })
@@ -66,7 +74,7 @@ describe('ONT Pool Edit', () => {
     })
   })
 
-  it('Updates a pool successfully', () => {
+  it.only('Updates a pool successfully', () => {
     cy.visit('#/ont/pools')
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()
@@ -80,8 +88,9 @@ describe('ONT Pool Edit', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('/v1/ont/pools/9', {
+    cy.intercept('/v1/ont/pools/1', {
       statusCode: 200,
+      body: {},
     })
     cy.get('[data-action=update-pool]').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')

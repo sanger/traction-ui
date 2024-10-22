@@ -1,13 +1,21 @@
 import mutations from '@/store/traction/ont/pools/mutations'
 import defaultState from '@/store/traction/ont/pools/state'
 import { describe, expect, it } from 'vitest'
-import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+import OntLibraryFactory from '@tests/factories/OntLibraryFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
+const ontLibraryFactory = OntLibraryFactory()
+const ontPoolFactory = OntPoolFactory()
+const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+const ontPlateFactory = OntPlateFactory()
+const ontTubeFactory = OntTubeFactory()
 
 describe('mutations', () => {
   const {
@@ -335,94 +343,11 @@ describe('mutations', () => {
 
   describe('populatePoolingLibraries', () => {
     it('populates the pooling libraries', () => {
-      const expectedPoolingLibraries = {
-        1: {
-          ont_request_id: '1',
-          kit_barcode: 'barcode-0',
-          tag_id: null,
-          volume: 8,
-          concentration: 4,
-          insert_size: 4068,
-          id: '1',
-          type: 'libraries',
-          created_at: '2022/12/02 14:18',
-          deactivated_at: null,
-          state: 'pending',
-          request: '1',
-          tube: undefined,
-          tag: null,
-          pool: '1',
-          source_well: undefined,
-          source_plate: undefined,
-          source_tube: undefined,
-        },
-        2: {
-          ont_request_id: '2',
-          kit_barcode: 'barcode-1',
-          tag_id: null,
-          volume: 7,
-          concentration: 7,
-          insert_size: 8247,
-          id: '2',
-          type: 'libraries',
-          created_at: '2022/12/02 14:18',
-          deactivated_at: null,
-          state: 'pending',
-          request: '2',
-          tube: undefined,
-          tag: null,
-          pool: '2',
-          source_well: undefined,
-          source_plate: undefined,
-          source_tube: undefined,
-        },
-        3: {
-          ont_request_id: '3',
-          kit_barcode: 'barcode-2',
-          tag_id: null,
-          volume: 3,
-          concentration: 3,
-          insert_size: 8683,
-          id: '3',
-          type: 'libraries',
-          created_at: '2022/12/02 14:18',
-          deactivated_at: null,
-          state: 'pending',
-          request: '3',
-          tube: undefined,
-          tag: null,
-          pool: '3',
-          source_well: undefined,
-          source_plate: undefined,
-          source_tube: undefined,
-        },
-        4: {
-          ont_request_id: '4',
-          kit_barcode: 'barcode-3',
-          tag_id: null,
-          volume: 4,
-          concentration: 6,
-          insert_size: 6997,
-          id: '4',
-          type: 'libraries',
-          created_at: '2022/12/02 14:18',
-          deactivated_at: null,
-          state: 'pending',
-          request: '4',
-          tube: undefined,
-          tag: null,
-          pool: '4',
-          source_well: undefined,
-          source_plate: undefined,
-          source_tube: undefined,
-        },
-      }
-
       const state = defaultState()
       // apply mutation
-      populatePoolingLibraries(state, Data.tractionOntLibraries.data.data)
+      populatePoolingLibraries(state, ontLibraryFactory.content.data)
 
-      expect(state.pooling.libraries).toEqual(expectedPoolingLibraries)
+      expect(state.pooling.libraries).toEqual(ontLibraryFactory.storeData.poolingLibraries)
     })
   })
 
@@ -430,17 +355,8 @@ describe('mutations', () => {
     it('sets the pool with the correct data', () => {
       const state = defaultState()
       // apply mutation
-      populatePoolAttributes(state, Data.TractionOntPool.data.data)
-      expect(state.pooling.pool).toEqual(
-        expect.objectContaining({
-          id: '3',
-          volume: 4,
-          concentration: 8,
-          kit_barcode: 'barcode-2',
-          insert_size: 8251,
-          source_identifier: 'GEN-1668092750-1:C1-D1',
-        }),
-      )
+      populatePoolAttributes(state, singleOntPoolFactory.content.data)
+      expect(state.pooling.pool).toEqual(singleOntPoolFactory.storeData.pooling.pool)
     })
   })
 
@@ -460,7 +376,7 @@ describe('mutations', () => {
   describe('populatePools', () => {
     it('updates the state', () => {
       // mock state
-      const pools = Data.TractionOntPools.data.data
+      const pools = ontPoolFactory.content.data
       const state = defaultState()
       // apply mutation
       populatePools(state, pools)
@@ -474,7 +390,7 @@ describe('mutations', () => {
   describe('setPools', () => {
     it('updates the state', () => {
       // mock state
-      const pools = Data.TractionOntPools.data.data
+      const pools = ontPoolFactory.content.data
       const defaultStateObject = defaultState()
       const state = {
         ...defaultStateObject,
@@ -499,7 +415,7 @@ describe('mutations', () => {
   describe('populateLibraries', () => {
     it('updates the state', () => {
       // mock state
-      const libraries = Data.tractionOntLibraries.data.data
+      const libraries = ontLibraryFactory.content.data
       const state = defaultState()
       // apply mutation
       populateLibraries(state, libraries)
@@ -513,7 +429,7 @@ describe('mutations', () => {
   describe('populatePlates', () => {
     it('updates the state', () => {
       // mock state
-      const plates = Data.OntPlates.data.data
+      const plates = ontPlateFactory.content.data
       const state = defaultState()
       // apply mutation
       populatePlates(state, plates)
@@ -527,7 +443,7 @@ describe('mutations', () => {
   describe('populateTubes', () => {
     it('updates the state', () => {
       // mock state
-      const tubes = Data.OntTubesRequest.data.data
+      const tubes = ontTubeFactory.content.data
       const state = defaultState()
       // apply mutation
       populateTubes(state, tubes)
@@ -541,7 +457,7 @@ describe('mutations', () => {
   describe('populateWells', () => {
     it('updates the state', () => {
       // mock state
-      const wells = Data.OntPlatesRequest.data.included.slice(0, 8)
+      const wells = ontPlateFactory.storeData.wells
       const state = defaultState()
       // apply mutation
       populateWells(state, wells)
@@ -555,7 +471,7 @@ describe('mutations', () => {
   describe('setRequests', () => {
     it('updates the state', () => {
       // mock state
-      const requests = Data.TractionOntRequests.data.data
+      const requests = ontRequestFactory.content.data
       const defaultStateObject = defaultState()
       const state = {
         ...defaultStateObject,
@@ -581,7 +497,7 @@ describe('mutations', () => {
   describe('populateRequests', () => {
     it('updates the state', () => {
       // mock state
-      const requests = Data.TractionOntRequests.data.data
+      const requests = ontRequestFactory.content.data
       const state = defaultState()
       // apply mutation
       populateRequests(state, requests)
@@ -609,14 +525,12 @@ describe('mutations', () => {
   describe('populateTags', () => {
     it('updates the state', () => {
       // mock state
-      const tags = Data.TractionOntRequests.data.included
+      const tags = ontTagSetFactory.content.included
       const state = defaultState()
       // apply mutation
       populateTags(state, tags)
       // assert result
-      expect(state.resources.tags).toEqual(
-        dataToObjectById({ data: tags, includeRelationships: true }),
-      )
+      expect(state.resources.tags).toEqual(dataToObjectById({ data: tags }))
     })
   })
 

@@ -1,5 +1,6 @@
 import OntRunsFactory from '../../../factories/OntRunsFactory.js'
 import OntRunFactory from '../../../factories/OntRunFactory.js'
+import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Runs view', () => {
   it('Visits the ont runs url', () => {
@@ -43,8 +44,12 @@ describe('ONT Runs view', () => {
       })
     })
 
-    cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-      fixture: 'tractionOntPools.json',
+    cy.wrap(OntPoolFactory()).as('ontPoolFactory')
+    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+      cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
+        statusCode: 200,
+        body: ontPoolFactory.content,
+      })
     })
 
     cy.visit('#/ont/runs')
@@ -53,6 +58,6 @@ describe('ONT Runs view', () => {
     // Check that the URL is correct
     cy.url().should('include', '#/ont/run/2')
     cy.get('#flowcell-id-1').invoke('val').should('eq', 'ABC1234')
-    cy.get('#pool-id-1').invoke('val').should('eq', 'TRAC-2-9')
+    cy.get('#pool-id-1').invoke('val').should('eq', 'TRAC-2-34')
   })
 })
