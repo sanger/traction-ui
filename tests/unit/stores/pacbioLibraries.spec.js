@@ -4,6 +4,10 @@ import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/v1/ResponseHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
+// import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
+
+// const pacbioLibraryFactory = PacbioLibraryFactory()
+
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -24,6 +28,7 @@ describe('usePacbioLibrariesStore', () => {
       expect(store.libraries).toEqual(libraries)
     })
   })
+
   describe('getters', () => {
     it('returns libraries array from "state.libraries"', async () => {
       const store = usePacbioLibrariesStore()
@@ -51,7 +56,7 @@ describe('usePacbioLibrariesStore', () => {
           barcode: 'TRAC-2-721',
         },
       }
-      const libraryTags = {
+      const tags = {
         3: {
           id: '3',
           type: 'tags',
@@ -66,7 +71,7 @@ describe('usePacbioLibrariesStore', () => {
         },
       }
 
-      store.$state = { libraries, libraryTags, requests, tubes }
+      store.$state = { libraries, tags, requests, tubes }
       const libraryArray = [
         {
           id: '1',
@@ -243,7 +248,7 @@ describe('usePacbioLibrariesStore', () => {
           type: 'tubes',
           barcode: 'TRAC-2-721',
         })
-        expect(store.libraryTags[3]).toEqual({
+        expect(store.tags[3]).toEqual({
           id: '3',
           type: 'tags',
           group_id: '1234',

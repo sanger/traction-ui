@@ -1,13 +1,13 @@
-import actions from '@/store/traction/ont/pools/actions'
+import actions from '@/store/traction/ont/pools/actions.js'
 import { describe, expect, it } from 'vitest'
-import defaultState from '@/store/traction/ont/pools/state'
-import { payload } from '@/store/traction/ont/pools/pool'
+import defaultState from '@/store/traction/ont/pools/state.js'
+import { payload } from '@/store/traction/ont/pools/pool.js'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
-import OntAutoTagFactory from '../../../../../factories/OntAutoTagFactory'
+import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory.js'
 
 const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
