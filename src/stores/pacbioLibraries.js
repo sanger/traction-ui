@@ -3,6 +3,7 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { libraryPayload } from '@/stores//utilities/pacbioLibraries.js'
 
 /**
  * @function validateFields
@@ -112,28 +113,17 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     }) {
       const rootState = useRootStore()
       const request = rootState.api.v1.traction.pacbio.libraries
-      const body = {
-        data: {
-          type: 'libraries',
-          attributes: {
-            pacbio_request_id,
-            template_prep_kit_box_barcode,
-            tag_id,
-            concentration,
-            volume,
-            insert_size,
-            primary_aliquot_attributes: {
-              template_prep_kit_box_barcode,
-              tag_id,
-              concentration,
-              volume,
-              insert_size,
-            },
-          },
-        },
-      }
+      const payload = libraryPayload({
+        pacbio_request_id,
+        template_prep_kit_box_barcode,
+        tag_id,
+        concentration,
+        volume,
+        insert_size,
+      })
+
       const promise = request.create({
-        data: body,
+        data: payload,
         include: 'tube,primary_aliquot',
       })
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -202,27 +192,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       const rootStore = useRootStore()
       const request = rootStore.api.v1.traction.pacbio.libraries
-      const body = {
-        data: {
-          type: 'libraries',
-          id: libraryFields.id,
-          attributes: {
-            template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
-            tag_id: libraryFields.tag_id,
-            concentration: libraryFields.concentration,
-            volume: libraryFields.volume,
-            insert_size: libraryFields.insert_size,
-            primary_aliquot_attributes: {
-              template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
-              volume: libraryFields.volume,
-              concentration: libraryFields.concentration,
-              insert_size: libraryFields.insert_size,
-              tag_id: libraryFields.tag_id,
-            },
-          },
-        },
-      }
-      const promise = request.update(body)
+      const payload = libraryPayload(libraryFields)
+      const promise = request.update(payload)
       const { success, errors } = await handleResponse(promise)
       if (success) {
         //Update all fields of the library in the store with matching ID with the given values.
