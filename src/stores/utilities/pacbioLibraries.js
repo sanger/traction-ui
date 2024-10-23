@@ -22,7 +22,6 @@ const libraryPayload = ({
           id,
           attributes: {
             ...requiredAttributes,
-            pacbio_request_id,
             primary_aliquot_attributes: {
               ...requiredAttributes,
             },

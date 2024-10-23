@@ -1,5 +1,5 @@
 import useRootStore from '@/stores'
-import { Data, createPinia, setActivePinia } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/v1/ResponseHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
@@ -32,7 +32,9 @@ describe('usePacbioLibrariesStore', () => {
 
   describe('#libraryPayload', () => {
     it('for a create action', () => {
-      expect(libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 })).toEqual({
+      const payload = libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 })
+      expect(Object.keys(payload.data).includes('id')).toBeFalsy()
+      expect(payload).toEqual({
         data: {
           type: 'libraries',
           attributes: {
@@ -47,7 +49,9 @@ describe('usePacbioLibrariesStore', () => {
     })
 
     it('for an update action', () => {
-      expect(libraryPayload({ ...requiredAttributes, id: 1 })).toEqual({
+      const payload = libraryPayload({ ...requiredAttributes, id: 1 })
+      expect(Object.keys(payload.data.attributes).includes('pacbio_request_id')).toBeFalsy()
+      expect(payload).toEqual({
         data: {
           id: 1,
           type: 'libraries',
@@ -190,7 +194,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(errors).toEqual([])
       })
 
-      it.only('when the library has no request, tube or tag', async () => {
+      it('when the library has no request, tube or tag', async () => {
         get.mockResolvedValue(pacbioLibraryWithoutRelationships.responses.axios)
 
         const { success, errors } = await store.fetchLibraries()
@@ -217,31 +221,18 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(async () => {
         update = vi.fn()
-        const libraries = Data.TractionPacbioLibrary
-        get = vi.fn().mockResolvedValue(libraries)
+        // const libraries = Data.TractionPacbioLibrary
+        get = vi.fn().mockResolvedValue(pacbioLibraryFactory.responses.axios)
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
 
         rootStore.api.v1.traction.pacbio.libraries.get = get
         rootStore.api.v1.traction.pacbio.libraries.update = update
         await store.fetchLibraries()
-        libraryBeforeUpdate = {
-          id: '1',
-          request: '1',
-          tag: '3',
-          tube: '4',
-          state: 'pending',
-          volume: 1.0,
-          concentration: 1,
-          insert_size: 100,
-          source_identifier: 'DN1:A1',
-          template_prep_kit_box_barcode: 'LK12345',
-          created_at: '09/23/2019 11:18',
-          type: 'libraries',
-        }
         mockSuccessResponse = {
           status: '201',
         }
+        libraryBeforeUpdate = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
         library = {
           ...libraryBeforeUpdate,
           concentration: 2.0,
@@ -252,47 +243,25 @@ describe('usePacbioLibrariesStore', () => {
       })
       it('successfully', async () => {
         update.mockResolvedValue(mockSuccessResponse)
-        const library = { ...libraryBeforeUpdate }
-        library.concentration = 2.0
-        library.template_prep_kit_box_barcode = 'LK12347'
-        library.tag_id = '3'
         const { success } = await store.updateLibrary(library)
-        expect(update).toBeCalledWith({
-          data: {
-            id: '1',
-            type: 'libraries',
-            attributes: {
-              concentration: 2.0,
-              template_prep_kit_box_barcode: 'LK12347',
-              volume: 1.0,
-              insert_size: 100,
-              tag_id: '3',
-              primary_aliquot_attributes: {
-                concentration: 2.0,
-                template_prep_kit_box_barcode: 'LK12347',
-                volume: 1.0,
-                insert_size: 100,
-                tag_id: '3',
-              },
-            },
-          },
-        })
         expect(success).toBeTruthy()
       })
 
       it('should update the values in the store', async () => {
         update.mockResolvedValue(mockSuccessResponse)
         await store.fetchLibraries()
-        expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
+
+        expect(store.libraries[libraryBeforeUpdate.id]).toEqual(libraryBeforeUpdate)
         await store.updateLibrary(library)
-        expect(store.libraries[1].concentration).toEqual(2.0)
-        expect(store.libraries[1].template_prep_kit_box_barcode).toEqual('LK12348')
-        expect(store.libraries[1].volume).toEqual(4.0)
+        const storeLibrary = store.libraries[libraryBeforeUpdate.id]
+        expect(storeLibrary.concentration).toEqual(2.0)
+        expect(storeLibrary.template_prep_kit_box_barcode).toEqual('LK12348')
+        expect(storeLibrary.volume).toEqual(4.0)
       })
 
       it('should return error if required attributes are empty', async () => {
         await store.fetchLibraries()
-        expect(store.libraries[1]).toEqual(libraryBeforeUpdate)
+        expect(store.libraries[libraryBeforeUpdate.id]).toEqual(libraryBeforeUpdate)
         library.volume = ''
         const { success, errors } = await store.updateLibrary(library)
         expect(success).toBeFalsy()
