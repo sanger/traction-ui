@@ -46,6 +46,49 @@ const findByText = (wrapper, text) => {
   return results.at(0)
 }
 
+/**
+ *
+ * @param {String} statusCode - status code of the response. Should be in the 200 range.
+ * @param {Object} data - data to be returned in the response
+ * @param {Array} included - included data to be returned in the response
+ * @returns {Object} - a successful response object (fetch)
+ * A standard response object that can be used to mock a successful fetch response.
+ */
+const successfulResponse = ({ statusCode = 201, data = {}, included = [] } = {}) => {
+  return {
+    status: statusCode,
+    statusText: 'OK',
+    json: () =>
+      Promise.resolve({
+        data,
+        included,
+      }),
+    ok: true,
+  }
+}
+
+/**
+ *
+ * @param {String} statusCode - status code of the response. Should be in the 400 or 500 range.
+ * @returns {Object} - a failed response object (fetch)
+ * A standard response object that can be used to mock a failed fetch response.
+ */
+const failedResponse = (statusCode = 500) => {
+  const statusTypes = {
+    422: { status: 422, statusText: 'Unprocessable Entity' },
+    500: { status: 500, statusText: 'Internal Server Error' },
+  }
+  return {
+    ...statusTypes[statusCode],
+    json: () =>
+      Promise.resolve({
+        errors: [{ title: 'error1', detail: 'There was an error.' }],
+      }),
+    ok: false,
+    errorSummary: 'error1 There was an error.',
+  }
+}
+
 export {
   mount,
   store,
@@ -59,4 +102,6 @@ export {
   createTestingPinia,
   findAllByText,
   findByText,
+  successfulResponse,
+  failedResponse,
 }
