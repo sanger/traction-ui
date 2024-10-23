@@ -1,15 +1,18 @@
 import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
+import PacbioRunFactory from '../../../factories/PacbioRunFactory.js'
 
 describe('Pacbio Runs view', () => {
   beforeEach(() => {
     cy.wrap(PacbioSmrtLinkVersionFactory()).as('pacbioSmrtLinkVersionFactory')
+    cy.wrap(PacbioRunFactory()).as('pacbioRunFactory')
   })
 
   it('Visits the pacbio runs url', () => {
-    cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
-      // has a record which has a run with no smrt link version
-      // probably best to fix when moving to factory
-      fixture: 'tractionPacbioRuns.json',
+    cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
+      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+        statusCode: 200,
+        body: pacbioRunFactory.content,
+      })
     })
     cy.get('@pacbioSmrtLinkVersionFactory').then((pacbioSmrtLinkVersionFactory) => {
       cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
@@ -23,9 +26,9 @@ describe('Pacbio Runs view', () => {
     cy.get('#filterValue').should('be.visible')
     cy.get('#filterValue').children().and('contain', 'Name')
     cy.get('#run-index').contains('tr', '5')
-    cy.get('#startRun-12')
-    cy.get('#editRun-12')
-    cy.get('#generate-sample-sheet-12')
+    cy.get('#completeRun-2')
+    cy.get('#editRun-2')
+    cy.get('#generate-sample-sheet-2')
     cy.get('#run-index')
       .first()
       .within(() => {
