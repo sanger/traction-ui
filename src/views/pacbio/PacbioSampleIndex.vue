@@ -39,8 +39,7 @@
         </template>
 
         <template #cell(actions)="row">
-          <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
-          </PacbioSampleMetadataEdit>
+          <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert" />
         </template>
 
         <template #cell(show_details)="row">
@@ -67,6 +66,7 @@
           </div>
         </template>
       </traction-table>
+      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -77,6 +77,8 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import LocationFetcher from '@/components/LocationFetcher.vue'
+
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
@@ -91,6 +93,7 @@ export default {
     PacbioSampleMetadataEdit,
     FilterCard,
     DataFetcher,
+    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
@@ -104,6 +107,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'source_identifier', label: 'Source', sortable: true },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
@@ -133,6 +137,9 @@ export default {
     printingStore() {
       return usePrintingStore()
     },
+    barcodes() {
+      return this.requests.map((request) => request.barcode).filter(Boolean);
+    }
   },
   methods: {
     /*
@@ -174,6 +181,15 @@ export default {
     */
     async fetchRequests() {
       return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
+    },
+    async updateLocations(locationsData) {
+      this.requests.forEach((request) => {
+        request.location = '-';
+        const location = locationsData.find((loc) => loc.barcode === request.barcode);
+        if (location) {
+          request.location = location.name;
+        }
+      });
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
   },
