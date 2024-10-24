@@ -3,6 +3,7 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { libraryPayload } from '@/stores//utilities/pacbioLibraries.js'
 
 /**
  * @function validateFields
@@ -44,9 +45,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     requests: {},
     /**
-     * @property {Object} libraryTags - An object to store all tags from all libraries indexed by id.
+     * @property {Object} tags - An object to store all tags from all libraries indexed by id.
      */
-    libraryTags: {},
+    tags: {},
   }),
 
   getters: {
@@ -54,7 +55,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * Transforms the libraries in the state into an array with additional properties.
      *
      * @function librariesArray
-     * @param {Object} state - The state object containing libraries, libraryTags, requests, and tubes.
+     * @param {Object} state - The state object containing libraries, tags, requests, and tubes.
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
@@ -67,15 +68,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
           /*Get the tag group ID from the library's tag ID or from the tag in pacbioRoot store(where all pacbio tags are kept). Why is this required?
           The librariesArray is called in multiple places (in create and edit context) to get the libraries. 
-          Therefore, librariesArray needs to search for the tag first in libraryTags. 
+          Therefore, librariesArray needs to search for the tag first in tags. 
           If not found, it should then look for it in 'pacbioRoot' store tags. 
           It's important to note that 'pacbioRoot' store tags will only get populated if a 'pacbioRoot' store action fetchPacbioTagSets is called before, 
           which may not happen in all the places where it's called. 
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
 
-          const tagGroupId = state.libraryTags[tagId]
-            ? state.libraryTags[tagId].group_id
+          const tagGroupId = state.tags[tagId]
+            ? state.tags[tagId].group_id
             : pacbioRootStore.tags[tagId]
               ? pacbioRootStore.tags[tagId].group_id
               : ''
@@ -100,35 +101,33 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Promise} A promise that resolves when the library is successfully created.
      *
      * @example
-     * await createLibraryInTraction(library, tagId);
+     * await createLibrary(library, tagId);
      */
-    async createLibraryInTraction(library) {
+    async createLibrary({
+      template_prep_kit_box_barcode,
+      tag_id,
+      concentration,
+      volume,
+      insert_size,
+      sample: { id: pacbio_request_id },
+    }) {
       const rootState = useRootStore()
       const request = rootState.api.v1.traction.pacbio.libraries
-      const body = {
-        data: {
-          type: 'libraries',
-          attributes: {
-            pacbio_request_id: library.sample.id,
-            template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-            tag_id: library.tag_id,
-            concentration: library.concentration,
-            volume: library.volume,
-            insert_size: library.insert_size,
-            primary_aliquot_attributes: {
-              template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-              volume: library.volume,
-              concentration: library.concentration,
-              insert_size: library.insert_size,
-              tag_id: library.tag_id,
-            },
-          },
-        },
-      }
+      const payload = libraryPayload({
+        pacbio_request_id,
+        template_prep_kit_box_barcode,
+        tag_id,
+        concentration,
+        volume,
+        insert_size,
+      })
+
       const promise = request.create({
-        data: body,
+        data: payload,
         include: 'tube,primary_aliquot',
       })
+
+      console.log(promise)
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
@@ -157,7 +156,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @param {number} page - The page number to fetch from the server.
      * @returns {Promise<{success: boolean, errors: Array}>} - A promise that resolves to an object containing a success boolean and an array of errors.
      */
-    async fetchLibraries(filter, page) {
+    async fetchLibraries(filter = {}, page = {}) {
       const rootStore = useRootStore()
       const pacbioLibraries = rootStore.api.v1.traction.pacbio.libraries
       const promise = pacbioLibraries.get({
@@ -173,7 +172,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         const { tubes, tags, requests } = groupIncludedByResource(included)
         this.libraries = dataToObjectById({ data, includeRelationships: true })
         this.tubes = dataToObjectById({ data: tubes })
-        this.libraryTags = dataToObjectById({ data: tags })
+        this.tags = dataToObjectById({ data: tags })
         this.requests = dataToObjectById({ data: requests })
       }
       return { success, errors, meta }
@@ -195,27 +194,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       const rootStore = useRootStore()
       const request = rootStore.api.v1.traction.pacbio.libraries
-      const body = {
-        data: {
-          type: 'libraries',
-          id: libraryFields.id,
-          attributes: {
-            template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
-            tag_id: libraryFields.tag_id,
-            concentration: libraryFields.concentration,
-            volume: libraryFields.volume,
-            insert_size: libraryFields.insert_size,
-            primary_aliquot_attributes: {
-              template_prep_kit_box_barcode: libraryFields.template_prep_kit_box_barcode,
-              volume: libraryFields.volume,
-              concentration: libraryFields.concentration,
-              insert_size: libraryFields.insert_size,
-              tag_id: libraryFields.tag_id,
-            },
-          },
-        },
-      }
-      const promise = request.update(body)
+      const payload = libraryPayload(libraryFields)
+      const promise = request.update(payload)
       const { success, errors } = await handleResponse(promise)
       if (success) {
         //Update all fields of the library in the store with matching ID with the given values.

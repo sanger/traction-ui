@@ -1,19 +1,21 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 import PacbioSamplesFactory from '../../../factories/PacbioSamplesFactory.js'
+import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
 
 describe('Pacbio library creation from sample', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
-    cy.wrap(PacbioSamplesFactory()).as('tractionPacbioSamplesFactory')
+    cy.wrap(PacbioSamplesFactory()).as('pacbioSamplesFactory')
+    cy.wrap(PacbioLibraryFactory()).as('pacbioLibraryFactory')
   })
 
   it('Visits the pacbio samples url', () => {
-    cy.get('@tractionPacbioSamplesFactory').then((tractionPacbioSamplesFactory) => {
+    cy.get('@pacbioSamplesFactory').then((pacbioSamplesFactory) => {
       cy.intercept('/v1/pacbio/requests?page[size]=25&page[number]=1', {
         statusCode: 200,
-        body: tractionPacbioSamplesFactory.content.data,
+        body: pacbioSamplesFactory.content.data,
       })
     })
 
@@ -30,8 +32,14 @@ describe('Pacbio library creation from sample', () => {
         body: printerFactory.content,
       })
     })
-    cy.intercept('/v1/pacbio/libraries?include=tube,primary_aliquot', {
-      fixture: 'tractionPacbioLibrary.json',
+
+    // something not quite right here.
+    // we are not returning the primary aliquot plus we are hard coding the data.
+    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
+      cy.intercept('/v1/pacbio/libraries?include=tube,primary_aliquot', {
+        statusCode: 200,
+        body: pacbioLibraryFactory.content,
+      })
     })
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')
@@ -49,6 +57,6 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#library-insertSize').type(1)
     cy.get('#create-btn').click()
     cy.get('#libraryForm').should('not.exist')
-    cy.contains('Created library with barcode TRAC-2-1465')
+    cy.contains('Created library with barcode TRAC-2-721')
   })
 })
