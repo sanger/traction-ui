@@ -1,7 +1,10 @@
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import { mount, Data, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { mount, flushPromises, createTestingPinia } from '@support/testHelper.js'
 import { expect, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
+import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
+
+const pacbioLibraryFactory = PacbioLibraryFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -35,7 +38,7 @@ describe('Libraries.vue', () => {
         if (store.$id === 'root') {
           store.api.v1.traction.pacbio.libraries.get = vi
             .fn()
-            .mockResolvedValue(Data.TractionPacbioLibraries)
+            .mockResolvedValue(pacbioLibraryFactory.responses.axios)
         }
       },
     ]

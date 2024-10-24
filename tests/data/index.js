@@ -6,7 +6,6 @@ import Samples from './samples'
 import TestResponse from './testResponse'
 import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
-import TractionPacbioLibraries from './tractionPacbioLibraries'
 import TractionPacbioPool from './tractionPacbioPool.json'
 import TractionPacbioPoolsWithAliquots from './tractionPacbioPools.json'
 import TractionPacbioPools from './tractionPacbioPools.json'
@@ -47,7 +46,6 @@ export default {
   TestResponse,
   TubeWithLibrary,
   CreatePacbioRequest,
-  TractionPacbioLibraries,
   TractionPacbioPool,
   TractionPacbioPools,
   TractionPacbioPoolsNoRelationships,

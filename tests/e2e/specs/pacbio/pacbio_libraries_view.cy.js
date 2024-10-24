@@ -1,13 +1,18 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
+import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
 
 describe('Pacbio Libraries view', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.wrap(PacbioLibraryFactory()).as('pacbioLibraryFactory')
 
-    cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
-      fixture: 'tractionPacbioLibraries.json',
+    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
+      cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
+        statusCode: 200,
+        body: pacbioLibraryFactory.content,
+      })
     })
     cy.get('@printerFactory').then((printerFactory) => {
       cy.intercept('GET', '/v1/printers', {
@@ -43,8 +48,10 @@ describe('Pacbio Libraries view', () => {
     cy.get('#insert_size').should('have.length.greaterThan', 0)
     cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
   })
+
+  // it would be better to use the factory to get the values.
   it('allows editing a library and updates the library values', () => {
-    cy.intercept('PATCH', '/v1/pacbio/libraries/18', {
+    cy.intercept('PATCH', '/v1/pacbio/libraries/722', {
       statusCode: 200,
       body: {
         data: {},
@@ -53,7 +60,7 @@ describe('Pacbio Libraries view', () => {
     cy.visit('#/pacbio/libraries')
     //When clicking on edit again on a librray with no  tag
     cy.get('#show_details').within(() => {
-      cy.get('#edit-btn-18').click()
+      cy.get('#edit-btn-722').click()
     })
     //It should show the form to edit the library with the values with an empty tag
     cy.get('#libraryForm').should('be.visible')
@@ -75,7 +82,7 @@ describe('Pacbio Libraries view', () => {
       cy.get('#tag-input').select(pacbioTagSetFactory.storeData.selected.tag.group_id)
     })
     cy.get('#update-btn').click()
-    cy.contains('Updated library with barcode TRAC-2-24')
+    cy.contains('Updated library with barcode TRAC-2-722')
     cy.get('#libraryForm').should('not.exist')
 
     //It should display updated values in table

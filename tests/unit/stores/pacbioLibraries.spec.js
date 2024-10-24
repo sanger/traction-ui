@@ -7,7 +7,7 @@ import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
 import { libraryPayload } from '@/stores/utilities/pacbioLibraries.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
-const pacbioLibraryWithoutRelationships = PacbioLibraryFactory(false)
+const pacbioLibraryWithoutRelationships = PacbioLibraryFactory({ relationships: false })
 
 const requiredAttributes = {
   volume: 1.0,
@@ -221,7 +221,6 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(async () => {
         update = vi.fn()
-        // const libraries = Data.TractionPacbioLibrary
         get = vi.fn().mockResolvedValue(pacbioLibraryFactory.responses.axios)
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
