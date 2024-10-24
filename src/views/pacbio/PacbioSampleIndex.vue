@@ -187,7 +187,10 @@ export default {
         request.location = '-';
         const location = locationsData.find((loc) => loc.barcode === request.barcode);
         if (location) {
-          request.location = location.name;
+          const { name, coordinates } = location;
+          request.location = coordinates && Object.keys(coordinates).length
+          ? `${name} - ${coordinates.row}, ${coordinates.column}`
+          : name;
         }
       });
     },
