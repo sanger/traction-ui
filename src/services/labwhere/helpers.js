@@ -7,12 +7,11 @@
  * @param {Array} labwhereBarcodes - An array of barcodes to find locations for.
  * @returns {Object} A mapping of barcodes to their corresponding locations. If a barcode is not found, an empty object is returned for that barcode.
  */
-const extractLocationsForLabwares = (labwares, labwareBarcodes) => {
+const extractLocationsForLabwares = (labwares, labwhereBarcodes) => {
   const locationMap = {}
-  labwareBarcodes.forEach((barcode) => {
-    locationMap[barcode] = labwares.length
-      ? labwares.find((labware) => labware.barcode === barcode)?.location || {}
-      : {}
+  labwhereBarcodes.forEach((barcode) => {
+    const labware = labwares.find((labware) => labware.barcode === barcode)
+    locationMap[barcode] = labware ? labware.location : {}
   })
   return locationMap
 }
