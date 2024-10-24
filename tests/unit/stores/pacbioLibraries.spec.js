@@ -82,7 +82,7 @@ describe('usePacbioLibrariesStore', () => {
       rootStore = useRootStore()
       store = usePacbioLibrariesStore()
     })
-    describe('#createLibraryInTraction', () => {
+    describe('#createLibrary', () => {
       let create
 
       beforeEach(() => {
@@ -104,7 +104,7 @@ describe('usePacbioLibrariesStore', () => {
           data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
         }
         create.mockResolvedValue(mockResponse)
-        const { success, barcode } = await store.createLibraryInTraction(formLibrary)
+        const { success, barcode } = await store.createLibrary(formLibrary)
         expect(create).toBeCalledWith({
           data: libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 }),
           include: 'tube,primary_aliquot',
@@ -121,7 +121,7 @@ describe('usePacbioLibrariesStore', () => {
         create.mockRejectedValue({ response: mockResponse })
 
         const expectedResponse = newResponse({ ...mockResponse, success: false })
-        const { success, errors } = await store.createLibraryInTraction(formLibrary)
+        const { success, errors } = await store.createLibrary(formLibrary)
 
         expect(success).toBeFalsy()
         expect(errors).toEqual(expectedResponse.errors)

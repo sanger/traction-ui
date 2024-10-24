@@ -101,9 +101,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Promise} A promise that resolves when the library is successfully created.
      *
      * @example
-     * await createLibraryInTraction(library, tagId);
+     * await createLibrary(library, tagId);
      */
-    async createLibraryInTraction({
+    async createLibrary({
       template_prep_kit_box_barcode,
       tag_id,
       concentration,
@@ -126,6 +126,8 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         data: payload,
         include: 'tube,primary_aliquot',
       })
+
+      console.log(promise)
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
