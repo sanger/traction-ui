@@ -26,10 +26,11 @@ const FetchWrapper = (baseUrl, serviceName) => {
         const rawResponse = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
           body,
         })
+
         const response = await rawResponse.json()
 
         if (!rawResponse.ok) {
