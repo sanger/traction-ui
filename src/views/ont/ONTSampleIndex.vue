@@ -94,7 +94,6 @@ export default {
       return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
     },
     async updateLocations(locationsData) {
-      console.log(this.barcodes)
       this.requests.forEach((request) => {
         request.location = '-'
         const location = locationsData.find((loc) => loc.barcode === request.barcode)

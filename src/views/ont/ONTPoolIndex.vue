@@ -137,8 +137,7 @@ export default {
       return usePrintingStore()
     },
     barcodes() {
-      console.log(this.pools.map((request) => request.barcode).filter(Boolean))
-      return this.pools.map((request) => request.barcode).filter(Boolean)
+      return this.pools.map((pool) => pool.barcode)
     },
   },
   watch: {
