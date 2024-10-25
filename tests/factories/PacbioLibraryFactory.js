@@ -31,7 +31,6 @@ const createLibrariesArray = ({ libraries, tubes, tags, requests }) => {
   return Object.values(libraries)
     .filter((library) => library.tube)
     .map((library) => {
-      console.log(library)
       const { request, tag, ...attributes } = library
       const { sample_name } = requests[request]
       const { barcode } = tubes[library.tube]

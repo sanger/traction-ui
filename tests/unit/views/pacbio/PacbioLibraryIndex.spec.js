@@ -36,9 +36,9 @@ describe('Libraries.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v1.traction.pacbio.libraries.get = vi
+          store.api.v2.traction.pacbio.libraries.get = vi
             .fn()
-            .mockResolvedValue(pacbioLibraryFactory.responses.axios)
+            .mockResolvedValue(pacbioLibraryFactory.responses.fetch)
         }
       },
     ]

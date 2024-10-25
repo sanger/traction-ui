@@ -1,5 +1,10 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { createPinia, setActivePinia, failedResponse } from '@support/testHelper'
+import {
+  createPinia,
+  setActivePinia,
+  failedResponse,
+  successfulResponse,
+} from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
 import { extractAttributes } from '@/api/JsonApi'
@@ -68,7 +73,7 @@ describe('usePacbioRunsStore', () => {
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
         store.runs = []
-        store.runRequest.update = vi.fn().mockReturnValue(pacbioRunsFactory.responses.fetch)
+        store.runRequest.update = vi.fn().mockReturnValue(successfulResponse())
         const updatedRun = pacbioRunsFactory.content.data
 
         const { success, errors } = await store.updateRun({ ...updatedRun })
