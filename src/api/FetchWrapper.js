@@ -27,7 +27,7 @@ const FetchWrapper = (baseUrl, serviceName, contentType = 'application/json') =>
         const rawResponse = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': this.contentType,
+            'Content-Type': contentType,
           },
           body,
         })
