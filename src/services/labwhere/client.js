@@ -1,7 +1,11 @@
 import { extractLocationsForLabwares } from './helpers.js'
 import { FetchWrapper } from '@/api/FetchWrapper.js'
 
-const labwhereFetch = FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere', 'multipart/form-data')
+const labwhereFetch = FetchWrapper(
+  import.meta.env['VITE_LABWHERE_BASE_URL'],
+  'LabWhere',
+  'multipart/form-data',
+)
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
  *
@@ -23,16 +27,12 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
   if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
     return { success: false, errors: ['No barcodes provided'], data: {} }
   }
-  const params = new URLSearchParams();
-  labwhereBarcodes.forEach(barcode => {
-    params.append('barcodes[]', barcode);
-  });
+  const params = new URLSearchParams()
+  labwhereBarcodes.forEach((barcode) => {
+    params.append('barcodes[]', barcode)
+  })
 
-  const response = await labwhereFetch.post(
-    '/api/labwares/searches',
-    params,
-    'multipart/form-data',
-  );
+  const response = await labwhereFetch.post('/api/labwares/searches', params, 'multipart/form-data')
 
   if (response.success) {
     response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)

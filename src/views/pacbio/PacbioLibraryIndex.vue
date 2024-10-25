@@ -78,7 +78,7 @@
           <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="row.toggleDetails" />
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
+      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -202,11 +202,12 @@ const displayedLibraries = computed(() =>
     const { name = '-', coordinates = {} } = location
     return {
       ...library,
-      location: coordinates.row && coordinates.column
-        ? `${name} - ${coordinates.row}, ${coordinates.column}`
-        : name,
+      location:
+        coordinates.row && coordinates.column
+          ? `${name} - ${coordinates.row}, ${coordinates.column}`
+          : name,
     }
-  })
+  }),
 )
 
 //methods
@@ -276,7 +277,7 @@ const getEditLibrary = (row) => {
 
 /**
  * Updates the `locationsData` with the new location data received from `LocationFetcher`.
- * 
+ *
  * @param {Array} data - Array of location data objects containing barcodes and location names.
  */
 const updateLocations = (newLocations) => {

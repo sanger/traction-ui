@@ -66,7 +66,7 @@
         >
         </printerModal>
       </div>
-      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
+      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -137,9 +137,9 @@ export default {
       return usePrintingStore()
     },
     barcodes() {
-      console.log(this.pools.map((request) => request.barcode).filter(Boolean));
-      return this.pools.map((request) => request.barcode).filter(Boolean);
-    }
+      console.log(this.pools.map((request) => request.barcode).filter(Boolean))
+      return this.pools.map((request) => request.barcode).filter(Boolean)
+    },
   },
   watch: {
     pools: {

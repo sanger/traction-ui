@@ -74,7 +74,7 @@
           </div>
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
+      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -185,11 +185,12 @@ const displayedPools = computed(() =>
     const { name = '-', coordinates = {} } = location
     return {
       ...pool,
-      location: coordinates.row && coordinates.column
-        ? `${name} - ${coordinates.row}, ${coordinates.column}`
-        : name,
+      location:
+        coordinates.row && coordinates.column
+          ? `${name} - ${coordinates.row}, ${coordinates.column}`
+          : name,
     }
-  })
+  }),
 )
 
 const barcodes = computed(() => pools.value.map((pool) => pool.barcode).filter(Boolean))
@@ -242,7 +243,7 @@ const fetchPools = async () => {
 
 /**
  * Updates the `locationsData` with the new location data received from `LocationFetcher`.
- * 
+ *
  * @param {Array} data - Array of location data objects containing barcodes and location names.
  */
 const updateLocations = (data) => {

@@ -66,7 +66,7 @@
           </div>
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
+      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -138,8 +138,8 @@ export default {
       return usePrintingStore()
     },
     barcodes() {
-      return this.requests.map((request) => request.barcode).filter(Boolean);
-    }
+      return this.requests.map((request) => request.barcode).filter(Boolean)
+    },
   },
   methods: {
     /*
@@ -184,15 +184,16 @@ export default {
     },
     async updateLocations(locationsData) {
       this.requests.forEach((request) => {
-        request.location = '-';
-        const location = locationsData.find((loc) => loc.barcode === request.barcode);
+        request.location = '-'
+        const location = locationsData.find((loc) => loc.barcode === request.barcode)
         if (location) {
-          const { name, coordinates } = location;
-          request.location = coordinates && Object.keys(coordinates).length
-          ? `${name} - ${coordinates.row}, ${coordinates.column}`
-          : name;
+          const { name, coordinates } = location
+          request.location =
+            coordinates && Object.keys(coordinates).length
+              ? `${name} - ${coordinates.row}, ${coordinates.column}`
+              : name
         }
-      });
+      })
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
   },
