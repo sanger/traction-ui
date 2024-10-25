@@ -33,7 +33,7 @@
           id="create-btn"
           theme="create"
           :disabled="!selectedSample.sample_name"
-          @click="create"
+          @click="createLibrary"
         >
           Create
         </traction-button>
@@ -121,11 +121,13 @@ const toggleDisplayCreatePanel = () => {
 }
 
 /**
- * @method create
- * @description Creates a new library by calling the create method from the 'pacbioLibraries' store.
+ * @method createLibrary
+ * @description Creates a new library by calling the createLibrary method from the 'pacbioLibraries' store.
  * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
  */
-const create = async () => {
+const createLibrary = async () => {
+  console.log('started')
+
   const { success, barcode, errors } = await librariesStore.createLibrary(
     formRef?.value?.formLibrary,
   )

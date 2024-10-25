@@ -127,7 +127,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         include: 'tube,primary_aliquot',
       })
 
-      console.log(promise)
       const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
