@@ -9,7 +9,7 @@
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="pools"
+        :items="updatedPools"
         :fields="fields"
         selectable
         select-mode="multi"
@@ -66,6 +66,7 @@
         >
         </printerModal>
       </div>
+      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -78,6 +79,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
+import LocationFetcher from '@/components/LocationFetcher.vue'
 
 export default {
   name: 'OntPoolIndex',
@@ -85,6 +87,7 @@ export default {
     DataFetcher,
     FilterCard,
     PrinterModal,
+    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
@@ -106,6 +109,7 @@ export default {
           label: 'Final Library Amount',
           sortable: true,
         },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
@@ -124,12 +128,25 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
+      updatedPools: [], // New data property for the updated pools list
     }
   },
   computed: {
     ...mapGetters('traction/ont/pools', ['pools']),
     printingStore() {
       return usePrintingStore()
+    },
+    barcodes() {
+      console.log(this.pools.map((request) => request.barcode).filter(Boolean));
+      return this.pools.map((request) => request.barcode).filter(Boolean);
+    }
+  },
+  watch: {
+    pools: {
+      immediate: true,
+      handler() {
+        this.updatedPools = this.pools
+      },
     },
   },
   methods: {
@@ -167,6 +184,19 @@ export default {
     },
     async fetchPools() {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
+    },
+    async updateLocations(locationsData) {
+      this.updatedPools = this.updatedPools.map((pool) => {
+        const location = locationsData.find((loc) => loc.barcode === pool.barcode)
+        return {
+          ...pool,
+          location: location
+            ? location.coordinates && Object.keys(location.coordinates).length
+              ? `${location.name} - ${location.coordinates.row}, ${location.coordinates.column}`
+              : location.name
+            : '-',
+        }
+      })
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
   },
