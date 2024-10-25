@@ -8,16 +8,14 @@
           class="float-left"
           :disabled="state.selected.length === 0"
           @select-printer="printLabels($event)"
-        >
-        </printerModal>
-
+        />
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="pools"
+        :items="displayedPools"
         :fields="state.fields"
         selectable
         select-mode="multi"
@@ -76,6 +74,7 @@
           </div>
         </template>
       </traction-table>
+      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -84,6 +83,7 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import LocationFetcher from '@/components/LocationFetcher.vue'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
@@ -145,6 +145,7 @@ const state = reactive({
       sortable: true,
     },
     { key: 'insert_size', label: 'Insert Size', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
     { key: 'created_at', label: 'Created at (UTC)', sortable: true },
     { key: 'actions', label: 'Actions' },
     { key: 'show_details', label: '' },
@@ -174,6 +175,24 @@ const pools = computed(() => poolsStore.poolsArray)
 
 //create printing store
 const printingStore = usePrintingStore()
+
+// Location handling with a computed property
+const locationsData = ref([])
+
+const displayedPools = computed(() =>
+  pools.value.map((pool) => {
+    const location = locationsData.value.find((loc) => loc.barcode === pool.barcode) || {}
+    const { name = '-', coordinates = {} } = location
+    return {
+      ...pool,
+      location: coordinates.row && coordinates.column
+        ? `${name} - ${coordinates.row}, ${coordinates.column}`
+        : name,
+    }
+  })
+)
+
+const barcodes = computed(() => pools.value.map((pool) => pool.barcode).filter(Boolean))
 
 //methods
 const createLabels = () => {
@@ -219,5 +238,14 @@ const printLabels = async (printerName) => {
  */
 const fetchPools = async () => {
   return await fetchWithQueryParams(poolsStore.fetchPools, state.filterOptions)
+}
+
+/**
+ * Updates the `locationsData` with the new location data received from `LocationFetcher`.
+ * 
+ * @param {Array} data - Array of location data objects containing barcodes and location names.
+ */
+const updateLocations = (data) => {
+  locationsData.value = data
 }
 </script>
