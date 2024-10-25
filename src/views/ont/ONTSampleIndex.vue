@@ -27,6 +27,7 @@
           </template>
         </template>
       </traction-table>
+      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -36,6 +37,7 @@ import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams'
+import LocationFetcher from '@/components/LocationFetcher.vue'
 // TODO: Move these actions back to top level store.
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
@@ -44,6 +46,7 @@ export default {
   components: {
     DataFetcher,
     FilterCard,
+    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
@@ -64,6 +67,7 @@ export default {
         },
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       filterOptions: [
@@ -80,11 +84,27 @@ export default {
   },
   computed: {
     ...mapGetters(['requests']),
+    barcodes() {
+      return this.requests.map((request) => request.barcode).filter(Boolean);
+    }
   },
   methods: {
     ...mapActions(['fetchOntRequests']),
     async fetchRequests() {
       return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
+    },
+    async updateLocations(locationsData) {
+      console.log(this.barcodes)
+      this.requests.forEach((request) => {
+        request.location = '-';
+        const location = locationsData.find((loc) => loc.barcode === request.barcode);
+        if (location) {
+          const { name, coordinates } = location;
+          request.location = coordinates && Object.keys(coordinates).length
+          ? `${name} - ${coordinates.row}, ${coordinates.column}`
+          : name;
+        }
+      });
     },
   },
 }
