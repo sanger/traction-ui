@@ -1,6 +1,6 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, store, Data, createTestingPinia } from '@support/testHelper'
-import Response from '@/api/v1/Response'
+import { mount, store, createTestingPinia } from '@support/testHelper'
+import SaphyrLibrariesFactory from '@tests/factories/SaphyrLibrariesFactory.js'
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(Libraries, {
@@ -17,37 +17,12 @@ function mountWithStore({ props } = {}) {
   })
   return { wrapperObj }
 }
-
+const saphyrLibrariesFactory = SaphyrLibrariesFactory()
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
-    mockLibraries = [
-      {
-        id: 1,
-        barcode: 'TRAC-8',
-        material: {
-          id: 6,
-          type: 'libraries',
-          state: 'pending',
-          sample_name: 'sample_d',
-          enzyme_name: 'Nb.BsrDI',
-          created_at: '03/12/2019 11:49',
-        },
-      },
-      {
-        id: 2,
-        barcode: 'TRAC-9',
-        material: {
-          id: 6,
-          type: 'libraries',
-          state: 'pending',
-          sample_name: 'sample_d',
-          enzyme_name: 'Nb.BsrDI',
-          created_at: '03/12/2019 11:49',
-        },
-      },
-    ]
+    mockLibraries = Object.values(saphyrLibrariesFactory.storeData.dataArray)
 
     // We mock the request response, to allow the provider to trigger our
     // behaviour for us. We might be better of mocking the action itself, but
@@ -55,7 +30,7 @@ describe('Libraries.vue', () => {
     // Before we used to inject the state directly, but that caused issues
     // when the component triggered the set requests action itself.
     vi.spyOn(store.getters['traction/saphyr/tubes/libraryRequest'], 'get').mockResolvedValue(
-      Data.TractionSaphyrLibraries,
+      saphyrLibrariesFactory.responses.fetch,
     )
 
     const { wrapperObj } = mountWithStore()
@@ -85,23 +60,27 @@ describe('Libraries.vue', () => {
     })
 
     it('calls the correct functions', async () => {
-      libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionSaphyrLibraries)])
+      libraries.deleteLibraries.mockReturnValue([{ success: true }])
       await libraries.handleLibraryDelete()
 
+      const barcodes = mockLibraries.map((s) => s.barcode).join(', ')
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map((s) => s.id))
       expect(libraries.showAlert).toBeCalledWith(
-        'Libraries TRAC-8, TRAC-9 successfully deleted',
+        `Libraries ${barcodes} successfully deleted`,
         'success',
       )
     })
 
     it('calls showAlert when there is an error', async () => {
       const failedResponse = {
-        status: 422,
-        statusText: 'Unprocessable Entity',
-        data: { data: { errors: { it: ['did not work'] } } },
+        errors: [
+          {
+            title: 'Unprocessable Entity',
+            status: '422',
+          },
+        ],
       }
-      libraries.deleteLibraries.mockReturnValue([new Response(failedResponse)])
+      libraries.deleteLibraries.mockReturnValue([failedResponse])
 
       await libraries.handleLibraryDelete()
 

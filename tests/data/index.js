@@ -1,13 +1,9 @@
-import Enzymes from './enzymes'
 import Libraries from './libraries'
 import Requests from './requests'
 import RunNoLibrary from './runNoLibrary'
 import RunWithLibrary from './runWithLibrary'
 import Samples from './samples'
 import TestResponse from './testResponse'
-import TractionSaphyrLibraries from './tractionSaphyrLibraries'
-import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
-import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
@@ -34,36 +30,23 @@ import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
-import TractionOntRequests from './tractionOntRequests'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore.json'
-import OntAutoTagStore from './ontAutoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
-import OntTubesRequest from './ontTubesRequest.json'
-import OntPlates from './ontPlates.json'
-import OntPlateRequest from './ontPlateRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
-import OntTubeRequest from './ontTubeRequest.json'
 import OntRun from './ontRun.json'
-import tractionOntLibraries from './tractionOntLibraries'
-import TractionOntPool from './tractionOntPool.json'
-import TractionOntPools from './tractionOntPools.json'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
 
 export default {
-  Enzymes,
   Libraries,
   Requests,
   RunNoLibrary,
   RunWithLibrary,
   Samples,
   TestResponse,
-  TractionSaphyrLibraries,
-  TractionSaphyrTubesWithRequest,
-  TractionTubesWithSample,
   TubeWithLibrary,
   CreatePacbioRequest,
   TractionPacbioLibraries,
@@ -90,22 +73,13 @@ export default {
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
-  tractionOntLibraries,
-  TractionOntRequests,
-  TractionOntPool,
-  TractionOntPools,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
-  OntAutoTagStore,
   OntPlatesRequest,
-  OntPlates,
-  OntPlateRequest,
   OntRequestsRequest,
   OntRun,
-  OntTubeRequest,
-  OntTubesRequest,
   PacbioRunWithWellDefaults,
   StorePools,
 }

@@ -1,13 +1,5 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
-import Response from '@/api/v1/Response'
-import {
-  mount,
-  Data,
-  flushPromises,
-  nextTick,
-  createTestingPinia,
-  router,
-} from '@support/testHelper'
+import { mount, flushPromises, nextTick, createTestingPinia, router } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { vi } from 'vitest'
@@ -21,10 +13,12 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+// TODO: This needs a refactor to include the way the store data is being created.
 const pacbioRunFactory = PacbioRunFactory()
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 
-const mockRuns = new Response(pacbioRunFactory.responses.axios).deserialize.runs
+const mockRuns = pacbioRunFactory.storeData
+
 /**
  * Helper method for mounting a component 'dataProps' if any and with a mock instance of pinia, with the given 'options'.
  * 'options' allows to define initial state while instantiating the component.
@@ -34,7 +28,9 @@ const mockRuns = new Response(pacbioRunFactory.responses.axios).deserialize.runs
  * @param {*} dataProps - data to be passed to the component while mounting
  */
 function factory(options, dataProps) {
-  const spy = vi.fn().mockResolvedValue({ success: true, data: pacbioRunFactory.content })
+  const spy = vi.fn().mockResolvedValue(pacbioRunFactory.responses.fetch)
+
+  // this is in the pacbioRunCreate store so didn't weant to change it to v2.
   const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.axios)
 
   const wrapperObj = mount(PacbioRunIndex, {
@@ -43,12 +39,12 @@ function factory(options, dataProps) {
         createTestingPinia({
           initialState: {
             pacbioRuns: {
-              runs: new Response(Data.PacbioRuns).deserialize.runs,
+              // This is only being used to check the smrt link version.
+              runs: mockRuns,
             },
             pacbioRunCreate: {
               resources: {
-                smrtLinkVersions: new Response(pacbioSmrtLinkVersionFactory.responses.axios)
-                  .deserialize.smrt_link_versions[0],
+                smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData,
               },
             },
             root: {},
@@ -61,9 +57,9 @@ function factory(options, dataProps) {
               }
               if (store.$id === 'root') {
                 store.api.v1.traction.pacbio.smrt_link_versions.get = spy2
-                store.api.v1.traction.pacbio.runs = vi
+                store.api.v2.traction.pacbio.runs = vi
                   .fn()
-                  .mockReturnValue(pacbioRunFactory.responses.axios)
+                  .mockReturnValue(pacbioRunFactory.responses.fetch)
               }
             },
           ],
