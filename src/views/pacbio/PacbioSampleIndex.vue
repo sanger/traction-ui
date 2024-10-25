@@ -21,7 +21,7 @@
         id="samples-table"
         v-model:sort-by="sortBy"
         primary_key="id"
-        :items="requests"
+        :items="displayedRequests"
         :fields="fields"
         selectable
         select-mode="single"
@@ -129,6 +129,7 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
+      locationsData: [], // Initialize locationsData
     }
   },
   computed: {
@@ -139,6 +140,17 @@ export default {
     },
     barcodes() {
       return this.requests.map((request) => request.barcode).filter(Boolean)
+    },
+    displayedRequests() {
+      return this.requests.map((request) => {
+        const location = this.locationsData.find((loc) => loc.barcode === request.barcode) || {}
+        const { name = '-', coordinates = {} } = location
+        request.location =
+          coordinates.row && coordinates.column
+            ? `${name} - ${coordinates.row}, ${coordinates.column}`
+            : name
+        return request
+      })
     },
   },
   methods: {
@@ -183,17 +195,7 @@ export default {
       return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
     },
     async updateLocations(locationsData) {
-      this.requests.forEach((request) => {
-        request.location = '-'
-        const location = locationsData.find((loc) => loc.barcode === request.barcode)
-        if (location) {
-          const { name, coordinates } = location
-          request.location =
-            coordinates && Object.keys(coordinates).length
-              ? `${name} - ${coordinates.row}, ${coordinates.column}`
-              : name
-        }
-      })
+      this.locationsData = locationsData // Update locationsData with new locations
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
   },
