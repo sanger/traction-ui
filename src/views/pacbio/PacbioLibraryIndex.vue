@@ -8,8 +8,7 @@
           class="float-left"
           :disabled="state.selected.length === 0"
           @select-printer="printLabels($event)"
-        >
-        </printerModal>
+        />
         <traction-button
           id="deleteLibraries"
           theme="delete"
@@ -48,7 +47,7 @@
       <traction-table
         id="library-index"
         v-model:sort-by="sortBy"
-        :items="libraries"
+        :items="displayedLibraries"
         :fields="state.fields"
         selectable
         select-mode="multi"
@@ -79,6 +78,7 @@
           <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="row.toggleDetails" />
         </template>
       </traction-table>
+      <LocationFetcher :barcodes="barcodes" @locationData="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -92,6 +92,7 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import LocationFetcher from '@/components/LocationFetcher.vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
@@ -150,6 +151,7 @@ const state = reactive({
     { key: 'source_identifier', label: 'Source', sortable: true },
     { key: 'volume', label: 'Initial Volume', sortable: true },
     { key: 'concentration', label: 'Concentration', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
     {
       key: 'template_prep_kit_box_barcode',
       label: 'Template Prep Kit Box Barcode',
@@ -190,7 +192,26 @@ const libraries = computed(() => librariesStore.librariesArray)
 
 const showConfirmationModal = ref(false)
 
+const barcodes = computed(() => libraries.value.map((library) => library.barcode).filter(Boolean))
+
+// Computed property for displayed libraries with updated location information
+const displayedLibraries = computed(() =>
+  libraries.value.map((library) => {
+    const location = locationsData.value.find((loc) => loc.barcode === lib.barcode) || {}
+    const { name = '-', coordinates = {} } = location
+    return {
+      ...library,
+      location: coordinates.row && coordinates.column
+        ? `${name} - ${coordinates.row}, ${coordinates.column}`
+        : name,
+    }
+  })
+)
+
 //methods
+
+const locationsData = ref([])
+
 const handleLibraryDelete = async () => {
   try {
     const selectedIds = state.selected.map((s) => s.id)
@@ -250,5 +271,14 @@ const fetchLibraries = async () => {
 const getEditLibrary = (row) => {
   const value = libraries.value.find((library) => library.id === row.item.id)
   return value
+}
+
+/**
+ * Updates the `locationsData` with the new location data received from `LocationFetcher`.
+ * 
+ * @param {Array} data - Array of location data objects containing barcodes and location names.
+ */
+const updateLocations = (newLocations) => {
+  locationsData.value = newLocations
 }
 </script>
