@@ -3,8 +3,7 @@ import { FetchWrapper } from '@/api/FetchWrapper.js'
 
 const labwhereFetch = FetchWrapper(
   import.meta.env['VITE_LABWHERE_BASE_URL'],
-  'LabWhere',
-  'multipart/form-data',
+  'LabWhere'
 )
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
