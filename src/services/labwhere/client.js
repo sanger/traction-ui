@@ -30,7 +30,8 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
 
   const response = await labwhereFetch.post(
     '/api/labwares/searches',
-    params
+    params,
+    'multipart/form-data',
   );
 
   if (response.success) {
