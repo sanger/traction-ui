@@ -7,13 +7,14 @@ import { getLabwhereLocations } from '@/services/labwhere/client.js'
 import { getCoordinateForLabware } from '@/services/labwhere/helpers.js'
 
 export default {
-  name: 'LocationFetcher',
+  name: 'LocationFetcher', // Declare the emitted event
   props: {
     barcodes: {
       type: Array,
       required: true,
     },
   },
+  emits: ['locationData'],
   watch: {
     barcodes: {
       immediate: true,
