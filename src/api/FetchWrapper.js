@@ -6,10 +6,11 @@
  * @param {string} serviceName - The name of the service being accessed.
  * @returns {Object} An object containing the base URL, service name, and a post method.
  */
-const FetchWrapper = (baseUrl, serviceName) => {
+const FetchWrapper = (baseUrl, serviceName, contentType = 'application/json') => {
   return {
     baseUrl: baseUrl,
     serviceName: serviceName,
+    contentType: contentType,
     /**
      * Sends a POST request to the specified endpoint with the provided body.
      *
@@ -26,7 +27,7 @@ const FetchWrapper = (baseUrl, serviceName) => {
         const rawResponse = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': this.contentType,
           },
           body,
         })
