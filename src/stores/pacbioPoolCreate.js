@@ -538,6 +538,16 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async createPool() {
       const { used_aliquots, pool } = this
+
+      Object.values(used_aliquots).forEach((usedAliquot) => {
+        const usedAliquotObject = createUsedAliquot({
+          ...usedAliquot,
+          request: usedAliquot.id,
+          source_type: 'Pacbio::Request',
+        })
+        this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
+      })
+
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
