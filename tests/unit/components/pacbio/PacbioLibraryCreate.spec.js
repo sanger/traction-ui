@@ -110,7 +110,6 @@ describe('PacbioLibraryCreate.vue', () => {
       expect(wrapper.element.querySelector('#libraryForm')).toBeNull()
     })
 
-    // skipping to check if the ci runs and e2e tests pass
     describe('#createLibrary', () => {
       let payload
 

@@ -126,8 +126,6 @@ const toggleDisplayCreatePanel = () => {
  * @returns {void} Displays a success message if the library is created successfully, otherwise displays a failure message.
  */
 const createLibrary = async () => {
-  console.log('started')
-
   const { success, barcode, errors } = await librariesStore.createLibrary(
     formRef?.value?.formLibrary,
   )
