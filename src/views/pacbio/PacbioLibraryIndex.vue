@@ -197,7 +197,7 @@ const barcodes = computed(() => libraries.value.map((library) => library.barcode
 // Computed property for displayed libraries with updated location information
 const displayedLibraries = computed(() =>
   libraries.value.map((library) => {
-    const location = locationsData.value.find((loc) => loc.barcode === lib.barcode) || {}
+    const location = locationsData.value.find((loc) => loc.barcode === library.barcode) || {}
     const { name = '-', coordinates = {} } = location
     return {
       ...library,
