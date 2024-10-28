@@ -140,7 +140,7 @@ export default {
       return usePrintingStore()
     },
     barcodes() {
-      return this.requests.map((request) => request.barcode).filter(Boolean)
+      return this.requests.map((request) => request.barcode)
     },
     displayedRequests() {
       return locationBuilder(this.requests, this.locationsData)

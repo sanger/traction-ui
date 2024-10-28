@@ -182,7 +182,7 @@ const locationsData = ref([])
 
 const displayedPools = computed(() => locationBuilder(pools.value, locationsData.value))
 
-const barcodes = computed(() => pools.value.map((pool) => pool.barcode).filter(Boolean))
+const barcodes = computed(() => pools.value.map((pool) => pool.barcode))
 
 //methods
 const createLabels = () => {

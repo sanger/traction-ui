@@ -89,7 +89,7 @@ export default {
   computed: {
     ...mapGetters(['requests']),
     barcodes() {
-      return this.requests.map((request) => request.barcode).filter(Boolean)
+      return this.requests.map((request) => request.source_identifier)
     },
     // Computed property to return updated displayed requests
     displayedRequests() {

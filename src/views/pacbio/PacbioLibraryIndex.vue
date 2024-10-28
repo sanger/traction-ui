@@ -194,7 +194,7 @@ const libraries = computed(() => librariesStore.librariesArray)
 
 const showConfirmationModal = ref(false)
 
-const barcodes = computed(() => libraries.value.map((library) => library.barcode).filter(Boolean))
+const barcodes = computed(() => libraries.value.map((library) => library.barcode))
 
 // Computed property for displayed libraries with updated location information
 const displayedLibraries = computed(() => {
