@@ -100,6 +100,7 @@ import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { usePrintingStore } from '@/stores/printing.js'
+import { locationBuilder } from '@/services/labwhere/helpers'
 
 /**
  * Following are new Vue 3 features used in this component:
@@ -196,19 +197,9 @@ const showConfirmationModal = ref(false)
 const barcodes = computed(() => libraries.value.map((library) => library.barcode).filter(Boolean))
 
 // Computed property for displayed libraries with updated location information
-const displayedLibraries = computed(() =>
-  libraries.value.map((library) => {
-    const location = locationsData.value.find((loc) => loc.barcode === library.barcode) || {}
-    const { name = '-', coordinates = {} } = location
-    return {
-      ...library,
-      location:
-        coordinates.row && coordinates.column
-          ? `${name} - ${coordinates.row}, ${coordinates.column}`
-          : name,
-    }
-  }),
-)
+const displayedLibraries = computed(() => {
+  return locationBuilder(libraries.value, locationsData.value)
+})
 
 //methods
 

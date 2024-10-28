@@ -90,6 +90,7 @@ import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { ref, reactive, computed } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
+import { locationBuilder } from '@/services/labwhere/helpers'
 /**
  * Following are new Vue 3 features used in this component:
  * 
@@ -179,19 +180,7 @@ const printingStore = usePrintingStore()
 // Location handling with a computed property
 const locationsData = ref([])
 
-const displayedPools = computed(() =>
-  pools.value.map((pool) => {
-    const location = locationsData.value.find((loc) => loc.barcode === pool.barcode) || {}
-    const { name = '-', coordinates = {} } = location
-    return {
-      ...pool,
-      location:
-        coordinates.row && coordinates.column
-          ? `${name} - ${coordinates.row}, ${coordinates.column}`
-          : name,
-    }
-  }),
-)
+const displayedPools = computed(() => locationBuilder(pools.value, locationsData.value))
 
 const barcodes = computed(() => pools.value.map((pool) => pool.barcode).filter(Boolean))
 

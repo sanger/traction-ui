@@ -78,6 +78,7 @@ import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LocationFetcher from '@/components/LocationFetcher.vue'
+import { locationBuilder } from '@/services/labwhere/helpers'
 
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
@@ -142,15 +143,7 @@ export default {
       return this.requests.map((request) => request.barcode).filter(Boolean)
     },
     displayedRequests() {
-      return this.requests.map((request) => {
-        const location = this.locationsData.find((loc) => loc.barcode === request.barcode) || {}
-        const { name = '-', coordinates = {} } = location
-        request.location =
-          coordinates.row && coordinates.column
-            ? `${name} - ${coordinates.row}, ${coordinates.column}`
-            : name
-        return request
-      })
+      return locationBuilder(this.requests, this.locationsData)
     },
   },
   methods: {

@@ -27,4 +27,18 @@ const getCoordinateForLabware = (location, labwareBarcode) => {
   return location?.coordinates?.find((coordinate) => coordinate.labware === labwareBarcode) || {}
 }
 
-export { extractLocationsForLabwares, getCoordinateForLabware }
+const locationBuilder = (items, locationsData) => {
+  return items.map((item) => {
+    const location = locationsData.find((loc) => loc.barcode === item.barcode)
+    return {
+      ...item,
+      location: location
+        ? location.coordinates && Object.keys(location.coordinates).length
+          ? `${location.name} - ${location.coordinates.row}, ${location.coordinates.column}`
+          : location.name
+        : '-',
+    }
+  })
+}
+
+export { extractLocationsForLabwares, getCoordinateForLabware, locationBuilder }

@@ -9,7 +9,7 @@
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="updatedPools"
+        :items="displayedPools"
         :fields="fields"
         selectable
         select-mode="multi"
@@ -80,6 +80,7 @@ import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import LocationFetcher from '@/components/LocationFetcher.vue'
+import { locationBuilder } from '@/services/labwhere/helpers'
 
 export default {
   name: 'OntPoolIndex',
@@ -128,7 +129,7 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      updatedPools: [], // New data property for the updated pools list
+      displayedPools: [], // New data property for the updated pools list
     }
   },
   computed: {
@@ -144,7 +145,7 @@ export default {
     pools: {
       immediate: true,
       handler() {
-        this.updatedPools = this.pools
+        this.displayedPools = this.pools
       },
     },
   },
@@ -185,17 +186,7 @@ export default {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
     },
     async updateLocations(locationsData) {
-      this.updatedPools = this.updatedPools.map((pool) => {
-        const location = locationsData.find((loc) => loc.barcode === pool.barcode)
-        return {
-          ...pool,
-          location: location
-            ? location.coordinates && Object.keys(location.coordinates).length
-              ? `${location.name} - ${location.coordinates.row}, ${location.coordinates.column}`
-              : location.name
-            : '-',
-        }
-      })
+      this.displayedPools = locationBuilder(this.pools, locationsData)
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
   },
