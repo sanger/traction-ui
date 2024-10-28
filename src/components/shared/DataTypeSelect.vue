@@ -31,7 +31,7 @@ export default {
     },
     allowNone: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   emits: ['update:modelValue'],
