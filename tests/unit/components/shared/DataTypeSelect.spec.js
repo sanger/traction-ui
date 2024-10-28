@@ -32,6 +32,8 @@ describe('DataTypeSelect.vue', () => {
     it('will list data types from all pipelines unless specified', () => {
       const wrapper = buildWrapper({})
       const select = wrapper.find('select')
+      // allowNone set to false
+      expect(findOption('None', { from: select })).toBeFalsy()
       expect(findOption('basecalls and raw data', { from: select })).toBeTruthy()
       expect(findOption('dummy type', { from: select })).toBeTruthy()
     })

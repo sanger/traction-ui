@@ -29,6 +29,10 @@ export default {
       type: String,
       default: undefined,
     },
+    allowNone: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['update:modelValue'],
   setup() {
