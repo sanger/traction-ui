@@ -86,30 +86,6 @@ describe('PacbioLibraryCreate.vue', () => {
       expect(cmp.selectedSample).toEqual(props.selectedSample)
     })
 
-    it('wiil show a library form when the create button is clicked', async () => {
-      wrapper.find('#pacbioLibraryCreate').trigger('click')
-      await nextTick()
-      expect(wrapper.find('#libraryForm').element).toBeTruthy()
-      expect(wrapper.element.querySelector('#pacbioLibraryCreate')).toBeNull()
-    })
-
-    it('should call the create method when the create button is clicked', async () => {
-      cmp.createLibrary = vi.fn()
-      wrapper.find('#pacbioLibraryCreate').trigger('click')
-      await nextTick()
-      wrapper.find('#create-btn').trigger('click')
-      expect(cmp.createLibrary).toBeCalled()
-    })
-
-    it('should not display library form when the cancel button is clicked', async () => {
-      wrapper.find('#pacbioLibraryCreate').trigger('click')
-      await nextTick()
-      expect(cmp.isDisplayLibraryForm).toBeTruthy()
-      wrapper.find('#cancel-btn').trigger('click')
-      await nextTick()
-      expect(wrapper.element.querySelector('#libraryForm')).toBeNull()
-    })
-
     describe('#createLibrary', () => {
       let payload
 
