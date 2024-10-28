@@ -4,7 +4,7 @@
 
 <script>
 import { getLabwhereLocations } from '@/services/labwhere/client.js'
-import { getCoordinateForLabware } from '@/services/labwhere/helpers.js'
+import { formatLocations } from '@/services/labwhere/helpers.js'
 
 export default {
   name: 'LocationFetcher',
@@ -31,22 +31,8 @@ export default {
       }
 
       try {
-        const locationsData = await getLabwhereLocations(this.barcodes)
-        const extractedLocations = Object.entries(locationsData.data).map(([barcode, item]) => ({
-          barcode,
-          name: item.name || '-', // Default to '-' if no name
-          coordinates: item.coordinates || null,
-        }))
-
-        const formattedLocations = await Promise.all(
-          extractedLocations.map(async (location) => {
-            const coordinates = await getCoordinateForLabware(location, location.barcode)
-            return {
-              ...location,
-              coordinates,
-            }
-          }),
-        )
+        const locationData = await getLabwhereLocations(this.barcodes)
+        const formattedLocations = await formatLocations(locationData)
 
         this.$emit('locationData', formattedLocations)
       } catch (error) {
