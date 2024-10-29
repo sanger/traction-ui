@@ -101,7 +101,7 @@ export default {
     async fetchRequests() {
       return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
     },
-    async updateLocations(locationsData) {
+    updateLocations(locationsData) {
       this.locationsData = locationsData // Update locationsData with new locations
     },
   },

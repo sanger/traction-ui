@@ -185,7 +185,7 @@ export default {
     async fetchPools() {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
     },
-    async updateLocations(locationsData) {
+    updateLocations(locationsData) {
       this.displayedPools = locationBuilder(this.pools, locationsData)
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
