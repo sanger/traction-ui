@@ -25,7 +25,7 @@ const getCoordinateForLabware = (location, labwareBarcode) => {
   return location?.coordinates?.find((coordinate) => coordinate.labware === labwareBarcode) || {}
 }
 
-const locationBuilder = (items, locationsData) => {
+const locationBuilder = (items, locationsData = []) => {
   return items.map((item) => {
     const location = locationsData.find(
       (loc) => loc.barcode === item.barcode || loc.barcode === item.source_identifier,
