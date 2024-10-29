@@ -41,14 +41,14 @@ const locationBuilder = (items, locationsData) => {
   })
 }
 
-const formatLocations = async (locationData) => {
+const formatLocations = (locationData) => {
   const extractedLocations = Object.entries(locationData.data).map(([barcode, item]) => ({
     barcode,
     name: item.name || '-', // Default to '-' if no name
     coordinates: item.coordinates || null,
   }))
 
-  const formattedLocations = await Promise.all(
+  const formattedLocations = Promise.all(
     extractedLocations.map(async (location) => {
       const coordinates = await getCoordinateForLabware(location, location.barcode)
       return {
