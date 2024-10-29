@@ -90,7 +90,7 @@ import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { ref, reactive, computed } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
-import { locationBuilder } from '@/services/labwhere/helpers'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
 /**
  * Following are new Vue 3 features used in this component:
  * 

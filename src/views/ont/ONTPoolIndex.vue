@@ -80,7 +80,7 @@ import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import LocationFetcher from '@/components/LocationFetcher.vue'
-import { locationBuilder } from '@/services/labwhere/helpers'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 export default {
   name: 'OntPoolIndex',
