@@ -25,10 +25,13 @@ describe('Pacbio Runs view', () => {
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
     cy.get('#filterValue').children().and('contain', 'Name')
-    cy.get('#run-index').contains('tr', '5')
-    cy.get('#completeRun-2')
-    cy.get('#editRun-2')
-    cy.get('#generate-sample-sheet-2')
+    cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
+      cy.get('#run-index').contains('tr', Object.values(pacbioRunFactory.storeData.runs).length)
+      const run = pacbioRunFactory.storeData.getRunByState('started')
+      cy.get(`#completeRun-${run.id}`)
+      cy.get(`#editRun-${run.id}`)
+      cy.get(`#generate-sample-sheet-${run.id}`)
+    })
     cy.get('#run-index')
       .first()
       .within(() => {
