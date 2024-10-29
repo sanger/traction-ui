@@ -66,7 +66,6 @@
           </div>
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -77,13 +76,14 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import LocationFetcher from '@/components/LocationFetcher.vue'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 import { mapActions, mapGetters } from 'vuex'
+import { ref } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
@@ -94,11 +94,13 @@ export default {
     PacbioSampleMetadataEdit,
     FilterCard,
     DataFetcher,
-    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -130,7 +132,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      locationsData: [], // Initialize locationsData
     }
   },
   computed: {
@@ -143,7 +144,16 @@ export default {
       return this.requests.map(({ barcode }) => barcode)
     },
     displayedRequests() {
-      return locationBuilder(this.requests, this.locationsData)
+      return locationBuilder(this.requests, this.labwareLocations.value)
+    },
+  },
+  watch: {
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
+      },
+      immediate: true,
     },
   },
   methods: {
@@ -186,9 +196,6 @@ export default {
     */
     async fetchRequests() {
       return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
-    },
-    updateLocations(locationsData) {
-      this.locationsData = locationsData // Update locationsData with new locations
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
   },

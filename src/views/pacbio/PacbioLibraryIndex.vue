@@ -78,7 +78,6 @@
           <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="row.toggleDetails" />
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -92,11 +91,11 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import LocationFetcher from '@/components/LocationFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watchEffect } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { usePrintingStore } from '@/stores/printing.js'
@@ -196,14 +195,21 @@ const showConfirmationModal = ref(false)
 
 const barcodes = computed(() => libraries.value.map(({ barcode }) => barcode))
 
+const { fetchLocations } = useLocationFetcher()
+
 // Computed property for displayed libraries with updated location information
 const displayedLibraries = computed(() => {
-  return locationBuilder(libraries.value, locationsData.value)
+  return locationBuilder(libraries.value, labwareLocations.value)
+})
+
+const labwareLocations = ref([])
+
+watchEffect(async () => {
+  const barcodesValue = barcodes.value
+  labwareLocations.value = await fetchLocations(barcodesValue)
 })
 
 //methods
-
-const locationsData = ref([])
 
 const handleLibraryDelete = async () => {
   try {
@@ -264,14 +270,5 @@ const fetchLibraries = async () => {
 const getEditLibrary = (row) => {
   const value = libraries.value.find((library) => library.id === row.item.id)
   return value
-}
-
-/**
- * Updates the `locationsData` with the new location data received from `LocationFetcher`.
- *
- * @param {Array} data - Array of location data objects containing barcodes and location names.
- */
-const updateLocations = (newLocations) => {
-  locationsData.value = newLocations
 }
 </script>

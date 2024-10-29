@@ -66,7 +66,6 @@
         >
         </printerModal>
       </div>
-      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -76,10 +75,11 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
+import { ref } from 'vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
-import LocationFetcher from '@/components/LocationFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 export default {
@@ -88,11 +88,13 @@ export default {
     DataFetcher,
     FilterCard,
     PrinterModal,
-    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -129,7 +131,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      displayedPools: [], // New data property for the updated pools list
     }
   },
   computed: {
@@ -140,13 +141,17 @@ export default {
     barcodes() {
       return this.pools.map((pool) => pool.barcode)
     },
+    displayedPools() {
+      return locationBuilder(this.pools, this.labwareLocations.value)
+    },
   },
   watch: {
-    pools: {
-      immediate: true,
-      handler() {
-        this.displayedPools = this.pools
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
       },
+      immediate: true,
     },
   },
   methods: {
@@ -184,9 +189,6 @@ export default {
     },
     async fetchPools() {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
-    },
-    updateLocations(locationsData) {
-      this.displayedPools = locationBuilder(this.pools, locationsData)
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
   },

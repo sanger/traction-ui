@@ -74,7 +74,6 @@
           </div>
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
@@ -83,12 +82,12 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import LocationFetcher from '@/components/LocationFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watchEffect } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 /**
@@ -169,6 +168,7 @@ const sortBy = ref('created_at')
 //Composables
 const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
+const { fetchLocations } = useLocationFetcher()
 
 //Create Pinia store
 const poolsStore = usePacbioPoolsStore()
@@ -177,12 +177,17 @@ const pools = computed(() => poolsStore.poolsArray)
 //create printing store
 const printingStore = usePrintingStore()
 
-// Location handling with a computed property
-const locationsData = ref([])
-
-const displayedPools = computed(() => locationBuilder(pools.value, locationsData.value))
+// Location fetching
+const displayedPools = computed(() => locationBuilder(pools.value, labwareLocations.value))
 
 const barcodes = computed(() => pools.value.map(({ barcode }) => barcode))
+
+const labwareLocations = ref([])
+
+watchEffect(async () => {
+  const barcodesValue = barcodes.value
+  labwareLocations.value = await fetchLocations(barcodesValue)
+})
 
 //methods
 const createLabels = () => {
@@ -228,14 +233,5 @@ const printLabels = async (printerName) => {
  */
 const fetchPools = async () => {
   return await fetchWithQueryParams(poolsStore.fetchPools, state.filterOptions)
-}
-
-/**
- * Updates the `locationsData` with the new location data received from `LocationFetcher`.
- *
- * @param {Array} data - Array of location data objects containing barcodes and location names.
- */
-const updateLocations = (data) => {
-  locationsData.value = data
 }
 </script>

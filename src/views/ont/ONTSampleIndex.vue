@@ -29,17 +29,17 @@
           </template>
         </template>
       </traction-table>
-      <LocationFetcher :barcodes="barcodes" @location-data="updateLocations" />
     </div>
   </DataFetcher>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+import { ref } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
-import LocationFetcher from '@/components/LocationFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
@@ -49,11 +49,13 @@ export default {
   components: {
     DataFetcher,
     FilterCard,
-    LocationFetcher,
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -83,7 +85,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      locationsData: [], // Initialize locationsData
     }
   },
   computed: {
@@ -93,16 +94,22 @@ export default {
     },
     // Computed property to return updated displayed requests
     displayedRequests() {
-      return locationBuilder(this.requests, this.locationsData)
+      return locationBuilder(this.requests, this.labwareLocations.value)
+    },
+  },
+  watch: {
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
+      },
+      immediate: true,
     },
   },
   methods: {
     ...mapActions(['fetchOntRequests']),
     async fetchRequests() {
       return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
-    },
-    updateLocations(locationsData) {
-      this.locationsData = locationsData // Update locationsData with new locations
     },
   },
 }
