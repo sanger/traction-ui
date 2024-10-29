@@ -2,7 +2,7 @@ import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import { mount, flushPromises, nextTick, createTestingPinia, router } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 
@@ -17,7 +17,11 @@ vi.mock('@/composables/useAlert', () => ({
 const pacbioRunFactory = PacbioRunFactory()
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 
-const mockRuns = pacbioRunFactory.storeData
+const getRunAndButtonForState = (wrapper, state, action) => {
+  const run = pacbioRunFactory.storeData.getRunByState(state)
+  const button = wrapper.find(`#${action}Run-${run.id}`)
+  return { run, button }
+}
 
 /**
  * Helper method for mounting a component 'dataProps' if any and with a mock instance of pinia, with the given 'options'.
@@ -39,8 +43,7 @@ function factory(options, dataProps) {
         createTestingPinia({
           initialState: {
             pacbioRuns: {
-              // This is only being used to check the smrt link version.
-              runs: mockRuns,
+              runs: {},
             },
             pacbioRunCreate: {
               resources: {
@@ -92,40 +95,41 @@ describe('PacbioRunIndex.vue', () => {
   })
 
   describe('building the table', () => {
-    it('exists', () => {
-      expect(wrapper.find('table').exists()).toBeTruthy
-    })
-
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(
+        Object.values(pacbioRunFactory.storeData.runs).length,
+      )
     })
 
-    it('contains the correct run skbb information', async () => {
+    // it would be better to move this to use data-id so we can test by run id
+    it('contains the correct run sequencing kit box barcode information', async () => {
       // Within each cell, the SKBB information is displayed as a list-item per plate
-      const run2skbbList = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].findAll('li')
-      expect(run2skbbList.length).toEqual(1)
-      const run2skbbListItem1 = run2skbbList[0]
-      expect(run2skbbListItem1.text()).toEqual('Plate 1: SKBB 2')
 
-      const run6skbbList = wrapper.find('tbody').findAll('tr')[5].findAll('td')[4].findAll('li')
-      expect(run6skbbList.length).toEqual(2)
-      const run6skbbListItem1 = run6skbbList[0]
-      expect(run6skbbListItem1.text()).toEqual('Plate 1: SKBB 6')
-      const run6skbbListItem2 = run6skbbList[1]
-      expect(run6skbbListItem2.text()).toEqual('Plate 2: SKBB 7')
+      const checkSequenceKitBoxBarcodes = (index) => {
+        const run = wrapper.find('tbody').findAll('tr')[index]
+        const storeRun = pacbioRunFactory.storeData.runs[run.find('#id').text()]
+        const plates = storeRun.plates.map((id) => pacbioRunFactory.storeData.plates[id])
+        const sequencingKitBoxBarcodes = run.find('#sequencing_kit_box_barcodes').findAll('li')
+
+        for (let i = 0; i < plates.length; i++) {
+          expect(sequencingKitBoxBarcodes[i].text()).toEqual(
+            `Plate ${plates[i].plate_number}: ${plates[i].sequencing_kit_box_barcode}`,
+          )
+        }
+      }
+
+      // Run 1
+      checkSequenceKitBoxBarcodes(1)
+
+      // Run 2
+      checkSequenceKitBoxBarcodes(Object.values(pacbioRunFactory.storeData.runs).length - 1)
     })
   })
 
   describe('version badge', () => {
-    let badges
-
-    beforeEach(() => {
-      // find all tags with class 'badge'
-      badges = wrapper.find('tbody').findAll('.badge')
-    })
-
     it('contains a badge for each run', () => {
-      expect(badges.length).toEqual(6)
+      const badges = wrapper.find('tbody').findAll('.badge')
+      expect(badges.length).toEqual(Object.values(pacbioRunFactory.storeData.runs).length)
     })
 
     it('contains the correct badge text', () => {
@@ -135,7 +139,7 @@ describe('PacbioRunIndex.vue', () => {
         .forEach((row) => {
           const run_id = row.find('#id').text()
           const badge = row.find('.badge').text()
-          const version_id = mockRuns.find((run) => run.id == run_id).pacbio_smrt_link_version_id
+          const version_id = pacbioRunFactory.storeData.runs[run_id].pacbio_smrt_link_version_id
           const version = runCreateStore.smrtLinkVersionList[version_id]
           expect(badge).toEqual(version.name.split('_')[0])
         })
@@ -164,65 +168,52 @@ describe('PacbioRunIndex.vue', () => {
   })
 
   describe('start button', () => {
-    let button
-
     it('is enabled when the run state is pending', () => {
-      // run at(1) is in state pending
-      button = wrapper.find('#startRun-1')
+      const { button } = getRunAndButtonForState(wrapper, 'pending', 'start')
       expect(button.element.disabled).toBe(false)
     })
 
     it('is not shown if the run state is started', () => {
-      // run at(2) is in state started
-      button = wrapper.find('#startRun-2')
+      const { button } = getRunAndButtonForState(wrapper, 'started', 'start')
       expect(button.exists()).toBe(false)
     })
 
     it('is not shown if the run state is completed', () => {
-      // run at(3) is in state started
-      button = wrapper.find('#startRun-3')
+      const { button } = getRunAndButtonForState(wrapper, 'completed', 'start')
       expect(button.exists()).toBe(false)
     })
 
     it('is not shown if the run state is cancelled', () => {
-      // run at(4) is in state started
-      button = wrapper.find('#startRun-4')
+      const { button } = getRunAndButtonForState(wrapper, 'cancelled', 'start')
       expect(button.exists()).toBe(false)
     })
 
     it('on click updateRun is called', () => {
       runsStore.updateRun = vi.fn()
-
-      button = wrapper.find('#startRun-1')
+      const { button, run } = getRunAndButtonForState(wrapper, 'pending', 'start')
       button.trigger('click')
-      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: run.id, state: 'started' })
     })
   })
 
   describe('complete button', () => {
-    let button
-
     it('is enabled when the run state is pending', () => {
-      // run at(1) is in state pending
-      button = wrapper.find('#completeRun-1')
+      const { button } = getRunAndButtonForState(wrapper, 'pending', 'complete')
       expect(button.exists()).toBe(false)
     })
 
     it('is enabled when the run state is started', () => {
-      // run at(2) is in state started
-      button = wrapper.find('#completeRun-2')
+      const { button } = getRunAndButtonForState(wrapper, 'started', 'complete')
       expect(button.element.disabled).toBe(false)
     })
 
     it('is not shown if the run state is completed', () => {
-      // run at(3) is in state cancelled
-      button = wrapper.find('#completeRun-3')
+      const { button } = getRunAndButtonForState(wrapper, 'completed', 'complete')
       expect(button.exists()).toBe(false)
     })
 
     it('is not shown if the run state is cancelled', () => {
-      // run at(4) is in state cancelled
-      button = wrapper.find('#completeRun-4')
+      const { button } = getRunAndButtonForState(wrapper, 'cancelled', 'complete')
       expect(button.exists()).toBe(false)
     })
 
@@ -230,67 +221,63 @@ describe('PacbioRunIndex.vue', () => {
       // run at(2) is in state started
       runsStore.updateRun = vi.fn()
 
-      button = wrapper.find('#completeRun-2')
+      const { button, run } = getRunAndButtonForState(wrapper, 'started', 'complete')
       button.trigger('click')
 
-      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: run.id, state: 'completed' })
     })
   })
 
   describe('cancel button', () => {
-    let button
-
     it('is enabled when the run state is pending', () => {
-      // run at(1) is in state pending
-      button = wrapper.find('#cancelRun-1')
+      const { button } = getRunAndButtonForState(wrapper, 'pending', 'cancel')
       expect(button.exists()).toBe(false)
     })
 
     it('is enabled when the run state is started', () => {
-      // run at(2) is in state started
-      button = wrapper.find('#cancelRun-2')
+      const { button } = getRunAndButtonForState(wrapper, 'started', 'cancel')
       expect(button.element.disabled).toBe(false)
     })
 
     it('is not shown if the run state is completed', () => {
-      // run at(3) is in state cancelled
-      button = wrapper.find('#cancelRun-3')
+      const { button } = getRunAndButtonForState(wrapper, 'completed', 'cancel')
       expect(button.exists()).toBe(false)
     })
 
     it('is not shown if the run state is cancelled', () => {
-      // run at(4) is in state cancelled
-      button = wrapper.find('#cancelRun-4')
+      const { button } = getRunAndButtonForState(wrapper, 'cancelled', 'cancel')
       expect(button.exists()).toBe(false)
     })
 
     it('on click updateRun is called', () => {
-      // run at(2) is in state started
       runsStore.updateRun = vi.fn()
 
-      button = wrapper.find('#cancelRun-2')
+      const { button, run } = getRunAndButtonForState(wrapper, 'started', 'cancel')
       button.trigger('click')
-
-      expect(runsStore.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
+      expect(runsStore.updateRun).toBeCalledWith({ id: run.id, state: 'cancelled' })
     })
   })
 
   describe('generate sample sheet button', () => {
-    let button
+    let run
+
+    beforeEach(() => {
+      run = Object.values(pacbioRunFactory.storeData.runs)[0]
+    })
 
     it('it exists when the run has wells with pools', () => {
-      button = wrapper.find('#generate-sample-sheet-1')
+      const button = wrapper.find(`#generate-sample-sheet-${run.id}`)
       expect(button.isVisible()).toBe(true) // button is shown
     })
 
     it('on click generateSampleSheetPath is called', () => {
       pacbioRunIndex.downloadCSV = vi.fn()
-      button = wrapper.find('#generate-sample-sheet-1')
+      const button = wrapper.find(`#generate-sample-sheet-${run.id}`)
       button.trigger('click')
 
       expect(pacbioRunIndex.downloadCSV).toBeCalledWith({
-        id: mockRuns[0].id,
-        name: mockRuns[0].name,
+        id: run.id,
+        name: run.name,
       })
     })
 
@@ -302,7 +289,7 @@ describe('PacbioRunIndex.vue', () => {
           .mockResolvedValue({ error: 'SMRTLink sample sheet version (v10) is invalid' }),
       })
 
-      button = wrapper.find('#generate-sample-sheet-1')
+      const button = wrapper.find(`#generate-sample-sheet-${run.id}`)
       button.trigger('click')
 
       await flushPromises()
@@ -314,7 +301,7 @@ describe('PacbioRunIndex.vue', () => {
 
     it('on click generateSampleSheetPath is called and shows an error when there is a network error', async () => {
       global.fetch = vi.fn().mockRejectedValue(new Error('Failed to fetch'))
-      button = wrapper.find('#generate-sample-sheet-1')
+      const button = wrapper.find(`#generate-sample-sheet-${run.id}`)
       button.trigger('click')
 
       await flushPromises()
@@ -324,14 +311,17 @@ describe('PacbioRunIndex.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(wrapper.find('tbody').findAll('tr')[0].text()).toMatch(/Sequel II/)
+      const runs = Object.values(pacbioRunFactory.storeData.runs)
+      const sortedRuns = runs.sort((a, b) => a.created_at.localeCompare(b.created_at)).reverse()
+      expect(wrapper.find('tbody').findAll('#id')[0].text()).toMatch(sortedRuns[0].id)
     })
   })
 
   describe('#updateRun', () => {
-    const id = 1
+    let id
     beforeEach(() => {
       runsStore.updateRun = vi.fn()
+      id = Object.values(pacbioRunFactory.storeData.runs)[0].id
     })
 
     it('calls startRun successfully', () => {
@@ -345,7 +335,6 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('calls cancelRun successfully', () => {
-      const id = 1
       pacbioRunIndex.updateRunState('cancelled', id)
       expect(runsStore.updateRun).toBeCalledWith({ id, state: 'cancelled' })
     })
@@ -354,21 +343,26 @@ describe('PacbioRunIndex.vue', () => {
       runsStore.updateRun.mockImplementation(() => {
         throw Error('Raise this error')
       })
-      pacbioRunIndex.updateRunState('started', 1)
+      pacbioRunIndex.updateRunState('started', id)
       expect(mockShowAlert).toBeCalled()
     })
   })
 
   describe('Edit Run button', () => {
+    let id
+    beforeEach(() => {
+      id = Object.values(pacbioRunFactory.storeData.runs)[0].id
+    })
+
     it('contains a Edit Run button', () => {
-      expect(wrapper.find('#editRun-1')).toBeDefined()
+      expect(wrapper.find(`#editRun-${id}`)).toBeDefined()
     })
 
     it('will call editRun when Edit is clicked', async () => {
-      const button = wrapper.find('#editRun-1')
+      const button = wrapper.find(`#editRun-${id}`)
       button.trigger('click')
       await flushPromises()
-      expect(router.currentRoute.value.path).toEqual('/pacbio/run/1')
+      expect(router.currentRoute.value.path).toEqual(`/pacbio/run/${id}`)
     })
   })
 })
