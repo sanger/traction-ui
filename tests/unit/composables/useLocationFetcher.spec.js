@@ -14,9 +14,9 @@ vi.mock('@/services/labwhere/helpers.js', () => ({
 describe('useLocationFetcher', () => {
   const { fetchLocations } = useLocationFetcher()
 
-  it('returns default locations if no barcodes are provided', async () => {
+  it('returns nothing if no barcodes are provided', async () => {
     const result = await fetchLocations([])
-    expect(result).toEqual([])
+    expect(result).toBeFalsy()
   })
 
   it('returns formatted locations on successful fetch', async () => {
