@@ -24,7 +24,11 @@ export function useLocationFetcher() {
     }))
 
     try {
-      const extractedLocations = await getLabwhereLocations(barcodes)
+      const trimmedBarcodes = barcodes.map((barcode) =>
+        barcode.includes(':') ? barcode.split(':')[0] : barcode,
+      )
+
+      const extractedLocations = await getLabwhereLocations(trimmedBarcodes)
       locationData = formatLocations(extractedLocations)
     } catch (error) {
       console.error('Error fetching locations:', error)
