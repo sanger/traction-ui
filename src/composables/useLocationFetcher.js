@@ -1,9 +1,22 @@
 import { getLabwhereLocations } from '@/services/labwhere/client.js'
 import { formatLocations } from '@/services/labwhere/helpers.js'
 
+/**
+ * A composable function to fetch and format location data for given barcodes.
+ *
+ * @returns {Object} An object containing:
+ *   @property {Function} fetchLocations - Fetches locations for specified barcodes.
+ */
 export function useLocationFetcher() {
   let locationData = []
 
+  /**
+   * Fetches location data for an array of barcodes.
+   *
+   * @param {Array<string>} barcodes - List of barcodes to fetch locations for.
+   * @returns {Promise<Array>} Promise resolving to an array of location objects,
+   * each with `barcode` and either `name` and `coordinates` or default values.
+   */
   const fetchLocations = async (barcodes) => {
     const defaultLocations = barcodes.map((barcode) => ({
       barcode,
