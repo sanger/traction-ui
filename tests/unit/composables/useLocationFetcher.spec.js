@@ -3,11 +3,11 @@ import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { getLabwhereLocations } from '@/services/labwhere/client.js'
 import { formatLocations } from '@/services/labwhere/helpers.js'
 
-vi.mock('@/services/labwhere/client', () => ({
+vi.mock('@/services/labwhere/client.js', () => ({
   getLabwhereLocations: vi.fn(),
 }))
 
-vi.mock('@/services/labwhere/helpers', () => ({
+vi.mock('@/services/labwhere/helpers.js', () => ({
   formatLocations: vi.fn(),
 }))
 
