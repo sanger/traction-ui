@@ -141,7 +141,7 @@ export default {
       return usePrintingStore()
     },
     barcodes() {
-      return this.requests.map(({ barcode }) => barcode)
+      return this.requests.map(({ source_identifier }) => source_identifier)
     },
     displayedRequests() {
       return locationBuilder(this.requests, this.labwareLocations.value)
