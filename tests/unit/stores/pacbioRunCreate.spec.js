@@ -16,8 +16,10 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
+const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
 
 describe('usePacbioRunCreateStore', () => {
   beforeEach(() => {
@@ -308,7 +310,7 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const find = vi.fn()
-        find.mockResolvedValue(Data.PacbioRun)
+        find.mockResolvedValue(pacbioRunFactory.responses.axios)
         rootStore.api.v1 = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
@@ -318,68 +320,27 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         const { success } = await store.fetchRun({ id: 1 })
 
-        const smartLinkVersion = Data.PacbioRun.data.included.slice(19)[0]
-        const plates = Data.PacbioRun.data.included.slice(0, 2)
-        const wells = Data.PacbioRun.data.included.slice(2, 5)
-        const aliquots = Data.PacbioRun.data.included.slice(5, 10)
-        const libraries = Data.PacbioRun.data.included.slice(10, 13)
-        const tubes = Data.PacbioRun.data.included.slice(13, 17)
-        const pools = Data.PacbioRun.data.included.slice(17, 19)
-        const tags = Data.PacbioRun.data.included.slice(20, 25)
+        expect(store.run).toEqual(pacbioRunFactory.storeData.run)
 
-        const smrtLinkVersion = {
-          id: smartLinkVersion.id,
-          type: smartLinkVersion.type,
-          ...smartLinkVersion.attributes,
-        }
+        expect(store.plates).toEqual(pacbioRunFactory.storeData.plates)
 
-        //runs
-        expect(store.run).toEqual({
-          id: Data.PacbioRun.data.data.id,
-          ...Data.PacbioRun.data.data.attributes,
-        })
-
-        //plates
-        expect(store.plates).toEqual(
-          jsonapi.dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
-        )
-
-        //wells
         expect(mockApiSplitData).toHaveBeenCalledWith({
-          data: wells,
+          data: pacbioRunFactory.storeData.wells,
           fn: jsonapi.dataToObjectByPosition,
           includeRelationships: true,
           parent: {
-            parentData: plates,
+            parentData: pacbioRunFactory.storeData.rawPlates,
             children: 'wells',
             key: 'plate_number',
           },
         })
 
-        //aliquots
-        expect(store.aliquots).toEqual(
-          jsonapi.dataToObjectById({ data: aliquots, includeRelationships: true }),
-        )
-
-        expect(store.libraries).toEqual(
-          jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
-        )
-
-        expect(store.tubes).toEqual(
-          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
-        )
-
-        //pools
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
-
-        expect(store.smrtLinkVersion).toEqual(smrtLinkVersion)
-
-        //tags
-        expect(store.tags).toEqual(
-          jsonapi.dataToObjectById({ data: tags, includeRelationships: true }),
-        )
+        expect(store.aliquots).toEqual(pacbioRunFactory.storeData.aliquots)
+        expect(store.libraries).toEqual(pacbioRunFactory.storeData.libraries)
+        expect(store.tubes).toEqual(pacbioRunFactory.storeData.tubes)
+        expect(store.pools).toEqual(pacbioRunFactory.storeData.pools)
+        expect(store.smrtLinkVersion).toEqual(pacbioRunFactory.storeData.smrtLinkVersion)
+        expect(store.tags).toEqual(pacbioRunFactory.storeData.tags)
         expect(success).toBeTruthy()
       })
 

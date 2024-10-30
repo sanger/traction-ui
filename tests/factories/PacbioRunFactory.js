@@ -1,11 +1,17 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById, groupIncludedByResource } from './../../src/api/JsonApi'
+import {
+  dataToObjectById,
+  groupIncludedByResource,
+  find,
+  extractAttributes,
+  dataToObjectByPlateNumber,
+} from './../../src/api/JsonApi'
 
 const getRunByState = (runs) => (state) => {
   return runs.find((run) => run.state === state)
 }
 
-const createStoreData = (data) => {
+const createStoreDataForMultipleRuns = (data) => {
   const runs = dataToObjectById({ data: data.data, includeRelationships: true })
   const { plates } = groupIncludedByResource(data.included)
   return {
@@ -15,11 +21,55 @@ const createStoreData = (data) => {
   }
 }
 
+const createStoreDataForSingleRun = (data) => {
+  const {
+    plates,
+    wells,
+    pools,
+    libraries,
+    tubes,
+    aliquots,
+    requests,
+    tags,
+    smrt_link_versions: [smrt_link_version = {}] = [],
+  } = groupIncludedByResource(data.included)
+
+  const run = extractAttributes(data.data)
+
+  return {
+    run,
+    smrtLinkVersion: extractAttributes(smrt_link_version),
+    aliquots: dataToObjectById({ data: aliquots, includeRelationships: true }),
+    libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+    tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
+    pools: dataToObjectById({ data: pools, includeRelationships: true }),
+    tags: dataToObjectById({ data: tags, includeRelationships: true }),
+    requests: dataToObjectById({ data: requests, includeRelationships: true }),
+    plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
+    rawPlates: plates,
+    wells,
+  }
+}
+
+/**
+ *
+ * @param {Object} data - the data from the json api response
+ * @param {null | integer} first - the first n records or null for all records
+ * @returns - the included data for the pools
+ */
+const createStoreData = (data, first) => {
+  if (first === 1) {
+    return createStoreDataForSingleRun(data)
+  } else {
+    return createStoreDataForMultipleRuns(data)
+  }
+}
+
 /*
  * Factory for creating a list of runs
  * @returns a base factory object with the runs data
  */
-const PacbioRunFactory = () => {
+const PacbioRunFactory = ({ all = true, first = null } = {}) => {
   const data = {
     // it would be better to pass the smrt link versions from the smrt link factory
     // so that the factory is more self-contained and is not so brittle
@@ -990,7 +1040,10 @@ const PacbioRunFactory = () => {
     },
   }
 
-  return { ...BaseFactory(data), storeData: createStoreData(data) }
+  // if first is completed find the data otherwise return all data
+  const foundData = all ? data : find({ data, all, first })
+
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, first) }
 }
 
 export default PacbioRunFactory

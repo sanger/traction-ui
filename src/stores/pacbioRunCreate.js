@@ -321,10 +321,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
         const smrtLinkVersion = extractAttributes(smrt_link_version)
 
-        this.run = {
-          id: data.id,
-          ...data.attributes,
-        }
+        this.run = extractAttributes(data)
+
         // Populate the plates
         this.plates = dataToObjectByPlateNumber({ data: plates, includeRelationships: true })
 
