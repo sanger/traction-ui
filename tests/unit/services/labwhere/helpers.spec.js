@@ -1,8 +1,19 @@
+import { vi } from 'vitest'
 import {
   extractLocationsForLabwares,
   getCoordinateForLabware,
+  locationBuilder,
+  formatLocations,
 } from '@/services/labwhere/helpers.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
+
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
+vi.mock('@/services/labwhere/client.js', () => ({
+  getCoordinateForLabware: vi.fn(),
+}))
 
 describe('helpers', () => {
   const labwhereLocationsFactory = LabwhereLocationsFactory()
@@ -82,6 +93,85 @@ describe('helpers', () => {
       const labwareBarcode = 'box-1'
       const result = getCoordinateForLabware(location, labwareBarcode)
       expect(result).toEqual(location.coordinates[0])
+    })
+  })
+
+  describe('locationBuilder', () => {
+    it('should return an array with items having location as "-" when no locationsData is provided', () => {
+      const items = [{ barcode: 'ABC123' }]
+      const result = locationBuilder(items)
+      expect(result).toEqual([{ barcode: 'ABC123', location: '-' }])
+    })
+
+    it('should return an array with items having location as "-" when no matching location is found', () => {
+      const items = [{ barcode: 'ABC123' }]
+      const locationsData = [
+        { barcode: 'XYZ789', name: 'Location 1', coordinates: { row: 1, column: 2 } },
+      ]
+      const result = locationBuilder(items, locationsData)
+      expect(result).toEqual([{ barcode: 'ABC123', location: '-' }])
+    })
+
+    it('should return an array with location name when location is found but has no coordinates', () => {
+      const items = [{ barcode: 'ABC123' }]
+      const locationsData = [{ barcode: 'ABC123', name: 'Location 1' }]
+      const result = locationBuilder(items, locationsData)
+      expect(result).toEqual([{ barcode: 'ABC123', location: 'Location 1' }])
+    })
+
+    it('should return an array with location name and coordinates when location is found with valid coordinates', () => {
+      const items = [{ barcode: 'ABC123' }]
+      const locationsData = [
+        { barcode: 'ABC123', name: 'Location 1', coordinates: { row: 1, column: 2 } },
+      ]
+      const result = locationBuilder(items, locationsData)
+      expect(result).toEqual([{ barcode: 'ABC123', location: 'Location 1 - 1, 2' }])
+    })
+
+    it('should return an array with location name when coordinates object is empty', () => {
+      const items = [{ barcode: 'ABC123' }]
+      const locationsData = [{ barcode: 'ABC123', name: 'Location 1', coordinates: {} }]
+      const result = locationBuilder(items, locationsData)
+      expect(result).toEqual([{ barcode: 'ABC123', location: 'Location 1' }])
+    })
+
+    it('should match item based on source_identifier if barcode is not present', () => {
+      const items = [{ source_identifier: 'ABC123' }]
+      const locationsData = [
+        { barcode: 'ABC123', name: 'Location 1', coordinates: { row: 1, column: 2 } },
+      ]
+      const result = locationBuilder(items, locationsData)
+      expect(result).toEqual([{ source_identifier: 'ABC123', location: 'Location 1 - 1, 2' }])
+    })
+  })
+
+  describe('formatLocations', () => {
+    it('sets default name "-" if name is missing', async () => {
+      const locationData = { data: { ABC123: { coordinates: [{ row: 1, column: 2 }] } } }
+      const result = await formatLocations(locationData)
+      expect(result[0].name).toEqual('-')
+    })
+
+    it('sets coordinates to empty array if not provided', async () => {
+      const locationData = { data: { ABC123: { name: 'Location 1' } } }
+      const result = await formatLocations(locationData)
+      expect(result[0].coordinates).toEqual({})
+    })
+
+    it('should return locations with valid coordinates when provided', async () => {
+      const location = labwhereLocationsFactory.content[0]
+      const labwareBarcode = 'box-1'
+
+      const expectedCoordinates = location.coordinates[0]
+      const locationData = {
+        data: {
+          [labwareBarcode]: { name: location.name, coordinates: [expectedCoordinates] },
+        },
+      }
+
+      const result = await formatLocations(locationData)
+
+      expect(result[0].coordinates).toEqual(expectedCoordinates)
     })
   })
 })
