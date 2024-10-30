@@ -25,6 +25,13 @@ const getCoordinateForLabware = (location, labwareBarcode) => {
   return location?.coordinates?.find((coordinate) => coordinate.labware === labwareBarcode) || {}
 }
 
+/**
+ * Builds location information for each item based on available location data.
+ *
+ * @param {Array} items - List of items to find locations for.
+ * @param {Array} locationsData - Array of location data containing coordinates and names.
+ * @returns {Array} Updated items with location information.
+ */
 const locationBuilder = (items, locationsData = []) => {
   return items.map((item) => {
     const location = locationsData.find(
@@ -41,6 +48,12 @@ const locationBuilder = (items, locationsData = []) => {
   })
 }
 
+/**
+ * Formats location data by extracting barcodes, names, and coordinates.
+ *
+ * @param {Object} locationData - Object containing location details with data property.
+ * @returns {Promise<Array>} Promise resolving to an array of formatted location objects.
+ */
 const formatLocations = (locationData) => {
   const extractedLocations = Object.entries(locationData.data).map(([barcode, item]) => ({
     barcode,
