@@ -46,6 +46,7 @@ describe('useLocationFetcher', () => {
       { barcode: 'barcode2', name: '-' },
     ]
 
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     getLabwhereLocations.mockRejectedValue(new Error('Fetch error'))
 
     const result = await fetchLocations(barcodes)
