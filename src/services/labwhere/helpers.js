@@ -61,15 +61,13 @@ const formatLocations = (locationData) => {
     coordinates: item.coordinates || null,
   }))
 
-  const formattedLocations = Promise.all(
-    extractedLocations.map(async (location) => {
-      const coordinates = await getCoordinateForLabware(location, location.barcode)
-      return {
-        ...location,
-        coordinates,
-      }
-    }),
-  )
+  const formattedLocations = extractedLocations.map((location) => {
+    const coordinates = getCoordinateForLabware(location, location.barcode)
+    return {
+      ...location,
+      coordinates,
+    }
+  })
 
   return formattedLocations
 }
