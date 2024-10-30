@@ -23,10 +23,6 @@ export function useLocationFetcher() {
       name: '-', // Default name for missing barcodes
     }))
 
-    if (barcodes.length === 0) {
-      return defaultLocations
-    }
-
     try {
       const extractedLocations = await getLabwhereLocations(barcodes)
       locationData = formatLocations(extractedLocations)
