@@ -29,7 +29,7 @@ export function useLocationFetcher() {
 
     try {
       const extractedLocations = await getLabwhereLocations(barcodes)
-      locationData = await formatLocations(extractedLocations)
+      locationData = formatLocations(extractedLocations)
     } catch (error) {
       console.error('Error fetching locations:', error)
       locationData = defaultLocations // Emit default locations on error
