@@ -63,8 +63,18 @@ const createStoreDataForSingleRun = (data) => {
     tags: dataToObjectById({ data: tags, includeRelationships: true }),
     requests: dataToObjectById({ data: requests, includeRelationships: true }),
     plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
-    rawPlates: plates,
-    wells,
+    wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    resources: {
+      plates,
+      wells,
+      pools,
+      libraries,
+      tubes,
+      aliquots,
+      requests,
+      tags,
+      smrt_link_version,
+    },
   }
 }
 

@@ -326,11 +326,11 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.plates).toEqual(pacbioRunFactory.storeData.plates)
 
         expect(mockApiSplitData).toHaveBeenCalledWith({
-          data: pacbioRunFactory.storeData.wells,
+          data: pacbioRunFactory.storeData.resources.wells,
           fn: jsonapi.dataToObjectByPosition,
           includeRelationships: true,
           parent: {
-            parentData: pacbioRunFactory.storeData.rawPlates,
+            parentData: pacbioRunFactory.storeData.resources.plates,
             children: 'wells',
             key: 'plate_number',
           },

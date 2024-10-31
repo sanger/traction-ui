@@ -3,6 +3,9 @@ import TestResponse from '@tests/data/testResponse'
 import CircularResponse from '@tests/data/circularResponse'
 import { describe, expect } from 'vitest'
 import { Data } from '@support/testHelper'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
+
+const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -271,21 +274,21 @@ describe('JsonApi', () => {
   describe('populateById', () => {
     it('with resources', () => {
       const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateById('wells')(state, wells)
       expect(state.resources.wells).toEqual(dataToObjectById({ data: wells }))
     })
 
     it('without resources', () => {
       const state = {}
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateById('wells', { populateResources: false })(state, wells)
       expect(state.wells).toEqual(dataToObjectById({ data: wells }))
     })
 
     it('with relationships', () => {
       const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateById('wells', { includeRelationships: true })(state, wells)
       expect(state.resources.wells).toEqual(
         dataToObjectById({ data: wells, includeRelationships: true }),
@@ -319,23 +322,24 @@ describe('JsonApi', () => {
 
   describe('dataToObjectByPlateNumber', () => {
     it('creates an object with the plate number as key', () => {
-      const data = Data.PacbioRun.data.included.slice(0, 1)
-      const plates = dataToObjectByPlateNumber({ data })
+      const resources = pacbioRunFactory.storeData.resources.plates
+      const plates = dataToObjectByPlateNumber({ data: resources })
       const keys = Object.keys(plates)
-      expect(keys.length).toEqual(data.length)
+      const { id, plate_number, type, attributes } = resources[0]
+      expect(keys.length).toEqual(resources.length)
       // bizarre. It reverses the keys.
       expect(plates[keys[0]]).toEqual({
-        id: data[0].id,
-        plate_number: data[0].plate_number,
-        type: data[0].type,
-        ...data[0].attributes,
+        id,
+        plate_number,
+        type,
+        ...attributes,
       })
     })
 
     it('adds the relationships if requested', () => {
-      const data = Data.PacbioRun.data.included.slice(0, 1)
-      const plates = dataToObjectByPlateNumber({ data, includeRelationships: true })
-      const item = plates['1']
+      const resources = pacbioRunFactory.storeData.resources.plates
+      const plates = dataToObjectByPlateNumber({ data: resources, includeRelationships: true })
+      const item = plates[Object.keys(plates)[0]]
       const keys = Object.keys(item)
       expect(keys.includes('wells')).toBeTruthy()
     })
@@ -344,21 +348,21 @@ describe('JsonApi', () => {
   describe('populateBy', () => {
     it('with resources', () => {
       const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateBy('wells', dataToObjectByPosition)(state, wells)
       expect(state.resources.wells).toEqual(dataToObjectByPosition({ data: wells }))
     })
 
     it('without resources', () => {
       const state = {}
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateBy('wells', dataToObjectByPosition, { populateResources: false })(state, wells)
       expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
     })
 
     it('with relationships', () => {
       const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const wells = pacbioRunFactory.storeData.resources.wells
       populateBy('wells', dataToObjectByPosition, { includeRelationships: true })(state, wells)
       expect(state.resources.wells).toEqual(
         dataToObjectByPosition({ data: wells, includeRelationships: true }),
@@ -366,12 +370,13 @@ describe('JsonApi', () => {
     })
   })
 
+  // this needs refactoring. Clearly a lot of complexity that needs to be simplified.
   describe('splitDataByParent', () => {
     it('splits the data by parent', () => {
-      const plates = Data.PacbioRun.data.included.slice(0, 2)
-      const wells = Data.PacbioRun.data.included.slice(2, 4)
+      const plates = pacbioRunFactory.storeData.resources.plates
+      const wells = pacbioRunFactory.storeData.resources.wells
 
-      const plateNumbers = plates.map((p) => p.attributes.plate_number.toString())
+      const plateKeys = Object.keys(pacbioRunFactory.storeData.plates)
 
       const result = splitDataByParent({
         data: wells,
@@ -381,14 +386,15 @@ describe('JsonApi', () => {
       })
 
       // check that result has the correct plate numbers
-      expect(Object.keys(result)).toEqual(plateNumbers)
-      // check that each plate has the correct wells
-      expect(result[plateNumbers[0]]).toEqual(
-        dataToObjectByPosition({ data: [wells[0], wells[1]], includeRelationships: true }),
-      )
-      expect(result[plateNumbers[1]]).toEqual(
-        dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
-      )
+      expect(Object.keys(result)).toEqual(plateKeys)
+
+      plateKeys.forEach((key) => {
+        const wellKeys = pacbioRunFactory.storeData.plates[key].wells
+        const wellsData = wellKeys.map((k) => wells.find((well) => well.id === k))
+        expect(result[key]).toEqual(
+          dataToObjectByPosition({ data: wellsData, includeRelationships: true }),
+        )
+      })
     })
   })
 
