@@ -262,18 +262,8 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=insert-size]').type('100')
     })
 
-    // Bulk sample addition
-    cy.get('[data-type=selected-labware-item]')
-      .first()
-      .trigger('mousedown', {
-        position: 'topLeft',
-      })
-      .trigger('mousemove', {
-        position: 'bottomRight',
-      })
-      .trigger('mouseup', {
-        position: 'bottomRight',
-      })
+    cy.get('#qcFileInput').attachFile('pacbioAndTags.csv')
+
     cy.get('[data-type=pool-aliquot-edit]').should('have.length', 4)
 
     const orderedElements = [
@@ -282,8 +272,7 @@ describe('Pacbio Pool Create', () => {
       'GEN-1680611780-1:C1',
       'GEN-1680611780-1:D1',
     ]
-    // can we create this dynamically?
-    cy.get('#qcFileInput').attachFile('pacbioAndTags.csv')
+
     // Validate the order
     cy.get('[data-type=pool-aliquot-edit]').each((el, index) => {
       cy.wrap(el).within(() => {
@@ -320,6 +309,7 @@ describe('Pacbio Pool Create', () => {
         },
       },
     })
+    cy.get('[data-testid=clear-alerts]').click()
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
   })

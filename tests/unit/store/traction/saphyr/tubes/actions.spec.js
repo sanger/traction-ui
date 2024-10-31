@@ -1,6 +1,6 @@
-import * as Actions from '@/store/traction/saphyr/tubes/actions'
+import * as Actions from '@/store/traction/saphyr/tubes/actions.js'
 import SaphyrTubesFactory from '@tests/factories/SaphyrTubesFactory.js'
-import BaseFactory from '../../../../../factories/BaseFactory'
+import BaseFactory from '../../../../../factories/BaseFactory.js'
 
 const saphyrTubesRequestFactory = SaphyrTubesFactory('request')
 const saphyrTubesLibraryFactory = SaphyrTubesFactory('library')

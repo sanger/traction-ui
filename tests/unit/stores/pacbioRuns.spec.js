@@ -1,8 +1,12 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { createPinia, setActivePinia } from '@support/testHelper'
+import {
+  createPinia,
+  setActivePinia,
+  failedResponse,
+  successfulResponse,
+} from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
-import { newResponse } from '@/api/v1/ResponseHelper'
 import { extractAttributes } from '@/api/JsonApi'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
@@ -37,7 +41,7 @@ describe('usePacbioRunsStore', () => {
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
         store.runs = []
-        store.runRequest.get = vi.fn().mockReturnValue(pacbioRunsFactory.responses.axios)
+        store.runRequest.get = vi.fn().mockReturnValue(pacbioRunsFactory.responses.fetch)
         const data = pacbioRunsFactory.content.data
         api.dataToObjectById = vi.fn().mockReturnValue(data)
         const { success, errors } = await store.fetchPacbioRuns()
@@ -50,18 +54,15 @@ describe('usePacbioRunsStore', () => {
         const store = usePacbioRunsStore()
         store.runs = []
 
-        const failedResponse = {
-          data: { data: { errors: { error1: ['There was an error'] } } },
-          status: 500,
-          statusText: 'Internal Server Error',
-        }
-        store.runRequest.get = vi.fn().mockRejectedValue({ response: failedResponse })
-        const expectedResponse = newResponse({ ...failedResponse, success: false })
+        const failureResponse = failedResponse()
+
+        // fetch does not reject the promise.
+        store.runRequest.get = vi.fn().mockResolvedValue(failureResponse)
         const { success, errors } = await store.fetchPacbioRuns()
 
         expect(store.runs.length).toEqual(0)
         expect(success).toEqual(false)
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(failureResponse.errorSummary)
       })
     })
     describe('updateRun', () => {
@@ -72,7 +73,7 @@ describe('usePacbioRunsStore', () => {
       it('runs successfully', async () => {
         const store = usePacbioRunsStore()
         store.runs = []
-        store.runRequest.update = vi.fn().mockReturnValue(pacbioRunsFactory.responses.axios)
+        store.runRequest.update = vi.fn().mockReturnValue(successfulResponse())
         const updatedRun = pacbioRunsFactory.content.data
 
         const { success, errors } = await store.updateRun({ ...updatedRun })
@@ -82,20 +83,16 @@ describe('usePacbioRunsStore', () => {
       })
       it(' runs unsuccessfully', async () => {
         const store = usePacbioRunsStore()
+        const failureResponse = failedResponse()
         store.runs = []
-        const failedResponse = {
-          data: { data: { errors: { error1: ['There was an error'] } } },
-          status: 500,
-          statusText: 'Internal Server Error',
-        }
-        store.runRequest.update = vi.fn().mockRejectedValue({ response: failedResponse })
-        const expectedResponse = newResponse({ ...failedResponse, success: false })
+        // const failedResponse = {
+        store.runRequest.update = vi.fn().mockResolvedValue(failureResponse)
 
         const { success, errors } = await store.updateRun({ ...updatedRun })
 
         expect(store.runs.length).toEqual(0)
         expect(success).toEqual(false)
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(failureResponse.errorSummary)
       })
     })
   })
