@@ -7,15 +7,12 @@
  * @param {Array} labwhereBarcodes - An array of barcodes to find locations for.
  * @returns {Object} A mapping of barcodes to their corresponding locations. If a barcode is not found, an empty object is returned for that barcode.
  */
-const extractLocationsForLabwares = (labwares, labwareBarcodes) => {
-  const locationMap = {}
-  labwareBarcodes.forEach((barcode) => {
-    locationMap[barcode] = labwares.length
-      ? labwares.find((labware) => labware.barcode === barcode)?.location || {}
-      : {}
-  })
-  return locationMap
-}
+
+const extractLocationsForLabwares = (labwares, labwhereBarcodes) =>
+  labwhereBarcodes.reduce((locationMap, barcode) => {
+    locationMap[barcode] = labwares.find((labware) => labware.barcode === barcode)?.location || {}
+    return locationMap
+  }, {})
 
 /**
  * Retrieves the coordinate for a specific labware within a given location.
@@ -28,4 +25,52 @@ const getCoordinateForLabware = (location, labwareBarcode) => {
   return location?.coordinates?.find((coordinate) => coordinate.labware === labwareBarcode) || {}
 }
 
-export { extractLocationsForLabwares, getCoordinateForLabware }
+/**
+ * Builds location information for each item based on available location data.
+ *
+ * @param {Array} items - List of items to find locations for.
+ * @param {Array} locationsData - Array of location data containing coordinates and names.
+ * @returns {Array} Updated items with location information.
+ */
+const locationBuilder = (items, locationsData = []) => {
+  return items.map((item) => {
+    const location = locationsData.find(
+      (loc) =>
+        loc.barcode === item.barcode || loc.barcode === item.source_identifier?.split(':')[0],
+    )
+    return {
+      ...item,
+      location: location
+        ? location.coordinates && Object.keys(location.coordinates).length
+          ? `${location.name} - ${location.coordinates.row}, ${location.coordinates.column}`
+          : location.name
+        : '-',
+    }
+  })
+}
+
+/**
+ * Formats location data by extracting barcodes, names, and coordinates.
+ *
+ * @param {Object} locationData - Object containing location details with data property.
+ * @returns {Promise<Array>} Promise resolving to an array of formatted location objects.
+ */
+const formatLocations = (locationData) => {
+  const extractedLocations = Object.entries(locationData.data).map(([barcode, item]) => ({
+    barcode,
+    name: item.name || '-', // Default to '-' if no name
+    coordinates: item.coordinates || null,
+  }))
+
+  const formattedLocations = extractedLocations.map((location) => {
+    const coordinates = getCoordinateForLabware(location, location.barcode)
+    return {
+      ...location,
+      coordinates,
+    }
+  })
+
+  return formattedLocations
+}
+
+export { extractLocationsForLabwares, getCoordinateForLabware, locationBuilder, formatLocations }

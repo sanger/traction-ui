@@ -9,7 +9,7 @@
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="pools"
+        :items="displayedPools"
         :fields="fields"
         selectable
         select-mode="multi"
@@ -75,9 +75,12 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { mapActions, mapGetters } from 'vuex'
+import { ref } from 'vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 export default {
   name: 'OntPoolIndex',
@@ -88,7 +91,10 @@ export default {
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -106,6 +112,7 @@ export default {
           label: 'Final Library Amount',
           sortable: true,
         },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
@@ -130,6 +137,21 @@ export default {
     ...mapGetters('traction/ont/pools', ['pools']),
     printingStore() {
       return usePrintingStore()
+    },
+    barcodes() {
+      return this.pools.map((pool) => pool.barcode)
+    },
+    displayedPools() {
+      return locationBuilder(this.pools, this.labwareLocations.value)
+    },
+  },
+  watch: {
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
+      },
+      immediate: true,
     },
   },
   methods: {

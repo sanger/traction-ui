@@ -3,14 +3,16 @@
     <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
-        <traction-pagination class="float-right" aria-controls="samples-table">
-        </traction-pagination>
+        <traction-pagination
+          class="float-right"
+          aria-controls="samples-table"
+        ></traction-pagination>
       </div>
 
       <traction-table
         id="samples-table"
         v-model:sort-by="sortBy"
-        :items="requests"
+        :items="displayedRequests"
         :fields="fields"
         selectable
         select-mode="single"
@@ -33,10 +35,13 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+import { ref } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
-import useQueryParams from '@/composables/useQueryParams'
-// TODO: Move these actions back to top level store.
+import useQueryParams from '@/composables/useQueryParams.js'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
+
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
 export default {
@@ -47,7 +52,10 @@ export default {
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -64,6 +72,7 @@ export default {
         },
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       filterOptions: [
@@ -80,6 +89,22 @@ export default {
   },
   computed: {
     ...mapGetters(['requests']),
+    barcodes() {
+      return this.requests.map(({ source_identifier }) => source_identifier)
+    },
+    // Computed property to return updated displayed requests
+    displayedRequests() {
+      return locationBuilder(this.requests, this.labwareLocations.value)
+    },
+  },
+  watch: {
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
+      },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(['fetchOntRequests']),

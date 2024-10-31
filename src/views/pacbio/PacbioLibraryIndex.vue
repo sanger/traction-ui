@@ -8,8 +8,7 @@
           class="float-left"
           :disabled="state.selected.length === 0"
           @select-printer="printLabels($event)"
-        >
-        </printerModal>
+        />
         <traction-button
           id="deleteLibraries"
           theme="delete"
@@ -48,7 +47,7 @@
       <traction-table
         id="library-index"
         v-model:sort-by="sortBy"
-        :items="libraries"
+        :items="displayedLibraries"
         :fields="state.fields"
         selectable
         select-mode="multi"
@@ -92,13 +91,15 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watchEffect } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { usePrintingStore } from '@/stores/printing.js'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 /**
  * Following are new Vue 3 features used in this component:
@@ -150,6 +151,7 @@ const state = reactive({
     { key: 'source_identifier', label: 'Source', sortable: true },
     { key: 'volume', label: 'Initial Volume', sortable: true },
     { key: 'concentration', label: 'Concentration', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
     {
       key: 'template_prep_kit_box_barcode',
       label: 'Template Prep Kit Box Barcode',
@@ -191,7 +193,24 @@ const libraries = computed(() => librariesStore.librariesArray)
 
 const showConfirmationModal = ref(false)
 
+const barcodes = computed(() => libraries.value.map(({ barcode }) => barcode))
+
+const { fetchLocations } = useLocationFetcher()
+
+// Computed property for displayed libraries with updated location information
+const displayedLibraries = computed(() => {
+  return locationBuilder(libraries.value, labwareLocations.value)
+})
+
+const labwareLocations = ref([])
+
+watchEffect(async () => {
+  const barcodesValue = barcodes.value
+  labwareLocations.value = await fetchLocations(barcodesValue)
+})
+
 //methods
+
 const handleLibraryDelete = async () => {
   try {
     const selectedIds = state.selected.map((s) => s.id)
