@@ -19,7 +19,6 @@ import PacbioTubeRequest from './pacbioTubeRequest'
 import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioTubeWithPool from './pacbioTubeWithPool.json'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
-import PacbioTubesWithPoolsAndLibraries from './pacbioTubesWithPoolsAndLibraries.json'
 import PacbioPool from './pacbioPool'
 import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioTagSets from './pacbioTagSets'
@@ -59,7 +58,6 @@ export default {
   PacbioTubesRequest,
   PacbioTubeWithPool,
   PacbioTubeWithLibrary,
-  PacbioTubesWithPoolsAndLibraries,
   PacbioPool,
   PacbioRequestsRequest,
   PacbioTagSets,
