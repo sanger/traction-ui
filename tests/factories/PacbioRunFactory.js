@@ -7,10 +7,21 @@ import {
   dataToObjectByPlateNumber,
 } from './../../src/api/JsonApi'
 
+/**
+ * Get a run by state
+ * @param {Array} runs - the runs to search
+ * @param {String} state - the state to search for
+ * @returns {Object} - the run with the state
+ */
 const getRunByState = (runs) => (state) => {
   return runs.find((run) => run.state === state)
 }
 
+/**
+ * Create the store data for multiple runs
+ * @param {Object} data - the data from the json api response
+ * @returns {Object} - the store data for runs and plates along with a method to get a run by state
+ */
 const createStoreDataForMultipleRuns = (data) => {
   const runs = dataToObjectById({ data: data.data, includeRelationships: true })
   const { plates } = groupIncludedByResource(data.included)
@@ -21,6 +32,12 @@ const createStoreDataForMultipleRuns = (data) => {
   }
 }
 
+/**
+ * Create the store data for a single run
+ * @param {Object} data - the data from the json api response
+ * @returns {Object} - the store data for run, plates, wells, pools, libraries, tubes, aliquots, requests, tags
+ * and smrt_link_version
+ */
 const createStoreDataForSingleRun = (data) => {
   const {
     plates,

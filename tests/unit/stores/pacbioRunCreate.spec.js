@@ -2,7 +2,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useRootStore from '@/stores'
 import storePools from '@tests/data/StoreRunPools.json'
-import { Data } from '@support/testHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 import {
   newRun,
@@ -17,9 +16,11 @@ import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
+const pacbioTubeFactory = PacbioTubeFactory()
 
 describe('usePacbioRunCreateStore', () => {
   beforeEach(() => {
@@ -373,48 +374,26 @@ describe('usePacbioRunCreateStore', () => {
 
     describe('findPoolsOrLibrariesByTube', () => {
       it('returns the tubes pools, libraries, aliquots, requests and tags when given valid tube barcodes', async () => {
-        const response = Data.PacbioTubesWithPoolsAndLibraries
-        const { data, included } = response.data
-
-        const tubes = data.slice(0, 3)
-        const pools = included.slice(0, 2)
-        const aliquots = included.slice(2, 11)
-        const libraries = included.slice(11, 20)
-        const requests = included.slice(20, 29)
-        const tags = included.slice(29, 33)
-
         // Mock stores
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(response)
+        get.mockResolvedValue(pacbioTubeFactory.responses.axios)
         rootStore.api.v1 = { traction: { pacbio: { tubes: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
         // apply action
         const { success } = await store.findPoolsOrLibrariesByTube({
-          barcode: 'TRAC-2-20,TRAC-2-22,TRAC-2-24',
+          barcode: pacbioTubeFactory.storeData.tubeBarcodes.join(),
         })
         expect(success).toBeTruthy()
 
-        expect(store.tubes).toEqual(
-          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true }),
-        )
-
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
-
-        expect(store.aliquots).toEqual(
-          jsonapi.dataToObjectById({ data: aliquots, includeRelationships: true }),
-        )
-
-        expect(store.libraries).toEqual(
-          jsonapi.dataToObjectById({ data: libraries, includeRelationships: true }),
-        )
-
-        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
-        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
+        expect(store.tubes).toEqual(pacbioTubeFactory.storeData.tubes)
+        expect(store.pools).toEqual(pacbioTubeFactory.storeData.pools)
+        expect(store.libraries).toEqual(pacbioTubeFactory.storeData.libraries)
+        expect(store.requests).toEqual(pacbioTubeFactory.storeData.requests)
+        expect(store.tags).toEqual(pacbioTubeFactory.storeData.tags)
+        expect(store.aliquots).toEqual(pacbioTubeFactory.storeData.aliquots)
       })
     })
 
