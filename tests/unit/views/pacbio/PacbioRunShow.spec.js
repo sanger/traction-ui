@@ -3,8 +3,8 @@ import { mount, router, flushPromises, createTestingPinia } from '@support/testH
 import { describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
-import PacbioRunFactory from '@tests/factories/pacbioRunFactory.js'
-import PacbioTubeFactory from '@tests/factories/pacbioTubeFactory.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
 const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
