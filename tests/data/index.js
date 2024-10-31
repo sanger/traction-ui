@@ -19,7 +19,6 @@ import PacbioTubeWithPool from './pacbioTubeWithPool.json'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
 import PacbioPool from './pacbioPool'
 import PacbioRequestsRequest from './pacbioRequestsRequest'
-import PacbioTagSets from './pacbioTagSets'
 import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
@@ -30,7 +29,6 @@ import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
-import OntRun from './ontRun.json'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
 
@@ -56,7 +54,6 @@ export default {
   PacbioTubeWithLibrary,
   PacbioPool,
   PacbioRequestsRequest,
-  PacbioTagSets,
   PacbioSequencingPlate,
   PacbioWell,
   PacbioWells,
@@ -67,7 +64,6 @@ export default {
   AutoTagStore,
   OntPlatesRequest,
   OntRequestsRequest,
-  OntRun,
   PacbioRunWithWellDefaults,
   StorePools,
 }
