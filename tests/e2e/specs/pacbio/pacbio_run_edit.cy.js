@@ -1,9 +1,14 @@
 import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
+import PacbioRunFactory from '../../../factories/PacbioRunFactory.js'
 
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
-      fixture: 'tractionPacbioRuns.json',
+    cy.wrap(PacbioRunFactory()).as('pacbioRunFactory')
+    cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
+      cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+        statusCode: 200,
+        body: pacbioRunFactory.content,
+      })
     })
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
       statusCode: 200,
@@ -21,7 +26,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      '/v1/pacbio/runs/1?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -36,7 +41,7 @@ describe('Pacbio Run Edit view', () => {
     )
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
-      cy.get('#editRun-12').click()
+      cy.get('#editRun-1').click()
     })
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
@@ -58,7 +63,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing Sequel IIe run to be edited
     cy.intercept(
-      'v1/pacbio/runs/13?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      'v1/pacbio/runs/2?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioSequelIIeRun.json',
       },
@@ -73,7 +78,7 @@ describe('Pacbio Run Edit view', () => {
     )
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-13').click()
+    cy.get('#editRun-2').click()
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
@@ -87,7 +92,7 @@ describe('Pacbio Run Edit view', () => {
   it('will not create a run if there is an error', () => {
     // Get the existing revio run to be edited
     cy.intercept(
-      '/v1/pacbio/runs/12?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+      '/v1/pacbio/runs/1?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       {
         fixture: 'tractionPacbioRevioRun.json',
       },
@@ -114,7 +119,7 @@ describe('Pacbio Run Edit view', () => {
 
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
-      cy.get('#editRun-12').click()
+      cy.get('#editRun-1').click()
     })
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
     cy.get('button').contains('Update').click()

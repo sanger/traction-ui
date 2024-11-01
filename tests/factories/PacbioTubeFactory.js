@@ -41,6 +41,8 @@ const getData = (data, findBy) => {
   }
 
   if (index !== null) {
+    // we need to includeAll as the requests for pools are in the libraries and I think
+    // pulled out as used_by in the aliquots
     const foundData = find({ data, start: index, count: 1, get: true, includeAll: true })
     return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
   } else {

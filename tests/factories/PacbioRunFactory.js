@@ -92,11 +92,18 @@ const createStoreData = (data, count) => {
   }
 }
 
+const getData = (data, findBy, count) => {
+  const computedCount = findBy ? 1 : count
+  const index = findBy ? data.data.findIndex((run) => run.attributes.system_name === findBy) : 0
+  const foundData = find({ data, start: index, count: computedCount })
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, computedCount) }
+}
+
 /*
  * Factory for creating a list of runs
  * @returns a base factory object with the runs data
  */
-const PacbioRunFactory = ({ count = undefined } = {}) => {
+const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
   const data = {
     // it would be better to pass the smrt link versions from the smrt link factory
     // so that the factory is more self-contained and is not so brittle
@@ -1067,10 +1074,12 @@ const PacbioRunFactory = ({ count = undefined } = {}) => {
     },
   }
 
-  // if first is completed find the data otherwise return all data
-  const foundData = find({ data, count })
+  return getData(data, findBy, count)
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
+  // if first is completed find the data otherwise return all data
+  // const foundData = find({ data, count })
+
+  // return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
 }
 
 export default PacbioRunFactory
