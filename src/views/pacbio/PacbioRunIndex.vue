@@ -33,7 +33,7 @@
           <div class="flex justify-between gap-1">
             <span class="grow">{{ row.item.system_name }}</span>
             <traction-badge :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
-              {{ getVersionName(row.item.pacbio_smrt_link_version_id).split('_')[0] }}
+              {{ versionName(row.item.pacbio_smrt_link_version_id) }}
             </traction-badge>
           </div>
         </template>
@@ -189,6 +189,12 @@ const sortBy = ref('created_at')
  */
 const getVersionName = (versionId) => {
   return runCreateStore.smrtLinkVersionList[versionId]?.name || '< ! >'
+}
+
+const versionName = (versionId) => {
+  const versionName = getVersionName(versionId)
+  const match = versionName.match(/^v\d+(_\d+)?/)
+  return match ? match[0] : '< ! >'
 }
 /**
  * Returns a boolean value indicating whether the run is disabled based on its state.
