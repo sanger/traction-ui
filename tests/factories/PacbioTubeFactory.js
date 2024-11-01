@@ -41,7 +41,7 @@ const getData = (data, findBy) => {
   }
 
   if (index !== null) {
-    const foundData = find({ data, start: index, count: 1, get: true })
+    const foundData = find({ data, start: index, count: 1, get: true, includeAll: true })
     return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
   } else {
     return { ...BaseFactory(data), storeData: createStoreData(data) }
@@ -271,6 +271,7 @@ const PacbioTubeFactory = ({ findBy = null } = {}) => {
           created_at: '2024/03/18 15:03',
           updated_at: '2024/03/18 15:03',
           source_identifier: 'GEN-1710774222-1:H4-C5',
+          available_volume: 20,
         },
         relationships: {
           tube: {
@@ -1644,7 +1645,7 @@ const PacbioTubeFactory = ({ findBy = null } = {}) => {
           deactivated_at: null,
           source_identifier: 'GEN-1710774222-1:F4',
           pacbio_request_id: 30,
-          tag_id: null,
+          available_volume: 20,
         },
         relationships: {
           request: {

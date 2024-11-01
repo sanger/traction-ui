@@ -695,6 +695,15 @@ describe('JsonApi', () => {
       })
     })
 
+    it('will return all included data if specified', () => {
+      const found = find({ data, count: 1, includeAll: true })
+
+      expect(found).toEqual({
+        data: data.data[0],
+        included: data.included,
+      })
+    })
+
     it('will find the first 2 records with a count of 2', () => {
       const found = find({ data, count: 2 })
       // another problem with ordering which is whye we are comparing keys

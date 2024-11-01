@@ -359,16 +359,19 @@ const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 
  * @param {Number} start - the number of items to return
  * @param {Number | undefined} count - the number of items to return. If undefined then return all
  * @param {Boolean} get - is this a get request? find returns data as an object and get returns an array
+ * @param {Boolean} includeAll - include all the resources
  * @returns {Object} - the found data and the included resources
  */
-const find = ({ data, start = 0, count = undefined, get = false } = {}) => {
+const find = ({ data, start = 0, count = undefined, get = false, includeAll = false } = {}) => {
   const end = count ? start + count : undefined
   const foundData = data.data.slice(start, end)
 
   // we need to extract the includes from the found data
-  const included = foundData.flatMap(({ relationships }) => {
-    return extractIncludes({ relationships, included: data.included })
-  })
+  const included = includeAll
+    ? data.included
+    : foundData.flatMap(({ relationships }) => {
+        return extractIncludes({ relationships, included: data.included })
+      })
 
   // we need to remove the duplicates from included
   // if we are only extracting a single record and find is used data needs to be an object
