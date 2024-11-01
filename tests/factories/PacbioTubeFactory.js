@@ -1,6 +1,11 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById, groupIncludedByResource } from './../../src/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource, find } from './../../src/api/JsonApi'
 
+/**
+ *
+ * @param {Object} data
+ * @returns {Object} - { tubes, tubeBarcodes, aliquots, pools, libraries, requests, tags }
+ */
 const createStoreData = (data) => {
   const tubes = dataToObjectById({ data: data.data, includeRelationships: true })
 
@@ -17,7 +22,38 @@ const createStoreData = (data) => {
   }
 }
 
-const PacbioTubeFactory = () => {
+/**
+ *
+ * @param {Object} data
+ * @param {String | null} findBy - 'libraries' | 'pools'
+ * @returns {Object} - { ...BaseFactory, storeData }
+ * if the findBy is libraries or pools find a single record by libraries or pools
+ * otherwise return the data as is.
+ * This is a bit messy but it will do for now.
+ */
+const getData = (data, findBy) => {
+  let index = null
+  if (findBy === 'libraries') {
+    index = data.data.findIndex((item) => item.relationships.libraries.data)
+  }
+  if (findBy === 'pools') {
+    index = data.data.findIndex((item) => item.relationships.pools.data.length > 0)
+  }
+
+  if (index !== null) {
+    const foundData = find({ data, start: index, count: 1, get: true })
+    return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
+  } else {
+    return { ...BaseFactory(data), storeData: createStoreData(data) }
+  }
+}
+
+/**
+ * Factory for creating a list of tag set
+ * @param {String | null} findBy
+ * @returns a base factory object with the tube data
+ */
+const PacbioTubeFactory = ({ findBy = null } = {}) => {
   const data = {
     data: [
       {
@@ -2063,7 +2099,7 @@ const PacbioTubeFactory = () => {
     },
   }
 
-  return { ...BaseFactory(data), storeData: createStoreData(data) }
+  return getData(data, findBy)
 }
 
 export default PacbioTubeFactory

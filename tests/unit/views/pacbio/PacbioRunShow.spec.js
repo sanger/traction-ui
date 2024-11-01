@@ -6,7 +6,7 @@ import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
-const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
 
 const smrtLinkVersions = {

@@ -81,11 +81,11 @@ const createStoreDataForSingleRun = (data) => {
 /**
  *
  * @param {Object} data - the data from the json api response
- * @param {null | integer} first - the first n records or null for all records
+ * @param {undefined | integer} first - the number of records
  * @returns - the included data for the pools
  */
-const createStoreData = (data, first) => {
-  if (first === 1) {
+const createStoreData = (data, count) => {
+  if (count === 1) {
     return createStoreDataForSingleRun(data)
   } else {
     return createStoreDataForMultipleRuns(data)
@@ -96,7 +96,7 @@ const createStoreData = (data, first) => {
  * Factory for creating a list of runs
  * @returns a base factory object with the runs data
  */
-const PacbioRunFactory = ({ all = true, first = null } = {}) => {
+const PacbioRunFactory = ({ count = undefined } = {}) => {
   const data = {
     // it would be better to pass the smrt link versions from the smrt link factory
     // so that the factory is more self-contained and is not so brittle
@@ -1068,9 +1068,9 @@ const PacbioRunFactory = ({ all = true, first = null } = {}) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = all ? data : find({ data, all, first })
+  const foundData = find({ data, count })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, first) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
 }
 
 export default PacbioRunFactory

@@ -5,7 +5,7 @@ import { describe, expect } from 'vitest'
 import { Data } from '@support/testHelper'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 
-const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -686,30 +686,40 @@ describe('JsonApi', () => {
     beforeEach(() => {
       data = rawData
     })
-    it('will find the first record by default', () => {
-      const found = find({ data })
+    it('will find the first record if count is 1', () => {
+      const found = find({ data, count: 1 })
+
       expect(found).toEqual({
         data: data.data[0],
         included: [...data.included.slice(0, 3), ...data.included.slice(-1)],
       })
     })
 
-    it('will find the first 2 records with an argument', () => {
-      const found = find({ data, first: 2 })
+    it('will find the first 2 records with a count of 2', () => {
+      const found = find({ data, count: 2 })
       // another problem with ordering which is whye we are comparing keys
       // probably need a method to sort the keys
       expect(Object.keys(found.data)).toEqual(Object.keys(data.data.slice(0, 2)))
       expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
     })
 
-    it('will find all the records with an argument', () => {
-      const found = find({ data, all: true })
+    it('will find the second record if start is 1 and count is 1', () => {
+      const found = find({ data, count: 1, start: 1 })
+      // 4,5,6
+      expect(found).toEqual({
+        data: data.data.slice(1, 2)[0],
+        included: data.included.slice(3),
+      })
+    })
+
+    it('will find all the records by default', () => {
+      const found = find({ data })
       expect(Object.keys(found.data)).toEqual(Object.keys(data.data))
       expect(Object.keys(found.included)).toEqual(Object.keys(data.included))
     })
 
     it('data will be an array if it is using get rather than find', () => {
-      const found = find({ data, get: true })
+      const found = find({ data, count: 1, get: true })
       expect(found).toEqual({
         data: data.data.slice(0, 1),
         included: [...data.included.slice(0, 3), ...data.included.slice(-1)],

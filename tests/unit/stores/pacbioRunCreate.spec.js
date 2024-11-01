@@ -19,7 +19,7 @@ import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
-const pacbioRunFactory = PacbioRunFactory({ all: false, first: 1 })
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
 
 describe('usePacbioRunCreateStore', () => {

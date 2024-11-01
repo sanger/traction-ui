@@ -6,7 +6,7 @@ const createStoreData = (included) => {
   return { requests, wells }
 }
 
-const OntPlateFactory = ({ all = true, first = null } = {}) => {
+const OntPlateFactory = ({ count = undefined } = {}) => {
   const data = {
     data: [
       {
@@ -761,7 +761,7 @@ const OntPlateFactory = ({ all = true, first = null } = {}) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = all ? data : find({ data, all, first, get: true })
+  const foundData = find({ data, count, get: true })
 
   return { ...BaseFactory(foundData), storeData: createStoreData(foundData.included) }
 }

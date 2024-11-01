@@ -13,7 +13,7 @@ const ontTagSetFactory = OntTagSetFactory()
 const ontRequestFactory = OntRequestFactory()
 const ontLibraryFactory = OntLibraryFactory()
 const ontPoolFactory = OntPoolFactory()
-const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 const ontPlateFactory = OntPlateFactory()
 const ontTubeFactory = OntTubeFactory()
 
