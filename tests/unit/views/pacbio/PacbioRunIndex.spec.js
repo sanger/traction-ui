@@ -34,8 +34,7 @@ const getRunAndButtonForState = (wrapper, state, action) => {
 function factory(options, dataProps) {
   const spy = vi.fn().mockResolvedValue(pacbioRunFactory.responses.fetch)
 
-  // this is in the pacbioRunCreate store so didn't weant to change it to v2.
-  const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.axios)
+  const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
 
   const wrapperObj = mount(PacbioRunIndex, {
     global: {
@@ -59,7 +58,7 @@ function factory(options, dataProps) {
                 store.runRequest.get = spy
               }
               if (store.$id === 'root') {
-                store.api.v1.traction.pacbio.smrt_link_versions.get = spy2
+                store.api.v2.traction.pacbio.smrt_link_versions.get = spy2
                 store.api.v2.traction.pacbio.runs = vi
                   .fn()
                   .mockReturnValue(pacbioRunFactory.responses.fetch)

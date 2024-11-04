@@ -17,6 +17,7 @@ import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
+import { successfulResponse, failedResponse } from '@support/testHelper'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
@@ -247,12 +248,6 @@ describe('usePacbioRunCreateStore', () => {
     })
   })
   describe('actions', () => {
-    const failedResponse = {
-      data: { data: [] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
-
     const plateNumber = 1
 
     const plates = {
@@ -278,8 +273,8 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.axios)
-        rootStore.api.v1 = { traction: { pacbio: { smrt_link_versions: { get } } } }
+        get.mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { pacbio: { smrt_link_versions: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -294,8 +289,8 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useroot store
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockRejectedValue(failedResponse)
-        rootStore.api.v1 = { traction: { pacbio: { smrt_link_versions: { get } } } }
+        get.mockRejectedValue(failedResponse())
+        rootStore.api.v2 = { traction: { pacbio: { smrt_link_versions: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -311,8 +306,8 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const find = vi.fn()
-        find.mockResolvedValue(pacbioRunFactory.responses.axios)
-        rootStore.api.v1 = { traction: { pacbio: { runs: { find } } } }
+        find.mockResolvedValue(pacbioRunFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
@@ -349,8 +344,8 @@ describe('usePacbioRunCreateStore', () => {
         //Mock useRootStore
         const rootStore = useRootStore()
         const find = vi.fn()
-        find.mockRejectedValue(failedResponse)
-        rootStore.api.v1 = { traction: { pacbio: { runs: { find } } } }
+        find.mockRejectedValue(failedResponse())
+        rootStore.api.v2 = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
@@ -377,8 +372,8 @@ describe('usePacbioRunCreateStore', () => {
         // Mock stores
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(pacbioTubeFactory.responses.axios)
-        rootStore.api.v1 = { traction: { pacbio: { tubes: { get } } } }
+        get.mockResolvedValue(pacbioTubeFactory.responses.fetch)
+        rootStore.api.v2 = { traction: { pacbio: { tubes: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -403,15 +398,12 @@ describe('usePacbioRunCreateStore', () => {
         const runType = createRunType({ id: run.id })
 
         it('success', async () => {
-          const mockResponse = {
-            status: '201',
-            data: { data: {} },
-          }
+          const mockResponse = successfulResponse()
           //Mock useRootStore
           const rootStore = useRootStore()
           const create = vi.fn()
           create.mockResolvedValue(mockResponse)
-          rootStore.api.v1 = { traction: { pacbio: { runs: { create } } } }
+          rootStore.api.v2 = { traction: { pacbio: { runs: { create } } } }
 
           const store = usePacbioRunCreateStore()
           store.$state = {
@@ -432,8 +424,8 @@ describe('usePacbioRunCreateStore', () => {
           //Mock useRootStore
           const rootStore = useRootStore()
           const create = vi.fn()
-          create.mockRejectedValue(failedResponse)
-          rootStore.api.v1 = { traction: { pacbio: { runs: { create } } } }
+          create.mockRejectedValue(failedResponse())
+          rootStore.api.v2 = { traction: { pacbio: { runs: { create } } } }
           const store = usePacbioRunCreateStore()
           //Initilaize the store state
           store.$state = {
@@ -453,15 +445,12 @@ describe('usePacbioRunCreateStore', () => {
         const runType = createRunType({ id: run.id })
 
         it('success', async () => {
-          const mockResponse = {
-            status: '201',
-            data: { data: {} },
-          }
+          const mockResponse = successfulResponse()
           //Mock useRootStore
           const rootStore = useRootStore()
           const update = vi.fn()
           update.mockResolvedValue(mockResponse)
-          rootStore.api.v1 = { traction: { pacbio: { runs: { update } } } }
+          rootStore.api.v2 = { traction: { pacbio: { runs: { update } } } }
 
           const store = usePacbioRunCreateStore()
           //Initilaize the store state
@@ -482,8 +471,8 @@ describe('usePacbioRunCreateStore', () => {
           const update = vi.fn()
           //Mock useRootStore
           const rootStore = useRootStore()
-          update.mockRejectedValue(failedResponse)
-          rootStore.api.v1 = { traction: { pacbio: { runs: { update } } } }
+          update.mockRejectedValue(failedResponse())
+          rootStore.api.v2 = { traction: { pacbio: { runs: { update } } } }
 
           const store = usePacbioRunCreateStore()
           //Initilaize the store state

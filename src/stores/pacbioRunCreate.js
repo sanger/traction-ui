@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v1/ResponseHelper'
+import { handleResponse } from '@/api/v2/ResponseHelper'
 import {
   groupIncludedByResource,
   extractAttributes,
@@ -232,11 +232,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchSmrtLinkVersions() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.smrt_link_versions
+      const request = rootStore.api.v2.traction.pacbio.smrt_link_versions
       const promise = request.get({})
       const response = await handleResponse(promise)
 
-      const { success, data: { data } = {}, errors = [] } = response
+      const { success, body: { data } = {}, errors = [] } = response
 
       if (success) {
         // populate smrtLinkVersions in store
@@ -255,7 +255,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
 
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.tubes
+      const request = rootStore.api.v2.traction.pacbio.tubes
       // used_aliquots could have a library instead of a request in the future but for the time being its just requests
       // so we only look for request in the includes
       const promise = request.get({
@@ -268,7 +268,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         filter,
       })
       const response = await handleResponse(promise)
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
 
       // success is true with an empty list when no pools match the filter
       if (success && data.length > 0) {
@@ -297,14 +297,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async fetchRun({ id }) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.runs
+      const request = rootStore.api.v2.traction.pacbio.runs
       const promise = request.find({
         id,
         include:
           'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       })
       const response = await handleResponse(promise)
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
 
       if (success) {
         const {
@@ -370,7 +370,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     async saveRun() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.runs
+      const request = rootStore.api.v2.traction.pacbio.runs
 
       // based on the runType create the payload and the promise
       const payload = this.runType.payload({
