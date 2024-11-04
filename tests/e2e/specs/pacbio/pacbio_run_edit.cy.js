@@ -96,10 +96,8 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('PATCH', '/v1/pacbio/runs/1581', {
       statusCode: 422,
       body: {
-        data: {
-          errors: {
-            sequencing_kit_box_barcode: ["can't be blank"],
-          },
+        errors: {
+          sequencing_kit_box_barcode: ["can't be blank"],
         },
       },
     })

@@ -21,7 +21,7 @@ describe('Pacbio Run Create view', () => {
     cy.wrap(PacbioTubeFactory({ findBy: 'pools' })).as('pacbioTubeFactoryWithPool')
     cy.get('@pacbioTubeFactoryWithPool').then((pacbioTubeFactoryWithPool) => {
       cy.intercept(
-        '/v1/pacbio/tubes?filter[barcode]=TRAC-2-22&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+        '/v1/pacbio/tubes?include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id&filter[barcode]=TRAC-2-22',
         {
           statusCode: 200,
           body: pacbioTubeFactoryWithPool.content,
@@ -33,7 +33,7 @@ describe('Pacbio Run Create view', () => {
     cy.wrap(PacbioTubeFactory({ findBy: 'libraries' })).as('pacbioTubeFactoryWithLibrary')
     cy.get('@pacbioTubeFactoryWithLibrary').then((pacbioTubeFactoryWithLibrary) => {
       cy.intercept(
-        '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
+        '/v1/pacbio/tubes?include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id&filter[barcode]=TRAC-2-20',
         {
           statusCode: 200,
           body: pacbioTubeFactoryWithLibrary.content,
@@ -50,7 +50,7 @@ describe('Pacbio Run Create view', () => {
     })
   })
 
-  it('Creates a Sequel IIe run successfully - v11', () => {
+  it.only('Creates a Sequel IIe run successfully - v11', () => {
     const dataTransfer = new DataTransfer()
 
     // Checks the PacbioRunInfoEdit component
