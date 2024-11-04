@@ -341,7 +341,12 @@ const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 
     if (includes.relationships) {
       return [
         includes,
-        ...extractIncludes({ relationships: includes.relationships, included, depth: depth + 1 }),
+        ...extractIncludes({
+          relationships: includes.relationships,
+          included,
+          depth: depth + 1,
+          maximumDepth,
+        }),
       ]
     } else {
       return includes
@@ -362,7 +367,14 @@ const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 
  * @param {Boolean} includeAll - include all the resources
  * @returns {Object} - the found data and the included resources
  */
-const find = ({ data, start = 0, count = undefined, get = false, includeAll = false } = {}) => {
+const find = ({
+  data,
+  start = 0,
+  count = undefined,
+  get = false,
+  includeAll = false,
+  maximumDepth = 3,
+} = {}) => {
   const end = count ? start + count : undefined
   const foundData = data.data.slice(start, end)
 
@@ -370,7 +382,7 @@ const find = ({ data, start = 0, count = undefined, get = false, includeAll = fa
   const included = includeAll
     ? data.included
     : foundData.flatMap(({ relationships }) => {
-        return extractIncludes({ relationships, included: data.included })
+        return extractIncludes({ relationships, included: data.included, maximumDepth })
       })
 
   // we need to remove the duplicates from included
