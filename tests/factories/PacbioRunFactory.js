@@ -102,6 +102,7 @@ const getData = (data, findBy, count) => {
 /*
  * Factory for creating a list of runs
  * @returns a base factory object with the runs data
+ * it would be better to be able to search for pools and libraries.
  */
 const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
   const data = {

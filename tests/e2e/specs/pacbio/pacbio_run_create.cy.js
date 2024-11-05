@@ -50,7 +50,7 @@ describe('Pacbio Run Create view', () => {
     })
   })
 
-  it.only('Creates a Sequel IIe run successfully - v11', () => {
+  it('Creates a Sequel IIe run successfully - v11', () => {
     const dataTransfer = new DataTransfer()
 
     // Checks the PacbioRunInfoEdit component

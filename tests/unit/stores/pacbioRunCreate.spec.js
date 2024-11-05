@@ -1,7 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useRootStore from '@/stores'
-import storePools from '@tests/data/StoreRunPools.json'
 import * as jsonapi from '@/api/JsonApi'
 import {
   newRun,
@@ -31,145 +30,80 @@ describe('usePacbioRunCreateStore', () => {
     setActivePinia(pinia)
   })
   describe('getters', () => {
-    // TODO: we probably need to sort the way we create the pools for tests
-    // prettier-ignore-start
-    const mockPoolsAndLibraries = [
-      {
-        barcode: 'TRAC-2-20',
-        id: '30',
-        type: 'libraries',
-        run_suitability: {
-          ready_for_run: false,
-          errors: [
-            {
-              title: "can't be blank",
-              detail: "insert_size - can't be blank",
-              code: '100',
-              source: {
-                pointer: '/data/attributes/insert_size',
-              },
-            },
-          ],
-        },
-        state: 'pending',
-        volume: 1,
-        available_volume: 1,
-        concentration: 1,
-        template_prep_kit_box_barcode: '029979102141700063023',
-        insert_size: null,
-        created_at: '2024/03/18 15:03',
-        deactivated_at: null,
-        source_identifier: 'GEN-1710774222-1:F4',
-        pacbio_request_id: 30,
-        tag_id: null,
-        request: '30',
-        tag: null,
-        tube: '20',
-        source_well: null,
-        source_plate: null,
-        primary_aliquot: '314',
-        used_aliquots: ['315'],
-        samples: ['GENSAMPLE-1710774222-30'],
-      },
-      {
-        barcode: 'TRAC-2-22',
-        id: '12',
-        type: 'pools',
-        run_suitability: { ready_for_run: true, errors: [] },
-        volume: 1,
-        available_volume: 1,
-        concentration: 1,
-        template_prep_kit_box_barcode: '029979102141700063023',
-        insert_size: 100,
-        created_at: '2024/03/18 15:03',
-        updated_at: '2024/03/18 15:03',
-        source_identifier: 'GEN-1710774222-1:H4-C5',
-        tube: '22',
-        libraries: null,
-        used_aliquots: ['319', '320', '321', '322'],
-        primary_aliquot: null,
-        samples: [
-          'GENSAMPLE-1710774222-32:bc1001_BAK8A_OA',
-          'GENSAMPLE-1710774222-33:bc1002_BAK8A_OA',
-          'GENSAMPLE-1710774222-34:bc1003_BAK8A_OA',
-          'GENSAMPLE-1710774222-35:bc1008_BAK8A_OA',
-        ],
-      },
-      {
-        barcode: 'TRAC-2-24',
-        id: '14',
-        type: 'pools',
-        run_suitability: { ready_for_run: true, errors: [] },
-        volume: 1,
-        available_volume: 1,
-        concentration: 1,
-        template_prep_kit_box_barcode: '029979102141700063023',
-        insert_size: 100,
-        created_at: '2024/03/18 15:03',
-        updated_at: '2024/03/18 15:03',
-        source_identifier: 'GEN-1710774222-1:E5-H5',
-        tube: '24',
-        libraries: null,
-        used_aliquots: ['331', '332', '333', '334'],
-        primary_aliquot: null,
-        samples: [
-          'GENSAMPLE-1710774222-37:bc1001_BAK8A_OA',
-          'GENSAMPLE-1710774222-38:bc1002_BAK8A_OA',
-          'GENSAMPLE-1710774222-39:bc1003_BAK8A_OA',
-          'GENSAMPLE-1710774222-40:bc1008_BAK8A_OA',
-        ],
-      },
-    ]
-    // prettier-ignore-end
-
-    const smrtLinkVersions = {
-      1: {
-        id: 1,
-        name: 'v1',
-        default: true,
-        active: true,
-      },
-      2: {
-        id: 2,
-        name: 'v2',
-        default: false,
-        active: true,
-      },
-    }
-
     describe('smrtLinkVersionList', () => {
       it('returns a list of smrt link version resources', () => {
         const store = usePacbioRunCreateStore()
-        store.resources.smrtLinkVersions = smrtLinkVersions
-        expect(store.smrtLinkVersionList).toEqual(smrtLinkVersions)
+        store.resources.smrtLinkVersions = pacbioSmrtLinkVersionFactory.storeData
+        expect(store.smrtLinkVersionList).toEqual(pacbioSmrtLinkVersionFactory.storeData)
       })
     })
     describe('defaultSmrtLinkVersion', () => {
       it('returns the default SMRT Link Version', () => {
         const store = usePacbioRunCreateStore()
-        store.resources.smrtLinkVersions = smrtLinkVersions
-        expect(store.defaultSmrtLinkVersion).toEqual(smrtLinkVersions[1])
+        store.resources.smrtLinkVersions = pacbioSmrtLinkVersionFactory.storeData
+        expect(store.defaultSmrtLinkVersion).toEqual(
+          pacbioSmrtLinkVersionFactory.defaultSmrtLinkVersion,
+        )
       })
     })
     describe('tubeContents', () => {
       it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
-        store.$state = { ...storePools }
-        expect(store.tubeContents).toEqual(mockPoolsAndLibraries)
+        store.$state = {
+          ...pacbioRunFactory.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+        }
+        const tubeContents = store.tubeContents
+        expect(tubeContents.length).toEqual(Object.values(pacbioRunFactory.storeData.tubes).length)
       })
 
-      it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
-        const store = usePacbioRunCreateStore()
-        store.$state = { ...storePools }
-        const actual = store.tubeContentByBarcode('TRAC-2-20')
-        expect(actual).toEqual(mockPoolsAndLibraries[0])
-      })
-
+      // needs refactoring. I am recreating some of the methods in pacbioRunCreate.
       it('"tubeContentByBarcode" returns the library data with the specified tube barcode', () => {
         const store = usePacbioRunCreateStore()
-        store.$state = { ...storePools }
-        const actual = store.tubeContentByBarcode('TRAC-2-24')
-        expect(actual).toEqual(mockPoolsAndLibraries[2])
+        store.$state = {
+          ...pacbioRunFactory.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+        }
+        const tube = Object.values(pacbioRunFactory.storeData.tubes).find((tube) => tube.libraries)
+        const library = pacbioRunFactory.storeData.libraries[tube.libraries]
+        const { request, tag } = library
+        const { sample_name } = pacbioRunFactory.storeData.requests[request]
+        const { group_id = '' } = pacbioRunFactory.storeData.tags[tag] || {}
+        const actual = store.tubeContentByBarcode(tube.barcode)
+        expect(actual).toEqual({
+          barcode: tube.barcode,
+          ...pacbioRunFactory.storeData.libraries[tube.libraries],
+          samples: [`${sample_name}:${group_id}`],
+        })
+      })
+
+      // need to get run with pools which is the second run
+      it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
+        const store = usePacbioRunCreateStore()
+        const pacbioRunFactoryWithPools = PacbioRunFactory({ findBy: 'Sequel IIe' })
+        store.$state = {
+          ...pacbioRunFactoryWithPools.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+        }
+        const tube = Object.values(pacbioRunFactoryWithPools.storeData.tubes).find(
+          (tube) => tube.pools,
+        )
+        const actual = store.tubeContentByBarcode(tube.barcode)
+        const pool = pacbioRunFactoryWithPools.storeData.pools[tube.pools]
+        // this is a bit of palava we are practically rewriting the method.
+        const samples = pool.libraries.map((library) => {
+          const { pacbio_request_id, tag_id } =
+            pacbioRunFactoryWithPools.storeData.libraries[library]
+          const { sample_name } = pacbioRunFactoryWithPools.storeData.requests[pacbio_request_id]
+          const { group_id = '' } = pacbioRunFactoryWithPools.storeData.tags[tag_id] || {}
+          return `${sample_name}:${group_id}`
+        })
+        expect(actual).toEqual({
+          barcode: tube.barcode,
+          ...pool,
+          // ugh!
+          samples: samples.reverse(),
+        })
       })
     })
     describe('getOrCreateWell', () => {
@@ -666,11 +600,14 @@ describe('usePacbioRunCreateStore', () => {
     describe('clearRunData', () => {
       it('clears existing pool data', () => {
         const store = usePacbioRunCreateStore()
-        store.$state = { ...storePools }
+        store.$state = {
+          ...pacbioRunFactory.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+        }
         store.clearRunData()
         expect(store.$state).toEqual({
           resources: {
-            smrtLinkVersions: {},
+            smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData,
           },
           run: {},
           pools: {},

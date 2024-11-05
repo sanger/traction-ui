@@ -1,26 +1,32 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import { mount, createTestingPinia, nextTick } from '@support/testHelper.js'
-import storePools from '@tests/data/StoreRunPools.json'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
 import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
+// TODO: There is still a lot in here which is hardcoded but it would require more work to move it to the factory.
+
+// has got pools.
+const pacbioRunFactory = PacbioRunFactory({ findBy: 'Sequel IIe' })
+
+// best to move to factory.
 const usedAliquots = {
   1: {
     id: '1',
     type: 'aliquots',
     source_type: 'Pacbio::Pool',
-    source_id: '12',
+    source_id: '5817',
     used_by_type: 'Pacbio::Well',
     volume: 0,
   },
   2: {
     id: '2',
     type: 'aliquots',
-    source_type: 'Pacbio::Pool',
-    source_id: '14',
+    source_type: 'Pacbio::Library',
+    source_id: '12739',
     used_by_type: 'Pacbio::Well',
     volume: 0,
   },
@@ -28,7 +34,7 @@ const usedAliquots = {
     id: '3',
     type: 'aliquots',
     source_type: 'Pacbio::Library',
-    source_id: '30',
+    source_id: '13357',
     used_by_type: 'Pacbio::Well',
     volume: 0,
   },
@@ -73,12 +79,18 @@ const smrtLinkVersions = {
  *
  */
 function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
+  const { pools, libraries, tubes, aliquots, requests, tags } = pacbioRunFactory.storeData
+
   const defaultOptions = {
     run: {},
     plates: { 1: newPlate(1) },
     wells: { 1: { A1: storeWell } },
-    ...storePools,
-    aliquots: { ...usedAliquots, ...storePools.aliquots },
+    pools,
+    libraries,
+    tubes,
+    requests,
+    tags,
+    aliquots: { ...usedAliquots, ...aliquots },
     smrtLinkVersion: smrtLinkVersions['v11'],
     resources: { smrtLinkVersions },
   }
@@ -211,13 +223,10 @@ describe('PacbioRunWell.vue', () => {
     })
   })
 
-  // TRAC-2-20 - libraries - 30
-  // TRAC-2-22 - pools - 12
-  // TRAC-2-24 - pools - 14
-
   describe('updateUsedAliquotSource', () => {
     it('adds the pool to the well', async () => {
-      const newBarcode = 'TRAC-2-22'
+      const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
+      const newBarcode = 'TRAC-2-9452'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
         state: {
@@ -229,7 +238,11 @@ describe('PacbioRunWell.vue', () => {
               },
             },
           },
-          ...storePools,
+          pools,
+          libraries,
+          tubes,
+          requests,
+          tags,
         },
         stubActions: false,
         plugins: [
@@ -243,19 +256,20 @@ describe('PacbioRunWell.vue', () => {
       // Check the aliquot exists and contains the correct data
       expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
         expect.objectContaining({
-          source_id: '12',
-          source_type: 'Pacbio::Pool',
-          volume: 1,
-          concentration: 1,
-          insert_size: 100,
-          template_prep_kit_box_barcode: '029979102141700063023',
+          source_id: '12739',
+          source_type: 'Pacbio::Library',
+          volume: 11,
+          concentration: 10.5,
+          insert_size: 8788,
+          template_prep_kit_box_barcode: '035092100938900103124',
           barcode: newBarcode,
         }),
       )
     })
 
     it('adds the library to the well', async () => {
-      const newBarcode = 'TRAC-2-20'
+      const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
+      const newBarcode = 'TRAC-2-9452'
       const updateWellMockFn = vi.fn()
       const { wrapperObj } = mountWithStore({
         state: {
@@ -267,7 +281,11 @@ describe('PacbioRunWell.vue', () => {
               },
             },
           },
-          ...storePools,
+          pools,
+          libraries,
+          tubes,
+          requests,
+          tags,
         },
         stubActions: false,
         plugins: [
@@ -281,11 +299,11 @@ describe('PacbioRunWell.vue', () => {
       // Check the aliquot exists and contains the correct data
       expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
         expect.objectContaining({
-          source_id: '30',
+          source_id: '12739',
           source_type: 'Pacbio::Library',
-          volume: 1,
-          concentration: 1,
-          template_prep_kit_box_barcode: '029979102141700063023',
+          volume: 11,
+          concentration: 10.5,
+          template_prep_kit_box_barcode: '035092100938900103124',
           barcode: newBarcode,
         }),
       )
@@ -316,11 +334,12 @@ describe('PacbioRunWell.vue', () => {
 
       const tooltip = wrapper.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
-      const expected = 'TRAC-2-22,TRAC-2-24,TRAC-2-20'
+      const expected = 'TRAC-2-10797,TRAC-2-9452,TRAC-2-10483'
       expect(tooltip.text()).toEqual(expected)
     })
 
     it('will only display aliquot source barcodes if the aliquot is not marked for destruction', async () => {
+      const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
       const { wrapperObj } = mountWithStore({
         state: {
           wells: {
@@ -334,7 +353,11 @@ describe('PacbioRunWell.vue', () => {
               },
             },
           },
-          ...storePools,
+          pools,
+          libraries,
+          tubes,
+          requests,
+          tags,
         },
         stubActions: false,
       })
@@ -344,7 +367,7 @@ describe('PacbioRunWell.vue', () => {
 
       const tooltip = wrapperObj.find('[data-attribute=tooltip]')
       // Only shows barcode of the non-destroyed aliquot
-      const expected = 'TRAC-2-24'
+      const expected = 'TRAC-2-9452'
       expect(tooltip.text()).toEqual(expected)
     })
   })
@@ -353,7 +376,7 @@ describe('PacbioRunWell.vue', () => {
     let mockEvent, newBarcode, store
 
     beforeEach(() => {
-      newBarcode = 'TRAC-2-20'
+      newBarcode = 'TRAC-2-9452'
       mockEvent = {
         dataTransfer: {
           getData() {
@@ -372,13 +395,14 @@ describe('PacbioRunWell.vue', () => {
       await nextTick()
       expect(store.updateWell).toBeCalled()
       // Check the aliquot exists and contains the correct data
+      // we could probably use the tube contents?
       expect(wrapper.vm.storeWell.used_aliquots[3]).toEqual(
         expect.objectContaining({
-          source_id: '30',
+          source_id: '12739',
           source_type: 'Pacbio::Library',
-          volume: 1,
-          concentration: 1,
-          template_prep_kit_box_barcode: '029979102141700063023',
+          volume: 11,
+          concentration: 10.5,
+          template_prep_kit_box_barcode: '035092100938900103124',
           barcode: newBarcode,
         }),
       )
