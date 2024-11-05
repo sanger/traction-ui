@@ -238,10 +238,8 @@ describe('Pacbio Run Create view', () => {
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
       body: {
-        data: {
-          errors: {
-            error1: ['some error'],
-          },
+        errors: {
+          error1: ['some error'],
         },
       },
     })

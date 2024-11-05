@@ -119,7 +119,6 @@ const tooltip = computed(() => {
           // If the used aliquot has been destroyed, return null
           if (_destroy) return
           const type = source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
-          // console.log(source_id)
           return store.tubeContents.find(
             (tubeContent) => source_id == tubeContent.id && type == tubeContent.type,
           ).barcode
