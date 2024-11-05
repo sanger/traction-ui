@@ -791,7 +791,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           ...attributes,
           request: request_id,
           source_id,
-          source_type: 'Pacbio::Request',
+          // source_type: 'Pacbio::Request',
         })
       })
     },
