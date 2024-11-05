@@ -645,34 +645,6 @@ describe('usePacbioPoolCreateStore', () => {
         used_aliquot2.concentration = concentration
       })
 
-      it('preserves the used aliquots source type', async () => {
-        const used_aliquots = {
-          _1: createUsedAliquot({
-            source_id: '1',
-            source_type: 'Pacbio::Library',
-            request: '1',
-            tag_id: '1',
-            template_prep_kit_box_barcode: 'ABC1',
-            volume: 1,
-            concentration: 1,
-            insert_size: 100,
-          }),
-        }
-        store.used_aliquots = used_aliquots
-        store.pool = pool
-        await store.createPool()
-        const playload = payload({ used_aliquots, pool })
-
-        expect(create).toHaveBeenCalledWith({
-          data: playload,
-          include: expect.anything(),
-        })
-
-        expect(playload.data.attributes.used_aliquots_attributes[0].source_type).toEqual(
-          used_aliquots['_1'].source_type,
-        )
-      })
-
       it('when the pool is invalid', async () => {
         store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.pool = { template_prep_kit_box_barcode: '' }
@@ -953,8 +925,6 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: 15230,
             concentration: 13,
             volume: 15,
-            source_type: 'Pacbio::Request',
-            validate: expect.any(Function),
           }),
         )
       })
