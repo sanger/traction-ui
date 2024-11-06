@@ -192,6 +192,8 @@ const formatLoadingTargetValue = (val) => {
     } else {
       return isNaN(well.loading_target_p1_plus_p2) ? 0 : well.loading_target_p1_plus_p2
     }
+  } else {
+    return 0
   }
 }
 

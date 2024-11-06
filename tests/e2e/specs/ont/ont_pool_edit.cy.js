@@ -29,7 +29,7 @@ describe('ONT Pool Edit', () => {
         },
       )
     })
-    cy.wrap(OntPoolFactory({ all: false, first: 1 })).as('singleOntPoolFactory')
+    cy.wrap(OntPoolFactory({ count: 1 })).as('singleOntPoolFactory')
     cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {
       cy.intercept(
         'v1/ont/pools/1?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',

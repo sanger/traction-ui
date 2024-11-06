@@ -25,6 +25,10 @@ const createStoreData = (data) => {
   }
 }
 
+/*
+ * Factory for creating a list of tag set
+ * @returns a base factory object with the tag set data
+ */
 const PacbioTagSetFactory = () => {
   const data = {
     data: [

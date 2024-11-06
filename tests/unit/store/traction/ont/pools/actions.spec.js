@@ -15,10 +15,10 @@ const ontRequestFactory = OntRequestFactory()
 
 // could we join these so we only need 1 factory?
 const ontPoolFactory = OntPoolFactory()
-const singleOntPoolFactory = OntPoolFactory({ all: false, first: 1 })
+const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
-const ontPlateFactory = OntPlateFactory({ all: false, first: 1 })
-const ontTubeFactory = OntTubeFactory({ all: false, first: 1 })
+const ontPlateFactory = OntPlateFactory({ count: 1 })
+const ontTubeFactory = OntTubeFactory({ count: 1 })
 const ontAutoTagFactory = OntAutoTagFactory()
 
 describe('actions.js', () => {
