@@ -422,7 +422,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given plate', () => {
         const request = store.requestsForPlate('DN1', 'A1')
-        expect(request).toEqual({ success: true, requestIds: ['1'], source_id: '1' })
+        expect(request).toEqual({ success: true, requestIds: ['1'] })
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: true })
       })
 
@@ -455,7 +455,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given tube', () => {
         const request = store.requestsForTube('3980000001795')
-        expect(request).toEqual({ success: true, requestIds: ['97'], source_id: '1' })
+        expect(request).toEqual({ success: true, requestIds: ['97'] })
         expect(store.selectTube).toBeCalledWith({ id: '1', selected: true })
       })
 

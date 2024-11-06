@@ -391,7 +391,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           success: false,
           errors: `A well named ${wellName} could not be found on ${barcode}`,
         }
-      return { success: true, requestIds: wells[wellId].requests, source_id: String(wellId) }
+      return { success: true, requestIds: wells[wellId].requests }
     },
 
     /**
@@ -407,7 +407,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
       // Ensure the tube is registered as selected
       this.selectTube({ id: tube.id, selected: true })
-      return { success: true, requestIds: tube.requests, source_id: String(tube.source_id) }
+      return { success: true, requestIds: tube.requests }
     },
 
     /**
@@ -756,7 +756,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
       const match = source.match(sourceRegex)
       const sourceData = match?.groups || { barcode: source }
-      const { success, errors, requestIds, source_id } = this.findRequestsForSource(sourceData)
+      const { success, errors, requestIds } = this.findRequestsForSource(sourceData)
 
       if (!success) {
         rootStore.addCSVLogMessage(info, errors)
@@ -780,7 +780,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       requestIds.forEach((request_id) => {
-        let used_aliquot = this.used_aliquots[`_${source_id}`]
+        let used_aliquot = this.used_aliquots[`_${request_id}`]
         if (!used_aliquot) {
           // We're adding a used_aliquot
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
