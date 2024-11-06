@@ -780,18 +780,20 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       requestIds.forEach((request_id) => {
-        const used_aliquot = this.used_aliquots[`_${source_id}`]
+        let used_aliquot = this.used_aliquots[`_${source_id}`]
         if (!used_aliquot) {
           // We're adding a used_aliquot
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
         }
-        this.updateUsedAliquot({
-          ...createUsedAliquot({ ...used_aliquot }),
+        used_aliquot = createUsedAliquot({
           ...tagAttributes,
           ...attributes,
           request: request_id,
           source_id,
-          source_type: 'Pacbio::Request',
+          source_type: attributes.source_type ? attributes.source_type : 'Pacbio::Request'
+        })
+        this.updateUsedAliquot({
+          ...used_aliquot,
         })
       })
     },

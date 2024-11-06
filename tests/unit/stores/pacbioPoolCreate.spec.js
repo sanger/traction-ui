@@ -959,6 +959,32 @@ describe('usePacbioPoolCreateStore', () => {
         )
       })
 
+      it('preserves the used_aliquots source type when present', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          source_type: 'Pacbio::Pool',
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+            expect.objectContaining({
+              request: '10',
+              tag_id: '131',
+              insert_size: 15230,
+              concentration: 13,
+              volume: 15,
+              source_type: 'Pacbio::Pool',
+              validate: expect.any(Function),
+            }),
+        )
+      })
+
       it('updates the corresponding used_aliquot for tubes', async () => {
         const record = {
           source: 'TRAC-2-2',
