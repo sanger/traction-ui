@@ -790,7 +790,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           ...attributes,
           request: request_id,
           source_id,
-          source_type: attributes.source_type ? attributes.source_type : 'Pacbio::Request'
+          source_type: attributes.source_type ? attributes.source_type : 'Pacbio::Request',
         })
         this.updateUsedAliquot({
           ...used_aliquot,
