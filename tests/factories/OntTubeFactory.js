@@ -6,7 +6,7 @@ const createStoreData = (included) => {
   return { requests }
 }
 
-const OntTubeFactory = ({ all = true, first = null } = {}) => {
+const OntTubeFactory = ({ count = undefined } = {}) => {
   const data = {
     data: [
       {
@@ -109,7 +109,7 @@ const OntTubeFactory = ({ all = true, first = null } = {}) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = all ? data : find({ data, all, first, get: true })
+  const foundData = find({ data, count, get: true })
 
   return { ...BaseFactory(foundData), storeData: createStoreData(foundData.included) }
 }

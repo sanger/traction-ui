@@ -50,11 +50,11 @@ const createStoreDataForMultiplePools = (included) => {
 /**
  *
  * @param {Object} data - the data from the json api response
- * @param {null | integer} first - the first n records or null for all records
+ * @param {undefined | integer} count - the number of records
  * @returns - the included data for the pools
  */
-const createStoreData = (data, first) => {
-  if (first === 1) {
+const createStoreData = (data, count) => {
+  if (count === 1) {
     return createStoreDataForSinglePool(data)
   } else {
     return createStoreDataForMultiplePools(data.included)
@@ -67,7 +67,7 @@ const createStoreData = (data, first) => {
  * @returns { BaseFactory }
  * pull out the attributes and relationships from the data and create a factory
  */
-const OntPoolFactory = ({ all = true, first = null } = {}) => {
+const OntPoolFactory = ({ count = undefined } = {}) => {
   const data = {
     data: [
       {
@@ -10534,9 +10534,9 @@ const OntPoolFactory = ({ all = true, first = null } = {}) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = all ? data : find({ data, all, first })
+  const foundData = find({ data, count })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, first) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
 }
 
 export default OntPoolFactory

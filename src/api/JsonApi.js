@@ -341,7 +341,12 @@ const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 
     if (includes.relationships) {
       return [
         includes,
-        ...extractIncludes({ relationships: includes.relationships, included, depth: depth + 1 }),
+        ...extractIncludes({
+          relationships: includes.relationships,
+          included,
+          depth: depth + 1,
+          maximumDepth,
+        }),
       ]
     } else {
       return includes
@@ -356,18 +361,29 @@ const extractIncludes = ({ relationships, included, depth = 1, maximumDepth = 3 
  * Find the first n items in the data and return them
  * Also extract the includes related to the found data
  * @param {Object} data - the data object to be searched
- * @param {Number} first - the number of items to return
- * @param {Boolean} all - return all the data
+ * @param {Number} start - the number of items to return
+ * @param {Number | undefined} count - the number of items to return. If undefined then return all
  * @param {Boolean} get - is this a get request? find returns data as an object and get returns an array
+ * @param {Boolean} includeAll - include all the resources
  * @returns {Object} - the found data and the included resources
  */
-const find = ({ data, all = false, first = 1, get = false } = {}) => {
-  const foundData = all ? data.data : data.data.slice(0, first)
+const find = ({
+  data,
+  start = 0,
+  count = undefined,
+  get = false,
+  includeAll = false,
+  maximumDepth = 3,
+} = {}) => {
+  const end = count ? start + count : undefined
+  const foundData = data.data.slice(start, end)
 
   // we need to extract the includes from the found data
-  const included = foundData.flatMap(({ relationships }) => {
-    return extractIncludes({ relationships, included: data.included })
-  })
+  const included = includeAll
+    ? data.included
+    : foundData.flatMap(({ relationships }) => {
+        return extractIncludes({ relationships, included: data.included, maximumDepth })
+      })
 
   // we need to remove the duplicates from included
   // if we are only extracting a single record and find is used data needs to be an object

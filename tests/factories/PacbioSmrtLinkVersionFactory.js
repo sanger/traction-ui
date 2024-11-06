@@ -93,8 +93,11 @@ const PacbioSmrtLinkVersionFactory = () => {
   }
 
   const storeData = dataToObjectById({ ...data })
+  const defaultSmrtLinkVersion = Object.values(storeData).find(
+    (smrtLinkVersion) => smrtLinkVersion.default,
+  )
 
-  return { ...BaseFactory(data), storeData }
+  return { ...BaseFactory(data), storeData, defaultSmrtLinkVersion }
 }
 
 export default PacbioSmrtLinkVersionFactory
