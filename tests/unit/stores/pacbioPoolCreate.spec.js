@@ -973,15 +973,15 @@ describe('usePacbioPoolCreateStore', () => {
         store.updateUsedAliquotFromCsvRecord({ record, info })
 
         expect(store.updateUsedAliquot).toHaveBeenCalledWith(
-            expect.objectContaining({
-              request: '10',
-              tag_id: '131',
-              insert_size: 15230,
-              concentration: 13,
-              volume: 15,
-              source_type: 'Pacbio::Pool',
-              validate: expect.any(Function),
-            }),
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Pool',
+            validate: expect.any(Function),
+          }),
         )
       })
 
