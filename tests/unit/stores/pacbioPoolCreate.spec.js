@@ -577,7 +577,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       const used_aliquot2 = createUsedAliquot({
         source_id: '2',
-        source_type: 'Pacbio::Well',
+        source_type: 'Pacbio::Request',
         request: '2',
         tag_id: '2',
         template_prep_kit_box_barcode: 'ABC1',
