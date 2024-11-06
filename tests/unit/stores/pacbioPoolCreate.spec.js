@@ -577,7 +577,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       const used_aliquot2 = createUsedAliquot({
         source_id: '2',
-        source_type: 'Pacbio::Request',
+        source_type: 'Pacbio::Well',
         request: '2',
         tag_id: '2',
         template_prep_kit_box_barcode: 'ABC1',
@@ -967,6 +967,7 @@ describe('usePacbioPoolCreateStore', () => {
           insert_size: 15230,
           concentration: 13,
           source_type: 'Pacbio::Pool',
+          type: 'pool',
           volume: 15,
         }
 
@@ -980,6 +981,57 @@ describe('usePacbioPoolCreateStore', () => {
             concentration: 13,
             volume: 15,
             source_type: 'Pacbio::Pool',
+            validate: expect.any(Function),
+          }),
+        )
+      })
+
+      it('defaults to attribute type when source type is absent', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          type: 'pools',
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Pool',
+            validate: expect.any(Function),
+          }),
+        )
+      })
+
+      it('defaults to Pacbio::Request in the absence of source type and attribute type', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Request',
             validate: expect.any(Function),
           }),
         )
