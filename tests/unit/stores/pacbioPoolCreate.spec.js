@@ -17,23 +17,6 @@ vi.mock('@/api/FeatureFlag', () => ({
 }))
 
 describe('usePacbioPoolCreateStore', () => {
-  const tagSets = {
-    1: {
-      id: '1',
-      name: 'tagSet1',
-      uuid: 'uuid1',
-      pipeline: 'pipeline1',
-      tags: [],
-    },
-    2: {
-      id: '2',
-      name: 'tagSet2',
-      uuid: 'uuid2',
-      pipeline: 'pipeline1',
-      tags: [],
-    },
-  }
-
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -49,11 +32,14 @@ describe('usePacbioPoolCreateStore', () => {
     })
 
     it('returns the selected tag set', () => {
-      const tagSet = { id: '1' }
       const pacbioRootStore = usePacbioRootStore()
-      pacbioRootStore.tagSets = tagSets
-      store.selected.tagSet = tagSet
-      expect(store.selectedTagSet).toEqual(tagSets['1'])
+      pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
+      pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
+      store.selected.tagSet = pacbioTagSetFactory.storeData.selected.tagSet
+      expect(store.selectedTagSet).toEqual({
+        ...pacbioTagSetFactory.storeData.selected.tagSet,
+        tags: pacbioTagSetFactory.storeData.selected.tags.all,
+      })
     })
 
     it('return the selected plates', () => {

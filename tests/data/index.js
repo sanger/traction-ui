@@ -15,7 +15,6 @@ import PacbioTubeWithPool from './pacbioTubeWithPool.json'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
 import PacbioPool from './pacbioPool'
 import PacbioRequestsRequest from './pacbioRequestsRequest'
-import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
@@ -44,7 +43,6 @@ export default {
   PacbioTubeWithLibrary,
   PacbioPool,
   PacbioRequestsRequest,
-  PacbioSequencingPlate,
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
