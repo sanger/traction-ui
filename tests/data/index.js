@@ -21,7 +21,6 @@ import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import AutoTagStore from './autoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
-import OntRequestsRequest from './ontRequestsRequest'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
 
@@ -49,7 +48,6 @@ export default {
   TractionTubeWithContainerMaterials,
   AutoTagStore,
   OntPlatesRequest,
-  OntRequestsRequest,
   PacbioRunWithWellDefaults,
   StorePools,
 }

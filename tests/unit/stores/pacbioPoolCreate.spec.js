@@ -408,7 +408,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given plate', () => {
         const request = store.requestsForPlate('DN1', 'A1')
-        expect(request).toEqual({ success: true, requestIds: ['1'], source_id: '1' })
+        expect(request).toEqual({ success: true, requestIds: ['1'] })
         expect(store.selectPlate).toBeCalledWith({ id: '1', selected: true })
       })
 
@@ -441,7 +441,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns the request for a given tube', () => {
         const request = store.requestsForTube('3980000001795')
-        expect(request).toEqual({ success: true, requestIds: ['97'], source_id: '1' })
+        expect(request).toEqual({ success: true, requestIds: ['97'] })
         expect(store.selectTube).toBeCalledWith({ id: '1', selected: true })
       })
 
@@ -629,6 +629,34 @@ describe('usePacbioPoolCreateStore', () => {
         expect(success).toBeFalsy()
         expect(errors).toEqual('The pool is invalid')
         used_aliquot2.concentration = concentration
+      })
+
+      it('preserves the used aliquots source type', async () => {
+        const used_aliquots = {
+          _1: createUsedAliquot({
+            source_id: '1',
+            source_type: 'Pacbio::Library',
+            request: '1',
+            tag_id: '1',
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: 1,
+            concentration: 1,
+            insert_size: 100,
+          }),
+        }
+        store.used_aliquots = used_aliquots
+        store.pool = pool
+        await store.createPool()
+        const playload = payload({ used_aliquots, pool })
+
+        expect(create).toHaveBeenCalledWith({
+          data: playload,
+          include: expect.anything(),
+        })
+
+        expect(playload.data.attributes.used_aliquots_attributes[0].source_type).toEqual(
+          used_aliquots['_1'].source_type,
+        )
       })
 
       it('when the pool is invalid', async () => {
@@ -911,6 +939,86 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: 15230,
             concentration: 13,
             volume: 15,
+            source_type: 'Pacbio::Request',
+            validate: expect.any(Function),
+          }),
+        )
+      })
+
+      it('preserves the used_aliquots source type when present', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          source_type: 'Pacbio::Pool',
+          type: 'pool',
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Pool',
+            validate: expect.any(Function),
+          }),
+        )
+      })
+
+      it('defaults to attribute type when source type is absent', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          type: 'pools',
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Pool',
+            validate: expect.any(Function),
+          }),
+        )
+      })
+
+      it('defaults to Pacbio::Request in the absence of source type and attribute type', async () => {
+        const record = {
+          source: 'DN1:A10',
+          tag: 'bc1024T',
+          genome_size: 6.3,
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }
+
+        store.updateUsedAliquotFromCsvRecord({ record, info })
+
+        expect(store.updateUsedAliquot).toHaveBeenCalledWith(
+          expect.objectContaining({
+            request: '10',
+            tag_id: '131',
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            source_type: 'Pacbio::Request',
+            validate: expect.any(Function),
           }),
         )
       })
