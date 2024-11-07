@@ -1,8 +1,13 @@
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
-import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { mount, router, flushPromises, createTestingPinia } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
+const pacbioTubeFactory = PacbioTubeFactory()
 
 const smrtLinkVersions = {
   1: {
@@ -32,10 +37,12 @@ function mountWithStore(props) {
           plugins: [
             ({ store }) => {
               if (store.$id === 'root') {
-                ;(store.api.v1.traction.pacbio.smrt_link_versions.get = vi.fn()),
-                  (store.api.v1.traction.pacbio.runs.find = vi.fn(() => Data.PacbioRun)),
-                  (store.api.v1.traction.pacbio.tubes.get = vi.fn(
-                    () => Data.PacbioTubesWithPoolsAndLibraries,
+                ;(store.api.v2.traction.pacbio.smrt_link_versions.get = vi.fn()),
+                  (store.api.v2.traction.pacbio.runs.find = vi.fn(
+                    () => pacbioRunFactory.responses.fetch,
+                  )),
+                  (store.api.v2.traction.pacbio.tubes.get = vi.fn(
+                    () => pacbioTubeFactory.responses.fetch,
                   ))
               }
             },
@@ -71,7 +78,7 @@ describe('PacbioRunShow.vue', () => {
 
   describe('existing run', () => {
     it('shows as an existing run ', async () => {
-      const { wrapper } = mountWithStore({ id: '12' })
+      const { wrapper } = mountWithStore({ id: pacbioRunFactory.storeData.run.id })
 
       // ClearData is getting rid of the smrtLinkVersion we manually set
       wrapper.vm.clearData = vi.fn()

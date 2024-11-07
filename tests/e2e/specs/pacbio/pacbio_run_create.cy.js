@@ -1,9 +1,15 @@
 import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
+import PacbioRunFactory from '../../../factories/PacbioRunFactory.js'
+import PacbioTubeFactory from '../../../factories/PacbioTubeFactory.js'
 
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
-    cy.intercept('/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
-      fixture: 'tractionPacbioRuns.json',
+    cy.wrap(PacbioRunFactory()).as('pacbioRunFactory')
+    cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
+      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+        statusCode: 200,
+        body: pacbioRunFactory.content,
+      })
     })
 
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
@@ -12,20 +18,28 @@ describe('Pacbio Run Create view', () => {
     })
 
     // Find the pool being searched for by barcode
-    cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-22&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
-      {
-        fixture: 'tractionPacbioTubeWithPool.json',
-      },
-    )
+    cy.wrap(PacbioTubeFactory({ findBy: 'pools' })).as('pacbioTubeFactoryWithPool')
+    cy.get('@pacbioTubeFactoryWithPool').then((pacbioTubeFactoryWithPool) => {
+      cy.intercept(
+        '/v1/pacbio/tubes?include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id&filter[barcode]=TRAC-2-22',
+        {
+          statusCode: 200,
+          body: pacbioTubeFactoryWithPool.content,
+        },
+      )
+    })
 
     // Find the library being searched for by barcode
-    cy.intercept(
-      '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id',
-      {
-        fixture: 'tractionPacbioTubeWithLibrary.json',
-      },
-    )
+    cy.wrap(PacbioTubeFactory({ findBy: 'libraries' })).as('pacbioTubeFactoryWithLibrary')
+    cy.get('@pacbioTubeFactoryWithLibrary').then((pacbioTubeFactoryWithLibrary) => {
+      cy.intercept(
+        '/v1/pacbio/tubes?include=pools.libraries.request,pools.requests,pools.used_aliquots.tag,libraries.used_aliquots.request,libraries.used_aliquots.tag&fields[requests]=sample_name&fields[tags]=group_id&filter[barcode]=TRAC-2-20',
+        {
+          statusCode: 200,
+          body: pacbioTubeFactoryWithLibrary.content,
+        },
+      )
+    })
 
     // Message on successful creation or edit of the run
     cy.intercept('POST', '/v1/pacbio/runs', {
@@ -141,6 +155,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    // this is related to the available volume of the library so better to use the data
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
     cy.get('#update').click()
@@ -182,6 +197,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
+    // this is related to the available volume of the library so better to use the data
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
     cy.get('#update').click()
@@ -222,10 +238,8 @@ describe('Pacbio Run Create view', () => {
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
       body: {
-        data: {
-          errors: {
-            error1: ['some error'],
-          },
+        errors: {
+          error1: ['some error'],
         },
       },
     })

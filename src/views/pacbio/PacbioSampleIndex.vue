@@ -21,7 +21,7 @@
         id="samples-table"
         v-model:sort-by="sortBy"
         primary_key="id"
-        :items="requests"
+        :items="displayedRequests"
         :fields="fields"
         selectable
         select-mode="single"
@@ -39,8 +39,7 @@
         </template>
 
         <template #cell(actions)="row">
-          <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
-          </PacbioSampleMetadataEdit>
+          <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert" />
         </template>
 
         <template #cell(show_details)="row">
@@ -77,10 +76,14 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 import { mapActions, mapGetters } from 'vuex'
+import { ref } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 
 export default {
@@ -94,7 +97,10 @@ export default {
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
+    const { fetchLocations } = useLocationFetcher()
+    const labwareLocations = ref([])
+
+    return { fetchWithQueryParams, fetchLocations, labwareLocations }
   },
   data() {
     return {
@@ -104,6 +110,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'source_identifier', label: 'Source', sortable: true },
+        { key: 'location', label: 'Location', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
@@ -132,6 +139,21 @@ export default {
     // makes it testable. We can get rid of this when we move over to pinia.
     printingStore() {
       return usePrintingStore()
+    },
+    barcodes() {
+      return this.requests.map(({ source_identifier }) => source_identifier)
+    },
+    displayedRequests() {
+      return locationBuilder(this.requests, this.labwareLocations.value)
+    },
+  },
+  watch: {
+    // Watch for changes to the barcodes and fetch locations accordingly
+    barcodes: {
+      handler: async function (newBarcodes) {
+        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
+      },
+      immediate: true,
     },
   },
   methods: {

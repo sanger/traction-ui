@@ -30,6 +30,7 @@ const FetchWrapper = (baseUrl, serviceName) => {
           },
           body,
         })
+
         const response = await rawResponse.json()
 
         if (!rawResponse.ok) {

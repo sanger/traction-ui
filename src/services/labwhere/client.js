@@ -23,10 +23,13 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
   if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
     return { success: false, errors: ['No barcodes provided'], data: {} }
   }
-  const response = await labwhereFetch.post(
-    '/api/labwares/searches',
-    JSON.stringify({ barcodes: [...labwhereBarcodes] }),
-  )
+  const params = new URLSearchParams()
+  labwhereBarcodes.forEach((barcode) => {
+    params.append('barcodes[]', barcode)
+  })
+
+  const response = await labwhereFetch.post('/api/labwares/searches', params, 'multipart/form-data')
+
   if (response.success) {
     response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
   }

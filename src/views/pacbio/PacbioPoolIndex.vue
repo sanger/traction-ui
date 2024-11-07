@@ -8,16 +8,14 @@
           class="float-left"
           :disabled="state.selected.length === 0"
           @select-printer="printLabels($event)"
-        >
-        </printerModal>
-
+        />
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="pools"
+        :items="displayedPools"
         :fields="state.fields"
         selectable
         select-mode="multi"
@@ -84,12 +82,14 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
+import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watchEffect } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
+import { locationBuilder } from '@/services/labwhere/helpers.js'
 /**
  * Following are new Vue 3 features used in this component:
  * 
@@ -145,6 +145,7 @@ const state = reactive({
       sortable: true,
     },
     { key: 'insert_size', label: 'Insert Size', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
     { key: 'created_at', label: 'Created at (UTC)', sortable: true },
     { key: 'actions', label: 'Actions' },
     { key: 'show_details', label: '' },
@@ -167,6 +168,7 @@ const sortBy = ref('created_at')
 //Composables
 const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
+const { fetchLocations } = useLocationFetcher()
 
 //Create Pinia store
 const poolsStore = usePacbioPoolsStore()
@@ -174,6 +176,18 @@ const pools = computed(() => poolsStore.poolsArray)
 
 //create printing store
 const printingStore = usePrintingStore()
+
+// Location fetching
+const displayedPools = computed(() => locationBuilder(pools.value, labwareLocations.value))
+
+const barcodes = computed(() => pools.value.map(({ barcode }) => barcode))
+
+const labwareLocations = ref([])
+
+watchEffect(async () => {
+  const barcodesValue = barcodes.value
+  labwareLocations.value = await fetchLocations(barcodesValue)
+})
 
 //methods
 const createLabels = () => {

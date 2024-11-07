@@ -14,7 +14,7 @@ describe('Ont Pool Create', () => {
       })
     })
 
-    cy.wrap(OntPlateFactory({ all: false, first: 1 })).as('ontPlateFactory')
+    cy.wrap(OntPlateFactory({ count: 1 })).as('ontPlateFactory')
 
     // tags are hardcoded. This should be moved to a factory.
     cy.get('@ontPlateFactory').then((ontPlateFactory) => {

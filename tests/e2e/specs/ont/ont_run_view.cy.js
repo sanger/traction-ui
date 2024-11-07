@@ -7,7 +7,7 @@ describe('ONT Run page', () => {
     cy.wrap(OntRunsFactory()).as('ontRunsFactory')
     cy.wrap(OntInstrumentsFactory()).as('ontInstrumentsFactory')
     cy.wrap(OntPoolFactory()).as('ontPoolFactory')
-    cy.wrap(OntPoolFactory({ all: false, first: 1 })).as('singleOntPoolFactory')
+    cy.wrap(OntPoolFactory({ count: 1 })).as('singleOntPoolFactory')
 
     cy.get('@ontInstrumentsFactory').then((ontInstrumentsFactory) => {
       cy.intercept('GET', '/v1/ont/instruments', {
