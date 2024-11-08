@@ -6,10 +6,10 @@ import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
-const ontRunsFactory = OntRunsFactory()
+const ontRunFactory = OntRunFactory()
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('useOntRunsStore', () => {
     it('"runRequest" returns "state.runRequest"', () => {
       const rootStore = useRootStore()
       const get = vi.fn()
-      get.mockResolvedValue(ontRunsFactory.responses.fetch)
+      get.mockResolvedValue(ontRunFactory.responses.fetch)
       rootStore.api.v2 = {
         traction: { ont: { runs: 'aRunRequest' } },
       }
