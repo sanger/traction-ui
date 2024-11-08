@@ -1,10 +1,30 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById, groupIncludedByResource, find } from './../../src/api/JsonApi'
+
+/**
+ *
+ * @param {Object} data
+ * @returns {Object} - libraries, pools, tubes, tags, requests, used_aliquots
+ */
+const createStoreData = (data) => {
+  const { tubes, aliquots, tags, requests, libraries } = groupIncludedByResource(data.included)
+
+  return {
+    libraries: dataToObjectById({ data: libraries }),
+    pools: dataToObjectById({ data: data.data, includeRelationships: true }),
+    tubes: dataToObjectById({ data: tubes }),
+    tags: dataToObjectById({ data: tags }),
+    requests: dataToObjectById({ data: requests }),
+    used_aliquots: dataToObjectById({ data: aliquots, includeRelationships: true }),
+  }
+}
 
 /*
  * Factory for creating a list of pools
+ * @param {Integer} count - The number of pools to create
  * @returns a base factory object with the pools data
  */
-const PacbioPoolFactory = () => {
+const PacbioPoolFactory = ({ count = undefined } = {}) => {
   const data = {
     data: [
       {
@@ -3251,7 +3271,10 @@ const PacbioPoolFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  // if first is completed find the data otherwise return all data
+  const foundData = find({ data, count, get: true })
+
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
 }
 
 export default PacbioPoolFactory

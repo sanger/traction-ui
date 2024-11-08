@@ -9,8 +9,10 @@ import { newResponse } from '@/api/v1/ResponseHelper.js'
 import * as jsonapi from '@/api/JsonApi'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory'
 
 const pacbioTagSetFactory = PacbioTagSetFactory()
+const pacbioPoolFactory = PacbioPoolFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
@@ -40,6 +42,10 @@ describe('usePacbioPoolCreateStore', () => {
         ...pacbioTagSetFactory.storeData.selected.tagSet,
         tags: pacbioTagSetFactory.storeData.selected.tags.all,
       })
+    })
+
+    it('has a factory', () => {
+      expect(pacbioPoolFactory).toBeDefined()
     })
 
     it('return the selected plates', () => {
