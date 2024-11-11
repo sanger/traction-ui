@@ -594,6 +594,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * // Populate used_aliquots from a pool
      * const result = await populateUsedAliquotsFromPool(1);
      * console.log(result); // { success: true, errors: [] }
+     * This method actually fetches the pool so should be renamed. It was difficult to work out which method created the pool,
+     * fetchPool
      */
     async populateUsedAliquotsFromPool(poolId) {
       const rootStore = useRootStore()
@@ -641,7 +643,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           includeRelationships: true,
         })
 
-        //Assign library request to tube if the tube has a library
+        // Assign library request to tube if the tube has a library
         Object.values(this.resources.libraries).forEach((library) => {
           const request = this.resources.requests[library.request]
           this.resources.tubes[library.tube].requests = [request.id]
