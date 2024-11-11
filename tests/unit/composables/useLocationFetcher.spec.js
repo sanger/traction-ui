@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { getLabwhereLocations } from '@/services/labwhere/client.js'
 import { formatLocations } from '@/services/labwhere/helpers.js'
 

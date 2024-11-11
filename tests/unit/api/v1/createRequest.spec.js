@@ -1,8 +1,6 @@
 import { defaultHeaders, createRequest } from '@/api/v1/createRequest'
 import axios from 'axios'
 
-// vi.mock('axios')
-
 describe('createRequest', () => {
   const attributes = {
     rootURL: 'http://traction',
