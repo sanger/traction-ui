@@ -79,7 +79,7 @@ import { ref } from 'vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
-import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 export default {

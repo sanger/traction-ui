@@ -7,7 +7,7 @@ import { formatLocations } from '@/services/labwhere/helpers.js'
  * @returns {Object} An object containing:
  *   @property {Function} fetchLocations - Fetches locations for specified barcodes.
  */
-export function useLocationFetcher() {
+export default function useLocationFetcher() {
   let locationData = []
 
   /**

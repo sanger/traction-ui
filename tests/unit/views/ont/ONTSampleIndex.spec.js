@@ -5,6 +5,12 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
 
+vi.mock('@/composables/useLocationFetcher', () => ({
+  default: () => ({
+    fetchLocations: vi.fn().mockResolvedValue([]),
+  }),
+}))
+
 describe('OntSampleIndex', () => {
   let wrapper
 
