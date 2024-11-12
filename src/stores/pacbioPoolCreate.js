@@ -3,7 +3,7 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload } from '@/stores/utilities/pool.js'
+import { validate, payload, assignLibraryRequestsToTubes } from '@/stores/utilities/pool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
@@ -630,8 +630,13 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           data: requests,
           includeRelationships: true,
         })
-        //Populate tubes
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+
+        // populate tubes and assign libraries to tubes
+        this.resources.tubes = assignLibraryRequestsToTubes({
+          libraries: this.resources.libraries,
+          requests: this.resources.requests,
+          tubes,
+        })
 
         // Get the pool tube and remove it from tubes list. This is bad practice and should be fixed
         this.tube = this.resources.tubes[data.relationships.tube.data.id]
@@ -643,12 +648,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           includeRelationships: true,
         })
 
-        // Assign library request to tube if the tube has a library
-        Object.values(this.resources.libraries).forEach((library) => {
-          const request = this.resources.requests[library.request]
-          this.resources.tubes[library.tube].requests = [request.id]
-          this.resources.tubes[library.tube].source_id = String(library.id)
-        })
         //Populate plates
         this.resources.plates = dataToObjectById({
           data: plates,
