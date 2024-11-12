@@ -631,6 +631,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           includeRelationships: true,
         })
 
+        //Populate libraries
+        this.resources.libraries = dataToObjectById({
+          data: libraries,
+          includeRelationships: true,
+        })
+
         // populate tubes and assign libraries to tubes
         this.resources.tubes = assignLibraryRequestsToTubes({
           libraries: this.resources.libraries,
@@ -641,12 +647,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // Get the pool tube and remove it from tubes list. This is bad practice and should be fixed
         this.tube = this.resources.tubes[data.relationships.tube.data.id]
         delete this.resources.tubes[data.relationships.tube.data.id]
-
-        //Populate libraries
-        this.resources.libraries = dataToObjectById({
-          data: libraries,
-          includeRelationships: true,
-        })
 
         //Populate plates
         this.resources.plates = dataToObjectById({
