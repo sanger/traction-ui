@@ -1,3 +1,5 @@
+import { dataToObjectById } from '@/api/JsonApi.js'
+
 /**
  * Validates a set of used_aliquots and the pool.
  * Checks if all required attributes are present in each used_aliquot and if there are no duplicate tags.
@@ -90,4 +92,23 @@ const payload = ({ used_aliquots, pool }) => {
   }
 }
 
-export { validate, payload }
+/**
+ *
+ * @param {Object} libraries - Object of libraries, key is id and value is library object
+ * @param {Object} requests - Object of requests, key is id and value is request object
+ * @param {Object} tubes - array of tubes
+ * @returns {Object} - Object of tubes, key is id and value is tube object
+ * Convert tubes to object with id as key
+ * Assign library request to tube if the tube has a library
+ */
+const assignLibraryRequestsToTubes = ({ libraries, requests, tubes }) => {
+  const storeTubes = dataToObjectById({ data: tubes, includeRelationships: true })
+  Object.values(libraries).map((library) => {
+    const request = requests[library.request]
+    storeTubes[library.tube].requests = [request.id]
+    storeTubes[library.tube].source_id = String(library.id)
+  })
+  return storeTubes
+}
+
+export { validate, payload, assignLibraryRequestsToTubes }

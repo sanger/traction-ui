@@ -5,6 +5,7 @@ import {
   find,
   extractAttributes,
 } from './../../src/api/JsonApi'
+import { createUsedAliquot } from './../../src/stores/utilities/usedAliquot.js'
 
 /**
  *
@@ -23,16 +24,41 @@ const createStoreData = (data) => {
     libraries = [],
   } = groupIncludedByResource(data.included)
 
+  console.log(JSON.stringify(libraries))
+  console.log(JSON.stringify(tubes))
+  console.log(JSON.stringify(requests))
+
+  const storeLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
+  const storeRequests = dataToObjectById({ data: requests, includeRelationships: true })
+  const storeTubes = dataToObjectById({ data: tubes, includeRelationships: true })
+  const storeAliquots = dataToObjectById({ data: aliquots, includeRelationships: true })
+
+  Object.values(storeLibraries).forEach((library) => {
+    const request = storeRequests[library.request]
+    storeTubes[library.tube].requests = [request.id]
+    storeTubes[library.tube].source_id = String(library.id)
+  })
+
+  const used_aliquots = Object.values(storeAliquots).reduce((result, aliquot) => {
+    aliquot.request = aliquot.id
+    const usedAliquotObject = createUsedAliquot({
+      ...aliquot,
+      tag_id: aliquot.tag,
+    })
+    usedAliquotObject.setRequestAndVolume(storeLibraries)
+    return { ...result, [`_${usedAliquotObject.source_id}`]: usedAliquotObject }
+  }, {})
+
   return {
     resources: {
-      tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
-      requests: dataToObjectById({ data: requests, includeRelationships: true }),
-      libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+      tubes: storeTubes,
+      requests: storeRequests,
+      libraries: storeLibraries,
       wells: dataToObjectById({ data: wells, includeRelationships: true }),
       plates: dataToObjectById({ data: plates, includeRelationships: true }),
     },
     pool,
-    used_aliquots: dataToObjectById({ data: aliquots, includeRelationships: true }),
+    used_aliquots,
     selected: {
       tag_set: tag_set.id,
     },
