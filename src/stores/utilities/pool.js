@@ -1,4 +1,5 @@
 import { dataToObjectById } from '@/api/JsonApi.js'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 
 /**
  * Validates a set of used_aliquots and the pool.
@@ -111,4 +112,28 @@ const assignLibraryRequestsToTubes = ({ libraries, requests, tubes }) => {
   return storeTubes
 }
 
-export { validate, payload, assignLibraryRequestsToTubes }
+/**
+ * @param {Object} libraries - Object of libraries, key is id and value is library object
+ * @param {Object} aliquots - Array of aliquots
+ * @returns {Object} - Object of used aliquots, key is source_id and value is used aliquot object
+ * Create used aliquots object and map it to source_id. Also set the request and volume for each used aliquot
+ */
+const createUsedAliquotsAndMapToSourceId = ({ aliquots, libraries }) => {
+  const usedAliquots = dataToObjectById({
+    data: aliquots,
+    includeRelationships: true,
+  })
+
+  return Object.values(usedAliquots).reduce((result, usedAliquot) => {
+    // what does this do?
+    usedAliquot.request = usedAliquot.id
+    const usedAliquotObject = createUsedAliquot({
+      ...usedAliquot,
+      tag_id: usedAliquot.tag,
+    })
+    usedAliquotObject.setRequestAndVolume(libraries)
+    return { ...result, [`_${usedAliquotObject.source_id}`]: usedAliquotObject }
+  }, {})
+}
+
+export { validate, payload, assignLibraryRequestsToTubes, createUsedAliquotsAndMapToSourceId }

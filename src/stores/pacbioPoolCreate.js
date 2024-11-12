@@ -3,7 +3,12 @@ import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload, assignLibraryRequestsToTubes } from '@/stores/utilities/pool.js'
+import {
+  validate,
+  payload,
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+} from '@/stores/utilities/pool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
@@ -658,20 +663,25 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
 
         // Create used_aliquots
-        const usedAliquots = dataToObjectById({
-          data: aliquots,
-          includeRelationships: true,
+        // const usedAliquots = dataToObjectById({
+        //   data: aliquots,
+        //   includeRelationships: true,
+        // })
+
+        this.used_aliquots = createUsedAliquotsAndMapToSourceId({
+          aliquots,
+          libraries: this.resources.libraries,
         })
         // Set the used_aliquots mapped to the source_id
-        Object.values(usedAliquots).forEach((usedAliquot) => {
-          usedAliquot.request = usedAliquot.id
-          const usedAliquotObject = createUsedAliquot({
-            ...usedAliquot,
-            tag_id: usedAliquot.tag,
-          })
-          usedAliquotObject.setRequestAndVolume(this.resources.libraries)
-          this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
-        })
+        // Object.values(usedAliquots).forEach((usedAliquot) => {
+        //   usedAliquot.request = usedAliquot.id
+        //   const usedAliquotObject = createUsedAliquot({
+        //     ...usedAliquot,
+        //     tag_id: usedAliquot.tag,
+        //   })
+        //   usedAliquotObject.setRequestAndVolume(this.resources.libraries)
+        //   this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
+        // })
 
         //Selects all the tubes and plates
         Object.values(this.resources.tubes).forEach(({ id }) =>

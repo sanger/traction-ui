@@ -27,6 +27,7 @@ const createStoreData = (data) => {
   console.log(JSON.stringify(libraries))
   console.log(JSON.stringify(tubes))
   console.log(JSON.stringify(requests))
+  console.log(JSON.stringify(aliquots))
 
   const storeLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
   const storeRequests = dataToObjectById({ data: requests, includeRelationships: true })
