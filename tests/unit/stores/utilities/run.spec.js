@@ -202,8 +202,9 @@ describe('run.js', () => {
 
       it('will create the correct payload', () => {
         const runType = createRunType({ id: 1 })
-        const aRun = newRun()
-        const { id, ...attributes } = aRun
+        // type should not be in attributes. Bug fix
+        const aRun = { ...newRun(), type: 'runs' }
+        const { id, type, ...attributes } = aRun
 
         expect(
           runType.payload({
@@ -216,6 +217,7 @@ describe('run.js', () => {
         ).toEqual(
           createPayload({
             id,
+            type,
             plates: plates.existing,
             wells: wells.existing,
             run: attributes,

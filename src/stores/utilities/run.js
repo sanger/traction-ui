@@ -99,9 +99,18 @@ const existingRunType = {
   action: 'update',
   label: 'Update Run',
   payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
-    const { id, ...attributes } = run
+    // the type should not be in the attributes.
+    const { id, type, ...attributes } = run
 
-    return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion, instrumentType })
+    return createPayload({
+      id,
+      type,
+      run: attributes,
+      plates,
+      wells,
+      smrtLinkVersion,
+      instrumentType,
+    })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
