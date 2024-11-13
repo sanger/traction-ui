@@ -4,8 +4,11 @@ import {
   groupIncludedByResource,
   find,
   extractAttributes,
-} from './../../src/api/JsonApi'
-import { createUsedAliquot } from './../../src/stores/utilities/usedAliquot.js'
+} from './../../src/api/JsonApi.js'
+import {
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+} from './../../src/stores/utilities/pool.js'
 
 /**
  *
@@ -24,31 +27,19 @@ const createStoreData = (data) => {
     libraries = [],
   } = groupIncludedByResource(data.included)
 
-  console.log(JSON.stringify(libraries))
-  console.log(JSON.stringify(tubes))
-  console.log(JSON.stringify(requests))
-  console.log(JSON.stringify(aliquots))
-
   const storeLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
   const storeRequests = dataToObjectById({ data: requests, includeRelationships: true })
-  const storeTubes = dataToObjectById({ data: tubes, includeRelationships: true })
-  const storeAliquots = dataToObjectById({ data: aliquots, includeRelationships: true })
 
-  Object.values(storeLibraries).forEach((library) => {
-    const request = storeRequests[library.request]
-    storeTubes[library.tube].requests = [request.id]
-    storeTubes[library.tube].source_id = String(library.id)
+  const storeTubes = assignLibraryRequestsToTubes({
+    libraries: storeLibraries,
+    requests: storeRequests,
+    tubes,
   })
 
-  const used_aliquots = Object.values(storeAliquots).reduce((result, aliquot) => {
-    aliquot.request = aliquot.id
-    const usedAliquotObject = createUsedAliquot({
-      ...aliquot,
-      tag_id: aliquot.tag,
-    })
-    usedAliquotObject.setRequestAndVolume(storeLibraries)
-    return { ...result, [`_${usedAliquotObject.source_id}`]: usedAliquotObject }
-  }, {})
+  const used_aliquots = createUsedAliquotsAndMapToSourceId({
+    aliquots,
+    libraries: storeLibraries,
+  })
 
   return {
     resources: {

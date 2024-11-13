@@ -2,7 +2,6 @@ import { createPinia, setActivePinia, Data } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
-import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pool.js'
 import { newResponse } from '@/api/v1/ResponseHelper.js'
@@ -62,90 +61,20 @@ describe('usePacbioPoolCreateStore', () => {
     })
 
     it('returns the selected usedAliquots', () => {
-      const payload = Data.PacbioRequestsRequest.data
-      const requestResources = payload.data
-      const { wells: wellResources, tubes: tubeResources } = groupIncludedByResource(
-        payload.included,
-      )
-      const requests = dataToObjectById({ data: requestResources, includeRelationships: true })
-      const wells = dataToObjectById({ data: wellResources, includeRelationships: true })
-      const tubes = dataToObjectById({ data: tubeResources, includeRelationships: true })
-
-      // When selecting a request with append the id with an underscore. This ensures
-      // keys are maintained in insertion order, not numeric order. This allow our requests
-      // to maintain the order in which they were selected
-      const used_aliquots = {
-        _136: {
-          source_id: '136',
-          source_type: 'Pacbio::Request',
-          request: '136',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-        _3: {
-          source_id: '3',
-          source_type: 'Pacbio::Request',
-          request: '3',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-        _40: {
-          source_id: '40',
-          source_type: 'Pacbio::Request',
-          request: '40',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-      }
-
       store.resources = {
         ...store.resources,
-        requests,
-        wells,
-        tubes,
+        ...pacbioPoolFactory.storeData.resources,
       }
-      store.used_aliquots = used_aliquots
-      expect(store.selectedUsedAliquots).toEqual([
-        {
-          ...requests['40'],
+      store.used_aliquots = pacbioPoolFactory.storeData.used_aliquots
+      const selectedUsedAliquots = store.selectedUsedAliquots
+      expect(selectedUsedAliquots.length).toEqual(Object.values(store.used_aliquots).length)
+      selectedUsedAliquots.forEach((aliquot) => {
+        expect(aliquot).toEqual({
+          ...store.resources.requests[aliquot.request],
+          ...store.used_aliquots[`_${aliquot.source_id}`],
           selected: true,
-          source_id: '40',
-          request: '40',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-        {
-          ...requests['136'],
-          selected: true,
-          source_id: '136',
-          request: '136',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-        {
-          ...requests['3'],
-          selected: true,
-          source_id: '3',
-          request: '3',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-      ])
+        })
+      })
     })
 
     describe('well list', () => {

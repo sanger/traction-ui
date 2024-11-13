@@ -662,26 +662,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //Populate wells
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
 
-        // Create used_aliquots
-        // const usedAliquots = dataToObjectById({
-        //   data: aliquots,
-        //   includeRelationships: true,
-        // })
-
+        // Populate used_aliquots
         this.used_aliquots = createUsedAliquotsAndMapToSourceId({
           aliquots,
           libraries: this.resources.libraries,
         })
-        // Set the used_aliquots mapped to the source_id
-        // Object.values(usedAliquots).forEach((usedAliquot) => {
-        //   usedAliquot.request = usedAliquot.id
-        //   const usedAliquotObject = createUsedAliquot({
-        //     ...usedAliquot,
-        //     tag_id: usedAliquot.tag,
-        //   })
-        //   usedAliquotObject.setRequestAndVolume(this.resources.libraries)
-        //   this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
-        // })
 
         //Selects all the tubes and plates
         Object.values(this.resources.tubes).forEach(({ id }) =>
