@@ -100,6 +100,7 @@ const existingRunType = {
   label: 'Update Run',
   payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // the type should not be in the attributes.
+    //might need further refactoring but this is enough for a hot fix
     const { id, type, ...attributes } = run
 
     return createPayload({
