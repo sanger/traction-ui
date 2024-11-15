@@ -66,6 +66,9 @@
         Import {{ labwareData.foundBarcodes.size }} labware into {{ props.pipeline }} from
         {{ reception.text }}
       </p>
+      <p id="scan-in-text" class="text-left">
+        {{ additionalDetails }}
+      </p>
       <div class="flex flex-row space-x-8 mt-5">
         <traction-button
           id="reset"
@@ -105,6 +108,7 @@ import { createBarcodeLabels, createBasicTubeBarcodeLabel } from '@/lib/LabelPri
 import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import DataFetcher from '@/components/DataFetcher.vue'
+import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 
 const props = defineProps({
   pipeline: {
@@ -118,6 +122,18 @@ const props = defineProps({
   requestOptions: {
     type: Object,
     default: () => ({}),
+  },
+  additionalDetails: {
+    type: String,
+    default: '',
+  },
+  userCode: {
+    type: String,
+    default: '',
+  },
+  locationBarcode: {
+    type: String,
+    default: '',
   },
 })
 const emit = defineEmits(['importStarted', 'importFinished', 'reset'])
@@ -247,12 +263,26 @@ async function importLabware() {
       labwareData.foundBarcodes,
       labwareData.attributes,
     )
+    const importedBarcodes = Array.from(labwareData.foundBarcodes)
+    const messages =
+      createMessages({
+        barcodes: importedBarcodes,
+        response,
+        reception: props.reception,
+      }) || []
 
-    const messages = createMessages({
-      barcodes: Array.from(labwareData.foundBarcodes),
-      response,
-      reception: props.reception,
-    })
+    if (importedBarcodes.length > 0 && props.userCode && props.locationBarcode) {
+      const labwhereResponse = await scanBarcodesInLabwhereLocation(
+        props.userCode,
+        props.locationBarcode,
+        importedBarcodes.join('\n'),
+      )
+      messages.push(
+        labwhereResponse.success
+          ? { type: 'success', text: labwhereResponse.message }
+          : { type: 'danger', text: labwhereResponse.errors.join('\n') },
+      )
+    }
 
     // we create a different alert for each message
     messages.forEach(({ type, text }) => {

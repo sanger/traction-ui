@@ -1,10 +1,11 @@
-import { mount, store, nextTick, createTestingPinia } from '@support/testHelper.js'
+import { mount, createTestingPinia } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import MultiBarcode from '@/components/reception/MultiBarcode.vue'
-import * as Reception from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
+import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+import { sharedTestsForImportAndScanIn } from '@tests/unit/components/reception/SharedTestsForImportAndScanIn.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -12,6 +13,7 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
+vi.mock('@/services/labwhere/client.js')
 
 const printerFactory = PrinterFactory()
 
@@ -42,6 +44,9 @@ describe('MultiBarcode', () => {
         requestOptions: {
           costCode: '1234',
         },
+        additionalDetails: 'The imported labware will be scanned into LRT020 Draw 1',
+        userCode: 'user1',
+        locationBarcode: 'location1',
         ...props,
       },
       state: { resources: { printers: printerFactory.storeData.printers } },
@@ -180,59 +185,16 @@ describe('MultiBarcode', () => {
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into PacBio from Sequencescape',
     )
+    expect(wrapper.find('#scan-in-text').text()).toEqual(
+      'The imported labware will be scanned into LRT020 Draw 1',
+    )
     expect(wrapper.find('[data-action=reset-form]').text()).toEqual('Reset')
     expect(wrapper.find('[data-action=import-labware]').text()).toEqual('Import')
   })
 
-  it('handles a failed import - load', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {})
+  describe('Import and scan in labware to abWhere ', async () => {
     const { wrapperObj: wrapper } = buildWrapper()
-    wrapper.vm.reception.fetchFunction = vi.fn().mockRejectedValue('Failed fetch')
-
-    await wrapper.vm.fetchLabware()
-    expect(mockShowAlert).toHaveBeenCalledWith('Failed fetch', 'danger')
-  })
-
-  it('handles a successful import', async () => {
-    store.state.traction.messages = []
-    const mockedcreateReception = vi
-      .spyOn(Reception, 'createReceptionResource')
-      .mockImplementation(() => {})
-    const mockedcreateMessages = vi.spyOn(Reception, 'createMessages').mockImplementation(() => {})
-    const { wrapperObj: wrapper } = buildWrapper()
-
-    const tractionReceptionsCreate = wrapper.vm.api.traction.receptions.create
-
-    const foundBarcodes = new Set(['NT1'])
-    const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
-    wrapper.vm.labwareData = { foundBarcodes, attributes }
-
-    // We've begun the import
-    await wrapper.vm.importLabware()
-    expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')
-    expect(mockedcreateReception).toBeCalled
-    expect(mockedcreateReception).toBeCalledWith(
-      tractionReceptionsCreate,
-      foundBarcodes,
-      attributes,
-    )
-    expect(mockedcreateMessages).toBeCalled()
-  })
-
-  it('handles a failed import - save', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {})
-    store.state.traction.messages = []
-    const message = 'The princess is in another castle'
-
-    vi.spyOn(Reception, 'createReceptionResource').mockRejectedValue(new Error(message))
-    const { wrapperObj: wrapper } = buildWrapper()
-    // We've begun the import
-    await wrapper.vm.importLabware()
-    expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')
-
-    await nextTick()
-
-    expect(mockShowAlert).toHaveBeenCalledWith(new Error(message), 'danger')
+    sharedTestsForImportAndScanIn(wrapper, scanBarcodesInLabwhereLocation, mockShowAlert)
   })
 
   // arbitrary test just to ensure this works
