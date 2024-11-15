@@ -2,10 +2,9 @@
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
     <traction-form @submit="scanBarcodesToLabwhere" @reset="reset">
       <SwipeCard
-        :user-code="user_code"
+        v-model="user_code"
         :error="errors.user_code"
         :validate-user-code="validateUserCode"
-        @update:user-code="user_code = $event"
       />
 
       <fieldset>

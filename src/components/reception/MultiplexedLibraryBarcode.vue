@@ -81,7 +81,7 @@
           Import {{ labwareData.foundBarcodes.size }} labware into {{ props.pipeline }} from
           {{ reception.text }}
         </p>
-        <p id="importText" class="text-left">
+        <p data-testid="additional-details" class="text-left">
           {{ additionalDetails }}
         </p>
         <div class="flex flex-row space-x-8 mt-5">
@@ -124,7 +124,7 @@ import { createBarcodeLabels, createBasicTubeBarcodeLabel } from '@/lib/LabelPri
 import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import DataFetcher from '@/components/DataFetcher.vue'
-import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+import { scanInBarcodesToLocation } from '@/services/labwhere/helpers.js'
 
 const props = defineProps({
   pipeline: {
@@ -302,15 +302,12 @@ async function importLabware() {
     })
 
     if (importedBarcodes.length > 0 && props.userCode && props.locationBarcode) {
-      const labwhereResponse = await scanBarcodesInLabwhereLocation(
-        props.userCode,
-        props.locationBarcode,
-        importedBarcodes.join('\n'),
-      )
       messages.push(
-        labwhereResponse.success
-          ? { type: 'success', text: labwhereResponse.message }
-          : { type: 'danger', text: labwhereResponse.errors.join('\n') },
+        await scanInBarcodesToLocation(
+          props.userCode,
+          props.locationBarcode,
+          importedBarcodes.join('\n'),
+        ),
       )
     }
 

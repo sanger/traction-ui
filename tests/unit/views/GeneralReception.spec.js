@@ -63,7 +63,7 @@ describe('GeneralReception', () => {
       const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('lw-shelf-1-30451')
-      expect(wrapper.find('#scan-in-text').text()).toContain(
+      expect(wrapper.find('[data-testid=additional-details]').text()).toContain(
         'The imported labware will be scanned into LRT007 – Shelf 1',
       )
     })

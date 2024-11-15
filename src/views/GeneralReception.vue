@@ -20,9 +20,8 @@
           />
         </traction-field-group>
         <SwipeCard
-          :user-code="user_code"
+          v-model="user_code"
           description="Only necessary if you would like to scan in to a specific location"
-          @update:user-code="user_code = $event"
         />
       </div>
       <div>
@@ -172,11 +171,6 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
-import TractionFieldGroup from '@/components/shared/TractionFieldGroup.vue'
-import TractionSelect from '@/components/shared/TractionSelect.vue'
-import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal.vue'
-import TractionInput from '@/components/shared/TractionInput.vue'
-import TractionMutedText from '@/components/shared/TractionMutedText.vue'
 import SwipeCard from '@/components/reception/SwipeCard.vue'
 
 // We don't expect the modal to display without a message. If we end up in this

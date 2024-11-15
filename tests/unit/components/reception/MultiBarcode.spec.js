@@ -185,7 +185,7 @@ describe('MultiBarcode', () => {
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into PacBio from Sequencescape',
     )
-    expect(wrapper.find('#scan-in-text').text()).toEqual(
+    expect(wrapper.find('[data-testid=additional-details]').text()).toEqual(
       'The imported labware will be scanned into LRT020 Draw 1',
     )
     expect(wrapper.find('[data-action=reset-form]').text()).toEqual('Reset')

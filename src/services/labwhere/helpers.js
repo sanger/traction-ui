@@ -1,5 +1,7 @@
 // A series of data extraction helpers for interfacing with the data from the LabWhere API.
 
+import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+
 /**
  * Extracts the locations for a given set of labwares based on their barcodes.
  *
@@ -73,4 +75,27 @@ const formatLocations = (locationData) => {
   return formattedLocations
 }
 
-export { extractLocationsForLabwares, getCoordinateForLabware, locationBuilder, formatLocations }
+/**
+ * Scans barcodes into a specified location in LabWhere.
+ *
+ * @param {string} userCode - The user code performing the scan.
+ * @param {string} location - The location where the barcodes will be scanned.
+ * @param {string} barcodes - barcode list.
+ * @returns {Object} An object indicating the result of the scan.
+ *                   The object contains a `type` property ('success' or 'danger') and a `text` property with the message.
+ *                   Used to display a success or error alert.
+ */
+const scanInBarcodesToLocation = async (userCode, location, barcodes) => {
+  const labwhereResponse = await scanBarcodesInLabwhereLocation(userCode, location, barcodes)
+  return labwhereResponse.success
+    ? { type: 'success', text: labwhereResponse.message }
+    : { type: 'danger', text: labwhereResponse.errors.join('\n') }
+}
+
+export {
+  extractLocationsForLabwares,
+  getCoordinateForLabware,
+  locationBuilder,
+  formatLocations,
+  scanInBarcodesToLocation,
+}

@@ -16,13 +16,9 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import TractionHeading from '@/components/TractionHeading.vue'
-import TractionMutedText from '@/components/shared/TractionMutedText.vue'
-import TractionFieldError from '@/components/shared/TractionFieldError.vue'
-import TractionInput from '@/components/shared/TractionInput.vue'
 
 const props = defineProps({
-  userCode: {
+  modelValue: {
     type: String,
     default: '',
   },
@@ -40,12 +36,12 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['update:userCode'])
-const localUserCode = ref(props.userCode)
+const emits = defineEmits(['update:modelValue']) // Update to support v-model
+const localUserCode = ref(props.modelValue)
 
 // Sync localUserCode with prop updates from the parent
 watch(
-  () => props.userCode,
+  () => props.modelValue,
   (newVal) => {
     localUserCode.value = newVal
   },
@@ -53,7 +49,7 @@ watch(
 
 // Emit changes to parent and trigger validation
 function updateUserCode(value) {
-  emits('update:userCode', value)
+  emits('update:modelValue', value)
   props.validateUserCode()
 }
 </script>
