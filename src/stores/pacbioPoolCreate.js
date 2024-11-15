@@ -821,7 +821,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
       const rootStore = useRootStore()
       const request = rootStore.api.v1.traction.pacbio.plates
-      const promise = request.get({ filter: filter, include: 'wells.requests' })
+      const promise = request.get({ filter, include: 'wells.requests' })
       const response = await handleResponse(promise)
       let { success, data: { data, included = [] } = {}, errors = [] } = response
       const { wells, requests } = groupIncludedByResource(included)
@@ -882,7 +882,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
       const rootStore = useRootStore()
       const request = rootStore.api.v1.traction.pacbio.tubes
-      const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
+      const promise = request.get({ filter, include: 'requests,libraries.request' })
       let {
         success,
         data: { data, included = [] } = {},

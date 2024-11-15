@@ -17,7 +17,7 @@ const createStoreData = (data) => {
     aliquots: dataToObjectById({ data: aliquots, includeRelationships: true }),
     pools: dataToObjectById({ data: pools, includeRelationships: true }),
     libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
-    requests: dataToObjectById({ data: requests }),
+    requests: dataToObjectById({ data: requests, includeRelationships: true }),
     tags: dataToObjectById({ data: tags }),
   }
 }
