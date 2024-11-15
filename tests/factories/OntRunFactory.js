@@ -21,12 +21,6 @@ const createStoreData = (data) => {
       state: 'pending',
       flowcell_attributes: [{ tube_barcode: 'TRAC-A-1' }],
     },
-    newRun: {
-      id: 'new',
-      instrument_name: null,
-      state: null,
-      flowcell_attributes: [],
-    },
     findRun: {
       flowcell_attributes: [],
       id: '1',
