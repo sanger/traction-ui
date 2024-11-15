@@ -2,20 +2,21 @@ import { useOntRunsStore } from '@/stores/ontRuns.js'
 import useOntRootStore from '@/stores/ontRoot.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
-import { createPinia, setActivePinia } from '@support/testHelper.js'
+import { createPinia, setActivePinia, store as vuexStore } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import { successfulResponse } from '@tests/support/testHelper.js'
-// import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
-// import vuexStore from '@/store'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
 const ontRunFactory = OntRunFactory()
-// const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory()
 
-describe.skip('useOntRunsStore', () => {
+vuexStore.state.traction.ont.pools.resources = { ...ontPoolFactory.storeData.resources }
+
+describe('useOntRunsStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -94,7 +95,7 @@ describe.skip('useOntRunsStore', () => {
           id: 1,
           instrument_name: 'GXB02004',
           state: 'pending',
-          flowcell_attributes: [{ tube_barcode: 'TRAC-A-1', flowcell_id: 1 }],
+          flowcell_attributes: [{ tube_barcode: 'TRAC-2-42', flowcell_id: 1 }],
         }
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
@@ -104,10 +105,6 @@ describe.skip('useOntRunsStore', () => {
         create.mockReturnValue(successfulResponse())
         store.runRequest.create = create
 
-        // vi.spyOn(vuexStore.getters['traction/ont/pools/pools']).mockReturnValue(
-        //   ontPoolFactory.storeData.pools
-        // )
-
         const response = await store.createRun()
         const payload = {
           data: {
@@ -116,7 +113,9 @@ describe.skip('useOntRunsStore', () => {
               attributes: {
                 ont_instrument_id: 1,
                 state: 'pending',
-                flowcell_attributes: [],
+                flowcell_attributes: [
+                  { tube_barcode: 'TRAC-2-42', flowcell_id: 1, ont_pool_id: '1' },
+                ],
               },
             },
           },

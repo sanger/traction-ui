@@ -45,7 +45,13 @@ const createStoreDataForMultiplePools = (data) => {
     libraries,
     tags,
     requests,
-    pools,
+    resources: {
+      tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
+      libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+      tags: dataToObjectById({ data: tags, includeRelationships: true }),
+      requests: dataToObjectById({ data: requests, includeRelationships: true }),
+      pools,
+    },
   }
 }
 
