@@ -40,15 +40,10 @@ describe('GeneralReception', () => {
   }
 
   describe('Workflow Selector', () => {
-
     it('has a workflow selector', () => {
-      const {wrapperObj: wrapper} = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
-      expect(
-          workflowSelect
-              .findAll('option')
-              .map((element) => element.text()),
-      ).toEqual([
+      expect(workflowSelect.findAll('option').map((element) => element.text())).toEqual([
         '',
         'Extractions -80 samples',
         'ONT -20 samples',
@@ -59,16 +54,18 @@ describe('GeneralReception', () => {
     })
 
     it('defaults to an empty option', async () => {
-      const {wrapperObj: wrapper} = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       expect(workflowSelect.element.value).toEqual('')
     })
 
     it('updates the summary section accordingly on user select', async () => {
-      const {wrapperObj: wrapper} = buildWrapper()
+      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
-      await workflowSelect.setValue('LTR018 Shelf 1')
-      expect(wrapper.find('#scan-in-text').text()).toContain("The imported labware will be scanned into LTR018 Shelf 1")
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('#scan-in-text').text()).toContain(
+        'The imported labware will be scanned into LRT007 – Shelf 1',
+      )
     })
   })
 

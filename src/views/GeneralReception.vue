@@ -151,7 +151,9 @@
         :reception="reception"
         :request-options="requestOptions"
         :additional-details="
-          workflowLocation ? `The imported labware will be scanned into ${workflowLocation}` : 'No location selected to scan into'
+          workflowLocation
+            ? `The imported labware will be scanned into ${workflowLocation}`
+            : 'No location selected to scan into'
         "
         :user-code="user_code"
         :location-barcode="location_barcode"
@@ -208,7 +210,7 @@ const workflowOptions = computed(() => [
 
 const workflowLocation = computed(() => {
   const workflowsMap = new Map(
-      Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow])
+    Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
   )
   if (workflow.value !== '') {
     return workflowsMap.get(workflow.value).location
@@ -217,7 +219,7 @@ const workflowLocation = computed(() => {
 })
 
 const location_barcode = computed(() => {
- return workflowLocation.value
+  return workflowLocation.value
 })
 
 function updatePipeline() {
