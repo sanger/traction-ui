@@ -101,10 +101,10 @@ describe('useOntRunsStore', () => {
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
+      // tuidy this up so we are pulling the data from the factory
       it.only('runs successfully', async () => {
         create.mockReturnValue(successfulResponse())
         store.runRequest.create = create
-
         const response = await store.createRun()
         const payload = {
           data: {
