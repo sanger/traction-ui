@@ -5,7 +5,7 @@ import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
-import { sharedTestsForImportAndScanIn } from '@tests/unit/components/reception/SharedTestsForImportAndScanIn.js'
+import { sharedTestsForImportAndScanIn } from './SharedTestsForImportAndScanIn.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({

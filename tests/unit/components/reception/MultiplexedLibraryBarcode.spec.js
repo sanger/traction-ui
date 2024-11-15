@@ -7,7 +7,7 @@ import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import { flushPromises } from '@vue/test-utils'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
-import { sharedTestsForImportAndScanIn } from '@tests/unit/components/reception/sharedTestsForImportAndScanIn.js'
+import { sharedTestsForImportAndScanIn } from './SharedTestsForImportAndScanIn.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
