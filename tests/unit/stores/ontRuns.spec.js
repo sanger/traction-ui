@@ -102,7 +102,7 @@ describe('useOntRunsStore', () => {
       })
 
       // tuidy this up so we are pulling the data from the factory
-      it.only('runs successfully', async () => {
+      it('runs successfully', async () => {
         create.mockReturnValue(successfulResponse())
         store.runRequest.create = create
         const response = await store.createRun()
@@ -199,7 +199,7 @@ describe('useOntRunsStore', () => {
       })
 
       it('runs successfully', async () => {
-        const find = vi.fn().mockReturnValue(ontRunFactory.findData.responses.fetch)
+        const find = vi.fn().mockReturnValue(ontRunFactory.responses.fetch)
         store.runRequest.find = find
         const response = await store.fetchRun(mockRun.id)
         expect(store.currentRun).toEqual(ontRunFactory.storeData.findRun)
