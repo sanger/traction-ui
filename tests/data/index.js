@@ -4,17 +4,12 @@ import Samples from './samples'
 import TestResponse from './testResponse'
 import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
-import TractionPacbioPool from './tractionPacbioPool.json'
 import TractionPacbioPoolsWithAliquots from './tractionPacbioPools.json'
 import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
-import PacbioPlateRequest from './pacbioPlateRequest'
-import PacbioTubeRequest from './pacbioTubeRequest'
 import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioTubeWithPool from './pacbioTubeWithPool.json'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
-import PacbioPool from './pacbioPool'
-import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
@@ -30,17 +25,12 @@ export default {
   TestResponse,
   TubeWithLibrary,
   CreatePacbioRequest,
-  TractionPacbioPool,
   TractionPacbioPools,
   TractionPacbioPoolsNoRelationships,
   TractionPacbioPoolsWithAliquots,
-  PacbioPlateRequest,
-  PacbioTubeRequest,
   PacbioTubesRequest,
   PacbioTubeWithPool,
   PacbioTubeWithLibrary,
-  PacbioPool,
-  PacbioRequestsRequest,
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
