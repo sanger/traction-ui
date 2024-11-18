@@ -149,7 +149,7 @@
         :pipeline="pipeline"
         :reception="reception"
         :request-options="requestOptions"
-        :additional-details="
+        :workflow-location-text="
           workflowLocation
             ? `The imported labware will be scanned into ${workflowLocation}`
             : 'No location selected to scan into'
