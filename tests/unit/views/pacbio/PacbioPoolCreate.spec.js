@@ -1,9 +1,9 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
-import { mount, createTestingPinia, Data, router, flushPromises } from '@support/testHelper.js'
+import { mount, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
 import { expect } from 'vitest'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
 import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -55,6 +55,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   return { wrapperObj, storeObj }
 }
 const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioTubeFactory = PacbioTubeFactory()
 
 describe('PacbioPoolCreate', () => {
   const mockFetchPacbioTagSets = vi.fn()
@@ -71,11 +72,12 @@ describe('PacbioPoolCreate', () => {
   ]
   const plates = pacbioPlatesRequestFactory.storeData.plates
   const wells = pacbioPlatesRequestFactory.storeData.wells
+  const tubes = pacbioTubeFactory.storeData.tubes
 
-  const tubes = dataToObjectById({
-    data: Data.PacbioTubesRequest.data.data,
-    includeRelationships: true,
-  })
+  // const tubes = dataToObjectById({
+  //   data: Data.PacbioTubesRequest.data.data,
+  //   includeRelationships: true,
+  // })
 
   describe('On Pool/New', () => {
     afterEach(async () => {
@@ -121,7 +123,7 @@ describe('PacbioPoolCreate', () => {
         61: { id: '61' },
       }
       store.selected.tubes = {
-        1: { id: '1' },
+        1: { id: '20' },
       }
     })
 
@@ -136,7 +138,7 @@ describe('PacbioPoolCreate', () => {
         mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
         expect(wrapper.vm.scannedLabware).toEqual([
           { barcode: 'DN814327C', type: 'plates' },
-          { barcode: 'GEN-1680611780-6', type: 'tubes' },
+          { barcode: 'TRAC-2-20', type: 'tubes' },
         ])
       })
     })

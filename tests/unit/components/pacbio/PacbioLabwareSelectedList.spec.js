@@ -1,9 +1,9 @@
-import { mount, createTestingPinia, Data } from '@support/testHelper.js'
+import { mount, createTestingPinia } from '@support/testHelper.js'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -39,30 +39,17 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   return { wrapperObj, storeObj }
 }
 const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioTubeFactory = PacbioTubeFactory({ transformTubes: true })
 
+// These tests are brittle and rely on testing the actual data.
+// They are all passing as I referred to data in the tube factory/
 describe('PacbioLabwareSelectedList', () => {
   let wrapper, store
   const plates = pacbioPlatesRequestFactory.storeData.plates
   const wells = pacbioPlatesRequestFactory.storeData.wells
   const plateRequests = pacbioPlatesRequestFactory.storeData.plateRequests
-
-  const tubesData = dataToObjectById({
-    data: Data.PacbioTubesRequest.data.data,
-    includeRelationships: true,
-  })
-  const tubes = Object.keys(tubesData).reduce((acc, key) => {
-    return {
-      ...acc,
-      [key]: {
-        ...tubesData[key],
-        source_id: tubesData[key].id,
-      },
-    }
-  }, {})
-  const requests = dataToObjectById({
-    data: Data.PacbioTubesRequest.data.included,
-    includeRelationships: true,
-  })
+  const tubes = pacbioTubeFactory.storeData.tubes
+  const requests = pacbioTubeFactory.storeData.requests
 
   it('should not display any labware when there is no labware', () => {
     const { wrapperObj } = mountWithStore({
@@ -141,14 +128,14 @@ describe('PacbioLabwareSelectedList', () => {
       const labware = [
         {
           type: 'tubes',
-          barcode: 'GEN-1680611780-6',
+          barcode: 'TRAC-2-20',
         },
       ]
       const { wrapperObj, storeObj } = mountWithStore({
         state: {
           selected: {
             tubes: {
-              1: { id: '1' },
+              1: { id: '20' },
             },
           },
           resources: {
@@ -168,7 +155,7 @@ describe('PacbioLabwareSelectedList', () => {
     it('should display the tube labware', async () => {
       const items = wrapper.findAll('[data-type="selected-labware-item"]')
       expect(items.length).toBe(1)
-      expect(wrapper.find('[data-attribute=labware-name]').text()).toContain('GEN-1680611780-6')
+      expect(wrapper.find('[data-attribute=labware-name]').text()).toContain('TRAC-2-20')
       const tubeWellComponent = wrapper.findComponent(PacbioTubeWell)
       expect(tubeWellComponent.exists()).toBe(true)
     })
@@ -182,7 +169,7 @@ describe('PacbioLabwareSelectedList', () => {
       expect(store.selectRequestInSource).toHaveBeenCalledOnce()
     })
     it('should emit closed event when remove button is clicked', async () => {
-      const button = wrapper.find('#remove-btn-1')
+      const button = wrapper.find('#remove-btn-20')
       await button.trigger('click')
       expect(wrapper.emitted().closed).toBeTruthy()
     })
@@ -197,7 +184,7 @@ describe('PacbioLabwareSelectedList', () => {
         },
         {
           type: 'tubes',
-          barcode: 'GEN-1680611780-6',
+          barcode: 'TRAC-2-20',
         },
       ]
       const { wrapperObj, storeObj } = mountWithStore({
@@ -207,7 +194,7 @@ describe('PacbioLabwareSelectedList', () => {
               61: { id: '61' },
             },
             tubes: {
-              1: { id: '1' },
+              1: { id: '20' },
             },
           },
           resources: {
@@ -229,15 +216,16 @@ describe('PacbioLabwareSelectedList', () => {
       const items = wrapper.findAll('[data-type="selected-labware-item"]')
       expect(items.length).toBe(2)
       expect(items[0].find('[data-attribute=labware-name]').text()).toContain('DN814327C')
-      expect(items[1].find('[data-attribute=labware-name]').text()).toContain('GEN-1680611780-6')
+      expect(items[1].find('[data-attribute=labware-name]').text()).toContain('TRAC-2-20')
     })
     describe('Table view', () => {
       beforeEach(() => {
         wrapper.find('[data-attribute=table-check-box]').trigger('click')
         //Select the requests associated with the tube
-        store.selectRequestInSource({ request: '241', source_id: '1', selected: true })
+        store.selectRequestInSource({ request: '30', source_id: '30', selected: true })
       })
       it('should display table view', () => {
+        console.log(pacbioTubeFactory.storeData.requests)
         expect(wrapper.find('[data-attribute=table-view]').exists()).toBe(true)
       })
       it('should display the correct fields', () => {
@@ -249,25 +237,25 @@ describe('PacbioLabwareSelectedList', () => {
       })
 
       it('contains the correct data', async () => {
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
-        expect(wrapper.find('tbody').findAll('td').length).toEqual(18)
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(11)
+        expect(wrapper.find('tbody').findAll('td').length).toEqual(66)
       })
       it('contains the selected  requests in the same order as it is added', () => {
         //First plate
-        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('DN814327C:A1')
+        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('GEN-1710774222-1:H5')
         expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('human')
 
         //Tube at the end
-        expect(wrapper.find('tbody').findAll('td')[12].text()).toEqual('GEN-1680611780-6')
+        expect(wrapper.find('tbody').findAll('td')[12].text()).toEqual('GEN-1710774222-1:H4')
         expect(wrapper.find('tbody').findAll('td')[13].text()).toEqual('human')
-        expect(wrapper.find('tbody').findAll('td')[14].text()).toEqual('PacBio_Ultra_Low_Input')
+        expect(wrapper.find('tbody').findAll('td')[14].text()).toEqual('Pacbio_HiFi')
         expect(wrapper.find('tbody').findAll('td')[15].text()).toEqual('3')
         expect(wrapper.find('tbody').findAll('td')[16].text()).toEqual('100')
       })
 
       it('displays the selected requests first when sortBySelection is true', async () => {
         //Tube requests
-        expect(wrapper.find('[data-attribute=request-checkbox-241]').element.checked).toBe(true)
+        expect(wrapper.find('[data-attribute=request-checkbox-30]').element.checked).toBe(true)
         //Plate requests
         expect(wrapper.find('[data-attribute=request-checkbox-40]').element.checked).toBe(false)
         expect(wrapper.find('[data-attribute=request-checkbox-41]').element.checked).toBe(false)
@@ -278,20 +266,20 @@ describe('PacbioLabwareSelectedList', () => {
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.sortBySelection).toBe(true)
         //Tube requests displayed first
-        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('GEN-1680611780-6')
+        expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('GEN-1710774222-1:H4')
         expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('human')
-        expect(wrapper.find('tbody').findAll('td')[2].text()).toEqual('PacBio_Ultra_Low_Input')
+        expect(wrapper.find('tbody').findAll('td')[2].text()).toEqual('Pacbio_HiFi')
         expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('3')
         expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('100')
       })
       it('should call selectRequestInSource method on select checkbox click ', async () => {
         store.selectRequestInSource = vi.fn()
-        await wrapper.find('[data-attribute=request-checkbox-241]').setChecked(false)
+        await wrapper.find('[data-attribute=request-checkbox-30]').setChecked(false)
         expect(store.selectRequestInSource).toHaveBeenCalledWith(
           expect.objectContaining({
-            request: '241',
+            request: '30',
             selected: false,
-            source_id: '241',
+            source_id: '30',
           }),
         )
       })
