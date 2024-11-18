@@ -1,4 +1,6 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
+import PacbioPlateFactory from '../../../factories/PacbioPlateFactory.js'
+import PacbioTubeFactory from '../../../factories/PacbioTubeFactory.js'
 
 describe('Pacbio Pool Create', () => {
   beforeEach(() => {
@@ -11,8 +13,12 @@ describe('Pacbio Pool Create', () => {
       })
     })
 
-    cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
-      fixture: 'tractionPacbioPlate.json',
+    cy.wrap(PacbioPlateFactory({ count: 1 })).as('pacbioPlateFactory')
+    cy.get('@pacbioPlateFactory').then((pacbioPlateFactory) => {
+      cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
+        statusCode: 200,
+        body: pacbioPlateFactory.content,
+      })
     })
 
     // The magic search input will check plates first before checking tubes so we need to intercept it
@@ -22,8 +28,15 @@ describe('Pacbio Pool Create', () => {
         data: {},
       },
     })
-    cy.intercept('/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request', {
-      fixture: 'tractionPacbioTubeWithLibrary.json',
+    cy.wrap(PacbioTubeFactory({ findBy: 'libraries' })).as('pacbioTubeFactory')
+    cy.get('@pacbioTubeFactory').then((pacbioTubeFactory) => {
+      cy.intercept(
+        '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request',
+        {
+          statusCode: 200,
+          body: pacbioTubeFactory.content,
+        },
+      )
     })
   })
 
@@ -187,15 +200,20 @@ describe('Pacbio Pool Create', () => {
       .trigger('mouseup', {
         position: 'bottomRight',
       })
-    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 4)
+    cy.get('[data-type=pool-aliquot-edit]').should('have.length', 8)
 
     const orderedElements = [
       'GEN-1680611780-1:A1',
       'GEN-1680611780-1:B1',
       'GEN-1680611780-1:C1',
       'GEN-1680611780-1:D1',
+      'GEN-1680611780-1:E1',
+      'GEN-1680611780-1:F1',
+      'GEN-1680611780-1:G1',
+      'GEN-1680611780-1:H1',
     ]
 
+    // how can we move this to the factory?
     cy.get('#qcFileInput').attachFile('pacbio.csv')
     // Validate the order
     cy.get('[data-type=pool-aliquot-edit]').each((el, index) => {
