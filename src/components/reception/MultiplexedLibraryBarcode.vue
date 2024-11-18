@@ -81,8 +81,8 @@
           Import {{ labwareData.foundBarcodes.size }} labware into {{ props.pipeline }} from
           {{ reception.text }}
         </p>
-        <p data-testid="additional-details" class="text-left">
-          {{ additionalDetails }}
+        <p data-testid="workflow-location-text" class="text-left">
+          {{ workflowLocationText }}
         </p>
         <div class="flex flex-row space-x-8 mt-5">
           <traction-button
@@ -139,7 +139,7 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
-  additionalDetails: {
+  workflowLocationText: {
     type: String,
     default: '',
   },

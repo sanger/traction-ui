@@ -57,7 +57,7 @@ describe('MultiplexedLibraryBarcode', () => {
         requestOptions: {
           costCode: '1234',
         },
-        additionalDetails: 'The imported labware will be scanned into LRT020 Draw 1',
+        workflowLocationText: 'The imported labware will be scanned into LRT020 Draw 1',
         userCode: 'user1',
         locationBarcode: 'location1',
         ...props,
@@ -174,7 +174,12 @@ describe('MultiplexedLibraryBarcode', () => {
 
   describe('Import and scan in labware to abWhere ', async () => {
     const { wrapperObj: wrapper } = await buildWrapper()
-    sharedTestsForImportAndScanIn(wrapper, scanBarcodesInLabwhereLocation, mockShowAlert)
+    sharedTestsForImportAndScanIn(
+      wrapper,
+      scanBarcodesInLabwhereLocation,
+      mockShowAlert,
+      'Sequencescape Multiplexed Libraries',
+    )
   })
 
   // arbitrary test just to ensure this works

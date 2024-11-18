@@ -44,7 +44,7 @@ describe('MultiBarcode', () => {
         requestOptions: {
           costCode: '1234',
         },
-        additionalDetails: 'The imported labware will be scanned into LRT020 Draw 1',
+        workflowLocationText: 'The imported labware will be scanned into LRT020 Draw 1',
         userCode: 'user1',
         locationBarcode: 'location1',
         ...props,
@@ -185,7 +185,7 @@ describe('MultiBarcode', () => {
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into PacBio from Sequencescape',
     )
-    expect(wrapper.find('[data-testid=additional-details]').text()).toEqual(
+    expect(wrapper.find('[data-testid=workflow-location-text]').text()).toEqual(
       'The imported labware will be scanned into LRT020 Draw 1',
     )
     expect(wrapper.find('[data-action=reset-form]').text()).toEqual('Reset')
@@ -194,7 +194,12 @@ describe('MultiBarcode', () => {
 
   describe('Import and scan in labware to abWhere ', async () => {
     const { wrapperObj: wrapper } = buildWrapper()
-    sharedTestsForImportAndScanIn(wrapper, scanBarcodesInLabwhereLocation, mockShowAlert)
+    sharedTestsForImportAndScanIn(
+      wrapper,
+      scanBarcodesInLabwhereLocation,
+      mockShowAlert,
+      'Sequencescape',
+    )
   })
 
   // arbitrary test just to ensure this works
