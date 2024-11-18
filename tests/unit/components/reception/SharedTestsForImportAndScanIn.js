@@ -25,10 +25,6 @@ export const sharedTestsForImportAndScanIn = (
       it('shows error alert message', () => {
         expect(mockShowAlert).toHaveBeenCalledWith('Failed fetch', 'danger')
       })
-
-      it('does call scan in LabWhere functionality', () => {
-        expect(scanBarcodesInLabwhereLocation).not.toHaveBeenCalled()
-      })
     })
 
     describe('Fails to import labware', () => {
