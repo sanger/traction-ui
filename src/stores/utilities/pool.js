@@ -1,5 +1,5 @@
-import { dataToObjectById } from '@/api/JsonApi.js'
-import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import { dataToObjectById } from './../../api/JsonApi.js'
+import { createUsedAliquot } from './usedAliquot.js'
 
 /**
  * Validates a set of used_aliquots and the pool.
