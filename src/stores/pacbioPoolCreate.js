@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { groupIncludedByResource, dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import {
   validate,
   payload,
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
 } from '@/stores/utilities/pool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
@@ -625,10 +626,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         } = groupIncludedByResource(included)
 
         //Populate pool attributes
-        this.pool = {
-          id: data.id,
-          ...data.attributes,
-        }
+        this.pool = extractAttributes(data)
 
         //Populate requests
         this.resources.requests = dataToObjectById({
@@ -649,7 +647,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           tubes,
         })
 
-        // Get the pool tube and remove it from tubes list. This is bad practice and should be fixed
+        // Get the pool tube and remove it from tubes list.
+        // There must be a reason why it is done this way?
         this.tube = this.resources.tubes[data.relationships.tube.data.id]
         delete this.resources.tubes[data.relationships.tube.data.id]
 
@@ -898,8 +897,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
 
       if (success) {
-        //If this a library, the requests will be associated with library, therefore manually assign it to a tube
-        const tubes = dataToObjectById({ data, includeRelationships: true })
+        // If this a library, the requests will be associated with library, therefore manually assign it to a tube
         if (libraries) {
           this.resources.libraries = {
             ...this.resources.libraries,
@@ -909,13 +907,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             }),
           }
         }
-        Object.keys(tubes).forEach((key) => {
-          tubes[key] = {
-            ...tubes[key],
-            requests: libraries ? requests.map((request) => request.id) : tubes[key].requests,
-            source_id: String(libraries ? tubes[key].libraries : tubes[key].id),
-          }
-        })
+
+        // not sure why this is done. No explanation in the code.
+        const tubes = assignRequestIdsToTubes({ libraries, tubes: data, requests })
+
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
         this.resources.tubes = {

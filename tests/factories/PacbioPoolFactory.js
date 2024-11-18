@@ -36,6 +36,8 @@ const createStoreData = (data) => {
     tubes,
   })
 
+  delete storeTubes[data.data.relationships.tube.data.id]
+
   const used_aliquots = createUsedAliquotsAndMapToSourceId({
     aliquots,
     libraries: storeLibraries,
@@ -62,7 +64,7 @@ const createStoreData = (data) => {
  * @param {Integer} count - The number of pools to create
  * @returns a base factory object with the pools data
  */
-const PacbioPoolFactory = ({ count = undefined } = {}) => {
+const PacbioPoolFactory = ({ count = undefined, includeAll = false } = {}) => {
   const data = {
     data: [
       {
@@ -720,11 +722,70 @@ const PacbioPoolFactory = ({ count = undefined } = {}) => {
           },
         },
       },
+      {
+        id: '61',
+        type: 'plates',
+        links: {
+          self: '/v1/pacbio/plates/61',
+        },
+        attributes: {
+          barcode: 'DN814327C',
+          created_at: '2021/06/03 06:59',
+        },
+        relationships: {
+          wells: {
+            links: {
+              self: '/v1/pacbio/plates/61/relationships/wells',
+              related: '/v1/pacbio/plates/61/wells',
+            },
+            data: [
+              {
+                type: 'wells',
+                id: '4722',
+              },
+              {
+                type: 'wells',
+                id: '4723',
+              },
+            ],
+          },
+        },
+      },
+      {
+        id: '4722',
+        type: 'wells',
+        attributes: {
+          position: 'A1',
+        },
+        relationships: {
+          plate: {
+            data: {
+              type: 'plates',
+              id: '61',
+            },
+          },
+        },
+      },
+      {
+        id: '4723',
+        type: 'wells',
+        attributes: {
+          position: 'A2',
+        },
+        relationships: {
+          plate: {
+            data: {
+              type: 'plates',
+              id: '61',
+            },
+          },
+        },
+      },
     ],
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = find({ data, count })
+  const foundData = find({ data, count, includeAll })
 
   return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
 }

@@ -1,15 +1,20 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById, groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { assignRequestIdsToTubes } from './../../src/stores/utilities/pool.js'
 
 /**
  *
  * @param {Object} data
+ * @param {transformTubes} - transform the tubes data
  * @returns {Object} - { tubes, tubeBarcodes, aliquots, pools, libraries, requests, tags }
  */
-const createStoreData = (data) => {
-  const tubes = dataToObjectById({ data: data.data, includeRelationships: true })
-
+const createStoreData = (data, transformTubes) => {
   const { pools, aliquots, libraries, requests, tags } = groupIncludedByResource(data.included)
+
+  // this happens in pacbioPoolCreate no idea what for.
+  const tubes = transformTubes
+    ? assignRequestIdsToTubes({ libraries, requests, tubes: data.data })
+    : dataToObjectById({ data: data.data, includeRelationships: true })
 
   return {
     tubes,
@@ -26,12 +31,13 @@ const createStoreData = (data) => {
  *
  * @param {Object} data
  * @param {String | null} findBy - 'libraries' | 'pools'
+ * @param {Boolean} transformTubes - transform the tubes data
  * @returns {Object} - { ...BaseFactory, storeData }
  * if the findBy is libraries or pools find a single record by libraries or pools
  * otherwise return the data as is.
  * This is a bit messy but it will do for now.
  */
-const getData = (data, findBy) => {
+const getData = (data, findBy, transformTubes) => {
   let index = null
   if (findBy === 'libraries') {
     index = data.data.findIndex((item) => item.relationships.libraries.data)
@@ -44,18 +50,19 @@ const getData = (data, findBy) => {
     // we need to includeAll as the requests for pools are in the libraries and I think
     // pulled out as used_by in the aliquots
     const foundData = find({ data, start: index, count: 1, get: true, includeAll: true })
-    return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
+    return { ...BaseFactory(foundData), storeData: createStoreData(foundData, transformTubes) }
   } else {
-    return { ...BaseFactory(data), storeData: createStoreData(data) }
+    return { ...BaseFactory(data), storeData: createStoreData(data, transformTubes) }
   }
 }
 
 /**
  * Factory for creating a list of tag set
  * @param {String | null} findBy
+ * @param {Boolean} transformTubes - transform the tubes data
  * @returns a base factory object with the tube data
  */
-const PacbioTubeFactory = ({ findBy = null } = {}) => {
+const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
   const data = {
     data: [
       {
@@ -2102,7 +2109,7 @@ const PacbioTubeFactory = ({ findBy = null } = {}) => {
     },
   }
 
-  return getData(data, findBy)
+  return getData(data, findBy, transformTubes)
 }
 
 export default PacbioTubeFactory

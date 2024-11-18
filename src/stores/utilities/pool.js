@@ -136,4 +136,33 @@ const createUsedAliquotsAndMapToSourceId = ({ aliquots, libraries }) => {
   }, {})
 }
 
-export { validate, payload, assignLibraryRequestsToTubes, createUsedAliquotsAndMapToSourceId }
+/**
+ *
+ * @param {Object} libraries - Array of libraries
+ * @param {Object} requests - Array of requests
+ * @param {Object} tubes - Array of tubes
+ * @returns {Object} - Object of tubes, key is id and value is tube object
+ * Convert tubes to object with id as key
+ * Assign request ids to tubes if the tubes have libraries
+ * Assign source_id to tubes based on libraries
+ * If libraries are empty, assign source_id to tubes based on tubes
+ */
+const assignRequestIdsToTubes = ({ libraries, requests, tubes }) => {
+  const tubesById = dataToObjectById({ data: tubes, includeRelationships: true })
+  Object.keys(tubesById).forEach((key) => {
+    tubesById[key] = {
+      ...tubesById[key],
+      requests: libraries ? requests.map((request) => request.id) : tubesById[key].requests,
+      source_id: String(libraries ? tubesById[key].libraries : tubesById[key].id),
+    }
+  })
+  return tubesById
+}
+
+export {
+  validate,
+  payload,
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
+}

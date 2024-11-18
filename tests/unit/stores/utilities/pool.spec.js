@@ -3,6 +3,7 @@ import {
   payload,
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
 } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -536,6 +537,112 @@ describe('pool', () => {
           ).toFixed(2),
         )
       })
+    })
+  })
+
+  describe('in flight modifications for fetching tubes', () => {
+    const tubes = [
+      {
+        id: '20',
+        type: 'tubes',
+        attributes: {
+          barcode: 'TRAC-2-20',
+        },
+        relationships: {
+          pools: {
+            data: [],
+          },
+          libraries: {
+            data: {
+              type: 'libraries',
+              id: '30',
+            },
+          },
+        },
+      },
+    ]
+
+    const requests = [
+      {
+        id: '32',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+      {
+        id: '33',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+      {
+        id: '30',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+    ]
+
+    const libraries = [
+      {
+        id: '30',
+        type: 'libraries',
+        attributes: {
+          volume: 1,
+          concentration: 1,
+          source_identifier: 'GEN-1710774222-1:F4',
+          pacbio_request_id: 30,
+          available_volume: 20,
+        },
+        relationships: {
+          request: {
+            data: {
+              type: 'requests',
+              id: '30',
+            },
+          },
+          tube: {
+            data: {
+              type: 'tubes',
+              id: '20',
+            },
+          },
+          primary_aliquot: {
+            data: {
+              type: 'aliquots',
+              id: '314',
+            },
+          },
+          used_aliquots: {
+            data: [
+              {
+                type: 'aliquots',
+                id: '315',
+              },
+            ],
+          },
+        },
+      },
+    ]
+
+    it('when there are libraries', () => {
+      const storeTubes = assignRequestIdsToTubes({ tubes, libraries, requests })
+      const tube = Object.values(storeTubes)[0]
+      expect(tube.requests).toEqual(requests.map((request) => request.id))
+      expect(tube.source_id).toEqual(tubes[0].relationships.libraries.data.id)
+    })
+
+    it('when there are no libraries', () => {
+      const storeTubes = assignRequestIdsToTubes({ tubes, requests })
+      const tube = Object.values(storeTubes)[0]
+      expect(tube.requests).not.toBeDefined()
+      expect(tube.source_id).toEqual(tubes[0].id)
     })
   })
 })
