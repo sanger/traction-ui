@@ -13,7 +13,6 @@ import PacbioTubeWithLibrary from './pacbioTubeWithLibrary.json'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
-import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 import StorePools from './StorePools.json'
@@ -34,7 +33,6 @@ export default {
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
-  TractionTubeWithContainerMaterials,
   OntPlatesRequest,
   PacbioRunWithWellDefaults,
   StorePools,
