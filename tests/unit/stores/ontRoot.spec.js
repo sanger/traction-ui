@@ -122,7 +122,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
-        rootStore.api.v1 = { traction: { ont: { instruments: { get } } } }
+        rootStore.api.v2 = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRootStore()
 
