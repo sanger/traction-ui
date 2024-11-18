@@ -61,8 +61,30 @@ const filterUndefinedValues = (record) =>
  * Column headers are assumed to be provided in the first row
  * Each record will have keys corresponding to each
  */
-const eachRecord = (csv, callback) => {
-  parse(csv, {
+// const eachRecord = (csv, callback) => {
+//   parse(csv, {
+//     bom: true, // Strip any byte-order-markers
+//     delimiter: ',',
+//     columns: validateHeaders(normaliseHeaders),
+//     skip_records_with_empty_values: true,
+//     skip_empty_lines: true,
+//     trim: true,
+//     info: true,
+//     cast,
+//     onRecord: filterUndefinedValues,
+//   }).forEach(callback)
+// }
+
+/**
+ * Parses the provided CSV contents and returns an array of records or an error string
+ * Column headers are assumed to be provided in the first row
+ * Each record will have keys corresponding to each
+ * @param {string} csv - The CSV content to parse
+ * @param {function} callback - The callback function to call with each record
+ * @return {Array<Object>|string} An array of valid records or an error string
+ */
+const eachRecord = (csv, callback, ...args) => {
+  const records = parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
     columns: validateHeaders(normaliseHeaders),
@@ -71,8 +93,20 @@ const eachRecord = (csv, callback) => {
     trim: true,
     info: true,
     cast,
-    onRecord: filterUndefinedValues,
-  }).forEach(callback)
+  }).map(filterUndefinedValues)
+
+  let retRecords = []
+  for (const record of records) {
+    const result = callback(record, ...args)
+    if (!result) {
+      retRecords.push(record)
+    } else if (result instanceof Error) {
+      return { error: result.message, record }
+    } else {
+      retRecords.push({ ...record, result })
+    }
+  }
+  return retRecords
 }
 
 export { eachRecord }
