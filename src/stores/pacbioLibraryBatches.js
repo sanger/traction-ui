@@ -47,8 +47,6 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
         return { success: false, errors: ['csvFile is required'] }
       }
       try {
-        debugger
-
         // Fetch the tags and requests
         const { requests, tags } = await fetchTagsAndRequests(tagSet)
 

@@ -1,5 +1,8 @@
 import { expect, it } from 'vitest'
-import { validateAndFormatAsPayloadData, hasDuplicateSources } from '@/stores/utilities/pacbioLibraryBatches'
+import {
+  validateAndFormatAsPayloadData,
+  hasDuplicateSources,
+} from '@/stores/utilities/pacbioLibraryBatches'
 import fs from 'fs'
 
 describe('pacbioLibraryBatches', () => {
@@ -86,16 +89,12 @@ describe('pacbioLibraryBatches', () => {
   })
 
   describe('hasDuplicateSources', () => {
-  
     it('returns false when there are no duplicate sources', () => {
-      const csvText = fs.readFileSync(
-        './tests/data/csv/pacbio_library_batch.csv',
-        'utf8',
-      )
+      const csvText = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
       const result = hasDuplicateSources(csvText)
       expect(result).toBe(false)
     })
-  
+
     it('returns true when there are duplicate sources', () => {
       const csvText = fs.readFileSync(
         './tests/data/csv/pacbio_library_batch_duplicate_source.csv',
@@ -104,13 +103,13 @@ describe('pacbioLibraryBatches', () => {
       const result = hasDuplicateSources(csvText)
       expect(result).toBe(true)
     })
-  
+
     it('returns false when the CSV is empty', () => {
       const csvText = ''
       const result = hasDuplicateSources(csvText)
       expect(result).toBe(false)
     })
-  
+
     it('returns false when there is only one source', () => {
       const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
   sample_DN814327C_A1,289,035980102141700123124,10,13.16,10191`
@@ -118,5 +117,4 @@ describe('pacbioLibraryBatches', () => {
       expect(result).toBe(false)
     })
   })
-
 })
