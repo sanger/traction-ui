@@ -5,7 +5,7 @@ import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import { groupIncludedByResource } from '@/api/JsonApi.js'
 import {
   validateAndFormatAsPayloadData,
-  hasDuplicateSources,
+  hasDuplicateTags,
   fetchTagsAndRequests,
 } from '@/stores/utilities/pacbioLibraryBatches.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
@@ -52,8 +52,9 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
 
         // Read the CSV file and validate the records
         const csv = await csvFile.text()
-        if (hasDuplicateSources(csv)) {
-          return { success: false, errors: ['Duplicate source exists'] }
+        const error = hasDuplicateTags(csv)  
+        if (error) {
+          return { success: false, errors: [error] }
         }
         const eachReordRetObj = eachRecord(
           csv,

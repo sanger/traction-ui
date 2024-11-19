@@ -63,28 +63,32 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
 }
 
 /**
- * Checks for duplicate sources in the CSV content.
+ * Checks for duplicate tags in the CSV content.
  *
  * @param {string} csvText - The CSV content as a string.
- * @returns {boolean} - True if duplicate sources are found, otherwise false.
+ * @returns {string|undefined} - Returns an error message if a duplicate or missing tag is found, otherwise undefined.
  */
-const hasDuplicateSources = (csvText) => {
+const  hasDuplicateTags = (csvText) => {
   const lines = csvText.split('\n')
   if (lines.length <= 2) {
     // Only header and one line or empty
-    return false
+    return 
   }
   const sources = new Set()
+  // Skip the header line
   for (const line of lines.slice(1)) {
-    // Skip the header line
-    const source = line.split(',')[0] // The source is the first column
+    if(!line) continue
+    const parts = line.split(',')
+    if (parts.length < 2 || !parts[1]) {
+      return `Tag missing in line: ${line.trim()}` 
+    }
+    const source = parts[1] // The tag is the second column
     if (sources.has(source)) {
-      return true
+      return  `Duplicate tag: ${parts[1].trim()}` 
     }
     sources.add(source)
   }
-
-  return false
+  return 
 }
 
 /**
@@ -102,4 +106,4 @@ async function fetchTagsAndRequests(tagSet) {
   return { requests, tags }
 }
 
-export { validateAndFormatAsPayloadData, hasDuplicateSources, fetchTagsAndRequests }
+export { validateAndFormatAsPayloadData, hasDuplicateTags, fetchTagsAndRequests }

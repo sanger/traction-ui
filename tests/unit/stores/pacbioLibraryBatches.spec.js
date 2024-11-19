@@ -57,7 +57,7 @@ describe('usePacbioLibraryBatchesStore', () => {
           data: {},
           included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
         })
-        tagSet = pacbioTagSetFactory.storeData.tagSets[7]
+        tagSet = pacbioTagSetFactory.storeData.selected.tagSet
       })
 
       it('returns error if input params are empty', async () => {
@@ -93,9 +93,9 @@ describe('usePacbioLibraryBatchesStore', () => {
         expect(barcodes).toEqual(['TRAC-1'])
       })
 
-      it('returns error when csv file contains duplicate sources', async () => {
+      it('returns error when csv file contains duplicate tags', async () => {
         csvFileTextContent = fs.readFileSync(
-          './tests/data/csv/pacbio_library_batch_duplicate_source.csv',
+          './tests/data/csv/pacbio_library_batch_duplicate_tags.csv',
           'utf8',
         )
         create.mockResolvedValue(mockSuccessResponse)
@@ -105,7 +105,7 @@ describe('usePacbioLibraryBatchesStore', () => {
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(['Duplicate source exists'])
+        expect(errors).toEqual(['Duplicate tag: 289'])
       })
 
       it('returns error when csv file contains invalid source', async () => {

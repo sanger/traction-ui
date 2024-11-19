@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import {
   validateAndFormatAsPayloadData,
-  hasDuplicateSources,
+  hasDuplicateTags
 } from '@/stores/utilities/pacbioLibraryBatches'
 import fs from 'fs'
 
@@ -88,33 +88,41 @@ describe('pacbioLibraryBatches', () => {
     })
   })
 
-  describe('hasDuplicateSources', () => {
-    it('returns false when there are no duplicate sources', () => {
+  describe('hasDuplicateTags', () => {
+    it('returns when there are no duplicate sources', () => {
       const csvText = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
-      const result = hasDuplicateSources(csvText)
-      expect(result).toBe(false)
+      const result = hasDuplicateTags(csvText)
+      expect(result).toBe(undefined)
     })
 
-    it('returns true when there are duplicate sources', () => {
+    it('returns error when there are duplicate tags', () => {
       const csvText = fs.readFileSync(
-        './tests/data/csv/pacbio_library_batch_duplicate_source.csv',
+        './tests/data/csv/pacbio_library_batch_duplicate_tags.csv',
         'utf8',
       )
-      const result = hasDuplicateSources(csvText)
-      expect(result).toBe(true)
+      const result = hasDuplicateTags(csvText)
+      expect(result).toBe('Duplicate tag: 289')
     })
 
-    it('returns false when the CSV is empty', () => {
-      const csvText = ''
-      const result = hasDuplicateSources(csvText)
-      expect(result).toBe(false)
-    })
-
-    it('returns false when there is only one source', () => {
+    it('returns when there is only one tag', () => {
       const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
   sample_DN814327C_A1,289,035980102141700123124,10,13.16,10191`
-      const result = hasDuplicateSources(csvText)
-      expect(result).toBe(false)
+      const result = hasDuplicateTags(csvText)
+      expect(result).toBe(undefined)
+    })
+    it('returns error when tag is empty', () => {
+      const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
+  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191
+  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191`
+      const result = hasDuplicateTags(csvText)
+      expect(result).toBe('Tag missing in line: sample_DN814327C_A1,,035980102141700123124,10,13.16,10191')
+    })
+    it('returns error when there is invalid tag', () => {
+      const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
+  sample_DN814327C_A1
+  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191`
+      const result = hasDuplicateTags(csvText)
+      expect(result).toBe('Tag missing in line: sample_DN814327C_A1')
     })
   })
 })
