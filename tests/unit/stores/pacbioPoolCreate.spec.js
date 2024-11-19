@@ -1,10 +1,14 @@
-import { createPinia, setActivePinia } from '@support/testHelper.js'
+import {
+  createPinia,
+  setActivePinia,
+  successfulResponse,
+  failedResponse,
+} from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pool.js'
-import { newResponse } from '@/api/v1/ResponseHelper.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
@@ -483,7 +487,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         create = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { create } } } }
       })
 
       const used_aliquot1 = createUsedAliquot({
@@ -518,10 +522,10 @@ describe('usePacbioPoolCreateStore', () => {
       // pool should be successfully created
       // for now: create a pool state with a simple success message
       it('when the pool is valid', async () => {
-        const mockResponse = {
-          status: '201',
-          data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-        }
+        const mockResponse = successfulResponse({
+          data: {},
+          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+        })
         const used_aliquots = {
           _1: used_aliquot1,
           _2: used_aliquot2,
@@ -539,17 +543,13 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('when there is an error', async () => {
-        const mockResponse = {
-          status: '422',
-          data: { data: { errors: { error1: ['There was an error'] } } },
-        }
+        const mockResponse = failedResponse(422)
         store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.pool = pool
-        create.mockRejectedValue({ response: mockResponse })
-        const expectedResponse = newResponse({ ...mockResponse, success: false })
+        create.mockResolvedValue(mockResponse)
         const { success, errors } = await store.createPool()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
 
       // validate used_aliquots fails
@@ -640,7 +640,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         update = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { update } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { update } } } }
         used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.used_aliquots = used_aliquots
         store.pool = pool
@@ -649,11 +649,10 @@ describe('usePacbioPoolCreateStore', () => {
       // pool should be successfully created
       // for now: create a pool state with a simple success message
       it('when the pool is valid', async () => {
-        const mockResponse = {
-          status: '201',
-          data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-        }
-
+        const mockResponse = successfulResponse({
+          data: {},
+          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+        })
         update.mockResolvedValue(mockResponse)
         const { success } = await store.updatePool()
         expect(update).toHaveBeenCalledWith(payload({ used_aliquots, pool }))
@@ -661,15 +660,11 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('when there is an error', async () => {
-        const mockResponse = {
-          status: '422',
-          data: { data: { errors: { error1: ['There was an error'] } } },
-        }
-        update.mockRejectedValue({ response: mockResponse })
-        const expectedResponse = newResponse({ ...mockResponse, success: false })
+        const mockResponse = failedResponse(422)
+        update.mockResolvedValue(mockResponse)
         const { success, errors } = await store.updatePool()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
 
       // validate used_aliquots fails
@@ -699,7 +694,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         find = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { find } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { find } } } }
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
         pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
@@ -707,7 +702,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('handles success', async () => {
-        find.mockResolvedValue(pacbioPoolFactory.responses.axios)
+        find.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         const { success } = await store.populateUsedAliquotsFromPool()
 
         expect(store.pool).toEqual(pacbioPoolFactory.storeData.pool)
@@ -729,7 +724,7 @@ describe('usePacbioPoolCreateStore', () => {
           count: 1,
           includeAll: true,
         })
-        find.mockResolvedValue(pacbioPoolFactoryWithAllIncludedData.responses.axios)
+        find.mockResolvedValue(pacbioPoolFactoryWithAllIncludedData.responses.fetch)
         const { success } = await store.populateUsedAliquotsFromPool()
         expect(store.resources.plates).toEqual(
           pacbioPoolFactoryWithAllIncludedData.storeData.resources.plates,
@@ -743,11 +738,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('handles failure', async () => {
-        find.mockRejectedValue({
-          data: { data: [] },
-          status: 500,
-          statusText: 'Internal Server Error',
-        })
+        find.mockResolvedValue(failedResponse(500))
         const { success } = await store.populateUsedAliquotsFromPool()
         expect(success).toEqual(false)
       })
@@ -1085,12 +1076,12 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v1 = { traction: { pacbio: { plates: { get } } } }
+        rootStore.api.v2 = { traction: { pacbio: { plates: { get } } } }
         store.selectPlate = vi.fn()
       })
 
       it('returns the plate that fits the valid plate barcode', async () => {
-        get.mockResolvedValue(pacbioPlateFactory.responses.axios)
+        get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
 
         const id = Object.keys(pacbioPlateFactory.storeData.resources.plates)[0]
         const { success } = await store.findPacbioPlate({
@@ -1106,7 +1097,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('returns an error and an empty list when plate barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: { data: [] } })
+        get.mockResolvedValue({ data: [] })
 
         const { success, errors } = await store.findPacbioPlate({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
@@ -1124,12 +1115,12 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v1 = { traction: { pacbio: { tubes: { get } } } }
+        rootStore.api.v2 = { traction: { pacbio: { tubes: { get } } } }
         store.selectPlate = vi.fn()
       })
 
       it('returns the tube that fits the valid tube barcode', async () => {
-        get.mockResolvedValue(pacbioTubeFactory.responses.axios)
+        get.mockResolvedValue(pacbioTubeFactory.responses.fetch)
         store.selectTube = vi.fn()
 
         const id = Object.keys(pacbioTubeFactory.storeData.tubes)[0]
@@ -1146,7 +1137,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('returns an error and an empty list when tube barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: { data: [] } })
+        get.mockResolvedValue({ data: [] })
 
         const { success, errors } = await store.findPacbioTube({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])
