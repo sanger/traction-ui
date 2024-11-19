@@ -52,7 +52,7 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
 
         // Read the CSV file and validate the records
         const csv = await csvFile.text()
-        const error = hasDuplicateTags(csv)  
+        const error = hasDuplicateTags(csv)
         if (error) {
           return { success: false, errors: [error] }
         }

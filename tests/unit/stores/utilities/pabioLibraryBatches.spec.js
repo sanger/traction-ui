@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import {
   validateAndFormatAsPayloadData,
-  hasDuplicateTags
+  hasDuplicateTags,
 } from '@/stores/utilities/pacbioLibraryBatches'
 import fs from 'fs'
 
@@ -115,7 +115,9 @@ describe('pacbioLibraryBatches', () => {
   sample_DN814327C_A1,,035980102141700123124,10,13.16,10191
   sample_DN814327C_A1,,035980102141700123124,10,13.16,10191`
       const result = hasDuplicateTags(csvText)
-      expect(result).toBe('Tag missing in line: sample_DN814327C_A1,,035980102141700123124,10,13.16,10191')
+      expect(result).toBe(
+        'Tag missing in line: sample_DN814327C_A1,,035980102141700123124,10,13.16,10191',
+      )
     })
     it('returns error when there is invalid tag', () => {
       const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size

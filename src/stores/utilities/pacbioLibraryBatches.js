@@ -68,27 +68,27 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
  * @param {string} csvText - The CSV content as a string.
  * @returns {string|undefined} - Returns an error message if a duplicate or missing tag is found, otherwise undefined.
  */
-const  hasDuplicateTags = (csvText) => {
+const hasDuplicateTags = (csvText) => {
   const lines = csvText.split('\n')
   if (lines.length <= 2) {
     // Only header and one line or empty
-    return 
+    return
   }
   const sources = new Set()
   // Skip the header line
   for (const line of lines.slice(1)) {
-    if(!line) continue
+    if (!line) continue
     const parts = line.split(',')
     if (parts.length < 2 || !parts[1]) {
-      return `Tag missing in line: ${line.trim()}` 
+      return `Tag missing in line: ${line.trim()}`
     }
     const source = parts[1] // The tag is the second column
     if (sources.has(source)) {
-      return  `Duplicate tag: ${parts[1].trim()}` 
+      return `Duplicate tag: ${parts[1].trim()}`
     }
     sources.add(source)
   }
-  return 
+  return
 }
 
 /**
