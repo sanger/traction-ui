@@ -159,10 +159,8 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
       statusCode: 422,
       body: {
-        data: {
-          errors: {
-            error1: ['There was a problem'],
-          },
+        errors: {
+          error1: ['There was a problem'],
         },
       },
     })
