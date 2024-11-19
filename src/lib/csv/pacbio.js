@@ -57,31 +57,12 @@ const filterUndefinedValues = (record) =>
   Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
 
 /**
- * Parses the provides CSV contents and passes each record to the callback
- * Column headers are assumed to be provided in the first row
- * Each record will have keys corresponding to each
- */
-// const eachRecord = (csv, callback) => {
-//   parse(csv, {
-//     bom: true, // Strip any byte-order-markers
-//     delimiter: ',',
-//     columns: validateHeaders(normaliseHeaders),
-//     skip_records_with_empty_values: true,
-//     skip_empty_lines: true,
-//     trim: true,
-//     info: true,
-//     cast,
-//     onRecord: filterUndefinedValues,
-//   }).forEach(callback)
-// }
-
-/**
- * Parses the provided CSV contents and returns an array of records or an error string
- * Column headers are assumed to be provided in the first row
- * Each record will have keys corresponding to each
- * @param {string} csv - The CSV content to parse
- * @param {function} callback - The callback function to call with each record
- * @return {Array<Object>|string} An array of valid records or an error string
+ * Processes each record in the CSV content using the provided callback function.
+ *
+ * @param {string} csv - The CSV content as a string.
+ * @param {Function} callback - The callback function to process each record.
+ * @param {...any} args - Additional arguments to pass to the callback function.
+ * @returns {Array|Object} - The processed records or an error object if an error occurs.
  */
 const eachRecord = (csv, callback, ...args) => {
   const records = parse(csv, {
@@ -98,11 +79,14 @@ const eachRecord = (csv, callback, ...args) => {
   let retRecords = []
   for (const record of records) {
     const result = callback(record, ...args)
+    // If callback does not return anything, we just add the record to the return
     if (!result) {
       retRecords.push(record)
     } else if (result instanceof Error) {
+      // If callback returns an error, we return the error and the record
       return { error: result.message, record }
     } else {
+      // If callback returns a result, we add the record and the result to the return
       retRecords.push({ ...record, result })
     }
   }
