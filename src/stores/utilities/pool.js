@@ -1,3 +1,6 @@
+import { dataToObjectById } from './../../api/JsonApi.js'
+import { createUsedAliquot } from './usedAliquot.js'
+
 /**
  * Validates a set of used_aliquots and the pool.
  * Checks if all required attributes are present in each used_aliquot and if there are no duplicate tags.
@@ -90,4 +93,76 @@ const payload = ({ used_aliquots, pool }) => {
   }
 }
 
-export { validate, payload }
+/**
+ *
+ * @param {Object} libraries - Object of libraries, key is id and value is library object
+ * @param {Object} requests - Object of requests, key is id and value is request object
+ * @param {Object} tubes - array of tubes
+ * @returns {Object} - Object of tubes, key is id and value is tube object
+ * Convert tubes to object with id as key
+ * Assign library request to tube if the tube has a library
+ */
+const assignLibraryRequestsToTubes = ({ libraries, requests, tubes }) => {
+  const storeTubes = dataToObjectById({ data: tubes, includeRelationships: true })
+  Object.values(libraries).map((library) => {
+    const request = requests[library.request]
+    storeTubes[library.tube].requests = [request.id]
+    storeTubes[library.tube].source_id = String(library.id)
+  })
+  return storeTubes
+}
+
+/**
+ * @param {Object} libraries - Object of libraries, key is id and value is library object
+ * @param {Object} aliquots - Array of aliquots
+ * @returns {Object} - Object of used aliquots, key is source_id and value is used aliquot object
+ * Create used aliquots object and map it to source_id. Also set the request and volume for each used aliquot
+ */
+const createUsedAliquotsAndMapToSourceId = ({ aliquots, libraries }) => {
+  const usedAliquots = dataToObjectById({
+    data: aliquots,
+    includeRelationships: true,
+  })
+
+  return Object.values(usedAliquots).reduce((result, usedAliquot) => {
+    // what does this do?
+    usedAliquot.request = usedAliquot.id
+    const usedAliquotObject = createUsedAliquot({
+      ...usedAliquot,
+      tag_id: usedAliquot.tag,
+    })
+    usedAliquotObject.setRequestAndVolume(libraries)
+    return { ...result, [`_${usedAliquotObject.source_id}`]: usedAliquotObject }
+  }, {})
+}
+
+/**
+ *
+ * @param {Object} libraries - Array of libraries
+ * @param {Object} requests - Array of requests
+ * @param {Object} tubes - Array of tubes
+ * @returns {Object} - Object of tubes, key is id and value is tube object
+ * Convert tubes to object with id as key
+ * Assign request ids to tubes if the tubes have libraries
+ * Assign source_id to tubes based on libraries
+ * If libraries are empty, assign source_id to tubes based on tubes
+ */
+const assignRequestIdsToTubes = ({ libraries, requests, tubes }) => {
+  const tubesById = dataToObjectById({ data: tubes, includeRelationships: true })
+  Object.keys(tubesById).forEach((key) => {
+    tubesById[key] = {
+      ...tubesById[key],
+      requests: libraries ? requests.map((request) => request.id) : tubesById[key].requests,
+      source_id: String(libraries ? tubesById[key].libraries : tubesById[key].id),
+    }
+  })
+  return tubesById
+}
+
+export {
+  validate,
+  payload,
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
+}

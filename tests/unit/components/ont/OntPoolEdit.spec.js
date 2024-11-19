@@ -1,9 +1,12 @@
 import { mount, store, nextTick } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
-import { Data } from '@support/testHelper'
 import { expect } from 'vitest'
+// ?? huh. Pacbio?
 import * as pacbio from '@/lib/csv/pacbio'
+import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory'
+
+const ontAutoTagFactory = OntAutoTagFactory()
 
 const buildWrapper = () =>
   mount(OntPoolEdit, {
@@ -164,7 +167,7 @@ describe('ontPoolEdit#edit', () => {
 
   describe('pool type', () => {
     it('says empty when there are no libraries', async () => {
-      const poolCreateStore = Object.assign({}, Data.ontAutoTagStore, {
+      const poolCreateStore = Object.assign({}, ontAutoTagFactory.storeData, {
         pooling: {
           libraries: {},
           pool: {},
@@ -177,7 +180,7 @@ describe('ontPoolEdit#edit', () => {
     })
 
     it('says library when there is one library', async () => {
-      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+      const poolCreateStore = Object.assign({}, ontAutoTagFactory.storeData, {
         pooling: {
           tube: {},
           libraries: { 1: newLibrary({ ont_request_id: '1' }) },

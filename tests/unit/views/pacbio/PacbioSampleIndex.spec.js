@@ -72,7 +72,6 @@ describe('PacbioSamples.vue', () => {
     let button
 
     it('is present for each sample', () => {
-      // 40 is one of the request id's from Data.PacbioRequestsRequest
       button = wrapper.find('#details-btn-40')
       expect(button.text()).toEqual('Show Details')
     })

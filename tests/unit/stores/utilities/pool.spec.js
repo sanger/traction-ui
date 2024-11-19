@@ -1,39 +1,15 @@
-import { validate, payload } from '@/stores/utilities/pool'
+import {
+  validate,
+  payload,
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
+} from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import { dataToObjectById } from '@/api/JsonApi'
 
 describe('pool', () => {
-  describe('createUsedAliquot', () => {
-    it('builds the corrrect default values', () => {
-      const usedAliquot = createUsedAliquot()
-      expect(usedAliquot.source_id).toBe(null)
-      expect(usedAliquot.template_prep_kit_box_barcode).toBe(null)
-      expect(usedAliquot.tag_id).toBe(null)
-      expect(usedAliquot.volume).toBe(null)
-      expect(usedAliquot.concentration).toBe(null)
-      expect(usedAliquot.insert_size).toBe(null)
-      expect(usedAliquot.available_volume).toBe(null)
-    })
-    it('builds with the correct given values', () => {
-      const usedAliquot = createUsedAliquot({
-        source_id: '1',
-        template_prep_kit_box_barcode: 'barcode1',
-        tag_id: 'tag1',
-        volume: 10,
-        available_volume: 10,
-        concentration: 5,
-        insert_size: 1,
-      })
-      expect(usedAliquot.source_id).toBe('1')
-      expect(usedAliquot.template_prep_kit_box_barcode).toBe('barcode1')
-      expect(usedAliquot.tag_id).toBe('tag1')
-      expect(usedAliquot.volume).toBe(10)
-      expect(usedAliquot.concentration).toBe(5)
-      expect(usedAliquot.insert_size).toBe(1)
-      expect(usedAliquot.available_volume).toBe(10)
-    })
-  })
-
   describe('validate', () => {
     it('returns true when all used_aliquots are valid and there are no duplicate tags', () => {
       const used_aliquots = {
@@ -294,6 +270,379 @@ describe('pool', () => {
       const result = payload({ used_aliquots, pool })
 
       expect(result).toEqual(expected)
+    })
+  })
+
+  describe('in flight modifications for fetching pools', () => {
+    const libraries = [
+      {
+        id: '14160',
+        type: 'libraries',
+        attributes: {
+          state: 'pending',
+          volume: 51.6,
+          concentration: 12.2,
+          source_identifier: 'FS71986093',
+          pacbio_request_id: 8951,
+          tag_id: 601,
+          used_volume: 7.5,
+          available_volume: 44.1,
+        },
+        relationships: {
+          request: {
+            data: {
+              type: 'requests',
+              id: '8951',
+            },
+          },
+          tag: {
+            data: {
+              type: 'tags',
+              id: '601',
+            },
+          },
+          tube: {
+            data: {
+              type: 'tubes',
+              id: '11877',
+            },
+          },
+          primary_aliquot: {
+            data: {
+              type: 'aliquots',
+              id: '35029',
+            },
+          },
+        },
+      },
+      {
+        id: '14159',
+        type: 'libraries',
+        links: {
+          self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/libraries/14159',
+        },
+        attributes: {
+          volume: 22.3,
+          concentration: 12.9,
+          source_identifier: 'FS71986813',
+          pacbio_request_id: 8950,
+          tag_id: 600,
+          used_volume: 7.5,
+          available_volume: 14.8,
+        },
+        relationships: {
+          request: {
+            data: {
+              type: 'requests',
+              id: '8950',
+            },
+          },
+          tag: {
+            data: {
+              type: 'tags',
+              id: '600',
+            },
+          },
+          tube: {
+            data: {
+              type: 'tubes',
+              id: '11876',
+            },
+          },
+          primary_aliquot: {
+            data: {
+              type: 'aliquots',
+              id: '35027',
+            },
+          },
+        },
+      },
+    ]
+
+    const tubes = [
+      {
+        id: '12066',
+        type: 'tubes',
+        attributes: {
+          barcode: 'TRAC-2-12066',
+        },
+        relationships: {
+          pools: {
+            data: [
+              {
+                type: 'pools',
+                id: '6011',
+              },
+            ],
+          },
+        },
+      },
+      {
+        id: '11877',
+        type: 'tubes',
+        attributes: {
+          barcode: 'TRAC-2-11877',
+        },
+        relationships: {
+          libraries: {
+            data: {
+              type: 'libraries',
+              id: '14160',
+            },
+          },
+        },
+      },
+      {
+        id: '11876',
+        type: 'tubes',
+        attributes: {
+          barcode: 'TRAC-2-11876',
+        },
+        relationships: {
+          libraries: {
+            data: {
+              type: 'libraries',
+              id: '14159',
+            },
+          },
+        },
+      },
+    ]
+
+    const requests = [
+      {
+        id: '8951',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+          sample_name: 'DTOL15016450',
+          barcode: 'FS71986093',
+          source_identifier: 'FS71986093',
+        },
+        relationships: {},
+      },
+      {
+        id: '8950',
+        type: 'requests',
+        links: {
+          self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/requests/8950',
+        },
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+          sample_name: 'DTOL15016449',
+          barcode: 'FS71986813',
+          source_identifier: 'FS71986813',
+        },
+        relationships: {},
+      },
+    ]
+
+    const aliquots = [
+      {
+        id: '35493',
+        type: 'aliquots',
+        attributes: {
+          aliquot_type: 'derived',
+          source_id: 14159,
+          source_type: 'Pacbio::Library',
+          used_by_id: 6011,
+          used_by_type: 'Pacbio::Pool',
+          state: 'created',
+          volume: 7.5,
+          concentration: 12.9,
+          insert_size: 9933,
+          template_prep_kit_box_barcode: '036037102141700123124',
+          tag_id: 600,
+        },
+        relationships: {
+          tag: {
+            data: {
+              type: 'tags',
+              id: '600',
+            },
+          },
+          pool: {
+            data: {
+              type: 'pools',
+              id: '6011',
+            },
+          },
+        },
+      },
+      {
+        id: '35494',
+        type: 'aliquots',
+        attributes: {
+          aliquot_type: 'derived',
+          source_id: 14160,
+          source_type: 'Pacbio::Library',
+          used_by_id: 6011,
+          used_by_type: 'Pacbio::Pool',
+          state: 'created',
+          volume: 7.5,
+          concentration: 12.2,
+          insert_size: 9360,
+          template_prep_kit_box_barcode: '036037102141700123124',
+          tag_id: 601,
+        },
+        relationships: {
+          tag: {
+            data: {
+              type: 'tags',
+              id: '601',
+            },
+          },
+          pool: {
+            data: {
+              type: 'pools',
+              id: '6011',
+            },
+          },
+        },
+      },
+    ]
+
+    it('add requests to library tubes', () => {
+      const storeLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
+      const storeRequests = dataToObjectById({ data: requests, includeRelationships: true })
+      const storeTubes = assignLibraryRequestsToTubes({
+        libraries: storeLibraries,
+        requests: storeRequests,
+        tubes,
+      })
+
+      Object.values(storeLibraries).forEach((library) => {
+        const request = storeRequests[library.request]
+        const tube = storeTubes[library.tube]
+        expect(tube.requests).toEqual([request.id])
+        expect(tube.source_id).toEqual(String(library.id))
+      })
+    })
+
+    it('create the used aliquots and map to source id', () => {
+      const storeLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
+      const usedAliquots = createUsedAliquotsAndMapToSourceId({
+        libraries: storeLibraries,
+        aliquots,
+      })
+      aliquots.forEach((aliquot) => {
+        const usedAliquot = usedAliquots[`_${aliquot.attributes.source_id}`]
+        expect(usedAliquot.tag_id).toEqual(String(aliquot.attributes.tag_id))
+        // this is a bit painful. Once refactored this should be tested within usedAliquot.
+        // but it adds an extra check.
+        expect(usedAliquot.request).toEqual(storeLibraries[usedAliquot.source_id].request)
+        expect(usedAliquot.available_volume).toEqual(
+          parseFloat(
+            storeLibraries[usedAliquot.source_id].available_volume + usedAliquot.volume,
+          ).toFixed(2),
+        )
+      })
+    })
+  })
+
+  describe('in flight modifications for fetching tubes', () => {
+    const tubes = [
+      {
+        id: '20',
+        type: 'tubes',
+        attributes: {
+          barcode: 'TRAC-2-20',
+        },
+        relationships: {
+          pools: {
+            data: [],
+          },
+          libraries: {
+            data: {
+              type: 'libraries',
+              id: '30',
+            },
+          },
+        },
+      },
+    ]
+
+    const requests = [
+      {
+        id: '32',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+      {
+        id: '33',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+      {
+        id: '30',
+        type: 'requests',
+        attributes: {
+          library_type: 'Pacbio_HiFi',
+        },
+        relationships: {},
+      },
+    ]
+
+    const libraries = [
+      {
+        id: '30',
+        type: 'libraries',
+        attributes: {
+          volume: 1,
+          concentration: 1,
+          source_identifier: 'GEN-1710774222-1:F4',
+          pacbio_request_id: 30,
+          available_volume: 20,
+        },
+        relationships: {
+          request: {
+            data: {
+              type: 'requests',
+              id: '30',
+            },
+          },
+          tube: {
+            data: {
+              type: 'tubes',
+              id: '20',
+            },
+          },
+          primary_aliquot: {
+            data: {
+              type: 'aliquots',
+              id: '314',
+            },
+          },
+          used_aliquots: {
+            data: [
+              {
+                type: 'aliquots',
+                id: '315',
+              },
+            ],
+          },
+        },
+      },
+    ]
+
+    it('when there are libraries', () => {
+      const storeTubes = assignRequestIdsToTubes({ tubes, libraries, requests })
+      const tube = Object.values(storeTubes)[0]
+      expect(tube.requests).toEqual(requests.map((request) => request.id))
+      expect(tube.source_id).toEqual(tubes[0].relationships.libraries.data.id)
+    })
+
+    it('when there are no libraries', () => {
+      const storeTubes = assignRequestIdsToTubes({ tubes, requests })
+      const tube = Object.values(storeTubes)[0]
+      expect(tube.requests).not.toBeDefined()
+      expect(tube.source_id).toEqual(tubes[0].id)
     })
   })
 })

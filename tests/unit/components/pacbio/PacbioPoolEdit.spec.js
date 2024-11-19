@@ -1,9 +1,11 @@
 import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit.vue'
-import { Data } from '@support/testHelper.js'
 import * as pacbio from '@/lib/csv/pacbio.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
+
+const pacbioAutoTagFactory = PacbioAutoTagFactory()
 
 const tagSet = {
   id: '1',
@@ -380,7 +382,7 @@ describe('pacbioPoolEdit#edit', () => {
       rootStore.tags = tags
     })
     it('says empty when there are no used_aliquots', async () => {
-      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+      const poolCreateStore = Object.assign({}, pacbioAutoTagFactory.storeData, {
         used_aliquots: {},
       })
       store.$state = poolCreateStore
@@ -388,7 +390,7 @@ describe('pacbioPoolEdit#edit', () => {
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
     it('says pool when there are multiple libraries', async () => {
-      store.$state = Data.AutoTagStore
+      store.$state = pacbioAutoTagFactory.storeData
       store.selected.tagSet.id = '1'
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')

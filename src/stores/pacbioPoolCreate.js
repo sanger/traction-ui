@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { groupIncludedByResource, dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import { validate, payload } from '@/stores/utilities/pool.js'
+import {
+  validate,
+  payload,
+  assignLibraryRequestsToTubes,
+  createUsedAliquotsAndMapToSourceId,
+  assignRequestIdsToTubes,
+} from '@/stores/utilities/pool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
@@ -542,12 +548,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.pools
+      const request = rootStore.api.v2.traction.pacbio.pools
       const promise = request.create({
         data: payload({ used_aliquots, pool }),
         include: 'tube',
       })
-      const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
+      const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
       const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
       const { attributes: { barcode = '' } = {} } = tube
       return { success, barcode, errors }
@@ -574,7 +580,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.pools
+      const request = rootStore.api.v2.traction.pacbio.pools
       const promise = request.update(payload({ used_aliquots, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
@@ -594,10 +600,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * // Populate used_aliquots from a pool
      * const result = await populateUsedAliquotsFromPool(1);
      * console.log(result); // { success: true, errors: [] }
+     * This method actually fetches the pool so should be renamed. It was difficult to work out which method created the pool,
+     * fetchPool
      */
     async populateUsedAliquotsFromPool(poolId) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.pools
+      const request = rootStore.api.v2.traction.pacbio.pools
       const promise = request.find({
         id: poolId,
         include:
@@ -605,7 +613,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       })
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
       if (success) {
         const {
           aliquots = [],
@@ -618,22 +626,13 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         } = groupIncludedByResource(included)
 
         //Populate pool attributes
-        this.pool = {
-          id: data.id,
-          ...data.attributes,
-        }
+        this.pool = extractAttributes(data)
 
         //Populate requests
         this.resources.requests = dataToObjectById({
           data: requests,
           includeRelationships: true,
         })
-        //Populate tubes
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
-
-        // Get the pool tube and remove it from tubes list
-        this.tube = this.resources.tubes[data.relationships.tube.data.id]
-        delete this.resources.tubes[data.relationships.tube.data.id]
 
         //Populate libraries
         this.resources.libraries = dataToObjectById({
@@ -641,12 +640,18 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           includeRelationships: true,
         })
 
-        //Assign library request to tube if the tube has a library
-        Object.values(this.resources.libraries).forEach((library) => {
-          const request = this.resources.requests[library.request]
-          this.resources.tubes[library.tube].requests = [request.id]
-          this.resources.tubes[library.tube].source_id = String(library.id)
+        // populate tubes and assign libraries to tubes
+        this.resources.tubes = assignLibraryRequestsToTubes({
+          libraries: this.resources.libraries,
+          requests: this.resources.requests,
+          tubes,
         })
+
+        // Get the pool tube and remove it from tubes list.
+        // There must be a reason why it is done this way?
+        this.tube = this.resources.tubes[data.relationships.tube.data.id]
+        delete this.resources.tubes[data.relationships.tube.data.id]
+
         //Populate plates
         this.resources.plates = dataToObjectById({
           data: plates,
@@ -656,20 +661,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         //Populate wells
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
 
-        // Create used_aliquots
-        const usedAliquots = dataToObjectById({
-          data: aliquots,
-          includeRelationships: true,
-        })
-        // Set the used_aliquots mapped to the source_id
-        Object.values(usedAliquots).forEach((usedAliquot) => {
-          usedAliquot.request = usedAliquot.id
-          const usedAliquotObject = createUsedAliquot({
-            ...usedAliquot,
-            tag_id: usedAliquot.tag,
-          })
-          usedAliquotObject.setRequestAndVolume(this.resources.libraries)
-          this.used_aliquots[`_${usedAliquotObject.source_id}`] = usedAliquotObject
+        // Populate used_aliquots
+        this.used_aliquots = createUsedAliquotsAndMapToSourceId({
+          aliquots,
+          libraries: this.resources.libraries,
         })
 
         //Selects all the tubes and plates
@@ -824,10 +819,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.plates
-      const promise = request.get({ filter: filter, include: 'wells.requests' })
+      const request = rootStore.api.v2.traction.pacbio.plates
+      const promise = request.get({ filter, include: 'wells.requests' })
       const response = await handleResponse(promise)
-      let { success, data: { data, included = [] } = {}, errors = [] } = response
+      let { success, body: { data, included = [] } = {}, errors = [] } = response
       const { wells, requests } = groupIncludedByResource(included)
 
       // We will be return a successful empty list if no plates match the filter
@@ -885,11 +880,11 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.tubes
-      const promise = request.get({ filter: filter, include: 'requests,libraries.request' })
+      const request = rootStore.api.v2.traction.pacbio.tubes
+      const promise = request.get({ filter, include: 'requests,libraries.request' })
       let {
         success,
-        data: { data, included = [] } = {},
+        body: { data, included = [] } = {},
         errors = [],
       } = await handleResponse(promise)
       const { requests, libraries } = groupIncludedByResource(included)
@@ -902,8 +897,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
 
       if (success) {
-        //If this a library, the requests will be associated with library, therefore manually assign it to a tube
-        const tubes = dataToObjectById({ data, includeRelationships: true })
+        // If this a library, the requests will be associated with library, therefore manually assign it to a tube
         if (libraries) {
           this.resources.libraries = {
             ...this.resources.libraries,
@@ -913,13 +907,10 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             }),
           }
         }
-        Object.keys(tubes).forEach((key) => {
-          tubes[key] = {
-            ...tubes[key],
-            requests: libraries ? requests.map((request) => request.id) : tubes[key].requests,
-            source_id: String(libraries ? tubes[key].libraries : tubes[key].id),
-          }
-        })
+
+        // not sure why this is done. No explanation in the code.
+        const tubes = assignRequestIdsToTubes({ libraries, tubes: data, requests })
+
         // We want to grab the first (and only) record from the applied filter
         this.selectTube({ id: data[0].id, selected: true })
         this.resources.tubes = {
