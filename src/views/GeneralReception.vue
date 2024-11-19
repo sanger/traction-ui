@@ -3,6 +3,28 @@
     <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
     <div class="w-1/2 space-y-8">
       <div>
+        <traction-heading level="4" :show-border="true">Workflow</traction-heading>
+        <traction-field-group
+          label=""
+          attribute="workflowSelect"
+          for="workflowSelect"
+          description="Select a workflow if you would like to scan in the imported labware to a specific location"
+          layout="spacious"
+        >
+          <traction-select
+            id="workflowSelect"
+            v-model="workflow"
+            class="inline-block w-full"
+            :options="workflowOptions"
+            data-type="workflow-list"
+          />
+        </traction-field-group>
+        <SwipeCard
+          v-model="user_code"
+          description="Only necessary if you would like to scan in to a specific location"
+        />
+      </div>
+      <div>
         <traction-heading level="4" :show-border="true"> Source </traction-heading>
         <traction-field-group
           label="Source"
@@ -127,6 +149,13 @@
         :pipeline="pipeline"
         :reception="reception"
         :request-options="requestOptions"
+        :workflow-location-text="
+          workflowLocation
+            ? `The imported labware will be scanned into ${workflowLocation}`
+            : 'No location selected to scan into'
+        "
+        :user-code="user_code"
+        :location-barcode="location_barcode"
         @import-started="importStarted"
         @import-finished="clearModal"
         @reset="reset"
@@ -137,11 +166,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import Receptions from '@/lib/receptions'
+import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
+import SwipeCard from '@/components/reception/SwipeCard.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -160,6 +190,31 @@ const pipeline = ref(reception.value.pipelines[0])
 const pipelineOptions = computed(() =>
   reception.value.pipelines.map((pipeline) => ({ value: pipeline, text: pipeline })),
 )
+const user_code = ref('')
+
+const workflow = ref('')
+
+const workflowOptions = computed(() => [
+  { value: '', text: '' }, // Empty option
+  ...Object.values(WorkflowsLocations).map((workflow) => ({
+    value: workflow.barcode,
+    text: workflow.name,
+  })),
+])
+
+const workflowLocation = computed(() => {
+  const workflowsMap = new Map(
+    Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
+  )
+  if (workflow.value !== '') {
+    return workflowsMap.get(workflow.value).location
+  }
+  return undefined
+})
+
+const location_barcode = computed(() => {
+  return workflowLocation.value
+})
 
 function updatePipeline() {
   // If the current reception doesn't include the current pipeline then update the pipeline to a valid one
