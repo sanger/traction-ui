@@ -1,3 +1,7 @@
+
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import store from '@/store'
+
 /**
  * Validates and formats a record as payload data.
  *
@@ -59,4 +63,44 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
   }
 }
 
-export { validateAndFormatAsPayloadData }
+/**
+ * Checks for duplicate sources in the CSV content.
+ *
+ * @param {string} csvText - The CSV content as a string.
+ * @returns {boolean} - True if duplicate sources are found, otherwise false.
+ */
+const hasDuplicateSources = (csvText) => {
+  const lines = csvText.split('\n')
+  if (lines.length <= 2) {
+    // Only header and one line or empty
+    return false
+  }
+  const sources = new Set()
+  for (const line of lines.slice(1)) {
+    // Skip the header line
+    const source = line.split(',')[0] // The source is the first column
+    if (sources.has(source)) {
+      return true
+    }
+    sources.add(source)
+  }
+
+  return false
+}
+
+/**
+ * Fetches all requests and tags for given tagset.
+ *
+ * @param {Object} tagSet - The tag set to fetch tags and requests for.
+ * @returns {Promise<Object>} - The fetched tags and requests.
+ */
+async function fetchTagsAndRequests(tagSet) {
+  const pacbioRootStore = usePacbioRootStore()
+  await store.dispatch('traction/pacbio/requests/setRequests')
+  const requests = store.getters['traction/pacbio/requests/requests']
+  await pacbioRootStore.fetchPacbioTagSets()
+  const tags = tagSet.tags.map((tag) => pacbioRootStore.tags[tag.id ?? tag])
+  return { requests, tags }
+}
+
+export { validateAndFormatAsPayloadData, hasDuplicateSources, fetchTagsAndRequests }
