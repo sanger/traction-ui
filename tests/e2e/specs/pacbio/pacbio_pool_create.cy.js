@@ -15,14 +15,18 @@ describe('Pacbio Pool Create', () => {
 
     cy.wrap(PacbioPlateFactory({ count: 1 })).as('pacbioPlateFactory')
     cy.get('@pacbioPlateFactory').then((pacbioPlateFactory) => {
-      cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
-        statusCode: 200,
-        body: pacbioPlateFactory.content,
-      })
+      cy.intercept(
+        'GET',
+        '/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests',
+        {
+          statusCode: 200,
+          body: pacbioPlateFactory.content,
+        },
+      )
     })
 
     // The magic search input will check plates first before checking tubes so we need to intercept it
-    cy.intercept('/v1/pacbio/plates?filter[barcode]=TRAC-2-20&include=wells.requests', {
+    cy.intercept('GET', '/v1/pacbio/plates?filter[barcode]=TRAC-2-20&include=wells.requests', {
       statusCode: 200,
       body: {
         data: {},
@@ -31,6 +35,7 @@ describe('Pacbio Pool Create', () => {
     cy.wrap(PacbioTubeFactory({ findBy: 'libraries' })).as('pacbioTubeFactory')
     cy.get('@pacbioTubeFactory').then((pacbioTubeFactory) => {
       cy.intercept(
+        'GET',
         '/v1/pacbio/tubes?filter[barcode]=TRAC-2-20&include=requests,libraries.request',
         {
           statusCode: 200,
@@ -101,7 +106,7 @@ describe('Pacbio Pool Create', () => {
         })
     })
 
-    cy.intercept('/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
         data: {
@@ -151,7 +156,7 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
       statusCode: 422,
       body: {
         data: {
@@ -240,7 +245,7 @@ describe('Pacbio Pool Create', () => {
         .should('have.value', tagList[1].id)
     })
 
-    cy.intercept('/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
         data: {
@@ -314,7 +319,7 @@ describe('Pacbio Pool Create', () => {
         .should('have.value', tagList[1].id)
     })
 
-    cy.intercept('/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
         data: {

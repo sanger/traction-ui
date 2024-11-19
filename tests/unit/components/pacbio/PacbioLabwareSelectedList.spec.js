@@ -225,7 +225,6 @@ describe('PacbioLabwareSelectedList', () => {
         store.selectRequestInSource({ request: '30', source_id: '30', selected: true })
       })
       it('should display table view', () => {
-        console.log(pacbioTubeFactory.storeData.requests)
         expect(wrapper.find('[data-attribute=table-view]').exists()).toBe(true)
       })
       it('should display the correct fields', () => {

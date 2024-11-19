@@ -48,10 +48,6 @@ describe('usePacbioPoolCreateStore', () => {
       })
     })
 
-    it('has a factory', () => {
-      expect(pacbioPoolFactory).toBeDefined()
-    })
-
     it('return the selected plates', () => {
       const plates = {
         1: {
@@ -723,6 +719,7 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.resources.plates).toEqual(pacbioPoolFactory.storeData.resources.plates)
         expect(store.resources.wells).toEqual(pacbioPoolFactory.storeData.resources.wells)
         expect(store.resources.tubes).toEqual(pacbioPoolFactory.storeData.resources.tubes)
+        expect(store.selected.tagSet).toEqual(pacbioPoolFactory.storeData.selected.tagSet)
         expect(success).toEqual(true)
       })
 
