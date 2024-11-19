@@ -95,21 +95,25 @@ const createStoreData = (data, count) => {
 /**
  *
  * @param {Object} data
- * @param {Integer} count
+ * @param {Integer} count - number of pools
+ * @param {Integer} start - start index
  * @param {Boolean} includeAll
  * @returns Factory with storeData
  */
-const getData = (data, count, includeAll) => {
-  const foundData = find({ data, count, includeAll })
+const getData = (data, start, count, includeAll) => {
+  const foundData = find({ data, start, count, includeAll })
   return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
 }
 
-/*
+/**
  * Factory for creating a list of pools
  * @param {Integer} count - The number of pools to create
+ * @param {Boolean} includeAll - Add all the included data
+ * @param {Integer} start - The index to start from
  * @returns a base factory object with the pools data
+ * It would be better to pull the pools out by barcode or id
  */
-const PacbioPoolFactory = ({ count = undefined, includeAll = false } = {}) => {
+const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } = {}) => {
   const data = {
     data: [
       {
@@ -1482,7 +1486,7 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false } = {}) => {
     ],
   }
 
-  return getData(data, count, includeAll)
+  return getData(data, start, count, includeAll)
 }
 
 export default PacbioPoolFactory
