@@ -213,7 +213,7 @@ const workflowLocation = computed(() => {
 })
 
 const location_barcode = computed(() => {
-  return workflowLocation.value
+  return workflow.value
 })
 
 function updatePipeline() {
