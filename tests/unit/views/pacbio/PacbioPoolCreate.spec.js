@@ -74,11 +74,6 @@ describe('PacbioPoolCreate', () => {
   const wells = pacbioPlatesRequestFactory.storeData.wells
   const tubes = pacbioTubeFactory.storeData.tubes
 
-  // const tubes = dataToObjectById({
-  //   data: Data.PacbioTubesRequest.data.data,
-  //   includeRelationships: true,
-  // })
-
   describe('On Pool/New', () => {
     afterEach(async () => {
       // Clear the router so it doesn't affect other tests as router is shared between tests
