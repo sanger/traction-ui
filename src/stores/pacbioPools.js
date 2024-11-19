@@ -2,21 +2,8 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { buildRunSuitabilityErrors } from '@/stores/utilities/pool.js'
 
-/**
- * This function takes an object with `pool` and `used_aliquots` properties and returns an array of run suitability errors.
- * It maps over the errors of `pool.run_suitability` and `used_aliquot.run_suitability` for each used_aliquot, formats the errors with the pool or used_aliquot details, and returns the formatted errors.
- *
- * @param {Object}  - An object with `pool` and `used_aliquots` properties.
- * @returns {string[]} The formatted run suitability errors.
- */
-const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
-  ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
-  ...used_aliquots.flatMap((used_aliquot) => {
-    const used_aliquotName = `Used aliquot ${used_aliquot.id} (${used_aliquot.sample_name})`
-    return used_aliquot.run_suitability.errors.map(({ detail }) => `${used_aliquotName} ${detail}`)
-  }),
-]
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
  * It contains the pools, tubes, used_aliquots, requests, and tags state properties, and the fetchPools action.

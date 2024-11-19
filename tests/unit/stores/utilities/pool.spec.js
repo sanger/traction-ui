@@ -4,6 +4,7 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  buildRunSuitabilityErrors,
 } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -643,6 +644,80 @@ describe('pool', () => {
       const tube = Object.values(storeTubes)[0]
       expect(tube.requests).not.toBeDefined()
       expect(tube.source_id).toEqual(tubes[0].id)
+    })
+  })
+
+  describe('#buildRunSuitabilityErrors', () => {
+    it('returns the correct errors', () => {
+      const pool = {
+        id: '2',
+        type: 'pools',
+        barcode: 'TRAC-2-2',
+        run_suitability: {
+          ready_for_run: false,
+          formattedErrors: [
+            "Pool insert_size - can't be blank",
+            'Pool used_aliquots - is invalid',
+            "Used aliquot 2 (Sample47) insert_size - can't be blank",
+          ],
+          errors: [
+            {
+              title: "can't be blank",
+              detail: "insert_size - can't be blank",
+              code: '100',
+              source: {
+                pointer: '/data/attributes/insert_size',
+              },
+            },
+            {
+              title: 'is invalid',
+              detail: 'used_aliquots - is invalid',
+              code: '100',
+              source: {
+                pointer: '/data/relationships/used_aliquots',
+              },
+            },
+          ],
+        },
+      }
+
+      const used_aliquots = [
+        {
+          id: '1',
+          type: 'used_aliquots',
+          sample_name: 'Sample48',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+        },
+        {
+          id: '2',
+          type: 'used_aliquots',
+          sample_name: 'Sample47',
+          run_suitability: {
+            ready_for_run: false,
+            errors: [
+              {
+                title: "can't be blank",
+                detail: "insert_size - can't be blank",
+                code: '100',
+                source: {
+                  pointer: '/data/attributes/insert_size',
+                },
+              },
+            ],
+          },
+        },
+      ]
+
+      const expected = [
+        "Pool insert_size - can't be blank",
+        'Pool used_aliquots - is invalid',
+        "Used aliquot 2 (Sample47) insert_size - can't be blank",
+      ]
+
+      expect(buildRunSuitabilityErrors({ used_aliquots, pool })).toEqual(expected)
     })
   })
 })

@@ -159,10 +159,26 @@ const assignRequestIdsToTubes = ({ libraries, requests, tubes }) => {
   return tubesById
 }
 
+/**
+ * This function takes an object with `pool` and `used_aliquots` properties and returns an array of run suitability errors.
+ * It maps over the errors of `pool.run_suitability` and `used_aliquot.run_suitability` for each used_aliquot, formats the errors with the pool or used_aliquot details, and returns the formatted errors.
+ *
+ * @param {Object}  - An object with `pool` and `used_aliquots` properties.
+ * @returns {string[]} The formatted run suitability errors.
+ */
+const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
+  ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
+  ...used_aliquots.flatMap((used_aliquot) => {
+    const used_aliquotName = `Used aliquot ${used_aliquot.id} (${used_aliquot.sample_name})`
+    return used_aliquot.run_suitability.errors.map(({ detail }) => `${used_aliquotName} ${detail}`)
+  }),
+]
+
 export {
   validate,
   payload,
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  buildRunSuitabilityErrors,
 }
