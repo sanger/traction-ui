@@ -120,31 +120,5 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
       }
       return { success, errors, meta }
     },
-
-    /**
-     * Creates a library batch request with the given library attributes.
-     *
-     * @param {Array} librariesAttributes - The attributes of the libraries to include in the batch.
-     * @returns {Promise<Object>} - The result of the create operation, including success status, tubes, and errors.
-     */
-    async createLibraryBatcheRequest(librariesAttributes) {
-      const rootStore = useRootStore()
-      const libraryBatches = rootStore.api.v2.traction.pacbio.library_batches
-      const promise = libraryBatches.create({
-        data: {
-          data: {
-            type: 'library_batches',
-            attributes: {
-              libraries_attributes: librariesAttributes,
-            },
-          },
-        },
-        include: 'libraries,libraries.tube',
-      })
-
-      const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
-      const { tubes = [] } = groupIncludedByResource(included)
-      return { success, tubes, errors }
-    },
   },
 })
