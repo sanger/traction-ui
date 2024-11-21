@@ -1,7 +1,7 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
-import PacbioPlatesRequestFactory from '../../../factories/PacbioPlatesRequestFactory.js'
 import PacbioPoolFactory from '../../../factories/PacbioPoolFactory.js'
+import PacbioPlateFactory from '../../../factories/PacbioPlateFactory.js'
 
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
@@ -58,11 +58,11 @@ describe('Pacbio Pool Edit', () => {
       },
     )
 
-    cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
-    cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
+    cy.wrap(PacbioPlateFactory()).as('pacbioPlateFactory')
+    cy.get('@pacbioPlateFactory').then((pacbioPlateFactory) => {
       cy.intercept('GET', '/v1/pacbio/plates?include=wells.requests', {
         statusCode: 200,
-        body: pacbioPlateRequestFactory.content,
+        body: pacbioPlateFactory.content,
       })
     })
 
