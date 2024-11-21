@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
-import { buildRunSuitabilityErrors } from '@/stores/utilities/pool.js'
+import { buildRunSuitabilityErrors, createUsedAliquotsFromState } from '@/stores/utilities/pool.js'
 
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
@@ -33,17 +33,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      */
     poolsArray: (state) => {
       return Object.values(state.pools).map((pool) => {
-        const used_aliquots = pool.used_aliquots.map((used_aliquotId) => {
-          const { id, type, source_id, source_type, tag, run_suitability } =
-            state.used_aliquots[used_aliquotId]
-          // Get the sample name based on the source_type
-          const { sample_name } =
-            source_type === 'Pacbio::Request'
-              ? state.requests[source_id]
-              : state.requests[state.libraries[source_id]?.pacbio_request_id]
-          const { group_id } = state.tags[tag] || {}
-          return { id, type, sample_name, group_id, run_suitability }
-        })
+        const used_aliquots = createUsedAliquotsFromState({ pool, state })
         const { barcode } = state.tubes[pool.tube]
         return {
           ...pool,

@@ -174,6 +174,30 @@ const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
   }),
 ]
 
+/**
+ *
+ * @param {Object} pool - pool object
+ * @param {Object} state - state object
+ * @returns {Object[]} - Array of used aliquots - id, type, source_id, source_type, tag, run suitability
+ * Create used aliquots from state
+ * For each aliquot in the pool, get the used aliquot from state and return the id, type, source_id, source_type, tag, and run suitability
+ * Get the sample name based on the source_type
+ * Get the group id based on the tag
+ */
+const createUsedAliquotsFromState = ({ pool, state }) => {
+  return pool.used_aliquots.map((used_aliquotId) => {
+    const { id, type, source_id, source_type, tag, run_suitability } =
+      state.used_aliquots[used_aliquotId]
+    // Get the sample name based on the source_type
+    const { sample_name } =
+      source_type === 'Pacbio::Request'
+        ? state.requests[source_id]
+        : state.requests[state.libraries[source_id]?.pacbio_request_id]
+    const { group_id } = state.tags[tag] || {}
+    return { id, type, sample_name, group_id, run_suitability }
+  })
+}
+
 export {
   validate,
   payload,
@@ -181,4 +205,5 @@ export {
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
   buildRunSuitabilityErrors,
+  createUsedAliquotsFromState,
 }

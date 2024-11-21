@@ -5,6 +5,7 @@ import {
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
   buildRunSuitabilityErrors,
+  createUsedAliquotsFromState,
 } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -718,6 +719,84 @@ describe('pool', () => {
       ]
 
       expect(buildRunSuitabilityErrors({ used_aliquots, pool })).toEqual(expected)
+    })
+  })
+
+  describe('createUsedAliquotsAndMapToSourceId', () => {
+    const pool = {
+      id: '1',
+      used_aliquots: ['1', '3'],
+      tube: '1',
+      type: 'pools',
+      source_identifier: 'DN1:A1',
+      run_suitability: {
+        ready_for_run: true,
+        errors: [],
+      },
+    }
+
+    const used_aliquots = {
+      1: {
+        id: '1',
+        source_id: '1',
+        source_type: 'Pacbio::Request',
+        tag: '26',
+        type: 'used_aliquots',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      },
+      3: {
+        id: '3',
+        source_id: '2',
+        source_type: 'Pacbio::Library',
+        tag: '26',
+        type: 'used_aliquots',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      },
+    }
+
+    const tags = {
+      26: {
+        group_id: 'bc1019',
+        id: '26',
+        type: 'tags',
+      },
+    }
+
+    const requests = {
+      1: { id: '1', sample_name: 'Sample48', type: 'requests' },
+      2: { id: '2', sample_name: 'Sample47', type: 'requests' },
+    }
+
+    const libraries = {
+      2: { id: '2', pacbio_request_id: '2', type: 'libraries' },
+    }
+
+    it('will produce the correct used_aliquots for pools', () => {
+      const expected = [
+        {
+          id: '1',
+          type: 'used_aliquots',
+          sample_name: 'Sample48',
+          group_id: 'bc1019',
+          run_suitability: { ready_for_run: true, errors: [] },
+        },
+        {
+          id: '3',
+          type: 'used_aliquots',
+          sample_name: 'Sample47',
+          group_id: 'bc1019',
+          run_suitability: { ready_for_run: true, errors: [] },
+        },
+      ]
+      expect(
+        createUsedAliquotsFromState({ pool, state: { used_aliquots, tags, requests, libraries } }),
+      ).toEqual(expected)
     })
   })
 })
