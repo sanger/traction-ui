@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v1/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
-import { buildRunSuitabilityErrors, createUsedAliquotsFromState } from '@/stores/utilities/pool.js'
+import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
 
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
@@ -32,19 +32,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @returns {Object[]} The array of pools with the retrieved data.
      */
     poolsArray: (state) => {
-      return Object.values(state.pools).map((pool) => {
-        const used_aliquots = createUsedAliquotsFromState({ pool, state })
-        const { barcode } = state.tubes[pool.tube]
-        return {
-          ...pool,
-          used_aliquots,
-          barcode,
-          run_suitability: {
-            ...pool.run_suitability,
-            formattedErrors: buildRunSuitabilityErrors({ used_aliquots, pool }),
-          },
-        }
-      })
+      return addUsedAliquotsBarcodeAndErrorsToPools(state)
     },
   },
   actions: {

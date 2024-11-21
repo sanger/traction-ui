@@ -8,7 +8,6 @@ import TractionPacbioPools from './tractionPacbioPools.json'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
 import PacbioWells from './pacbioWells'
 import OntPlatesRequest from './ontPlatesRequest.json'
-import StorePools from './StorePools.json'
 
 export default {
   Libraries,
@@ -21,5 +20,4 @@ export default {
   TractionPacbioPoolsWithAliquots,
   PacbioWells,
   OntPlatesRequest,
-  StorePools,
 }
