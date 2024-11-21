@@ -1,9 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
-import { Data } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
-import * as jsonapi from '@/api/JsonApi.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
 import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
 
@@ -42,30 +40,13 @@ describe('usePacbioPools', () => {
       })
 
       it('successfully', async () => {
-        const response = Data.TractionPacbioPoolsWithAliquots
-        const { data: pools, included } = response.data
-        get.mockResolvedValue(response)
-
+        get.mockResolvedValue(pacbioPoolFactory.responses.axios)
         await store.fetchPools()
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: included.slice(0, 2) }))
-        expect(store.used_aliquots).toEqual(
-          jsonapi.dataToObjectById({ data: included.slice(2, 4), includeRelationships: true }),
-        )
-        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: included.slice(4, 6) }))
-        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: included.slice(6, 8) }))
-      })
-
-      it('when the pool has no used_aliquots', async () => {
-        const response = Data.TractionPacbioPoolsNoRelationships
-        const { data: pools } = response.data
-        get.mockResolvedValue(response)
-        await store.fetchPools()
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
+        expect(store.pools).toEqual(pacbioPoolFactory.storeData.pools)
+        expect(store.tubes).toEqual(pacbioPoolFactory.storeData.tubes)
+        expect(store.used_aliquots).toEqual(pacbioPoolFactory.storeData.used_aliquots)
+        expect(store.tags).toEqual(pacbioPoolFactory.storeData.tags)
+        expect(store.requests).toEqual(pacbioPoolFactory.storeData.requests)
       })
 
       it('unsuccessfully', async () => {
