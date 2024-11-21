@@ -31,7 +31,7 @@ export default {
       return {
         'flex w-32 h-20 whitespace-normal justify-center items-center rounded-md border border-transparent text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 text-black bg-gray-300 hover:bg-gray-100 shadow-sm focus:border-gray-100 focus:shadow-outline-gray active:bg-gray-100':
           this.viewType == ViewType.Button,
-        'group items-center px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-700':
+        'group items-center px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white text-gray-400 hover:text-white':
           this.viewType == ViewType.MenuItem,
       }
     },
