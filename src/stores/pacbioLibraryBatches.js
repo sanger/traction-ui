@@ -9,6 +9,7 @@ import {
   fetchTagsAndRequests,
 } from '@/stores/utilities/pacbioLibraryBatches.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
 /**
  * usePacbioLibraryBatchesStore is a store to manage pacbio library batches.
@@ -16,10 +17,6 @@ import { dataToObjectById } from '@/api/JsonApi.js'
  */
 export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', {
   state: () => ({
-    /**
-     * @property {Object} libraryBatches - An object to store all library batches indexed by id.
-     */
-    libraryBatches: {},
     /**
      * @property {Object} libraries - An object to store all libraries indexed by id.
      */
@@ -29,6 +26,33 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
      */
     tubes: {},
   }),
+
+  getters: {
+    /**
+     * Retrieves the libraries in the batch with their associated details.
+     *
+     * @param {Object} state - The state object of the store.
+     * @returns {Array<Object>} - An array of library objects with their details.
+     */
+    librariesInBatch: (state) => {
+      const pacbioRootStore = usePacbioRootStore()
+      return Object.values(state.libraries).map((library) => {
+        const { id, tag_id, volume, concentration, insert_size, template_prep_kit_box_barcode } =
+          library
+        const tag = pacbioRootStore.tags[tag_id]
+        const tagGroupId = tag ? tag.group_id : ''
+        return {
+          id,
+          barcode: state.tubes[library.tube].barcode,
+          tag: tagGroupId,
+          volume,
+          concentration,
+          insert_size,
+          template_prep_kit_box_barcode,
+        }
+      })
+    },
+  },
 
   actions: {
     /**
@@ -60,7 +84,7 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
           csv,
           validateAndFormatAsPayloadData,
           requests,
-          Object.values(tags).map((t) => t.id),
+          Object.values(tags),
         )
         if (eachReordRetObj.error) {
           return { success: false, errors: [eachReordRetObj.error] }
@@ -79,46 +103,17 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
               },
             },
           },
-          include: 'libraries,libraries.tube',
+          include: 'libraries.tube',
         })
 
         const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
-        const { tubes = [] } = groupIncludedByResource(included)
-
-        // Return the result
-        const barcodes = tubes.map((tube) => tube.attributes.barcode)
-        return { success, barcodes, errors }
+        const { tubes = [], libraries = [] } = groupIncludedByResource(included)
+        this.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        this.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
+        return { success, result: this.librariesInBatch, errors }
       } catch (error) {
         return { success: false, errors: [error] }
       }
-    },
-
-    /**
-     * Fetches library batches with optional filters and pagination.
-     *
-     * @param {Object} [filter={}] - The filter criteria for fetching library batches.
-     * @param {Object} [page={}] - The pagination options for fetching library batches.
-     * @returns {Promise<Object>} - The result of the fetch operation, including success status, errors, and metadata.
-     */
-    async fetchLibraryBatches(filter = {}, page = {}) {
-      const rootStore = useRootStore()
-      const pacbioLibraryBatches = rootStore.api.v2.traction.pacbio.library_batches
-      const promise = pacbioLibraryBatches.get({
-        page,
-        filter,
-        include: 'libraries,libraries.tube',
-      })
-      const response = await handleResponse(promise)
-
-      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
-
-      if (success && data.length > 0) {
-        const { tubes, libraries } = groupIncludedByResource(included)
-        this.libraryBatches = dataToObjectById({ data, includeRelationships: true })
-        this.tubes = dataToObjectById({ data: tubes })
-        this.libraries = dataToObjectById({ data: libraries })
-      }
-      return { success, errors, meta }
     },
   },
 })

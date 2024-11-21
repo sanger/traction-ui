@@ -9,7 +9,7 @@ import store from '@/store'
  * @param {Array} tagIds - The list of valid tag IDs.
  * @returns {Object|Error} - Returns the formatted payload data or an error if validation fails.
  */
-const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
+const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
   const { source, tag, ...attributes } = record
 
   /**
@@ -20,30 +20,29 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
    */
   const createError = (message) => new Error(`Invalid record at line ${info.lines}: ${message}`)
 
-  if (!source || !tag) {
-    return createError('source and tag are required')
-  }
-
-  const request = requests.find((r) => r.sample_name === source)
-  if (!request) {
-    return createError(`source ${source} not found`)
-  }
-
-  if (!tagIds.includes(tag)) {
-    return createError(`tag ${tag} not found`)
-  }
-
   const measurementAttributes = [
     'concentration',
     'insert_size',
     'template_prep_kit_box_barcode',
     'volume',
   ]
-  for (const attr of measurementAttributes) {
-    if (!attributes[attr]) {
+  const requiredAttributes = ['source', 'tag', ...measurementAttributes]
+  for (const attr of requiredAttributes) {
+    if (!record[attr]) {
       return createError(`${attr} is required`)
     }
   }
+
+  const request = requests.find((r) => r.source_identifier === source)
+  if (!request) {
+    return createError(`source ${source} not found`)
+  }
+
+  const tagObj = tags.find((t) => t.group_id === tag)
+  if (!tagObj) {
+    return createError(`tag ${tag} not found`)
+  }
+
   const measurementAttributesObj = measurementAttributes.reduce((obj, key) => {
     if (attributes[key] !== undefined) {
       obj[key] = attributes[key]
@@ -53,10 +52,10 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tagIds) => {
 
   return {
     pacbio_request_id: request.id,
-    tag_id: tag,
+    tag_id: tagObj.id,
     ...measurementAttributesObj,
     primary_aliquot_attributes: {
-      tag_id: tag,
+      tag_id: tagObj.id,
       ...measurementAttributesObj,
     },
   }

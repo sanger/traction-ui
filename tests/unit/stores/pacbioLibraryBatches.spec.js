@@ -10,17 +10,18 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import PacbioLibraryBatchFactory from '@tests/factories/PacbioLibraryBatchFactory.js'
 import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import fs from 'fs'
 import { store } from '@support/testHelper.js'
 
 const pacbioRequestsFactory = PacbioRequestsFactory()
-const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
+const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory(pacbioTagSetFactory.storeData.tags)
 
 describe('usePacbioLibraryBatchesStore', () => {
   const apiGetter = store.getters.api.v2
 
-  let rootStore, pacbioLibraryBatchStore
+  let rootStore, pacbioLibraryBatchStore, pacbioRootStore
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
       up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -28,6 +29,18 @@ describe('usePacbioLibraryBatchesStore', () => {
     setActivePinia(pinia)
     rootStore = useRootStore()
     pacbioLibraryBatchStore = usePacbioLibraryBatchesStore()
+    pacbioRootStore = usePacbioRootStore()
+  })
+
+  describe('librariesInBatch', () => {
+    it('returns libraries in batch', () => {
+      pacbioLibraryBatchStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
+      pacbioLibraryBatchStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
+      pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
+      expect(pacbioLibraryBatchStore.librariesInBatch).toEqual(
+        pacbioLibraryBatchFactory.storeData.librariesInBatch,
+      )
+    })
   })
 
   describe('actions', () => {
@@ -53,10 +66,7 @@ describe('usePacbioLibraryBatchesStore', () => {
         }
         logMessage = vi.fn()
         rootStore.addCSVLogMessage = logMessage
-        mockSuccessResponse = successfulResponse({
-          data: {},
-          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
-        })
+        mockSuccessResponse = successfulResponse(pacbioLibraryBatchFactory.content)
         tagSet = pacbioTagSetFactory.storeData.selected.tagSet
       })
 
@@ -79,7 +89,7 @@ describe('usePacbioLibraryBatchesStore', () => {
       it('successfully creates a library batch', async () => {
         csvFileTextContent = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
         create.mockResolvedValue(mockSuccessResponse)
-        const { success, barcodes } = await pacbioLibraryBatchStore.createLibraryBatch(
+        const { success, result } = await pacbioLibraryBatchStore.createLibraryBatch(
           csvFile,
           tagSet,
         )
@@ -90,7 +100,11 @@ describe('usePacbioLibraryBatchesStore', () => {
 
         expect(create).toBeCalled(payload)
         expect(success).toBeTruthy()
-        expect(barcodes).toEqual(['TRAC-1'])
+        expect(pacbioLibraryBatchStore.libraries).toEqual(
+          pacbioLibraryBatchFactory.storeData.libraries,
+        )
+        expect(pacbioLibraryBatchStore.tubes).toEqual(pacbioLibraryBatchFactory.storeData.tubes)
+        expect(result).toEqual(pacbioLibraryBatchStore.librariesInBatch)
       })
 
       it('returns error when csv file contains duplicate tags', async () => {
@@ -105,7 +119,7 @@ describe('usePacbioLibraryBatchesStore', () => {
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(['Duplicate tag: 289'])
+        expect(errors).toEqual(['Duplicate tag: bc2067'])
       })
 
       it('returns error when csv file contains invalid source', async () => {
@@ -120,7 +134,7 @@ describe('usePacbioLibraryBatchesStore', () => {
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(['Invalid record at line 2: source test not found'])
+        expect(errors).toEqual(['Invalid record at line 3: source test not found'])
       })
 
       it('returns errors on failedResponse', async () => {
@@ -131,36 +145,6 @@ describe('usePacbioLibraryBatchesStore', () => {
           csvFile,
           tagSet,
         )
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(failureResponse.errorSummary)
-      })
-    })
-
-    describe('#fetchLibraryBatches', () => {
-      let get
-
-      beforeEach(() => {
-        get = vi.fn()
-        rootStore.api.v2.traction.pacbio.library_batches.get = get
-      })
-
-      it('successfully', async () => {
-        get.mockResolvedValue(pacbioLibraryBatchFactory.responses.fetch)
-        const { success } = await pacbioLibraryBatchStore.fetchLibraryBatches()
-        expect(success).toBeTruthy()
-        expect(pacbioLibraryBatchStore.libraryBatches).toEqual(
-          pacbioLibraryBatchFactory.storeData.libraryBatches,
-        )
-        expect(pacbioLibraryBatchStore.tubes).toEqual(pacbioLibraryBatchFactory.storeData.tubes)
-        expect(pacbioLibraryBatchStore.libraries).toEqual(
-          pacbioLibraryBatchFactory.storeData.libraries,
-        )
-      })
-
-      it('unsuccessfully', async () => {
-        const failureResponse = failedResponse()
-        get.mockResolvedValue(failureResponse)
-        const { success, errors } = await pacbioLibraryBatchStore.fetchLibraryBatches()
         expect(success).toBeFalsy()
         expect(errors).toEqual(failureResponse.errorSummary)
       })

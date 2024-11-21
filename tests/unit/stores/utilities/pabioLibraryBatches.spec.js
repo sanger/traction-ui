@@ -4,81 +4,97 @@ import {
   hasDuplicateTags,
 } from '@/stores/utilities/pacbioLibraryBatches'
 import fs from 'fs'
+import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+
+const pacbioRequestsFactory = PacbioRequestsFactory()
+const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('pacbioLibraryBatches', () => {
-  describe('validateAndFormatAsPayloadData', () => {
-    const requests = [
-      { id: 1, sample_name: 'sample1' },
-      { id: 2, sample_name: 'sample2' },
-    ]
-    const tagIds = ['1', '2']
+  const requests = pacbioRequestsFactory.storeData.requests
+  const tags = Object.values(pacbioTagSetFactory.storeData.tags)
 
-    it('returns an error if source or tag is missing', () => {
-      const record = { source: '', tag: '', concentration: 10, insert_size: 100, volume: 5 }
-      const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagIds)
-      expect(result).toEqual(new Error('Invalid record at line 1: source and tag are required'))
+  describe('validateAndFormatAsPayloadData', () => {
+    const requiredFields = [
+      'source',
+      'tag',
+      'concentration',
+      'insert_size',
+      'volume',
+      'template_prep_kit_box_barcode',
+    ]
+
+    requiredFields.forEach((field) => {
+      it(`returns an error if ${field} is missing`, () => {
+        const record = {
+          source: 'sample1',
+          tag: '1',
+          concentration: 10,
+          insert_size: 100,
+          volume: 5,
+          template_prep_kit_box_barcode: 'abc',
+        }
+        record[field] = '' // Set the current field to an empty string
+        const info = { lines: 1 }
+        const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
+        expect(result).toEqual(new Error(`Invalid record at line 1: ${field} is required`))
+      })
     })
 
     it('returns an error if source is not found in requests', () => {
       const record = {
         source: 'sample3',
         tag: '1',
+        tag_set: 'tagSet1',
         concentration: 10,
         insert_size: 100,
         volume: 5,
+        template_prep_kit_box_barcode: 'abc',
       }
       const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagIds)
+      const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
       expect(result).toEqual(new Error('Invalid record at line 1: source sample3 not found'))
     })
 
     it('returns an error if tag is not found in tagIds', () => {
       const record = {
-        source: 'sample1',
+        source: requests[0].source_identifier,
+        tag_set: pacbioTagSetFactory.storeData.selected.tagSet.name,
         tag: '3',
         concentration: 10,
         insert_size: 100,
         volume: 5,
-      }
-      const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagIds)
-      expect(result).toEqual(new Error('Invalid record at line 1: tag 3 not found'))
-    })
-
-    it('returns an error if any required attribute is missing', () => {
-      const record = {
-        source: 'sample1',
-        tag: '1',
-        concentration: 10,
-        insert_size: 100,
         template_prep_kit_box_barcode: 'abc',
       }
       const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagIds)
-      expect(result).toEqual(new Error('Invalid record at line 1: volume is required'))
+      const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
+      expect(result).toEqual(new Error('Invalid record at line 1: tag 3 not found'))
     })
 
     it('returns formatted payload data if all validations pass', () => {
+      const tagSet = pacbioTagSetFactory.storeData.selected.tagSet
+      const tag = pacbioTagSetFactory.storeData.selected.tag
+      const request = pacbioRequestsFactory.content.data[0]
       const record = {
-        source: 'sample1',
-        tag: '1',
+        source: request.attributes.source_identifier,
+        tag_set: tagSet.name,
+        tag: tag.group_id,
         concentration: 10,
         insert_size: 100,
         volume: 5,
         template_prep_kit_box_barcode: 'abc',
       }
       const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagIds)
+      const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
       expect(result).toEqual({
-        pacbio_request_id: 1,
-        tag_id: '1',
+        pacbio_request_id: request.id,
+        tag_id: tag.id,
         concentration: 10,
         insert_size: 100,
         volume: 5,
         template_prep_kit_box_barcode: 'abc',
         primary_aliquot_attributes: {
-          tag_id: '1',
+          tag_id: tag.id,
           template_prep_kit_box_barcode: 'abc',
           concentration: 10,
           insert_size: 100,
@@ -101,7 +117,7 @@ describe('pacbioLibraryBatches', () => {
         'utf8',
       )
       const result = hasDuplicateTags(csvText)
-      expect(result).toBe('Duplicate tag: 289')
+      expect(result).toBe('Duplicate tag: bc2067')
     })
 
     it('returns when there is only one tag', () => {

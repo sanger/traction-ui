@@ -1,7 +1,7 @@
 import BaseFactory from './BaseFactory'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 
-const PacbioLibraryBatchFactory = () => {
+const PacbioLibraryBatchFactory = (tags = []) => {
   const data = {
     data: [
       {
@@ -54,7 +54,7 @@ const PacbioLibraryBatchFactory = () => {
           deactivated_at: null,
           source_identifier: 'GEN-1725896371-4:B3',
           pacbio_request_id: 407,
-          tag_id: 1,
+          tag_id: 303,
           used_volume: 0,
           available_volume: 10,
         },
@@ -91,7 +91,7 @@ const PacbioLibraryBatchFactory = () => {
           deactivated_at: null,
           source_identifier: 'GEN-1725896371-4:B3',
           pacbio_request_id: 407,
-          tag_id: 1,
+          tag_id: 304,
           used_volume: 0,
           available_volume: 10,
         },
@@ -134,13 +134,24 @@ const PacbioLibraryBatchFactory = () => {
     },
   }
 
-  const createStoreData = ({ data, included }) => {
+  const createStoreData = ({ included }) => {
     const { tubes, libraries } = groupIncludedByResource(included)
-    const libraryBatches = dataToObjectById({ data, includeRelationships: true })
+    const librariesObj = dataToObjectById({ data: libraries, includeRelationships: true })
+    const tubesObj = dataToObjectById({ data: tubes })
     return {
-      libraryBatches,
-      tubes: dataToObjectById({ data: tubes }),
-      libraries: dataToObjectById({ data: libraries }),
+      librariesInBatch: Object.values(librariesObj).map((library) => {
+        return {
+          id: library.id,
+          barcode: tubesObj[library.tube].barcode,
+          tag: tags[library.tag_id]?.group_id,
+          volume: library.volume,
+          concentration: library.concentration,
+          insert_size: library.insert_size,
+          template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+        }
+      }),
+      tubes: tubesObj,
+      libraries: librariesObj,
     }
   }
 
