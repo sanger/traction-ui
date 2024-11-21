@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <TractionHeader></TractionHeader>
-    <TractionHeading level="1" shadow>{{ pipeline }} {{ page }}</TractionHeading>
     <div class="flex flex-col mb-auto px-4 pt-4 pb-10">
       <router-view class="text-center" />
     </div>
@@ -31,14 +30,12 @@
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import TractionMessage from '@/components/TractionMessage'
-import TractionHeading from '@/components/TractionHeading'
 import TractionHeader from '@/components/TractionHeader'
 
 export default {
   components: {
     InfoFooter,
     TractionMessage,
-    TractionHeading,
     TractionHeader,
   },
   computed: {
