@@ -2,8 +2,8 @@ import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import { mount, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
 import { expect } from 'vitest'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
-import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -54,7 +54,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioPlateFactory = PacbioPlateFactory()
 const pacbioTubeFactory = PacbioTubeFactory()
 
 describe('PacbioPoolCreate', () => {
@@ -70,8 +70,7 @@ describe('PacbioPoolCreate', () => {
       }
     },
   ]
-  const plates = pacbioPlatesRequestFactory.storeData.plates
-  const wells = pacbioPlatesRequestFactory.storeData.wells
+  const { plates, wells } = pacbioPlateFactory.storeData.resources
   const tubes = pacbioTubeFactory.storeData.tubes
 
   describe('On Pool/New', () => {

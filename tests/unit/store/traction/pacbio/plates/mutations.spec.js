@@ -1,14 +1,14 @@
 import mutations from '@/store/traction/pacbio/plates/mutations'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+import PacbioPlateFactory from '@tests/factories/pacbioPlateFactory'
 
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioPlateFactory = PacbioPlateFactory()
 
 describe('mutations', () => {
   it('"setPlates" sets "state.plates" to the given plates', () => {
     const state = {
       plates: {},
     }
-    mutations.setPlates(state, pacbioPlatesRequestFactory.content.data)
-    expect(state.plates).toEqual(pacbioPlatesRequestFactory.storeData.plates)
+    mutations.setPlates(state, pacbioPlateFactory.content.data)
+    expect(state.plates).toEqual(pacbioPlateFactory.storeData.resources.plates)
   })
 })

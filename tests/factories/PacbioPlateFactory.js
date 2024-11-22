@@ -8,12 +8,16 @@ import { groupIncludedByResource, find, dataToObjectById } from './../../src/api
  */
 const createStoreData = (data) => {
   const { wells, requests } = groupIncludedByResource(data.included)
+  const storePlates = dataToObjectById({ data: data.data, includeRelationships: true })
 
   return {
     resources: {
-      plates: dataToObjectById({ data: data.data, includeRelationships: true }),
+      plates: storePlates,
       wells: dataToObjectById({ data: wells, includeRelationships: true }),
       requests: dataToObjectById({ data: requests, includeRelationships: true }),
+    },
+    selected: {
+      plate: Object.values(storePlates)[0], // first plate
     },
   }
 }

@@ -2,8 +2,10 @@ import { mount, createTestingPinia } from '@support/testHelper.js'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+
+const pacbioPlateFactory = PacbioPlateFactory()
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -38,18 +40,16 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
   const storeObj = usePacbioPoolCreateStore()
   return { wrapperObj, storeObj }
 }
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+
 const pacbioTubeFactory = PacbioTubeFactory({ transformTubes: true })
 
 // These tests are brittle and rely on testing the actual data.
 // They are all passing as I referred to data in the tube factory/
 describe('PacbioLabwareSelectedList', () => {
   let wrapper, store
-  const plates = pacbioPlatesRequestFactory.storeData.plates
-  const wells = pacbioPlatesRequestFactory.storeData.wells
-  const plateRequests = pacbioPlatesRequestFactory.storeData.plateRequests
-  const tubes = pacbioTubeFactory.storeData.tubes
-  const requests = pacbioTubeFactory.storeData.requests
+
+  const { plates, wells, requests: plateRequests } = pacbioPlateFactory.storeData.resources
+  const { tubes, requests } = pacbioTubeFactory.storeData
 
   it('should not display any labware when there is no labware', () => {
     const { wrapperObj } = mountWithStore({
@@ -66,14 +66,14 @@ describe('PacbioLabwareSelectedList', () => {
       const labware = [
         {
           type: 'plates',
-          barcode: 'DN814327C',
+          barcode: 'GEN-1680611780-1',
         },
       ]
       const { wrapperObj, storeObj } = mountWithStore({
         state: {
           selected: {
             plates: {
-              61: { id: '61' },
+              1: { id: '1' },
             },
           },
           resources: {
@@ -92,11 +92,11 @@ describe('PacbioLabwareSelectedList', () => {
     it('should display the plate labware', () => {
       const items = wrapper.findAll('[data-type="selected-labware-item"]')
       expect(items.length).toBe(1)
-      expect(wrapper.find('[data-attribute=labware-name]').text()).toContain('DN814327C')
+      expect(wrapper.find('[data-attribute=labware-name]').text()).toContain('GEN-1680611780-1')
     })
     it('should emit closed event when remove button is clicked', async () => {
       store.deselectPlateAndContents = vi.fn()
-      const button = wrapper.find('#remove-btn-61')
+      const button = wrapper.find('#remove-btn-1')
       await button.trigger('click')
       expect(wrapper.emitted().closed).toBeTruthy()
     })
