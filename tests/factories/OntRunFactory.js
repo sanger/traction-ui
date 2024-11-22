@@ -15,18 +15,6 @@ const createStoreData = (data) => {
   return {
     runs,
     runsArray: Object.values(runs),
-    validRun: {
-      id: 1,
-      instrument_name: 'GXB02004',
-      state: 'pending',
-      flowcell_attributes: [{ tube_barcode: 'TRAC-A-1' }],
-    },
-    findRun: {
-      flowcell_attributes: [],
-      id: '1',
-      state: 'pending',
-      instrument_name: 'GXB02004',
-    },
   }
 }
 
@@ -39,19 +27,42 @@ const createStoreData = (data) => {
  * otherwise return the data as is.
  * This is a bit messy but it will do for now.
  */
-const getData = (data, findBy) => {
+const getData = (data, findBy, count) => {
+  let countVal = findBy? 1 : count
   const index =
     findBy === 'flowcells'
       ? data.data.findIndex((item) => item.relationships.flowcells?.data)
-      : null
+      : 0
 
   if (index !== null) {
     // we need to includeAll as the requests for pools are in the libraries and I think
     // pulled out as used_by in the aliquots
-    const foundData = find({ data, start: index, count: 1, get: true, includeAll: true })
-    return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
-  } else {
-    return { ...BaseFactory(data), storeData: createStoreData(data) }
+    const foundData = find({ data, start: index, count: countVal, get: true, includeAll: true })
+    return { ...BaseFactory(foundData), storeData: createStoreData(foundData),formattedOntRun }
+  } 
+  else
+  {
+    return { ...BaseFactory(data), storeData: createStoreData(data),formattedOntRun}
+  }
+}
+
+const formattedOntRun = (instruments, pools, fetchResponse) => {
+  const { data, included = [] } = fetchResponse
+  const instrument_name = instruments.find((i) => i.id == data[0].attributes.ont_instrument_id)?.name
+
+  return {
+    id: data[0].id,
+    instrument_name: instrument_name,
+    state: data[0].attributes.state,
+    flowcell_attributes: included.map((fc) => {
+      const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.tube_barcode
+      return {
+        flowcell_id: fc.attributes.flowcell_id,
+        ont_pool_id: fc.attributes.ont_pool_id,
+        position: fc.attributes.position,
+        tube_barcode: tube_barcode,
+      }
+    }),
   }
 }
 
@@ -61,7 +72,7 @@ const getData = (data, findBy) => {
  * @returns {Object} An object containing the base factory data, find data, and store data.
  */
 
-const OntRunFactory = ({ findBy = null } = {}) => {
+const OntRunFactory = ({ count = undefined, findBy = null } = {}) => {
   const data = {
     data: [
       {
@@ -136,6 +147,7 @@ const OntRunFactory = ({ findBy = null } = {}) => {
           name: 'GXB02004',
           instrument_type: 'GridION',
           max_number_of_flowcells: 5,
+          ont_pool_id: 1,
         },
       },
       {
@@ -148,6 +160,7 @@ const OntRunFactory = ({ findBy = null } = {}) => {
           name: 'PC24B148',
           instrument_type: 'PromethION',
           max_number_of_flowcells: 24,
+          ont_pool_id: 2,
         },
       },
       {
@@ -165,7 +178,7 @@ const OntRunFactory = ({ findBy = null } = {}) => {
     },
   }
 
-  return getData(data, findBy)
+  return getData(data, findBy,count)
 }
 
 export default OntRunFactory
