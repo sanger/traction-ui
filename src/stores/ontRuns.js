@@ -102,7 +102,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
         //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
         const existingPools = store.getters['traction/ont/pools/pools']
 
-        this.currentRun = buildFormatedOntRun(existingInstruments, included, data,existingPools)
+        this.currentRun = buildFormatedOntRun(existingInstruments, included, data, existingPools)
         return { success, errors }
       }
     },

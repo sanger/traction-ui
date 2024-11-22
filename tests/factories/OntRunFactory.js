@@ -28,27 +28,25 @@ const createStoreData = (data) => {
  * This is a bit messy but it will do for now.
  */
 const getData = (data, findBy, count) => {
-  let countVal = findBy? 1 : count
+  let countVal = findBy ? 1 : count
   const index =
-    findBy === 'flowcells'
-      ? data.data.findIndex((item) => item.relationships.flowcells?.data)
-      : 0
+    findBy === 'flowcells' ? data.data.findIndex((item) => item.relationships.flowcells?.data) : 0
 
   if (index !== null) {
     // we need to includeAll as the requests for pools are in the libraries and I think
     // pulled out as used_by in the aliquots
     const foundData = find({ data, start: index, count: countVal, get: true, includeAll: true })
-    return { ...BaseFactory(foundData), storeData: createStoreData(foundData),formattedOntRun }
-  } 
-  else
-  {
-    return { ...BaseFactory(data), storeData: createStoreData(data),formattedOntRun}
+    return { ...BaseFactory(foundData), storeData: createStoreData(foundData), formattedOntRun }
+  } else {
+    return { ...BaseFactory(data), storeData: createStoreData(data), formattedOntRun }
   }
 }
 
 const formattedOntRun = (instruments, pools, fetchResponse) => {
   const { data, included = [] } = fetchResponse
-  const instrument_name = instruments.find((i) => i.id == data[0].attributes.ont_instrument_id)?.name
+  const instrument_name = instruments.find(
+    (i) => i.id == data[0].attributes.ont_instrument_id,
+  )?.name
 
   return {
     id: data[0].id,
@@ -178,7 +176,7 @@ const OntRunFactory = ({ count = undefined, findBy = null } = {}) => {
     },
   }
 
-  return getData(data, findBy,count)
+  return getData(data, findBy, count)
 }
 
 export default OntRunFactory

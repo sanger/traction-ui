@@ -1,4 +1,3 @@
-
 const buildFormatedOntRun = (instruments, pools, data, included) => {
   const instrument_name = instruments.find((i) => i.id == data.attributes.ont_instrument_id)?.name
 
