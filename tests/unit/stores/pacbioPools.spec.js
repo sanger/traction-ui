@@ -4,6 +4,7 @@ import useRootStore from '@/stores'
 import { expect } from 'vitest'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
 import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { failedResponse } from '@support/testHelper.js'
 
 const pacbioPoolFactory = PacbioPoolFactory()
 
@@ -29,18 +30,17 @@ describe('usePacbioPools', () => {
   })
   describe('actions', () => {
     describe('#fetchPools', () => {
-      let get, failedResponse, rootStore, store
+      let get, rootStore, store
 
       beforeEach(() => {
         get = vi.fn()
         store = usePacbioPoolsStore()
         rootStore = useRootStore()
-        rootStore.api.v1.traction.pacbio.pools.get = get
-        failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+        rootStore.api.v2.traction.pacbio.pools.get = get
       })
 
       it('successfully', async () => {
-        get.mockResolvedValue(pacbioPoolFactory.responses.axios)
+        get.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         await store.fetchPools()
         expect(store.pools).toEqual(pacbioPoolFactory.storeData.pools)
         expect(store.tubes).toEqual(pacbioPoolFactory.storeData.tubes)
@@ -50,10 +50,11 @@ describe('usePacbioPools', () => {
       })
 
       it('unsuccessfully', async () => {
-        get.mockRejectedValue(failedResponse)
+        const mockResponse = failedResponse()
+        get.mockResolvedValue(mockResponse)
         const { success, errors } = await store.fetchPools()
         expect(success).toEqual(false)
-        expect(errors).toEqual(failedResponse)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
   })

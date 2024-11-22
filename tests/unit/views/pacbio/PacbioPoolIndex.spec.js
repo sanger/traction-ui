@@ -36,9 +36,9 @@ describe('PacbioPoolIndex.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v1.traction.pacbio.pools.get = vi
+          store.api.v2.traction.pacbio.pools.get = vi
             .fn()
-            .mockResolvedValue(pacbioPoolFactory.responses.axios)
+            .mockResolvedValue(pacbioPoolFactory.responses.fetch)
         }
       },
     ]
