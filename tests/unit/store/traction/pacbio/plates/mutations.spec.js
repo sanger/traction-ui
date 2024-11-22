@@ -1,5 +1,5 @@
 import mutations from '@/store/traction/pacbio/plates/mutations'
-import PacbioPlateFactory from '@tests/factories/pacbioPlateFactory'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory'
 
 const pacbioPlateFactory = PacbioPlateFactory()
 
