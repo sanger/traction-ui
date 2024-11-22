@@ -9,6 +9,7 @@ import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import { successfulResponse } from '@tests/support/testHelper.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import * as ontRuns from '@/stores/utilities/ontRuns.js'
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
 const ontRunFactory = OntRunFactory()
@@ -187,22 +188,25 @@ describe('useOntRunsStore', () => {
       })
     })
     describe('#fetchRun', () => {
-      let store, mockRun
+      let store
 
       beforeEach(() => {
         store = useOntRunsStore()
-        store.currentRun = ontRunFactory.storeData.validRun
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
-
-        mockRun = ontRunFactory.storeData.validRun
       })
 
       it('runs successfully', async () => {
         const find = vi.fn().mockReturnValue(ontRunFactory.responses.fetch)
         store.runRequest.find = find
-        const response = await store.fetchRun(mockRun.id)
-        expect(store.currentRun).toEqual(ontRunFactory.storeData.findRun)
+        const ontSingleRunFactory = OntRunFactory({ count: 1 })
+        const formattedRun = ontSingleRunFactory.formattedOntRun(
+          Object.values(ontInstrumentsFactory.storeData.instruments),
+          Object.values(ontPoolFactory.storeData.resources.pools),
+          ontSingleRunFactory.content,
+        )
+
+        vi.spyOn(ontRuns, 'buildFormatedOntRun').mockReturnValue(formattedRun)
+        const response = await store.fetchRun(ontSingleRunFactory.content.data[0].id)
+        expect(store.currentRun).toEqual(formattedRun)
         expect(response.success).toBeTruthy()
       })
     })
