@@ -1,11 +1,12 @@
 import { expect, it } from 'vitest'
 import {
   validateAndFormatAsPayloadData,
-  hasDuplicateTags,
+  fetchTagsAndRequests,
 } from '@/stores/utilities/pacbioLibraryBatches'
-import fs from 'fs'
 import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
+import useRootStore from '@/stores'
 
 const pacbioRequestsFactory = PacbioRequestsFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
@@ -28,7 +29,7 @@ describe('pacbioLibraryBatches', () => {
       it(`returns an error if ${field} is missing`, () => {
         const record = {
           source: 'sample1',
-          tag: '1',
+          tag: 'abc',
           concentration: 10,
           insert_size: 100,
           volume: 5,
@@ -44,8 +45,7 @@ describe('pacbioLibraryBatches', () => {
     it('returns an error if source is not found in requests', () => {
       const record = {
         source: 'sample3',
-        tag: '1',
-        tag_set: 'tagSet1',
+        tag: tags[0].group_id,
         concentration: 10,
         insert_size: 100,
         volume: 5,
@@ -56,11 +56,10 @@ describe('pacbioLibraryBatches', () => {
       expect(result).toEqual(new Error('Invalid record at line 1: source sample3 not found'))
     })
 
-    it('returns an error if tag is not found in tagIds', () => {
+    it('returns an error if tag is not found in tags', () => {
       const record = {
         source: requests[0].source_identifier,
-        tag_set: pacbioTagSetFactory.storeData.selected.tagSet.name,
-        tag: '3',
+        tag: 'abc',
         concentration: 10,
         insert_size: 100,
         volume: 5,
@@ -68,7 +67,24 @@ describe('pacbioLibraryBatches', () => {
       }
       const info = { lines: 1 }
       const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
-      expect(result).toEqual(new Error('Invalid record at line 1: tag 3 not found'))
+      expect(result).toEqual(new Error('Invalid record at line 1: tag abc not found'))
+    })
+    it('returns an error if tag is duplicated', () => {
+      const tagWithDuplicates = [...tags, tags[0]]
+
+      const record = {
+        source: requests[0].source_identifier,
+        tag: tags[0].group_id,
+        concentration: 10,
+        insert_size: 100,
+        volume: 5,
+        template_prep_kit_box_barcode: 'abc',
+      }
+      const info = { lines: 1 }
+      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagWithDuplicates)
+      expect(result).toEqual(
+        new Error(`Invalid record at line 1: Duplicate tag: ${tags[0].group_id}`),
+      )
     })
 
     it('returns formatted payload data if all validations pass', () => {
@@ -104,43 +120,68 @@ describe('pacbioLibraryBatches', () => {
     })
   })
 
-  describe('hasDuplicateTags', () => {
-    it('returns when there are no duplicate sources', () => {
-      const csvText = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
-      const result = hasDuplicateTags(csvText)
-      expect(result).toBe(undefined)
+  describe('fetchTagsAndRequests', () => {
+    let tagSet, rootStore, requestsData, sources
+    beforeEach(() => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      rootStore = useRootStore()
+      rootStore.api.v2 = {
+        traction: {
+          pacbio: {
+            tag_sets: { get: vi.fn().mockResolvedValue(pacbioTagSetFactory.responses.fetch) },
+            requests: { get: vi.fn().mockResolvedValue(pacbioRequestsFactory.responses.fetch) },
+          },
+        },
+      }
+      tagSet = pacbioTagSetFactory.storeData.selected.tagSet
+      requestsData = pacbioRequestsFactory.storeData.requests
+      sources = requestsData.map((r) => r.source_identifier)
     })
 
-    it('returns error when there are duplicate tags', () => {
-      const csvText = fs.readFileSync(
-        './tests/data/csv/pacbio_library_batch_duplicate_tags.csv',
-        'utf8',
-      )
-      const result = hasDuplicateTags(csvText)
-      expect(result).toBe('Duplicate tag: bc2067')
+    it('fetches requests and tags successfully', async () => {
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+
+      expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
+        filter: { source_identifier: sources.join(',') },
+      })
+      expect(rootStore.api.v2.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
+        include: 'tags',
+        filter: { name: tagSet.name },
+      })
+      expect(requests).toEqual(pacbioRequestsFactory.storeData.requests)
+      expect(tags).toEqual(Object.values(pacbioTagSetFactory.storeData.tags))
     })
 
-    it('returns when there is only one tag', () => {
-      const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
-  sample_DN814327C_A1,289,035980102141700123124,10,13.16,10191`
-      const result = hasDuplicateTags(csvText)
-      expect(result).toBe(undefined)
+    it('returns null tags if tag set fetch fails', async () => {
+      rootStore.api.v2.traction.pacbio.tag_sets.get.mockResolvedValue({ success: false })
+
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+
+      expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
+        filter: { source_identifier: sources.join(',') },
+      })
+      expect(rootStore.api.v2.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
+        include: 'tags',
+        filter: { name: tagSet.name },
+      })
+      expect(requests).toEqual(pacbioRequestsFactory.storeData.requests)
+      expect(tags).toBeUndefined()
     })
-    it('returns error when tag is empty', () => {
-      const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
-  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191
-  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191`
-      const result = hasDuplicateTags(csvText)
-      expect(result).toBe(
-        'Tag missing in line: sample_DN814327C_A1,,035980102141700123124,10,13.16,10191',
-      )
-    })
-    it('returns error when there is invalid tag', () => {
-      const csvText = `Source,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size
-  sample_DN814327C_A1
-  sample_DN814327C_A1,,035980102141700123124,10,13.16,10191`
-      const result = hasDuplicateTags(csvText)
-      expect(result).toBe('Tag missing in line: sample_DN814327C_A1')
+
+    it('returns empty requests if request fetch fails', async () => {
+      rootStore.api.v2.traction.pacbio.requests.get.mockResolvedValue({ success: false })
+
+      const { requests } = await fetchTagsAndRequests(sources, tagSet)
+
+      expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
+        filter: { source_identifier: sources.join(',') },
+      })
+      expect(rootStore.api.v2.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
+        include: 'tags',
+        filter: { name: tagSet.name },
+      })
+      expect(requests).toBeUndefined()
     })
   })
 })

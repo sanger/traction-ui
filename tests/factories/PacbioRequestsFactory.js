@@ -2,7 +2,7 @@ import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 
 const createStoreData = (data) => {
-  const requests = dataToObjectById({ data: data.data, includeRelationships: false })
+  const requests = dataToObjectById({ data: data.data, includeRelationships: true })
   return {
     requests: Object.values(requests),
   }

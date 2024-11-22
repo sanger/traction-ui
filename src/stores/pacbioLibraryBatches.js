@@ -5,11 +5,11 @@ import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import { groupIncludedByResource } from '@/api/JsonApi.js'
 import {
   validateAndFormatAsPayloadData,
-  hasDuplicateTags,
   fetchTagsAndRequests,
 } from '@/stores/utilities/pacbioLibraryBatches.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { getColumnValues } from '@/lib/csv/pacbio.js'
 
 /**
  * usePacbioLibraryBatchesStore is a store to manage pacbio library batches.
@@ -71,21 +71,20 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
         return { success: false, errors: ['csvFile is required'] }
       }
       try {
-        // Fetch the tags and requests
-        const { requests, tags } = await fetchTagsAndRequests(tagSet)
-
-        // Read the CSV file and validate the records
         const csv = await csvFile.text()
-        const error = hasDuplicateTags(csv)
-        if (error) {
-          return { success: false, errors: [error] }
+        const sources = getColumnValues(csv, 0)
+
+        // Fetch the tags and requests
+        const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+
+        if (requests.length === 0) {
+          return { success: false, errors: ['No requests found'] }
         }
-        const eachReordRetObj = eachRecord(
-          csv,
-          validateAndFormatAsPayloadData,
-          requests,
-          Object.values(tags),
-        )
+        if (tags.length === 0) {
+          return { success: false, errors: ['No tags found'] }
+        }
+        // Validate csv and return results
+        const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
         if (eachReordRetObj.error) {
           return { success: false, errors: [eachReordRetObj.error] }
         }
@@ -105,7 +104,6 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
           },
           include: 'libraries.tube',
         })
-
         const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
         const { tubes = [], libraries = [] } = groupIncludedByResource(included)
         this.tubes = dataToObjectById({ data: tubes, includeRelationships: true })

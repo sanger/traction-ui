@@ -12,15 +12,11 @@ import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import fs from 'fs'
-import { store } from '@support/testHelper.js'
-
 const pacbioRequestsFactory = PacbioRequestsFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
 const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory(pacbioTagSetFactory.storeData.tags)
 
 describe('usePacbioLibraryBatchesStore', () => {
-  const apiGetter = store.getters.api.v2
-
   let rootStore, pacbioLibraryBatchStore, pacbioRootStore
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -45,19 +41,16 @@ describe('usePacbioLibraryBatchesStore', () => {
 
   describe('actions', () => {
     describe('createLibraryBatch', () => {
-      let create, getTagSets, csvFile, csvFileTextContent, logMessage, mockSuccessResponse, tagSet
+      let create, csvFile, csvFileTextContent, logMessage, mockSuccessResponse, tagSet
 
       beforeEach(() => {
-        vi.spyOn(apiGetter.traction.pacbio.requests, 'get').mockResolvedValue(
-          pacbioRequestsFactory.responses.fetch,
-        )
         create = vi.fn()
-        getTagSets = vi.fn().mockResolvedValue(pacbioTagSetFactory.responses.fetch)
         rootStore.api.v2 = {
           traction: {
             pacbio: {
               library_batches: { create },
-              tag_sets: { get: getTagSets },
+              tag_sets: { get: vi.fn().mockResolvedValue(pacbioTagSetFactory.responses.fetch) },
+              requests: { get: vi.fn().mockResolvedValue(pacbioRequestsFactory.responses.fetch) },
             },
           },
         }
@@ -107,27 +100,11 @@ describe('usePacbioLibraryBatchesStore', () => {
         expect(result).toEqual(pacbioLibraryBatchStore.librariesInBatch)
       })
 
-      it('returns error when csv file contains duplicate tags', async () => {
-        csvFileTextContent = fs.readFileSync(
-          './tests/data/csv/pacbio_library_batch_duplicate_tags.csv',
-          'utf8',
-        )
-        create.mockResolvedValue(mockSuccessResponse)
-        const { success, errors } = await pacbioLibraryBatchStore.createLibraryBatch(
-          csvFile,
-          tagSet,
-        )
-        expect(create).not.toBeCalled()
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(['Duplicate tag: bc2067'])
-      })
-
-      it('returns error when csv file contains invalid source', async () => {
+      it('returns error when csv file contains errors', async () => {
         csvFileTextContent = fs.readFileSync(
           './tests/data/csv/pacbio_library_batch_invalid_source.csv',
           'utf8',
         )
-        create.mockResolvedValue(mockSuccessResponse)
         const { success, errors } = await pacbioLibraryBatchStore.createLibraryBatch(
           csvFile,
           tagSet,

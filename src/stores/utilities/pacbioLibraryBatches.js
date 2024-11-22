@@ -1,5 +1,6 @@
-import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import store from '@/store'
+import useRootStore from '@/stores'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 /**
  * Validates and formats a record as payload data.
@@ -11,7 +12,6 @@ import store from '@/store'
  */
 const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
   const { source, tag, ...attributes } = record
-
   /**
    * Creates an error with a specific message.
    *
@@ -33,14 +33,18 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
     }
   }
 
-  const request = requests.find((r) => r.source_identifier === source)
-  if (!request) {
-    return createError(`source ${source} not found`)
+  if (tags.filter((t) => t.group_id === tag).length > 1) {
+    return createError(`Duplicate tag: ${tag}`)
   }
 
   const tagObj = tags.find((t) => t.group_id === tag)
   if (!tagObj) {
     return createError(`tag ${tag} not found`)
+  }
+
+  const request = requests.find((r) => r.source_identifier === source)
+  if (!request) {
+    return createError(`source ${source} not found`)
   }
 
   const measurementAttributesObj = measurementAttributes.reduce((obj, key) => {
@@ -62,47 +66,39 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
 }
 
 /**
- * Checks for duplicate tags in the CSV content.
- *
- * @param {string} csvText - The CSV content as a string.
- * @returns {string|undefined} - Returns an error message if a duplicate or missing tag is found, otherwise undefined.
- */
-const hasDuplicateTags = (csvText) => {
-  const lines = csvText.split('\n')
-  if (lines.length <= 2) {
-    // Only header and one line or empty
-    return
-  }
-  const sources = new Set()
-  // Skip the header line
-  for (const line of lines.slice(1)) {
-    if (!line) continue
-    const parts = line.split(',')
-    if (parts.length < 2 || !parts[1]) {
-      return `Tag missing in line: ${line.trim()}`
-    }
-    const source = parts[1] // The tag is the second column
-    if (sources.has(source)) {
-      return `Duplicate tag: ${parts[1].trim()}`
-    }
-    sources.add(source)
-  }
-  return
-}
-
-/**
  * Fetches all requests and tags for given tagset.
  *
  * @param {Object} tagSet - The tag set to fetch tags and requests for.
  * @returns {Promise<Object>} - The fetched tags and requests.
  */
-async function fetchTagsAndRequests(tagSet) {
-  const pacbioRootStore = usePacbioRootStore()
-  await store.dispatch('traction/pacbio/requests/setRequests')
-  const requests = store.getters['traction/pacbio/requests/requests']
-  await pacbioRootStore.fetchPacbioTagSets()
-  const tags = tagSet.tags.map((tag) => pacbioRootStore.tags[tag.id ?? tag])
-  return { requests, tags }
+async function fetchTagsAndRequests(sources, tagSet) {
+  let requests, tags
+
+  const rootStore = useRootStore()
+  let promise = rootStore.api.v2.traction.pacbio.requests.get({
+    filter: { source_identifier: sources.join(',') },
+  })
+  let response = await handleResponse(promise)
+
+  const { success, body: { data } = {} } = response
+  if (success && data) {
+    requests = Object.values(dataToObjectById({ data, includeRelationships: true }))
+  }
+
+  promise = rootStore.api.v2.traction.pacbio.tag_sets.get({
+    include: 'tags',
+    filter: { name: tagSet.name },
+  })
+  response = await handleResponse(promise)
+
+  const { success: successTagSet, body: { included = [] } = {} } = response
+  if (!successTagSet || !included) {
+    return { requests, tags }
+  }
+
+  const { tags: tagsObj } = groupIncludedByResource(included)
+  tags = dataToObjectById({ data: tagsObj })
+  return { requests, tags: Object.values(tags) }
 }
 
-export { validateAndFormatAsPayloadData, hasDuplicateTags, fetchTagsAndRequests }
+export { validateAndFormatAsPayloadData, fetchTagsAndRequests }
