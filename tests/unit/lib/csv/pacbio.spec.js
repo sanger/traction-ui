@@ -3,7 +3,7 @@
 // We need to do this because node-based csv-parse library used in 'eachRecord' doesn't work with jsdom
 
 import fs from 'fs'
-import { eachRecord } from '@/lib/csv/pacbio'
+import { eachRecord, getColumnValues } from '@/lib/csv/pacbio'
 
 describe('eachRecord', () => {
   it('handles empty CSV data', () => {
@@ -100,5 +100,36 @@ describe('eachRecord', () => {
     const callback = vi.fn().mockReturnValue(new Error('some error'))
     const result = eachRecord(csv, callback)
     expect(result.error).toEqual('some error')
+  })
+})
+describe('getColumnValues', () => {
+  it('returns an empty array for empty CSV data', () => {
+    const csv = ''
+    const result = getColumnValues(csv, 0)
+    expect(result).toEqual([])
+  })
+
+  it('returns an empty array for CSV data with only headers', () => {
+    const csv = 'header1,header2,header3\n'
+    const result = getColumnValues(csv, 0)
+    expect(result).toEqual([])
+  })
+
+  it('returns the correct column values when CSV has headers', () => {
+    const csv = 'header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6'
+    const result = getColumnValues(csv, 1)
+    expect(result).toEqual(['value2', 'value5'])
+  })
+
+  it('returns the correct column values when CSV does not have headers', () => {
+    const csv = 'value1,value2,value3\nvalue4,value5,value6'
+    const result = getColumnValues(csv, 1, false)
+    expect(result).toEqual(['value2', 'value5'])
+  })
+
+  it('handles empty columns correctly', () => {
+    const csv = 'header1,header2,header3\nvalue1,,value3\nvalue4,value5,'
+    const result = getColumnValues(csv, 1)
+    expect(result).toEqual(['', 'value5'])
   })
 })

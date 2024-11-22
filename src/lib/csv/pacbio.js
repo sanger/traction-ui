@@ -92,5 +92,26 @@ const eachRecord = (csv, callback, ...args) => {
   }
   return retRecords
 }
+/*
+ * @param {string} csv - The CSV data as a string.
+ * @param {number} column - The index of the column to extract values from.
+ * @param {boolean} [hasHeader=true] - Whether the CSV data includes a header row.
+ * @returns {Array<string>} An array of values from the specified column.
+ *
+ * @example
+ * const csv = 'header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6';
+ * const values = getColumnValues(csv, 1);
+ * console.log(values); // Output: ['value2', 'value5']
+ */
+const getColumnValues = (csv, column, hasHeader = true) => {
+  const lines = csv.split('\n').filter((line) => line.trim() !== '')
+  if (lines.length === 0) return []
 
-export { eachRecord }
+  const data = hasHeader ? lines.slice(1) : lines
+
+  return data.map((line) => {
+    const columns = line.split(',')
+    return column >= columns.length ? '' : columns[column]
+  })
+}
+export { eachRecord, getColumnValues }
