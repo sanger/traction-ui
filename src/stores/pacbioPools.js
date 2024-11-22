@@ -47,7 +47,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @param {number} page - The page for the request.
      * @returns {Promise<Object>} A promise that resolves to an object with the success status, errors, and meta data of the response.
      */
-    async fetchPools(filter, page) {
+    async fetchPools(filter = {}, page = {}) {
       const rootStore = useRootStore()
       const request = rootStore.api.v2.traction.pacbio.pools
       const promise = request.get({
