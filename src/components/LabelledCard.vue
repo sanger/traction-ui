@@ -1,12 +1,12 @@
 <template>
-  <div class="mt-4 border-2 border-gray-200 rounded-md bg-white text-black" :data-pipeline="title">
+  <div class="border-2 border-gray-200 rounded-md bg-white text-black" :data-pipeline="title">
     <div class="text-left p-4 border-b-2 border-gray-200 bg-gray-100">
-      <h3 class="text-2xl" data-attribute="title">{{ title }}</h3>
-      <span class="text-gray-600 text-md" data-attribute="description">
+      <h3 class="text-xl" data-attribute="title">{{ title }}</h3>
+      <span class="text-gray-600 font-light" data-attribute="description">
         {{ description }}
       </span>
     </div>
-    <div class="flex flex-row flex-wrap gap-y-8 gap-x-3 py-8 px-4">
+    <div class="flex flex-row flex-wrap gap-y-4 gap-x-3 py-4 px-4">
       <slot />
     </div>
   </div>
