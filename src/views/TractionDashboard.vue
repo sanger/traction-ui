@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-col px-4 gap-y-4">
-      <div class="flex flex-col text-left pb-4">
+      <div class="flex flex-col text-left">
         <h1
           class="text-4xl bg-gradient-to-r from-sp-400 to-sdb-400 inline-block text-transparent bg-clip-text w-40"
         >
@@ -11,12 +11,14 @@
           >Long read LIMS for library prep and sequencing setup</span
         >
       </div>
-      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4">
-        <h2 class="text-2xl">Pipelines</h2>
-        <span class="text-md text-gray font-light"
-          >A set of quick links for each sequencing pipeline</span
-        >
-        <div :class="`grid grid-cols-${pipelines.length} gap-x-8`">
+      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
+        <div>
+          <h2 class="text-2xl">Pipelines</h2>
+          <span class="text-md text-gray font-light"
+            >A set of quick links for each sequencing pipeline</span
+          >
+        </div>
+        <div :class="`grid grid-cols-${pipelines.length} gap-x-4`">
           <LabelledCard
             v-for="(pipeline, index) in pipelines"
             :key="index"
@@ -34,10 +36,12 @@
         </div>
       </div>
 
-      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4">
-        <h2 class="text-2xl">Tools</h2>
-        <span class="text-md text-gray font-light">A set of quick links for Traction tools</span>
-        <div class="flex flex-row flex-wrap gap-y-8 gap-x-3 py-8 px-4 text-center">
+      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
+        <div>
+          <h2 class="text-2xl">Tools</h2>
+          <span class="text-md text-gray font-light">A set of quick links for Traction tools</span>
+        </div>
+        <div class="flex flex-row flex-wrap gap-y-4 gap-x-4 text-center">
           <TractionLink
             v-for="route in toolRoutes"
             :key="route"
