@@ -1,22 +1,23 @@
-import * as Actions from '@/store/traction/pacbio/plates/actions'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+import * as Actions from '@/store/traction/pacbio/plates/actions.js'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+import { failedResponse } from '@tests/support/testHelper.js'
 
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
 
 describe('Pacbio plates actions', () => {
-  let commit, get, getters, failedResponse, successResponse
+  let commit, get, getters, successResponse
 
   beforeEach(() => {
     commit = vi.fn()
     get = vi.fn()
     getters = { getPlates: { get: get } }
 
-    failedResponse = {
-      error1: ['There was an error'],
-      status: 500,
-      ok: false,
-    }
-    successResponse = pacbioPlatesRequestFactory.responses.fetch
+    // failedResponse = {
+    //   error1: ['There was an error'],
+    //   status: 500,
+    //   ok: false,
+    // }
+    successResponse = pacbioPlateFactory.responses.fetch
   })
 
   describe('setPlates', () => {
@@ -24,19 +25,20 @@ describe('Pacbio plates actions', () => {
       get.mockReturnValue(successResponse)
       const { success, errors } = await Actions.setPlates({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setPlates', pacbioPlatesRequestFactory.content.data)
+      expect(commit).toHaveBeenCalledWith('setPlates', pacbioPlateFactory.content.data)
       expect(success).toEqual(true)
       expect(errors).toEqual({})
     })
 
     it('errors fetching the plates', async () => {
-      get.mockRejectedValue(failedResponse)
+      const mockResponse = failedResponse()
+      get.mockResolvedValue(mockResponse)
 
       const { success, errors } = await Actions.setPlates({ commit, getters })
 
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)
-      expect(errors.error1).toEqual(['There was an error'])
+      expect(errors).toEqual(mockResponse.errorSummary)
     })
   })
 
@@ -44,16 +46,18 @@ describe('Pacbio plates actions', () => {
     it('fetches the plate from the service, and returns it with wells and requests', async () => {
       get.mockReturnValue(successResponse)
 
-      // Barcode provided is first plate in Data.PacbioPlatesRequest
-      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN1' })
+      const plate = await Actions.findPlate(
+        { commit, getters },
+        { barcode: pacbioPlateFactory.storeData.plate.barcode },
+      )
 
-      expect(plate).toEqual(pacbioPlatesRequestFactory.storeData.findPlatesData)
+      expect(plate).toEqual(pacbioPlateFactory.storeData.plate)
     })
 
     it('errors fetching the plate', async () => {
-      get.mockRejectedValue(failedResponse)
+      const mockResponse = failedResponse()
+      get.mockRejectedValue(mockResponse)
 
-      // Barcode provided is first plate in Data.PacbioPlatesRequest
       const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
 
       expect(plate).toEqual({})

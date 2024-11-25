@@ -1,16 +1,15 @@
-import { mount, store, Data } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
-import Response from '@/api/v1/Response'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+
+const ontPlateFactory = OntPlateFactory()
 
 describe('OntPlateSelectedList', () => {
-  let wrapper, mockPlates
+  let wrapper
 
   beforeEach(() => {
-    const responseBody = new Response(Data.OntPlatesRequest)._body
-    mockPlates = responseBody.data
-    const mockWells = responseBody.included.slice(0, 16)
-    store.commit('traction/ont/pools/populatePlates', mockPlates)
-    store.commit('traction/ont/pools/populateWells', mockWells)
+    store.commit('traction/ont/pools/populatePlates', ontPlateFactory.storeData.plates)
+    store.commit('traction/ont/pools/populateWells', ontPlateFactory.storeData.wells)
 
     wrapper = mount(OntPlateSelectedList, {
       store,

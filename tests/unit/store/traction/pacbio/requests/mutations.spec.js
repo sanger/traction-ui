@@ -1,12 +1,12 @@
 import mutations from '@/store/traction/pacbio/requests/mutations'
 import { dataToObjectById } from '@/api/JsonApi'
-import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 
-const pacbioRequestsFactory = PacbioRequestsFactory()
+const pacbioRequestFactory = PacbioRequestFactory()
 
 describe('mutations', () => {
   it('"setRequests" sets "state.requests" to the given requests', () => {
-    const requests = pacbioRequestsFactory.content.data
+    const requests = pacbioRequestFactory.content.data
     const state = {
       requests: {},
     }
@@ -17,7 +17,7 @@ describe('mutations', () => {
   })
 
   it('"updateRequest" updates "state.requests" to the include the updated request', () => {
-    const requests = pacbioRequestsFactory.content.data
+    const requests = pacbioRequestFactory.content.data
     const state = {
       requests: dataToObjectById({ data: requests, includeRelationships: false }),
     }

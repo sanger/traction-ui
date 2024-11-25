@@ -3,9 +3,9 @@ import { mount, router, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { useOntRunsStore } from '@/stores/ontRuns'
-import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 
-const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
  * This method also returns the wrapper and the store object for further testing.
@@ -42,7 +42,7 @@ describe('ONTRunInstrumentFlowcells', () => {
   let wrapper, ontRunInstrumentFlowcell, mockInstruments, mockRun
 
   beforeEach(() => {
-    mockInstruments = ontInstrumentsFactory.storeData.instruments
+    mockInstruments = ontInstrumentFactory.storeData.instruments
     mockRun = {
       id: 'new',
       instrument_name: 'PC24B148',
@@ -70,7 +70,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     })
 
     it('must have instruments', () => {
-      const expected = ontInstrumentsFactory.storeData.instrumentsArray.map((i) => {
+      const expected = ontInstrumentFactory.storeData.instrumentsArray.map((i) => {
         const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
           ...i,
@@ -81,7 +81,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     })
 
     it('must have instrumentByName', () => {
-      const expected = ontInstrumentsFactory.storeData.instrumentsArray
+      const expected = ontInstrumentFactory.storeData.instrumentsArray
         .map((i) => {
           const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
           return {

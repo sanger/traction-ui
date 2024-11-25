@@ -1,9 +1,9 @@
 import * as Actions from '@/store/traction/saphyr/tubes/actions.js'
-import SaphyrTubesFactory from '@tests/factories/SaphyrTubesFactory.js'
+import SaphyrTubeFactory from '@tests/factories/SaphyrTubeFactory.js'
 import BaseFactory from '../../../../../factories/BaseFactory.js'
 
-const saphyrTubesRequestFactory = SaphyrTubesFactory('request')
-const saphyrTubesLibraryFactory = SaphyrTubesFactory('library')
+const saphyrTubesRequestFactory = SaphyrTubeFactory('request')
+const saphyrTubesLibraryFactory = SaphyrTubeFactory('library')
 const failedResponse = {
   errors: [
     {
@@ -53,7 +53,7 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('when no tubes exist', async () => {
-    const factory = SaphyrTubesFactory()
+    const factory = SaphyrTubeFactory()
     get.mockReturnValue(factory.responses.fetch)
 
     const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
