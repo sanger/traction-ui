@@ -1,4 +1,4 @@
-import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource } from './../../api/JsonApi.js'
 
 /**
  *
