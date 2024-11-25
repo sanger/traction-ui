@@ -11,12 +11,6 @@ describe('Pacbio plates actions', () => {
     commit = vi.fn()
     get = vi.fn()
     getters = { getPlates: { get: get } }
-
-    // failedResponse = {
-    //   error1: ['There was an error'],
-    //   status: 500,
-    //   ok: false,
-    // }
     successResponse = pacbioPlateFactory.responses.fetch
   })
 
