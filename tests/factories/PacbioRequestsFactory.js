@@ -175,7 +175,7 @@ const PacbioRequestsFactory = () => {
           barcode: '3980000001795',
           sample_species: 'Gryphon',
           created_at: '2022/03/01 10:41',
-          source_identifier: '3980000001795',
+          source_identifier: 'GEN-1725896371-4:B3',
         },
         relationships: {
           well: {

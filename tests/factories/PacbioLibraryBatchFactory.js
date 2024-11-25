@@ -155,30 +155,55 @@ const PacbioLibraryBatchFactory = (tags = []) => {
     }
   }
 
-  const createLibraryBatchPayloadData = (csvText, requests) => {
-    const lines = csvText.split('\n')
-    // Skip the header line
-    const libraries_attributes = []
-    lines.slice(1).forEach((line) => {
-      if (!line) return
-      const [source, tag, template_prep_kit_box_barcode, volume, concentration, insert_size] =
-        line.split(',')
-      const attributes = {
-        template_prep_kit_box_barcode,
-        volume,
-        concentration,
-        insert_size,
-      }
-      const request = requests.find((r) => r.sample_name === source)
-      libraries_attributes.push({
+  const storeData = createStoreData(data)
+
+  const createCsvFromLibraryBatchData = (tags, invalid_source = false, duplicate_tags = false) => {
+    const tagArrr = Object.values(tags)
+    const header = [
+      'source',
+      'tag',
+      'template_prep_kit_box_barcode',
+      'volume',
+      'concentration',
+      'insert_size',
+    ]
+    const lines = []
+    Object.values(storeData.libraries).forEach((library, indx) => {
+      let tag =
+        duplicate_tags && indx > 0
+          ? lines[0].split(',')[1]
+          : tagArrr.find((t) => t.id === String(library.tag_id))?.group_id
+      const source = indx === 0 && invalid_source ? 'test' : library.source_identifier
+      lines[indx] = [
+        source,
+        tag,
+        library.template_prep_kit_box_barcode,
+        library.volume,
+        library.concentration,
+        library.insert_size,
+      ].join(',')
+    })
+
+    return [header, ...lines].join('\n')
+  }
+
+  const createLibraryBatchPayloadData = (tags, requests) => {
+    const tagArrr = Object.values(tags)
+    const libraries_attributes = Object.values(storeData.libraries).map((library) => {
+      const tag = tagArrr.find((t) => t.id === String(library.tag_id))?.group_id
+      const request = requests.find((r) => r.source_identifier === library.source_identifier)
+      return {
+        ...library,
         pacbio_request_id: request?.id,
         tag_id: tag,
-        ...attributes,
         primary_aliquot_attributes: {
           tag_id: tag,
-          ...attributes,
+          volume: library.volume,
+          concentration: library.concentration,
+          insert_size: library.insert_size,
+          template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
         },
-      })
+      }
     })
     return {
       type: 'library_batches',
@@ -186,7 +211,12 @@ const PacbioLibraryBatchFactory = (tags = []) => {
     }
   }
 
-  return { ...BaseFactory(data), storeData: createStoreData(data), createLibraryBatchPayloadData }
+  return {
+    ...BaseFactory(data),
+    storeData,
+    createLibraryBatchPayloadData,
+    createCsvFromLibraryBatchData,
+  }
 }
 
 export default PacbioLibraryBatchFactory

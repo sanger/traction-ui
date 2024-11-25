@@ -11,7 +11,6 @@ import PacbioLibraryBatchFactory from '@tests/factories/PacbioLibraryBatchFactor
 import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import fs from 'fs'
 const pacbioRequestsFactory = PacbioRequestsFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
 const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory(pacbioTagSetFactory.storeData.tags)
@@ -80,14 +79,16 @@ describe('usePacbioLibraryBatchesStore', () => {
       })
 
       it('successfully creates a library batch', async () => {
-        csvFileTextContent = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
         create.mockResolvedValue(mockSuccessResponse)
         const { success, result } = await pacbioLibraryBatchStore.createLibraryBatch(
           csvFile,
           tagSet,
         )
         const payload = pacbioLibraryBatchFactory.createLibraryBatchPayloadData(
-          csvFileTextContent,
+          pacbioTagSetFactory.storeData.tags,
           pacbioRequestsFactory.content.data,
         )
 
@@ -101,23 +102,26 @@ describe('usePacbioLibraryBatchesStore', () => {
       })
 
       it('returns error when csv file contains errors', async () => {
-        csvFileTextContent = fs.readFileSync(
-          './tests/data/csv/pacbio_library_batch_invalid_source.csv',
-          'utf8',
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+          true,
         )
+
         const { success, errors } = await pacbioLibraryBatchStore.createLibraryBatch(
           csvFile,
           tagSet,
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(['Invalid record at line 3: source test not found'])
+        expect(errors).toEqual(['Invalid record at line 2: source test not found'])
       })
 
       it('returns errors on failedResponse', async () => {
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
         const failureResponse = failedResponse()
         create.mockResolvedValue(failureResponse)
-        csvFileTextContent = fs.readFileSync('./tests/data/csv/pacbio_library_batch.csv', 'utf8')
         const { success, errors } = await pacbioLibraryBatchStore.createLibraryBatch(
           csvFile,
           tagSet,
