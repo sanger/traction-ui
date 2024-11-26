@@ -5,16 +5,18 @@ const buildFormatedOntRun = (instruments, pools, data, included) => {
     id: data.id,
     instrument_name: instrument_name,
     state: data.attributes.state,
-    flowcell_attributes: included.map((fc) => {
-      const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.barcode
+    flowcell_attributes: included
+      .filter((item) => item.type === 'flowcells')
+      .map((fc) => {
+        const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.tube_barcode
 
-      return {
-        flowcell_id: fc.attributes.flowcell_id,
-        ont_pool_id: fc.attributes.ont_pool_id,
-        position: fc.attributes.position,
-        tube_barcode: tube_barcode,
-      }
-    }),
+        return {
+          flowcell_id: fc.attributes.flowcell_id,
+          ont_pool_id: fc.attributes.ont_pool_id,
+          position: fc.attributes.position,
+          tube_barcode: tube_barcode,
+        }
+      }),
   }
 }
 

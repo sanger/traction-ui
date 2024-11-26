@@ -189,23 +189,26 @@ describe('useOntRunsStore', () => {
     })
     describe('#fetchRun', () => {
       let store
-
       beforeEach(() => {
         store = useOntRunsStore()
+        const ontRootStore = useOntRootStore()
+        ontRootStore.resources.instruments = ontInstrumentsFactory.storeData.instruments
+        ontRootStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
       })
 
       it('runs successfully', async () => {
-        const find = vi.fn().mockReturnValue(ontRunFactory.responses.fetch)
+        const ontSingleRunFactory = OntRunFactory({ findBy: 'flowcells' })
+        const find = vi.fn().mockReturnValue(ontSingleRunFactory.responses.fetch)
         store.runRequest.find = find
-        const ontSingleRunFactory = OntRunFactory({ count: 1 })
-        const formattedRun = ontSingleRunFactory.formattedOntRun(
+
+        const formattedRun = ontRuns.buildFormatedOntRun(
           Object.values(ontInstrumentsFactory.storeData.instruments),
           Object.values(ontPoolFactory.storeData.resources.pools),
-          ontSingleRunFactory.content,
+          ontSingleRunFactory.content.data,
+          ontSingleRunFactory.content.included,
         )
 
-        vi.spyOn(ontRuns, 'buildFormatedOntRun').mockReturnValue(formattedRun)
-        const response = await store.fetchRun(ontSingleRunFactory.content.data[0].id)
+        const response = await store.fetchRun(ontSingleRunFactory.content.data.id)
         expect(store.currentRun).toEqual(formattedRun)
         expect(response.success).toBeTruthy()
       })

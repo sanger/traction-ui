@@ -23,8 +23,6 @@ function createPayload(run) {
   //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
   const existingPools = store.getters['traction/ont/pools/pools']
 
-  console.log(existingPools)
-
   const flowcell_attributes = run.flowcell_attributes
     .filter((fc) => fc.flowcell_id && fc.tube_barcode)
     .map((fc) => {
@@ -102,7 +100,9 @@ export const useOntRunsStore = defineStore('ontRuns', {
         //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
         const existingPools = store.getters['traction/ont/pools/pools']
 
-        this.currentRun = buildFormatedOntRun(existingInstruments, included, data, existingPools)
+        console.log(existingPools)
+
+        this.currentRun = buildFormatedOntRun(existingInstruments, existingPools, data, included)
         return { success, errors }
       }
     },

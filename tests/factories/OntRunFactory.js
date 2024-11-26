@@ -5,13 +5,20 @@ import { dataToObjectById, find } from '../../src/api/JsonApi.js'
  * Creates store data from the provided data.
  *
  * @param {Object} data - The data to be processed.
- * @returns {Object} An object containing the runs, runsArray, validRun, newRun, and findRun.
+ * @param {Number} count - The number of records to process.
+ * @returns {Object} An object containing the runs, runsArray
+ * If the count is 1, an empty object is returned.
  */
-const createStoreData = (data) => {
+const createStoreData = (data, count) => {
+  if (count === 1) {
+    return {}
+  }
+
   const runs = dataToObjectById({
     data: data.data,
     includeRelationships: true,
   })
+
   return {
     runs,
     runsArray: Object.values(runs),
@@ -35,32 +42,10 @@ const getData = (data, findBy, count) => {
   if (index !== null) {
     // we need to includeAll as the requests for pools are in the libraries and I think
     // pulled out as used_by in the aliquots
-    const foundData = find({ data, start: index, count: countVal, get: true, includeAll: true })
-    return { ...BaseFactory(foundData), storeData: createStoreData(foundData), formattedOntRun }
+    const foundData = find({ data, start: index, count: countVal, includeAll: true })
+    return { ...BaseFactory(foundData), storeData: createStoreData(foundData, countVal) }
   } else {
-    return { ...BaseFactory(data), storeData: createStoreData(data), formattedOntRun }
-  }
-}
-
-const formattedOntRun = (instruments, pools, fetchResponse) => {
-  const { data, included = [] } = fetchResponse
-  const instrument_name = instruments.find(
-    (i) => i.id == data[0].attributes.ont_instrument_id,
-  )?.name
-
-  return {
-    id: data[0].id,
-    instrument_name: instrument_name,
-    state: data[0].attributes.state,
-    flowcell_attributes: included.map((fc) => {
-      const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.tube_barcode
-      return {
-        flowcell_id: fc.attributes.flowcell_id,
-        ont_pool_id: fc.attributes.ont_pool_id,
-        position: fc.attributes.position,
-        tube_barcode: tube_barcode,
-      }
-    }),
+    return { ...BaseFactory(data), storeData: createStoreData(data, countVal) }
   }
 }
 

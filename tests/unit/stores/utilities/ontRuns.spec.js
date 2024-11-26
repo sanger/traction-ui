@@ -8,8 +8,8 @@ describe('buildFormatedOntRun', () => {
   ]
 
   const pools = [
-    { id: '1', barcode: 'Tube 1' },
-    { id: '2', barcode: 'Tube 2' },
+    { id: '1', barcode: 'Tube 1', tube_barcode: 'Tube 1' },
+    { id: '2', barcode: 'Tube 2', tube_barcode: 'Tube 2' },
   ]
 
   const fetchResponse = {
@@ -22,6 +22,7 @@ describe('buildFormatedOntRun', () => {
     },
     included: [
       {
+        type: 'flowcells',
         attributes: {
           flowcell_id: 'fc1',
           ont_pool_id: '1',
@@ -29,6 +30,7 @@ describe('buildFormatedOntRun', () => {
         },
       },
       {
+        type: 'flowcells',
         attributes: {
           flowcell_id: 'fc2',
           ont_pool_id: '2',
