@@ -806,7 +806,7 @@ describe('pool', () => {
       },
     }
 
-    it('#createUsedAliquotsAndMapToSourceId - will produce the correct used_aliquots for pools', () => {
+    it('#createUsedAliquotsFromState - will produce the correct used_aliquots for pools', () => {
       const expected = [
         {
           id: '1',
