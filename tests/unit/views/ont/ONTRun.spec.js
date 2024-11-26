@@ -2,10 +2,10 @@ import ONTRun from '@/views/ont/ONTRun'
 import { mount, store, router, flushPromises, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
-const ontRunsFactory = OntRunsFactory()
+const ontRunFactory = OntRunFactory()
 const ontPoolFactory = OntPoolFactory()
 
 /**
@@ -30,7 +30,7 @@ function mountWithStore(props) {
               if (store.$id === 'root') {
                 store.api.v2.traction.ont.instruments.get = vi
                   .fn()
-                  .mockReturnValue(ontRunsFactory.responses.fetch)
+                  .mockReturnValue(ontRunFactory.responses.fetch)
               }
             },
           ],
