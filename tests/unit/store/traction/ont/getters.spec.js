@@ -2,17 +2,17 @@ import { expect, it } from 'vitest'
 import getters from '@/store/traction/ont/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 
 const ontInstrumentsFactory = OntInstrumentsFactory()
-const ontRunsFactory = OntRunsFactory()
+const ontRunFactory = OntRunFactory()
 
 describe('getters.js', () => {
   let state, instruments, runs
 
   beforeEach(() => {
     instruments = ontInstrumentsFactory.storeData.instruments
-    runs = ontRunsFactory.storeData.runs
+    runs = ontRunFactory.storeData.runs
 
     state = {
       resources: {
