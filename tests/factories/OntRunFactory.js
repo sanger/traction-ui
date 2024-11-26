@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById, find } from '../../src/api/JsonApi.js'
+import { dataToObjectById, find, groupIncludedByResource } from '../../src/api/JsonApi.js'
 
 /**
  * Creates store data from the provided data.
@@ -19,8 +19,11 @@ const createStoreData = (data, count) => {
     includeRelationships: true,
   })
 
+  const { instruments } = groupIncludedByResource(data.included)
+
   return {
     runs,
+    instruments: dataToObjectById({ data: instruments }),
     runsArray: Object.values(runs),
   }
 }

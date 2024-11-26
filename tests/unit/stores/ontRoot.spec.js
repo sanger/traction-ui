@@ -83,7 +83,7 @@ describe('useOntRootStore', () => {
         const { success } = await store.fetchOntRuns()
 
         expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
-        expect(store.resources.instruments).toEqual(ontInstrumentsFactory.storeData.instruments)
+        expect(store.resources.instruments).toEqual(ontRunFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
