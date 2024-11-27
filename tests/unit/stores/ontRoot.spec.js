@@ -3,8 +3,8 @@ import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
-import OntInstrumentFactory from '@tests/factories/OntInstrumentsFactory.js'
-import OntRunFactory from '@tests/factories/OntRunsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
@@ -83,7 +83,7 @@ describe('useOntRootStore', () => {
         const { success } = await store.fetchOntRuns()
 
         expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
-        expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
+        expect(store.resources.instruments).toEqual(ontRunFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
@@ -122,7 +122,7 @@ describe('useOntRootStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
-        rootStore.api.v2 = { traction: { ont: { instruments: { get } } } }
+        rootStore.api.v1 = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRootStore()
 

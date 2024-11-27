@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { buildFormatedOntRun } from '@/stores/utilities/ontRuns.js'
+import { buildFormattedOntRun } from '@/stores/utilities/ontRuns.js'
 
-describe('buildFormatedOntRun', () => {
+describe('buildFormattedOntRun', () => {
   const instruments = [
     { id: '1', name: 'Instrument 1' },
     { id: '2', name: 'Instrument 2' },
@@ -41,7 +41,7 @@ describe('buildFormatedOntRun', () => {
   }
 
   it('returns the formatted run object', () => {
-    const result = buildFormatedOntRun(
+    const result = buildFormattedOntRun(
       instruments,
       pools,
       fetchResponse.data,
@@ -71,7 +71,7 @@ describe('buildFormatedOntRun', () => {
 
   it('handles missing instrument gracefully', () => {
     const invalidInstruments = []
-    const result = buildFormatedOntRun(
+    const result = buildFormattedOntRun(
       invalidInstruments,
       pools,
       fetchResponse.data,
@@ -101,7 +101,7 @@ describe('buildFormatedOntRun', () => {
 
   it('handles missing pool gracefully', () => {
     const invalidPools = []
-    const result = buildFormatedOntRun(
+    const result = buildFormattedOntRun(
       instruments,
       invalidPools,
       fetchResponse.data,

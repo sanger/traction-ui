@@ -4,7 +4,7 @@ import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'
 import { flowCellType } from '@/stores/utilities/flowCell'
-import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
+import { buildFormattedOntRun } from '@/stores/utilities/ontRuns'
 
 /**
  *
@@ -100,7 +100,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
         //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
         const existingPools = store.getters['traction/ont/pools/pools']
 
-        this.currentRun = buildFormatedOntRun(existingInstruments, existingPools, data, included)
+        this.currentRun = buildFormattedOntRun(existingInstruments, existingPools, data, included)
         return { success, errors }
       }
     },

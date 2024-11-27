@@ -200,7 +200,7 @@ describe('useOntRunsStore', () => {
         const find = vi.fn().mockReturnValue(ontSingleRunFactory.responses.fetch)
         store.runRequest.find = find
 
-        const formattedRun = ontRuns.buildFormatedOntRun(
+        const formattedRun = ontRuns.buildFormattedOntRun(
           Object.values(ontInstrumentFactory.storeData.instruments),
           Object.values(ontPoolFactory.storeData.resources.pools),
           ontSingleRunFactory.content.data,
