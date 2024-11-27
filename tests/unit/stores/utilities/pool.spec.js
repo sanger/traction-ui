@@ -4,6 +4,9 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  buildRunSuitabilityErrors,
+  createUsedAliquotsFromState,
+  addUsedAliquotsBarcodeAndErrorsToPools,
 } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -643,6 +646,222 @@ describe('pool', () => {
       const tube = Object.values(storeTubes)[0]
       expect(tube.requests).not.toBeDefined()
       expect(tube.source_id).toEqual(tubes[0].id)
+    })
+  })
+
+  describe('#buildRunSuitabilityErrors', () => {
+    it('returns the correct errors', () => {
+      const pool = {
+        id: '2',
+        type: 'pools',
+        barcode: 'TRAC-2-2',
+        run_suitability: {
+          ready_for_run: false,
+          formattedErrors: [
+            "Pool insert_size - can't be blank",
+            'Pool used_aliquots - is invalid',
+            "Used aliquot 2 (Sample47) insert_size - can't be blank",
+          ],
+          errors: [
+            {
+              title: "can't be blank",
+              detail: "insert_size - can't be blank",
+              code: '100',
+              source: {
+                pointer: '/data/attributes/insert_size',
+              },
+            },
+            {
+              title: 'is invalid',
+              detail: 'used_aliquots - is invalid',
+              code: '100',
+              source: {
+                pointer: '/data/relationships/used_aliquots',
+              },
+            },
+          ],
+        },
+      }
+
+      const used_aliquots = [
+        {
+          id: '1',
+          type: 'used_aliquots',
+          sample_name: 'Sample48',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+        },
+        {
+          id: '2',
+          type: 'used_aliquots',
+          sample_name: 'Sample47',
+          run_suitability: {
+            ready_for_run: false,
+            errors: [
+              {
+                title: "can't be blank",
+                detail: "insert_size - can't be blank",
+                code: '100',
+                source: {
+                  pointer: '/data/attributes/insert_size',
+                },
+              },
+            ],
+          },
+        },
+      ]
+
+      const expected = [
+        "Pool insert_size - can't be blank",
+        'Pool used_aliquots - is invalid',
+        "Used aliquot 2 (Sample47) insert_size - can't be blank",
+      ]
+
+      expect(buildRunSuitabilityErrors({ used_aliquots, pool })).toEqual(expected)
+    })
+  })
+
+  describe('convert pools', () => {
+    const state = {
+      pools: {
+        1: {
+          id: '1',
+          used_aliquots: ['1', '3'],
+          tube: '1',
+          type: 'pools',
+          source_identifier: 'DN1:A1',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+          2: {
+            id: '2',
+            used_aliquots: ['2'],
+            tube: '2',
+            type: 'pools',
+            source_identifier: 'DN1:B1',
+            run_suitability: {
+              ready_for_run: true,
+              errors: [],
+            },
+          },
+        },
+      },
+      used_aliquots: {
+        1: {
+          id: '1',
+          source_id: '1',
+          source_type: 'Pacbio::Request',
+          tag: '26',
+          type: 'used_aliquots',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+        },
+        2: {
+          id: '2',
+          source_id: '2',
+          source_type: 'Pacbio::Request',
+          tag: '7',
+          type: 'used_aliquots',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+        },
+        3: {
+          id: '3',
+          source_id: '2',
+          source_type: 'Pacbio::Library',
+          tag: '26',
+          type: 'used_aliquots',
+          run_suitability: {
+            ready_for_run: true,
+            errors: [],
+          },
+        },
+      },
+      tags: {
+        26: {
+          group_id: 'bc1019',
+          id: '26',
+          type: 'tags',
+        },
+        7: { group_id: 'bc1011_BAK8A_OA', id: '7', type: 'tags' },
+      },
+      requests: {
+        1: { id: '1', sample_name: 'Sample48', type: 'requests' },
+        2: { id: '2', sample_name: 'Sample47', type: 'requests' },
+      },
+
+      libraries: {
+        2: { id: '2', pacbio_request_id: '2', type: 'libraries' },
+      },
+      tubes: {
+        1: { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
+        2: { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
+      },
+    }
+
+    it('#createUsedAliquotsFromState - will produce the correct used_aliquots for pools', () => {
+      const expected = [
+        {
+          id: '1',
+          type: 'used_aliquots',
+          sample_name: 'Sample48',
+          group_id: 'bc1019',
+          run_suitability: { ready_for_run: true, errors: [] },
+        },
+        {
+          id: '3',
+          type: 'used_aliquots',
+          sample_name: 'Sample47',
+          group_id: 'bc1019',
+          run_suitability: { ready_for_run: true, errors: [] },
+        },
+      ]
+      expect(createUsedAliquotsFromState({ pool: state.pools[1], state })).toEqual(expected)
+    })
+
+    it('#addUsedAliquotsBarcodeAndErrorsToPools - will produce the correct pools', () => {
+      const expected = [
+        {
+          2: {
+            id: '2',
+            used_aliquots: ['2'],
+            tube: '2',
+            type: 'pools',
+            source_identifier: 'DN1:B1',
+            run_suitability: { ready_for_run: true, errors: [] },
+          },
+          id: '1',
+          used_aliquots: [
+            {
+              id: '1',
+              type: 'used_aliquots',
+              sample_name: 'Sample48',
+              group_id: 'bc1019',
+              run_suitability: { ready_for_run: true, errors: [] },
+            },
+            {
+              id: '3',
+              type: 'used_aliquots',
+              sample_name: 'Sample47',
+              group_id: 'bc1019',
+              run_suitability: { ready_for_run: true, errors: [] },
+            },
+          ],
+          tube: '1',
+          type: 'pools',
+          source_identifier: 'DN1:A1',
+          run_suitability: { ready_for_run: true, errors: [], formattedErrors: [] },
+          barcode: 'TRAC-2-1',
+        },
+      ]
+      expect(addUsedAliquotsBarcodeAndErrorsToPools(state)).toEqual(expected)
     })
   })
 })

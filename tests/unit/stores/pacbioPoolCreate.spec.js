@@ -1224,10 +1224,6 @@ describe('usePacbioPoolCreateStore', () => {
         'source_type',
         'request',
       ]
-      beforeEach(() => {
-        const create = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
-      })
       it('selects a request by default', () => {
         store.used_aliquots = {
           _2: createUsedAliquot({

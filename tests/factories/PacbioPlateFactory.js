@@ -1,20 +1,28 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi.js'
+import { extractPlatefromData } from './../../src/stores/utilities/plate.js'
 
 /**
  *
  * @param {Object} data - the data object
  * @returns {Object} - the data object - the plates, wells and requests
  */
-const createStoreData = (data) => {
+const createStoreData = (data, count) => {
   const { wells, requests } = groupIncludedByResource(data.included)
+  const storePlates = dataToObjectById({ data: data.data, includeRelationships: true })
+
+  const plate = count === 1 ? extractPlatefromData(data) : {}
 
   return {
     resources: {
-      plates: dataToObjectById({ data: data.data, includeRelationships: true }),
+      plates: storePlates,
       wells: dataToObjectById({ data: wells, includeRelationships: true }),
       requests: dataToObjectById({ data: requests, includeRelationships: true }),
     },
+    selected: {
+      plate: Object.values(storePlates)[0], // first plate
+    },
+    plate,
   }
 }
 
@@ -916,7 +924,7 @@ const PacbioPlateFactory = ({ count = undefined } = {}) => {
 
   const foundData = find({ data, count, get: true })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
 }
 
 export default PacbioPlateFactory

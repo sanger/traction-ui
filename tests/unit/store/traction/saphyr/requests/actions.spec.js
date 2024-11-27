@@ -1,12 +1,12 @@
 import * as Actions from '@/store/traction/saphyr/requests/actions'
-import SaphyrRequestsFactory from '@tests/factories/SaphyrRequestsFactory.js'
+import SaphyrRequestFactory from '@tests/factories/SaphyrRequestFactory.js'
 
-const saphyrRequestsFactory = SaphyrRequestsFactory()
+const saphyrRequestFactory = SaphyrRequestFactory()
 
 describe('actions', () => {
   let successResponse
   beforeEach(() => {
-    successResponse = saphyrRequestsFactory.responses.fetch
+    successResponse = saphyrRequestFactory.responses.fetch
   })
 
   describe('setRequests', () => {
@@ -19,7 +19,7 @@ describe('actions', () => {
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setRequests', saphyrRequestsFactory.storeData.requests)
+      expect(commit).toHaveBeenCalledWith('setRequests', saphyrRequestFactory.storeData.requests)
     })
   })
 })

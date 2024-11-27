@@ -159,10 +159,76 @@ const assignRequestIdsToTubes = ({ libraries, requests, tubes }) => {
   return tubesById
 }
 
+/**
+ * This function takes an object with `pool` and `used_aliquots` properties and returns an array of run suitability errors.
+ * It maps over the errors of `pool.run_suitability` and `used_aliquot.run_suitability` for each used_aliquot, formats the errors with the pool or used_aliquot details, and returns the formatted errors.
+ *
+ * @param {Object}  - An object with `pool` and `used_aliquots` properties.
+ * @returns {string[]} The formatted run suitability errors.
+ */
+const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
+  ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
+  ...used_aliquots.flatMap((used_aliquot) => {
+    const used_aliquotName = `Used aliquot ${used_aliquot.id} (${used_aliquot.sample_name})`
+    return used_aliquot.run_suitability.errors.map(({ detail }) => `${used_aliquotName} ${detail}`)
+  }),
+]
+
+/**
+ *
+ * @param {Object} pool - pool object
+ * @param {Object} state - state object
+ * @returns {Object[]} - Array of used aliquots - id, type, source_id, source_type, tag, run suitability
+ * Create used aliquots from state
+ * For each aliquot in the pool, get the used aliquot from state and return the id, type, source_id, source_type, tag, and run suitability
+ * Get the sample name based on the source_type
+ * Get the group id based on the tag
+ */
+const createUsedAliquotsFromState = ({ pool, state }) => {
+  return pool.used_aliquots.map((used_aliquotId) => {
+    const { id, type, source_id, source_type, tag, run_suitability } =
+      state.used_aliquots[used_aliquotId]
+    // Get the sample name based on the source_type
+    const { sample_name } =
+      source_type === 'Pacbio::Request'
+        ? state.requests[source_id]
+        : state.requests[state.libraries[source_id]?.pacbio_request_id]
+    const { group_id } = state.tags[tag] || {}
+    return { id, type, sample_name, group_id, run_suitability }
+  })
+}
+
+/**
+ * @param {Object} state - The state object - pools, tubes, used_aliquots, requests, tags
+ * @returns {Object[]} The array of pools with the retrieved data.
+ * This function takes the state object as an argument and returns an array of pools with the retrieved data.
+ * It maps over the values of the pools object, and for each pool, it creates an array of used aliquots using the `createUsedAliquotsFromState` function.
+ * It retrieves the barcode for each pool from the tubes object based on the pool's tube.
+ * It returns the pools with the retrieved data, including the used aliquots, barcode, and run suitability
+ */
+const addUsedAliquotsBarcodeAndErrorsToPools = (state) => {
+  return Object.values(state.pools).map((pool) => {
+    const used_aliquots = createUsedAliquotsFromState({ pool, state })
+    const { barcode } = state.tubes[pool.tube]
+    return {
+      ...pool,
+      used_aliquots,
+      barcode,
+      run_suitability: {
+        ...pool.run_suitability,
+        formattedErrors: buildRunSuitabilityErrors({ used_aliquots, pool }),
+      },
+    }
+  })
+}
+
 export {
   validate,
   payload,
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  buildRunSuitabilityErrors,
+  createUsedAliquotsFromState,
+  addUsedAliquotsBarcodeAndErrorsToPools,
 }

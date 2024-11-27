@@ -1,6 +1,9 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper'
+import { mount, router, flushPromises, createTestingPinia } from '@support/testHelper'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
+import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
+
+const pacbioPoolFactory = PacbioPoolFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -33,9 +36,9 @@ describe('PacbioPoolIndex.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v1.traction.pacbio.pools.get = vi
+          store.api.v2.traction.pacbio.pools.get = vi
             .fn()
-            .mockResolvedValue(Data.TractionPacbioPools)
+            .mockResolvedValue(pacbioPoolFactory.responses.fetch)
         }
       },
     ]
@@ -56,7 +59,7 @@ describe('PacbioPoolIndex.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(4)
     })
   })
 

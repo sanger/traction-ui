@@ -1,17 +1,17 @@
 import { expect, it } from 'vitest'
 import getters from '@/store/traction/ont/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunsFactory = OntRunsFactory()
 
 describe('getters.js', () => {
   let state, instruments, runs
 
   beforeEach(() => {
-    instruments = ontInstrumentsFactory.storeData.instruments
+    instruments = ontInstrumentFactory.storeData.instruments
     runs = ontRunsFactory.storeData.runs
 
     state = {

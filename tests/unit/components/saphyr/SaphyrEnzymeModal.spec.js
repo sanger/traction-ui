@@ -103,6 +103,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
       await enzymeModal.getEnzymeOptions()
 
+      // TODO: Move this to a factory
       const enzymes = new Response(EnzymesJson).deserialize.enzymes
       const enzymeOptions = enzymes.map((enzyme, index) =>
         Object.assign({ value: index + 1, text: enzyme.name }),

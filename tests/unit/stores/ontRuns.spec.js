@@ -5,10 +5,10 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
-import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunsFactory = OntRunsFactory()
 
 describe('useOntRunsStore', () => {
@@ -37,7 +37,7 @@ describe('useOntRunsStore', () => {
       store.currentRun = {
         id: 1,
       }
-      store.instruments = ontInstrumentsFactory.storeData.instruments
+      store.instruments = ontInstrumentFactory.storeData.instruments
       store.instrumentFlowcellLayout = InstrumentFlowcellLayout
     })
 
