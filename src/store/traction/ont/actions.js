@@ -9,6 +9,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   fetchOntRuns: async ({ commit, rootState }, filter, page) => {
+    // TODO: Remove use of v1
     const request = rootState.api.v1.traction.ont.runs
     const promise = request.get({ page, filter, include: 'instrument' })
 
@@ -25,6 +26,7 @@ export default {
     return { success, errors, meta }
   },
   setInstruments: async ({ commit, rootState }) => {
+    // TODO: Remove use of v1
     const request = rootState.api.v1.traction.ont.instruments
     const promise = request.get()
     const response = await handleResponse(promise)

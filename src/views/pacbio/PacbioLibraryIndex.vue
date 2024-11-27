@@ -91,7 +91,7 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'

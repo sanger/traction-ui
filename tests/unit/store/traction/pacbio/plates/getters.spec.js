@@ -1,15 +1,15 @@
 import getters from '@/store/traction/pacbio/plates/getters'
-import PacbioPlatesRequestFactory from '@tests/factories/PacbioPlatesRequestFactory'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory'
 
-const pacbioPlatesRequestFactory = PacbioPlatesRequestFactory()
+const pacbioPlateFactory = PacbioPlateFactory()
 
 describe('getters', () => {
   it('"plates" returns "state.plates"', () => {
     const state = {
-      plates: pacbioPlatesRequestFactory.storeData.plates,
+      plates: pacbioPlateFactory.storeData.resources.plates,
     }
     expect(getters.plates(state)).toStrictEqual(
-      Object.values(pacbioPlatesRequestFactory.storeData.plates),
+      Object.values(pacbioPlateFactory.storeData.resources.plates),
     )
   })
 })

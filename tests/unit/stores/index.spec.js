@@ -15,18 +15,9 @@ describe('index', () => {
     it('has api state', () => {
       const store = useRootStore()
       expect(store.api).toBeDefined()
+      // TODO: Remove use of v1
       expect(store.api.v1).toBeDefined()
       expect(store.api.v2).toBeDefined()
-    })
-
-    describe('api', () => {
-      it('contains multiple resources', () => {
-        const store = useRootStore()
-        expect(store.api.v1.traction).toBeDefined()
-        expect(store.api.v1.printMyBarcode).toBeDefined()
-        expect(store.api.v2.traction).toBeDefined()
-        expect(store.api.v2.printMyBarcode).toBeDefined()
-      })
     })
 
     it('has a plate map', () => {

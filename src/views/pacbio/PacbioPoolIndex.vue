@@ -34,7 +34,7 @@
 
         <template #cell(actions)="row">
           <router-link
-            id="edit-pool"
+            :id="'edit-pool-' + row.item.id"
             data-action="edit-pool"
             :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
           >
@@ -82,7 +82,7 @@
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'

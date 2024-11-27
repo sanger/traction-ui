@@ -1,9 +1,10 @@
 import BaseFactory from './BaseFactory.js'
 import { groupIncludedByResource, find } from './../../src/api/JsonApi'
 
-const createStoreData = (included) => {
-  const { requests, wells } = groupIncludedByResource(included)
-  return { requests, wells }
+const createStoreData = (data) => {
+  const plates = data.data
+  const { requests, wells } = groupIncludedByResource(data.included)
+  return { plates, requests, wells }
 }
 
 const OntPlateFactory = ({ count = undefined } = {}) => {
@@ -763,7 +764,7 @@ const OntPlateFactory = ({ count = undefined } = {}) => {
   // if first is completed find the data otherwise return all data
   const foundData = find({ data, count, get: true })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData.included) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
 }
 
 export default OntPlateFactory

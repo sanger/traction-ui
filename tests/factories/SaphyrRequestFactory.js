@@ -5,7 +5,7 @@ import { dataToObjectById } from '../../src/api/JsonApi.js'
  * Factory for creating a list of requests for Saphyr piupeline
  * @returns a base factory object with the requests data
  */
-const SaphyrRequestsFactory = () => {
+const SaphyrRequestFactory = () => {
   const data = {
     data: [
       {
@@ -132,4 +132,4 @@ const SaphyrRequestsFactory = () => {
   return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
-export default SaphyrRequestsFactory
+export default SaphyrRequestFactory

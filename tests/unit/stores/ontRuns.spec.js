@@ -5,17 +5,14 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { createPinia, setActivePinia, store as vuexStore } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
-import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import { successfulResponse } from '@tests/support/testHelper.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import * as ontRuns from '@/stores/utilities/ontRuns.js'
 
-const ontInstrumentsFactory = OntInstrumentsFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
-const ontPoolFactory = OntPoolFactory()
-
-vuexStore.state.traction.ont.pools.resources = { ...ontPoolFactory.storeData.resources }
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -43,7 +40,7 @@ describe('useOntRunsStore', () => {
       store.currentRun = {
         id: 1,
       }
-      store.instruments = ontInstrumentsFactory.storeData.instruments
+      store.instruments = ontInstrumentFactory.storeData.instruments
       store.instrumentFlowcellLayout = InstrumentFlowcellLayout
     })
 

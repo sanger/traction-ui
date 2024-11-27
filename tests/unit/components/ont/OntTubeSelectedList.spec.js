@@ -11,6 +11,7 @@ describe('OntTubeSelectedList', () => {
 
   describe('building the table', () => {
     beforeEach(() => {
+      //TODO: Move this to fetch response
       const responseBody = new Response(ontTubeFactory.responses.axios)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
@@ -37,6 +38,7 @@ describe('OntTubeSelectedList', () => {
 
   describe('with a selected tube', () => {
     beforeEach(() => {
+      //TODO: Move this to fetch response
       const responseBody = new Response(ontTubeFactory.responses.axios)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included

@@ -39,7 +39,7 @@ import { ref } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
-import { useLocationFetcher } from '@/composables/useLocationFetcher.js'
+import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
