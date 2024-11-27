@@ -11,7 +11,7 @@ const createStoreData = (data) => {
  * @returns a base factory object with the run data
  * store data object is for simulating the stored data in tests
  */
-const SaphyrTubesFactory = (type) => {
+const SaphyrTubeFactory = (type) => {
   let data = { data: [] }
   if (type === 'request') {
     data = {
@@ -110,4 +110,4 @@ const SaphyrTubesFactory = (type) => {
   }
 }
 
-export default SaphyrTubesFactory
+export default SaphyrTubeFactory

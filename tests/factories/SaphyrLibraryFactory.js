@@ -10,7 +10,7 @@ const createStoreData = (data) => {
  * @returns a base factory object with the run data
  * store data object is for simulating the stored data in tests
  */
-const SaphyrLibrariesFactory = () => {
+const SaphyrLibraryFactory = () => {
   const data = {
     data: [
       {
@@ -225,4 +225,4 @@ const SaphyrLibrariesFactory = () => {
   }
 }
 
-export default SaphyrLibrariesFactory
+export default SaphyrLibraryFactory

@@ -5,7 +5,7 @@ import { dataToObjectById } from '../../src/api/JsonApi.js'
  *
  * @returns {Object} An object containing the base factory data and store data.
  */
-const OntInstrumentsFactory = () => {
+const OntInstrumentFactory = () => {
   const data = {
     data: [
       {
@@ -56,4 +56,4 @@ const OntInstrumentsFactory = () => {
   return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
-export default OntInstrumentsFactory
+export default OntInstrumentFactory

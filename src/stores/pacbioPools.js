@@ -1,22 +1,9 @@
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v1/ResponseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
 
-/**
- * This function takes an object with `pool` and `used_aliquots` properties and returns an array of run suitability errors.
- * It maps over the errors of `pool.run_suitability` and `used_aliquot.run_suitability` for each used_aliquot, formats the errors with the pool or used_aliquot details, and returns the formatted errors.
- *
- * @param {Object}  - An object with `pool` and `used_aliquots` properties.
- * @returns {string[]} The formatted run suitability errors.
- */
-const buildRunSuitabilityErrors = ({ pool, used_aliquots }) => [
-  ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
-  ...used_aliquots.flatMap((used_aliquot) => {
-    const used_aliquotName = `Used aliquot ${used_aliquot.id} (${used_aliquot.sample_name})`
-    return used_aliquot.run_suitability.errors.map(({ detail }) => `${used_aliquotName} ${detail}`)
-  }),
-]
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
  * It contains the pools, tubes, used_aliquots, requests, and tags state properties, and the fetchPools action.
@@ -45,29 +32,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @returns {Object[]} The array of pools with the retrieved data.
      */
     poolsArray: (state) => {
-      return Object.values(state.pools).map((pool) => {
-        const used_aliquots = pool.used_aliquots.map((used_aliquotId) => {
-          const { id, type, source_id, source_type, tag, run_suitability } =
-            state.used_aliquots[used_aliquotId]
-          // Get the sample name based on the source_type
-          const { sample_name } =
-            source_type === 'Pacbio::Request'
-              ? state.requests[source_id]
-              : state.requests[state.libraries[source_id]?.pacbio_request_id]
-          const { group_id } = state.tags[tag] || {}
-          return { id, type, sample_name, group_id, run_suitability }
-        })
-        const { barcode } = state.tubes[pool.tube]
-        return {
-          ...pool,
-          used_aliquots,
-          barcode,
-          run_suitability: {
-            ...pool.run_suitability,
-            formattedErrors: buildRunSuitabilityErrors({ used_aliquots, pool }),
-          },
-        }
-      })
+      return addUsedAliquotsBarcodeAndErrorsToPools(state)
     },
   },
   actions: {
@@ -82,9 +47,9 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @param {number} page - The page for the request.
      * @returns {Promise<Object>} A promise that resolves to an object with the success status, errors, and meta data of the response.
      */
-    async fetchPools(filter, page) {
+    async fetchPools(filter = {}, page = {}) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v1.traction.pacbio.pools
+      const request = rootStore.api.v2.traction.pacbio.pools
       const promise = request.get({
         page,
         filter,
@@ -97,7 +62,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
       })
       const response = await handleResponse(promise)
 
-      const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
+      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
       if (success) {
         const { tubes, aliquots, tags, requests, libraries } = groupIncludedByResource(included)
 

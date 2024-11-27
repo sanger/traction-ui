@@ -8,7 +8,7 @@ const createStoreData = (data) => {
   }
 }
 
-const PacbioRequestsFactory = () => {
+const PacbioRequestFactory = () => {
   const data = {
     data: [
       {
@@ -395,11 +395,9 @@ const PacbioRequestsFactory = () => {
     meta: {
       page_count: 1,
     },
-    status: 200,
-    statusText: 'Success',
   }
 
   return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
-export default PacbioRequestsFactory
+export default PacbioRequestFactory

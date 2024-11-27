@@ -1,14 +1,14 @@
 import { mount, store } from '@support/testHelper'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
-import PacbioSamplesFactory from '@tests/factories/PacbioSamplesFactory.js'
+import PacbioSampleFactory from '@tests/factories/PacbioSampleFactory.js'
 
-const pacbioSamplesFactory = PacbioSamplesFactory()
+const pacbioSampleFactory = PacbioSampleFactory()
 
 describe('PacbioSampleMetadataEdit.vue', () => {
   let wrapper, modal, props, mockSamples
 
   beforeEach(() => {
-    mockSamples = pacbioSamplesFactory.content.data.data
+    mockSamples = pacbioSampleFactory.content.data.data
     props = { req: mockSamples[0] }
 
     store.commit('traction/pacbio/requests/setRequests', mockSamples)

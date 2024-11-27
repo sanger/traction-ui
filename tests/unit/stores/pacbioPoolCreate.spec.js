@@ -1,39 +1,32 @@
-import { createPinia, setActivePinia, Data } from '@support/testHelper.js'
+import {
+  createPinia,
+  setActivePinia,
+  successfulResponse,
+  failedResponse,
+} from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
-import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pool.js'
-import { newResponse } from '@/api/v1/ResponseHelper.js'
-import * as jsonapi from '@/api/JsonApi'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
+import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory.js'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
 const pacbioTagSetFactory = PacbioTagSetFactory()
+const pacbioPoolFactory = PacbioPoolFactory({ count: 1 })
+const pacbioAutoTagFactory = PacbioAutoTagFactory()
+const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
+const pacbioTubeFactory = PacbioTubeFactory({ findBy: 'libraries', transformTubes: true })
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))
 
 describe('usePacbioPoolCreateStore', () => {
-  const tagSets = {
-    1: {
-      id: '1',
-      name: 'tagSet1',
-      uuid: 'uuid1',
-      pipeline: 'pipeline1',
-      tags: [],
-    },
-    2: {
-      id: '2',
-      name: 'tagSet2',
-      uuid: 'uuid2',
-      pipeline: 'pipeline1',
-      tags: [],
-    },
-  }
-
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -49,11 +42,14 @@ describe('usePacbioPoolCreateStore', () => {
     })
 
     it('returns the selected tag set', () => {
-      const tagSet = { id: '1' }
       const pacbioRootStore = usePacbioRootStore()
-      pacbioRootStore.tagSets = tagSets
-      store.selected.tagSet = tagSet
-      expect(store.selectedTagSet).toEqual(tagSets['1'])
+      pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
+      pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
+      store.selected.tagSet = pacbioTagSetFactory.storeData.selected.tagSet
+      expect(store.selectedTagSet).toEqual({
+        ...pacbioTagSetFactory.storeData.selected.tagSet,
+        tags: pacbioTagSetFactory.storeData.selected.tags.all,
+      })
     })
 
     it('return the selected plates', () => {
@@ -70,90 +66,20 @@ describe('usePacbioPoolCreateStore', () => {
     })
 
     it('returns the selected usedAliquots', () => {
-      const payload = Data.PacbioRequestsRequest.data
-      const requestResources = payload.data
-      const { wells: wellResources, tubes: tubeResources } = groupIncludedByResource(
-        payload.included,
-      )
-      const requests = dataToObjectById({ data: requestResources, includeRelationships: true })
-      const wells = dataToObjectById({ data: wellResources, includeRelationships: true })
-      const tubes = dataToObjectById({ data: tubeResources, includeRelationships: true })
-
-      // When selecting a request with append the id with an underscore. This ensures
-      // keys are maintained in insertion order, not numeric order. This allow our requests
-      // to maintain the order in which they were selected
-      const used_aliquots = {
-        _136: {
-          source_id: '136',
-          source_type: 'Pacbio::Request',
-          request: '136',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-        _3: {
-          source_id: '3',
-          source_type: 'Pacbio::Request',
-          request: '3',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-        _40: {
-          source_id: '40',
-          source_type: 'Pacbio::Request',
-          request: '40',
-          tag_id: null,
-          volume: null,
-          concentration: null,
-          insert_size: null,
-        }, // A selected request
-      }
-
       store.resources = {
         ...store.resources,
-        requests,
-        wells,
-        tubes,
+        ...pacbioPoolFactory.storeData.resources,
       }
-      store.used_aliquots = used_aliquots
-      expect(store.selectedUsedAliquots).toEqual([
-        {
-          ...requests['40'],
+      store.used_aliquots = pacbioPoolFactory.storeData.used_aliquots
+      const selectedUsedAliquots = store.selectedUsedAliquots
+      expect(selectedUsedAliquots.length).toEqual(Object.values(store.used_aliquots).length)
+      selectedUsedAliquots.forEach((aliquot) => {
+        expect(aliquot).toEqual({
+          ...store.resources.requests[aliquot.request],
+          ...store.used_aliquots[`_${aliquot.source_id}`],
           selected: true,
-          source_id: '40',
-          request: '40',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-        {
-          ...requests['136'],
-          selected: true,
-          source_id: '136',
-          request: '136',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-        {
-          ...requests['3'],
-          selected: true,
-          source_id: '3',
-          request: '3',
-          source_type: 'Pacbio::Request',
-          concentration: null,
-          insert_size: null,
-          tag_id: null,
-          volume: null,
-        },
-      ])
+        })
+      })
     })
 
     describe('well list', () => {
@@ -281,9 +207,9 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('autoTagPlate', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
-        pacbioRootStore.tagSets = Data.AutoTagStore.resources.tagSets
-        pacbioRootStore.tags = Data.AutoTagStore.resources.tags
+        store.$state = pacbioAutoTagFactory.storeData
+        pacbioRootStore.tagSets = pacbioAutoTagFactory.storeData.resources.tagSets
+        pacbioRootStore.tags = pacbioAutoTagFactory.storeData.resources.tags
       })
 
       it('will not update used_aliquots when given with invalid values', () => {
@@ -361,9 +287,9 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('autoTagTube', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
-        pacbioRootStore.tagSets = Data.AutoTagStore.resources.tagSets
-        pacbioRootStore.tags = Data.AutoTagStore.resources.tags
+        store.$state = pacbioAutoTagFactory.storeData
+        pacbioRootStore.tagSets = pacbioAutoTagFactory.storeData.resources.tagSets
+        pacbioRootStore.tags = pacbioAutoTagFactory.storeData.resources.tags
       })
 
       it('will not update used_aliquots when given with invalid values', () => {
@@ -415,7 +341,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('requestForPlate', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selected.plates = {}
         store.selectPlate = vi.fn()
       })
@@ -448,7 +374,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('requestForTube', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selected.tubes = {}
         store.selectTube = vi.fn()
       })
@@ -472,7 +398,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('findRequestsForSource', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.requestsForPlate = vi.fn()
         store.requestsForTube = vi.fn()
       })
@@ -490,7 +416,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('selectWellRequests', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selectRequestInSource = vi.fn()
       })
 
@@ -506,7 +432,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('updateUsedAliquot', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
       })
 
       it('updates the used_aliquot with the given values', () => {
@@ -523,7 +449,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('desselectPlateAndContents', () => {
       it('deselects the plate and its contents', () => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selectPlate = vi.fn()
         store.selectRequestInSource = vi.fn()
         store.deselectPlateAndContents('1')
@@ -534,7 +460,7 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('desselectTubeAndContents', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selectTube = vi.fn()
         store.selectRequestInSource = vi.fn()
       })
@@ -561,7 +487,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         create = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { create } } } }
       })
 
       const used_aliquot1 = createUsedAliquot({
@@ -596,10 +522,10 @@ describe('usePacbioPoolCreateStore', () => {
       // pool should be successfully created
       // for now: create a pool state with a simple success message
       it('when the pool is valid', async () => {
-        const mockResponse = {
-          status: '201',
-          data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-        }
+        const mockResponse = successfulResponse({
+          data: {},
+          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+        })
         const used_aliquots = {
           _1: used_aliquot1,
           _2: used_aliquot2,
@@ -617,17 +543,13 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('when there is an error', async () => {
-        const mockResponse = {
-          status: '422',
-          data: { data: { errors: { error1: ['There was an error'] } } },
-        }
+        const mockResponse = failedResponse(422)
         store.used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.pool = pool
-        create.mockRejectedValue({ response: mockResponse })
-        const expectedResponse = newResponse({ ...mockResponse, success: false })
+        create.mockResolvedValue(mockResponse)
         const { success, errors } = await store.createPool()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
 
       // validate used_aliquots fails
@@ -718,7 +640,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         update = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { update } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { update } } } }
         used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.used_aliquots = used_aliquots
         store.pool = pool
@@ -727,11 +649,10 @@ describe('usePacbioPoolCreateStore', () => {
       // pool should be successfully created
       // for now: create a pool state with a simple success message
       it('when the pool is valid', async () => {
-        const mockResponse = {
-          status: '201',
-          data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
-        }
-
+        const mockResponse = successfulResponse({
+          data: {},
+          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+        })
         update.mockResolvedValue(mockResponse)
         const { success } = await store.updatePool()
         expect(update).toHaveBeenCalledWith(payload({ used_aliquots, pool }))
@@ -739,15 +660,11 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('when there is an error', async () => {
-        const mockResponse = {
-          status: '422',
-          data: { data: { errors: { error1: ['There was an error'] } } },
-        }
-        update.mockRejectedValue({ response: mockResponse })
-        const expectedResponse = newResponse({ ...mockResponse, success: false })
+        const mockResponse = failedResponse(422)
+        update.mockResolvedValue(mockResponse)
         const { success, errors } = await store.updatePool()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(expectedResponse.errors)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
 
       // validate used_aliquots fails
@@ -777,7 +694,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         find = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { find } } } }
+        rootStore.api.v2 = { traction: { pacbio: { pools: { find } } } }
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
         pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
@@ -785,56 +702,43 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('handles success', async () => {
-        find.mockResolvedValue(Data.TractionPacbioPool)
+        find.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         const { success } = await store.populateUsedAliquotsFromPool()
 
-        const usedAliquotsData = Data.TractionPacbioPool.data.included.slice(0, 1)
-        const requests = Data.TractionPacbioPool.data.included.slice(100, 148)
-        const plates = Data.TractionPacbioPool.data.included.slice(3, 4)
-        const wells = Data.TractionPacbioPool.data.included.slice(4, 100)
-        const tubes = Data.TractionPacbioPool.data.included.slice(148, 149)
-
-        expect(store.pool).toEqual({
-          id: Data.TractionPacbioPool.data.data.id,
-          ...Data.TractionPacbioPool.data.data.attributes,
-        })
-
-        const used_aliquots = jsonapi.dataToObjectById({
-          data: usedAliquotsData,
-          includeRelationships: true,
-        })
-        const value = Object.values(used_aliquots)[0]
-        expect(JSON.stringify(store.used_aliquots[`_${value.request}`])).toEqual(
-          JSON.stringify(
-            createUsedAliquot({
-              ...value,
-              tag_id: value.tag,
-            }),
-          ),
+        expect(store.pool).toEqual(pacbioPoolFactory.storeData.pool)
+        // we have to stringify this. Not sure why
+        expect(JSON.stringify(store.used_aliquots)).toEqual(
+          JSON.stringify(pacbioPoolFactory.storeData.used_aliquots),
         )
-        expect(store.resources.requests).toEqual(
-          jsonapi.dataToObjectById({ data: requests, includeRelationships: true }),
-        )
-        expect(store.resources.plates).toEqual(
-          jsonapi.dataToObjectById({ data: plates, includeRelationships: true }),
-        )
-        expect(store.resources.wells).toEqual(
-          jsonapi.dataToObjectById({ data: wells, includeRelationships: true }),
-        )
-        expect(store.resources.tubes).toEqual({})
-        expect(store.tube).toEqual(
-          jsonapi.dataToObjectById({ data: tubes, includeRelationships: true })[tubes[0].id],
-        )
-
+        expect(store.resources.requests).toEqual(pacbioPoolFactory.storeData.resources.requests)
+        expect(store.resources.plates).toEqual(pacbioPoolFactory.storeData.resources.plates)
+        expect(store.resources.wells).toEqual(pacbioPoolFactory.storeData.resources.wells)
+        expect(store.resources.tubes).toEqual(pacbioPoolFactory.storeData.resources.tubes)
+        expect(store.selected.tagSet).toEqual(pacbioPoolFactory.storeData.selected.tagSet)
         expect(success).toEqual(true)
       })
 
-      it('handles failure', async () => {
-        find.mockRejectedValue({
-          data: { data: [] },
-          status: 500,
-          statusText: 'Internal Server Error',
+      // an extra check to ensure this data is added to the store
+      it('adds the wells and pools data to the store', async () => {
+        const pacbioPoolFactoryWithAllIncludedData = PacbioPoolFactory({
+          count: 1,
+          includeAll: true,
         })
+        find.mockResolvedValue(pacbioPoolFactoryWithAllIncludedData.responses.fetch)
+        const { success } = await store.populateUsedAliquotsFromPool()
+        expect(store.resources.plates).toEqual(
+          pacbioPoolFactoryWithAllIncludedData.storeData.resources.plates,
+        )
+        expect(Object.values(store.resources.plates).length).toBeGreaterThan(0)
+        expect(store.resources.wells).toEqual(
+          pacbioPoolFactoryWithAllIncludedData.storeData.resources.wells,
+        )
+        expect(Object.values(store.resources.plates).length).toBeGreaterThan(0)
+        expect(success).toBeTruthy()
+      })
+
+      it('handles failure', async () => {
+        find.mockResolvedValue(failedResponse(500))
         const { success } = await store.populateUsedAliquotsFromPool()
         expect(success).toEqual(false)
       })
@@ -842,9 +746,9 @@ describe('usePacbioPoolCreateStore', () => {
 
     describe('applyTags', () => {
       beforeEach(() => {
-        store.$state = Data.AutoTagStore
-        pacbioRootStore.tagSets = Data.AutoTagStore.resources.tagSets
-        pacbioRootStore.tags = Data.AutoTagStore.resources.tags
+        store.$state = pacbioAutoTagFactory.storeData
+        pacbioRootStore.tagSets = pacbioAutoTagFactory.storeData.resources.tagSets
+        pacbioRootStore.tags = pacbioAutoTagFactory.storeData.resources.tags
       })
 
       it('applies a single tag when autoTag is false', async () => {
@@ -903,7 +807,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         store.$reset()
-        store.$state = Data.AutoTagStore
+        store.$state = pacbioAutoTagFactory.storeData
         store.selected = { ...store.selected, plates: {}, tubes: {} }
         store.updateUsedAliquot = vi.fn()
         rootStore.addCSVLogMessage = vi.fn()
@@ -1172,36 +1076,28 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v1 = { traction: { pacbio: { plates: { get } } } }
+        rootStore.api.v2 = { traction: { pacbio: { plates: { get } } } }
         store.selectPlate = vi.fn()
       })
 
       it('returns the plate that fits the valid plate barcode', async () => {
-        get.mockResolvedValue(Data.PacbioPlateRequest)
+        get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
 
-        const { success } = await store.findPacbioPlate({ barcode: 'GEN-1680611780-1' })
+        const id = Object.keys(pacbioPlateFactory.storeData.resources.plates)[0]
+        const { success } = await store.findPacbioPlate({
+          barcode: pacbioPlateFactory.storeData.resources.plates[id].barcode,
+        })
 
-        expect(store.selectPlate).toHaveBeenCalledWith({ id: '1', selected: true })
-        expect(store.resources.plates).toEqual(
-          jsonapi.dataToObjectById({
-            data: Data.PacbioPlateRequest.data.data,
-            includeRelationships: true,
-          }),
-        )
-        const wells = Data.PacbioPlateRequest.data.included.slice(0, 8)
-        expect(store.resources.wells).toEqual(
-          jsonapi.dataToObjectById({ data: wells, includeRelationships: true }),
-        )
-        const requests = Data.PacbioPlateRequest.data.included.slice(8, 16)
-        expect(store.resources.requests).toEqual(
-          jsonapi.dataToObjectById({ data: requests, includeRelationships: true }),
-        )
+        expect(store.selectPlate).toHaveBeenCalledWith({ id, selected: true })
+        expect(store.resources.plates).toEqual(pacbioPlateFactory.storeData.resources.plates)
+        expect(store.resources.wells).toEqual(pacbioPlateFactory.storeData.resources.wells)
+        expect(store.resources.requests).toEqual(pacbioPlateFactory.storeData.resources.requests)
 
         expect(success).toEqual(true)
       })
 
       it('returns an error and an empty list when plate barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: { data: [] } })
+        get.mockResolvedValue({ data: [] })
 
         const { success, errors } = await store.findPacbioPlate({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
@@ -1219,32 +1115,29 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v1 = { traction: { pacbio: { tubes: { get } } } }
+        rootStore.api.v2 = { traction: { pacbio: { tubes: { get } } } }
         store.selectPlate = vi.fn()
       })
 
       it('returns the tube that fits the valid tube barcode', async () => {
-        get.mockResolvedValue(Data.PacbioTubeRequest)
+        get.mockResolvedValue(pacbioTubeFactory.responses.fetch)
         store.selectTube = vi.fn()
 
-        const { success } = await store.findPacbioTube({ barcode: 'GEN-1680611780-6' })
+        const id = Object.keys(pacbioTubeFactory.storeData.tubes)[0]
 
-        expect(store.selectTube).toHaveBeenCalledWith({ id: '1', selected: true })
-        const tubes = jsonapi.dataToObjectById({
-          data: Data.PacbioTubeRequest.data.data,
-          includeRelationships: true,
+        const { success } = await store.findPacbioTube({
+          barcode: pacbioTubeFactory.storeData.tubes[id].barcode,
         })
-        tubes['1'].source_id = '1'
-        expect(store.resources.tubes).toEqual(tubes)
-        const requests = Data.PacbioTubeRequest.data.included.slice(0, 1)
-        expect(store.resources.requests).toEqual(
-          jsonapi.dataToObjectById({ data: requests, includeRelationships: true }),
-        )
+
+        expect(store.selectTube).toHaveBeenCalledWith({ id, selected: true })
         expect(success).toEqual(true)
+
+        expect(store.resources.requests).toEqual(pacbioTubeFactory.storeData.requests)
+        expect(store.resources.tubes).toEqual(pacbioTubeFactory.storeData.tubes)
       })
 
       it('returns an error and an empty list when tube barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: { data: [] } })
+        get.mockResolvedValue({ data: [] })
 
         const { success, errors } = await store.findPacbioTube({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])
@@ -1331,10 +1224,6 @@ describe('usePacbioPoolCreateStore', () => {
         'source_type',
         'request',
       ]
-      beforeEach(() => {
-        const create = vi.fn()
-        rootStore.api.v1 = { traction: { pacbio: { pools: { create } } } }
-      })
       it('selects a request by default', () => {
         store.used_aliquots = {
           _2: createUsedAliquot({

@@ -19,6 +19,7 @@ const createStoreData = (data) => {
       tagSet,
       tag: tags[tagSet.tags[0]],
       tags: {
+        all: tagSet.tags.map((id) => tags[id]),
         first: (n = 1) => tagSet.tags.slice(0, n).map((id) => tags[id]),
       },
     },

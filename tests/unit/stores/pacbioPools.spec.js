@@ -1,102 +1,12 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
-import { Data } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
-import * as jsonapi from '@/api/JsonApi'
+import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
+import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { failedResponse } from '@support/testHelper.js'
 
-const pools = [
-  {
-    id: '1',
-    type: 'pools',
-    barcode: 'TRAC-2-1',
-    used_aliquots: [
-      {
-        id: '1',
-        sample_name: 'Sample48',
-        group_id: 'bc1019',
-        type: 'used_aliquots',
-        run_suitability: {
-          ready_for_run: true,
-          errors: [],
-        },
-      },
-    ],
-    tube: '1',
-    volume: 1.0,
-    concentration: 1.0,
-    template_prep_kit_box_barcode: 'LK12345',
-    insert_size: 100,
-    source_identifier: 'DN1:A1',
-    created_at: '2021-07-15T15:26:29.000Z',
-    updated_at: '2021-07-15T15:26:29.000Z',
-    run_suitability: {
-      ready_for_run: true,
-      errors: [],
-      formattedErrors: [],
-    },
-  },
-  {
-    id: '2',
-    type: 'pools',
-    barcode: 'TRAC-2-2',
-    used_aliquots: [
-      {
-        id: '2',
-        sample_name: 'Sample47',
-        group_id: 'bc1011_BAK8A_OA',
-        type: 'used_aliquots',
-        run_suitability: {
-          ready_for_run: false,
-          errors: [
-            {
-              title: "can't be blank",
-              detail: "insert_size - can't be blank",
-              code: '100',
-              source: {
-                pointer: '/data/attributes/insert_size',
-              },
-            },
-          ],
-        },
-      },
-    ],
-    tube: '2',
-    volume: 1.0,
-    concentration: 1.0,
-    template_prep_kit_box_barcode: 'LK12345',
-    insert_size: null,
-    source_identifier: 'DN1:B1',
-    created_at: '2021-07-15T15:26:29.000Z',
-    updated_at: '2021-07-15T15:26:29.000Z',
-    run_suitability: {
-      ready_for_run: false,
-      formattedErrors: [
-        "Pool insert_size - can't be blank",
-        'Pool used_aliquots - is invalid',
-        "Used aliquot 2 (Sample47) insert_size - can't be blank",
-      ],
-      errors: [
-        {
-          title: "can't be blank",
-          detail: "insert_size - can't be blank",
-          code: '100',
-          source: {
-            pointer: '/data/attributes/insert_size',
-          },
-        },
-        {
-          title: 'is invalid',
-          detail: 'used_aliquots - is invalid',
-          code: '100',
-          source: {
-            pointer: '/data/relationships/used_aliquots',
-          },
-        },
-      ],
-    },
-  },
-]
+const pacbioPoolFactory = PacbioPoolFactory()
 
 describe('usePacbioPools', () => {
   beforeEach(() => {
@@ -110,105 +20,41 @@ describe('usePacbioPools', () => {
     let store
     beforeEach(() => {
       store = usePacbioPoolsStore()
-      store.$state = Data.StorePools
+      store.$state = pacbioPoolFactory.storeData
     })
     it('"poolsArrays" returns denormalized pools from "state.pools"', () => {
-      expect(store.poolsArray).toEqual(pools)
-    })
-
-    it('"poolsArray" returns pools successfully and with an empty library group_id if that library has no tag', () => {
-      store.used_aliquots[1] = {
-        id: '1',
-        source_id: '1',
-        source_type: 'Pacbio::Request',
-        request: '1',
-        tag: '',
-        type: 'used_aliquots',
-        run_suitability: { ready_for_run: true, errors: [] },
-      }
-      expect(store.poolsArray[0].used_aliquots[0].group_id).toEqual(undefined)
-    })
-
-    it('"poolsArray" returns pools successfully if a pool has a library', () => {
-      const library = {
-        id: '1',
-        tag: '26',
-        type: 'libraries',
-        volume: 1.0,
-        concentration: 1.0,
-        template_prep_kit_box_barcode: 'LK12345',
-        insert_size: 100,
-        source_identifier: 'DN1:A1',
-        created_at: '2021-07-15T15:26:29.000Z',
-        updated_at: '2021-07-15T15:26:29.000Z',
-        pacbio_request_id: '1',
-        run_suitability: {
-          ready_for_run: true,
-          errors: [],
-        },
-      }
-      store.libraries = {
-        1: library,
-      }
-      store.used_aliquots[2] = {
-        id: '1',
-        source_id: '1',
-        source_type: 'Pacbio::Library',
-        request: '1',
-        tag: '',
-        type: 'used_aliquots',
-        run_suitability: { ready_for_run: true, errors: [] },
-      }
-      // The sample name is derived from the library's request
-      expect(store.poolsArray[1].used_aliquots[0].sample_name).toEqual(
-        store.requests[library.pacbio_request_id].sample_name,
+      expect(store.poolsArray).toEqual(
+        addUsedAliquotsBarcodeAndErrorsToPools(pacbioPoolFactory.storeData),
       )
     })
   })
   describe('actions', () => {
     describe('#fetchPools', () => {
-      let get, failedResponse, rootStore, store
+      let get, rootStore, store
 
       beforeEach(() => {
         get = vi.fn()
         store = usePacbioPoolsStore()
         rootStore = useRootStore()
-        rootStore.api.v1.traction.pacbio.pools.get = get
-        failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+        rootStore.api.v2.traction.pacbio.pools.get = get
       })
 
       it('successfully', async () => {
-        const response = Data.TractionPacbioPoolsWithAliquots
-        const { data: pools, included } = response.data
-        get.mockResolvedValue(response)
-
+        get.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         await store.fetchPools()
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: included.slice(0, 2) }))
-        expect(store.used_aliquots).toEqual(
-          jsonapi.dataToObjectById({ data: included.slice(2, 4), includeRelationships: true }),
-        )
-        expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: included.slice(4, 6) }))
-        expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: included.slice(6, 8) }))
-      })
-
-      it('when the pool has no used_aliquots', async () => {
-        const response = Data.TractionPacbioPoolsNoRelationships
-        const { data: pools } = response.data
-        get.mockResolvedValue(response)
-        await store.fetchPools()
-        expect(store.pools).toEqual(
-          jsonapi.dataToObjectById({ data: pools, includeRelationships: true }),
-        )
+        expect(store.pools).toEqual(pacbioPoolFactory.storeData.pools)
+        expect(store.tubes).toEqual(pacbioPoolFactory.storeData.tubes)
+        expect(store.used_aliquots).toEqual(pacbioPoolFactory.storeData.used_aliquots)
+        expect(store.tags).toEqual(pacbioPoolFactory.storeData.tags)
+        expect(store.requests).toEqual(pacbioPoolFactory.storeData.requests)
       })
 
       it('unsuccessfully', async () => {
-        get.mockRejectedValue(failedResponse)
+        const mockResponse = failedResponse()
+        get.mockResolvedValue(mockResponse)
         const { success, errors } = await store.fetchPools()
         expect(success).toEqual(false)
-        expect(errors).toEqual(failedResponse)
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
   })

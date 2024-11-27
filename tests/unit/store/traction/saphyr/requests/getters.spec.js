@@ -1,15 +1,15 @@
 import getters from '@/store/traction/saphyr/requests/getters.js'
-import SaphyrRequestsFactory from '@tests/factories/SaphyrRequestsFactory.js'
+import SaphyrRequestFactory from '@tests/factories/SaphyrRequestFactory.js'
 
-const saphyrRequestsFactory = SaphyrRequestsFactory()
+const saphyrRequestFactory = SaphyrRequestFactory()
 
 describe('getters', () => {
   it('"requests" returns "state.requests"', () => {
     const state = {
-      requests: saphyrRequestsFactory.storeData.requests,
+      requests: saphyrRequestFactory.storeData.requests,
     }
     expect(getters.requests(state)).toStrictEqual(
-      Object.values(saphyrRequestsFactory.storeData.requests),
+      Object.values(saphyrRequestFactory.storeData.requests),
     )
   })
 })
