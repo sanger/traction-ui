@@ -3,11 +3,11 @@ import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
-import OntInstrumentsFactory from '@tests/factories/OntInstrumentsFactory.js'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntInstrumentFactory from '@tests/factories/OntInstrumentsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunsFactory.js'
 
-const ontInstrumentsFactory = OntInstrumentsFactory()
-const ontRunsFactory = OntRunsFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
+const ontRunFactory = OntRunFactory()
 
 describe('useOntRootStore', () => {
   beforeEach(() => {
@@ -27,8 +27,8 @@ describe('useOntRootStore', () => {
   describe('getters', () => {
     let resources
     beforeEach(() => {
-      const instruments = ontInstrumentsFactory.storeData.instruments
-      const runs = ontRunsFactory.storeData.runs
+      const instruments = ontInstrumentFactory.storeData.instruments
+      const runs = ontRunFactory.storeData.runs
       resources = {
         instruments,
         runs,
@@ -82,8 +82,8 @@ describe('useOntRootStore', () => {
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()
 
-        expect(store.resources.runs).toEqual(ontRunsFactory.storeData.runs)
-        expect(store.resources.instruments).toEqual(ontInstrumentsFactory.storeData.instruments)
+        expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
+        expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })

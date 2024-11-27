@@ -13,6 +13,8 @@ import * as ontRuns from '@/stores/utilities/ontRuns.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
+const ontPoolFactory = OntPoolFactory()
+vuexStore.state.traction.ont.pools.resources = { ...ontPoolFactory.storeData.resources }
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -189,7 +191,7 @@ describe('useOntRunsStore', () => {
       beforeEach(() => {
         store = useOntRunsStore()
         const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = ontInstrumentsFactory.storeData.instruments
+        ontRootStore.resources.instruments = ontInstrumentFactory.storeData.instruments
         ontRootStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
       })
 
@@ -199,7 +201,7 @@ describe('useOntRunsStore', () => {
         store.runRequest.find = find
 
         const formattedRun = ontRuns.buildFormatedOntRun(
-          Object.values(ontInstrumentsFactory.storeData.instruments),
+          Object.values(ontInstrumentFactory.storeData.instruments),
           Object.values(ontPoolFactory.storeData.resources.pools),
           ontSingleRunFactory.content.data,
           ontSingleRunFactory.content.included,
