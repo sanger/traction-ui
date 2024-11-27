@@ -8,10 +8,10 @@ import {
 import { usePacbioLibraryBatchesStore } from '@/stores/pacbioLibraryBatches.js'
 import { beforeEach, describe, expect, vi } from 'vitest'
 import PacbioLibraryBatchFactory from '@tests/factories/PacbioLibraryBatchFactory.js'
-import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-const pacbioRequestsFactory = PacbioRequestsFactory()
+const pacbioRequestFactory = PacbioRequestFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
 const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory(pacbioTagSetFactory.storeData.tags)
 
@@ -49,7 +49,7 @@ describe('usePacbioLibraryBatchesStore', () => {
             pacbio: {
               library_batches: { create },
               tag_sets: { get: vi.fn().mockResolvedValue(pacbioTagSetFactory.responses.fetch) },
-              requests: { get: vi.fn().mockResolvedValue(pacbioRequestsFactory.responses.fetch) },
+              requests: { get: vi.fn().mockResolvedValue(pacbioRequestFactory.responses.fetch) },
             },
           },
         }
@@ -89,7 +89,7 @@ describe('usePacbioLibraryBatchesStore', () => {
         )
         const payload = pacbioLibraryBatchFactory.createLibraryBatchPayloadData(
           pacbioTagSetFactory.storeData.tags,
-          pacbioRequestsFactory.content.data,
+          pacbioRequestFactory.content.data,
         )
 
         expect(create).toBeCalled(payload)

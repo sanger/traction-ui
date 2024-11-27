@@ -3,16 +3,16 @@ import {
   validateAndFormatAsPayloadData,
   fetchTagsAndRequests,
 } from '@/stores/utilities/pacbioLibraryBatches'
-import PacbioRequestsFactory from '@tests/factories/PacbioRequestsFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 
-const pacbioRequestsFactory = PacbioRequestsFactory()
+const pacbioRequestFactory = PacbioRequestFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('pacbioLibraryBatches', () => {
-  const requests = pacbioRequestsFactory.storeData.requests
+  const requests = pacbioRequestFactory.storeData.requests
   const tags = Object.values(pacbioTagSetFactory.storeData.tags)
 
   describe('validateAndFormatAsPayloadData', () => {
@@ -90,7 +90,7 @@ describe('pacbioLibraryBatches', () => {
     it('returns formatted payload data if all validations pass', () => {
       const tagSet = pacbioTagSetFactory.storeData.selected.tagSet
       const tag = pacbioTagSetFactory.storeData.selected.tag
-      const request = pacbioRequestsFactory.content.data[0]
+      const request = pacbioRequestFactory.content.data[0]
       const record = {
         source: request.attributes.source_identifier,
         tag_set: tagSet.name,
@@ -130,12 +130,12 @@ describe('pacbioLibraryBatches', () => {
         traction: {
           pacbio: {
             tag_sets: { get: vi.fn().mockResolvedValue(pacbioTagSetFactory.responses.fetch) },
-            requests: { get: vi.fn().mockResolvedValue(pacbioRequestsFactory.responses.fetch) },
+            requests: { get: vi.fn().mockResolvedValue(pacbioRequestFactory.responses.fetch) },
           },
         },
       }
       tagSet = pacbioTagSetFactory.storeData.selected.tagSet
-      requestsData = pacbioRequestsFactory.storeData.requests
+      requestsData = pacbioRequestFactory.storeData.requests
       sources = requestsData.map((r) => r.source_identifier)
     })
 
@@ -149,7 +149,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toEqual(pacbioRequestsFactory.storeData.requests)
+      expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
       expect(tags).toEqual(Object.values(pacbioTagSetFactory.storeData.tags))
     })
 
@@ -165,7 +165,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toEqual(pacbioRequestsFactory.storeData.requests)
+      expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
       expect(tags).toBeUndefined()
     })
 
