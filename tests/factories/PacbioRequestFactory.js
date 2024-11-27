@@ -1,4 +1,12 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
+
+const createStoreData = (data) => {
+  const requests = dataToObjectById({ data: data.data, includeRelationships: true })
+  return {
+    requests: Object.values(requests),
+  }
+}
 
 const PacbioRequestFactory = () => {
   const data = {
@@ -167,7 +175,7 @@ const PacbioRequestFactory = () => {
           barcode: '3980000001795',
           sample_species: 'Gryphon',
           created_at: '2022/03/01 10:41',
-          source_identifier: '3980000001795',
+          source_identifier: 'GEN-1725896371-4:B3',
         },
         relationships: {
           well: {
@@ -389,7 +397,7 @@ const PacbioRequestFactory = () => {
     },
   }
 
-  return BaseFactory(data)
+  return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
 export default PacbioRequestFactory
