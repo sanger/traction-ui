@@ -1,5 +1,5 @@
 import OntRunFactory from '../../../factories/OntRunFactory.js'
-import OntInstrumentFactory from '../../../factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '../../../factories/OntInstrumentFactory.js'
 import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Run page', () => {
