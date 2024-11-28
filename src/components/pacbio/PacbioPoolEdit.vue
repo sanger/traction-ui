@@ -230,7 +230,6 @@ const poolSetter = (attr) => {
     },
     set(newValue) {
       pool[attr] = newValue
-      updatePool(pool, attr)
     },
   })
 }
