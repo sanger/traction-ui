@@ -1738,5 +1738,43 @@ describe('usePacbioPoolCreateStore', () => {
         })
       })
     })
+
+    describe('validatePoolAttribute', () => {
+      it('will not set errors if the requested field is valid', () => {
+        store.pool = {
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+          template_prep_kit_box_barcode: 'ABC1',
+        }
+        store.validatePoolAttribute('concentration')
+        expect(store.pool.errors).toEqual({})
+      })
+      it('will remove if errors exist for the requested field and it is valid', () => {
+        store.pool = {
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+          template_prep_kit_box_barcode: 'ABC1',
+          errors: { concentration: ['error'] },
+        }
+        store.validatePoolAttribute('concentration')
+        expect(store.pool.errors).toEqual({})
+      })
+      it('will add error if the requested field is invalid', () => {
+        store.pool = {
+          volume: null,
+          concentration: 1,
+          insert_size: 100,
+          template_prep_kit_box_barcode: 'ABC1',
+          errors: { concentration: ['error'] },
+        }
+        store.validatePoolAttribute('volume')
+        expect(store.pool.errors).toEqual({
+          concentration: ['error'],
+          volume: 'must be present',
+        })
+      })
+    })
   })
 })
