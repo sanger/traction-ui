@@ -33,8 +33,12 @@ export default {
           this.viewType == ViewType.Button,
         'items-center px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white text-gray-400 hover:text-white':
           this.viewType == ViewType.MenuItem,
+        'text-white': this.isActive,  
       }
     },
+    isActive() {
+      return this.$route.path === this.link
+    }
   },
 }
 </script>
