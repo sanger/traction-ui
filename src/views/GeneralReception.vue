@@ -1,29 +1,7 @@
 <template>
   <div class="flex flex-row space-x-12 px-12">
     <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
-    <div class="w-1/2 space-y-8">
-      <div>
-        <traction-heading level="4" :show-border="true">Workflow</traction-heading>
-        <traction-field-group
-          label=""
-          attribute="workflowSelect"
-          for="workflowSelect"
-          description="Select a workflow if you would like to scan in the imported labware to a specific location"
-          layout="spacious"
-        >
-          <traction-select
-            id="workflowSelect"
-            v-model="workflow"
-            class="inline-block w-full"
-            :options="workflowOptions"
-            data-type="workflow-list"
-          />
-        </traction-field-group>
-        <SwipeCard
-          v-model="user_code"
-          description="Only necessary if you would like to scan in to a specific location"
-        />
-      </div>
+    <div class="w-1/2">
       <div>
         <traction-heading level="4" :show-border="true"> Source </traction-heading>
         <traction-field-group
@@ -62,6 +40,47 @@
             @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
+
+        <div class="grid grid-cols-2 gab-4 mt-4 mb-4">
+          <div>
+            <traction-label class="inline-block w-full text-left">Workflow</traction-label>
+            <traction-muted-text class=""
+              >Select a workflow if you would like to scan in the imported
+              labware</traction-muted-text
+            >
+            <traction-select
+              id="workflowSelect"
+              v-model="workflow"
+              class="mt-1 mr-2"
+              :options="workflowOptions"
+              data-type="workflow-list"
+            />
+          </div>
+          <!-- Only displaying the swipecard field when the user selects a workflow -->
+          <div v-show="workflow">
+            <traction-label class="inline-block w-full text-left"
+              >User barcode or swipecard</traction-label
+            >
+            <traction-muted-text class="ml-1 text-left"
+              >Only required when a workflow is selected</traction-muted-text
+            >
+            <traction-field-error
+              data-attribute="user-code-error"
+              :error="
+                !user_code && workflow
+                  ? 'User code is required to scan in the imported labware'
+                  : ''
+              "
+            >
+              <traction-input
+                id="userCode"
+                v-model="user_code"
+                data-attribute="user-code-input"
+                class="mt-1"
+              />
+            </traction-field-error>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -171,7 +190,6 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
-import SwipeCard from '@/components/reception/SwipeCard.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -196,10 +214,12 @@ const workflow = ref('')
 
 const workflowOptions = computed(() => [
   { value: '', text: '' }, // Empty option
-  ...Object.values(WorkflowsLocations).map((workflow) => ({
-    value: workflow.barcode,
-    text: workflow.name,
-  })),
+  ...Object.values(WorkflowsLocations)
+    .filter((workflow) => workflow.pipelines.includes(pipeline.value))
+    .map((workflow) => ({
+      value: workflow.barcode,
+      text: workflow.name,
+    })),
 ])
 
 const workflowLocation = computed(() => {

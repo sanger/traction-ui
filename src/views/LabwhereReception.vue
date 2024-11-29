@@ -1,11 +1,21 @@
 <template>
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
     <traction-form @submit="scanBarcodesToLabwhere" @reset="reset">
-      <SwipeCard
-        v-model="user_code"
-        :error="errors.user_code"
-        :validate-user-code="validateUserCode"
-      />
+      <fieldset>
+        <traction-heading level="4" show-border>User barcode or swipecard</traction-heading>
+        <traction-muted-text class="flex justify-left"
+          >Enter user barcode/swipecard</traction-muted-text
+        >
+        <traction-field-error data-attribute="user-code-error" :error="errors.user_code">
+          <traction-input
+            id="userCode"
+            v-model="user_code"
+            data-attribute="user-code-input"
+            class="flex w-full"
+            @update:model-value="validateUserCode"
+          />
+        </traction-field-error>
+      </fieldset>
 
       <fieldset>
         <traction-heading level="4" show-border>Location barcode</traction-heading>
@@ -89,7 +99,6 @@
 import { ref, reactive, computed } from 'vue'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
-import SwipeCard from '@/components/reception/SwipeCard.vue'
 
 const user_code = ref('') // User code or swipecard
 const location_barcode = ref('') // Location barcode
