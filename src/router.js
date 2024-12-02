@@ -30,7 +30,6 @@ import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vu
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
 function checkPaginationParams(to) {
-  console.log(to)
   Object.prototype.hasOwnProperty.call(to.query, 'page_size') ? '' : (to.query.page_size = 25)
   Object.prototype.hasOwnProperty.call(to.query, 'page_number') ? '' : (to.query.page_number = 1)
   Object.prototype.hasOwnProperty.call(to.query, 'page_count') ? '' : (to.query.page_count = 1)

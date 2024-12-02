@@ -41,7 +41,6 @@ describe('ONT Run page', () => {
   it('Shows the correct information', () => {
     cy.visit('#/ont/run/new')
 
-    cy.contains('ONT Run')
     cy.contains('1. Run Information')
     cy.contains('2. Run Instrument Flowcells')
 

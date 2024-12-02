@@ -9,11 +9,16 @@ describe('Visit Home Page', () => {
 
   it('Visits the app root url', () => {
     cy.visit('/')
-    cy.contains('Home')
+    // Nav bar links
     cy.contains('Label Printing')
     cy.contains('QC Results Upload')
-    cy.contains('Dashboard')
-    cy.contains('PacBio')
-    cy.contains('ONT')
+    cy.contains('Reception')
+    cy.contains('LabWhere Reception')
+
+    // Home page contents
+    cy.contains('Traction')
+    cy.contains('Pipelines')
+    cy.contains('Tools')
+    cy.contains('Docs')
   })
 })
