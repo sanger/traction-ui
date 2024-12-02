@@ -1742,7 +1742,7 @@ describe('usePacbioPoolCreateStore', () => {
     describe('validatePoolAttribute', () => {
       it('will not set errors if the requested field is valid', () => {
         store.pool = {
-          volume: 1,
+          volume: 0,
           concentration: 1,
           insert_size: 100,
           template_prep_kit_box_barcode: 'ABC1',
@@ -1773,6 +1773,19 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.pool.errors).toEqual({
           concentration: ['error'],
           volume: 'must be present',
+        })
+      })
+      it('will add error if the volume is less than the used_volume', () => {
+        store.pool = {
+          volume: 2,
+          used_volume: 4,
+          concentration: 1,
+          insert_size: 100,
+          template_prep_kit_box_barcode: 'ABC1',
+        }
+        store.validatePoolAttribute('volume')
+        expect(store.pool.errors).toEqual({
+          volume: 'must be greater than used volume',
         })
       })
     })
