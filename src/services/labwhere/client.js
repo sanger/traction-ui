@@ -70,7 +70,7 @@ const scanBarcodesInLabwhereLocation = async (
   startPosition,
 ) => {
   if (!userCode || !labwareBarcodes) {
-    return { success: false, errors: ['Missing required parameters'] }
+    return { success: false, errors: ['Required parameters are missing for the Scan In operation'] }
   }
 
   const params = {

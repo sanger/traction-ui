@@ -12,9 +12,10 @@ describe('Import samples from Sequencescape', () => {
   describe('Successfully - V2', () => {
     beforeEach(() => {
       cy.visit('#/reception')
-      cy.get('#userCode').type('usercodeX')
-      cy.get('#workflowSelect').select('ONT -20 samples')
       cy.get('[data-type="source-list"]').select('Sequencescape')
+
+      cy.get('#workflowSelect').select('Pacbio -20 samples')
+      cy.get('#userCode').type('usercodeX')
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
       cy.get('[data-attribute=estimate_of_gb_required]').type('3')
@@ -56,16 +57,16 @@ describe('Import samples from Sequencescape', () => {
       cy.intercept('POST', '/api/scans', {
         statusCode: 201,
         body: {
-          message: 'SE108532I successfully stored in LRT020 Draw 1',
+          message: 'SE108532I successfully stored in LRT006 Draw 1',
         },
       })
       cy.get('#barcodes').type('DN9000002A\nNT1O\n')
       cy.contains('Import 2 labware into PacBio from Sequencescape')
-      cy.contains('The imported labware will be scanned into LRT020 Draw 1')
+      cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
       cy.contains('DN9000002A imported from Sequencescape')
       cy.contains('NT1O imported from Sequencescape')
-      cy.contains('SE108532I successfully stored in LRT020 Draw 1')
+      cy.contains('SE108532I successfully stored in LRT006 Draw 1')
     })
 
     it('successfully import to traction but fails to scan in to labWhere', () => {
@@ -75,7 +76,7 @@ describe('Import samples from Sequencescape', () => {
       })
       cy.get('#barcodes').type('DN9000002A\nNT1O\n')
       cy.contains('Import 2 labware into PacBio from Sequencescape')
-      cy.contains('The imported labware will be scanned into LRT020 Draw 1')
+      cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
       cy.contains('DN9000002A imported from Sequencescape')
       cy.contains('NT1O imported from Sequencescape')
@@ -91,8 +92,8 @@ describe('Import samples from Sequencescape', () => {
       body: { data: [] },
     })
     cy.get('#barcodes').type('DN9000002A\nNT1O')
+    cy.get('#workflowSelect').select('Pacbio -20 samples')
     cy.get('#userCode').type('usercodeX')
-    cy.get('#workflowSelect').select('ONT -20 samples')
     cy.contains('Import 0 labware into PacBio from Sequencescape')
     cy.get('[data-action="import-labware"]').click()
     // TODO: We might need to change the error if it causes issues.
@@ -102,8 +103,8 @@ describe('Import samples from Sequencescape', () => {
   it('Unsuccessfully - when there is an error from traction', () => {
     cy.visit('#/reception')
     cy.contains('Scan barcodes')
+    cy.get('#workflowSelect').select('Pacbio -20 samples')
     cy.get('#userCode').type('usercodeX')
-    cy.get('#workflowSelect').select('ONT -20 samples')
     cy.intercept(sequencescapeRequest, {
       statusCode: 200,
       body: SequencescapeLabwareFactory().content,
@@ -114,7 +115,7 @@ describe('Import samples from Sequencescape', () => {
     })
     cy.get('#barcodes').type('DN9000002A\nNT1O\n')
     cy.contains('Import 2 labware into PacBio from Sequencescape')
-    cy.contains('The imported labware will be scanned into LRT020 Draw 1')
+    cy.contains('The imported labware will be scanned into LRT006 Draw 1')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
   })

@@ -32,8 +32,8 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     beforeEach(() => {
       cy.visit('#/reception')
       cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
-      cy.get('#userCode').type('usercodeX')
       cy.get('#workflowSelect').select('ONT -20 samples')
+      cy.get('#userCode').type('usercodeX')
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
       cy.get('[data-attribute=number-of-flowcells-input]').type('3')

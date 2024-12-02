@@ -271,7 +271,7 @@ async function importLabware() {
         reception: props.reception,
       }) || []
 
-    if (importedBarcodes.length > 0 && props.userCode && props.locationBarcode) {
+    if (importedBarcodes.length > 0) {
       messages.push(
         await scanInBarcodesToLocation(
           props.userCode,

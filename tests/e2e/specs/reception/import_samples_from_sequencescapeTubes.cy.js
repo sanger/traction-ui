@@ -18,8 +18,8 @@ describe('Import samples from Sequencescape Tubes', () => {
   describe('Successfully - V2', () => {
     beforeEach(() => {
       cy.visit('#/reception')
+      cy.get('#workflowSelect').select('Pacbio -20 samples')
       cy.get('#userCode').type('usercodeX')
-      cy.get('#workflowSelect').select('ONT -20 samples')
       cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
@@ -61,16 +61,16 @@ describe('Import samples from Sequencescape Tubes', () => {
       cy.intercept('POST', '/api/scans', {
         statusCode: 201,
         body: {
-          message: 'SE108532I successfully stored in LRT020 Draw 1',
+          message: 'SE108532I successfully stored in LRT006 Draw 1',
         },
       })
       cy.get('#barcodes').type('3980000001795\n')
       cy.contains('Import 1 labware into PacBio from Sequencescape Tubes')
-      cy.contains('The imported labware will be scanned into LRT020 Draw 1')
+      cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
       cy.contains('DN9000002A imported from Sequencescape')
       cy.contains('NT1O imported from Sequencescape')
-      cy.contains('SE108532I successfully stored in LRT020 Draw 1')
+      cy.contains('SE108532I successfully stored in LRT006 Draw 1')
     })
 
     it('successfully import to traction but fails to scan in to labWhere', () => {
@@ -80,7 +80,7 @@ describe('Import samples from Sequencescape Tubes', () => {
       })
       cy.get('#barcodes').type('3980000001795\n')
       cy.contains('Import 1 labware into PacBio from Sequencescape Tubes')
-      cy.contains('The imported labware will be scanned into LRT020 Draw 1')
+      cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
       cy.contains('DN9000002A imported from Sequencescape')
       cy.contains('NT1O imported from Sequencescape')

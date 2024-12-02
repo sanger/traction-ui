@@ -46,8 +46,6 @@ describe('GeneralReception', () => {
       expect(workflowSelect.findAll('option').map((element) => element.text())).toEqual([
         '',
         'Extractions -80 samples',
-        'ONT -20 samples',
-        'ONT Fridge samples',
         'Pacbio -20 samples',
         'Pacbio Fridge samples',
       ])
@@ -59,6 +57,29 @@ describe('GeneralReception', () => {
       expect(workflowSelect.element.value).toEqual('')
     })
 
+    it('displays user swipecard when a workflow is selected', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(true)
+    })
+
+    it('hides user swipecard when a workflow is not selected', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('')
+      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(false)
+    })
+
+    it('errors user code fields if not set', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('[data-attribute=user-code-error]').text()).toContain(
+        'User code is required to scan in the imported labware',
+      )
+    })
+
     it('updates the summary section accordingly on user select', async () => {
       const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
@@ -67,11 +88,6 @@ describe('GeneralReception', () => {
         'The imported labware will be scanned into LRT007 – Shelf 1',
       )
     })
-  })
-
-  it('has a user barcode/swipecard field', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
-    expect(wrapper.find('userBarcode')).toBeTruthy()
   })
 
   it('has a source selector', () => {
