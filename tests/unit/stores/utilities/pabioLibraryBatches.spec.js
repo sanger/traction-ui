@@ -140,7 +140,7 @@ describe('pacbioLibraryBatches', () => {
     })
 
     it('fetches requests and tags successfully', async () => {
-      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
@@ -156,7 +156,7 @@ describe('pacbioLibraryBatches', () => {
     it('returns null tags if tag set fetch fails', async () => {
       rootStore.api.v2.traction.pacbio.tag_sets.get.mockResolvedValue({ success: false })
 
-      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
@@ -172,7 +172,7 @@ describe('pacbioLibraryBatches', () => {
     it('returns empty requests if request fetch fails', async () => {
       rootStore.api.v2.traction.pacbio.requests.get.mockResolvedValue({ success: false })
 
-      const { requests } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
