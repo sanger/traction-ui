@@ -25,11 +25,10 @@ export default {
     return { success, errors, meta }
   },
   setInstruments: async ({ commit, rootState }) => {
-    // TODO: Remove use of v1
-    const request = rootState.api.v1.traction.ont.instruments
+    const request = rootState.api.v2.traction.ont.instruments
     const promise = request.get()
     const response = await handleResponse(promise)
-    const { success, data: { data } = {}, errors = [] } = response
+    const { success, body: { data } = {}, errors = [] } = response
 
     if (success) {
       commit('setInstruments', data)

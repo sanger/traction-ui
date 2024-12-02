@@ -42,7 +42,6 @@ export default {
   },
   computed: {
     api() {
-      // TODO: Remove use of v1
       return this.$store.getters.api.v2
     },
     enzymeRequest() {

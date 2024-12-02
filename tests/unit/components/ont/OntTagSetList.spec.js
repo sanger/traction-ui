@@ -1,5 +1,5 @@
-import OntTagSetList from '@/components/ont/OntTagSetList'
-import { mount, store } from '@support/testHelper'
+import OntTagSetList from '@/components/ont/OntTagSetList.vue'
+import { mount, store } from '@support/testHelper.js'
 
 describe('OntTagSetList', () => {
   let wrapper

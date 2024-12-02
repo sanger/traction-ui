@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi'
 
 /**
  *
@@ -37,13 +37,21 @@ const createStoreDataForSinglePool = (data) => {
  * @param {Array} included - the included data from the json api response
  * @returns {Object} - { tubes, libraries, tags, requests } the included data for multiple pools
  */
-const createStoreDataForMultiplePools = (included) => {
-  const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+const createStoreDataForMultiplePools = (data) => {
+  const pools = dataToObjectById({ data: data.data, includeRelationships: true })
+  const { tubes, libraries, tags, requests } = groupIncludedByResource(data.included)
   return {
     tubes,
     libraries,
     tags,
     requests,
+    resources: {
+      tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
+      libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+      tags: dataToObjectById({ data: tags, includeRelationships: true }),
+      requests: dataToObjectById({ data: requests, includeRelationships: true }),
+      pools,
+    },
   }
 }
 
@@ -57,7 +65,7 @@ const createStoreData = (data, count) => {
   if (count === 1) {
     return createStoreDataForSinglePool(data)
   } else {
-    return createStoreDataForMultiplePools(data.included)
+    return createStoreDataForMultiplePools(data)
   }
 }
 
