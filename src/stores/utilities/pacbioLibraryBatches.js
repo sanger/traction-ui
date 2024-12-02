@@ -87,7 +87,7 @@ async function fetchTagsAndRequests(sources, tagSet) {
 
   promise = rootStore.api.v2.traction.pacbio.tag_sets.get({
     include: 'tags',
-    filter: { name: tagSet.name },
+    filter: { name: tagSet },
   })
   response = await handleResponse(promise)
 
