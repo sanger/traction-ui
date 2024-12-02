@@ -111,6 +111,7 @@ const getColumnValues = (csv, column, hasHeader = true) => {
 
   return data.map((line) => {
     const columns = line.split(',')
+    if(!column) return columns
     return column >= columns.length ? '' : columns[column]
   })
 }
