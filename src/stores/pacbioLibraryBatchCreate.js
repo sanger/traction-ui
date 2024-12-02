@@ -15,7 +15,7 @@ import { getColumnValues } from '@/lib/csv/pacbio.js'
  * usePacbioLibraryBatchesStore is a store to manage pacbio library batches.
  * @returns {Object} - The store object.
  */
-export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', {
+export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchCreate', {
   state: () => ({
     /**
      * @property {Object} libraries - An object to store all libraries indexed by id.
@@ -59,7 +59,7 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
      * Creates a library batch from a CSV file and a tag set.
      *
      * @param {File} csvFile - The CSV file containing library batch data.
-     * @param {Object} tagSet - The tag set to validate against.
+     * @param {Object} tagSet - The tag set name to validate against.
      * @returns {Promise<Object>} - The result of the library batch creation.
      */
     async createLibraryBatch(csvFile, tagSet) {
