@@ -23,6 +23,7 @@ const createStoreData = (data) => {
         first: (n = 1) => tagSet.tags.slice(0, n).map((id) => tags[id]),
       },
     },
+    findTagSetByName: (name) => Object.values(tagSets).find((ts) => ts.name === name)
   }
 }
 
