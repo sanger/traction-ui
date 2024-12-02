@@ -1096,5 +1096,29 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!used_aliquot) return
       used_aliquot.validateField(field, value)
     },
+
+    validatePoolAttribute(field) {
+      const { pool } = this
+      // Assigns the errors object to the pool object if it doesn't exist
+      pool.errors ??= {}
+      // We check its not 0 to prevent false errors as 0 is valid but !0 returns true
+      if (!pool[field] && pool[field] !== 0) {
+        pool.errors[field] = 'must be present'
+        return
+      }
+
+      // If the field is 'volume' and the pool has a used volume, check that the pool volume is greater than the used volume
+      if (
+        field === 'volume' &&
+        pool.used_volume != null &&
+        parseFloat(pool[field]) < parseFloat(pool.used_volume)
+      ) {
+        pool.errors[field] = 'must be greater than used volume'
+        return
+      }
+
+      // Remove any existing errors for the field
+      delete pool.errors[field]
+    },
   },
 })

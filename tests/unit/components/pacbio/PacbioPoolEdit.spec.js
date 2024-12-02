@@ -80,28 +80,28 @@ describe('pacbioPoolEdit#new', () => {
       await input.setValue('017865101789500022821')
       await wrapper.vm.$nextTick()
       expect(store.pool.template_prep_kit_box_barcode).toEqual('017865101789500022821')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
       expect(store.pool.volume).toEqual('10.0')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
       expect(store.pool.concentration).toEqual('2.4')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
       expect(store.pool.insert_size).toEqual('100')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
   })
 
