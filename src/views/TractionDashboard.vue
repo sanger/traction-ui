@@ -14,14 +14,16 @@
       <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
         <button class="flex flex-row" @click="pipelineDropdown = !pipelineDropdown">
           <div class="flex flex-col text-left w-full">
-            <h2 class="text-2xl">Pipeline</h2>
+            <h2 class="text-2xl">Pipelines</h2>
             <span class="text-md text-gray font-light"
               >A set of quick links for each sequencing pipeline</span
             >
           </div>
           <TractionArrowIcon class="inline-block h-6 w-6" direction="down" />
         </button>
-        <div :class="`grid grid-cols-${pipelines.length} gap-x-4 ${pipelineDropdown ? 'show' : 'hidden'}`">
+        <div
+          :class="`grid grid-cols-${pipelines.length} gap-x-4 ${pipelineDropdown ? 'show' : 'hidden'}`"
+        >
           <LabelledCard
             v-for="(pipeline, index) in pipelines"
             :key="index"
@@ -49,7 +51,9 @@
           </div>
           <TractionArrowIcon class="inline-block h-6 w-6" direction="down" />
         </button>
-        <div :class="`z-10 flex flex-row flex-wrap gap-y-4 gap-x-4 text-center ${toolDropdown ? 'show' : 'hidden'}`">
+        <div
+          :class="`z-10 flex flex-row flex-wrap gap-y-4 gap-x-4 text-center ${toolDropdown ? 'show' : 'hidden'}`"
+        >
           <TractionLink
             v-for="route in toolRoutes"
             :key="route"
@@ -69,7 +73,9 @@
           </div>
           <TractionArrowIcon class="inline-block h-6 w-6" direction="down" />
         </button>
-        <div :class="`z-10 flex flex-row flex-wrap gap-y-4 gap-x-4 text-center ${docDropdown ? 'show' : 'hidden'}`">
+        <div
+          :class="`z-10 flex flex-row flex-wrap gap-y-4 gap-x-4 text-center ${docDropdown ? 'show' : 'hidden'}`"
+        >
           <a
             v-for="doc in docRoutes"
             :key="doc.name"
