@@ -15,7 +15,8 @@ const createStoreData = (data) => {
     selected: {
       printer: printers['1'],
     },
-    getPrintersOfType: (type) => Object.values(printers).filter((printer) => printer.labware_type === type),
+    getPrintersOfType: (type) =>
+      Object.values(printers).filter((printer) => printer.labware_type === type),
   }
 }
 

@@ -185,7 +185,6 @@ const { printLabels } = usePacbioLibraryPrint()
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
 
-
 //computed
 const libraries = computed(() => librariesStore.librariesArray)
 
@@ -230,13 +229,8 @@ const handleLibraryDelete = async () => {
   }
 }
 
-
-
 const onPrintAction = async (printerName) => {
-  const { success, message = {} } = await printLabels(
-    printerName,
-    state.selected
-  )
+  const { success, message = {} } = await printLabels(printerName, state.selected)
   showAlert(message, success ? 'success' : 'danger')
 }
 

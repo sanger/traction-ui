@@ -7,7 +7,7 @@
             <traction-section
               title="Create Library Batch"
               number="1"
-              description="To get started, please select a tag set and csv file, then press Create Libraries button"
+              description="To get started, please select a tag set and csv file, then press the 'Create Libraries' button"
             ></traction-section>
             <div class="text-left px-4">
               Select tag set
@@ -18,7 +18,7 @@
               ></traction-select>
             </div>
             <div class="px-4">
-              <label class="flex text-left" for="csvFieInput">Select file</label>
+              <label class="flex text-left" for="csvFieInput">Select csv file</label>
               <div class="flex flex-row space-x-2">
                 <div id="borderDiv" class="w-full">
                   <input
@@ -69,7 +69,7 @@
             <traction-section
               title="View Created Libraries"
               number="2"
-              description="All libraries created will be displayed here"
+              description="Once the 'Create Libraries' button is clicked, all the created libraries will be displayed here."
             ></traction-section>
             <div class="flex flex-row space-x-4">
               <div class="w-full overflow-y-auto">
@@ -94,7 +94,7 @@
             <traction-section
               title="Print Labels"
               number="3"
-              description="Once the libraries are created, please select a printer and press the Print button"
+              description="Once the libraries are created, please select a printer and press the 'Print Labels' button"
             ></traction-section>
 
             <div class="text-left px-4 pb-4">
@@ -157,6 +157,14 @@
 </template>
 
 <script setup>
+/**
+ * PacbioLibraryBatchCreate.vue
+ *
+ * This component is used to create a library batch from a csv file and tag set
+ * and print labels for the created libraries
+ *
+ * @module PacbioLibraryBatchCreate
+ */
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import { usePacbioLibraryBatchCreateStore } from '@/stores/pacbioLibraryBatchCreate.js'
@@ -177,9 +185,7 @@ const defaultTagSetName = 'Pacbio_96_barcode_plate_v3'
 const selectedPrinterName = ref('') // selected printer id
 const showCSVPreview = ref(false) // Show preview of the csv file
 const selectedTagSet = ref('') // Chosen tag set
-const csvFileInput = ref('') //Reference to the csv file input
-const selectedCSVFile = ref('') //Reference to the selected csv file
-
+const csvFileInput = ref('') //Reference to the csv file input component
 /**
  * Set the default tag set
  *
@@ -220,6 +226,7 @@ const printerOptions = computed(() => {
   }))
 })
 
+const selectedCSVFile = ref('') //Reference to the selected csv file
 const csvTableFields = [
   { key: 'source', label: 'Source' },
   { key: 'tag', label: 'Tag' },
@@ -288,6 +295,9 @@ const createLibraryBatch = async () => {
   }
 }
 
+/**
+ * Prints the labels for the created libraries
+ */
 const onPrintAction = async () => {
   const { success, message = {} } = await printLabels(
     selectedPrinterName.value,

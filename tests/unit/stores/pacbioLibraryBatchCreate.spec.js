@@ -97,7 +97,9 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         expect(pacbioLibraryBatchCreateStore.libraries).toEqual(
           pacbioLibraryBatchFactory.storeData.libraries,
         )
-        expect(pacbioLibraryBatchCreateStore.tubes).toEqual(pacbioLibraryBatchFactory.storeData.tubes)
+        expect(pacbioLibraryBatchCreateStore.tubes).toEqual(
+          pacbioLibraryBatchFactory.storeData.tubes,
+        )
         expect(result).toEqual(pacbioLibraryBatchCreateStore.librariesInBatch)
       })
 

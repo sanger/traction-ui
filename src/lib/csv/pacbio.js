@@ -94,7 +94,7 @@ const eachRecord = (csv, callback, ...args) => {
 }
 /*
  * @param {string} csv - The CSV data as a string.
- * @param {number} column - The index of the column to extract values from.
+ * @param {number} column - The index of the column to extract values from. if column is undefined, return all columns
  * @param {boolean} [hasHeader=true] - Whether the CSV data includes a header row.
  * @returns {Array<string>} An array of values from the specified column.
  *
@@ -111,7 +111,7 @@ const getColumnValues = (csv, column, hasHeader = true) => {
 
   return data.map((line) => {
     const columns = line.split(',')
-    if(!column) return columns
+    if (column === null) return columns
     return column >= columns.length ? '' : columns[column]
   })
 }
