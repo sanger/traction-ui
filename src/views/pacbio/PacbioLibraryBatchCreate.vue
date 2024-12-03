@@ -44,7 +44,7 @@
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>
             </div>
-            <div class="flex flex-row space-x-8 py-4">
+            <div class="flex flex-row space-x-8 py-4 px-4">
               <traction-button
                 id="reset"
                 full-width
