@@ -4,6 +4,7 @@ import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'
 import { flowCellType } from '@/stores/utilities/flowCell'
+import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
 
 /**
  *
@@ -95,31 +96,11 @@ export const useOntRunsStore = defineStore('ontRuns', {
       if (success && !data.empty) {
         const ontRootStore = useOntRootStore()
         const existingInstruments = ontRootStore.instruments
-        const instrument_name = existingInstruments.find(
-          (i) => i.id == data.attributes.ont_instrument_id,
-        ).name
 
         //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
         const existingPools = store.getters['traction/ont/pools/pools']
 
-        const currentRun = {
-          id: data.id,
-          instrument_name: instrument_name,
-          state: data.attributes.state,
-          flowcell_attributes: included.map((fc) => {
-            const tube_barcode = existingPools.find(
-              (p) => p.id == fc.attributes.ont_pool_id,
-            ).barcode
-
-            return {
-              flowcell_id: fc.attributes.flowcell_id,
-              ont_pool_id: fc.attributes.ont_pool_id,
-              position: fc.attributes.position,
-              tube_barcode: tube_barcode,
-            }
-          }),
-        }
-        this.currentRun = currentRun
+        this.currentRun = buildFormatedOntRun(existingInstruments, existingPools, data, included)
         return { success, errors }
       }
     },

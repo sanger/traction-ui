@@ -1,14 +1,13 @@
-import OntRunsFactory from '../../../factories/OntRunsFactory.js'
 import OntRunFactory from '../../../factories/OntRunFactory.js'
 import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Runs view', () => {
   it('Visits the ont runs url', () => {
-    cy.wrap(OntRunsFactory()).as('ontRunsFactory')
-    cy.get('@ontRunsFactory').then((ontRunsFactory) => {
+    cy.wrap(OntRunFactory()).as('ontRunFactory')
+    cy.get('@ontRunFactory').then((ontRunFactory) => {
       cy.intercept('GET', '/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
         statusCode: 200,
-        body: ontRunsFactory.content,
+        body: ontRunFactory.content,
       })
     })
     cy.visit('#/ont/runs')
@@ -27,20 +26,19 @@ describe('ONT Runs view', () => {
   })
 
   it('displays the ONT run page with correct data when clicking on edit run', () => {
-    cy.wrap(OntRunsFactory()).as('ontRunsFactory')
     cy.wrap(OntRunFactory()).as('ontRunFactory')
-
-    cy.get('@ontRunsFactory').then((ontRunsFactory) => {
+    cy.get('@ontRunFactory').then((ontRunFactory) => {
       cy.intercept('GET', '/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
         statusCode: 200,
-        body: ontRunsFactory.content,
+        body: ontRunFactory.content,
       })
     })
 
-    cy.get('@ontRunFactory').then((ontRunFactory) => {
+    cy.wrap(OntRunFactory({ findBy: 'flowcells' })).as('ontRunFactoryWithFlowcells')
+    cy.get('@ontRunFactoryWithFlowcells').then((ontRunFactoryWithFlowcells) => {
       cy.intercept('GET', '/v1/ont/runs/2?include=flowcells', {
         statusCode: 200,
-        body: ontRunFactory.content,
+        body: ontRunFactoryWithFlowcells.content,
       })
     })
 

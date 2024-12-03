@@ -1,9 +1,9 @@
 import ONTRuns from '@/views/ont/ONTRunIndex'
 import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import useOntRootStore from '@/stores/ontRoot.js'
 
-const ontRunsFactory = OntRunsFactory()
+const ontRunFactory = OntRunFactory()
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -39,12 +39,12 @@ describe('ONTRuns.vue', () => {
   let wrapper, runs, mockRuns
 
   beforeEach(async () => {
-    mockRuns = ontRunsFactory.storeData.runs
+    mockRuns = ontRunFactory.storeData.runs
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
           // this was api. but didn't fail so is it needed?
-          store.api.v2.traction.ont.runs.get = vi.fn(() => ontRunsFactory.responses.fetch)
+          store.api.v2.traction.ont.runs.get = vi.fn(() => ontRunFactory.responses.fetch)
         }
       },
     ]

@@ -1,22 +1,17 @@
 import { mount, store, nextTick } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
-import Response from '@/api/v1/Response'
 import { expect } from 'vitest'
 import OntTubeFactory from '@tests/factories/OntTubeFactory'
 
 const ontTubeFactory = OntTubeFactory()
 
 describe('OntTubeSelectedList', () => {
-  let wrapper, mockTubes
+  let wrapper
 
   describe('building the table', () => {
     beforeEach(() => {
-      //TODO: Move this to fetch response
-      const responseBody = new Response(ontTubeFactory.responses.axios)._body
-      mockTubes = responseBody.data
-      const mockRequests = responseBody.included
-      store.commit('traction/ont/pools/populateTubes', mockTubes)
-      store.commit('traction/ont/pools/populateRequests', mockRequests)
+      store.state.traction.ont.pools.resources.tubes = ontTubeFactory.storeData.tubes
+      store.state.traction.ont.pools.resources.requests = ontTubeFactory.storeData.requests
 
       wrapper = mount(OntTubeSelectedList, {
         store,
@@ -38,12 +33,11 @@ describe('OntTubeSelectedList', () => {
 
   describe('with a selected tube', () => {
     beforeEach(() => {
-      //TODO: Move this to fetch response
-      const responseBody = new Response(ontTubeFactory.responses.axios)._body
-      mockTubes = responseBody.data
-      const mockRequests = responseBody.included
-      store.commit('traction/ont/pools/populateTubes', mockTubes)
-      store.commit('traction/ont/pools/populateRequests', mockRequests)
+      store.state.traction.ont.pools.resources.tubes = ontTubeFactory.storeData.tubes
+      store.state.traction.ont.pools.resources.requests =
+        ontTubeFactory.storeData.resources.requests
+
+      console.log(ontTubeFactory.storeData.resources.requests)
 
       const selectTube = { id: '1', selected: true }
       const selectRequest = { id: '191', selected: true }

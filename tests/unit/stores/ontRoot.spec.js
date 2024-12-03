@@ -4,10 +4,10 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { createPinia, setActivePinia } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
-import OntRunsFactory from '@tests/factories/OntRunsFactory.js'
+import OntRunFactory from '@tests/factories/OntRunFactory.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
-const ontRunsFactory = OntRunsFactory()
+const ontRunFactory = OntRunFactory()
 
 describe('useOntRootStore', () => {
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('useOntRootStore', () => {
     let resources
     beforeEach(() => {
       const instruments = ontInstrumentFactory.storeData.instruments
-      const runs = ontRunsFactory.storeData.runs
+      const runs = ontRunFactory.storeData.runs
       resources = {
         instruments,
         runs,
@@ -76,14 +76,14 @@ describe('useOntRootStore', () => {
       it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockResolvedValue(ontRunsFactory.responses.fetch)
+        get.mockResolvedValue(ontRunFactory.responses.fetch)
         rootStore.api.v2 = { traction: { ont: { runs: { get } } } }
 
         const store = useOntRootStore()
         const { success } = await store.fetchOntRuns()
 
-        expect(store.resources.runs).toEqual(ontRunsFactory.storeData.runs)
-        expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
+        expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
+        expect(store.resources.instruments).toEqual(ontRunFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })

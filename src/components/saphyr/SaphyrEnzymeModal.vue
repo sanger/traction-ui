@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import handlePromise from '@/api/v1/PromiseHelper'
+import handleResponse from '@/api/v2/ResponseHelper'
 
 export default {
   name: 'SaphyrEnzymeModal',
@@ -42,8 +42,7 @@ export default {
   },
   computed: {
     api() {
-      // TODO: Remove use of v1
-      return this.$store.getters.api.v1
+      return this.$store.getters.api.v2
     },
     enzymeRequest() {
       return this.api.traction.saphyr.enzymes
@@ -77,17 +76,20 @@ export default {
     },
     async getEnzymeOptions() {
       const promise = this.enzymeRequest.get()
-      const response = await handlePromise(promise)
+      const {
+        success,
+        errors,
+        body: { data },
+      } = await handleResponse(promise)
 
-      if (response.successful) {
-        const enzymes = response.deserialize.enzymes
-        const enzymeOptions = enzymes.map((enzyme) =>
-          Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }),
+      if (success) {
+        const enzymeOptions = data.map((enzyme) =>
+          Object.assign({ value: parseInt(enzyme.id), text: enzyme.attributes.name }),
         )
         enzymeOptions.unshift({ value: null, text: 'Please select an option' })
         this.enzymeOptions = enzymeOptions
       } else {
-        this.message = response.errors.message
+        this.message = errors
       }
     },
     async provider() {
