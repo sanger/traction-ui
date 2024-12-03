@@ -59,12 +59,17 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('POST', '/v1/pacbio/library_batches?include=libraries.tube', {
       statusCode: 200,
       body: pacbioLibraryBatchFactory.content,
-     
     })
     cy.get('[data-action=create-libraries]').click()
-    cy.get('#library-batch-table tbody tr').should('have.length',pacbioLibraryBatchFactory.storeData.librariesInBatch.length)  
+    cy.get('#library-batch-table tbody tr').should(
+      'have.length',
+      pacbioLibraryBatchFactory.storeData.librariesInBatch.length,
+    )
 
-    cy.get('#list-barcodes-to-print li').should('have.length', pacbioLibraryBatchFactory.storeData.librariesInBatch.length)
+    cy.get('#list-barcodes-to-print li').should(
+      'have.length',
+      pacbioLibraryBatchFactory.storeData.librariesInBatch.length,
+    )
     pacbioLibraryBatchFactory.storeData.librariesInBatch.forEach((library, index) => {
       cy.get('#list-barcodes-to-print li').eq(index).should('contain', library.barcode)
     })
@@ -86,7 +91,6 @@ describe('Pacbio Pool Create', () => {
   })
 
   it('will not create libraries when there is an error', () => {
-
     cy.visit('#/pacbio/library-batch')
     cy.contains('Create Library Batch')
 
@@ -119,11 +123,10 @@ describe('Pacbio Pool Create', () => {
       },
     })
 
-    cy.get('#library-batch-table tbody tr').should('have.length',0)
+    cy.get('#library-batch-table tbody tr').should('have.length', 0)
     cy.contains('No Libraries Created Yet').should('exist')
     cy.contains('No Barcodes to Print Yet').should('exist')
     cy.get('[data-action=create-libraries]').click()
     cy.contains('error1 There was a problem')
-
   })
 })

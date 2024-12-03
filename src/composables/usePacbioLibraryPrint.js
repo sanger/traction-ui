@@ -3,8 +3,8 @@ import { usePrintingStore } from '@/stores/printing.js'
 
 /**
  * Composable function for handling Pacbio library printing.
- * @returns {Object} - An object containing the printLabels function 
- * 
+ * @returns {Object} - An object containing the printLabels function
+ *
  */
 export default function usePacbioLibraryPrint() {
   const createLabels = (printBarcodes) => {
@@ -21,7 +21,7 @@ export default function usePacbioLibraryPrint() {
     })
   }
 
-   /**
+  /**
    * Prints labels using the specified printer.
    * @param {string} printerName - The name of the printer.
    * @param {Array} printBarcodes - An array of objects containing barcode and source_identifier for each label to print.
