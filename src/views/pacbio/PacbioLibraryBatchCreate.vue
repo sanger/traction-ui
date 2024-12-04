@@ -39,7 +39,7 @@
                 >
               </div>
             </div>
-            <div v-if="showCSVPreview" class="flex flex-row space-x-4">
+            <div v-if="showCSVPreview && selectedCSVFile" class="flex flex-row space-x-4">
               <div class="w-full h-64 overflow-y-auto border-2" data-type="csv-preview">
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>

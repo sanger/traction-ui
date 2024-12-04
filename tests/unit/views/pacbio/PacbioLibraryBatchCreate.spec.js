@@ -82,7 +82,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       const csvPreviewBtn = wrapper.find('button[data-type="csv-preview-btn"]')
       expect(csvPreviewBtn.exists()).toBe(true)
       expect(csvPreviewBtn.element.disabled).toBe(true)
-      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(true)
+      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(false)
 
       const resetBtn = wrapper.find('#reset')
       expect(resetBtn.exists()).toBe(true)
