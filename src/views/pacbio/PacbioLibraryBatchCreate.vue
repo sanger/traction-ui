@@ -45,13 +45,7 @@
               </div>
             </div>
             <div class="flex flex-row space-x-8 py-4 px-4">
-              <traction-button
-                id="reset"
-                full-width
-                theme="reset"
-                data-action="reset-form"
-                @click="onReset"
-              >
+              <traction-button id="reset" theme="reset" data-action="reset-form" @click="onReset">
                 Reset
               </traction-button>
               <traction-button
