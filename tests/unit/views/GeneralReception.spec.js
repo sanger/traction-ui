@@ -39,6 +39,57 @@ describe('GeneralReception', () => {
     })
   }
 
+  describe('Workflow Selector', () => {
+    it('has a workflow selector', () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      expect(workflowSelect.findAll('option').map((element) => element.text())).toEqual([
+        '',
+        'Extractions -80 samples',
+        'Pacbio -20 samples',
+        'Pacbio Fridge samples',
+      ])
+    })
+
+    it('defaults to an empty option', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      expect(workflowSelect.element.value).toEqual('')
+    })
+
+    it('displays user swipecard when a workflow is selected', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(true)
+    })
+
+    it('hides user swipecard when a workflow is not selected', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('')
+      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(false)
+    })
+
+    it('errors user code fields if not set', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('[data-attribute=user-code-error]').text()).toContain(
+        'User code is required to scan in the imported labware',
+      )
+    })
+
+    it('updates the summary section accordingly on user select', async () => {
+      const { wrapperObj: wrapper } = buildWrapper()
+      const workflowSelect = wrapper.find('#workflowSelect')
+      await workflowSelect.setValue('lw-shelf-1-30451')
+      expect(wrapper.find('[data-testid=workflow-location-text]').text()).toContain(
+        'The imported labware will be scanned into LRT007 – Shelf 1',
+      )
+    })
+  })
+
   it('has a source selector', () => {
     const { wrapperObj: wrapper } = buildWrapper()
 

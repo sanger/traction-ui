@@ -1,6 +1,6 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, store, createTestingPinia } from '@support/testHelper'
-import SaphyrLibrariesFactory from '@tests/factories/SaphyrLibrariesFactory.js'
+import SaphyrLibraryFactory from '@tests/factories/SaphyrLibraryFactory.js'
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(Libraries, {
@@ -17,12 +17,12 @@ function mountWithStore({ props } = {}) {
   })
   return { wrapperObj }
 }
-const saphyrLibrariesFactory = SaphyrLibrariesFactory()
+const saphyrLibraryFactory = SaphyrLibraryFactory()
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
-    mockLibraries = Object.values(saphyrLibrariesFactory.storeData.dataArray)
+    mockLibraries = Object.values(saphyrLibraryFactory.storeData.dataArray)
 
     // We mock the request response, to allow the provider to trigger our
     // behaviour for us. We might be better of mocking the action itself, but
@@ -30,7 +30,7 @@ describe('Libraries.vue', () => {
     // Before we used to inject the state directly, but that caused issues
     // when the component triggered the set requests action itself.
     vi.spyOn(store.getters['traction/saphyr/tubes/libraryRequest'], 'get').mockResolvedValue(
-      saphyrLibrariesFactory.responses.fetch,
+      saphyrLibraryFactory.responses.fetch,
     )
 
     const { wrapperObj } = mountWithStore()

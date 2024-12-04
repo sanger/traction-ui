@@ -1,24 +1,24 @@
-import OntRunsFactory from '../../../factories/OntRunsFactory.js'
-import OntInstrumentsFactory from '../../../factories/OntInstrumentsFactory.js'
+import OntInstrumentFactory from '../../../factories/OntInstrumentFactory.js'
+import OntRunFactory from '../../../factories/OntRunFactory.js'
 import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Run page', () => {
   beforeEach(() => {
-    cy.wrap(OntRunsFactory()).as('ontRunsFactory')
-    cy.wrap(OntInstrumentsFactory()).as('ontInstrumentsFactory')
+    cy.wrap(OntInstrumentFactory()).as('ontInstrumentFactory')
+    cy.wrap(OntRunFactory()).as('ontRunFactory')
     cy.wrap(OntPoolFactory()).as('ontPoolFactory')
     cy.wrap(OntPoolFactory({ count: 1 })).as('singleOntPoolFactory')
 
-    cy.get('@ontInstrumentsFactory').then((ontInstrumentsFactory) => {
+    cy.get('@ontInstrumentFactory').then((ontInstrumentFactory) => {
       cy.intercept('GET', '/v1/ont/instruments', {
         statusCode: 200,
-        body: ontInstrumentsFactory.content,
+        body: ontInstrumentFactory.content,
       })
     })
-    cy.get('@ontRunsFactory').then((ontRunsFactory) => {
+    cy.get('@ontRunFactory').then((ontRunFactory) => {
       cy.intercept('GET', '/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
         statusCode: 200,
-        body: ontRunsFactory.content,
+        body: ontRunFactory.content,
       })
     })
     cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {

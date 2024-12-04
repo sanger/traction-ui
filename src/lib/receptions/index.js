@@ -15,6 +15,39 @@ const defaultRequestOptions = () => ({
   data_type: null,
 })
 
+const WorkflowsLocations = {
+  Extractions: {
+    pipelines: ['ONT', 'PacBio'],
+    name: 'Extractions -80 samples',
+    location: 'Long Read DTOL Freezer 2/Shelf 3/Rack 3',
+    barcode: 'lw-drawer-2-30398',
+  },
+  ONT: {
+    pipelines: ['ONT'],
+    name: 'ONT -20 samples',
+    location: 'LRT020 Draw 1',
+    barcode: 'lw-drawer-1-37292',
+  },
+  OntFridgeSamples: {
+    pipelines: ['ONT'],
+    name: 'ONT Fridge samples',
+    location: 'LTR018 Shelf 1',
+    barcode: 'lw-shelf-1-30503',
+  },
+  Pacbio: {
+    pipelines: ['PacBio'],
+    name: 'Pacbio -20 samples',
+    location: 'LRT006 Draw 1',
+    barcode: 'lw-shelf-1-30472',
+  },
+  PacbioFridgeSamples: {
+    pipelines: ['PacBio'],
+    name: 'Pacbio Fridge samples',
+    location: 'LRT007 – Shelf 1',
+    barcode: 'lw-shelf-1-30451',
+  },
+}
+
 const ReceptionTypes = {
   Sequencescape: {
     name: 'sequencescape',
@@ -71,4 +104,4 @@ const Receptions = {
 }
 
 export default Receptions
-export { defaultRequestOptions }
+export { defaultRequestOptions, WorkflowsLocations }

@@ -57,12 +57,15 @@ const filterUndefinedValues = (record) =>
   Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
 
 /**
- * Parses the provides CSV contents and passes each record to the callback
- * Column headers are assumed to be provided in the first row
- * Each record will have keys corresponding to each
+ * Processes each record in the CSV content using the provided callback function.
+ *
+ * @param {string} csv - The CSV content as a string.
+ * @param {Function} callback - The callback function to process each record.
+ * @param {...any} args - Additional arguments to pass to the callback function.
+ * @returns {Array|Object} - The processed records or an error object if an error occurs.
  */
-const eachRecord = (csv, callback) => {
-  parse(csv, {
+const eachRecord = (csv, callback, ...args) => {
+  const records = parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
     columns: validateHeaders(normaliseHeaders),
@@ -71,8 +74,44 @@ const eachRecord = (csv, callback) => {
     trim: true,
     info: true,
     cast,
-    onRecord: filterUndefinedValues,
-  }).forEach(callback)
-}
+  }).map(filterUndefinedValues)
 
-export { eachRecord }
+  let retRecords = []
+  for (const record of records) {
+    const result = callback(record, ...args)
+    // If callback does not return anything, we just add the record to the return
+    if (!result) {
+      retRecords.push(record)
+    } else if (result instanceof Error) {
+      // If callback returns an error, we return the error and the record
+      return { error: result.message, record }
+    } else {
+      // If callback returns a result, we add the record and the result to the return
+      retRecords.push({ ...record, result })
+    }
+  }
+  return retRecords
+}
+/*
+ * @param {string} csv - The CSV data as a string.
+ * @param {number} column - The index of the column to extract values from.
+ * @param {boolean} [hasHeader=true] - Whether the CSV data includes a header row.
+ * @returns {Array<string>} An array of values from the specified column.
+ *
+ * @example
+ * const csv = 'header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6';
+ * const values = getColumnValues(csv, 1);
+ * console.log(values); // Output: ['value2', 'value5']
+ */
+const getColumnValues = (csv, column, hasHeader = true) => {
+  const lines = csv.split('\n').filter((line) => line.trim() !== '')
+  if (lines.length === 0) return []
+
+  const data = hasHeader ? lines.slice(1) : lines
+
+  return data.map((line) => {
+    const columns = line.split(',')
+    return column >= columns.length ? '' : columns[column]
+  })
+}
+export { eachRecord, getColumnValues }

@@ -34,7 +34,7 @@
 
         <template #cell(actions)="row">
           <router-link
-            id="edit-pool"
+            :id="'edit-pool-' + row.item.id"
             data-action="edit-pool"
             :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
           >

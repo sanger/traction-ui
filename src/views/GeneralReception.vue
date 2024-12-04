@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row space-x-12 px-12">
     <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
-    <div class="w-1/2 space-y-8">
+    <div class="w-1/2">
       <div>
         <traction-heading level="4" :show-border="true"> Source </traction-heading>
         <traction-field-group
@@ -40,6 +40,47 @@
             @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
+
+        <div class="grid grid-cols-2 gab-4 mt-4 mb-4">
+          <div>
+            <traction-label class="inline-block w-full text-left">Workflow</traction-label>
+            <traction-muted-text class=""
+              >Select a workflow if you would like to scan in the imported
+              labware</traction-muted-text
+            >
+            <traction-select
+              id="workflowSelect"
+              v-model="workflow"
+              class="mt-1 mr-2"
+              :options="workflowOptions"
+              data-type="workflow-list"
+            />
+          </div>
+          <!-- Only displaying the swipecard field when the user selects a workflow -->
+          <div v-show="workflow">
+            <traction-label class="inline-block w-full text-left"
+              >User barcode or swipecard</traction-label
+            >
+            <traction-muted-text class="ml-1 text-left"
+              >Only required when a workflow is selected</traction-muted-text
+            >
+            <traction-field-error
+              data-attribute="user-code-error"
+              :error="
+                !user_code && workflow
+                  ? 'User code is required to scan in the imported labware'
+                  : ''
+              "
+            >
+              <traction-input
+                id="userCode"
+                v-model="user_code"
+                data-attribute="user-code-input"
+                class="mt-1"
+              />
+            </traction-field-error>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -127,6 +168,13 @@
         :pipeline="pipeline"
         :reception="reception"
         :request-options="requestOptions"
+        :workflow-location-text="
+          workflowLocation
+            ? `The imported labware will be scanned into ${workflowLocation}`
+            : 'No location selected to scan into'
+        "
+        :user-code="user_code"
+        :location-barcode="location_barcode"
         @import-started="importStarted"
         @import-finished="clearModal"
         @reset="reset"
@@ -137,7 +185,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import Receptions from '@/lib/receptions'
+import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
@@ -160,6 +208,33 @@ const pipeline = ref(reception.value.pipelines[0])
 const pipelineOptions = computed(() =>
   reception.value.pipelines.map((pipeline) => ({ value: pipeline, text: pipeline })),
 )
+const user_code = ref('')
+
+const workflow = ref('')
+
+const workflowOptions = computed(() => [
+  { value: '', text: '' }, // Empty option
+  ...Object.values(WorkflowsLocations)
+    .filter((workflow) => workflow.pipelines.includes(pipeline.value))
+    .map((workflow) => ({
+      value: workflow.barcode,
+      text: workflow.name,
+    })),
+])
+
+const workflowLocation = computed(() => {
+  const workflowsMap = new Map(
+    Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
+  )
+  if (workflow.value !== '') {
+    return workflowsMap.get(workflow.value).location
+  }
+  return undefined
+})
+
+const location_barcode = computed(() => {
+  return workflow.value
+})
 
 function updatePipeline() {
   // If the current reception doesn't include the current pipeline then update the pipeline to a valid one

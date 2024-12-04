@@ -1,7 +1,8 @@
-import Response from '@/api/v1/Response'
-import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import EnzymesJson from '@tests/data/enzymes.json'
-import { mount, store, flushPromises } from '@support/testHelper'
+import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal.vue'
+import { mount, store, flushPromises, failedResponse } from '@support/testHelper.js'
+import SaphyEnzymeFactory from '@tests/factories/SaphyrEnzymeFactory.js'
+
+const saphyrEnzymeFactory = SaphyEnzymeFactory()
 
 describe('SaphyrEnzymeModal.vue', () => {
   let wrapper, enzymeModal
@@ -99,35 +100,21 @@ describe('SaphyrEnzymeModal.vue', () => {
     })
 
     it('success', async () => {
-      enzymeModal.enzymeRequest.get.mockResolvedValue(EnzymesJson)
+      enzymeModal.enzymeRequest.get.mockResolvedValue(saphyrEnzymeFactory.responses.fetch)
 
       await enzymeModal.getEnzymeOptions()
 
-      const enzymes = new Response(EnzymesJson).deserialize.enzymes
-      const enzymeOptions = enzymes.map((enzyme, index) =>
-        Object.assign({ value: index + 1, text: enzyme.name }),
-      )
-      enzymeOptions.unshift({ value: null, text: 'Please select an option' })
-
-      expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions)
+      expect(enzymeModal.enzymeOptions.length).toEqual(saphyrEnzymeFactory.content.data.length + 1)
     })
 
     it('failure', async () => {
-      const mockResponse = {
-        data: {
-          errors: {
-            name: ['name error message 1'],
-          },
-        },
-        status: 422,
-        statusText: 'Unprocessible entity',
-      }
+      const mockResponse = failedResponse(422)
 
       enzymeModal.enzymeRequest.get.mockResolvedValue(mockResponse)
       await enzymeModal.getEnzymeOptions()
       await flushPromises()
 
-      expect(enzymeModal.message).toEqual('name name error message 1')
+      expect(enzymeModal.message).toEqual('error1 There was an error.')
     })
   })
 

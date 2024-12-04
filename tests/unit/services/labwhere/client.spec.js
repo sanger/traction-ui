@@ -66,7 +66,10 @@ describe('client', () => {
   describe('scanBarcodesInLabwhereLocation', () => {
     it('should return an error if required parameters are missing', async () => {
       const result = await scanBarcodesInLabwhereLocation('', '', '', null)
-      expect(result).toEqual({ success: false, errors: ['Missing required parameters'] })
+      expect(result).toEqual({
+        success: false,
+        errors: ['Required parameters are missing for the Scan In operation'],
+      })
     })
 
     it('should return an error if fetch fails', async () => {

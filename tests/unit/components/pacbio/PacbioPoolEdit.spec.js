@@ -1,9 +1,11 @@
 import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit.vue'
-import { Data } from '@support/testHelper.js'
 import * as pacbio from '@/lib/csv/pacbio.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
+
+const pacbioAutoTagFactory = PacbioAutoTagFactory()
 
 const tagSet = {
   id: '1',
@@ -78,28 +80,28 @@ describe('pacbioPoolEdit#new', () => {
       await input.setValue('017865101789500022821')
       await wrapper.vm.$nextTick()
       expect(store.pool.template_prep_kit_box_barcode).toEqual('017865101789500022821')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
       expect(store.pool.volume).toEqual('10.0')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
       expect(store.pool.concentration).toEqual('2.4')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
       expect(store.pool.insert_size).toEqual('100')
-      expect(store.updatePool).toBeCalled()
+      expect(store.validatePoolAttribute).toBeCalled()
     })
   })
 
@@ -380,7 +382,7 @@ describe('pacbioPoolEdit#edit', () => {
       rootStore.tags = tags
     })
     it('says empty when there are no used_aliquots', async () => {
-      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+      const poolCreateStore = Object.assign({}, pacbioAutoTagFactory.storeData, {
         used_aliquots: {},
       })
       store.$state = poolCreateStore
@@ -388,7 +390,7 @@ describe('pacbioPoolEdit#edit', () => {
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
     it('says pool when there are multiple libraries', async () => {
-      store.$state = Data.AutoTagStore
+      store.$state = pacbioAutoTagFactory.storeData
       store.selected.tagSet.id = '1'
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')

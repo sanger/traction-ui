@@ -1,9 +1,10 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi'
 
-const createStoreData = (included) => {
-  const { requests } = groupIncludedByResource(included)
-  return { requests }
+const createStoreData = (data) => {
+  const tubes = dataToObjectById({ data: data.data, includeRelationships: true })
+  const { requests } = groupIncludedByResource(data.included)
+  return { requests, tubes, resources: { requests: dataToObjectById({ data: requests }) } }
 }
 
 const OntTubeFactory = ({ count = undefined } = {}) => {
@@ -111,7 +112,7 @@ const OntTubeFactory = ({ count = undefined } = {}) => {
   // if first is completed find the data otherwise return all data
   const foundData = find({ data, count, get: true })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData.included) }
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData) }
 }
 
 export default OntTubeFactory

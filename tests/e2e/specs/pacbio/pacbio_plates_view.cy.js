@@ -1,16 +1,24 @@
-import PacbioPlatesRequestFactory from '../../../factories/PacbioPlatesRequestFactory.js'
+import PacbioPlateFactory from '../../../factories/PacbioPlateFactory.js'
 
 describe('Pacbio plates view', () => {
   it('Visits the pacbio plates url', () => {
-    cy.intercept('v1/pacbio/plates?filter[barcode]=DN1&include=wells.requests', {
-      fixture: 'pacbioPlateWithWellsRequest.json',
+    cy.wrap(PacbioPlateFactory()).as('pacbioSinglePlateFactory')
+    cy.get('@pacbioSinglePlateFactory').then((pacbioSinglePlateFactory) => {
+      cy.intercept(
+        'GET',
+        'v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests',
+        {
+          statusCode: 200,
+          body: pacbioSinglePlateFactory.content,
+        },
+      )
     })
     // When we type 1 into input per page we search for page size 1
-    cy.wrap(PacbioPlatesRequestFactory()).as('pacbioPlateRequestFactory')
-    cy.get('@pacbioPlateRequestFactory').then((pacbioPlateRequestFactory) => {
+    cy.wrap(PacbioPlateFactory()).as('pacbioPlateFactory')
+    cy.get('@pacbioPlateFactory').then((pacbioPlateFactory) => {
       cy.intercept('GET', /\/v1\/pacbio\/plates\?page\[size\]=\d+&page\[number\]=\d+/, {
         statusCode: 200,
-        body: pacbioPlateRequestFactory.content,
+        body: pacbioPlateFactory.content,
       })
     })
 
@@ -24,7 +32,7 @@ describe('Pacbio plates view', () => {
     cy.get('#input-per-page').clear().type('1')
     cy.get('#details-btn-1').click()
     cy.get('ellipse').should('have.length', 96)
-    cy.get('[data-status=filled]').should('have.length', 2)
-    cy.get('[data-status=empty]').should('have.length', 94)
+    cy.get('[data-status=filled]').should('have.length', 8)
+    cy.get('[data-status=empty]').should('have.length', 88)
   })
 })

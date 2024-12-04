@@ -91,6 +91,9 @@ const config = [
           {
             name: 'smrt_link_versions',
           },
+          {
+            name: 'library_batches',
+          },
         ],
       },
       {

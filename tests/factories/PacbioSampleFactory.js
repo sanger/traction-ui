@@ -1,6 +1,6 @@
 import BaseFactory from './BaseFactory.js'
 
-const PacbioSamplesFactory = () => {
+const PacbioSampleFactory = () => {
   const data = {
     data: {
       data: [
@@ -198,11 +198,9 @@ const PacbioSamplesFactory = () => {
         },
       ],
     },
-    status: 200,
-    statusText: 'Success',
   }
 
   return BaseFactory(data)
 }
 
-export default PacbioSamplesFactory
+export default PacbioSampleFactory

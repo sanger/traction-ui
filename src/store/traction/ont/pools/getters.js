@@ -152,8 +152,8 @@ export default {
           const { group_id } = state.resources.tags[tag] || {}
           return { id, type, sample_name, group_id }
         })
-        const { barcode } = state.resources.tubes[pool.tube]
 
+        const { barcode } = state.resources.tubes[pool.tube]
         return {
           ...pool,
           libraries,
