@@ -82,7 +82,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       const csvPreviewBtn = wrapper.find('button[data-type="csv-preview-btn"]')
       expect(csvPreviewBtn.exists()).toBe(true)
       expect(csvPreviewBtn.element.disabled).toBe(true)
-      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(false)
+      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(true)
 
       const resetBtn = wrapper.find('#reset')
       expect(resetBtn.exists()).toBe(true)
@@ -164,13 +164,13 @@ describe('PacbioLibraryBatchCreate.vue', () => {
     })
     it('toggles the csv preview table display', async () => {
       const csvPreviewBtn = wrapper.find('button[data-type="csv-preview-btn"]')
-      expect(csvPreviewBtn.text()).toBe('Show CSV Data')
+      expect(csvPreviewBtn.text()).toBe('Hide CSV Data')
       // Click the button to show the preview table
-      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(false)
+      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(true)
       await csvPreviewBtn.trigger('click')
       await wrapper.vm.$nextTick()
-      expect(csvPreviewBtn.text()).toBe('Hide CSV Data')
-      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(true)
+      expect(csvPreviewBtn.text()).toBe('Show CSV Data')
+      expect(wrapper.find('div[data-type="csv-preview"]').exists()).toBe(false)
     })
   })
 

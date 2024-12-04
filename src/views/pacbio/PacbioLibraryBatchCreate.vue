@@ -177,7 +177,7 @@ const { printLabels } = usePacbioLibraryPrint()
 const defaultTagSetName = 'Pacbio_96_barcode_plate_v3'
 
 const selectedPrinterName = ref('') // selected printer id
-const showCSVPreview = ref(false) // Show preview of the csv file
+const showCSVPreview = ref(true) // Show preview of the csv file
 const selectedTagSet = ref('') // Chosen tag set
 const csvFileInput = ref('') //Reference to the csv file input component
 /**
@@ -194,10 +194,12 @@ const setDefaultTagSet = () => {
 }
 
 async function fetchData() {
-  await pacbioRootStore.fetchPacbioTagSets()
+  const ret = await pacbioRootStore.fetchPacbioTagSets()
+  if (!ret.success) {
+    return ret
+  }
   setDefaultTagSet()
-  await fetchPrinters()
-  return { success: true }
+  return await fetchPrinters()
 }
 
 const isDisabledCSVPreview = computed(() => !state.csvData.length)
@@ -284,6 +286,9 @@ const createLibraryBatch = async () => {
   )
   if (success) {
     state.resultData = result
+    // Clear the csv file input, so that 'Create Libraries' button is disabled
+    csvFileInput.value.value = ''
+    selectedCSVFile.value = ''
   } else {
     showAlert(errors, 'danger')
   }

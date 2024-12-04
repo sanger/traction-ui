@@ -4,7 +4,7 @@ import PacbioLibraryBatchFactory from '../../../factories/PacbioLibraryBatchFact
 import PacbioRequestFactory from '../../../factories/PacbioRequestFactory.js'
 const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory()
 
-describe('Pacbio Pool Create', () => {
+describe('Pacbio Library Batch Create', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
@@ -32,7 +32,7 @@ describe('Pacbio Pool Create', () => {
     })
   })
 
-  it('Creates a pool successfully', () => {
+  it('Creates a library batch successfully', () => {
     cy.visit('#/pacbio/library-batch')
     cy.contains('Create Library Batch')
 

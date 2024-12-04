@@ -110,7 +110,7 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         this.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
         return { success, result: this.librariesInBatch, errors }
       } catch (error) {
-        return { success: false, errors: [error] }
+        return { success: false, errors: { error } }
       }
     },
   },
