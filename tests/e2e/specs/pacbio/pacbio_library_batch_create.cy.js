@@ -52,7 +52,6 @@ describe('Pacbio Library Batch Create', () => {
     })
 
     // Show CSV Preview
-    cy.get('[data-type=csv-preview-btn]').click()
     cy.get('[data-type=csv-preview]').should('exist')
 
     // Create Libraries
@@ -110,7 +109,6 @@ describe('Pacbio Library Batch Create', () => {
     })
 
     // Show CSV Preview
-    cy.get('[data-type=csv-preview-btn]').click()
     cy.get('[data-type=csv-preview]').should('exist')
 
     // Create Libraries
