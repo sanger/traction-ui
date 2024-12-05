@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
+import { getPrintersOfType } from './utilities/printers.js'
 
 export const usePrintingStore = defineStore('printing', {
   state: () => ({
@@ -23,7 +24,7 @@ export const usePrintingStore = defineStore('printing', {
     printers: (state) => (labwareType) => {
       const printerValues = Object.values(state.resources.printers)
       if (labwareType) {
-        return printerValues.filter((printer) => printer.labware_type === labwareType)
+        return getPrintersOfType(printerValues,labwareType)
       }
       return printerValues
     },
