@@ -21,6 +21,5 @@ import TractionLink from '@/components/TractionLink'
 import { bgColorClass } from '@/lib/BgColorClass'
 
 const environment = import.meta.env['VITE_ENVIRONMENT']
-
 const headerClasses = ['relative', bgColorClass[environment]]
 </script>
