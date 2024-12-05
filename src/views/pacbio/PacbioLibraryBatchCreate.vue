@@ -35,11 +35,11 @@
                   class="whitespace-nowrap"
                   :disabled="isDisabledCSVPreview"
                   @click="showCSVPreview = !showCSVPreview"
-                  >{{ showCSVPreview ? 'Hide CSV Data' : 'Show CSV Data' }}</traction-button
+                  >{{ isDisplayCSVPreview ? 'Hide CSV Data' : 'Show CSV Data' }}</traction-button
                 >
               </div>
             </div>
-            <div v-if="showCSVPreview && selectedCSVFile" class="flex flex-row space-x-4">
+            <div v-if="isDisplayCSVPreview" class="flex flex-row space-x-4">
               <div class="w-full h-64 overflow-y-auto border-2" data-type="csv-preview">
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="w-full h-full border-2">
-              <div class="w-full h-full p-4 space-y-4 rounded-md border-t-4">
+              <div class="w-full h-full p-4 space-y-4 rounded-md">
                 <traction-heading level="4" show-border> Preview Barcodes </traction-heading>
                 <div class="h-full">
                   <div class="space-x-4 pb-4 flex flex-row">
@@ -202,6 +202,8 @@ async function fetchData() {
   return await fetchPrinters()
 }
 
+const selectedCSVFile = ref('') //Reference to the selected csv file
+
 const isDisabledCSVPreview = computed(() => !state.csvData.length)
 
 const isCreateDisabled = computed(() => !selectedTagSet.value || !selectedCSVFile.value)
@@ -209,6 +211,8 @@ const isCreateDisabled = computed(() => !selectedTagSet.value || !selectedCSVFil
 const printBarcodes = computed(() => state.resultData.map((item) => item.barcode))
 
 const isPrintDisabled = computed(() => !selectedPrinterName.value || !printBarcodes.value.length)
+
+const isDisplayCSVPreview = computed(() => showCSVPreview.value && state.csvData.length)
 
 /**
  * Printer options
@@ -222,7 +226,7 @@ const printerOptions = computed(() => {
   }))
 })
 
-const selectedCSVFile = ref('') //Reference to the selected csv file
+
 const csvTableFields = [
   { key: 'source', label: 'Source' },
   { key: 'tag', label: 'Tag' },
@@ -245,6 +249,7 @@ const state = reactive({
  * @param evt - Event object
  */
 const onSelectFile = async (evt) => {
+  state.csvData = []
   if (evt?.target?.files?.length) {
     selectedCSVFile.value = evt.target.files[0]
     try {
@@ -252,6 +257,8 @@ const onSelectFile = async (evt) => {
       //Parse the csv file
       const records = eachRecord(csv, () => {})
       state.csvData = records.map((record) => record.record)
+
+      
     } catch (error) {
       showAlert(error, 'danger')
     }
@@ -273,6 +280,8 @@ const onReset = () => {
  * Creates a library batch from the selected tag set and csv file
  */
 const createLibraryBatch = async () => {
+  //reset the existing result data 
+  state.resultData = []
   const selectedTagSetName = pacbioRootStore.tagSetChoices.find(
     (tagset) => tagset.value === selectedTagSet.value,
   )?.text
@@ -287,7 +296,6 @@ const createLibraryBatch = async () => {
   if (success) {
     state.resultData = result
     // Clear the csv file input, so that 'Create Libraries' button is disabled
-    csvFileInput.value.value = ''
     selectedCSVFile.value = ''
   } else {
     showAlert(errors, 'danger')
@@ -300,7 +308,7 @@ const createLibraryBatch = async () => {
 const onPrintAction = async () => {
   const { success, message = {} } = await printLabels(
     selectedPrinterName.value,
-    state.resultData.map((item) => ({ barcode: item.barcode, source_identifier: item.source })),
+    pacbioLibraryBatchCreateStore.librariesInfoInPrintFormat,
   )
   showAlert(message, success ? 'success' : 'danger')
 }
