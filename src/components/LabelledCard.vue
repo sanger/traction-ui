@@ -1,6 +1,9 @@
 <template>
-  <div class="border-2 border-gray-200 rounded-md bg-white text-black" :data-pipeline="title">
-    <div class="text-left p-4 border-b-2 border-gray-200 bg-gray-100">
+  <div
+    class="border-2 border-gray-200 rounded-md bg-white text-sp-400 shadow-[#F06292_8px_8px_0_0]"
+    :data-pipeline="title"
+  >
+    <div class="text-left p-4 border-b-2 border-gray-200 bg-gray-100 rounded-md">
       <h3 class="text-xl" data-attribute="title">{{ title }}</h3>
       <span class="text-gray-600 font-light" data-attribute="description">
         {{ description }}
