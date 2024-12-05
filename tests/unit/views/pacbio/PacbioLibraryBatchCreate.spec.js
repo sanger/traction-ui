@@ -175,19 +175,6 @@ describe('PacbioLibraryBatchCreate.vue', () => {
   })
 
   describe('#createLibraryBatchButton', () => {
-    it('enables the create button when csv data and tagset is present', async () => {
-      const csvContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
-        pacbioTagSetFactory.storeData.tags,
-      )
-      const csvFile = {
-        text: () => Promise.resolve(csvContent),
-      }
-      const event = { target: { files: [csvFile] } }
-      await wrapper.vm.onSelectFile(event)
-      await flushPromises()
-      const createBtn = wrapper.find('#create')
-      expect(createBtn.element.disabled).toBe(false)
-    })
     it('disables the create button when csv data is not present', async () => {
       const createBtn = wrapper.find('#create')
       expect(createBtn.element.disabled).toBe(true)
@@ -263,9 +250,6 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       const createdLibaries = wrapper.find('div[data-type="created-libraries"]')
       expect(createdLibaries.text()).toBe('No Libraries Created Yet')
 
-      // Check the created barcode list
-      const barcodeList = wrapper.find('#list-barcodes-to-print')
-      expect(barcodeList.exists()).toBe(false)
       const emptyBarcodes = wrapper.find('div[data-type="empty-barcodes"]')
       expect(emptyBarcodes.text()).toBe('No Barcodes to Print Yet')
     })

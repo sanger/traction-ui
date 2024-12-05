@@ -166,7 +166,7 @@ describe('pacbioLibraryBatches', () => {
         filter: { name: tagSet.name },
       })
       expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
-      expect(tags).toBeUndefined()
+      expect(tags).toEqual([])
     })
 
     it('returns empty requests if request fetch fails', async () => {
@@ -181,7 +181,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toBeUndefined()
+      expect(requests).toEqual([])
     })
   })
 })

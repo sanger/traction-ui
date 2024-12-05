@@ -6,7 +6,7 @@ import {
   failedResponse,
 } from '@support/testHelper.js'
 import { usePacbioLibraryBatchCreateStore } from '@/stores/pacbioLibraryBatchCreate.js'
-import { beforeEach, describe, expect, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import PacbioLibraryBatchFactory from '@tests/factories/PacbioLibraryBatchFactory.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
@@ -27,14 +27,32 @@ describe('usePacbioLibraryBatchCreateStore', () => {
     pacbioRootStore = usePacbioRootStore()
   })
 
-  describe('librariesInBatch', () => {
-    it('returns libraries in batch', () => {
-      pacbioLibraryBatchCreateStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
-      pacbioLibraryBatchCreateStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
-      pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
-      expect(pacbioLibraryBatchCreateStore.librariesInBatch).toEqual(
-        pacbioLibraryBatchFactory.storeData.librariesInBatch,
-      )
+  describe('getters', () => {
+    describe('librariesInBatch', () => {
+      it('returns libraries in batch', () => {
+        pacbioLibraryBatchCreateStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
+        pacbioLibraryBatchCreateStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
+        pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
+        expect(pacbioLibraryBatchCreateStore.librariesInBatch).toEqual(
+          pacbioLibraryBatchFactory.storeData.librariesInBatch,
+        )
+      })
+      it('returns library data in print format', () => {})
+    })
+
+    describe('librariesInfoInPrintFormat', () => {
+      it('returns library data in print format', () => {
+        pacbioLibraryBatchCreateStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
+        pacbioLibraryBatchCreateStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
+        expect(pacbioLibraryBatchCreateStore.librariesInfoInPrintFormat).toEqual(
+          pacbioLibraryBatchFactory.storeData.librariesInBatch.map(
+            ({ barcode, source: source_identifier }) => ({
+              barcode,
+              source_identifier,
+            }),
+          ),
+        )
+      })
     })
   })
 
@@ -70,12 +88,25 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         // Test with csvFile as null
         let result = await pacbioLibraryBatchCreateStore.createLibraryBatch(null, tagSet)
         expect(result.success).toBeFalsy()
-        expect(result.errors).toEqual(['csvFile is required'])
+        expect(result.errors).toEqual('csvFile is required')
 
         // Test with tagSet as null
         result = await pacbioLibraryBatchCreateStore.createLibraryBatch(csvFile, null)
         expect(result.success).toBeFalsy()
-        expect(result.errors).toEqual(['tagSet is required'])
+        expect(result.errors).toEqual('tagSet is required')
+      })
+
+      it('returns error if no requests are found', async () => {
+        rootStore.api.v2.traction.pacbio.requests.get.mockResolvedValue({ data: [] })
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('None of the given sources (/samples) were found')
       })
 
       it('successfully creates a library batch', async () => {
@@ -115,7 +146,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual(['Invalid record at line 2: source test not found'])
+        expect(errors).toEqual('Invalid record at line 2: source test not found')
       })
 
       it('returns errors on failedResponse', async () => {
