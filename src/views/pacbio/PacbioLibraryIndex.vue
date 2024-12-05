@@ -146,7 +146,7 @@ const state = reactive({
       formatter: (obj) => (obj['run_suitability.ready_for_run'] ? '✓' : ''),
       sortable: true,
     },
-    { key: 'sample_name', label: 'Sample Name', sortable: true },
+    { key: 'sample_name', label: 'Sample Name Test', sortable: true },
     { key: 'barcode', label: 'Barcode', sortable: true },
     { key: 'source_identifier', label: 'Source', sortable: true },
     { key: 'volume', label: 'Initial Volume', sortable: true },
@@ -203,6 +203,8 @@ const displayedLibraries = computed(() => {
 })
 
 const labwareLocations = ref([])
+
+
 
 watchEffect(async () => {
   const barcodesValue = barcodes.value
