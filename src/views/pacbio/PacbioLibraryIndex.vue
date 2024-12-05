@@ -151,7 +151,7 @@ const state = reactive({
     { key: 'source_identifier', label: 'Source', sortable: true },
     { key: 'volume', label: 'Initial Volume', sortable: true },
     { key: 'concentration', label: 'Concentration', sortable: true },
-    { key: 'location', label: 'Location', sortable: true },
+    { key: 'location', label: 'Location test', sortable: true },
     {
       key: 'template_prep_kit_box_barcode',
       label: 'Template Prep Kit Box Barcode',
