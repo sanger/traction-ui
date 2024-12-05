@@ -1,7 +1,7 @@
 // we need to use absolute paths for Cypress. @ not available. Can we add it
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from '../../src/api/JsonApi.js'
-import {getPrintersOfType} from '../../src/stores/utilities/printers.js'
+import { getPrintersOfType } from '../../src/stores/utilities/printers.js'
 
 /**
  * @param {Object} data
@@ -16,7 +16,7 @@ const createStoreData = (data) => {
     selected: {
       printer: printers['1'],
     },
-    getPrintersOfType: (type) => getPrintersOfType(Object.values(printers), type)
+    getPrintersOfType: (type) => getPrintersOfType(Object.values(printers), type),
   }
 }
 

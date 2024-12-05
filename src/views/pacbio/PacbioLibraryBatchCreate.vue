@@ -226,7 +226,6 @@ const printerOptions = computed(() => {
   }))
 })
 
-
 const csvTableFields = [
   { key: 'source', label: 'Source' },
   { key: 'tag', label: 'Tag' },
@@ -257,8 +256,6 @@ const onSelectFile = async (evt) => {
       //Parse the csv file
       const records = eachRecord(csv, () => {})
       state.csvData = records.map((record) => record.record)
-
-      
     } catch (error) {
       showAlert(error, 'danger')
     }
@@ -280,7 +277,7 @@ const onReset = () => {
  * Creates a library batch from the selected tag set and csv file
  */
 const createLibraryBatch = async () => {
-  //reset the existing result data 
+  //reset the existing result data
   state.resultData = []
   const selectedTagSetName = pacbioRootStore.tagSetChoices.find(
     (tagset) => tagset.value === selectedTagSet.value,

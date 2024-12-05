@@ -78,10 +78,10 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
     async createLibraryBatch(csvFile, tagSet) {
       // Check if the required parameters are provided
       if (!tagSet) {
-        return { success: false, errors:'tagSet is required' }
+        return { success: false, errors: 'tagSet is required' }
       }
       if (!csvFile) {
-        return { success: false, errors:'csvFile is required'}
+        return { success: false, errors: 'csvFile is required' }
       }
       try {
         const csv = await csvFile.text()
@@ -94,7 +94,7 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
           return { success: false, errors: 'None of the given sources (/samples) were found' }
         }
         if (tags.length === 0) {
-          return { success: false, errors:'None of the given tags found' }
+          return { success: false, errors: 'None of the given tags found' }
         }
         // Validate csv and return results
         const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
@@ -123,7 +123,7 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         this.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
         return { success, result: this.librariesInBatch, errors }
       } catch (error) {
-        return { success: false, errors:  error.message }
+        return { success: false, errors: error.message }
       }
     },
   },

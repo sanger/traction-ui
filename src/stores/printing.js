@@ -24,7 +24,7 @@ export const usePrintingStore = defineStore('printing', {
     printers: (state) => (labwareType) => {
       const printerValues = Object.values(state.resources.printers)
       if (labwareType) {
-        return getPrintersOfType(printerValues,labwareType)
+        return getPrintersOfType(printerValues, labwareType)
       }
       return printerValues
     },
