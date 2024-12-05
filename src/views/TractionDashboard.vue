@@ -22,7 +22,7 @@
           <TractionArrowIcon class="inline-block h-6 w-6" direction="down" />
         </button>
         <div
-          :class="`grid grid-cols-${pipelines.length} gap-x-4 ${pipelineDropdown ? 'show' : 'hidden'}`"
+          :class="`grid grid-cols-${pipelines.length} gap-x-8 ${pipelineDropdown ? 'show' : 'hidden'}`"
         >
           <LabelledCard
             v-for="(pipeline, index) in pipelines"
@@ -66,7 +66,7 @@
       <div class="flex flex-col border border-gray-200 rounded-md p-4 gap-y-4">
         <button class="flex flex-row" @click="docDropdown = !docDropdown">
           <div class="flex flex-col text-left w-full">
-            <h2 class="text-2xl">Docs</h2>
+            <h2 class="text-2xl">Documentation</h2>
             <span class="text-md text-gray font-light"
               >A set of (external) links for Traction documentation</span
             >

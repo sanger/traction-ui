@@ -19,6 +19,6 @@ describe('Visit Home Page', () => {
     cy.contains('Traction')
     cy.contains('Pipelines')
     cy.contains('Tools')
-    cy.contains('Docs')
+    cy.contains('Documentation')
   })
 })
