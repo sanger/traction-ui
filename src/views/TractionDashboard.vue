@@ -14,7 +14,10 @@
       <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
         <button class="flex flex-row" @click="pipelineDropdown = !pipelineDropdown">
           <div class="flex flex-col text-left w-full">
-            <h2 class="text-2xl">Pipelines</h2>
+            <div class="flex flex-row items-center gap-x-2">
+              <h2 class="text-2xl">Pipelines</h2>
+              <TractionGeneticsIcon></TractionGeneticsIcon>
+            </div>
             <span class="text-md text-gray font-light"
               >A set of quick links for each sequencing pipeline</span
             >
@@ -44,7 +47,10 @@
       <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
         <button class="flex flex-row" @click="toolDropdown = !toolDropdown">
           <div class="flex flex-col text-left w-full">
-            <h2 class="text-2xl">Tools</h2>
+            <div class="flex flex-row items-center gap-x-2">
+              <h2 class="text-2xl">Tools</h2>
+              <TractionToolsIcon></TractionToolsIcon>
+            </div>
             <span class="text-md text-gray font-light"
               >A set of quick links for Traction tools</span
             >
@@ -66,7 +72,10 @@
       <div class="flex flex-col border border-gray-200 rounded-md p-4 gap-y-4">
         <button class="flex flex-row" @click="docDropdown = !docDropdown">
           <div class="flex flex-col text-left w-full">
-            <h2 class="text-2xl">Documentation</h2>
+            <div class="flex flex-row items-center gap-x-2">
+              <h2 class="text-2xl">Documentation</h2>
+              <TractionDocsIcon></TractionDocsIcon>
+            </div>
             <span class="text-md text-gray font-light"
               >A set of (external) links for Traction documentation</span
             >
@@ -97,6 +106,9 @@ import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
 import LabelledCard from '@/components/LabelledCard'
 import TractionLink from '@/components/TractionLink'
+import TractionDocsIcon from '@/icons/DocsIcon.vue'
+import TractionToolsIcon from '@/icons/ToolsIcon.vue'
+import TractionGeneticsIcon from '@/icons/GeneticsIcon.vue'
 
 const docRoutes = [
   {

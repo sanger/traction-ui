@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border-2 border-gray-200 rounded-md bg-white text-sp-400 shadow-custom-pink"
+    class="border-2 border-sdb-200 rounded-md bg-white text-sdb-400 shadow-custom-pink"
     :data-pipeline="title"
   >
     <div class="text-left p-4 border-b-2 border-gray-200 bg-gray-100 rounded-md">
