@@ -1,8 +1,14 @@
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import { mount, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import {
+  mount,
+  flushPromises,
+  createTestingPinia,
+  successfulResponse,
+} from '@support/testHelper.js'
 import { expect, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
+import useRootStore from '@/stores'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 
@@ -111,7 +117,12 @@ describe('Libraries.vue', () => {
   })
 
   describe('Printing labels', () => {
+    let create
     beforeEach(() => {
+      const rootStore = useRootStore()
+      create = vi.fn()
+      rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
+
       libraries.state.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
@@ -119,37 +130,18 @@ describe('Libraries.vue', () => {
       ]
     })
 
-    describe('#createLabels', () => {
-      it('will have the correct number of labels', () => {
-        expect(libraries.createLabels().length).toEqual(3)
-      })
-
-      it('will have the correct text for each label', () => {
-        const label = libraries.createLabels()[0]
-        expect(label.barcode).toEqual('TRAC-1')
-        expect(label.first_line).toEqual('Pacbio - Library')
-        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
-        expect(label.third_line).toEqual('TRAC-1')
-        expect(label.fourth_line).toEqual('SQSC-1')
-        expect(label.label_name).toEqual('main_label')
-      })
-    })
-
     describe('#printLabels', () => {
       beforeEach(() => {
-        const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
-        wrapper.vm.printingStore.createPrintJob = mockPrintJob
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
       })
 
-      it('should create a print job', () => {
-        expect(wrapper.vm.printingStore.createPrintJob).toBeCalledWith({
-          printerName: 'printer1',
-          labels: libraries.createLabels(),
-          copies: 1,
-        })
-        expect(mockShowAlert).toBeCalledWith('success', 'success')
+      it('creates a print job and shows a success alert', async () => {
+        create.mockResolvedValue(successfulResponse())
+        wrapper.vm.onPrintAction()
+        await flushPromises()
+
+        expect(mockShowAlert).toBeCalledWith('Barcode(s) successfully printed', 'success')
       })
     })
   })

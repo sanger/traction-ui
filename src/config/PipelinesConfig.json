@@ -10,7 +10,7 @@
     "name": "pacbio",
     "title": "PacBio",
     "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
-    "routes": ["plates", "samples", "libraries", "pools", "runs", "pool/new"],
+    "routes": ["plates", "samples", "libraries", "pools", "runs", "pool/new", "library-batch"],
     "active": true
   },
   {

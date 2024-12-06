@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory'
-import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource } from './../../src/api/JsonApi'
 
 const PacbioLibraryBatchFactory = (tags = []) => {
   const data = {
@@ -141,6 +141,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
     return {
       librariesInBatch: Object.values(librariesObj).map((library) => {
         return {
+          source: library.source_identifier,
           id: library.id,
           barcode: tubesObj[library.tube].barcode,
           tag: tags[library.tag_id]?.group_id,

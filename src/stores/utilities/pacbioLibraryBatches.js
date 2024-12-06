@@ -72,7 +72,8 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
  * @returns {Promise<Object>} - The fetched tags and requests.
  */
 async function fetchTagsAndRequests(sources, tagSet) {
-  let requests, tags
+  let requests = [],
+    tags = []
 
   const rootStore = useRootStore()
   let promise = rootStore.api.v2.traction.pacbio.requests.get({
@@ -87,7 +88,7 @@ async function fetchTagsAndRequests(sources, tagSet) {
 
   promise = rootStore.api.v2.traction.pacbio.tag_sets.get({
     include: 'tags',
-    filter: { name: tagSet.name },
+    filter: { name: tagSet },
   })
   response = await handleResponse(promise)
 

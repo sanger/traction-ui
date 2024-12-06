@@ -15,7 +15,7 @@ import { getColumnValues } from '@/lib/csv/pacbio.js'
  * usePacbioLibraryBatchesStore is a store to manage pacbio library batches.
  * @returns {Object} - The store object.
  */
-export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', {
+export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchCreate', {
   state: () => ({
     /**
      * @property {Object} libraries - An object to store all libraries indexed by id.
@@ -37,13 +37,21 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
     librariesInBatch: (state) => {
       const pacbioRootStore = usePacbioRootStore()
       return Object.values(state.libraries).map((library) => {
-        const { id, tag_id, volume, concentration, insert_size, template_prep_kit_box_barcode } =
-          library
+        const {
+          id,
+          tag_id,
+          volume,
+          concentration,
+          insert_size,
+          template_prep_kit_box_barcode,
+          source_identifier,
+        } = library
         const tag = pacbioRootStore.tags[tag_id]
         const tagGroupId = tag ? tag.group_id : ''
         return {
           id,
           barcode: state.tubes[library.tube].barcode,
+          source: source_identifier,
           tag: tagGroupId,
           volume,
           concentration,
@@ -52,6 +60,11 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
         }
       })
     },
+    librariesInfoInPrintFormat: (state) =>
+      Object.values(state.libraries).map(({ tube, source_identifier }) => ({
+        barcode: state.tubes[tube].barcode,
+        source_identifier,
+      })),
   },
 
   actions: {
@@ -59,16 +72,16 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
      * Creates a library batch from a CSV file and a tag set.
      *
      * @param {File} csvFile - The CSV file containing library batch data.
-     * @param {Object} tagSet - The tag set to validate against.
+     * @param {Object} tagSet - The tag set name to validate against.
      * @returns {Promise<Object>} - The result of the library batch creation.
      */
     async createLibraryBatch(csvFile, tagSet) {
       // Check if the required parameters are provided
       if (!tagSet) {
-        return { success: false, errors: ['tagSet is required'] }
+        return { success: false, errors: 'tagSet is required' }
       }
       if (!csvFile) {
-        return { success: false, errors: ['csvFile is required'] }
+        return { success: false, errors: 'csvFile is required' }
       }
       try {
         const csv = await csvFile.text()
@@ -78,15 +91,15 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
         const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
 
         if (requests.length === 0) {
-          return { success: false, errors: ['No requests found'] }
+          return { success: false, errors: 'None of the given sources (/samples) were found' }
         }
         if (tags.length === 0) {
-          return { success: false, errors: ['No tags found'] }
+          return { success: false, errors: 'None of the given tags found' }
         }
         // Validate csv and return results
         const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
         if (eachReordRetObj.error) {
-          return { success: false, errors: [eachReordRetObj.error] }
+          return { success: false, errors: eachReordRetObj.error }
         }
 
         // Create the library batch request
@@ -110,7 +123,7 @@ export const usePacbioLibraryBatchesStore = defineStore('pacbioLibraryBatches', 
         this.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
         return { success, result: this.librariesInBatch, errors }
       } catch (error) {
-        return { success: false, errors: [error] }
+        return { success: false, errors: error.message }
       }
     },
   },
