@@ -84,9 +84,15 @@ export default {
     async createLibraries(selectedEnzymeId) {
       const payload = { samples: this.selected, enzymeID: selectedEnzymeId }
       const response = await this.createLibrariesInTraction(payload)
+      const {
+        success,
+        body: { data },
+      } = response
 
-      if (response.successful || !response.empty) {
-        const barcodes = response.deserialize.libraries.map((l) => l.barcode)
+      console.log(data)
+
+      if (success && data.length > 0) {
+        const barcodes = data.map((l) => l.attributes.barcode)
         this.showAlert('Libraries successfully created with barcodes: ' + barcodes, 'success')
       } else {
         this.showAlert('Failed to create library in Traction: ', 'danger')

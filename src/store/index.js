@@ -60,7 +60,6 @@
 
 import { createStore } from 'vuex'
 import config from '@/api/Config'
-import buildV1 from '@/api/v1/ApiBuilder'
 import buildV2 from '@/api/v2/ApiBuilder'
 import traction from '@/store/traction'
 import PlateMap from '@/config/PlateMap'
@@ -68,7 +67,6 @@ import PlateMap from '@/config/PlateMap'
 const store = createStore({
   state: {
     api: {
-      v1: buildV1({ config }),
       v2: buildV2({ config }),
     },
     plateMap: PlateMap,
