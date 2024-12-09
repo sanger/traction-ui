@@ -6,7 +6,6 @@ import {
   successfulResponse,
 } from '@support/testHelper'
 import { beforeEach, describe } from 'vitest'
-import api from '@/api/JsonApi'
 import { extractAttributes } from '@/api/JsonApi'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
@@ -43,7 +42,6 @@ describe('usePacbioRunsStore', () => {
         store.runs = []
         store.runRequest.get = vi.fn().mockReturnValue(pacbioRunsFactory.responses.fetch)
         const data = pacbioRunsFactory.content.data
-        api.dataToObjectById = vi.fn().mockReturnValue(data)
         const { success, errors } = await store.fetchPacbioRuns()
         expect(store.runsArray.length).toEqual(data.length)
         expect(success).toEqual(true)

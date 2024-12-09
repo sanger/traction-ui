@@ -1,7 +1,7 @@
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { expect } from 'vitest'
-import { newResponse } from '@/api/v1/ResponseHelper'
 import PacbioSampleFactory from '@tests/factories/PacbioSampleFactory.js'
+import { failedResponse } from '@tests/support/testHelper.js'
 
 let requests
 
@@ -48,19 +48,13 @@ describe('actions', () => {
       const update = vi.fn()
       const commit = vi.fn()
       const getters = { requestsRequest: { update: update } }
-      const mockResponse = {
-        error: ['There was an error'],
-        status: 500,
-        ok: false,
-      }
+      const mockResponse = failedResponse()
 
-      update.mockRejectedValue({ ...mockResponse })
-      const expectedResponse = newResponse({ ...mockResponse, success: false })
+      update.mockRejectedValue(mockResponse)
 
-      const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
+      const { success } = await Actions.updateRequest({ commit, getters }, sample)
 
       expect(success).toEqual(false)
-      expect(errors.error).toEqual(expectedResponse.errors)
     })
   })
 

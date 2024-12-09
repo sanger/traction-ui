@@ -170,36 +170,6 @@ const extractRelationships = (relationships, included, includeStore = {}) => {
   }, {})
 }
 
-const extractResourceObject = (data, included, includeStore = {}) => {
-  return Object.assign(
-    extractAttributes(data),
-    extractRelationships(data.relationships, included, includeStore),
-  )
-}
-
-/*
-  Deserialize a json-api object to bring included relationships, ids and types inline.
-  @param response: {data: Object, included: Object} the object to deserialize
-  DEPRECATED: use populate by methods instead
-*/
-const deserialize = ({ data, included }, includeStore = {}) => {
-  if (Array.isArray(data)) {
-    return data.reduce((result, item) => {
-      const resourceObject = extractResourceObject(item, included, includeStore)
-      const type = resourceObject.type
-      if (Array.isArray(result[type])) {
-        result[type].push(resourceObject)
-      } else {
-        result[type] = [resourceObject]
-      }
-      return result
-    }, {})
-  } else {
-    const resourceObject = extractResourceObject(data, included, includeStore)
-    return { [resourceObject.type]: [resourceObject] }
-  }
-}
-
 const matchesAllAttributes =
   (filters) =>
   ({ attributes }) =>
@@ -401,8 +371,6 @@ export {
   findIncluded,
   deserializeIncluded,
   extractRelationships,
-  extractResourceObject,
-  deserialize,
   dataToObjectById,
   extractRelationshipsAndGroupById,
   mapAttribute,
@@ -415,5 +383,3 @@ export {
   extractIncludes,
   find,
 }
-
-export default deserialize

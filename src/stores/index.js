@@ -1,5 +1,4 @@
 import config from '@/api/Config.js'
-import buildV1 from '@/api/v1/ApiBuilder.js'
 import buildV2 from '@/api/v2/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
@@ -15,7 +14,6 @@ const useRootStore = defineStore('root', {
     //Build an API instance using the config
     // api: mergeApis(build({ config })),
     api: {
-      v1: buildV1({ config }),
       v2: buildV2({ config }),
     },
 

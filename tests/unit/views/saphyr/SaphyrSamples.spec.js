@@ -1,7 +1,12 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, store, Data, createTestingPinia } from '@support/testHelper'
-import Response from '@/api/v1/Response'
+import { mount, store, createTestingPinia } from '@support/testHelper'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import SaphyrRequestFactory from '@tests/factories/SaphyrRequestFactory.js'
+import SaphyrLibraryFactory from '@tests/factories/SaphyrLibraryFactory.js'
+import SaphyrEnzymeFactory from '@tests/factories/SaphyrEnzymeFactory.js'
+
+const saphyrLibraryFactory = SaphyrLibraryFactory()
+const saphyrEnzymeFactory = SaphyrEnzymeFactory()
 
 function mountWithStore({ props } = {}) {
   const wrapperObj = mount(Samples, {
@@ -36,10 +41,9 @@ describe('Samples.vue', () => {
     )
 
     // Here we mock enzymes as they are loaded in the modal
-    vi.spyOn(store.getters.api.v2.traction.saphyr.enzymes, 'get').mockResolvedValue({
-      // TODO: This should be a factory
-      data: Data.Enzymes,
-    })
+    vi.spyOn(store.getters.api.v2.traction.saphyr.enzymes, 'get').mockResolvedValue(
+      saphyrEnzymeFactory.responses.fetch,
+    )
     const { wrapperObj } = mountWithStore()
     store.state.requests = saphyrRequestFactory.storeData.requests
     wrapper = wrapperObj
@@ -84,15 +88,15 @@ describe('Samples.vue', () => {
     })
 
     it('is successful', async () => {
-      // TODO: This should be a factory
-      const expectedResponse = new Response(Data.Libraries)
-      samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
+      samples.createLibrariesInTraction.mockResolvedValue(
+        handleResponse(saphyrLibraryFactory.responses.fetch),
+      )
 
       await samples.createLibraries(selectedEnzymeId)
 
       expect(samples.createLibrariesInTraction).toBeCalledWith(payload)
       expect(samples.showAlert).toBeCalledWith(
-        'Libraries successfully created with barcodes: TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5',
+        'Libraries successfully created with barcodes: TRAC-11,TRAC-12,TRAC-13,TRAC-14,TRAC-15,TRAC-16,TRAC-17,TRAC-18,TRAC-19,TRAC-20,TRAC-21,TRAC-22,TRAC-23,TRAC-24,TRAC-25,TRAC-26,TRAC-27',
         'success',
       )
     })

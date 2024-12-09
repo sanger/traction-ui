@@ -1,5 +1,5 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { mount, store, router, flushPromises, Data, createTestingPinia } from '@support/testHelper'
+import { mount, store, router, flushPromises, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
@@ -7,6 +7,7 @@ import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontRunFactory = OntRunFactory()
 const ontPoolFactory = OntPoolFactory()
+const ontRunFactoryForSingleRun = OntRunFactory({ count: 1 })
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -102,7 +103,6 @@ describe('ONTRun.vue', () => {
       const { wrapperObj } = mountWithStore({ id: '1' })
       wrapper = wrapperObj
       ontRun = wrapper.vm
-      ontRun.fetchRun = vi.fn(() => Data.OntRun)
       expect(ontRun.newRecord).toEqual(false)
     })
   })
@@ -156,7 +156,7 @@ describe('ONTRun.vue', () => {
       const { wrapperObj } = mountWithStore({ id: '1' })
       wrapper = wrapperObj
       ontRun = wrapper.vm
-      ontRun.fetchRun = vi.fn(() => Data.OntRun)
+      ontRun.fetchRun = vi.fn(() => ontRunFactoryForSingleRun.responses.fetch)
       ontRun.updateRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
       ontRun.showAlert = vi.fn()
