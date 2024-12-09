@@ -89,8 +89,6 @@ export default {
         body: { data },
       } = response
 
-      console.log(data)
-
       if (success && data.length > 0) {
         const barcodes = data.map((l) => l.attributes.barcode)
         this.showAlert('Libraries successfully created with barcodes: ' + barcodes, 'success')

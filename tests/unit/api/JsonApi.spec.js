@@ -1,5 +1,4 @@
 import * as JsonApi from '@/api/JsonApi.js'
-import CircularResponse from '@tests/data/circularResponse'
 import { describe, expect } from 'vitest'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioWellFactory from '@tests/factories/PacbioWellFactory.js'
@@ -18,8 +17,6 @@ describe('JsonApi', () => {
     extractRelationships,
     findIncluded,
     deserializeIncluded,
-    extractResourceObject,
-    deserialize,
     groupIncludedByResource,
     extractRelationshipsAndGroupById,
     dataToObjectById,
@@ -113,81 +110,6 @@ describe('JsonApi', () => {
             },
           ],
         })
-      })
-
-      it('can extract a resource object', () => {
-        expect(extractResourceObject(dataItem, included)).toEqual({
-          id: '1',
-          type: 'cheeses',
-          attrA: 'you caught me',
-          attrB: 'luv dancing',
-          bean: { id: '1', type: 'beans' },
-          pickle: { attrI: 'I just keep', attrJ: 'rolling on', id: '2', type: 'pickles' },
-          chocolates: [
-            {
-              attrC: 'can you',
-              attrD: 'feel it',
-              id: '3',
-              type: 'chocolates',
-              crisps: { type: 'crisps', id: '100', attrE: 'Cyber Insekt' },
-            },
-          ],
-        })
-      })
-
-      describe('with circular relationships', () => {
-        beforeEach(() => {
-          data = CircularResponse.data
-          included = CircularResponse.data.included
-          dataItem = data.data[0]
-        })
-
-        it('can extract a resource object', () => {
-          expect(extractResourceObject(dataItem, included)).toMatchObject({
-            id: '1',
-            state: 'pending',
-            volume: 1.0,
-            concentration: 1.0,
-            template_prep_kit_box_barcode: 'LK12345',
-            insert_size: 100,
-            created_at: '2021/06/17 09:43',
-            deactivated_at: null,
-            source_identifier: 'DN1:A1',
-            tag: {
-              id: '13',
-              oligo: 'ACACACTCTATCAGATT',
-              group_id: 'bc1019_BAK8B_OA',
-              tag_set: {
-                id: '1',
-                name: 'Sequel_16_barcodes_v3',
-                uuid: '4d87a8ab-4d16-f0b0-77e5-0f467dba442e',
-              },
-            },
-          })
-        })
-      })
-
-      it('will work if single record is passed through deserializer', () => {
-        expect(deserialize({ data: dataItem, included: included })).toEqual({
-          cheeses: [extractResourceObject(dataItem, included)],
-        })
-      })
-    })
-
-    describe('for a bunch of records', () => {
-      let deserialized
-
-      beforeEach(() => {
-        deserialized = deserialize(dummyDataFactory.content)
-      })
-
-      it('will extract all of the records', () => {
-        expect(deserialized.cheeses.length).toEqual(2)
-      })
-
-      it('will extract each record correctly', () => {
-        const item = extractResourceObject(dataItem, included)
-        expect(deserialized.cheeses[0]).toEqual(item)
       })
     })
   })
