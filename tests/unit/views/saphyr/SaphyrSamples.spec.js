@@ -1,6 +1,6 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, store, createTestingPinia } from '@support/testHelper'
-import { handleResponse } from '@/api/v2/responseHelper.js'
+import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import SaphyrRequestFactory from '@tests/factories/SaphyrRequestFactory.js'
 import SaphyrLibraryFactory from '@tests/factories/SaphyrLibraryFactory.js'
 import SaphyrEnzymeFactory from '@tests/factories/SaphyrEnzymeFactory.js'
