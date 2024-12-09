@@ -37,8 +37,6 @@ describe('OntTubeSelectedList', () => {
       store.state.traction.ont.pools.resources.requests =
         ontTubeFactory.storeData.resources.requests
 
-      console.log(ontTubeFactory.storeData.resources.requests)
-
       const selectTube = { id: '1', selected: true }
       const selectRequest = { id: '191', selected: true }
       store.commit('traction/ont/pools/selectTube', selectTube)
