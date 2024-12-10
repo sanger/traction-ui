@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById } from './../../src/api/JsonApi'
 
 const createStoreData = (data) => {
   const requests = dataToObjectById({ data: data.data, includeRelationships: true })

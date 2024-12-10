@@ -1,4 +1,9 @@
-import { flattenObject, alphaNumericSortDefault, regexSort } from '@/lib/DataHelpers'
+import {
+  flattenObject,
+  alphaNumericSortDefault,
+  regexSort,
+  findDuplicates,
+} from '@/lib/DataHelpers'
 
 describe('DataHelpers', () => {
   describe('flattenObject', () => {
@@ -83,6 +88,42 @@ describe('DataHelpers', () => {
       expect(
         regexSort('A-TEST2', 'A-TEST2', { alpha: /[^a-zA-Z]*/g, numeric: /[^0-9]*/g }, false),
       ).toEqual(0)
+    })
+  })
+  describe('findDuplicates', () => {
+    it('should return an array of duplicate values', () => {
+      const input = ['a', 'b', 'a', 'c', 'b', 'd']
+      const expectedOutput = ['a', 'b']
+      const result = findDuplicates(input)
+      expect(result).toEqual(expectedOutput)
+    })
+
+    it('should return an empty array if there are no duplicates', () => {
+      const input = ['a', 'b', 'c', 'd']
+      const expectedOutput = []
+      const result = findDuplicates(input)
+      expect(result).toEqual(expectedOutput)
+    })
+
+    it('should return an empty array if the input array is empty', () => {
+      const input = []
+      const expectedOutput = []
+      const result = findDuplicates(input)
+      expect(result).toEqual(expectedOutput)
+    })
+
+    it('should handle arrays with all duplicate values', () => {
+      const input = ['a', 'a', 'a', 'a']
+      const expectedOutput = ['a']
+      const result = findDuplicates(input)
+      expect(result).toEqual(expectedOutput)
+    })
+
+    it('should handle arrays with no duplicate values', () => {
+      const input = ['a', 'b', 'c', 'd', 'e']
+      const expectedOutput = []
+      const result = findDuplicates(input)
+      expect(result).toEqual(expectedOutput)
     })
   })
 })

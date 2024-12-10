@@ -69,23 +69,6 @@ describe('pacbioLibraryBatches', () => {
       const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
       expect(result).toEqual(new Error('Invalid record at line 1: tag abc not found'))
     })
-    it('returns an error if tag is duplicated', () => {
-      const tagWithDuplicates = [...tags, tags[0]]
-
-      const record = {
-        source: requests[0].source_identifier,
-        tag: tags[0].group_id,
-        concentration: 10,
-        insert_size: 100,
-        volume: 5,
-        template_prep_kit_box_barcode: 'abc',
-      }
-      const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagWithDuplicates)
-      expect(result).toEqual(
-        new Error(`Invalid record at line 1: Duplicate tag: ${tags[0].group_id}`),
-      )
-    })
 
     it('returns formatted payload data if all validations pass', () => {
       const tagSet = pacbioTagSetFactory.storeData.selected.tagSet
@@ -140,7 +123,7 @@ describe('pacbioLibraryBatches', () => {
     })
 
     it('fetches requests and tags successfully', async () => {
-      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
@@ -156,7 +139,7 @@ describe('pacbioLibraryBatches', () => {
     it('returns null tags if tag set fetch fails', async () => {
       rootStore.api.v2.traction.pacbio.tag_sets.get.mockResolvedValue({ success: false })
 
-      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
@@ -166,13 +149,13 @@ describe('pacbioLibraryBatches', () => {
         filter: { name: tagSet.name },
       })
       expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
-      expect(tags).toBeUndefined()
+      expect(tags).toEqual([])
     })
 
     it('returns empty requests if request fetch fails', async () => {
       rootStore.api.v2.traction.pacbio.requests.get.mockResolvedValue({ success: false })
 
-      const { requests } = await fetchTagsAndRequests(sources, tagSet)
+      const { requests } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.v2.traction.pacbio.requests.get).toHaveBeenCalledWith({
         filter: { source_identifier: sources.join(',') },
@@ -181,7 +164,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toBeUndefined()
+      expect(requests).toEqual([])
     })
   })
 })

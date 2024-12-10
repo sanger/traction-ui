@@ -11,7 +11,6 @@ import { setActivePinia, createPinia } from 'pinia'
 import { createTestingPinia } from '@pinia/testing'
 
 import store from '@/store'
-import Data from '@tests/data/'
 import router from '@/router'
 import { nextTick } from 'vue'
 import globalAlert from '@/mixins/globalAlert'
@@ -92,7 +91,6 @@ const failedResponse = (statusCode = 500) => {
 export {
   mount,
   store,
-  Data,
   shallowMount,
   router,
   flushPromises,

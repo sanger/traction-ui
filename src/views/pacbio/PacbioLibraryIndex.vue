@@ -7,7 +7,7 @@
           ref="printerModal"
           class="float-left"
           :disabled="state.selected.length === 0"
-          @select-printer="printLabels($event)"
+          @select-printer="onPrintAction($event)"
         />
         <traction-button
           id="deleteLibraries"
@@ -92,14 +92,13 @@ import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
-import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, reactive, computed, watchEffect } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
-import { usePrintingStore } from '@/stores/printing.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
+import usePacbioLibraryPrint from '@/composables/usePacbioLibraryPrint.js'
 
 /**
  * Following are new Vue 3 features used in this component:
@@ -181,12 +180,10 @@ const sortBy = ref('id')
 //Composables
 const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
+const { printLabels } = usePacbioLibraryPrint()
 
 //Create Pinia store
 const librariesStore = usePacbioLibrariesStore()
-
-// Create printing store
-const printingStore = usePrintingStore()
 
 //computed
 const libraries = computed(() => librariesStore.librariesArray)
@@ -232,26 +229,8 @@ const handleLibraryDelete = async () => {
   }
 }
 
-const createLabels = () => {
-  const date = getCurrentDate()
-  return state.selected.map(({ barcode, source_identifier }) => {
-    return {
-      barcode,
-      first_line: 'Pacbio - Library',
-      second_line: date,
-      third_line: barcode,
-      fourth_line: source_identifier,
-      label_name: 'main_label',
-    }
-  })
-}
-
-const printLabels = async (printerName) => {
-  const { success, message = {} } = await printingStore.createPrintJob({
-    printerName,
-    labels: createLabels(),
-    copies: 1,
-  })
+const onPrintAction = async (printerName) => {
+  const { success, message = {} } = await printLabels(printerName, state.selected)
   showAlert(message, success ? 'success' : 'danger')
 }
 
