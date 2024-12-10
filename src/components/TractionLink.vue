@@ -29,7 +29,7 @@ export default {
   computed: {
     cssClass() {
       return {
-        'flex w-32 h-20 p-2 justify-center items-center rounded-md border border-gray-200 text-sm font-sm hover:bg-gray-100 shadow-sm':
+        'flex w-32 h-20 p-2 justify-center items-center rounded-md border-2 border-gray-200 text-sm font-sm hover:bg-gray-100 shadow-sm':
           this.viewType == ViewType.Button,
         'items-center px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white text-gray-400 hover:text-white':
           this.viewType == ViewType.MenuItem,
