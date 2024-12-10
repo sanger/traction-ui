@@ -124,7 +124,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         )
       })
 
-      it('returns error if there are dupliacte tags', async () => {
+      it('returns error if there are duplicate tags', async () => {
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,
         )
