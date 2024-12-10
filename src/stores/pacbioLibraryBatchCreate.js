@@ -117,11 +117,6 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
           return { success: false, errors: 'None of the given tags found' }
         }
 
-        const uniqueSources = [...new Set(sources)]
-        if (uniqueSources.length !== sources.length) {
-          return { success: false, errors: 'Duplicate sources found in the csv' }
-        }
-
         // Validate csv and return results
         const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
         if (eachReordRetObj.error) {
