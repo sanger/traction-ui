@@ -11,7 +11,7 @@ describe('TractionSpinner.vue', () => {
 
   it('displays the default color', () => {
     const wrapper = buildWrapper({})
-    expect(wrapper.attributes('class')).toContain('text-sdb')
+    expect(wrapper.attributes('class')).toContain('text-sp-400')
   })
 
   it('displays color given in props', () => {

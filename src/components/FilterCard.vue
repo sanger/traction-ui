@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col w-full">
-    <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mt-2 mb-2 p-3">
-      <div class="grid grid-cols-5 gap-2 w-full">
+    <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md py-2 px-4">
+      <div class="grid grid-cols-5 w-full">
         <div class="flex flex-col text-left">
-          <p class="flex font-semibold text-l">Filter results</p>
-          <p class="flex font-light text-gray-700 text-xs italiclist-none">
+          <p class="flex text-l">Filter results</p>
+          <p class="flex font-light text-gray-700 text-sm italiclist-none">
             By default filters by created at
           </p>
         </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="flex items-center">
           <div class="w-full">
-            <traction-button @click="resetFilter()">Reset</traction-button>
+            <traction-button theme="accent" @click="resetFilter()">Reset</traction-button>
             <traction-button
               id="filterButton"
               :disabled="filter_value == '' || filter_input == ''"
