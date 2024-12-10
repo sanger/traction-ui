@@ -69,23 +69,6 @@ describe('pacbioLibraryBatches', () => {
       const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
       expect(result).toEqual(new Error('Invalid record at line 1: tag abc not found'))
     })
-    it('returns an error if tag is duplicated', () => {
-      const tagWithDuplicates = [...tags, tags[0]]
-
-      const record = {
-        source: requests[0].source_identifier,
-        tag: tags[0].group_id,
-        concentration: 10,
-        insert_size: 100,
-        volume: 5,
-        template_prep_kit_box_barcode: 'abc',
-      }
-      const info = { lines: 1 }
-      const result = validateAndFormatAsPayloadData({ record, info }, requests, tagWithDuplicates)
-      expect(result).toEqual(
-        new Error(`Invalid record at line 1: Duplicate tag: ${tags[0].group_id}`),
-      )
-    })
 
     it('returns formatted payload data if all validations pass', () => {
       const tagSet = pacbioTagSetFactory.storeData.selected.tagSet

@@ -77,3 +77,24 @@ export const flattenObject = (obj, parentKey) => {
 
   return result
 }
+
+/**
+ * Finds duplicate values in an array.
+ *
+ * @param {Array} arr - The array to check for duplicates.
+ * @returns {Array} - An array of duplicate values.
+ */
+export const findDuplicates = (arr) => {
+  const seen = new Set()
+  const duplicates = new Set()
+
+  arr.forEach((item) => {
+    if (seen.has(item)) {
+      duplicates.add(item)
+    } else {
+      seen.add(item)
+    }
+  })
+
+  return Array.from(duplicates)
+}

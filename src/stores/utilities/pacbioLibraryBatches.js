@@ -33,10 +33,6 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
     }
   }
 
-  if (tags.filter((t) => t.group_id === tag).length > 1) {
-    return createError(`Duplicate tag: ${tag}`)
-  }
-
   const tagObj = tags.find((t) => t.group_id === tag)
   if (!tagObj) {
     return createError(`tag ${tag} not found`)

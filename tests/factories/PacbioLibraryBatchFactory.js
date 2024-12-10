@@ -89,7 +89,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           insert_size: 10191,
           created_at: '2024/11/15 17:38',
           deactivated_at: null,
-          source_identifier: 'GEN-1725896371-4:B3',
+          source_identifier: 'DN814327C:A1',
           pacbio_request_id: 407,
           tag_id: 304,
           used_volume: 0,

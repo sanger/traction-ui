@@ -10,6 +10,7 @@ import {
 import { dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { getColumnValues } from '@/lib/csv/pacbio.js'
+import { findDuplicates } from '@/lib/DataHelpers.js'
 
 /**
  * usePacbioLibraryBatchesStore is a store to manage pacbio library batches.
@@ -86,6 +87,25 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
       try {
         const csv = await csvFile.text()
         const sources = getColumnValues(csv, 0)
+        const tagNames = getColumnValues(csv, 1)
+
+        // Check for duplicate sources
+        let duplicates = findDuplicates(sources)
+        if (duplicates.length) {
+          return {
+            success: false,
+            errors: `Duplicate sources found in the csv: ${duplicates.join(', ')}`,
+          }
+        }
+
+        // Check for duplicate tags
+        duplicates = findDuplicates(tagNames)
+        if (duplicates.length) {
+          return {
+            success: false,
+            errors: `Duplicate tags found in the csv: ${duplicates.join(', ')}`,
+          }
+        }
 
         // Fetch the tags and requests
         const { requests, tags } = await fetchTagsAndRequests(sources, tagSet)
@@ -96,6 +116,12 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         if (tags.length === 0) {
           return { success: false, errors: 'None of the given tags found' }
         }
+
+        const uniqueSources = [...new Set(sources)]
+        if (uniqueSources.length !== sources.length) {
+          return { success: false, errors: 'Duplicate sources found in the csv' }
+        }
+
         // Validate csv and return results
         const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
         if (eachReordRetObj.error) {
