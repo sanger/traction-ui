@@ -109,6 +109,41 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         expect(errors).toEqual('None of the given sources (/samples) were found')
       })
 
+      it('returns error if there are dupliacte sources', async () => {
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
+        csvFileTextContent += csvFileTextContent
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(
+          `Duplicate sources found in the csv: ${pacbioLibraryBatchFactory.storeData.librariesInBatch.map((batch) => batch.source).join(', ')}`,
+        )
+      })
+
+      it('returns error if there are duplicate tags', async () => {
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
+        //Create duplicate tags
+        let csvLines = csvFileTextContent.split('\n')
+        let firstLineColumns = csvLines[1].split(',')
+        let secondLineColumns = csvLines[2].split(',')
+        secondLineColumns[1] = firstLineColumns[1]
+        csvLines[1] = firstLineColumns.join(',')
+        csvLines[2] = secondLineColumns.join(',')
+        csvFileTextContent = csvLines.join('\n')
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(`Duplicate tags found in the csv: ${firstLineColumns[1]}`)
+      })
+
       it('successfully creates a library batch', async () => {
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,

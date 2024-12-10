@@ -1,6 +1,6 @@
 <template>
   <DataFetcher :fetcher="fetchData">
-    <div class="w-full h-screen px-4">
+    <div class="w-full px-4">
       <div class="flex flex-row w-full h-full">
         <div class="w-1/2 px-4">
           <div class="flex flex-col space-y-4">
