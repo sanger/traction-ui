@@ -10,7 +10,7 @@ module.exports = {
       ...defaultOptions.theme.fontSize,
     },
     boxShadow: {
-      'custom-pink': '8px 8px 0 0 #F06292',
+      'custom-pink': '6px 6px 0 0 #F06292',
     },
   },
   important: true,
