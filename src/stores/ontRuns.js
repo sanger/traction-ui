@@ -1,10 +1,18 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/v2/ResponseHelper'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
-import store from '@/store'
 import { flowCellType } from '@/stores/utilities/flowCell'
 import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
+
+// Helper function for setting pool and library data
+const formatById = (obj, data, includeRelationships = false) => {
+  return {
+    ...obj,
+    ...dataToObjectById({ data, includeRelationships }),
+  }
+}
 
 /**
  *
@@ -15,18 +23,15 @@ import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
  * The payload returned doesn't have the id field as it is not required for create request
  * and for update request the id field is added in the updateRun action
  */
-function createPayload(run) {
+function createPayload(run, pools, tubes) {
   const ontRootStore = useOntRootStore()
   const existingInstruments = ontRootStore.instruments
   const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
-  //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
-  const existingPools = store.getters['traction/ont/pools/pools']
-
   const flowcell_attributes = run.flowcell_attributes
     .filter((fc) => fc.flowcell_id && fc.tube_barcode)
     .map((fc) => {
-      const pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
+      const pool = Object.values(pools).find((p) => tubes[p.tube].barcode == fc.tube_barcode)
       const pool_id = pool ? pool.id : ''
 
       return { ...fc, ...{ ont_pool_id: pool_id } }
@@ -47,11 +52,13 @@ function createPayload(run) {
 export const useOntRunsStore = defineStore('ontRuns', {
   state: () => ({
     currentRun: {
-      flowcell_attributes: [flowCellType],
+      flowcell_attributes: [],
       id: 'new',
       state: null,
       instrument_name: null,
     },
+    pools: {},
+    tubes: {},
   }),
   getters: {
     runRequest: () => {
@@ -68,11 +75,13 @@ export const useOntRunsStore = defineStore('ontRuns', {
         id: 'new',
         instrument_name: null,
         state: null,
-        flowcell_attributes: [flowCellType],
+        flowcell_attributes: [],
       }
     },
     async createRun() {
-      const promise = this.runRequest.create({ data: createPayload(this.currentRun) })
+      const promise = this.runRequest.create({
+        data: createPayload(this.currentRun, this.pools, this.tubes),
+      })
       return await handleResponse(promise)
     },
     async updateRun() {
@@ -80,7 +89,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const payload = {
         data: {
           id: this.currentRun.id,
-          ...createPayload(this.currentRun).data,
+          ...createPayload(this.currentRun, this.pools, this.tubes).data,
         },
       }
       const promise = this.runRequest.update(payload)
@@ -88,7 +97,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
     },
     async fetchRun(runId) {
       const request = this.runRequest
-      const promise = request.find({ id: runId, include: 'flowcells' })
+      const promise = request.find({ id: runId, include: 'flowcells.pool.tube' })
       const response = await handleResponse(promise)
 
       const { success, body: { data, included = [] } = {}, errors = {} } = response
@@ -97,12 +106,48 @@ export const useOntRunsStore = defineStore('ontRuns', {
         const ontRootStore = useOntRootStore()
         const existingInstruments = ontRootStore.instruments
 
-        //TODO: This need to be refactored to use the Pinia once ont/pools is migrated
-        const existingPools = store.getters['traction/ont/pools/pools']
+        const { pools, tubes } = groupIncludedByResource(included)
+        this.pools = formatById(this.pools, pools, true)
+        this.tubes = formatById(this.tubes, tubes, true)
 
-        this.currentRun = buildFormatedOntRun(existingInstruments, existingPools, data, included)
+        this.currentRun = buildFormatedOntRun(
+          existingInstruments,
+          this.pools,
+          this.tubes,
+          data,
+          included,
+        )
         return { success, errors }
       }
+    },
+    async fetchPool(barcode) {
+      // Here we want to make sure the barcode exists
+      // If it doesn't, set success to null for component validation
+      if (!barcode || barcode.trim() === '') {
+        return {
+          success: true,
+        }
+      }
+      const rootStore = useRootStore()
+      const request = rootStore.api.v2.traction.ont.pools
+      const promise = request.get({ filter: { barcode }, include: 'tube' })
+      const response = await handleResponse(promise)
+      let { success, body: { data, included = [] } = {} } = response
+
+      if (success && !data.empty) {
+        const { tubes } = groupIncludedByResource(included)
+        this.pools = {
+          ...this.pools,
+          ...formatById(this.pools, data, true),
+        }
+        this.tubes = {
+          ...this.tubes,
+          ...formatById(this.tubes, tubes, true),
+        }
+        return { success }
+      }
+
+      return { success: false, errors: '' }
     },
     setInstrumentName(name) {
       this.currentRun.instrument_name = name
@@ -112,27 +157,9 @@ export const useOntRunsStore = defineStore('ontRuns', {
     },
     setNewFlowCell(position) {
       this.currentRun.flowcell_attributes.push({
-        ...flowCellType,
+        ...flowCellType(),
         position,
       })
-    },
-    setFlowcellId(obj) {
-      const flowCellObj = this.getFlowCell(obj.position)
-      if (flowCellObj) {
-        flowCellObj['flowcell_id'] = obj.$event
-      } else {
-        const flowcell = { ...flowCellType, flowcell_id: obj.$event, position: obj.position }
-        this.currentRun.flowcell_attributes.push(flowcell)
-      }
-    },
-    setPoolTubeBarcode(obj) {
-      const flowCellObj = this.getFlowCell(obj.position)
-      if (flowCellObj) {
-        flowCellObj['tube_barcode'] = obj.barcode
-      } else {
-        const flowcell = { ...flowCellType, tube_barcode: obj.barcode, position: obj.position }
-        this.currentRun.flowcell_attributes.push(flowcell)
-      }
     },
     setCurrentRun(run) {
       this.currentRun = run

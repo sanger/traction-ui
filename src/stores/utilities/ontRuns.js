@@ -1,4 +1,6 @@
-const buildFormatedOntRun = (instruments, pools, data, included) => {
+import { flowCellType } from '@/stores/utilities/flowCell'
+
+const buildFormatedOntRun = (instruments, pools, tubes, data, included) => {
   const instrument_name = instruments.find((i) => i.id == data.attributes.ont_instrument_id)?.name
 
   return {
@@ -8,9 +10,11 @@ const buildFormatedOntRun = (instruments, pools, data, included) => {
     flowcell_attributes: included
       .filter((item) => item.type === 'flowcells')
       .map((fc) => {
-        const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.tube_barcode
+        const pool = Object.values(pools).find((p) => p.id == fc.attributes.ont_pool_id)
+        const tube_barcode = pool ? tubes[pool.tube].barcode : ''
 
         return {
+          ...flowCellType(),
           flowcell_id: fc.attributes.flowcell_id,
           ont_pool_id: fc.attributes.ont_pool_id,
           position: fc.attributes.position,

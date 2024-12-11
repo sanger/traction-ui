@@ -103,7 +103,6 @@ export default {
     },
     async provider() {
       await this.setInstruments()
-      await this.fetchOntPools()
 
       if (this.id === 'new') {
         this.newRun()
