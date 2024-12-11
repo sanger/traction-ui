@@ -12,9 +12,7 @@
           <span v-else :class="routeClass(pipelineRoute)">{{ humanise(pipelineRoute) }} </span>
         </div>
       </traction-menu>
-      <span class="flex items-center text-xl pl-4 text-gray-400 text-light">{{
-        pipelineInfo.title
-      }}</span>
+      <span class="flex items-center text-xl pl-4 text-gray-400">{{ pipelineInfo.title }}</span>
     </div>
     <router-view class="mt-2" />
   </div>
@@ -50,7 +48,7 @@ export default {
     },
     routeClass(route) {
       return `text-black hover:bg-sdb-300 hover:text-white flex
-        py-1 m-0 rounded-t-md w-24 justify-center
+        py-1 rounded-t-md w-24 justify-center
         transition-colors duration-100 ease-in-out cursor-pointer
         ${this.isActive(route) ? 'text-white bg-sdb-300' : 'text-black bg-gray-200'}`
     },
