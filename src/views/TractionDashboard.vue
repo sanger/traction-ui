@@ -62,9 +62,9 @@
         >
           <TractionLink
             v-for="route in toolRoutes"
-            :key="route"
-            :name="humanise(route)"
-            :link="`/${route}`"
+            :key="route.name"
+            :name="route.name"
+            :link="`/${route.link}`"
           />
         </div>
       </div>
@@ -131,6 +131,23 @@ const docRoutes = [
 const docDropdown = ref(false)
 const toolDropdown = ref(false)
 const pipelineDropdown = ref(true)
-const toolRoutes = ['label-printing', 'qc-results-upload', 'reception', 'labwhere-reception']
+const toolRoutes = [
+  {
+    name: 'Label Printing',
+    link: 'label-printing',
+  },
+  {
+    name: 'QC Results Upload',
+    link: 'qc-results-upload',
+  },
+  {
+    name: 'Reception',
+    link: 'reception',
+  },
+  {
+    name: 'LabWhere Reception',
+    link: 'labwhere-reception',
+  },
+]
 const pipelines = computed(() => PipelinesConfig.filter(({ active }) => active))
 </script>
