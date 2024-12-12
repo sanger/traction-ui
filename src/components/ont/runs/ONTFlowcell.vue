@@ -130,22 +130,26 @@ export default {
     /**
      * green - if both flowcellId and barcode fields contain valid values
      * red - if any of flowcellId and barcode fields contain invalid values
-     * white - if both flowcellId and barcode fields are empty
+     * gray - if both flowcellId and barcode fields are empty
      * yellow - if one of flowcellId and barcode fields are valid and other is empty
      */
     flowcell_bg_colour() {
       const tube_barcode_errors = this.flowcellErrorsFor('tube_barcode')
       const flowcell_id_errors = this.flowcellErrorsFor('flowcell_id')
-      if (
-        !flowcell_id_errors &&
-        !tube_barcode_errors &&
-        this.flowCell.tube_barcode &&
-        this.flowCell.flowcell_id
-      )
-        return 'border border-3 border-success'
-      else if (flowcell_id_errors && tube_barcode_errors) return 'border border-3 border-failure'
-      else if (flowcell_id_errors || tube_barcode_errors) return 'border border-3 border-yellow'
-      else return 'border border-3 border-gray-300'
+      // If the flowcell is empty return gray border
+      if (!this.flowCell.tube_barcode && !this.flowCell.flowcell_id) {
+        return 'border border-3 border-gray-300'
+      }
+
+      // If there are errors in either of the fields return red border
+      if (!!flowcell_id_errors || !!tube_barcode_errors) return 'border border-3 border-failure'
+
+      // If either field is empty return yellow border
+      if (!this.flowCell.tube_barcode || !this.flowCell.flowcell_id)
+        return 'border border-3 border-warning'
+
+      // If both fields are valid return green border
+      return 'border border-3 border-success'
     },
   },
   /**

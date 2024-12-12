@@ -25,7 +25,7 @@ function flowCellType() {
      */
     validateFlowcellId() {
       //If flowcell_id is not empty, check if it contains a valid string
-      if (!this.flowcell_id.match(/^[a-zA-Z]{3}[0-9]{3,}$/)) {
+      if (this.flowcell_id && !this.flowcell_id.match(/^[a-zA-Z]{3}[0-9]{3,}$/)) {
         this.errors['flowcell_id'] = 'Enter a valid Flowcell ID (3 letters then at least 3 numbers)'
         return false
       }
@@ -43,8 +43,8 @@ function flowCellType() {
       // Here we want to make sure the barcode exists
       // If it doesn't, set success to null for component validation
       if (this.tube_barcode.trim() === '') {
-        this.errors.tube_barcode = 'Tube barcode is required'
-        return false
+        delete this.errors['tube_barcode']
+        return true
       }
 
       const store = useOntRunsStore()
