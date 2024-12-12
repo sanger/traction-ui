@@ -63,7 +63,7 @@ describe('SamplesExtraction', () => {
       }
       request.mockResolvedValue(failedResponse)
 
-      expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
+      await expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })
