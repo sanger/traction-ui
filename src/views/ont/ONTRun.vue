@@ -75,10 +75,14 @@ export default {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     runValid() {
-      const flowcells = (this.currentRun.flowcell_attributes || []).filter(
-        (fc) => fc.flowcell_id && fc.tube_barcode,
-      )
-      return this.currentRun.instrument_name && this.currentRun.state && flowcells.length != 0
+      const flowCellsValid = this.currentRun.flowcell_attributes?.every((fc) => {
+        // If it has a tube barcode or flowcell id, it must have both and no errors
+        return (
+          (!!fc.tube_barcode && !!fc.flowcell_id && Object.values(fc.errors).length == 0) ||
+          (!fc.tube_barcode && !fc.flowcell_id)
+        )
+      })
+      return this.currentRun.instrument_name && this.currentRun.state && flowCellsValid
     },
   },
   methods: {
