@@ -128,7 +128,6 @@ export const useOntRunsStore = defineStore('ontRuns', {
       let { success, body: { data } = {} } = response
 
       if (success && !data.empty) {
-        console.log(data)
         this.pools = {
           ...this.pools,
           ...formatById(this.pools, data),

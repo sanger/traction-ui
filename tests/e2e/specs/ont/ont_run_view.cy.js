@@ -26,7 +26,6 @@ describe('ONT Run page', () => {
         statusCode: 200,
         body: { data: [singleOntPoolFactory.content.data] },
       })
-      console.log(singleOntPoolFactory.content)
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
