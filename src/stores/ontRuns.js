@@ -23,7 +23,7 @@ const formatById = (obj, data, includeRelationships = false) => {
  * The payload returned doesn't have the id field as it is not required for create request
  * and for update request the id field is added in the updateRun action
  */
-function createPayload(run, pools, tubes) {
+function createPayload(run, pools) {
   const ontRootStore = useOntRootStore()
   const existingInstruments = ontRootStore.instruments
   const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
@@ -31,7 +31,7 @@ function createPayload(run, pools, tubes) {
   const flowcell_attributes = run.flowcell_attributes
     .filter((fc) => fc.flowcell_id && fc.tube_barcode)
     .map((fc) => {
-      const pool = Object.values(pools).find((p) => tubes[p.tube].barcode == fc.tube_barcode)
+      const pool = Object.values(pools).find((p) => p.tube_barcode == fc.tube_barcode)
       const pool_id = pool ? pool.id : ''
 
       return { ...fc, ...{ ont_pool_id: pool_id } }
@@ -80,7 +80,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
     },
     async createRun() {
       const promise = this.runRequest.create({
-        data: createPayload(this.currentRun, this.pools, this.tubes),
+        data: createPayload(this.currentRun, this.pools),
       })
       return await handleResponse(promise)
     },
@@ -89,7 +89,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const payload = {
         data: {
           id: this.currentRun.id,
-          ...createPayload(this.currentRun, this.pools, this.tubes).data,
+          ...createPayload(this.currentRun, this.pools).data,
         },
       }
       const promise = this.runRequest.update(payload)
@@ -97,7 +97,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
     },
     async fetchRun(runId) {
       const request = this.runRequest
-      const promise = request.find({ id: runId, include: 'flowcells.pool.tube' })
+      const promise = request.find({ id: runId, include: 'flowcells.pool' })
       const response = await handleResponse(promise)
 
       const { success, body: { data, included = [] } = {}, errors = {} } = response
@@ -106,17 +106,10 @@ export const useOntRunsStore = defineStore('ontRuns', {
         const ontRootStore = useOntRootStore()
         const existingInstruments = ontRootStore.instruments
 
-        const { pools, tubes } = groupIncludedByResource(included)
+        const { pools } = groupIncludedByResource(included)
         this.pools = formatById(this.pools, pools, true)
-        this.tubes = formatById(this.tubes, tubes, true)
 
-        this.currentRun = buildFormatedOntRun(
-          existingInstruments,
-          this.pools,
-          this.tubes,
-          data,
-          included,
-        )
+        this.currentRun = buildFormatedOntRun(existingInstruments, this.pools, data, included)
         return { success, errors }
       }
     },
@@ -130,24 +123,20 @@ export const useOntRunsStore = defineStore('ontRuns', {
       }
       const rootStore = useRootStore()
       const request = rootStore.api.v2.traction.ont.pools
-      const promise = request.get({ filter: { barcode }, include: 'tube' })
+      const promise = request.get({ filter: { barcode } })
       const response = await handleResponse(promise)
-      let { success, body: { data, included = [] } = {} } = response
+      let { success, body: { data } = {} } = response
 
       if (success && !data.empty) {
-        const { tubes } = groupIncludedByResource(included)
+        console.log(data)
         this.pools = {
           ...this.pools,
-          ...formatById(this.pools, data, true),
-        }
-        this.tubes = {
-          ...this.tubes,
-          ...formatById(this.tubes, tubes, true),
+          ...formatById(this.pools, data),
         }
         return { success }
       }
 
-      return { success: false, errors: '' }
+      return { success: false }
     },
     setInstrumentName(name) {
       this.currentRun.instrument_name = name

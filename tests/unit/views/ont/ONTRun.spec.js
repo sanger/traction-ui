@@ -201,14 +201,12 @@ describe('ONTRun.vue', () => {
   describe('#provider', () => {
     describe('when it is a new run', () => {
       beforeEach(() => {
-        ontRun.fetchOntPools = vi.fn()
         ontRun.newRun = vi.fn()
         ontRun.setInstruments = vi.fn()
       })
 
       it('calls fetchOntPools successfully', async () => {
         await ontRun.provider()
-        expect(ontRun.fetchOntPools).toBeCalled()
         expect(ontRun.newRun).toBeCalled()
         expect(ontRun.setInstruments).toBeCalled()
       })
@@ -220,14 +218,12 @@ describe('ONTRun.vue', () => {
         wrapper = wrapperObj
         ontRun = wrapper.vm
 
-        ontRun.fetchOntPools = vi.fn()
         ontRun.setInstruments = vi.fn(() => Promise.resolve())
         ontRun.fetchRun = vi.fn()
       })
 
       it('calls fetchOntPools successfully', async () => {
         await ontRun.provider()
-        expect(ontRun.fetchOntPools).toBeCalled()
         expect(ontRun.fetchRun).toBeCalledWith(1)
         expect(ontRun.setInstruments).toBeCalled()
       })

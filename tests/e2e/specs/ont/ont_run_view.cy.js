@@ -24,14 +24,9 @@ describe('ONT Run page', () => {
     cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {
       cy.intercept('v1/ont/pools?filter[barcode]=TRAC-2-42', {
         statusCode: 200,
-        body: singleOntPoolFactory.content,
+        body: { data: [singleOntPoolFactory.content.data] },
       })
-    })
-    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
-      cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-        statusCode: 200,
-        body: ontPoolFactory.content,
-      })
+      console.log(singleOntPoolFactory.content)
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
@@ -92,7 +87,7 @@ describe('ONT Run page', () => {
     // Wait 500ms to allow debounce function to be called and validate input
     cy.wait(500)
 
-    cy.contains('Enter a valid Pool Library barcode')
+    cy.contains('Enter a valid Pool barcode')
   })
 
   it('Shows an error message if run create fails', () => {

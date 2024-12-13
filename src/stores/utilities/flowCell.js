@@ -23,7 +23,7 @@ function flowCellType() {
      * @description Validates the flowcell_id field
      * @returns {Boolean} - A boolean value indicating if the flowcell_id is valid
      */
-    validateFlowcellId() {
+    validateFlowCellId() {
       //If flowcell_id is not empty, check if it contains a valid string
       if (this.flowcell_id && !this.flowcell_id.match(/^[a-zA-Z]{3}[0-9]{3,}$/)) {
         this.errors['flowcell_id'] = 'Enter a valid Flowcell ID (3 letters then at least 3 numbers)'
@@ -39,7 +39,7 @@ function flowCellType() {
      * @description Validates the tube_barcode field
      * @returns {Boolean} - A boolean value indicating if the tube_barcode is valid
      */
-    async validateBarcode() {
+    validateBarcode() {
       // Here we want to make sure the barcode exists
       // If it doesn't, set success to null for component validation
       if (this.tube_barcode.trim() === '') {
@@ -49,13 +49,13 @@ function flowCellType() {
 
       const store = useOntRunsStore()
       const storeBarcode = Object.values(store.pools).find(
-        (p) => store.tubes[p.tube].barcode == this.tube_barcode,
+        (p) => p.tube_barcode == this.tube_barcode,
       )
 
       // We will be returned a successful empty list if no pools match the barcode
       // Therefore we want to return success false, if we don't have any pools
       if (!storeBarcode) {
-        this.errors.tube_barcode = 'Pool not found with this barcode'
+        this.errors.tube_barcode = 'Enter a valid Pool barcode'
         return false
       }
 

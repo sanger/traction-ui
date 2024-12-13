@@ -70,7 +70,7 @@
  */
 import { mapState, mapActions as mapActionsPinia } from 'pinia'
 import { useOntRunsStore } from '@/stores/ontRuns'
-import { flowCellType } from '@/stores/utilities/flowCell'
+import { flowCellType } from '@/stores/utilities/flowCell.js'
 export default {
   name: 'ONTFlowcell',
   props: {
@@ -102,7 +102,7 @@ export default {
       },
       async set(value) {
         this.flowCell.flowcell_id = value
-        this.flowCell.validateFlowcellId()
+        this.flowCell.validateFlowCellId()
       },
     },
     flowCell() {
