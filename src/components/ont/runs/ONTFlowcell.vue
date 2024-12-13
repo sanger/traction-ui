@@ -15,7 +15,7 @@
             <traction-field-error
               id="input-flowcell-id-feedback"
               :error="flowcellErrorsFor('flowcell_id')"
-              :with-icon="!!flowCell.errors?.flowcell_id"
+              :with-icon="!!flowCell.flowcell_id"
             >
               <traction-input
                 :id="'flowcell-id-' + position"
@@ -34,7 +34,7 @@
             <traction-field-error
               id="input-pool-tube-barcode-feedback"
               :error="flowcellErrorsFor('tube_barcode')"
-              :with-icon="!!flowCell.errors?.tube_barcode"
+              :with-icon="!!flowCell.tube_barcode"
             >
               <traction-input
                 :id="'pool-id-' + position"
