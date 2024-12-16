@@ -99,7 +99,7 @@
 import { ref, reactive, computed } from 'vue'
 import {
   scanBarcodesInLabwhereLocation,
-  exhaustSamplesIfDestroyed,
+  exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
 
@@ -174,12 +174,13 @@ const scanBarcodesToLabwhere = async () => {
     )
     if (response.success) {
       let message = response.message
-      const {success,exhaustedLibraries} = await exhaustSamplesIfDestroyed(
+      const {success,exhaustedLibraries} = await exhaustLibraryVolumeIfDestroyed(
         location_barcode.value,
         uniqueBarcodesArray.value,
       )
       if (success && exhaustedLibraries.length > 0) {
-        message += ` and sample volumes have been exhausted for ${exhaustedLibraries.length} libraries }`
+        const length = exhaustedLibraries.length
+        message += ` and sample volumes have been exhausted for ${length} ${length === 1 ? 'library' : 'libraries'}`
       }
       showAlert(message, 'success')
     } else {
