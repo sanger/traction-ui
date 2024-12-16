@@ -1,5 +1,5 @@
 import config from '@/api/Config.js'
-import buildV2 from '@/api/ApiBuilder.js'
+import build from '@/api/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
@@ -13,7 +13,7 @@ const useRootStore = defineStore('root', {
   state: () => ({
     //Build an API instance using the config
     // api: mergeApis(build({ config })),
-    api: buildV2({ config }),
+    api: build({ config }),
 
     //Get plateMap state from the PlateMap.json file
     plateMap: PlateMap,

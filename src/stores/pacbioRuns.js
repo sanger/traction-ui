@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper'
-import { dataToObjectById, extractAttributes } from '@/api/JsonApi'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import store from '@/store'
 
 export const usePacbioRunsStore = defineStore('pacbioRuns', {
