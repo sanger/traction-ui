@@ -1,7 +1,13 @@
 import { extractLocationsForLabwares } from './helpers.js'
 import { FetchWrapper } from '@/api/FetchWrapper.js'
+import {
+  fetchLibraries,
+  exhaustLibrayVolume,
+  formatAndTransformLibraries,
+} from '@/stores/utilities/pacbioLibraries.js'
 
 const labwhereFetch = FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
+const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
  *
@@ -46,7 +52,7 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
  *
  * @param {string} userCode - The user code or swipecard.
  * @param {string} locationBarcode - The barcode of the location where labware will be stored.
- * @param {string} labwareBarcodes - The barcodes of the labware to be stored, separated by newlines.
+ * @param {string} labwareBarcodes - The barcodes of the labware (library barcode or the plate / tube barcode for samples) to be stored, separated by newlines.
  * @param {number|null} [startPosition=null] - The starting position for storing the labware (optional).
  * @returns {Promise<{success: boolean, errors: string[]}>} - A promise that resolves to an object containing the success status, any errors, and the data.
  *
@@ -90,4 +96,39 @@ const scanBarcodesInLabwhereLocation = async (
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
 
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation }
+const exhaustSamplesIfDestroyed = async (locationBarcode, labwareBarcodes) => {
+  if (locationBarcode !== destroyLocation) return { success: false }
+  let librariesToDestroy = []
+
+  const fetchAndMergeLibraries = async (barcodes, filterKey) => {
+    const filterOptions = { filter: { [filterKey]: barcodes.join(',') } }
+    const { success, libraries, tubes, tags, requests } = await fetchLibraries(filterOptions)
+    if (success) {
+      librariesToDestroy = [
+        ...librariesToDestroy,
+        ...formatAndTransformLibraries(libraries, tubes, tags, requests),
+      ]
+    }
+  }
+  await fetchAndMergeLibraries(labwareBarcodes, 'source_identifier')
+  const barcodesNotFetchedAsSourceIdentifer = labwareBarcodes.filter(
+    (barcode) => !librariesToDestroy.some((library) => library.source_identifier === barcode),
+  )
+  // If not all libraries are found by source_identifier, try fetching by barcode
+  if (barcodesNotFetchedAsSourceIdentifer.length > 0) {
+    //Fetch libraries which are not found by barcode
+    await fetchAndMergeLibraries(barcodesNotFetchedAsSourceIdentifer, 'barcode')
+  }
+  if(!librariesToDestroy.length) return { success: false }
+  const exhaustedLibraries = []
+  await Promise.all(
+    librariesToDestroy.map(async (library) => {
+      const { success } = await exhaustLibrayVolume(library)
+      if (success) {
+        exhaustedLibraries.push(library)
+      }
+    }),
+  )
+  return { success: exhaustedLibraries.length>0, exhaustedLibraries }
+}
+export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustSamplesIfDestroyed }
