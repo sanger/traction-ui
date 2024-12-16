@@ -1,8 +1,8 @@
 import { mount, store } from '@support/testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
-import * as Run from '@/api/v2/SaphyrRun.js'
+import * as Run from '@/api/SaphyrRun.js'
 import { TubeWithLibrary } from '@tests/unit/store/traction/saphyr/runs/actions.spec.js'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 
 describe('Flowcell', () => {

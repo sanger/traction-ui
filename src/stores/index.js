@@ -1,8 +1,8 @@
 import config from '@/api/Config.js'
-import buildV2 from '@/api/v2/ApiBuilder.js'
+import build from '@/api/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import store from '@/store'
 
@@ -13,9 +13,7 @@ const useRootStore = defineStore('root', {
   state: () => ({
     //Build an API instance using the config
     // api: mergeApis(build({ config })),
-    api: {
-      v2: buildV2({ config }),
-    },
+    api: build({ config }),
 
     //Get plateMap state from the PlateMap.json file
     plateMap: PlateMap,
@@ -41,7 +39,7 @@ const useRootStore = defineStore('root', {
       if (!['ont', 'pacbio'].includes(pipeline)) {
         return { success: false, errors: [`Tag sets cannot be retrieved for pipeline ${pipeline}`] }
       }
-      const request = this.api.v2.traction[pipeline].tag_sets
+      const request = this.api.traction[pipeline].tag_sets
       const promise = request.get()
       const {
         success,

@@ -46,7 +46,7 @@ describe('PacbioLibraryCreate.vue', () => {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        store.api.v2.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
+        store.api.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
       }
     },
   ]

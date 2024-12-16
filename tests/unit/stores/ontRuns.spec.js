@@ -52,7 +52,7 @@ describe('useOntRunsStore', () => {
       const rootStore = useRootStore()
       const get = vi.fn()
       get.mockResolvedValue(ontRunFactory.responses.fetch)
-      rootStore.api.v2 = {
+      rootStore.api = {
         traction: { ont: { runs: 'aRunRequest' } },
       }
       const actual = store.runRequest
@@ -259,7 +259,7 @@ describe('useOntRunsStore', () => {
               data: [{ id: 7, type: 'pools', attributes: { tube: 2, tube_barcode: 'TRAC-2-34' } }],
             }),
         })
-        rootStore.api.v2.traction.ont.pools = { get }
+        rootStore.api.traction.ont.pools = { get }
 
         const response = await store.fetchPool('TRAC-2-34')
         expect(store.pools).toEqual({
@@ -271,7 +271,7 @@ describe('useOntRunsStore', () => {
       it('returns success false and returns an error if the pool is not found', async () => {
         const rootStore = useRootStore()
         const get = vi.fn().mockReturnValue(failedResponse)
-        rootStore.api.v2.traction.ont.pools = { get }
+        rootStore.api.traction.ont.pools = { get }
 
         const response = await store.fetchPool('TRAC-2-34')
         expect(response.success).toBeFalsy()

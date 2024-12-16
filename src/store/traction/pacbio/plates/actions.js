@@ -1,4 +1,4 @@
-import handleResponse from '@/api/v2/ResponseHelper'
+import handleResponse from '@/api/ResponseHelper'
 import { extractPlatefromData } from '@/stores/utilities/plate.js'
 
 const setPlates = async ({ commit, getters }, options) => {

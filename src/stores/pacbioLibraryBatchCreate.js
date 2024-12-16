@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { eachRecord } from '@/lib/csv/pacbio.js'
 import useRootStore from '@/stores/index.js'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource } from '@/api/JsonApi.js'
 import {
   validateAndFormatAsPayloadData,
@@ -126,7 +126,7 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         // Create the library batch request
         const librariesAttributes = eachReordRetObj.map((r) => r.result)
         const rootStore = useRootStore()
-        const libraryBatches = rootStore.api.v2.traction.pacbio.library_batches
+        const libraryBatches = rootStore.api.traction.pacbio.library_batches
         const promise = libraryBatches.create({
           data: {
             data: {

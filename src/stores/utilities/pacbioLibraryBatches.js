@@ -1,5 +1,5 @@
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 /**
@@ -72,7 +72,7 @@ async function fetchTagsAndRequests(sources, tagSet) {
     tags = []
 
   const rootStore = useRootStore()
-  let promise = rootStore.api.v2.traction.pacbio.requests.get({
+  let promise = rootStore.api.traction.pacbio.requests.get({
     filter: { source_identifier: sources.join(',') },
   })
   let response = await handleResponse(promise)
@@ -82,7 +82,7 @@ async function fetchTagsAndRequests(sources, tagSet) {
     requests = Object.values(dataToObjectById({ data, includeRelationships: true }))
   }
 
-  promise = rootStore.api.v2.traction.pacbio.tag_sets.get({
+  promise = rootStore.api.traction.pacbio.tag_sets.get({
     include: 'tags',
     filter: { name: tagSet },
   })

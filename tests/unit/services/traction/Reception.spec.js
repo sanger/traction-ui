@@ -61,7 +61,7 @@ describe('Traction', () => {
     it('does not import labware if none are present', async () => {
       const attributes = { source, request_attributes: [] }
       const foundBarcodes = new Set([])
-      expect(
+      await expect(
         createReceptionResource(createReceptionRequest, foundBarcodes, attributes),
       ).rejects.toThrow('No labware to import')
 
@@ -92,7 +92,7 @@ describe('Traction', () => {
       const attributes = { source, request_attributes: requestAttributes }
       const foundBarcodes = new Set(['NT1'])
 
-      expect(
+      await expect(
         createReceptionResource(createReceptionRequest, foundBarcodes, attributes),
       ).rejects.toThrow('error1 There was an error.')
     })

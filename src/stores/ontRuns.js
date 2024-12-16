@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
@@ -63,7 +63,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
   getters: {
     runRequest: () => {
       const rootStore = useRootStore()
-      return rootStore.api.v2.traction.ont.runs
+      return rootStore.api.traction.ont.runs
     },
     getFlowCell: (state) => (position) => {
       return state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
@@ -129,7 +129,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.ont.pools
+      const request = rootStore.api.traction.ont.pools
       const promise = request.get({ filter: { barcode } })
       const response = await handleResponse(promise)
       let { success, body: { data } = {} } = response

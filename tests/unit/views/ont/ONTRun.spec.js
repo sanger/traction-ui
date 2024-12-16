@@ -18,7 +18,7 @@ const ontRunFactoryForSingleRun = OntRunFactory({ count: 1 })
  * props - props to pass to the component
  */
 function mountWithStore(props) {
-  vi.spyOn(store.state.api.v2.traction.ont.pools, 'get').mockResolvedValue(
+  vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(
     ontPoolFactory.responses.fetch,
   )
   const wrapperObj = mount(ONTRun, {
@@ -29,7 +29,7 @@ function mountWithStore(props) {
           plugins: [
             ({ store }) => {
               if (store.$id === 'root') {
-                store.api.v2.traction.ont.instruments.get = vi
+                store.api.traction.ont.instruments.get = vi
                   .fn()
                   .mockReturnValue(ontRunFactory.responses.fetch)
               }

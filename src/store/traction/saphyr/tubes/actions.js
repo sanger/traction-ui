@@ -1,4 +1,4 @@
-import handleResponse from '@/api/v2/ResponseHelper.js'
+import handleResponse from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {

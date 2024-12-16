@@ -44,7 +44,7 @@ describe('ONTRuns.vue', () => {
       ({ store }) => {
         if (store.$id === 'root') {
           // this was api. but didn't fail so is it needed?
-          store.api.v2.traction.ont.runs.get = vi.fn(() => ontRunFactory.responses.fetch)
+          store.api.traction.ont.runs.get = vi.fn(() => ontRunFactory.responses.fetch)
         }
       },
     ]
