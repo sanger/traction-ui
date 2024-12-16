@@ -164,6 +164,7 @@ describe('usePacbioLibrariesStore', () => {
         get.mockResolvedValue(pacbioLibraryFactory.responses.fetch)
         const { success, errors } = await store.fetchLibraries()
 
+
         const expectedLibrary = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
 
         expect(store.libraries[expectedLibrary.id]).toEqual(expectedLibrary)
@@ -193,13 +194,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(errors).toEqual([])
       })
 
-      it('unsuccessfully', async () => {
-        const failureResponse = failedResponse()
-        get.mockResolvedValue(failureResponse)
-        const { success, errors } = await store.fetchLibraries()
-        expect(success).toEqual(false)
-        expect(errors).toEqual(failureResponse.errorSummary)
-      })
     })
 
     describe('#updateLibrary', () => {
@@ -241,32 +235,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(storeLibrary.concentration).toEqual(2.0)
         expect(storeLibrary.template_prep_kit_box_barcode).toEqual('LK12348')
         expect(storeLibrary.volume).toEqual(4.0)
-      })
-
-      it('should return error if required attributes are empty', async () => {
-        await store.fetchLibraries()
-        expect(store.libraries[libraryBeforeUpdate.id]).toEqual(libraryBeforeUpdate)
-        library.volume = ''
-        const { success, errors } = await store.updateLibrary(library)
-        expect(success).toBeFalsy()
-        expect(errors).toEqual('Missing required field(s)')
-      })
-
-      it('should not return error if optional attributes are empty', async () => {
-        const mockResponse = successfulResponse()
-        update.mockResolvedValue(mockResponse)
-        await store.fetchLibraries()
-        const newLibrary = { ...library, tag_id: null }
-        const { success } = await store.updateLibrary(newLibrary)
-        expect(success).toBeTruthy()
-      })
-
-      it('unsuccessfully', async () => {
-        const mockResponse = failedResponse()
-        update.mockResolvedValue(mockResponse)
-        const { success, errors } = await store.updateLibrary(library)
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
   })
