@@ -19,7 +19,6 @@ const createStoreData = ({ data, included }) => {
   }
 }
 
-
 /*
  * Factory for creating a pacbio library
  * @returns a base factory object with the libraries data

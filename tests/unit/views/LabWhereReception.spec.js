@@ -14,13 +14,13 @@ vi.mock('@/composables/useAlert', () => ({
 }))
 
 describe('LabWhereReception', () => {
-  let mockExhaustSamples;
+  let mockExhaustSamples
   const buildWrapper = () => {
     return mount(LabwhereReception)
   }
 
   beforeEach(() => {
-    mockExhaustSamples =  vi.spyOn(labwhereClient, 'exhaustLibraryVolumeIfDestroyed')
+    mockExhaustSamples = vi.spyOn(labwhereClient, 'exhaustLibraryVolumeIfDestroyed')
     mockExhaustSamples.mockResolvedValue({ success: false })
   })
 
@@ -97,7 +97,6 @@ describe('LabWhereReception', () => {
       success: true,
       message: 'barcode1, barcode2 successfully stored in location123',
     })
-    
 
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(
@@ -122,7 +121,10 @@ describe('LabWhereReception', () => {
       success: true,
       message: 'barcode1, barcode2 successfully stored in location123',
     })
-    mockExhaustSamples.mockResolvedValue({ success: true, exhaustedLibraries: [{barcode:'barcode1'}] })
+    mockExhaustSamples.mockResolvedValue({
+      success: true,
+      exhaustedLibraries: [{ barcode: 'barcode1' }],
+    })
 
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(

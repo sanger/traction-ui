@@ -8,7 +8,7 @@ import {
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, describe, expect } from 'vitest'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
-import { libraryPayload , formatAndTransformLibraries} from '@/stores/utilities/pacbioLibraries.js'
+import { libraryPayload, formatAndTransformLibraries } from '@/stores/utilities/pacbioLibraries.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 const pacbioLibraryWithoutRelationships = PacbioLibraryFactory({ relationships: false })
@@ -77,7 +77,9 @@ describe('usePacbioLibrariesStore', () => {
       store.$state = { ...pacbioLibraryFactory.storeData }
       const { libraries, tubes, tags, requests } = pacbioLibraryFactory.storeData
 
-      expect(store.librariesArray).toEqual(formatAndTransformLibraries(libraries, tubes, tags, requests))
+      expect(store.librariesArray).toEqual(
+        formatAndTransformLibraries(libraries, tubes, tags, requests),
+      )
     })
   })
   describe('actions', () => {
@@ -165,7 +167,6 @@ describe('usePacbioLibrariesStore', () => {
         get.mockResolvedValue(pacbioLibraryFactory.responses.fetch)
         const { success, errors } = await store.fetchLibraries()
 
-
         const expectedLibrary = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
 
         expect(store.libraries[expectedLibrary.id]).toEqual(expectedLibrary)
@@ -194,7 +195,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
-
     })
 
     describe('#updateLibrary', () => {

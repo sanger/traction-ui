@@ -174,7 +174,8 @@ const scanBarcodesToLabwhere = async () => {
     )
     if (response.success) {
       let message = response.message
-      const {success,exhaustedLibraries} = await exhaustLibraryVolumeIfDestroyed(
+      // Check if the library volume need to be exhausted
+      const { success, exhaustedLibraries } = await exhaustLibraryVolumeIfDestroyed(
         location_barcode.value,
         uniqueBarcodesArray.value,
       )

@@ -10,7 +10,6 @@ import { beforeEach, describe, it } from 'vitest'
 const mockFetch = vi.fn()
 const labwhereLocationsFactory = LabwhereLocationsFactory()
 
-
 beforeEach(() => {
   global.fetch = mockFetch
 })
@@ -188,7 +187,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
     })
     it('should return exhaused libraries', async () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
-      expect(result).toEqual({success: true, exhaustedLibraries:formattedLibraries})
+      expect(result).toEqual({ success: true, exhaustedLibraries: formattedLibraries })
     })
 
     it('should exhaust library volumes', async () => {
@@ -215,7 +214,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
     })
     it('should return an empty array', async () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
-      expect(result).toEqual({success: false})
+      expect(result).toEqual({ success: false })
     })
   })
   describe('when exhaustLibrayVolume fails', () => {
@@ -224,7 +223,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       mockFormatAndTransformLibraries.mockReturnValueOnce([formattedLibraries[0]])
       mockExhaustLibrayVolume.mockResolvedValue({ success: false })
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
-      expect(result).toEqual({success:false, exhaustedLibraries: []})
+      expect(result).toEqual({ success: false, exhaustedLibraries: [] })
     })
     it('should not return libraries for which the exhaustLibrayVolume fails ', async () => {
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[0])
@@ -234,7 +233,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       mockExhaustLibrayVolume.mockResolvedValueOnce({ success: true })
       mockExhaustLibrayVolume.mockResolvedValueOnce({ success: false })
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
-      expect(result).toEqual({success:true, exhaustedLibraries: [formattedLibraries[0]]})
+      expect(result).toEqual({ success: true, exhaustedLibraries: [formattedLibraries[0]] })
     })
   })
 })

@@ -7,7 +7,7 @@ import {
   libraryPayload,
   fetchLibraries,
   updateLibrary,
-  formatAndTransformLibraries
+  formatAndTransformLibraries,
 } from '@/stores/utilities/pacbioLibraries.js'
 
 /**
@@ -57,7 +57,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           associated with all libraries."*/
       const tags = { ...state.tags, ...pacbioRootStore.tags }
       return formatAndTransformLibraries(state.libraries, state.tubes, tags, state.requests)
-      
     },
   },
   actions: {
@@ -123,9 +122,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Promise<{success: boolean, errors: Array}>} - A promise that resolves to an object containing a success boolean and an array of errors.
      */
     async fetchLibraries(filterOptions) {
-      const { success, data, meta, errors, libraries, tubes, tags, requests } = await fetchLibraries({
-        ...filterOptions,
-      })
+      const { success, data, meta, errors, libraries, tubes, tags, requests } =
+        await fetchLibraries({
+          ...filterOptions,
+        })
       if (success && data.length > 0) {
         this.libraries = libraries
         this.tubes = tubes
@@ -136,11 +136,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     },
 
     /**
-     * Updates the library with matchingid with all given field values.
-     * @param {*} libraryFields - The fields to update the library with.
-     * * @returns {Promise<Object>} A promise that resolves to an object.
-     * The object has a 'success' property that is true if the library was updated successfully and false otherwise.
-     * If 'success' is false, the object also has an 'errors' property with a message describing the error.
+     * Updates a library with the given fields and updates the store if successful.
+     *
+     * @param {Object} libraryFields - The fields of the library to update.
+     * @returns {Promise<Object>} - An object containing the success status and any errors.
      */
     async updateLibrary(libraryFields) {
       const { success, errors } = await updateLibrary(libraryFields)

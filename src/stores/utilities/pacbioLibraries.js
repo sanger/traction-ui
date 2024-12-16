@@ -115,6 +115,15 @@ async function fetchLibraries(fetchOptions = {}) {
   return { success, data, errors, meta, libraries, tubes, tags, requests }
 }
 
+/**
+ * Formats and transforms libraries.
+ *
+ * @param {Object} libraries - The libraries to format and transform.
+ * @param {Object} tubes - The tubes associated with the libraries.
+ * @param {Object} tags - The tags associated with the libraries.
+ * @param {Object} requests - The requests associated with the libraries.
+ * @returns {Array<Object>} - The formatted and transformed libraries.
+ */
 const formatAndTransformLibraries = (libraries, tubes, tags, requests) =>
   Object.values(libraries)
     .filter((library) => library.tube)
@@ -133,12 +142,24 @@ const formatAndTransformLibraries = (libraries, tubes, tags, requests) =>
       }
     })
 
+/**
+ * Exhausts the volume of a library.
+ *
+ * @param {Object} library - The library to exhaust the volume of.
+ * @returns {Promise<Object>} - An object containing the success status and any errors.
+ */
 async function exhaustLibrayVolume(library) {
   library.volume = library.used_volume
   const { success, errors } = await updateLibrary(library)
   return { success, errors }
 }
 
+/**
+ * Updates a library with the given fields and updates the store if successful.
+ *
+ * @param {Object} libraryFields - The fields of the library to update.
+ * @returns {Promise<Object>} - An object containing the success status and any errors.
+ */
 async function updateLibrary(libraryFields) {
   //Validate the libraryFields to ensure that all required fields are present
   const valid = validateLibraryFields(libraryFields)

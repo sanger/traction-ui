@@ -95,11 +95,18 @@ const scanBarcodesInLabwhereLocation = async (
   )
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
-
+/**
+ * Exhausts the volume of libraries if the location barcode matches the destroy location.
+ *
+ * @param {string} locationBarcode - The barcode of the location.
+ * @param {Array<string>} labwareBarcodes - The barcodes of the labware.
+ * @returns {Promise<Object>} - An object containing the success status and the exhausted libraries.
+ */
 const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes) => {
   if (locationBarcode !== destroyLocation) return { success: false }
   let librariesToDestroy = []
 
+  //Fetch libraries by filter key
   const fetchAndMergeLibraries = async (barcodes, filterKey) => {
     const filterOptions = { filter: { [filterKey]: barcodes.join(',') } }
     const { success, libraries, tubes, tags, requests } = await fetchLibraries(filterOptions)
@@ -110,6 +117,8 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
       ]
     }
   }
+
+  //Fetch libraries by source_identifier
   await fetchAndMergeLibraries(labwareBarcodes, 'source_identifier')
   const barcodesNotFetchedAsSourceIdentifer = labwareBarcodes.filter(
     (barcode) => !librariesToDestroy.some((library) => library.source_identifier === barcode),
@@ -119,8 +128,11 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
     //Fetch libraries which are not found by barcode
     await fetchAndMergeLibraries(barcodesNotFetchedAsSourceIdentifer, 'barcode')
   }
-  if(!librariesToDestroy.length) return { success: false }
+  // If no libraries are found, return a failed response
+  if (!librariesToDestroy.length) return { success: false }
   const exhaustedLibraries = []
+
+  // Exhaust the volume of libraries
   await Promise.all(
     librariesToDestroy.map(async (library) => {
       const { success } = await exhaustLibrayVolume(library)
@@ -129,6 +141,6 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
       }
     }),
   )
-  return { success: exhaustedLibraries.length>0, exhaustedLibraries }
+  return { success: exhaustedLibraries.length > 0, exhaustedLibraries }
 }
 export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed }
