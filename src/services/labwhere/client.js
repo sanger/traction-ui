@@ -96,7 +96,7 @@ const scanBarcodesInLabwhereLocation = async (
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
 
-const exhaustSamplesIfDestroyed = async (locationBarcode, labwareBarcodes) => {
+const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes) => {
   if (locationBarcode !== destroyLocation) return { success: false }
   let librariesToDestroy = []
 
@@ -131,4 +131,4 @@ const exhaustSamplesIfDestroyed = async (locationBarcode, labwareBarcodes) => {
   )
   return { success: exhaustedLibraries.length>0, exhaustedLibraries }
 }
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustSamplesIfDestroyed }
+export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed }
