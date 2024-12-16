@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import useRootStore from '@/stores'
+import useRootStore from '@/stores/index.js'
 import { handleResponse } from '@/api/v2/ResponseHelper.js'
 import { groupIncludedByResource } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
@@ -8,7 +8,7 @@ import {
   fetchLibraries,
   updateLibrary,
   formatAndTransformLibraries
-} from '@/stores//utilities/pacbioLibraries.js'
+} from '@/stores/utilities/pacbioLibraries.js'
 
 /**
  * Importing `defineStore` function from 'pinia' library.
