@@ -372,7 +372,7 @@ describe('usePacbioRunCreateStore', () => {
             smrtLinkVersion: defaultSmrtLinkVersion,
             instrumentType: PacbioInstrumentTypes.Revio,
           }
-          const { success,errors } = await store.saveRun()
+          const { success, errors } = await store.saveRun()
           expect(success).toBeFalsy()
           expect(errors).toEqual(failureResponse.errorSummary)
         })
@@ -424,7 +424,7 @@ describe('usePacbioRunCreateStore', () => {
             instrumentType: PacbioInstrumentTypes.Revio,
           }
 
-          const { success,errors } = await store.saveRun()
+          const { success, errors } = await store.saveRun()
           expect(success).toBeFalsy()
           expect(errors).toEqual(failureResponse.errorSummary)
         })
