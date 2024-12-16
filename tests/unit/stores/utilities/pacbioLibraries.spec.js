@@ -31,7 +31,7 @@ describe('pacbioLibraries', () => {
     beforeEach(() => {
       rootStore = useRootStore()
       get = vi.fn()
-      rootStore.api.v2.traction.pacbio.libraries.get = get
+      rootStore.api.traction.pacbio.libraries.get = get
     })
 
     it('calls the api to fetch libraries with default includea', async () => {
@@ -122,7 +122,7 @@ describe('pacbioLibraries', () => {
     beforeEach(() => {
       rootStore = useRootStore()
       update = vi.fn()
-      rootStore.api.v2.traction.pacbio.libraries.update = update
+      rootStore.api.traction.pacbio.libraries.update = update
     })
     it('doesnt call update if required library fields are empty', async () => {
       const libraryFields = {
@@ -202,7 +202,7 @@ describe('pacbioLibraries', () => {
     beforeEach(() => {
       rootStore = useRootStore()
       update = vi.fn()
-      rootStore.api.v2.traction.pacbio.libraries.update = update
+      rootStore.api.traction.pacbio.libraries.update = update
     })
     it('exhausts library volume', async () => {
       const library = {

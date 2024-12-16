@@ -1,5 +1,5 @@
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
 /**
@@ -92,7 +92,7 @@ async function fetchLibraries(fetchOptions = {}) {
     include: Array.from(includes).join(','),
   }
   const rootStore = useRootStore()
-  const pacbioLibraries = rootStore.api.v2.traction.pacbio.libraries
+  const pacbioLibraries = rootStore.api.traction.pacbio.libraries
   const promise = pacbioLibraries.get(fetchOptionsDefaultInclude)
   const response = await handleResponse(promise)
 
@@ -167,7 +167,7 @@ async function updateLibrary(libraryFields) {
     return valid
   }
   const rootStore = useRootStore()
-  const request = rootStore.api.v2.traction.pacbio.libraries
+  const request = rootStore.api.traction.pacbio.libraries
   const payload = libraryPayload(libraryFields)
   const promise = request.update(payload)
   const { success, errors } = await handleResponse(promise)
