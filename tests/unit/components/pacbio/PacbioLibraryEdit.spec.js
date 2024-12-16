@@ -60,9 +60,7 @@ describe('PacbioLibraryEdit.vue', () => {
       ({ store }) => {
         if (store.$id === 'root') {
           // this was api. but didn't fail so is it needed?
-          store.api.v2.traction.pacbio.tag_sets.get = vi.fn(
-            () => pacbioTagSetFactory.responses.fetch,
-          )
+          store.api.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
         }
       },
     ]

@@ -1,6 +1,6 @@
 import { mount, store } from '@support/testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
-import * as Run from '@/api/v2/SaphyrRun.js'
+import * as Run from '@/api/SaphyrRun.js'
 
 describe('Chip', () => {
   let wrapper, chip, run, props

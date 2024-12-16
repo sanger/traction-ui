@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { libraryPayload } from '@/stores//utilities/pacbioLibraries.js'
@@ -112,7 +112,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       sample: { id: pacbio_request_id },
     }) {
       const rootState = useRootStore()
-      const request = rootState.api.v2.traction.pacbio.libraries
+      const request = rootState.api.traction.pacbio.libraries
       const payload = libraryPayload({
         pacbio_request_id,
         template_prep_kit_box_barcode,
@@ -144,7 +144,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async deleteLibraries(libraryIds) {
       const rootStore = useRootStore()
-      const promises = rootStore.api.v2.traction.pacbio.libraries.destroy(libraryIds)
+      const promises = rootStore.api.traction.pacbio.libraries.destroy(libraryIds)
       const responses = await Promise.all(promises.map((promise) => handleResponse(promise)))
       return responses
     },
@@ -157,7 +157,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async fetchLibraries(filter = {}, page = {}) {
       const rootStore = useRootStore()
-      const pacbioLibraries = rootStore.api.v2.traction.pacbio.libraries
+      const pacbioLibraries = rootStore.api.traction.pacbio.libraries
       const promise = pacbioLibraries.get({
         page,
         filter,
@@ -192,7 +192,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       }
 
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.libraries
+      const request = rootStore.api.traction.pacbio.libraries
       const payload = libraryPayload(libraryFields)
       const promise = request.update(payload)
       const { success, errors } = await handleResponse(promise)

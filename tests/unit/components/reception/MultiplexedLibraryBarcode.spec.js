@@ -44,7 +44,7 @@ describe('MultiplexedLibraryBarcode', () => {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        store.api.v2.traction.ont.tag_sets.get = vi.fn(() => ontTagSetFactory.responses.fetch)
+        store.api.traction.ont.tag_sets.get = vi.fn(() => ontTagSetFactory.responses.fetch)
       }
     },
   ]

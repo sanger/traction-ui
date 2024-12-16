@@ -5,7 +5,7 @@ import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFa
 describe('Sequencescape', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
     let request
 
     beforeEach(() => {

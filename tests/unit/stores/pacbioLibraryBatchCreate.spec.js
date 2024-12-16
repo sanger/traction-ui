@@ -62,7 +62,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
 
       beforeEach(() => {
         create = vi.fn()
-        rootStore.api.v2 = {
+        rootStore.api = {
           traction: {
             pacbio: {
               library_batches: { create },
@@ -97,7 +97,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
       })
 
       it('returns error if no requests are found', async () => {
-        rootStore.api.v2.traction.pacbio.requests.get.mockResolvedValue({ data: [] })
+        rootStore.api.traction.pacbio.requests.get.mockResolvedValue({ data: [] })
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,
         )

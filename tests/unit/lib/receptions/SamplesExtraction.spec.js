@@ -6,7 +6,7 @@ describe('SamplesExtraction', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['SE108532I']
     let request
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
 
     beforeEach(() => {
       request = vi.spyOn(requests.sampleExtraction.assets, 'get')

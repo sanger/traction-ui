@@ -43,7 +43,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { requests: { get } } } } } }
+      const rootState = { api: { traction: { ont: { requests: { get } } } } }
       get.mockResolvedValue(ontRequestFactory.responses.fetch)
       // apply action
       const { success } = await actions.fetchOntRequests({ commit, rootState })
@@ -57,7 +57,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { requests: { get } } } } } }
+      const rootState = { api: { traction: { ont: { requests: { get } } } } }
       get.mockResolvedValue(failedResponse)
 
       // apply action
@@ -74,7 +74,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { get } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { get } } } } }
       get.mockResolvedValue(ontPoolFactory.responses.fetch)
       // apply action
       const { success } = await actions.fetchOntPools({ commit, rootState })
@@ -93,7 +93,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { get } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { get } } } } }
       get.mockResolvedValue(failedResponse)
       // apply action
       const { success } = await fetchOntPools({ commit, rootState })
@@ -109,7 +109,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
+      const rootState = { api: { traction: { ont: { tag_sets: { get } } } } }
       get.mockResolvedValue(ontTagSetFactory.responses.fetch)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
@@ -124,7 +124,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { tag_sets: { get } } } } } }
+      const rootState = { api: { traction: { ont: { tag_sets: { get } } } } }
       get.mockResolvedValue(failedResponse)
       // apply action
       const { success } = await fetchOntTagSets({ commit, rootState })
@@ -253,7 +253,7 @@ describe('actions.js', () => {
 
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { create } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { create } } } } }
       const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
@@ -273,7 +273,7 @@ describe('actions.js', () => {
 
       // mock dependencies
       const update = vi.fn(() => Promise.resolve(mockResponse))
-      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: library2 }
       const { success, errors } = await updatePool({
         rootState,
@@ -291,7 +291,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const create = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { create } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { create } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
         commit,
@@ -344,7 +344,7 @@ describe('actions.js', () => {
 
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { pooling: { libraries, pool } } })
@@ -357,7 +357,7 @@ describe('actions.js', () => {
       const mockResponse = failedResponse(422)
       // mock dependencies
       const update = vi.fn(() => Promise.resolve(mockResponse))
-      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: library2 }
       const { success, errors } = await updatePool({
         rootState,
@@ -375,7 +375,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const update = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { update } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
         commit,
@@ -748,7 +748,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { find } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { find } } } } }
       find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
       // apply action
       const { success } = await setPoolData({ commit, rootState }, 3)
@@ -784,7 +784,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const find = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { pools: { find } } } } } }
+      const rootState = { api: { traction: { ont: { pools: { find } } } } }
       find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
 
       const { success, errors } = await setPoolData({ commit, rootState }, 'new')
@@ -801,7 +801,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
 
       get.mockResolvedValue(ontPlateFactory.responses.fetch)
 
@@ -826,7 +826,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
 
       get.mockResolvedValue(successfulResponse({ statusCode: 200 }))
 
@@ -842,7 +842,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { plates: { get } } } } } }
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
 
       const { success, errors } = await findOntPlate({ commit, rootState }, { barcode: '' })
       expect(errors).toEqual(['Please provide a plate barcode'])
@@ -856,7 +856,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { tubes: { get } } } } } }
+      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
 
       get.mockResolvedValue(ontTubeFactory.responses.fetch)
 
@@ -880,7 +880,7 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { v2: { traction: { ont: { tubes: { get } } } } } }
+      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
 
       get.mockResolvedValue(successfulResponse({ statusCode: 200 }))
 

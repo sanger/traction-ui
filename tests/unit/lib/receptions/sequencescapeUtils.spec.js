@@ -89,7 +89,7 @@ describe('sequencescapeUtils', () => {
       },
     }
 
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
     let request
 
     beforeEach(() => {

@@ -2,7 +2,7 @@
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
 // new paths, greatly simplifying the removal.
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware

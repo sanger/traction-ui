@@ -42,7 +42,7 @@ describe('Libraries.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v2.traction.pacbio.libraries.get = vi
+          store.api.traction.pacbio.libraries.get = vi
             .fn()
             .mockResolvedValue(pacbioLibraryFactory.responses.fetch)
         }
@@ -121,7 +121,7 @@ describe('Libraries.vue', () => {
     beforeEach(() => {
       const rootStore = useRootStore()
       create = vi.fn()
-      rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
+      rootStore.api = { printMyBarcode: { print_jobs: { create } } }
 
       libraries.state.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
