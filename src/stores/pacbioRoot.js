@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 
@@ -78,7 +78,7 @@ export const usePacbioRootStore = defineStore('pacbioRoot', {
      */
     async fetchPacbioTagSets() {
       const rootStore = useRootStore()
-      const promise = rootStore.api.v2.traction.pacbio.tag_sets.get({ include: 'tags' })
+      const promise = rootStore.api.traction.pacbio.tag_sets.get({ include: 'tags' })
       const response = await handleResponse(promise)
       const { success, body: { data, included = [] } = {}, errors = [] } = response
       if (success && data.length > 0) {

@@ -6,7 +6,7 @@ describe('PacbioPlates.vue', () => {
   let wrapper, plates
   const pacbioPlateFactory = PacbioPlateFactory()
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.v2.traction.pacbio.plates, 'get')
+    const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
     get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
 
     wrapper = mount(PacbioPlates, {

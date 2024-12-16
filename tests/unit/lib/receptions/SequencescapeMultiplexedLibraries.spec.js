@@ -5,7 +5,7 @@ import SequencescapeMultiplexedLibraryFactory from '@tests/factories/Sequencesca
 describe('SequencescapeMultiplexedLibraries', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['3980000042705']
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
     let request
 
     beforeEach(() => {
@@ -131,7 +131,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
 
       request.mockResolvedValue(failedResponse)
 
-      expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
+      await expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })

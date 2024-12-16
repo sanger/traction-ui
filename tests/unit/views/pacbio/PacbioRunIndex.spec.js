@@ -58,8 +58,8 @@ function factory(options, dataProps) {
                 store.runRequest.get = spy
               }
               if (store.$id === 'root') {
-                store.api.v2.traction.pacbio.smrt_link_versions.get = spy2
-                store.api.v2.traction.pacbio.runs = vi
+                store.api.traction.pacbio.smrt_link_versions.get = spy2
+                store.api.traction.pacbio.runs = vi
                   .fn()
                   .mockReturnValue(pacbioRunFactory.responses.fetch)
               }

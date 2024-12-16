@@ -48,10 +48,8 @@ describe('PacbioLibraryBatchCreate.vue', () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.v2.traction.pacbio.tag_sets.get = vi.fn(
-            () => pacbioTagSetFactory.responses.fetch,
-          )
-          store.api.v2.traction.printers.get = vi.fn(() => printerFactory.responses.fetch)
+          store.api.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
+          store.api.traction.printers.get = vi.fn(() => printerFactory.responses.fetch)
         }
       },
     ]
@@ -281,7 +279,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
     beforeEach(async () => {
       const rootStore = useRootStore()
       create = vi.fn()
-      rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
+      rootStore.api = { printMyBarcode: { print_jobs: { create } } }
     })
     it('creates a print job and shows a success alert', async () => {
       create.mockResolvedValue(successfulResponse())

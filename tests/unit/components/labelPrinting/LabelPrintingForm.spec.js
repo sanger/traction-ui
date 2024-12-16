@@ -25,13 +25,9 @@ const workflowFactory = WorkflowFactory()
 const plugins = [
   ({ store }) => {
     if (store.$id === 'root') {
-      store.api.v2.traction.printers.get = vi
-        .fn()
-        .mockResolvedValue(printersFactory.responses.fetch)
+      store.api.traction.printers.get = vi.fn().mockResolvedValue(printersFactory.responses.fetch)
 
-      store.api.v2.traction.workflows.get = vi
-        .fn()
-        .mockResolvedValue(workflowFactory.responses.fetch)
+      store.api.traction.workflows.get = vi.fn().mockResolvedValue(workflowFactory.responses.fetch)
     }
   },
 ]

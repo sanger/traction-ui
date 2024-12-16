@@ -97,7 +97,7 @@ describe('usePacbioLibrariesStore', () => {
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
 
-        rootStore.api.v2 = {
+        rootStore.api = {
           traction: {
             pacbio: {
               libraries: { create },
@@ -134,7 +134,7 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(() => {
         destroy = vi.fn()
-        rootStore.api.v2.traction.pacbio.libraries = { destroy }
+        rootStore.api.traction.pacbio.libraries = { destroy }
         libraryIds = [1, 2]
       })
 
@@ -160,7 +160,7 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(() => {
         get = vi.fn()
-        rootStore.api.v2.traction.pacbio.libraries.get = get
+        rootStore.api.traction.pacbio.libraries.get = get
       })
 
       it('successfully', async () => {
@@ -206,8 +206,8 @@ describe('usePacbioLibrariesStore', () => {
         rootStore = useRootStore()
         store = usePacbioLibrariesStore()
 
-        rootStore.api.v2.traction.pacbio.libraries.get = get
-        rootStore.api.v2.traction.pacbio.libraries.update = update
+        rootStore.api.traction.pacbio.libraries.get = get
+        rootStore.api.traction.pacbio.libraries.update = update
         await store.fetchLibraries()
         libraryBeforeUpdate = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
         library = {

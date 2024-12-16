@@ -78,7 +78,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       sample: { id: pacbio_request_id },
     }) {
       const rootState = useRootStore()
-      const request = rootState.api.v2.traction.pacbio.libraries
+      const request = rootState.api.traction.pacbio.libraries
       const payload = libraryPayload({
         pacbio_request_id,
         template_prep_kit_box_barcode,
@@ -110,7 +110,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async deleteLibraries(libraryIds) {
       const rootStore = useRootStore()
-      const promises = rootStore.api.v2.traction.pacbio.libraries.destroy(libraryIds)
+      const promises = rootStore.api.traction.pacbio.libraries.destroy(libraryIds)
       const responses = await Promise.all(promises.map((promise) => handleResponse(promise)))
       return responses
     },

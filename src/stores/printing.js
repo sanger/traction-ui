@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
+import { handleResponse, parsePrintMyBarcodeErrors } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 import { getPrintersOfType } from './utilities/printers.js'
@@ -55,7 +55,7 @@ export const usePrintingStore = defineStore('printing', {
     }) {
       const rootStore = useRootStore()
 
-      const request = rootStore.api.v2.printMyBarcode.print_jobs
+      const request = rootStore.api.printMyBarcode.print_jobs
 
       const payload = {
         printer_name: printerName,
@@ -85,7 +85,7 @@ export const usePrintingStore = defineStore('printing', {
     async fetchPrinters() {
       const rootStore = useRootStore()
 
-      const request = rootStore.api.v2.traction.printers
+      const request = rootStore.api.traction.printers
 
       const promise = request.get()
       const response = await handleResponse(promise)
@@ -109,7 +109,7 @@ export const usePrintingStore = defineStore('printing', {
      */
     async fetchWorkflows() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.workflows
+      const request = rootStore.api.traction.workflows
       const response = await handleResponse(request.get({ include: 'workflow_steps' }))
       const { success, body } = response
       if (success) {

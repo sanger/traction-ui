@@ -51,7 +51,7 @@ describe('useOntRunsStore', () => {
       const rootStore = useRootStore()
       const get = vi.fn()
       get.mockResolvedValue(ontRunFactory.responses.fetch)
-      rootStore.api.v2 = {
+      rootStore.api = {
         traction: { ont: { runs: 'aRunRequest' } },
       }
       const actual = store.runRequest

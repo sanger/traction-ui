@@ -1,5 +1,5 @@
 import { store } from '@support/testHelper.js'
-import { vi } from 'vitest'
+import { expect, vi } from 'vitest'
 import {
   fetchLabwareFromSequencescape,
   findIncluded,
@@ -89,7 +89,7 @@ describe('sequencescapeUtils', () => {
       },
     }
 
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
     let request
 
     beforeEach(() => {
@@ -130,7 +130,7 @@ describe('sequencescapeUtils', () => {
         statusText: 'Internal Server Error',
       }
       request.mockResolvedValue(failedResponse)
-      expect(() => fetchLabwareFromSequencescape({ requests, barcodes })).rejects.toThrow(
+      await expect(() => fetchLabwareFromSequencescape({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })

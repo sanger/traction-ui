@@ -1,4 +1,4 @@
-import { defaultHeaders, createRequest, QueryParametersType } from '@/api/v2/createRequest.js'
+import { defaultHeaders, createRequest, QueryParametersType } from '@/api/createRequest.js'
 
 import { expect } from 'vitest'
 
