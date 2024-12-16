@@ -360,7 +360,7 @@ describe('usePacbioRunCreateStore', () => {
           const create = vi.fn()
           const failureResponse = failedResponse()
 
-          create.mockRejectedValue(failureResponse)
+          create.mockResolvedValue(failureResponse)
           rootStore.api = { traction: { pacbio: { runs: { create } } } }
           const store = usePacbioRunCreateStore()
           //Initilaize the store state
@@ -409,7 +409,7 @@ describe('usePacbioRunCreateStore', () => {
           //Mock useRootStore
           const rootStore = useRootStore()
           const failureResponse = failedResponse()
-          update.mockRejectedValue(failureResponse)
+          update.mockResolvedValue(failureResponse)
           rootStore.api = { traction: { pacbio: { runs: { update } } } }
 
           const store = usePacbioRunCreateStore()
