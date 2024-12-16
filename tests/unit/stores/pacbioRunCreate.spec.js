@@ -358,8 +358,10 @@ describe('usePacbioRunCreateStore', () => {
           //Mock useRootStore
           const rootStore = useRootStore()
           const create = vi.fn()
-          create.mockRejectedValue(failedResponse())
-          rootStore.api.v2 = { traction: { pacbio: { runs: { create } } } }
+          const failureResponse = failedResponse()
+
+          create.mockRejectedValue(failureResponse)
+          rootStore.api = { traction: { pacbio: { runs: { create } } } }
           const store = usePacbioRunCreateStore()
           //Initilaize the store state
           store.$state = {
@@ -370,8 +372,9 @@ describe('usePacbioRunCreateStore', () => {
             smrtLinkVersion: defaultSmrtLinkVersion,
             instrumentType: PacbioInstrumentTypes.Revio,
           }
-          const { success } = await store.saveRun()
+          const { success,errors } = await store.saveRun()
           expect(success).toBeFalsy()
+          expect(errors).toEqual(failureResponse.errorSummary)
         })
       })
       describe('update', () => {
@@ -405,8 +408,9 @@ describe('usePacbioRunCreateStore', () => {
           const update = vi.fn()
           //Mock useRootStore
           const rootStore = useRootStore()
-          update.mockRejectedValue(failedResponse())
-          rootStore.api.v2 = { traction: { pacbio: { runs: { update } } } }
+          const failureResponse = failedResponse()
+          update.mockRejectedValue(failureResponse)
+          rootStore.api = { traction: { pacbio: { runs: { update } } } }
 
           const store = usePacbioRunCreateStore()
           //Initilaize the store state
@@ -420,8 +424,9 @@ describe('usePacbioRunCreateStore', () => {
             instrumentType: PacbioInstrumentTypes.Revio,
           }
 
-          const { success } = await store.saveRun()
+          const { success,errors } = await store.saveRun()
           expect(success).toBeFalsy()
+          expect(errors).toEqual(failureResponse.errorSummary)
         })
       })
     })
