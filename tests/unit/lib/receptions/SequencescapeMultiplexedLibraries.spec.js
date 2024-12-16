@@ -5,7 +5,7 @@ import SequencescapeMultiplexedLibraryFactory from '@tests/factories/Sequencesca
 describe('SequencescapeMultiplexedLibraries', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['3980000042705']
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
     let request
 
     beforeEach(() => {

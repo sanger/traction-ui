@@ -15,7 +15,7 @@ describe('index', () => {
     it('has api state', () => {
       const store = useRootStore()
       expect(store.api).toBeDefined()
-      expect(store.api.v2).toBeDefined()
+      expect(store.api).toBeDefined()
     })
 
     it('has a plate map', () => {
@@ -83,7 +83,7 @@ describe('index', () => {
     describe('fetchTagSets', () => {
       it('fetches pacbio tag sets by default', async () => {
         const store = useRootStore()
-        store.api.v2.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
+        store.api.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
           status: '200',
           statusText: 'OK',
           json: () =>
@@ -96,7 +96,7 @@ describe('index', () => {
 
       it('fetches ont tag sets when called with ont', async () => {
         const store = useRootStore()
-        store.api.v2.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
+        store.api.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
           status: '200',
           statusText: 'OK',
           json: () =>

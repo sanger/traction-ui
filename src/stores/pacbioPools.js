@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
 
@@ -49,7 +49,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      */
     async fetchPools(filter = {}, page = {}) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.pools
+      const request = rootStore.api.traction.pacbio.pools
       const promise = request.get({
         page,
         filter,

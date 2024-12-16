@@ -208,7 +208,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
-        rootStore.api.v2 = { traction: { pacbio: { smrt_link_versions: { get } } } }
+        rootStore.api = { traction: { pacbio: { smrt_link_versions: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -224,7 +224,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse())
-        rootStore.api.v2 = { traction: { pacbio: { smrt_link_versions: { get } } } }
+        rootStore.api = { traction: { pacbio: { smrt_link_versions: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -241,7 +241,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const find = vi.fn()
         find.mockResolvedValue(pacbioRunFactory.responses.fetch)
-        rootStore.api.v2 = { traction: { pacbio: { runs: { find } } } }
+        rootStore.api = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
@@ -279,7 +279,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const find = vi.fn()
         find.mockRejectedValue(failedResponse())
-        rootStore.api.v2 = { traction: { pacbio: { runs: { find } } } }
+        rootStore.api = { traction: { pacbio: { runs: { find } } } }
 
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
@@ -307,7 +307,7 @@ describe('usePacbioRunCreateStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(pacbioTubeFactory.responses.fetch)
-        rootStore.api.v2 = { traction: { pacbio: { tubes: { get } } } }
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
 
         const store = usePacbioRunCreateStore()
 
@@ -337,7 +337,7 @@ describe('usePacbioRunCreateStore', () => {
           const rootStore = useRootStore()
           const create = vi.fn()
           create.mockResolvedValue(mockResponse)
-          rootStore.api.v2 = { traction: { pacbio: { runs: { create } } } }
+          rootStore.api = { traction: { pacbio: { runs: { create } } } }
 
           const store = usePacbioRunCreateStore()
           store.$state = {
@@ -384,7 +384,7 @@ describe('usePacbioRunCreateStore', () => {
           const rootStore = useRootStore()
           const update = vi.fn()
           update.mockResolvedValue(mockResponse)
-          rootStore.api.v2 = { traction: { pacbio: { runs: { update } } } }
+          rootStore.api = { traction: { pacbio: { runs: { update } } } }
 
           const store = usePacbioRunCreateStore()
           //Initilaize the store state

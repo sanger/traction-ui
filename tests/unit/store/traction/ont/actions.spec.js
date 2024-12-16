@@ -14,7 +14,7 @@ describe('fetchOntRuns', () => {
     const commit = vi.fn()
     // mock dependencies
     const get = vi.fn()
-    const rootState = { api: { v2: { traction: { ont: { runs: { get } } } } } }
+    const rootState = { api: { traction: { ont: { runs: { get } } } } }
     get.mockResolvedValue(ontRunFactory.responses.fetch)
     // apply action
     const { success } = await actions.fetchOntRuns({ commit, rootState })
@@ -31,7 +31,7 @@ describe('fetchOntRuns', () => {
     const commit = vi.fn()
     // mock dependencies
     const get = vi.fn()
-    const rootState = { api: { v2: { traction: { ont: { runs: { get } } } } } }
+    const rootState = { api: { traction: { ont: { runs: { get } } } } }
     get.mockResolvedValue(failedResponse())
     // apply action
     const { success } = await actions.fetchOntRuns({ commit, rootState })
@@ -47,7 +47,7 @@ describe('setInstruments', () => {
     const commit = vi.fn()
     // mock dependencies
     const get = vi.fn()
-    const rootState = { api: { v2: { traction: { ont: { instruments: { get } } } } } }
+    const rootState = { api: { traction: { ont: { instruments: { get } } } } }
     get.mockResolvedValue(ontInstrumentFactory.responses.fetch)
     // apply action
     const { success } = await actions.setInstruments({ commit, rootState })
@@ -60,7 +60,7 @@ describe('setInstruments', () => {
     const commit = vi.fn()
     // mock dependencies
     const get = vi.fn()
-    const rootState = { api: { v2: { traction: { ont: { instruments: { get } } } } } }
+    const rootState = { api: { traction: { ont: { instruments: { get } } } } }
     get.mockResolvedValue(failedResponse())
     // apply action
     const { success } = await actions.setInstruments({ commit, rootState })

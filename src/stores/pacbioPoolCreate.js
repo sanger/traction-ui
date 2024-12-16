@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import {
@@ -548,7 +548,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.pools
+      const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
         data: payload({ used_aliquots, pool }),
         include: 'tube',
@@ -580,7 +580,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (!validate({ used_aliquots, pool }))
         return { success: false, errors: 'The pool is invalid' }
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.pools
+      const request = rootStore.api.traction.pacbio.pools
       const promise = request.update(payload({ used_aliquots, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
@@ -605,7 +605,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      */
     async populateUsedAliquotsFromPool(poolId) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.pools
+      const request = rootStore.api.traction.pacbio.pools
       const promise = request.find({
         id: poolId,
         include:
@@ -819,7 +819,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.plates
+      const request = rootStore.api.traction.pacbio.plates
       const promise = request.get({ filter, include: 'wells.requests' })
       const response = await handleResponse(promise)
       let { success, body: { data, included = [] } = {}, errors = [] } = response
@@ -880,7 +880,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         }
       }
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.tubes
+      const request = rootStore.api.traction.pacbio.tubes
       const promise = request.get({ filter, include: 'requests,libraries.request' })
       let {
         success,

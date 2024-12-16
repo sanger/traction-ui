@@ -37,11 +37,11 @@ function mountWithStore(props) {
           plugins: [
             ({ store }) => {
               if (store.$id === 'root') {
-                ;(store.api.v2.traction.pacbio.smrt_link_versions.get = vi.fn()),
-                  (store.api.v2.traction.pacbio.runs.find = vi.fn(
+                ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
+                  (store.api.traction.pacbio.runs.find = vi.fn(
                     () => pacbioRunFactory.responses.fetch,
                   )),
-                  (store.api.v2.traction.pacbio.tubes.get = vi.fn(
+                  (store.api.traction.pacbio.tubes.get = vi.fn(
                     () => pacbioTubeFactory.responses.fetch,
                   ))
               }

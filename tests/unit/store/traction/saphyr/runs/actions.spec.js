@@ -1,7 +1,7 @@
 import * as Actions from '@/store/traction/saphyr/runs/actions'
-import * as Run from '@/api/v2/SaphyrRun.js'
+import * as Run from '@/api/SaphyrRun.js'
 import SaphyrRunFactory from '@tests/factories/SaphyrRunFactory.js'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 
 const TractionTubesWithSample = {

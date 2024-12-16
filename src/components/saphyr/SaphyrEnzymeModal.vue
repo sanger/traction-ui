@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import handleResponse from '@/api/v2/ResponseHelper'
+import handleResponse from '@/api/ResponseHelper'
 
 export default {
   name: 'SaphyrEnzymeModal',
@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     api() {
-      return this.$store.getters.api.v2
+      return this.$store.getters.api
     },
     enzymeRequest() {
       return this.api.traction.saphyr.enzymes

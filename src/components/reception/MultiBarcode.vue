@@ -140,7 +140,7 @@ const emit = defineEmits(['importStarted', 'importFinished', 'reset'])
 
 const { showAlert } = useAlert()
 const { createPrintJob, printers } = usePrintingStore()
-const api = useRootStore().api.v2
+const api = useRootStore().api
 const receptionRequest = api.traction.receptions.create
 
 const barcodes = ref('')

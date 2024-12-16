@@ -1,6 +1,6 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, store, createTestingPinia } from '@support/testHelper'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import SaphyrRequestFactory from '@tests/factories/SaphyrRequestFactory.js'
 import SaphyrLibraryFactory from '@tests/factories/SaphyrLibraryFactory.js'
 import SaphyrEnzymeFactory from '@tests/factories/SaphyrEnzymeFactory.js'
@@ -41,7 +41,7 @@ describe('Samples.vue', () => {
     )
 
     // Here we mock enzymes as they are loaded in the modal
-    vi.spyOn(store.getters.api.v2.traction.saphyr.enzymes, 'get').mockResolvedValue(
+    vi.spyOn(store.getters.api.traction.saphyr.enzymes, 'get').mockResolvedValue(
       saphyrEnzymeFactory.responses.fetch,
     )
     const { wrapperObj } = mountWithStore()

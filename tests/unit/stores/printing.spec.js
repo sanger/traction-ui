@@ -52,7 +52,7 @@ describe('usePrintingStore', () => {
         const get = vi.fn()
 
         get.mockResolvedValue(printerFactory.responses.fetch)
-        rootStore.api.v2 = { traction: { printers: { get } } }
+        rootStore.api = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
@@ -70,7 +70,7 @@ describe('usePrintingStore', () => {
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue('Internal Server Error')
-        rootStore.api.v2 = { traction: { printers: { get } } }
+        rootStore.api = { traction: { printers: { get } } }
 
         const store = usePrintingStore()
 
@@ -87,7 +87,7 @@ describe('usePrintingStore', () => {
         const get = vi.fn()
 
         get.mockResolvedValue(workflowFactory.responses.fetch)
-        rootStore.api.v2 = { traction: { workflows: { get } } }
+        rootStore.api = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
         expect(store.resources.pipelines).toEqual(workflowFactory.storeData)
@@ -104,7 +104,7 @@ describe('usePrintingStore', () => {
           status: 500,
           ok: false,
         })
-        rootStore.api.v2 = { traction: { workflows: { get } } }
+        rootStore.api = { traction: { workflows: { get } } }
         const { success } = await store.fetchWorkflows()
 
         expect(store.resources.pipelines).toEqual({ workflows: [], steps: {} })
@@ -141,7 +141,7 @@ describe('usePrintingStore', () => {
 
         const rootStore = useRootStore()
         const create = vi.fn()
-        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         const { success, message } = await store.createPrintJob({ ...printJobOptions })
@@ -174,7 +174,7 @@ describe('usePrintingStore', () => {
 
         const create = vi.fn()
         const rootStore = useRootStore()
-        rootStore.api.v2 = { printMyBarcode: { print_jobs: { create } } }
+        rootStore.api = { printMyBarcode: { print_jobs: { create } } }
         create.mockResolvedValue(mockResponse)
 
         // eslint-disable-next-line no-unused-vars
