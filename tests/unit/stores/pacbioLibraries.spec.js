@@ -8,7 +8,7 @@ import {
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, describe, expect } from 'vitest'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
-import { libraryPayload } from '@/stores/utilities/pacbioLibraries.js'
+import { libraryPayload , formatAndTransformLibraries} from '@/stores/utilities/pacbioLibraries.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 const pacbioLibraryWithoutRelationships = PacbioLibraryFactory({ relationships: false })
@@ -75,8 +75,9 @@ describe('usePacbioLibrariesStore', () => {
       const store = usePacbioLibrariesStore()
 
       store.$state = { ...pacbioLibraryFactory.storeData }
+      const { libraries, tubes, tags, requests } = pacbioLibraryFactory.storeData
 
-      expect(store.librariesArray).toEqual(pacbioLibraryFactory.librariesArray)
+      expect(store.librariesArray).toEqual(formatAndTransformLibraries(libraries, tubes, tags, requests))
     })
   })
   describe('actions', () => {
