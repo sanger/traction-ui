@@ -1,7 +1,7 @@
 import {
   getLabwhereLocations,
   scanBarcodesInLabwhereLocation,
-  exhaustSamplesIfDestroyed,
+  exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
@@ -9,6 +9,7 @@ import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
 const mockFetch = vi.fn()
 const labwhereLocationsFactory = LabwhereLocationsFactory()
+
 
 beforeEach(() => {
   global.fetch = mockFetch
@@ -118,7 +119,7 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 })
 
-describe('exhaustSamplesIfDestroyed', () => {
+describe('exhaustLibraryVolumeIfDestroyed', () => {
   beforeEach(() => {
     const pinia = createPinia()
     setActivePinia(pinia)
@@ -152,8 +153,6 @@ describe('exhaustSamplesIfDestroyed', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    // Mock the environment variable
-    import.meta.env = { VITE_DESTROYED_LOCATION_BARCODE: destroyLocation }
     mockFetchLibraries = vi.fn()
     mockFormatAndTransformLibraries = vi.fn()
     mockExhaustLibrayVolume = vi.fn()
@@ -166,7 +165,7 @@ describe('exhaustSamplesIfDestroyed', () => {
   })
 
   it('should return false if locationBarcode does not match destroyLocation', async () => {
-    const result = await exhaustSamplesIfDestroyed('wrong-location', labwareBarcodes)
+    const result = await exhaustLibraryVolumeIfDestroyed('wrong-location', labwareBarcodes)
     expect(mockFetchLibraries).not.toHaveBeenCalled()
     expect(result).toEqual({ success: false })
   })
@@ -180,7 +179,7 @@ describe('exhaustSamplesIfDestroyed', () => {
       mockExhaustLibrayVolume.mockResolvedValue({ success: true })
     })
     it('should fetch libraries by source_identifier and barcode', async () => {
-      await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(mockFetchLibraries).toHaveBeenCalledTimes(2)
       expect(mockFetchLibraries).toHaveBeenCalledWith({
         filter: { source_identifier: 'barcode1,barcode2,barcode3' },
@@ -188,12 +187,12 @@ describe('exhaustSamplesIfDestroyed', () => {
       expect(mockFetchLibraries).toHaveBeenCalledWith({ filter: { barcode: 'barcode2,barcode3' } })
     })
     it('should return exhaused libraries', async () => {
-      const result = await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({success: true, exhaustedLibraries:formattedLibraries})
     })
 
     it('should exhaust library volumes', async () => {
-      await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(mockExhaustLibrayVolume).toHaveBeenCalledTimes(2)
       expect(mockExhaustLibrayVolume).toHaveBeenCalledWith(formattedLibraries[0])
       expect(mockExhaustLibrayVolume).toHaveBeenCalledWith(formattedLibraries[1])
@@ -204,7 +203,7 @@ describe('exhaustSamplesIfDestroyed', () => {
       mockFetchLibraries.mockResolvedValueOnce({ success: false })
     })
     it('should return an empty array', async () => {
-      const result = await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: false })
       expect(mockExhaustLibrayVolume).not.toHaveBeenCalled()
     })
@@ -215,7 +214,7 @@ describe('exhaustSamplesIfDestroyed', () => {
       mockFormatAndTransformLibraries.mockReturnValueOnce([])
     })
     it('should return an empty array', async () => {
-      const result = await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({success: false})
     })
   })
@@ -224,7 +223,7 @@ describe('exhaustSamplesIfDestroyed', () => {
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[0])
       mockFormatAndTransformLibraries.mockReturnValueOnce([formattedLibraries[0]])
       mockExhaustLibrayVolume.mockResolvedValue({ success: false })
-      const result = await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({success:false, exhaustedLibraries: []})
     })
     it('should not return libraries for which the exhaustLibrayVolume fails ', async () => {
@@ -234,7 +233,7 @@ describe('exhaustSamplesIfDestroyed', () => {
       mockFormatAndTransformLibraries.mockReturnValueOnce([formattedLibraries[1]])
       mockExhaustLibrayVolume.mockResolvedValueOnce({ success: true })
       mockExhaustLibrayVolume.mockResolvedValueOnce({ success: false })
-      const result = await exhaustSamplesIfDestroyed(destroyLocation, labwareBarcodes)
+      const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({success:true, exhaustedLibraries: [formattedLibraries[0]]})
     })
   })
