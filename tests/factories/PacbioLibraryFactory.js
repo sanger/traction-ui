@@ -1,6 +1,5 @@
 import BaseFactory from './BaseFactory.js'
 import { groupIncludedByResource, dataToObjectById } from '../../src/api/JsonApi.js'
-import {formatAndTransformLibraries} from '../../src/stores/utilities/pacbioLibraries.js'
 
 /**
  * @function createStoreData
@@ -20,15 +19,6 @@ const createStoreData = ({ data, included }) => {
   }
 }
 
-/**
- * @function createLibrariesArray
- * @param {Object} storeData - libraries, tubes, tags, requests
- * @returns {Array} An array of libraries with sample_name, barcode, and group_id.
- * @description A function that creates an array of libraries with sample_name, barcode, and group_id.
- */
-const createLibrariesArray = ({ libraries, tubes, tags, requests }) => {
-  return formatAndTransformLibraries(libraries, tubes, tags, requests)
-}
 
 /*
  * Factory for creating a pacbio library
@@ -735,8 +725,7 @@ const PacbioLibraryFactory = ({ relationships = true } = {}) => {
   // certain tests require data with no relationships
   if (relationships) {
     const storeData = createStoreData(data)
-    const librariesArray = createLibrariesArray(storeData)
-    return { ...BaseFactory(data), storeData, librariesArray }
+    return { ...BaseFactory(data), storeData }
   } else {
     // take all the relationships out of the data
     const dataWithoutRelationships = data.data.map(({ id, type, attributes }) => ({
