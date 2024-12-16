@@ -113,6 +113,13 @@ export const useOntRunsStore = defineStore('ontRuns', {
         return { success, errors }
       }
     },
+
+    /**
+     * Fetches a pool by its barcode and adds the pool to the store if it exists.
+     *
+     * @param {string} barcode - The barcode of the pool to fetch.
+     * @returns {Promise<{success: boolean}>} - An object indicating the success of the operation.
+     */
     async fetchPool(barcode) {
       // Here we want to make sure the barcode exists
       // If it doesn't, set success to null for component validation
@@ -127,7 +134,8 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const response = await handleResponse(promise)
       let { success, body: { data } = {} } = response
 
-      if (success && !data.empty) {
+      // If response is successful and the
+      if (success && data.length > 0) {
         this.pools = {
           ...this.pools,
           ...formatById(this.pools, data),
