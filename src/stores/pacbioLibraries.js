@@ -1,27 +1,14 @@
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/v2/ResponseHelper.js'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
+import { groupIncludedByResource } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { libraryPayload } from '@/stores//utilities/pacbioLibraries.js'
-
-/**
- * @function validateFields
- * @param {Object} library - The library object to validate.
- * @returns {boolean} Returns true if all required fields are present and truthy in the library object, false otherwise.
- * @description Validates that the required fields are present in the given library object.
- * The required fields are 'id', 'template_prep_kit_box_barcode', 'volume' and 'concentration'.
- * The 'tag' and 'insert_size' fields are optional.
- */
-const validateFields = (library) => {
-  const requiredAttributes = ['id', 'template_prep_kit_box_barcode', 'volume', 'concentration']
-  const errors = requiredAttributes.filter((field) => !library[field])
-
-  return {
-    success: errors.length === 0,
-    errors: 'Missing required field(s)',
-  }
-}
+import {
+  libraryPayload,
+  fetchLibraries,
+  updateLibrary,
+  formatAndTransformLibraries
+} from '@/stores//utilities/pacbioLibraries.js'
 
 /**
  * Importing `defineStore` function from 'pinia' library.
@@ -60,13 +47,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     librariesArray: (state) => {
       const pacbioRootStore = usePacbioRootStore()
-      return Object.values(state.libraries)
-        .filter((library) => library.tube)
-        .map((library) => {
-          const { id, request, tag_id, tag, tube, ...attributes } = library
-          const tagId = tag_id ?? tag
-
-          /*Get the tag group ID from the library's tag ID or from the tag in pacbioRoot store(where all pacbio tags are kept). Why is this required?
+      /*Get the tag group ID from the library's tag ID or from the tag in pacbioRoot store(where all pacbio tags are kept). Why is this required?
           The librariesArray is called in multiple places (in create and edit context) to get the libraries. 
           Therefore, librariesArray needs to search for the tag first in tags. 
           If not found, it should then look for it in 'pacbioRoot' store tags. 
@@ -74,23 +55,9 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           which may not happen in all the places where it's called. 
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
-
-          const tagGroupId = state.tags[tagId]
-            ? state.tags[tagId].group_id
-            : pacbioRootStore.tags[tagId]
-              ? pacbioRootStore.tags[tagId].group_id
-              : ''
-
-          return {
-            id,
-            tag_id: String(tagId),
-            tube,
-            ...attributes,
-            tag_group_id: tagGroupId ?? '',
-            sample_name: state.requests[request].sample_name,
-            barcode: state.tubes[tube].barcode,
-          }
-        })
+      const tags = { ...state.tags, ...pacbioRootStore.tags }
+      return formatAndTransformLibraries(state.libraries, state.tubes, tags, state.requests)
+      
     },
   },
   actions: {
@@ -155,24 +122,15 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @param {number} page - The page number to fetch from the server.
      * @returns {Promise<{success: boolean, errors: Array}>} - A promise that resolves to an object containing a success boolean and an array of errors.
      */
-    async fetchLibraries(filter = {}, page = {}) {
-      const rootStore = useRootStore()
-      const pacbioLibraries = rootStore.api.v2.traction.pacbio.libraries
-      const promise = pacbioLibraries.get({
-        page,
-        filter,
-        include: 'request,tag,tube',
+    async fetchLibraries(filterOptions) {
+      const { success, data, meta, errors, libraries, tubes, tags, requests } = await fetchLibraries({
+        ...filterOptions,
       })
-      const response = await handleResponse(promise)
-
-      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
-
       if (success && data.length > 0) {
-        const { tubes, tags, requests } = groupIncludedByResource(included)
-        this.libraries = dataToObjectById({ data, includeRelationships: true })
-        this.tubes = dataToObjectById({ data: tubes })
-        this.tags = dataToObjectById({ data: tags })
-        this.requests = dataToObjectById({ data: requests })
+        this.libraries = libraries
+        this.tubes = tubes
+        this.tags = tags
+        this.requests = requests
       }
       return { success, errors, meta }
     },
@@ -185,17 +143,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * If 'success' is false, the object also has an 'errors' property with a message describing the error.
      */
     async updateLibrary(libraryFields) {
-      //Validate the libraryFields to ensure that all required fields are present
-      const valid = validateFields(libraryFields)
-      if (!valid.success) {
-        return { success: false, errors: valid.errors }
-      }
-
-      const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.pacbio.libraries
-      const payload = libraryPayload(libraryFields)
-      const promise = request.update(payload)
-      const { success, errors } = await handleResponse(promise)
+      const { success, errors } = await updateLibrary(libraryFields)
       if (success) {
         //Update all fields of the library in the store with matching ID with the given values.
         this.libraries[libraryFields.id] = {
