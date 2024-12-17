@@ -1,5 +1,5 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
-import { mount, createTestingPinia } from '@support/testHelper'
+import { mount, createTestingPinia, flushPromises } from '@support/testHelper'
 import { describe, expect } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
@@ -31,7 +31,7 @@ function mountWithStore(props = {}) {
 describe('ONTFlowcell', () => {
   let wrapper, ontFlowcell, props, store
 
-  beforeEach(() => {
+  beforeEach(async () => {
     props = {
       position: 1,
       coordinate: 'A1',
@@ -48,6 +48,7 @@ describe('ONTFlowcell', () => {
     ]
     wrapper = wrapperObj
     ontFlowcell = wrapperObj.vm
+    await flushPromises()
   })
 
   describe('props', () => {
