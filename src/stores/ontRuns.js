@@ -134,7 +134,8 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const response = await handleResponse(promise)
       let { success, body: { data } = {} } = response
 
-      // If response is successful and the
+      // TODO: data.length check could be refactored into handleResponse to avoid repetition
+      // If response is successful and the data is not empty, add the pool to the store
       if (success && data.length > 0) {
         this.pools = {
           ...this.pools,
