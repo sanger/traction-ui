@@ -97,7 +97,10 @@
  * It displays a success message if the barcodes are stored successfully, or an error message if the submission fails.
  */
 import { ref, reactive, computed } from 'vue'
-import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+import {
+  scanBarcodesInLabwhereLocation,
+  exhaustLibraryVolumeIfDestroyed,
+} from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
 
 const user_code = ref('') // User code or swipecard
@@ -170,7 +173,17 @@ const scanBarcodesToLabwhere = async () => {
       start_position.value,
     )
     if (response.success) {
-      showAlert(response.message, 'success')
+      let message = response.message
+      // Check if the library volume need to be exhausted
+      const { success, exhaustedLibraries } = await exhaustLibraryVolumeIfDestroyed(
+        location_barcode.value,
+        uniqueBarcodesArray.value,
+      )
+      if (success && exhaustedLibraries.length > 0) {
+        const length = exhaustedLibraries.length
+        message += ` and sample volumes have been exhausted for ${length} ${length === 1 ? 'library' : 'libraries'}`
+      }
+      showAlert(message, 'success')
     } else {
       showAlert(response.errors.join('\n'), 'danger')
     }
