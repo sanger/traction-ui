@@ -31,9 +31,9 @@ const createStoreData = (data, count) => {
 /**
  *
  * @param {Object} data
- * @param {String | null} findBy - 'libraries' | 'pools'
+ * @param {String | null} findBy - 'flowcells'
  * @returns {Object} - { ...BaseFactory, storeData }
- * if the findBy is libraries or pools find a single record by libraries or pools
+ * if the findBy is flowcells find a single record by flowcells
  * otherwise return the data as is.
  * This is a bit messy but it will do for now.
  */
@@ -43,8 +43,6 @@ const getData = (data, findBy, count) => {
     findBy === 'flowcells' ? data.data.findIndex((item) => item.relationships.flowcells?.data) : 0
 
   if (index !== null) {
-    // we need to includeAll as the requests for pools are in the libraries and I think
-    // pulled out as used_by in the aliquots
     const foundData = find({ data, start: index, count: countVal, includeAll: true })
     return { ...BaseFactory(foundData), storeData: createStoreData(foundData, countVal) }
   } else {
@@ -156,6 +154,42 @@ const OntRunFactory = ({ count = undefined, findBy = null } = {}) => {
           position: 1,
           flowcell_id: 'ABC1234',
           ont_pool_id: 7,
+        },
+      },
+      {
+        id: '7',
+        type: 'pools',
+        links: {
+          self: 'http://localhost:3100/v1/ont/pools/7',
+        },
+        attributes: {
+          volume: 2.0,
+          kit_barcode: 'barcode-1',
+          concentration: 8.0,
+          insert_size: 3362,
+          created_at: '2024/08/13 07:35',
+          updated_at: '2024/08/13 07:35',
+          tube_barcode: 'TRAC-2-34',
+          source_identifier: 'GEN-1723534534-1:F1, B2, F2-G2',
+          final_library_amount: 7.2,
+        },
+        relationships: {
+          tube: {
+            links: {
+              self: 'http://localhost:3100/v1/ont/pools/7/relationships/tube',
+              related: 'http://localhost:3100/v1/ont/pools/7/tube',
+            },
+            data: {
+              type: 'tubes',
+              id: '34',
+            },
+          },
+          libraries: {
+            links: {
+              self: 'http://localhost:3100/v1/ont/pools/7/relationships/libraries',
+              related: 'http://localhost:3100/v1/ont/pools/7/libraries',
+            },
+          },
         },
       },
     ],

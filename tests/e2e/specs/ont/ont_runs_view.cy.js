@@ -1,5 +1,4 @@
 import OntRunFactory from '../../../factories/OntRunFactory.js'
-import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
 describe('ONT Runs view', () => {
   it('Visits the ont runs url', () => {
@@ -36,17 +35,9 @@ describe('ONT Runs view', () => {
 
     cy.wrap(OntRunFactory({ findBy: 'flowcells' })).as('ontRunFactoryWithFlowcells')
     cy.get('@ontRunFactoryWithFlowcells').then((ontRunFactoryWithFlowcells) => {
-      cy.intercept('GET', '/v1/ont/runs/2?include=flowcells', {
+      cy.intercept('GET', '/v1/ont/runs/2?include=flowcells.pool', {
         statusCode: 200,
         body: ontRunFactoryWithFlowcells.content,
-      })
-    })
-
-    cy.wrap(OntPoolFactory()).as('ontPoolFactory')
-    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
-      cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-        statusCode: 200,
-        body: ontPoolFactory.content,
       })
     })
 

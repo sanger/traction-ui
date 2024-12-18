@@ -201,14 +201,12 @@ describe('ONTRun.vue', () => {
   describe('#provider', () => {
     describe('when it is a new run', () => {
       beforeEach(() => {
-        ontRun.fetchOntPools = vi.fn()
         ontRun.newRun = vi.fn()
         ontRun.setInstruments = vi.fn()
       })
 
-      it('calls fetchOntPools successfully', async () => {
+      it('calls sets required data successfully', async () => {
         await ontRun.provider()
-        expect(ontRun.fetchOntPools).toBeCalled()
         expect(ontRun.newRun).toBeCalled()
         expect(ontRun.setInstruments).toBeCalled()
       })
@@ -220,17 +218,66 @@ describe('ONTRun.vue', () => {
         wrapper = wrapperObj
         ontRun = wrapper.vm
 
-        ontRun.fetchOntPools = vi.fn()
         ontRun.setInstruments = vi.fn(() => Promise.resolve())
         ontRun.fetchRun = vi.fn()
       })
 
-      it('calls fetchOntPools successfully', async () => {
+      it('calls sets required data successfully', async () => {
         await ontRun.provider()
-        expect(ontRun.fetchOntPools).toBeCalled()
         expect(ontRun.fetchRun).toBeCalledWith(1)
         expect(ontRun.setInstruments).toBeCalled()
       })
+    })
+  })
+
+  describe('#runValid', () => {
+    it('returns true when all fields are valid', () => {
+      ontRun.currentRun.instrument_name = '1'
+      ontRun.currentRun.state = 'active'
+      ontRun.currentRun.flowcell_attributes = [
+        { position: '1', flowcell_id: 'ABC1234', tube_barcode: '123', errors: {} },
+        // Empty flowcells are fine
+        { position: '2', flowcell_id: '', tube_barcode: '', errors: {} },
+      ]
+      expect(ontRun.runValid).toEqual(true)
+    })
+
+    it('returns false when there are invalid fields', () => {
+      ontRun.currentRun.instrument_name = '1'
+      ontRun.currentRun.state = undefined
+      ontRun.currentRun.flowcell_attributes = [
+        { position: '1', flowcell_id: 'ABC1234', tube_barcode: '123', errors: {} },
+      ]
+      expect(ontRun.runValid).toBeFalsy()
+    })
+
+    it('returns false when there is a flowcell with a missing value', () => {
+      ontRun.currentRun.instrument_name = '1'
+      ontRun.currentRun.state = undefined
+      ontRun.currentRun.flowcell_attributes = [
+        // Valid flowcell
+        { position: '1', flowcell_id: 'ABC1234', tube_barcode: '123', errors: {} },
+        // Invalid flowcell
+        { position: '1', flowcell_id: '', tube_barcode: '123', errors: {} },
+      ]
+      expect(ontRun.runValid).toBeFalsy()
+    })
+
+    it('returns false when there is a flowcell with an error', () => {
+      ontRun.currentRun.instrument_name = '1'
+      ontRun.currentRun.state = undefined
+      ontRun.currentRun.flowcell_attributes = [
+        // Valid flowcell
+        { position: '1', flowcell_id: 'ABC1234', tube_barcode: '123', errors: {} },
+        // Invalid flowcell
+        {
+          position: '1',
+          flowcell_id: 'ABC12355',
+          tube_barcode: '123',
+          errors: { tube_barcode: 'Enter a valid Pool barcode' },
+        },
+      ]
+      expect(ontRun.runValid).toBeFalsy()
     })
   })
 })

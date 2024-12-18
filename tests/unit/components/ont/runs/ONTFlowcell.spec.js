@@ -1,7 +1,8 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
-import { mount, createTestingPinia } from '@support/testHelper'
+import { mount, createTestingPinia, flushPromises } from '@support/testHelper'
 import { describe, expect } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
+import { flowCellType } from '@/stores/utilities/flowCell.js'
 
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given props.
@@ -30,18 +31,24 @@ function mountWithStore(props = {}) {
 describe('ONTFlowcell', () => {
   let wrapper, ontFlowcell, props, store
 
-  beforeEach(() => {
+  beforeEach(async () => {
     props = {
       position: 1,
       coordinate: 'A1',
     }
     const { wrapperObj, storeObj } = mountWithStore(props)
     store = storeObj
+    store.currentRun.flowcell_attributes = [
+      {
+        ...flowCellType(),
+        position: 1,
+        tube_barcode: 'TRAC-1-A',
+        flowcell_id: 'ABC123',
+      },
+    ]
     wrapper = wrapperObj
     ontFlowcell = wrapperObj.vm
-
-    store.setFlowcellId({ $event: 'ABC123', position: 1 })
-    store.setPoolTubeBarcode({ barcode: 'TRAC-1-A', position: 1 })
+    await flushPromises()
   })
 
   describe('props', () => {
@@ -54,11 +61,11 @@ describe('ONTFlowcell', () => {
   })
 
   describe('#computed', () => {
-    describe('flowcellIdValidation', () => {
+    describe('flowcellId', () => {
       it('errors if FlowcellId is not valid', async () => {
         const flowcellIdInput = wrapper.find('#flowcell-id-1')
         await flowcellIdInput.setValue('some value')
-        expect(ontFlowcell.flowcellIdValidationError).toBe(
+        expect(ontFlowcell.flowCell.errors.flowcell_id).toBe(
           'Enter a valid Flowcell ID (3 letters then at least 3 numbers)',
         )
       })
@@ -66,43 +73,41 @@ describe('ONTFlowcell', () => {
       it('does not error if FlowcellId is valid', async () => {
         const flowcellIdInput = wrapper.find('#flowcell-id-1')
         await flowcellIdInput.setValue('ABC123')
-        expect(ontFlowcell.flowcellIdValidationError).toBe('')
+        expect(ontFlowcell.flowCell.errors.flowcell_id).toBe(undefined)
       })
     })
 
     it('#mapState', async () => {
-      ontFlowcell.flowCellValidationState = {
-        statusBarcode: 'Valid',
-        statusId: 'Valid',
-        errorBarcode: '',
-        errorId: '',
-        state: 'Success',
-      }
-      expect(ontFlowcell.flowcellId).toBeDefined()
       expect(ontFlowcell.flowcellId).toEqual('ABC123')
-      expect(ontFlowcell.poolTubeBarcode).toBeDefined()
-      expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-A')
-      expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
+      expect(ontFlowcell.barcode).toEqual('TRAC-1-A')
+      expect(ontFlowcell.flowcell_id_field_colour).toEqual('border-3 border-solid border-success')
+      expect(ontFlowcell.flowcell_barcode_field_colour).toEqual(
+        'border-3 border-solid border-success',
+      )
       expect(ontFlowcell.flowcell_bg_colour).toEqual('border border-3 border-success')
     })
   })
 
   describe('#methods', () => {
-    describe('#mapActions', () => {
-      it('#setFlowcellId', () => {
-        ontFlowcell.setFlowcellId({ $event: 'FC2', position: 1 })
-        expect(ontFlowcell.flowcellId).toEqual('FC2')
-      })
-
-      it('#setPoolTubeBarcode', () => {
-        ontFlowcell.setPoolTubeBarcode({ barcode: 'TRAC-1-B', position: 1 })
-        expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-B')
-      })
-    })
-
     describe('formatter', () => {
       it('formats the string', () => {
         expect(ontFlowcell.formatter(' a StriNG    ')).toEqual('A STRING')
+      })
+    })
+
+    describe('flowcellErrorsFor', () => {
+      it('returns undefined if there are no errors for a given property', async () => {
+        ontFlowcell.flowCell.errors = {}
+
+        expect(ontFlowcell.flowcellErrorsFor('flowcell_id')).toBe(undefined)
+      })
+
+      it('returns the error for a given property', async () => {
+        ontFlowcell.flowCell.errors = {
+          flowcell_id: 'some error',
+        }
+
+        expect(ontFlowcell.flowcellErrorsFor('flowcell_id')).toBe('some error')
       })
     })
   })
