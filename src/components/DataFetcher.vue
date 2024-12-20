@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="isLoading" class="flex items-center justify-center">
-      <traction-spinner class="h-32 w-32" />
+    <div v-if="isLoading" class="flex p-32 items-center justify-center">
+      <traction-spinner classes="h-32 w-32" />
     </div>
-    <div v-else-if="isError" class="flex flex-col items-center justify-center">
-      <p class="flex mb-5 mt-10 text-lg font-bold">There was an error retrieving the data</p>
-      <traction-button class="flex mt-10" @click="getData()">Retry</traction-button>
+    <div v-else-if="isError" class="flex p-32 flex-col items-center justify-center">
+      <p class="flex text-lg font-semilight p-4">There was an error retrieving the data</p>
+      <traction-button @click="getData()">Retry</traction-button>
     </div>
     <slot v-else />
   </div>
