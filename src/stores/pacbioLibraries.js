@@ -4,9 +4,11 @@ import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import {
-  libraryPayload,
-  fetchLibraries,
-  updateLibrary,
+  getPacbioLibraryResources,
+  buildLibraryResourcePayload,
+} from '@/services/traction/PacbioLibrary.js'
+import {
+  validateAndUpdateLibrary,
   formatAndTransformLibraries,
 } from '@/stores/utilities/pacbioLibraries.js'
 
@@ -79,7 +81,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     }) {
       const rootState = useRootStore()
       const request = rootState.api.traction.pacbio.libraries
-      const payload = libraryPayload({
+      const payload = buildLibraryResourcePayload({
         pacbio_request_id,
         template_prep_kit_box_barcode,
         tag_id,
@@ -123,7 +125,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async fetchLibraries(filterOptions) {
       const { success, data, meta, errors, libraries, tubes, tags, requests } =
-        await fetchLibraries({
+        await getPacbioLibraryResources({
           ...filterOptions,
         })
       if (success && data.length > 0) {
@@ -142,7 +144,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Promise<Object>} - An object containing the success status and any errors.
      */
     async updateLibrary(libraryFields) {
-      const { success, errors } = await updateLibrary(libraryFields)
+      const { success, errors } = await validateAndUpdateLibrary(libraryFields)
       if (success) {
         //Update all fields of the library in the store with matching ID with the given values.
         this.libraries[libraryFields.id] = {
