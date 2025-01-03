@@ -1,10 +1,10 @@
 import { extractLocationsForLabwares } from './helpers.js'
 import { FetchWrapper } from '@/api/FetchWrapper.js'
 import {
-  fetchLibraries,
   exhaustLibrayVolume,
   formatAndTransformLibraries,
 } from '@/stores/utilities/pacbioLibraries.js'
+import { getPacbioLibraryResources } from '@/services/traction/PacbioLibrary.js'
 
 const labwhereFetch = FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
 const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
@@ -109,7 +109,9 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   //Fetch libraries by filter key
   const fetchAndMergeLibraries = async (barcodes, filterKey) => {
     const filterOptions = { filter: { [filterKey]: barcodes.join(',') } }
-    const { success, libraries, tubes, tags, requests } = await fetchLibraries(filterOptions)
+
+    const { success, libraries, tubes, tags, requests } =
+      await getPacbioLibraryResources(filterOptions)
     if (success) {
       librariesToDestroy = [
         ...librariesToDestroy,
