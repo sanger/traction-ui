@@ -8,7 +8,8 @@ import {
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, describe, expect } from 'vitest'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
-import { libraryPayload, formatAndTransformLibraries } from '@/stores/utilities/pacbioLibraries.js'
+import { formatAndTransformLibraries } from '@/stores/utilities/pacbioLibraries.js'
+import { buildLibraryResourcePayload } from '@/services/traction/PacbioLibrary.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 const pacbioLibraryWithoutRelationships = PacbioLibraryFactory({ relationships: false })
@@ -36,7 +37,7 @@ describe('usePacbioLibrariesStore', () => {
 
   describe('#libraryPayload', () => {
     it('for a create action', () => {
-      const payload = libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 })
+      const payload = buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 })
       expect(Object.keys(payload.data).includes('id')).toBeFalsy()
       expect(payload).toEqual({
         data: {
@@ -53,7 +54,7 @@ describe('usePacbioLibrariesStore', () => {
     })
 
     it('for an update action', () => {
-      const payload = libraryPayload({ ...requiredAttributes, id: 1 })
+      const payload = buildLibraryResourcePayload({ ...requiredAttributes, id: 1 })
       expect(Object.keys(payload.data.attributes).includes('pacbio_request_id')).toBeFalsy()
       expect(payload).toEqual({
         data: {
@@ -113,7 +114,7 @@ describe('usePacbioLibrariesStore', () => {
         create.mockResolvedValue(mockResponse)
         const { success, barcode } = await store.createLibrary(formLibrary)
         expect(create).toBeCalledWith({
-          data: libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 }),
+          data: buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 }),
           include: 'tube,primary_aliquot',
         })
         expect(success).toBeTruthy()

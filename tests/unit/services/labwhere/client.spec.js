@@ -5,6 +5,7 @@ import {
 } from '@/services/labwhere/client.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
+import * as pacbioLibraryService from '@/services/traction/PacbioLibrary.js'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
 const mockFetch = vi.fn()
@@ -155,7 +156,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
     mockFetchLibraries = vi.fn()
     mockFormatAndTransformLibraries = vi.fn()
     mockExhaustLibrayVolume = vi.fn()
-    mockFetchLibraries = vi.spyOn(pacbioLibraryUtilities, 'fetchLibraries')
+    mockFetchLibraries = vi.spyOn(pacbioLibraryService, 'getPacbioLibraryResources')
     mockFormatAndTransformLibraries = vi.spyOn(
       pacbioLibraryUtilities,
       'formatAndTransformLibraries',
