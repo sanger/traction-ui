@@ -1,3 +1,5 @@
+import { flowCellType } from '@/stores/utilities/flowCell'
+
 const buildFormatedOntRun = (instruments, pools, data, included) => {
   const instrument_name = instruments.find((i) => i.id == data.attributes.ont_instrument_id)?.name
 
@@ -8,13 +10,14 @@ const buildFormatedOntRun = (instruments, pools, data, included) => {
     flowcell_attributes: included
       .filter((item) => item.type === 'flowcells')
       .map((fc) => {
-        const tube_barcode = pools.find((p) => p.id == fc.attributes.ont_pool_id)?.tube_barcode
+        const pool = Object.values(pools).find((p) => p.id == fc.attributes.ont_pool_id)
 
         return {
+          ...flowCellType(),
           flowcell_id: fc.attributes.flowcell_id,
           ont_pool_id: fc.attributes.ont_pool_id,
           position: fc.attributes.position,
-          tube_barcode: tube_barcode,
+          tube_barcode: pool?.tube_barcode,
         }
       }),
   }

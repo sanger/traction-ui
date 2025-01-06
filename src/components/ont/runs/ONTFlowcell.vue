@@ -14,8 +14,8 @@
             <label class="flex justify-start text-sm ml-1 text-gray-600">Flowcell ID</label>
             <traction-field-error
               id="input-flowcell-id-feedback"
-              :error="flowcellIdValidationError"
-              :with-icon="isFlowcellIdExists"
+              :error="flowcellErrorsFor('flowcell_id')"
+              :with-icon="!!flowCell.flowcell_id"
             >
               <traction-input
                 :id="'flowcell-id-' + position"
@@ -33,8 +33,8 @@
             >
             <traction-field-error
               id="input-pool-tube-barcode-feedback"
-              :error="barcodeValidationError"
-              :with-icon="isBarcodeExists"
+              :error="flowcellErrorsFor('tube_barcode')"
+              :with-icon="!!flowCell.tube_barcode"
             >
               <traction-input
                 :id="'pool-id-' + position"
@@ -52,7 +52,7 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 /**
  * # ONTFlowcell
  *
@@ -68,149 +68,94 @@
  * white - if both flowcellId and barcode fields are empty
  * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
-import { createNamespacedHelpers } from 'vuex'
-import { mapState, mapActions as mapActionsPinia } from 'pinia'
 import { useOntRunsStore } from '@/stores/ontRuns'
-const { mapActions } = createNamespacedHelpers('traction/ont/pools')
-import { FlowCellStateEnum, FieldStatusEnum, flowCellType } from '@/stores/utilities/flowCell'
-export default {
-  name: 'ONTFlowcell',
-  props: {
-    position: {
-      type: Number,
-      required: true,
-    },
-    coordinate: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      /**Represents the current flowCell Validation state */
-      flowCellValidationState: {
-        statusId: FieldStatusEnum.Empty,
-        statusBarcode: FieldStatusEnum.Empty,
-        errorBarcode: '',
-        errorId: '',
-        state: FlowCellStateEnum.Empty,
-      },
-    }
-  },
-  computed: {
-    ...mapState(useOntRunsStore, ['currentRun', 'getFlowCell']),
-    // For Vuex asynchronous validation we need to use computed getter and setter properties
-    barcode: {
-      get() {
-        return this.poolTubeBarcode
-      },
-      async set(value) {
-        /*It is required to update the barcode here because components are externally
-          listening to this state */
-        this.setPoolTubeBarcode({
-          barcode: value,
-          position: this.position,
-        })
-        //Validate barcode field of flowcell
-        const validation = await this.flowCell.validateFlowCell(
-          false,
-          true,
-          this.flowCellValidationState,
-        )
-        this.setFlowCellValidation(validation)
-      },
-    },
-    flowcellId: {
-      get() {
-        const flowCell = this.getFlowCell(this.position)
-        if (flowCell) {
-          return this.getFlowCell(this.position).flowcell_id
-        }
-        return ''
-      },
-      async set(value) {
-        this.setFlowcellId({ $event: value, position: this.position })
-        //Validate flowcell id field of flowcell
-        const validation = await this.flowCell.validateFlowCell(
-          true,
-          false,
-          this.flowCellValidationState,
-        )
-        this.setFlowCellValidation(validation)
-      },
-    },
-    flowCell() {
-      //If flowcell is not present in the store, return a new empty flowcell
-      //(this is reduce the number of null checks in validations)
-      return this.getFlowCell(this.position) ?? { ...flowCellType }
-    },
+import { computed } from 'vue'
 
-    poolTubeBarcode() {
-      return this.flowCell.tube_barcode
-    },
-    flowcellIdValidationError() {
-      return this.flowCellValidationState.errorId
-    },
-    isFlowcellIdExists() {
-      return this.flowCellValidationState.statusId !== FieldStatusEnum.Empty
-    },
-    barcodeValidationError() {
-      return this.flowCellValidationState.errorBarcode
-    },
-    isBarcodeExists() {
-      return this.flowCellValidationState.statusBarcode !== FieldStatusEnum.Empty
-    },
-    /**Displays green if valid, red if invalid and no border if empty */
-    flowcell_id_field_colour() {
-      return this.flowCellValidationState.statusId !== FieldStatusEnum.Empty
-        ? this.flowCellValidationState.errorId.length === 0
-          ? 'border-3 border-solid border-success'
-          : 'border-3 border-solid border-failure focus:border-failure'
-        : ''
-    },
+const props = defineProps({
+  position: {
+    type: Number,
+    required: true,
+  },
+  coordinate: {
+    type: String,
+    required: true,
+  },
+})
 
-    /**Displays green if valid, red if invalid and no border if empty */
-    flowcell_barcode_field_colour() {
-      return this.flowCellValidationState.statusId !== FieldStatusEnum.Empty
-        ? this.flowCellValidationState.errorId.length === 0
-          ? 'border-3 border-solid border-success'
-          : 'border-3 border-solid border-failure focus:border-failure'
-        : ''
-    },
-    /**
-     * green - if both flowcellId and barcode fields contain valid values
-     * red - if any of flowcellId and barcode fields contain invalid values
-     * white - if both flowcellId and barcode fields are empty
-     * yellow - if one of flowcellId and barcode fields are valid and other is empty
-     */
-    flowcell_bg_colour() {
-      const state = this.flowCellValidationState.state
-      if (state === FlowCellStateEnum.Success) return 'border border-3 border-success'
-      if (state === FlowCellStateEnum.Failure) return 'border border-3 border-failure'
-      if (state === FlowCellStateEnum.Warning) return 'border border-3 border-warning'
-      else return 'border border-3 border-gray-300'
-    },
+const ontRunsStore = useOntRunsStore()
+
+const flowCell = computed(() => ontRunsStore.getOrCreateFlowCell(props.position))
+
+const barcode = computed({
+  get() {
+    return flowCell.value.tube_barcode
   },
-  /**
-   * If flowcell is not present in the store, set a new flowcell
-   * This is required to display empty flowcells
-   */
-  mounted() {
-    const flowCell = this.getFlowCell(this.position)
-    if (!flowCell) this.setNewFlowCell(this.position)
+  async set(value) {
+    flowCell.value.tube_barcode = value
+    await ontRunsStore.fetchPool(value)
+    flowCell.value.validateBarcode()
   },
-  methods: {
-    ...mapActionsPinia(useOntRunsStore, ['setFlowcellId', 'setPoolTubeBarcode', 'setNewFlowCell']),
-    ...mapActions(['validatePoolBarcode']),
-    formatter(value) {
-      return value.toUpperCase().trim()
-    },
-    setBarcodeState(state) {
-      this.barcodeState = state
-    },
-    setFlowCellValidation(validation) {
-      this.flowCellValidationState = validation
-    },
+})
+
+const flowcellId = computed({
+  get() {
+    return flowCell.value.flowcell_id
   },
+  async set(value) {
+    flowCell.value.flowcell_id = value
+    flowCell.value.validateFlowCellId()
+  },
+})
+
+/**Displays green if valid, red if invalid and no border if empty */
+const flowcell_id_field_colour = computed(() => {
+  return flowCell.value.flowcell_id
+    ? !flowcellErrorsFor('flowcell_id')
+      ? 'border-3 border-solid border-success'
+      : 'border-3 border-solid border-failure focus:border-failure'
+    : ''
+})
+
+/**Displays green if valid, red if invalid and no border if empty */
+const flowcell_barcode_field_colour = computed(() => {
+  return flowCell.value.tube_barcode
+    ? !flowcellErrorsFor('tube_barcode')
+      ? 'border-3 border-solid border-success'
+      : 'border-3 border-solid border-failure focus:border-failure'
+    : ''
+})
+
+/**
+ * green - if both flowcellId and barcode fields contain valid values
+ * red - if any of flowcellId and barcode fields contain invalid values
+ * gray - if both flowcellId and barcode fields are empty
+ * yellow - if one of flowcellId and barcode fields are valid and other is empty
+ */
+const flowcell_bg_colour = computed(() => {
+  const tube_barcode_errors = flowcellErrorsFor('tube_barcode')
+  const flowcell_id_errors = flowcellErrorsFor('flowcell_id')
+  // If the flowcell is empty return gray border
+  if (!flowCell.value.tube_barcode && !flowCell.value.flowcell_id) {
+    return 'border border-3 border-gray-300'
+  }
+
+  // If there are errors in either of the fields return red border
+  if (!!flowcell_id_errors || !!tube_barcode_errors) return 'border border-3 border-failure'
+
+  // If either field is empty return yellow border
+  if (!flowCell.value.tube_barcode || !flowCell.value.flowcell_id)
+    return 'border border-3 border-warning'
+
+  // If both fields are valid return green border
+  return 'border border-3 border-success'
+})
+
+// Checks if the pool attribute should be displayed with an error
+const flowcellErrorsFor = (attribute) => {
+  return flowCell.value?.errors?.[attribute]
+}
+
+const formatter = (value) => {
+  return value.toUpperCase().trim()
 }
 </script>
