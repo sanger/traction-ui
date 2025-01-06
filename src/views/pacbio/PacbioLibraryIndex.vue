@@ -53,6 +53,22 @@
         select-mode="multi"
         @row-selected="(items) => (state.selected = items)"
       >
+        <template #cell(volume)="row">
+          <template v-if="exhausted(row)">
+            <div class="relative">
+              <label class="block text-center w-full">{{ row.item.volume }}</label>
+              <traction-badge
+                id="exhausted-badge"
+                class="absolute top-0 right-0 transform -translate-y translate-x-1/2"
+                colour="sanger-pink"
+                >Exhausted</traction-badge
+              >
+            </div>
+          </template>
+          <template v-else>
+            <label>{{ row.item.volume }}</label>
+          </template>
+        </template>
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
             <span>&check;</span>
@@ -99,6 +115,7 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 import usePacbioLibraryPrint from '@/composables/usePacbioLibraryPrint.js'
+import { isLibraryExhausted } from '@/stores/utilities/pacbioLibraries.js'
 
 /**
  * Following are new Vue 3 features used in this component:
@@ -148,7 +165,7 @@ const state = reactive({
     { key: 'sample_name', label: 'Sample Name', sortable: true },
     { key: 'barcode', label: 'Barcode', sortable: true },
     { key: 'source_identifier', label: 'Source', sortable: true },
-    { key: 'volume', label: 'Initial Volume', sortable: true },
+    { key: 'volume', label: 'Initial Volume' },
     { key: 'concentration', label: 'Concentration', sortable: true },
     { key: 'location', label: 'Location', sortable: true },
     {
@@ -249,5 +266,10 @@ const fetchLibraries = async () => {
 const getEditLibrary = (row) => {
   const value = libraries.value.find((library) => library.id === row.item.id)
   return value
+}
+
+const exhausted = (row) => {
+  const value = getEditLibrary(row)
+  return isLibraryExhausted(value)
 }
 </script>

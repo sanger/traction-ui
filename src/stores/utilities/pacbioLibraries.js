@@ -66,6 +66,16 @@ async function exhaustLibrayVolume(library) {
 }
 
 /**
+ * Checks if the library is exhausted.
+ *
+ * @param {Object} library - The library object to check.
+ * @param {number} library.volume - The current volume of the library.
+ * @param {number} library.used_volume - The used volume of the library.
+ * @returns {boolean} - Returns true if the library is exhausted, otherwise false.
+ */
+const isLibraryExhausted = (library) => library.volume === library.used_volume
+
+/**
  * Updates a library with the given fields and updates the store if successful.
  *
  * @param {Object} libraryFields - The fields of the library to update.
@@ -81,4 +91,9 @@ async function validateAndUpdateLibrary(libraryFields) {
   return { success, errors }
 }
 
-export { validateAndUpdateLibrary, exhaustLibrayVolume, formatAndTransformLibraries }
+export {
+  validateAndUpdateLibrary,
+  exhaustLibrayVolume,
+  formatAndTransformLibraries,
+  isLibraryExhausted,
+}
