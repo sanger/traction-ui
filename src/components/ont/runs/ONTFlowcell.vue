@@ -69,8 +69,7 @@
  * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
 import { useOntRunsStore } from '@/stores/ontRuns'
-import { flowCellType } from '@/stores/utilities/flowCell.js'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   position: {
@@ -85,7 +84,7 @@ const props = defineProps({
 
 const ontRunsStore = useOntRunsStore()
 
-const flowCell = computed(() => ontRunsStore.getFlowCell(props.position) ?? { ...flowCellType() })
+const flowCell = computed(() => ontRunsStore.getOrCreateFlowCell(props.position))
 
 const barcode = computed({
   get() {
@@ -149,11 +148,6 @@ const flowcell_bg_colour = computed(() => {
 
   // If both fields are valid return green border
   return 'border border-3 border-success'
-})
-
-onMounted(() => {
-  const flowCell = ontRunsStore.getFlowCell(props.position)
-  if (!flowCell) ontRunsStore.setNewFlowCell(props.position)
 })
 
 // Checks if the pool attribute should be displayed with an error

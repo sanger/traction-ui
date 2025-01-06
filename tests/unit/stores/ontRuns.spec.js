@@ -58,6 +58,32 @@ describe('useOntRunsStore', () => {
       const actual = store.runRequest
       expect(actual).toEqual('aRunRequest')
     })
+
+    describe('#getOrCreateFlowCell', () => {
+      it('returns a flowcell if one is found at the given position', () => {
+        store.currentRun = {
+          flowcell_attributes: [{ tube_barcode: '123', flowcell_id: '1', position: 1 }],
+        }
+        const actual = store.getOrCreateFlowCell(1)
+        expect(actual).toEqual({ tube_barcode: '123', flowcell_id: '1', position: 1 })
+      })
+
+      it('creates a new flowcell if one does not exist at the given position', () => {
+        store.currentRun = {
+          flowcell_attributes: [],
+        }
+        const actual = store.getOrCreateFlowCell(1)
+        expect(actual).toEqual(
+          expect.objectContaining({
+            position: 1,
+            errors: {},
+            flowcell_id: '',
+            tube_barcode: '',
+            type: 'FlowCell',
+          }),
+        )
+      })
+    })
   })
 
   describe('actions', () => {

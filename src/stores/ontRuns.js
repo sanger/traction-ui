@@ -65,8 +65,15 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const rootStore = useRootStore()
       return rootStore.api.traction.ont.runs
     },
-    getFlowCell: (state) => (position) => {
-      return state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
+    getOrCreateFlowCell: (state) => (position) => {
+      // Find the flowcell with the given position
+      let flowcell = state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
+      // If the flowcell doesn't exist, create a new one
+      if (!flowcell) {
+        flowcell = { ...flowCellType(), position }
+        state.currentRun.flowcell_attributes.push(flowcell)
+      }
+      return flowcell
     },
   },
   actions: {
