@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 
 /**
  * Creates a QC results upload resource.

@@ -487,7 +487,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         create = vi.fn()
-        rootStore.api.v2 = { traction: { pacbio: { pools: { create } } } }
+        rootStore.api = { traction: { pacbio: { pools: { create } } } }
       })
 
       const used_aliquot1 = createUsedAliquot({
@@ -640,7 +640,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         update = vi.fn()
-        rootStore.api.v2 = { traction: { pacbio: { pools: { update } } } }
+        rootStore.api = { traction: { pacbio: { pools: { update } } } }
         used_aliquots = { _1: used_aliquot1, _2: used_aliquot2 }
         store.used_aliquots = used_aliquots
         store.pool = pool
@@ -694,7 +694,7 @@ describe('usePacbioPoolCreateStore', () => {
 
       beforeEach(() => {
         find = vi.fn()
-        rootStore.api.v2 = { traction: { pacbio: { pools: { find } } } }
+        rootStore.api = { traction: { pacbio: { pools: { find } } } }
         const pacbioRootStore = usePacbioRootStore()
         pacbioRootStore.tagSets = pacbioTagSetFactory.storeData.tagSets
         pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
@@ -1076,7 +1076,7 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v2 = { traction: { pacbio: { plates: { get } } } }
+        rootStore.api = { traction: { pacbio: { plates: { get } } } }
         store.selectPlate = vi.fn()
       })
 
@@ -1115,7 +1115,7 @@ describe('usePacbioPoolCreateStore', () => {
       const get = vi.fn()
 
       beforeEach(() => {
-        rootStore.api.v2 = { traction: { pacbio: { tubes: { get } } } }
+        rootStore.api = { traction: { pacbio: { tubes: { get } } } }
         store.selectPlate = vi.fn()
       })
 

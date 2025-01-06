@@ -36,7 +36,7 @@ describe('usePacbioPools', () => {
         get = vi.fn()
         store = usePacbioPoolsStore()
         rootStore = useRootStore()
-        rootStore.api.v2.traction.pacbio.pools.get = get
+        rootStore.api.traction.pacbio.pools.get = get
       })
 
       it('successfully', async () => {

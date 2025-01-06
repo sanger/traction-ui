@@ -1,4 +1,4 @@
-import { handleResponse, newResponse, parsePrintMyBarcodeErrors } from '@/api/v2/ResponseHelper'
+import { handleResponse, newResponse, parsePrintMyBarcodeErrors } from '@/api/ResponseHelper.js'
 import { it } from 'vitest'
 
 describe('ResponseHelper', () => {

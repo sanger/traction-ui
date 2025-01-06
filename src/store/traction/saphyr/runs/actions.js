@@ -1,5 +1,5 @@
-import handleResponse from '@/api/v2/ResponseHelper.js'
-import * as Run from '@/api/v2/SaphyrRun'
+import handleResponse from '@/api/ResponseHelper.js'
+import * as Run from '@/api/SaphyrRun'
 import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 
 const setRuns = async ({ commit, getters }) => {

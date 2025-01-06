@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { handleResponse } from '@/api/v2/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
@@ -69,7 +69,7 @@ const useOntRootStore = defineStore('ontRoot', {
      */
     async fetchOntRuns(filter, page) {
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.ont.runs
+      const request = rootStore.api.traction.ont.runs
       const promise = request.get({ page, ...filter, include: 'instrument' })
 
       const response = await handleResponse(promise)
@@ -86,7 +86,7 @@ const useOntRootStore = defineStore('ontRoot', {
     },
     async setInstruments() {
       const rootStore = useRootStore()
-      const request = rootStore.api.v2.traction.ont.instruments
+      const request = rootStore.api.traction.ont.instruments
       const promise = request.get()
       const response = await handleResponse(promise)
       const { success, body: { data } = {}, errors = {} } = response

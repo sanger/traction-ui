@@ -1,14 +1,20 @@
 import useAlert from '@/composables/useAlert.js'
 import store from '@/store'
-import { createPinia, setActivePinia } from 'pinia'
+import { useRouter } from 'vue-router'
+
+// we need to mock the vue-router to avoid the following warning:
+// [Vue warn]: inject() can only be used inside setup() or functional components.
+vi.mock('vue-router')
 
 describe('#useAlert', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
+  useRouter.mockReturnValue({
+    push: vi.fn(),
   })
+
+  beforeEach(() => {
+    useRouter().push.mockReset()
+  })
+
   it('commits addMessage on show Alert call', () => {
     const mockCommit = vi.fn().mockResolvedValue({})
     store.commit = mockCommit

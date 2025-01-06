@@ -8,7 +8,7 @@ const printerFactory = PrinterFactory()
 const plugins = [
   ({ store }) => {
     if (store.$id === 'root') {
-      store.api.v2.traction.printers.get = vi.fn().mockResolvedValue(printerFactory.responses.fetch)
+      store.api.traction.printers.get = vi.fn().mockResolvedValue(printerFactory.responses.fetch)
     }
   },
 ]

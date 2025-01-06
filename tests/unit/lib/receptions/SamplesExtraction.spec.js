@@ -6,7 +6,7 @@ describe('SamplesExtraction', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['SE108532I']
     let request
-    const requests = store.getters.api.v2
+    const requests = store.getters.api
 
     beforeEach(() => {
       request = vi.spyOn(requests.sampleExtraction.assets, 'get')
@@ -63,7 +63,7 @@ describe('SamplesExtraction', () => {
       }
       request.mockResolvedValue(failedResponse)
 
-      expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
+      await expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })

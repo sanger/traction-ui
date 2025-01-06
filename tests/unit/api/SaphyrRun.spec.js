@@ -1,7 +1,7 @@
-import * as Run from '@/api/v2/SaphyrRun'
-import build from '@/api/v2/ApiBuilder'
-import config from '@/api/Config'
-import { handleResponse } from '@/api/v2/ResponseHelper.js'
+import * as Run from '@/api/SaphyrRun.js'
+import build from '@/api/ApiBuilder.js'
+import config from '@/api/Config.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
 
 describe('Run', () => {
   let failedResponse, chipBarcode, run

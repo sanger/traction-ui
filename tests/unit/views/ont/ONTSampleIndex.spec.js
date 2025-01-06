@@ -15,7 +15,7 @@ describe('OntSampleIndex', () => {
   let wrapper
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.v2.traction.ont.requests, 'get')
+    const get = vi.spyOn(store.state.api.traction.ont.requests, 'get')
     get.mockReturnValue(ontRequestFactory.responses.fetch)
 
     wrapper = mount(ONTSampleIndex, {
