@@ -4,6 +4,7 @@ import {
   formatAndTransformLibraries,
   validateAndUpdateLibrary,
   exhaustLibrayVolume,
+  isLibraryExhausted,
 } from '@/stores/utilities/pacbioLibraries.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 
@@ -146,6 +147,33 @@ describe('pacbioLibraries', () => {
       expect(library.volume).toEqual(library.used_volume)
       expect(update).toHaveBeenCalled()
       expect(success).toBeTruthy()
+    })
+  })
+
+  describe('isLibraryExhausted', () => {
+    let update
+    beforeEach(() => {
+      rootStore = useRootStore()
+      update = vi.fn()
+      rootStore.api.traction.pacbio.libraries.update = update
+    })
+    it('returns true if volume is equal to used_volume', async () => {
+      const library = {
+        id: 1,
+        volume: 15,
+        used_volume: 15,
+      }
+      const isExhausted = isLibraryExhausted(library)
+      expect(isExhausted).toBeTruthy()
+    })
+    it('returns false if volume is not equal to used_volume', async () => {
+      const library = {
+        id: 1,
+        volume: 15,
+        used_volume: 10,
+      }
+      const isExhausted = isLibraryExhausted(library)
+      expect(isExhausted).toBeFalsy()
     })
   })
 })

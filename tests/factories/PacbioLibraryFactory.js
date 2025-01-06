@@ -23,7 +23,7 @@ const createStoreData = ({ data, included }) => {
  * Factory for creating a pacbio library
  * @returns a base factory object with the libraries data
  */
-const PacbioLibraryFactory = ({ relationships = true } = {}) => {
+const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) => {
   const data = {
     data: [
       {
@@ -35,6 +35,7 @@ const PacbioLibraryFactory = ({ relationships = true } = {}) => {
         attributes: {
           state: 'pending',
           volume: 1,
+          used_volume: exhausted ? 1 : 0,
           concentration: 1,
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,
