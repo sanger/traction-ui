@@ -3,119 +3,106 @@ import {
   scanBarcodesInLabwhereLocation,
   exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
-import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
 import * as pacbioLibraryService from '@/services/traction/PacbioLibrary.js'
+import * as helpers from '@/services/labwhere/helpers.js'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
-const mockFetch = vi.fn()
-const labwhereLocationsFactory = LabwhereLocationsFactory()
 
-beforeEach(() => {
-  global.fetch = mockFetch
-})
-
-afterEach(() => {
-  vi.clearAllMocks()
-})
+const spyPost = vi.fn()
+const mockFetchWrapper = {
+  post: spyPost,
+  baseUrl: 'http://test',
+  serviceName: 'test',
+}
 
 describe('getLabwhereLocations', () => {
+  let spyExtractLocations
+  beforeEach(() => {
+    spyExtractLocations = vi.spyOn(helpers, 'extractLocationsForLabwares')
+  })
+
   it('should return an error if no barcodes are provided', async () => {
-    const result = await getLabwhereLocations([])
+    const result = await getLabwhereLocations([], mockFetchWrapper)
     expect(result).toEqual({ success: false, errors: ['No barcodes provided'], data: {} })
   })
 
-  it('should return an error if fetch fails', async () => {
-    mockFetch.mockRejectedValue(new Error('Network error'))
-    const result = await getLabwhereLocations(['barcode1'])
-    expect(result).toEqual({
+  it('should not call extractLocationsForLabwares if post fails', async () => {
+    const response = {
       success: false,
       errors: ['Failed to access LabWhere: Network error'],
       data: {},
-    })
+    }
+    spyPost.mockReturnValue(response)
+    const result = await getLabwhereLocations(['barcode1'], mockFetchWrapper)
+    expect(result).toEqual(response)
+    expect(spyExtractLocations).not.toHaveBeenCalled()
   })
 
-  it('should return an error if response is not ok', async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      json: async () => ({ errors: ['Some error'] }),
-    })
-    const result = await getLabwhereLocations(['barcode1'])
-    expect(result).toEqual({ success: false, errors: ['Some error'], data: {} })
-  })
-
-  it('should return locations if fetch is successful', async () => {
-    const mockResponse = [
+  it('should call extractLocationsForLabwares if post succeeds', async () => {
+    spyPost.mockReturnValue({ success: true })
+    const data = [
       {
         barcode: 'barcode1',
-        location: labwhereLocationsFactory.content[0],
+        location: 'location1',
       },
       {
         barcode: 'barcode2',
-        location: labwhereLocationsFactory.content[1],
+        location: 'location2',
       },
     ]
-    const expectedData = {
-      barcode1: mockResponse[0].location,
-      barcode2: mockResponse[1].location,
-      barcode3: {},
-    }
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockResponse,
-    })
-
-    const result = await getLabwhereLocations(['barcode1', 'barcode2', 'barcode3'])
-    expect(result).toEqual({ success: true, errors: [], data: expectedData })
+    spyExtractLocations.mockReturnValue(data)
+    const result = await getLabwhereLocations(['barcode1'], mockFetchWrapper)
+    expect(result).toEqual({ success: true, data })
+    expect(spyExtractLocations).toHaveBeenCalled()
   })
 })
 describe('scanBarcodesInLabwhereLocation', () => {
   it('should return an error if required parameters are missing', async () => {
-    const result = await scanBarcodesInLabwhereLocation('', '', '', null)
+    const result = await scanBarcodesInLabwhereLocation('', '', '', null, mockFetchWrapper)
     expect(result).toEqual({
       success: false,
       errors: ['Required parameters are missing for the Scan In operation'],
     })
   })
 
-  it('should return an error if fetch fails', async () => {
-    mockFetch.mockRejectedValue(new Error('Network error'))
-    const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', null)
+  it('should return formatted result for post response', async () => {
+    spyPost.mockResolvedValue({
+      success: true,
+      errors: [],
+      data: { message: 'Labware stored to location 1' },
+    })
+    const result = await scanBarcodesInLabwhereLocation(
+      'user123',
+      'location123',
+      'barcode1',
+      null,
+      mockFetchWrapper,
+    )
+    expect(spyPost).toHaveBeenCalledWith(
+      '/api/scans',
+      expect.any(String),
+      'application/x-www-form-urlencoded',
+    )
+    const callArgs = spyPost.mock.calls[0]
+    const params = new URLSearchParams(callArgs[1])
+    expect(params.get('scan[start_position]')).toBe(null)
+    expect(params.get('scan[user_code]')).toBe('user123')
+    expect(params.get('scan[labware_barcodes]')).toBe('barcode1')
+    expect(params.get('scan[location_barcode]')).toBe('location123')
     expect(result).toEqual({
-      success: false,
-      errors: ['Failed to access LabWhere: Network error'],
+      success: true,
+      errors: [],
+      message: 'Labware stored to location 1',
     })
-  })
-
-  it('should return an error if response is not ok', async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      json: async () => ({ errors: ['Some error'] }),
-    })
-    const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', null)
-    expect(result).toEqual({ success: false, errors: ['Some error'] })
-  })
-
-  it('should return success if fetch is successful', async () => {
-    const mockResponse = { success: true, errors: [], message: 'Labware stored to location 1' }
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockResponse,
-    })
-
-    const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', null)
-    expect(result).toEqual(mockResponse)
   })
 
   it('should include start position if provided', async () => {
-    const mockResponse = { success: true, errors: [] }
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => mockResponse,
-    })
-
-    const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1)
-    expect(result).toEqual(mockResponse)
+    spyPost.mockResolvedValue({ success: true, errors: [], data: { message: '' } })
+    await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1, mockFetchWrapper)
+    const callArgs = spyPost.mock.calls[0]
+    const params = new URLSearchParams(callArgs[1])
+    expect(params.get('scan[start_position]')).toBe('1')
   })
 })
 

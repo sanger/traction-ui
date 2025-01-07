@@ -12,6 +12,7 @@ const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
  *
  * @param {string[]} labwhereBarcodes - An array of labware barcodes to search for.
+ * @param {Object} [fetchWrapper=labwhereFetch] - The fetch wrapper to use for the request (optional).
  * @returns {Promise<{success: boolean, errors: string[], data: Object}>} - A promise that resolves to an object containing the success status, any errors, and the data (locations).
  *
  * @example
@@ -24,7 +25,7 @@ const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
  *   }
  * });
  */
-const getLabwhereLocations = async (labwhereBarcodes) => {
+const getLabwhereLocations = async (labwhereBarcodes, fetchWrapper = labwhereFetch) => {
   // If no barcodes are provided, return a failed response.
   if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
     return { success: false, errors: ['No barcodes provided'], data: {} }
@@ -34,7 +35,7 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
     params.append('barcodes[]', barcode)
   })
 
-  const response = await labwhereFetch.post('/api/labwares/searches', params, 'multipart/form-data')
+  const response = await fetchWrapper.post('/api/labwares/searches', params, 'multipart/form-data')
 
   if (response.success) {
     response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
@@ -54,6 +55,7 @@ const getLabwhereLocations = async (labwhereBarcodes) => {
  * @param {string} locationBarcode - The barcode of the location where labware will be stored.
  * @param {string} labwareBarcodes - The barcodes of the labware (library barcode or the plate / tube barcode for samples) to be stored, separated by newlines.
  * @param {number|null} [startPosition=null] - The starting position for storing the labware (optional).
+ * @param {Object} [fetchWrapper=labwhereFetch] - The fetch wrapper to use for the request (optional).
  * @returns {Promise<{success: boolean, errors: string[]}>} - A promise that resolves to an object containing the success status, any errors, and the data.
  *
  * @example
@@ -74,6 +76,7 @@ const scanBarcodesInLabwhereLocation = async (
   locationBarcode,
   labwareBarcodes,
   startPosition,
+  fetchWrapper = labwhereFetch,
 ) => {
   if (!userCode || !labwareBarcodes) {
     return { success: false, errors: ['Required parameters are missing for the Scan In operation'] }
@@ -88,7 +91,7 @@ const scanBarcodesInLabwhereLocation = async (
   if (startPosition) {
     params['scan[start_position]'] = startPosition
   }
-  const response = await labwhereFetch.post(
+  const response = await fetchWrapper.post(
     '/api/scans',
     new URLSearchParams(params).toString(),
     'application/x-www-form-urlencoded',
