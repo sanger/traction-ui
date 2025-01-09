@@ -1,16 +1,15 @@
 <template>
   <div
-    class="mt-4 border-t-4 border-sp rounded-md space-y-1 bg-sdb-400 text-gray-100"
+    class="border-2 border-sdb-200 rounded-md bg-white text-sdb-400 shadow-custom-pink"
     :data-pipeline="title"
   >
-    <div class="text-center text-2xl" data-attribute="title">{{ title }}</div>
-    <div class="text-center text-xs italic px-2" data-attribute="description">
-      {{ description }}
+    <div class="text-left p-4 border-b-2 border-gray-200 bg-gray-100 rounded-md">
+      <h3 class="text-xl" data-attribute="title">{{ title }}</h3>
+      <span class="text-gray-600 font-light" data-attribute="description">
+        {{ description }}
+      </span>
     </div>
-    <div class="pt-2">
-      <h1 class="border-b-2 border-sp" />
-    </div>
-    <div class="flex flex-row flex-wrap justify-center gap-y-8 gap-x-3 py-8 px-3">
+    <div class="flex flex-row flex-wrap gap-y-4 gap-x-3 py-4 px-4">
       <slot />
     </div>
   </div>

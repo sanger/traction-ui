@@ -1,15 +1,19 @@
 <template>
   <div class="flex flex-col justify-start">
-    <traction-menu :border="true"
-      ><traction-menu-item
-        v-for="(pipelineRoute, index) in pipelineInfo.routes"
-        :key="index"
-        :active="isActive(pipelineRoute)"
-        color="blue"
-        @click="setSource(index)"
-        >{{ humanise(pipelineRoute) }}</traction-menu-item
-      >
-    </traction-menu>
+    <div class="flex flex-row border-b-2 border-gray-200">
+      <traction-menu>
+        <div v-for="(pipelineRoute, index) in pipelineInfo.routes" :key="index">
+          <router-link
+            v-if="!isActive(pipelineRoute)"
+            :class="routeClass(pipelineRoute)"
+            :to="`/${pipelineInfo.name}/${pipelineRoute}`"
+            >{{ humanise(pipelineRoute) }}
+          </router-link>
+          <span v-else :class="routeClass(pipelineRoute)">{{ humanise(pipelineRoute) }} </span>
+        </div>
+      </traction-menu>
+      <span class="flex items-center text-xl pl-4 text-gray-400">{{ pipelineInfo.title }}</span>
+    </div>
     <router-view class="mt-2" />
   </div>
 </template>
@@ -17,7 +21,6 @@
 <script>
 import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
-import { isNavigationFailure, NavigationFailureType } from 'vue-router'
 export default {
   name: 'PipelineView',
   props: {
@@ -40,22 +43,14 @@ export default {
     path(route) {
       return '/' + this.pipelineInfo.name + '/' + route
     },
-    /** Callback handler for tab item selection - Each tab selection navigates user to a different page which
-     * is handled by the router.push method**/
-    setSource(index) {
-      this.sourceIndex = index
-      // If new tab is already active, do nothing
-      if (this.isActive(this.pipelineInfo.routes[index])) {
-        return
-      }
-      this.$router.push({ path: this.path(this.pipelineInfo.routes[index]) }).catch((error) => {
-        if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
-          console.error(error)
-        }
-      })
-    },
     isActive(pipelineRoute) {
       return this.$route.path === this.path(pipelineRoute)
+    },
+    routeClass(route) {
+      return `text-black hover:bg-sdb-300 hover:text-white flex
+        py-1 rounded-t-md w-24 justify-center
+        transition-colors duration-100 ease-in-out cursor-pointer
+        ${this.isActive(route) ? 'text-white bg-sdb-300' : 'text-black bg-gray-200'}`
     },
     humanise,
   },
