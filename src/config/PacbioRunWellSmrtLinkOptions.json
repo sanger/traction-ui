@@ -918,7 +918,7 @@
       "default": true,
       "props": {
         "options": ["True", "False"],
-        "dataAttribute": "full_resolution_base_qual"
+        "dataAttribute": "full-resolution-base-qual"
       }
     }
   ],

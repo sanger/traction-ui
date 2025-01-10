@@ -234,6 +234,76 @@ describe('Pacbio Run Create view', () => {
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
+  it('Creates a Revio run successfully - v25_1_revio', () => {
+    const dataTransfer = new DataTransfer()
+
+    // Checks the PacbioRunInfoEdit component
+    cy.visit('#/pacbio/runs')
+    cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('[data-attribute="system_name"]').select('Revio')
+    cy.get('[data-attribute="smrt_link_version"]').select('v25_1_revio')
+
+    // Type in the barcode of the pool/library being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-22')
+    cy.get('button').contains('Search').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 1
+    cy.get('[data-attribute=pacbio-run-plate-1]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="use-adaptive-loading"]').select('True')
+    cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
+    // this is related to the available volume of the library so better to use the data
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+
+    cy.get('#update').click()
+
+    cy.get('[data-attribute="message"]').within(() => {
+      cy.get('[data-attribute="dismiss"]').click()
+    })
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 2
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('[data-attribute="use-adaptive-loading"]').select('True')
+    cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
+    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+
+    cy.get('#update').click()
+
+    cy.get('button').contains('Create').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully created')
+  })
+
   it('Creates a run unsuccessfully', () => {
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
