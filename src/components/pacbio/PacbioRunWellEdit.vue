@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
@@ -331,7 +331,7 @@ const handleCustomProps = (component) => {
       formatter: formatLoadingTargetValue,
     }
   }
-  return component.props
+  return { ...component.props, ...component.wellProps }
 }
 
 //handleCustomEvents function is used to handle custom events for the component

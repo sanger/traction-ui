@@ -12,7 +12,7 @@ import {
 } from '@/stores/utilities/run'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { defaultAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
@@ -114,7 +114,7 @@ describe('usePacbioRunCreateStore', () => {
           wells: {
             [plateNumber]: {},
           },
-          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
+          defaultWellAttributes: { ...defaultAttributes() },
         }
         const position = 'A1'
         const well = store.getOrCreateWell(position, plateNumber)
@@ -128,7 +128,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
+          defaultWellAttributes: { ...defaultAttributes() },
         }
         const gottenWell = store.getOrCreateWell(position, plateNumber)
         expect(gottenWell).toEqual(well)
@@ -151,7 +151,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
+          defaultWellAttributes: { ...defaultAttributes() },
           aliquots: {
             1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
             2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
@@ -174,7 +174,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: {} },
-          defaultWellAttributes: { ...PacbioRunWellSmrtLinkOptions.defaultAttributes },
+          defaultWellAttributes: { ...defaultAttributes() },
         }
         const gottenWell = store.getWell(plateNumber, position)
         expect(gottenWell).toBeUndefined()

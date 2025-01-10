@@ -3,7 +3,7 @@ import { mount, createTestingPinia, nextTick } from '@support/testHelper.js'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 

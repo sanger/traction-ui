@@ -11,7 +11,7 @@ import {
   dataToObjectByPosition,
 } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run'
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { defaultAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -458,7 +458,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Sets the defaultWellAttributes
      */
     setDefaultWellAttributes() {
-      this.defaultWellAttributes = { ...PacbioRunWellSmrtLinkOptions.defaultAttributes }
+      this.defaultWellAttributes = { ...defaultAttributes(this.run) }
     },
 
     /**
@@ -565,6 +565,17 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Return the total available volume rounded to 2 decimal places
       return parseFloat(total_available_volume)
+    },
+
+    /**
+     * Updates all wells use_adaptive_loading attribute to the given value
+     */
+    setAdaptiveLoading(value) {
+      Object.values(this.wells).forEach((plate) => {
+        Object.values(plate).forEach((well) => {
+          well.use_adaptive_loading = value
+        })
+      })
     },
   },
 })
