@@ -6,7 +6,7 @@ describe('Pacbio Run Create view', () => {
   beforeEach(() => {
     cy.wrap(PacbioRunFactory()).as('pacbioRunFactory')
     cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
-      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1', {
         statusCode: 200,
         body: pacbioRunFactory.content,
       })
