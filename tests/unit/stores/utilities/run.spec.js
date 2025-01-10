@@ -309,6 +309,47 @@ describe('run.js', () => {
       })
     })
 
+    it('will remove read-only run attributes', () => {
+      const run = {
+        id: 1,
+        system_name: 'Revio',
+        dna_control_complex_box_barcode: null,
+        // these are read-only attributes
+        adaptive_loading: 'True',
+        sequencing_kit_box_barcodes: ['Plate 1: test'],
+      }
+
+      const payload = createPayload({
+        run,
+        plates: plates.new,
+        wells: wells.new,
+        smrtLinkVersion: smrtLinkVersions['1'],
+        instrumentType: PacbioInstrumentTypes.Revio,
+      })
+
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            id: 1,
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            system_name: PacbioInstrumentTypes.Revio.name,
+            dna_control_complex_box_barcode: null,
+            plates_attributes: [
+              {
+                ...plates.new[1],
+                wells_attributes: createWellsPayload(wells.new[1]),
+              },
+              {
+                ...plates.new[2],
+                wells_attributes: createWellsPayload(wells.new[2]),
+              },
+            ],
+          },
+        },
+      })
+    })
+
     it('will create an existing run payload', () => {
       const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: null }
       const { id, ...attributes } = aRun

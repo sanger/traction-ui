@@ -141,6 +141,10 @@ const createRunType = ({ id }) => {
  * creates a JSONAPI payload for a run
  */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
+  // Removes read only attributes
+  delete run['adaptive_loading']
+  delete run['sequencing_kit_box_barcodes']
+
   return {
     data: {
       type: 'runs',
