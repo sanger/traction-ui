@@ -12,7 +12,7 @@ const pacbioRequestFactory = PacbioRequestFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('pacbioLibraryBatches', () => {
-  const requests = pacbioRequestFactory.storeData.requests
+  const requests = pacbioRequestFactory.storeData.requestsArray
   const tags = Object.values(pacbioTagSetFactory.storeData.tags)
 
   describe('validateAndFormatAsPayloadData', () => {
@@ -118,7 +118,7 @@ describe('pacbioLibraryBatches', () => {
         },
       }
       tagSet = pacbioTagSetFactory.storeData.selected.tagSet
-      requestsData = pacbioRequestFactory.storeData.requests
+      requestsData = pacbioRequestFactory.storeData.requestsArray
       sources = requestsData.map((r) => r.source_identifier)
     })
 
@@ -132,7 +132,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
+      expect(requests).toEqual(pacbioRequestFactory.storeData.requestsArray)
       expect(tags).toEqual(Object.values(pacbioTagSetFactory.storeData.tags))
     })
 
@@ -148,7 +148,7 @@ describe('pacbioLibraryBatches', () => {
         include: 'tags',
         filter: { name: tagSet.name },
       })
-      expect(requests).toEqual(pacbioRequestFactory.storeData.requests)
+      expect(requests).toEqual(pacbioRequestFactory.storeData.requestsArray)
       expect(tags).toEqual([])
     })
 
