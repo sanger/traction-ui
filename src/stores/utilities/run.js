@@ -141,7 +141,6 @@ const createRunType = ({ id }) => {
  * creates a JSONAPI payload for a run
  */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
-
   return {
     data: {
       type: 'runs',
