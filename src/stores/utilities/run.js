@@ -141,16 +141,13 @@ const createRunType = ({ id }) => {
  * creates a JSONAPI payload for a run
  */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
-  // Removes read only attributes
-  delete run['adaptive_loading']
-  delete run['sequencing_kit_box_barcodes']
 
   return {
     data: {
       type: 'runs',
       id,
       attributes: {
-        ...run,
+        ...removeReadOnlyAttributes(run),
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
         plates_attributes: Object.values(plates)
@@ -199,6 +196,18 @@ const createWellsPayload = (wells) => {
       // flatten the array
       .flat()
   )
+}
+
+/**
+ * @param {run} - A run object
+ * @returns {Object} - A run object with read only attributes removed
+ */
+const removeReadOnlyAttributes = (run) => {
+  // Removes read only attributes
+  // eslint-disable-next-line no-unused-vars
+  const { adaptive_loading, sequencing_kit_box_barcodes, ...filteredRun } = run
+
+  return filteredRun
 }
 
 export {
