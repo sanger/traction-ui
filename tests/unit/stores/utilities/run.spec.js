@@ -10,7 +10,7 @@ import {
 } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { defaultAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 
 const smrtLinkVersions = {
   1: {
@@ -101,7 +101,7 @@ describe('run.js', () => {
   describe('newWell', () => {
     it('will have the default well attributes if nothing is changed', () => {
       expect(newWell({ position: 'A1' })).toEqual({
-        ...defaultAttributes(),
+        ...defaultSmrtLinkAttributes(),
         position: 'A1',
         row: 'A',
         column: '1',
@@ -116,7 +116,7 @@ describe('run.js', () => {
         on_plate_loading_concentration: 3.5,
       }
       expect(newWell({ position: 'A1', ...attributes })).toEqual({
-        ...defaultAttributes(),
+        ...defaultSmrtLinkAttributes(),
         ...attributes,
         position: 'A1',
         row: 'A',

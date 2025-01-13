@@ -1,4 +1,4 @@
-import { defaultAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 
 /**
  *
@@ -54,7 +54,7 @@ const splitPosition = (position) => {
 const newWell = ({ position, ...attributes }) => {
   const [row, column] = splitPosition(position)
   return {
-    ...defaultAttributes(),
+    ...defaultSmrtLinkAttributes(),
     used_aliquots: [],
     ...attributes,
     position,

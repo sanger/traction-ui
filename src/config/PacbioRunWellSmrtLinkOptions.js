@@ -956,13 +956,13 @@ const PacbioRunWellSmrtLinkOptions = {
 }
 
 /**
- * defaultAttributes
+ * defaultSmrtLinkAttributes
  * The default attributes for the Pacbio Run Well Defaults.
  *
  * @param {Object} run The run object.
  * @returns {Object} An object that contains the default attributes for the Pacbio Run Well Defaults.
  */
-const defaultAttributes = (run = {}) => {
+const defaultSmrtLinkAttributes = (run = {}) => {
   return {
     movie_time: null,
     ccs_analysis_output: 'Yes',
@@ -985,4 +985,4 @@ const defaultAttributes = (run = {}) => {
   }
 }
 
-export { PacbioRunWellSmrtLinkOptions, defaultAttributes }
+export { PacbioRunWellSmrtLinkOptions, defaultSmrtLinkAttributes }

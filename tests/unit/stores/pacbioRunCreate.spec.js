@@ -12,7 +12,7 @@ import {
 } from '@/stores/utilities/run'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { defaultAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
@@ -114,7 +114,7 @@ describe('usePacbioRunCreateStore', () => {
           wells: {
             [plateNumber]: {},
           },
-          defaultWellAttributes: { ...defaultAttributes() },
+          defaultWellAttributes: { ...defaultSmrtLinkAttributes() },
         }
         const position = 'A1'
         const well = store.getOrCreateWell(position, plateNumber)
@@ -128,7 +128,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...defaultAttributes() },
+          defaultWellAttributes: { ...defaultSmrtLinkAttributes() },
         }
         const gottenWell = store.getOrCreateWell(position, plateNumber)
         expect(gottenWell).toEqual(well)
@@ -151,7 +151,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: { [position]: well } },
-          defaultWellAttributes: { ...defaultAttributes() },
+          defaultWellAttributes: { ...defaultSmrtLinkAttributes() },
           aliquots: {
             1: { id: '1', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '1' },
             2: { id: '2', type: 'aliquots', source_type: 'Pacbio::Pool', source_id: '2' },
@@ -174,7 +174,7 @@ describe('usePacbioRunCreateStore', () => {
         store.$state = {
           ...store.$state,
           wells: { 1: {} },
-          defaultWellAttributes: { ...defaultAttributes() },
+          defaultWellAttributes: { ...defaultSmrtLinkAttributes() },
         }
         const gottenWell = store.getWell(plateNumber, position)
         expect(gottenWell).toBeUndefined()
@@ -900,6 +900,74 @@ describe('usePacbioRunCreateStore', () => {
             volume: 10,
           })
           expect(available_volume).toEqual(expected_available_volume)
+        })
+      })
+    })
+
+    describe('setAdaptiveLoading', () => {
+      it('sets the adaptive loading for all wells in a run', () => {
+        const store = usePacbioRunCreateStore()
+
+        store.$state = {
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                use_adaptive_loading: 'False',
+                used_aliquots: [
+                  {
+                    id: '1',
+                    type: 'aliquots',
+                    volume: 10,
+                    source_type: 'Pacbio::Library',
+                    source_id: '1',
+                  },
+                ],
+              },
+              B1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                use_adaptive_loading: 'False',
+                used_aliquots: [
+                  {
+                    id: '1',
+                    type: 'aliquots',
+                    volume: 10,
+                    source_type: 'Pacbio::Library',
+                    source_id: '1',
+                  },
+                ],
+              },
+            },
+            2: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                use_adaptive_loading: 'False',
+                used_aliquots: [
+                  {
+                    id: '1',
+                    type: 'aliquots',
+                    volume: 10,
+                    source_type: 'Pacbio::Library',
+                    source_id: '1',
+                  },
+                ],
+              },
+            },
+          },
+        }
+
+        store.setAdaptiveLoading('True')
+
+        Object.values(store.wells).forEach((plate) => {
+          Object.values(plate).forEach((well) => {
+            expect(well.use_adaptive_loading).toEqual('True')
+          })
         })
       })
     })
