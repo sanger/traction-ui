@@ -265,7 +265,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
-    cy.get('[data-attribute="use-adaptive-loading"]').select('True')
+    // Adaptive loading is disabled on a per-well basis and controlled by the well defaults value
+    cy.get('[data-attribute="use-adaptive-loading"]')
+      .should('have.value', 'False')
+      .and('be.disabled')
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
     // this is related to the available volume of the library so better to use the data
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
@@ -294,7 +297,11 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
-    cy.get('[data-attribute="use-adaptive-loading"]').select('True')
+    // Adaptive loading is disabled on a per-well basis and controlled by the well defaults value
+    cy.get('[data-attribute="use-adaptive-loading"]')
+      .should('have.value', 'False')
+      .and('be.disabled')
+
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
     cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
 
