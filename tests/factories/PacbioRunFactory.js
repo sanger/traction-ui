@@ -125,6 +125,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
             ' TRAC-2-10185 212pM  TRAC-2-11561 258pM  TRAC-2-11562 197pM  TRAC-2-11563 221pM',
           pacbio_smrt_link_version_id: 5,
           plates_attributes: null,
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1', 'Plate 2: skbb-2'],
         },
         relationships: {
           plates: {
@@ -158,6 +160,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           comments: ' TRAC-2-10797 81pM  TRAC-2-9452 81pM  TRAC-2-10748 81pM  TRAC-2-10483 77pM',
           pacbio_smrt_link_version_id: 4,
           plates_attributes: null,
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1'],
         },
         relationships: {
           plates: {
@@ -189,6 +193,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Sequel IIe',
           pacbio_smrt_link_version_id: 2,
           created_at: '11/09/2019 01:11',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1'],
         },
         relationships: {
           plates: {
@@ -214,6 +220,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Sequel IIe',
           pacbio_smrt_link_version_id: 2,
           created_at: '12/09/2019 02:22',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1'],
         },
         relationships: {
           plates: {
@@ -239,6 +247,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Sequel IIe',
           pacbio_smrt_link_version_id: 2,
           created_at: '10/09/2019 02:22',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1'],
         },
         relationships: {
           plates: {
@@ -264,6 +274,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Revio',
           pacbio_smrt_link_version_id: 3,
           created_at: '10/09/2019 02:22',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1', 'Plate 2: skbb-2'],
         },
         relationships: {
           plates: {
@@ -289,6 +301,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Revio',
           pacbio_smrt_link_version_id: 3,
           created_at: '10/09/2019 02:22',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1', 'Plate 2: skbb-2'],
         },
         relationships: {
           plates: {
@@ -314,6 +328,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Revio',
           pacbio_smrt_link_version_id: 5,
           created_at: '10/09/2019 02:22',
+          adaptive_loading: false,
+          sequencing_kit_box_barcodes: ['Plate 1: skbb-1', 'Plate 2: skbb-2'],
         },
         relationships: {
           plates: {

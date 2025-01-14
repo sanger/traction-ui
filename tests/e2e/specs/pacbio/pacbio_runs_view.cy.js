@@ -9,7 +9,7 @@ describe('Pacbio Runs view', () => {
 
   it('Visits the pacbio runs url', () => {
     cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
-      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1', {
         statusCode: 200,
         body: pacbioRunFactory.content,
       })

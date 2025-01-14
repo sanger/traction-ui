@@ -10,7 +10,7 @@ import {
 } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import PacbioRunWellSmrtlLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 
 const smrtLinkVersions = {
   1: {
@@ -101,7 +101,7 @@ describe('run.js', () => {
   describe('newWell', () => {
     it('will have the default well attributes if nothing is changed', () => {
       expect(newWell({ position: 'A1' })).toEqual({
-        ...PacbioRunWellSmrtlLinkOptions.defaultAttributes,
+        ...defaultSmrtLinkAttributes(),
         position: 'A1',
         row: 'A',
         column: '1',
@@ -116,7 +116,7 @@ describe('run.js', () => {
         on_plate_loading_concentration: 3.5,
       }
       expect(newWell({ position: 'A1', ...attributes })).toEqual({
-        ...PacbioRunWellSmrtlLinkOptions.defaultAttributes,
+        ...defaultSmrtLinkAttributes(),
         ...attributes,
         position: 'A1',
         row: 'A',
@@ -294,6 +294,47 @@ describe('run.js', () => {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.SequelIIe.name,
             dna_control_complex_box_barcode: 'to keep',
+            plates_attributes: [
+              {
+                ...plates.new[1],
+                wells_attributes: createWellsPayload(wells.new[1]),
+              },
+              {
+                ...plates.new[2],
+                wells_attributes: createWellsPayload(wells.new[2]),
+              },
+            ],
+          },
+        },
+      })
+    })
+
+    it('will remove read-only run attributes', () => {
+      const run = {
+        id: 1,
+        system_name: 'Revio',
+        dna_control_complex_box_barcode: null,
+        // these are read-only attributes
+        adaptive_loading: 'True',
+        sequencing_kit_box_barcodes: ['Plate 1: test'],
+      }
+
+      const payload = createPayload({
+        run,
+        plates: plates.new,
+        wells: wells.new,
+        smrtLinkVersion: smrtLinkVersions['1'],
+        instrumentType: PacbioInstrumentTypes.Revio,
+      })
+
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            id: 1,
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            system_name: PacbioInstrumentTypes.Revio.name,
+            dna_control_complex_box_barcode: null,
             plates_attributes: [
               {
                 ...plates.new[1],

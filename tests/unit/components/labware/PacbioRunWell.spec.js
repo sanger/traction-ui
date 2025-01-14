@@ -3,7 +3,7 @@ import { mount, createTestingPinia, nextTick } from '@support/testHelper.js'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
@@ -67,6 +67,7 @@ const smrtLinkVersions = {
   v12_sequel_iie: { id: 3, name: 'v12_sequel_iie', default: false, active: true },
   v13_revio: { id: 4, name: 'v13_revio', default: false, active: true },
   v13_sequel_iie: { id: 5, name: 'v13_sequel_iie', default: false, active: true },
+  v25_1_revio: { id: 4, name: 'v25_1_revio', default: false, active: true },
 }
 
 /**
@@ -138,6 +139,7 @@ describe('PacbioRunWell.vue', () => {
       { smrt_link_version: 'v12_sequel_iie' },
       { smrt_link_version: 'v13_revio' },
       { smrt_link_version: 'v13_sequel_iie' },
+      { smrt_link_version: 'v25_1_revio' },
     ])('for SMRTLink version $smrt_link_version status is correct', ({ smrt_link_version }) => {
       let valid_required_fields
 
