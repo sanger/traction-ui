@@ -1,7 +1,7 @@
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit.vue'
 import { mount, createTestingPinia } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 // required as suggestion to remove the deprecated function
@@ -50,7 +50,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
                 dna_control_complex_box_barcode: null,
                 comments: null,
               },
-              ...PacbioRunWellSmrtLinkOptions.defaultAttributes,
+              ...defaultSmrtLinkAttributes(),
               ...state,
             },
           },

@@ -89,6 +89,26 @@ const PacbioSmrtLinkVersionFactory = () => {
           },
         },
       },
+      {
+        id: '6',
+        type: 'smrt_link_versions',
+        links: {
+          self: 'http://traction/v1/pacbio/smrt_link_versions/6',
+        },
+        attributes: {
+          name: 'v25_1_revio',
+          default: false,
+          active: true,
+        },
+        relationships: {
+          smrt_link_option_versions: {
+            links: {
+              self: 'http://traction/v1/pacbio/smrt_link_versions/6/relationships/smrt_link_option_versions',
+              related: 'http://traction/v1/pacbio/smrt_link_versions/6/smrt_link_option_versions',
+            },
+          },
+        },
+      },
     ],
   }
 

@@ -23,18 +23,39 @@
       >
         <template #cell(sequencing_kit_box_barcodes)="row">
           <ul>
-            <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
+            <li
+              v-for="barcode in row.item.sequencing_kit_box_barcodes"
+              :key="barcode"
+              :data-attribute="row.item.id + '-sequencing-kit-bb'"
+            >
               {{ barcode }}
             </li>
           </ul>
         </template>
 
         <template #cell(system_name_and_version)="row">
-          <div class="flex justify-between gap-1">
+          <div class="flex items-center">
             <span class="grow">{{ row.item.system_name }}</span>
-            <traction-badge :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
-              {{ versionName(row.item.pacbio_smrt_link_version_id) }}
-            </traction-badge>
+            <div class="flex-end">
+              <traction-badge
+                :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)"
+                :data-attribute="'smrt-link-version-badge'"
+              >
+                {{ versionName(row.item.pacbio_smrt_link_version_id) }}
+              </traction-badge>
+              <traction-tooltip
+                v-if="row.item.adaptive_loading"
+                tooltip-text="Adaptive Loading enabled"
+              >
+                <traction-badge
+                  colour="sanger-green"
+                  :class="'px-2 rounded-sm'"
+                  :data-attribute="'adaptive-loading-badge'"
+                >
+                  AL
+                </traction-badge>
+              </traction-tooltip>
+            </div>
           </div>
         </template>
 

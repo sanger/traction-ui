@@ -27,7 +27,7 @@
  * @name PacbioRunWell
  * @description A single well in a Pacbio run plate
  */
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed } from 'vue'
