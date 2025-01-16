@@ -41,6 +41,7 @@ describe('Pacbio Runs view', () => {
         cy.get('#sequencing_kit_box_barcodes').should('have.length.greaterThan', 0)
         cy.get('#dna_control_complex_box_barcode').should('have.length.greaterThan', 0)
         cy.get('#system_name_and_version').find('.badge').should('have.length.greaterThan', 0)
+        cy.get('#adaptive_loading').should('exist')
       })
   })
 })
