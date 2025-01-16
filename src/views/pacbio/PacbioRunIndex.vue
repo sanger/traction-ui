@@ -43,18 +43,6 @@
               >
                 {{ versionName(row.item.pacbio_smrt_link_version_id) }}
               </traction-badge>
-              <traction-tooltip
-                v-if="row.item.adaptive_loading"
-                tooltip-text="Adaptive Loading enabled"
-              >
-                <traction-badge
-                  colour="sanger-green"
-                  :class="'px-2 rounded-sm'"
-                  :data-attribute="'adaptive-loading-badge'"
-                >
-                  AL
-                </traction-badge>
-              </traction-tooltip>
             </div>
           </div>
         </template>
@@ -178,6 +166,12 @@ const fields = ref([
     sortable: true,
   },
   { key: 'system_name_and_version', label: 'System & Version', sortable: true },
+  {
+    key: 'adaptive_loading',
+    label: 'Adaptive Loading',
+    formatter: (obj) => (obj['adaptive_loading'] ? '✓' : ''),
+    sortable: true,
+  },
   { key: 'created_at', label: 'Created at (UTC)', sortable: true },
   { key: 'actions', label: 'Actions' },
 ])

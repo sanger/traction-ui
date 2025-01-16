@@ -137,26 +137,6 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
-  describe('Adaptive Loading badge', () => {
-    it('is hidden if a run does not have adaptive loading enable', () => {
-      const badges = wrapper.find('tbody').findAll('[data-attribute=adaptive-loading-badge]')
-      // All runs have adaptive loading disabled by default
-      expect(badges.length).toEqual(0)
-    })
-
-    it('is shown if a run has adaptive loading enabled', async () => {
-      // Enable adaptive loading for the first run
-      const run_id = Object.values(pacbioRunFactory.storeData.runs)[0].id
-      runsStore.runs[run_id].adaptive_loading = true
-      await nextTick()
-      const badges = wrapper.find('tbody').findAll('[data-attribute=adaptive-loading-badge]')
-
-      // We should only have one badge
-      expect(badges[0].text()).toEqual('AL')
-      expect(badges.length).toEqual(1)
-    })
-  })
-
   describe('new run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('[data-action=new-run]').exists()).toBeTruthy()
