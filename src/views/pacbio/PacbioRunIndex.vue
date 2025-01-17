@@ -23,18 +23,27 @@
       >
         <template #cell(sequencing_kit_box_barcodes)="row">
           <ul>
-            <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
+            <li
+              v-for="barcode in row.item.sequencing_kit_box_barcodes"
+              :key="barcode"
+              :data-attribute="row.item.id + '-sequencing-kit-bb'"
+            >
               {{ barcode }}
             </li>
           </ul>
         </template>
 
         <template #cell(system_name_and_version)="row">
-          <div class="flex justify-between gap-1">
+          <div class="flex items-center">
             <span class="grow">{{ row.item.system_name }}</span>
-            <traction-badge :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
-              {{ versionName(row.item.pacbio_smrt_link_version_id) }}
-            </traction-badge>
+            <div class="flex-end">
+              <traction-badge
+                :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)"
+                :data-attribute="'smrt-link-version-badge'"
+              >
+                {{ versionName(row.item.pacbio_smrt_link_version_id) }}
+              </traction-badge>
+            </div>
           </div>
         </template>
 
@@ -157,6 +166,12 @@ const fields = ref([
     sortable: true,
   },
   { key: 'system_name_and_version', label: 'System & Version', sortable: true },
+  {
+    key: 'adaptive_loading',
+    label: 'Adaptive Loading',
+    formatter: (obj) => (obj['adaptive_loading'] ? '✓' : ''),
+    sortable: true,
+  },
   { key: 'created_at', label: 'Created at (UTC)', sortable: true },
   { key: 'actions', label: 'Actions' },
 ])

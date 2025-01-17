@@ -100,34 +100,18 @@ describe('PacbioRunIndex.vue', () => {
       )
     })
 
-    // it would be better to move this to use data-id so we can test by run id
     it('contains the correct run sequencing kit box barcode information', async () => {
-      // Within each cell, the SKBB information is displayed as a list-item per plate
-
-      const checkSequenceKitBoxBarcodes = (index) => {
-        const run = wrapper.find('tbody').findAll('tr')[index]
-        const storeRun = pacbioRunFactory.storeData.runs[run.find('#id').text()]
-        const plates = storeRun.plates.map((id) => pacbioRunFactory.storeData.plates[id])
-        const sequencingKitBoxBarcodes = run.find('#sequencing_kit_box_barcodes').findAll('li')
-
-        for (let i = 0; i < plates.length; i++) {
-          expect(sequencingKitBoxBarcodes[i].text()).toEqual(
-            `Plate ${plates[i].plate_number}: ${plates[i].sequencing_kit_box_barcode}`,
-          )
-        }
-      }
-
-      // Run 1
-      checkSequenceKitBoxBarcodes(1)
-
-      // Run 2
-      checkSequenceKitBoxBarcodes(Object.values(pacbioRunFactory.storeData.runs).length - 1)
+      Object.values(pacbioRunFactory.storeData.runs).forEach((run) => {
+        expect(
+          wrapper.findAll(`[data-attribute="${run.id}-sequencing-kit-bb"]`).map((x) => x.text()),
+        ).toEqual(run.sequencing_kit_box_barcodes)
+      })
     })
   })
 
   describe('version badge', () => {
     it('contains a badge for each run', () => {
-      const badges = wrapper.find('tbody').findAll('.badge')
+      const badges = wrapper.find('tbody').findAll('[data-attribute=smrt-link-version-badge]')
       expect(badges.length).toEqual(Object.values(pacbioRunFactory.storeData.runs).length)
     })
 
@@ -137,7 +121,7 @@ describe('PacbioRunIndex.vue', () => {
         .findAll('tr')
         .forEach((row) => {
           const run_id = row.find('#id').text()
-          const badge = row.find('.badge').text()
+          const badge = row.find('[data-attribute=smrt-link-version-badge]').text()
           const version_id = pacbioRunFactory.storeData.runs[run_id].pacbio_smrt_link_version_id
           const version = runCreateStore.smrtLinkVersionList[version_id]
           expect(badge).toEqual(version.name.split('_')[0])
