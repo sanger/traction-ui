@@ -53,8 +53,6 @@ export const usePacbioRequestsStore = defineStore('pacbioRequests', {
         errors = {},
       } = response
 
-      console.log(data)
-
       if (success) {
         this.requests[data.id] = extractAttributes(data)
       }
