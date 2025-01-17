@@ -9,7 +9,7 @@ const createStoreData = (data, includeRelationships) => {
   }
 }
 
-const PacbioRequestFactory = ({ includeRelationships = true }) => {
+const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
   const data = {
     data: [
       {
