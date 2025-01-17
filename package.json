@@ -45,7 +45,7 @@
     "@pinia/testing": "^0.1.7",
     "@vue/test-utils": "^2.4.6",
     "clean-jsdoc-theme": "^4.3.0",
-    "cypress": "^13.17.0",
+    "cypress": "^14.0.0",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.7",
     "eslint": "^9.17.0",
