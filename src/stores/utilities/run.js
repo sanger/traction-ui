@@ -1,4 +1,4 @@
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 
 /**
  *
@@ -54,7 +54,7 @@ const splitPosition = (position) => {
 const newWell = ({ position, ...attributes }) => {
   const [row, column] = splitPosition(position)
   return {
-    ...PacbioRunWellSmrtLinkOptions.defaultAttributes,
+    ...defaultSmrtLinkAttributes(),
     used_aliquots: [],
     ...attributes,
     position,
@@ -146,7 +146,7 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType
       type: 'runs',
       id,
       attributes: {
-        ...run,
+        ...removeReadOnlyAttributes(run),
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
         plates_attributes: Object.values(plates)
@@ -195,6 +195,18 @@ const createWellsPayload = (wells) => {
       // flatten the array
       .flat()
   )
+}
+
+/**
+ * @param {run} - A run object
+ * @returns {Object} - A run object with read only attributes removed
+ */
+const removeReadOnlyAttributes = (run) => {
+  // Removes read only attributes
+  // eslint-disable-next-line no-unused-vars
+  const { adaptive_loading, sequencing_kit_box_barcodes, ...filteredRun } = run
+
+  return filteredRun
 }
 
 export {

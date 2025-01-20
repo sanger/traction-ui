@@ -9,7 +9,7 @@ describe('Pacbio Runs view', () => {
 
   it('Visits the pacbio runs url', () => {
     cy.get('@pacbioRunFactory').then((pacbioRunFactory) => {
-      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1&include=plates', {
+      cy.intercept('GET', '/v1/pacbio/runs?page[size]=25&page[number]=1', {
         statusCode: 200,
         body: pacbioRunFactory.content,
       })
@@ -41,6 +41,7 @@ describe('Pacbio Runs view', () => {
         cy.get('#sequencing_kit_box_barcodes').should('have.length.greaterThan', 0)
         cy.get('#dna_control_complex_box_barcode').should('have.length.greaterThan', 0)
         cy.get('#system_name_and_version').find('.badge').should('have.length.greaterThan', 0)
+        cy.get('#adaptive_loading').should('exist')
       })
   })
 })

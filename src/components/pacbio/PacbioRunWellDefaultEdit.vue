@@ -10,6 +10,7 @@
           :is="field.component"
           v-bind="handleCustomProps(field)"
           v-model="store.runDefaultWellAttributes[field.value]"
+          v-on="handleCustomEvents(field)"
         />
       </traction-field-group>
     </div>
@@ -23,7 +24,7 @@
  * It uses the PacbioRunWellSmrtLinkOptions config to get the default well components.
  * It uses the usePacbioRunCreateStore store to get the SMRT Link version and default well attributes.
  */
-import PacbioRunWellSmrtLinkOptions from '@/config/PacbioRunWellSmrtLinkOptions.json'
+import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { computed } from 'vue'
 
@@ -44,5 +45,19 @@ const handleCustomProps = (component) => {
     // We want the data attribute to be unique for default fields
     dataAttribute: `default-${component.props.dataAttribute}`,
   }
+}
+
+//handleCustomEvents function is used to handle custom events for the component
+const handleCustomEvents = (component) => {
+  // This is a special case for the use_adaptive_loading component
+  // We may need to make this SMRTLink version specific in the future
+  // It would be nice to move this to the component config
+  if (component.name == 'use_adaptive_loading') {
+    return {
+      ...component.events,
+      change: (e) => store.setAdaptiveLoading(e.target.value),
+    }
+  }
+  return { ...component.events }
 }
 </script>
