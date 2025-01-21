@@ -19,38 +19,11 @@ const createStoreData = ({ data, included }) => {
   }
 }
 
-/**
- * @function createLibrariesArray
- * @param {Object} storeData - libraries, tubes, tags, requests
- * @returns {Array} An array of libraries with sample_name, barcode, and group_id.
- * @description A function that creates an array of libraries with sample_name, barcode, and group_id.
- * This is verbatim repeating what is in the store, but it is useful to have a function that
- * does this for testing purposes. It can be used for refactoring and eventually removing the function
- */
-const createLibrariesArray = ({ libraries, tubes, tags, requests }) => {
-  return Object.values(libraries)
-    .filter((library) => library.tube)
-    .map((library) => {
-      const { request, tag, ...attributes } = library
-      const { sample_name } = requests[request]
-      const { barcode } = tubes[library.tube]
-      const { group_id } = tags[tag]
-
-      return {
-        ...attributes,
-        sample_name,
-        barcode,
-        tag_group_id: group_id,
-        tag_id: tag,
-      }
-    })
-}
-
 /*
  * Factory for creating a pacbio library
  * @returns a base factory object with the libraries data
  */
-const PacbioLibraryFactory = ({ relationships = true } = {}) => {
+const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) => {
   const data = {
     data: [
       {
@@ -62,6 +35,7 @@ const PacbioLibraryFactory = ({ relationships = true } = {}) => {
         attributes: {
           state: 'pending',
           volume: 1,
+          used_volume: exhausted ? 1 : 0,
           concentration: 1,
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,
@@ -751,8 +725,7 @@ const PacbioLibraryFactory = ({ relationships = true } = {}) => {
   // certain tests require data with no relationships
   if (relationships) {
     const storeData = createStoreData(data)
-    const librariesArray = createLibrariesArray(storeData)
-    return { ...BaseFactory(data), storeData, librariesArray }
+    return { ...BaseFactory(data), storeData }
   } else {
     // take all the relationships out of the data
     const dataWithoutRelationships = data.data.map(({ id, type, attributes }) => ({

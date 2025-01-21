@@ -5,7 +5,7 @@ import {
   createTestingPinia,
   successfulResponse,
 } from '@support/testHelper.js'
-import { expect, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
 import useRootStore from '@/stores'
@@ -67,6 +67,29 @@ describe('Libraries.vue', () => {
 
     it('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+    })
+  })
+  describe('exhausted badge display', () => {
+    it('displays the badge for exhausted if exhausted libraries exist', async () => {
+      const pacbioLibraryFactoryWithExhausted = PacbioLibraryFactory({ exhausted: true })
+      const plugins = [
+        ({ store }) => {
+          if (store.$id === 'root') {
+            store.api.traction.pacbio.libraries.get = vi
+              .fn()
+              .mockResolvedValue(pacbioLibraryFactoryWithExhausted.responses.fetch)
+          }
+        },
+      ]
+      const { wrapperObj } = mountWithStore({
+        plugins,
+      })
+      wrapper = wrapperObj
+      await flushPromises()
+      expect(wrapper.find('#exhausted-badge').exists()).toBe(true)
+    })
+    it('will not display exhausted badge', async () => {
+      expect(wrapper.find('#exhausted-badge').exists()).toBeFalsy()
     })
   })
 
