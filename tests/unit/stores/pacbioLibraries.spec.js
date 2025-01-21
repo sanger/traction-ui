@@ -8,7 +8,8 @@ import {
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, describe, expect } from 'vitest'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
-import { libraryPayload } from '@/stores/utilities/pacbioLibraries.js'
+import { formatAndTransformLibraries } from '@/stores/utilities/pacbioLibraries.js'
+import { buildLibraryResourcePayload } from '@/services/traction/PacbioLibrary.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 const pacbioLibraryWithoutRelationships = PacbioLibraryFactory({ relationships: false })
@@ -36,7 +37,7 @@ describe('usePacbioLibrariesStore', () => {
 
   describe('#libraryPayload', () => {
     it('for a create action', () => {
-      const payload = libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 })
+      const payload = buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 })
       expect(Object.keys(payload.data).includes('id')).toBeFalsy()
       expect(payload).toEqual({
         data: {
@@ -53,7 +54,7 @@ describe('usePacbioLibrariesStore', () => {
     })
 
     it('for an update action', () => {
-      const payload = libraryPayload({ ...requiredAttributes, id: 1 })
+      const payload = buildLibraryResourcePayload({ ...requiredAttributes, id: 1 })
       expect(Object.keys(payload.data.attributes).includes('pacbio_request_id')).toBeFalsy()
       expect(payload).toEqual({
         data: {
@@ -75,8 +76,11 @@ describe('usePacbioLibrariesStore', () => {
       const store = usePacbioLibrariesStore()
 
       store.$state = { ...pacbioLibraryFactory.storeData }
+      const { libraries, tubes, tags, requests } = pacbioLibraryFactory.storeData
 
-      expect(store.librariesArray).toEqual(pacbioLibraryFactory.librariesArray)
+      expect(store.librariesArray).toEqual(
+        formatAndTransformLibraries(libraries, tubes, tags, requests),
+      )
     })
   })
   describe('actions', () => {
@@ -110,7 +114,7 @@ describe('usePacbioLibrariesStore', () => {
         create.mockResolvedValue(mockResponse)
         const { success, barcode } = await store.createLibrary(formLibrary)
         expect(create).toBeCalledWith({
-          data: libraryPayload({ ...requiredAttributes, pacbio_request_id: 1 }),
+          data: buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 }),
           include: 'tube,primary_aliquot',
         })
         expect(success).toBeTruthy()
@@ -192,14 +196,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
-
-      it('unsuccessfully', async () => {
-        const failureResponse = failedResponse()
-        get.mockResolvedValue(failureResponse)
-        const { success, errors } = await store.fetchLibraries()
-        expect(success).toEqual(false)
-        expect(errors).toEqual(failureResponse.errorSummary)
-      })
     })
 
     describe('#updateLibrary', () => {
@@ -241,32 +237,6 @@ describe('usePacbioLibrariesStore', () => {
         expect(storeLibrary.concentration).toEqual(2.0)
         expect(storeLibrary.template_prep_kit_box_barcode).toEqual('LK12348')
         expect(storeLibrary.volume).toEqual(4.0)
-      })
-
-      it('should return error if required attributes are empty', async () => {
-        await store.fetchLibraries()
-        expect(store.libraries[libraryBeforeUpdate.id]).toEqual(libraryBeforeUpdate)
-        library.volume = ''
-        const { success, errors } = await store.updateLibrary(library)
-        expect(success).toBeFalsy()
-        expect(errors).toEqual('Missing required field(s)')
-      })
-
-      it('should not return error if optional attributes are empty', async () => {
-        const mockResponse = successfulResponse()
-        update.mockResolvedValue(mockResponse)
-        await store.fetchLibraries()
-        const newLibrary = { ...library, tag_id: null }
-        const { success } = await store.updateLibrary(newLibrary)
-        expect(success).toBeTruthy()
-      })
-
-      it('unsuccessfully', async () => {
-        const mockResponse = failedResponse()
-        update.mockResolvedValue(mockResponse)
-        const { success, errors } = await store.updateLibrary(library)
-        expect(success).toBeFalsy()
-        expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
   })

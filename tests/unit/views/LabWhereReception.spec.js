@@ -1,6 +1,8 @@
 import { mount } from '@support/testHelper'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+import * as labwhereClient from '@/services/labwhere/client.js'
+import { beforeEach } from 'vitest'
 
 vi.mock('@/services/labwhere/client.js')
 
@@ -12,9 +14,15 @@ vi.mock('@/composables/useAlert', () => ({
 }))
 
 describe('LabWhereReception', () => {
+  let mockExhaustSamples
   const buildWrapper = () => {
     return mount(LabwhereReception)
   }
+
+  beforeEach(() => {
+    mockExhaustSamples = vi.spyOn(labwhereClient, 'exhaustLibraryVolumeIfDestroyed')
+    mockExhaustSamples.mockResolvedValue({ success: false })
+  })
 
   it('has a user code input field', () => {
     const wrapper = buildWrapper()
@@ -55,7 +63,6 @@ describe('LabWhereReception', () => {
       success: true,
       message: 'barcode1 successfully stored in location123',
     })
-
     await wrapper.find('#submit-button').trigger('submit')
     expect(scanBarcodesInLabwhereLocation).toBeCalledWith('user1', 'location1', 'barcode1', null)
   })
@@ -100,6 +107,34 @@ describe('LabWhereReception', () => {
     )
     expect(mockShowAlert).toBeCalledWith(
       'barcode1, barcode2 successfully stored in location123',
+      'success',
+    )
+    expect(mockExhaustSamples).toBeCalledWith('location123', ['barcode1', 'barcode2'])
+  })
+
+  it('validates form and exhaust libraries successfully', async () => {
+    const wrapper = buildWrapper()
+    wrapper.vm.user_code = 'user123'
+    wrapper.vm.location_barcode = 'location123'
+    wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
+    scanBarcodesInLabwhereLocation.mockResolvedValue({
+      success: true,
+      message: 'barcode1, barcode2 successfully stored in location123',
+    })
+    mockExhaustSamples.mockResolvedValue({
+      success: true,
+      exhaustedLibraries: [{ barcode: 'barcode1' }],
+    })
+
+    await wrapper.find('#submit-button').trigger('submit')
+    expect(scanBarcodesInLabwhereLocation).toHaveBeenCalledWith(
+      'user123',
+      'location123',
+      'barcode1\nbarcode2',
+      null,
+    )
+    expect(mockShowAlert).toBeCalledWith(
+      'barcode1, barcode2 successfully stored in location123 and sample volumes have been exhausted for 1 library',
       'success',
     )
   })
