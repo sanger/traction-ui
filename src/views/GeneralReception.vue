@@ -77,6 +77,7 @@
                 v-model="user_code"
                 data-attribute="user-code-input"
                 class="mt-1"
+                type="password"
               />
             </traction-field-error>
           </div>

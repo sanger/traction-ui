@@ -12,6 +12,7 @@
             v-model="user_code"
             data-attribute="user-code-input"
             class="flex w-full"
+            type="password"
             @update:model-value="validateUserCode"
           />
         </traction-field-error>
