@@ -30,6 +30,17 @@ describe('TractionInput.vue', () => {
     expect(wrapper.find('input[type=number]').element.value).toEqual('10')
   })
 
+  it('sets default value for type password', () => {
+    const wrapper = buildWrapper({ type: 'password', modelValue: 'secret' })
+    expect(wrapper.find('input[type=password]').element.value).toEqual('secret')
+  })
+
+  it('emits the value for type password', async () => {
+    const wrapper = buildWrapper({ type: 'password' })
+    await wrapper.find('input').setValue('newsecret')
+    expect(wrapper.emitted('update:modelValue')).toEqual([['newsecret']])
+  })
+
   it('emits the value', async () => {
     const wrapper = buildWrapper({ type: 'number' })
     await wrapper.find('input').setValue('10000')
