@@ -65,12 +65,6 @@ export default {
       type: Function,
       default: undefined,
     },
-    // Although the type attribute is passed through the $attrs object to support fallthrough attributes,
-    // it is explicitly defined here for clarity and to ensure proper type handling.
-    type: {
-      type: String,
-      default: 'text',
-    },
   },
   emits: ['enterKeyPress', 'update:modelValue'],
   data() {
