@@ -26,7 +26,9 @@ describe('LabWhereReception', () => {
 
   it('has a user code input field', () => {
     const wrapper = buildWrapper()
-    expect(wrapper.find('#userCode').exists()).toBe(true)
+    const userCodeInput = wrapper.find('#userCode')
+    expect(userCodeInput.exists()).toBe(true)
+    expect(userCodeInput.attributes('type')).toBe('password')
   })
 
   it('has a location barcode input field', () => {
