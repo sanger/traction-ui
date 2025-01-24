@@ -42,7 +42,7 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [], props }
 }
 
 describe('PacbioSampleMetadataEdit.vue', () => {
-  let wrapper, modal, props, mockSamples, store
+  let wrapper, props, mockSamples, store
 
   beforeEach(async () => {
     mockSamples = pacbioSampleFactory.content.data.data
@@ -56,65 +56,30 @@ describe('PacbioSampleMetadataEdit.vue', () => {
     await flushPromises()
     wrapper = wrapperObj
     store = storeObj
-    modal = wrapperObj.vm
   })
 
-  it('will have a modal', () => {
-    expect(wrapper.find('#editSampleModal')).toBeDefined()
-  })
-
-  it('will have a form', () => {
-    expect(wrapper.find('#sampleMetaDataForm')).toBeDefined()
-  })
-
-  it('store', () => {
-    expect(store).toBeDefined()
-  })
-
-  describe.skip('update', () => {
+  describe('update', () => {
     beforeEach(() => {
-      modal.alert = vi.fn()
-      modal.hide = vi.fn()
-      modal.updateRequest = vi.fn()
+      store.updateRequest = vi.fn()
     })
 
     it('successful ', async () => {
-      modal.updateRequest.mockResolvedValue({ success: true, errors: [] })
-      await modal.update()
-      expect(modal.alert).toBeCalledWith('Sample updated', 'success')
-      expect(modal.hide).toBeCalled()
+      store.updateRequest.mockResolvedValue({ success: true, errors: [] })
+      await wrapper.vm.update()
+      expect(mockShowAlert).toBeCalledWith('Sample updated', 'success')
     })
 
     it('unsuccessful ', async () => {
-      modal.updateRequest.mockResolvedValue({ success: false, errors: ['Error: Raise this error'] })
-      await modal.update()
-      expect(modal.alert).toBeCalledWith(
+      store.updateRequest.mockReturnValue({ success: false, errors: ['Error: Raise this error'] })
+      await wrapper.vm.update()
+      expect(mockShowAlert).toBeCalledWith(
         'Failed to update sample. Error: Raise this error',
         'danger',
       )
-      expect(modal.hide).toBeCalled()
     })
   })
 
-  describe.skip('alert', () => {
-    it('emits an event with the message', () => {
-      modal.alert('emit this message', 'success')
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
-      expect(wrapper.emitted().alert[0][1]).toEqual('success')
-    })
-  })
-
-  describe.skip('Edit button', () => {
-    let button
-
-    it('is present for each sample', () => {
-      button = wrapper.find('#editSample-1')
-      expect(button.text()).toEqual('Edit')
-    })
-  })
-
-  it.skip('#generateId', () => {
-    expect(modal.generateId('edit', 1)).toEqual('edit-1')
+  it('#generateId', () => {
+    expect(wrapper.vm.generateId('edit', 1)).toEqual('edit-1')
   })
 })

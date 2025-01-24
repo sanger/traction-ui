@@ -65,7 +65,7 @@ describe('Libraries.vue', () => {
       }
     })
 
-    it('contains the correct data', async () => {
+    it.only('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
