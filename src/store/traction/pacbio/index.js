@@ -1,10 +1,8 @@
-import pacbioRequestsModule from '@/store/traction/pacbio/requests'
 import pacbioPlatesModule from '@/store/traction/pacbio/plates'
 
 const pacbio = {
   namespaced: true,
   modules: {
-    requests: pacbioRequestsModule,
     plates: pacbioPlatesModule,
   },
   state: {
