@@ -25,32 +25,6 @@ const config = [
     ],
     pipelines: [
       {
-        name: 'saphyr',
-        resources: [
-          {
-            name: 'libraries',
-          },
-          {
-            name: 'enzymes',
-          },
-          {
-            name: 'runs',
-          },
-          {
-            name: 'chips',
-          },
-          {
-            name: 'flowcells',
-          },
-          {
-            name: 'requests',
-          },
-          {
-            name: 'tubes',
-          },
-        ],
-      },
-      {
         name: 'pacbio',
         resources: [
           {
