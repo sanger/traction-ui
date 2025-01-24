@@ -19,18 +19,18 @@
  * }
  * const payload = createRequestPayload(request)
  * console.log(payload)
- * // {
- * //   data: {
- * //     id: '123',
- * //     type: 'requests',
- * //     attributes: {
- * //       library_type: 'Type A',
- * //       estimate_of_gb_required: 10,
- * //       number_of_smrt_cells: 2,
- * //       cost_code: 'CC123',
- * //     },
- * //   },
- * // }
+ * {
+ *   data: {
+ *     id: '123',
+ *     type: 'requests',
+ *     attributes: {
+ *       library_type: 'Type A',
+ *       estimate_of_gb_required: 10,
+ *       number_of_smrt_cells: 2,
+ *       cost_code: 'CC123',
+ *     },
+ *   },
+ * }
  */
 
 const createRequestPayload = ({

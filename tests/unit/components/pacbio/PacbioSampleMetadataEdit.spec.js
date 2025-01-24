@@ -19,7 +19,7 @@ vi.mock('@/composables/useAlert', () => ({
  * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
  * which includes
  * state - initial state of the store
- * stubActions - boolean to stub actions or not.
+ * stubActions - boolean to stub actions or not. If you do not set this to false it will stub all actions and could cause errors
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
 function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {

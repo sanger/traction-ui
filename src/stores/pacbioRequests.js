@@ -22,6 +22,15 @@ export const usePacbioRequestsStore = defineStore('pacbioRequests', {
   },
 
   actions: {
+    /**
+     * Sets the requests in the store by fetching them from the API.
+     *
+     * @param {Object} options - The options to pass to the API request.
+     * @returns {Promise<Object>} A promise that resolves to an object containing:
+     *   - {boolean} success - Indicates whether the request was successful.
+     *   - {Object} errors - An object containing error messages, if any.
+     *   - {Object} meta - Metadata returned from the API.
+     */
     async setRequests(options) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.requests
@@ -40,6 +49,14 @@ export const usePacbioRequestsStore = defineStore('pacbioRequests', {
       return { success, errors, meta }
     },
 
+    /**
+     * Updates a request in the store by sending the updated data to the API.
+     *
+     * @param {Object} payload - The payload containing the updated request data, including id, library_type, estimate_of_gb_required, number_of_smrt_cells, and cost_code.
+     * @returns {Promise<Object>} A promise that resolves to an object containing:
+     *   - {boolean} success - Indicates whether the request was successful.
+     *   - {Object} errors - An object containing error messages, if any.
+     */
     async updateRequest(payload) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.requests
