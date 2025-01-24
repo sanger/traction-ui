@@ -11,7 +11,7 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-function mountWithStore({ props, state = {}, stubActions = false, plugins =[] } = {}) {
+function mountWithStore({ props, state = {}, stubActions = false, plugins = [] } = {}) {
   const wrapperObj = mount(PacbioSampleIndex, {
     global: {
       plugins: [

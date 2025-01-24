@@ -1,9 +1,9 @@
 import { mount, createTestingPinia, flushPromises } from '@support/testHelper.js'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit.vue'
-import PacbioSampleFactory from '@tests/factories/PacbioSampleFactory.js'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 
-const pacbioSampleFactory = PacbioSampleFactory()
+const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: false })
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -45,7 +45,7 @@ describe('PacbioSampleMetadataEdit.vue', () => {
   let wrapper, props, mockSamples, store
 
   beforeEach(async () => {
-    mockSamples = pacbioSampleFactory.content.data.data
+    mockSamples = pacbioRequestFactory.content.data
     props = { req: mockSamples[0] }
 
     // store.commit('traction/pacbio/requests/setRequests', mockSamples)

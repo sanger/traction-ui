@@ -1,12 +1,12 @@
-import PacbioSampleFactory from '@tests/factories/PacbioSampleFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import { createRequestPayload } from '@/stores/utilities/pacbioRequests.js'
 
-const pacbioSampleFactory = PacbioSampleFactory()
+const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: false })
 
 describe('pacbioRequests', () => {
   describe('createRequestPayload', () => {
     it('creates the payload for the sample', async () => {
-      const sample = pacbioSampleFactory.content.data.data[0]
+      const sample = pacbioRequestFactory.content.data[0]
       const result = createRequestPayload(sample)
       expect(result.data).toEqual({
         id: sample.id,
