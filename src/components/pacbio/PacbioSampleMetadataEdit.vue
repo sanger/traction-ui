@@ -85,15 +85,6 @@ const showModal = ref(false)
 
 const { hideModal } = useModalHelper()
 
-// Function to update the request
-const update = async () => {
-  await requestsStore.updateRequest(request).then(({ success, errors }) => {
-    success
-      ? alert('Sample updated', 'success')
-      : alert('Failed to update sample. ' + errors, 'danger')
-  })
-  hide()
-}
 
 // Function to generate a unique ID
 const generateId = (text, id) => {
@@ -101,6 +92,17 @@ const generateId = (text, id) => {
 }
 
 const { showAlert } = useAlert()
+
+// Function to update the request
+const update = async () => {
+  const {success, errors} = await requestsStore.updateRequest(request)
+  if (success) {
+    showAlert('Sample updated', 'success')
+  } else {
+    showAlert('Failed to update sample. ' + errors, 'danger')
+  }
+  hide()
+}
 
 // Function to show the modal and populate the request data
 const show = () => {
@@ -114,8 +116,4 @@ const hide = () => {
   hideModal()
 }
 
-// Function to show an alert message
-const alert = (message, type) => {
-  showAlert(message, type)
-}
 </script>
