@@ -25,7 +25,7 @@
         :fields="state.fields"
         selectable
         select-mode="single"
-        @row-selected="(items) => (selected = items)"
+        @row-selected="(items) => (state.selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
