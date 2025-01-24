@@ -85,7 +85,6 @@ const showModal = ref(false)
 
 const { hideModal } = useModalHelper()
 
-
 // Function to generate a unique ID
 const generateId = (text, id) => {
   return `${text}-${id}`
@@ -95,7 +94,7 @@ const { showAlert } = useAlert()
 
 // Function to update the request
 const update = async () => {
-  const {success, errors} = await requestsStore.updateRequest(request)
+  const { success, errors } = await requestsStore.updateRequest(request)
   if (success) {
     showAlert('Sample updated', 'success')
   } else {
@@ -115,5 +114,4 @@ const hide = () => {
   showModal.value = false
   hideModal()
 }
-
 </script>
