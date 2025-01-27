@@ -5,11 +5,6 @@ import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
-import SaphyrView from '@/views/SaphyrView.vue'
-import SaphyrSamples from '@/views/saphyr/SaphyrSamples.vue'
-import SaphyrLibraries from '@/views/saphyr/SaphyrLibraries.vue'
-import SaphyrRuns from '@/views/saphyr/SaphyrRuns.vue'
-import SaphyrRun from '@/views/saphyr/SaphyrRun.vue'
 import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
@@ -72,35 +67,6 @@ const router = createRouter({
       name: 'QcResultsUpload',
       meta: { page: 'QC Results Upload' },
       component: QcResultsUpload,
-    },
-    {
-      path: '/saphyr',
-      component: SaphyrView,
-      meta: { pipeline: 'Saphyr' },
-      children: [
-        { path: '', redirect: 'samples', meta: { page: 'Samples' } },
-        {
-          path: 'samples',
-          name: 'SaphyrSamples',
-          component: SaphyrSamples,
-          meta: { page: 'Samples' },
-        },
-        {
-          path: 'libraries',
-          name: 'SaphyrLibraries',
-          component: SaphyrLibraries,
-          meta: { page: 'Libraries' },
-        },
-        { path: 'runs', name: 'SaphyrRuns', component: SaphyrRuns, meta: { page: 'Runs' } },
-        {
-          path: 'run',
-          name: 'SaphyrRun',
-          component: SaphyrRun,
-          props: { id: true },
-          meta: { page: 'Run' },
-        },
-        { path: 'run/:id', component: SaphyrRun, props: true, meta: { page: 'Run' } },
-      ],
     },
     {
       path: '/pacbio',

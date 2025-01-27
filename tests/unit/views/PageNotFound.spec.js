@@ -25,11 +25,6 @@ describe('PageNotFound.vue', () => {
       await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/dashboard')
     })
-    it('will redirect to saphyr runs', async () => {
-      wrapper.find('#saphyr-link').trigger('click')
-      await flushPromises()
-      expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
-    })
     it('will redirect to pacbio runs', async () => {
       wrapper.find('#pacbio-link').trigger('click')
       await flushPromises()

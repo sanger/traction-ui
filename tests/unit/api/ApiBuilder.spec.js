@@ -46,7 +46,7 @@ const config = [
     ],
     pipelines: [
       {
-        name: 'saphyr',
+        name: 'pacbio',
         resources: [
           {
             name: 'libraries',
@@ -131,31 +131,31 @@ describe('ApiBuilder', () => {
 
   describe('pipelines', () => {
     it('creates a pipeline', () => {
-      expect(api.api3.saphyr).toBeDefined()
+      expect(api.api3.pacbio).toBeDefined()
     })
 
     it('creates resources for the pipeline', () => {
-      const request = api.api3.saphyr
+      const request = api.api3.pacbio
 
       expect(request.libraries).toBeDefined()
       expect(request.flowcells).toBeDefined()
     })
 
     it('creates the correct resource for each request', () => {
-      const request = api.api3.saphyr
+      const request = api.api3.pacbio
 
-      expect(request.libraries.resource).toEqual('saphyr/libraries')
-      expect(request.flowcells.resource).toEqual('saphyr/flowcells')
+      expect(request.libraries.resource).toEqual('pacbio/libraries')
+      expect(request.flowcells.resource).toEqual('pacbio/flowcells')
     })
   })
 
   it('will create nested resources if they exist', () => {
-    const runs = api.api3.saphyr.runs
+    const runs = api.api3.pacbio.runs
 
     expect(runs.plates).toBeDefined()
-    expect(runs.plates.resource).toEqual('saphyr/runs/plates')
+    expect(runs.plates.resource).toEqual('pacbio/runs/plates')
 
     expect(runs.wells).toBeDefined()
-    expect(runs.wells.resource).toEqual('saphyr/runs/wells')
+    expect(runs.wells.resource).toEqual('pacbio/runs/wells')
   })
 })
