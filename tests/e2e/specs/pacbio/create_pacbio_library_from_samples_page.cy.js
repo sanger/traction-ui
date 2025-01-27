@@ -1,21 +1,21 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
-import PacbioSampleFactory from '../../../factories/PacbioSampleFactory.js'
+import PacbioRequestFactory from '../../../factories/PacbioRequestFactory.js'
 import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
 
 describe('Pacbio library creation from sample', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
-    cy.wrap(PacbioSampleFactory()).as('pacbioSampleFactory')
+    cy.wrap(PacbioRequestFactory({ includeRelationships: false })).as('pacbioRequestFactory')
     cy.wrap(PacbioLibraryFactory()).as('pacbioLibraryFactory')
   })
 
   it('Visits the pacbio samples url', () => {
-    cy.get('@pacbioSampleFactory').then((pacbioSampleFactory) => {
+    cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
       cy.intercept('/v1/pacbio/requests?page[size]=25&page[number]=1', {
         statusCode: 200,
-        body: pacbioSampleFactory.content.data,
+        body: pacbioRequestFactory.content,
       })
     })
 

@@ -1,17 +1,17 @@
 <template>
   <DataFetcher :fetcher="fetchRequests">
-    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
+    <FilterCard :fetcher="fetchRequests" :filter-options="state.filterOptions" />
     <div class="flex flex-col">
       <div>
         <PrinterModal
           ref="printerModal"
           class="float-left"
-          :disabled="selected.length === 0"
+          :disabled="state.selected.length === 0"
           @select-printer="printLabels($event)"
         />
         <PacbioLibraryCreate
           ref="libraryCreateBtn"
-          :selected-sample="selected[0]"
+          :selected-sample="state.selected[0]"
           class="float-left"
         />
         <traction-pagination class="float-right" aria-controls="samples-table" />
@@ -19,13 +19,13 @@
 
       <traction-table
         id="samples-table"
-        v-model:sort-by="sortBy"
+        v-model:sort-by="state.sortBy"
         primary_key="id"
         :items="displayedRequests"
-        :fields="fields"
+        :fields="state.fields"
         selectable
         select-mode="single"
-        @row-selected="(items) => (selected = items)"
+        @row-selected="(items) => (state.selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
@@ -56,7 +56,7 @@
 
         <template #row-details="row">
           <div class="text-left">
-            <template v-for="(field, index) in field_in_details">
+            <template v-for="(field, index) in state.field_in_details">
               <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
                 field.label
               }}</span
@@ -70,7 +70,7 @@
   </DataFetcher>
 </template>
 
-<script>
+<script setup>
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
@@ -82,122 +82,100 @@ import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
-import { mapActions, mapGetters } from 'vuex'
-import { ref } from 'vue'
+import { computed, ref, watchEffect, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
+import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
+import useAlert from '@/composables/useAlert.js'
 
-export default {
-  name: 'PacbioSampleIndex',
-  components: {
-    PacbioLibraryCreate,
-    PrinterModal,
-    PacbioSampleMetadataEdit,
-    FilterCard,
-    DataFetcher,
-  },
-  setup() {
-    const { fetchWithQueryParams } = useQueryParams()
-    const { fetchLocations } = useLocationFetcher()
-    const labwareLocations = ref([])
+const { fetchWithQueryParams } = useQueryParams()
+const { fetchLocations } = useLocationFetcher()
+const pacbioRequestsStore = usePacbioRequestsStore()
+const labwareLocations = ref([])
+const { showAlert } = useAlert()
 
-    return { fetchWithQueryParams, fetchLocations, labwareLocations }
-  },
-  data() {
+const state = reactive({
+  fields: [
+    { key: 'selected', label: '\u2713' },
+    { key: 'id', label: 'Sample ID (Request)', sortable: true },
+    { key: 'sample_name', label: 'Name', sortable: true },
+    { key: 'sample_species', label: 'Species', sortable: true },
+    { key: 'source_identifier', label: 'Source', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
+    { key: 'created_at', label: 'Created at (UTC)', sortable: true },
+    { key: 'actions', label: 'Actions' },
+    { key: 'show_details', label: '' },
+  ],
+  field_in_details: [
+    { label: 'Library type', item: 'library_type' },
+    { label: 'Estimate of GB required', item: 'estimate_of_gb_required' },
+    { label: 'Number of SMRT cells', item: 'number_of_smrt_cells' },
+    { label: 'Cost code', item: 'cost_code' },
+    { label: 'External study ID', item: 'external_study_id' },
+  ],
+  filterOptions: [
+    { value: '', text: '' },
+    { value: 'source_identifier', text: 'Source' },
+    { value: 'species', text: 'Species' },
+    { value: 'sample_name', text: 'Name' },
+  ],
+  selected: [],
+  sortBy: 'created_at',
+})
+
+const printingStore = usePrintingStore()
+
+const barcodes = computed(() => {
+  return pacbioRequestsStore.requestsArray.map(({ source_identifier }) => source_identifier)
+})
+
+/**
+ * @returns {Array} The  locations of requests to display
+ */
+const displayedRequests = computed(() => {
+  return locationBuilder(pacbioRequestsStore.requestsArray, labwareLocations.value)
+})
+
+watchEffect(async () => {
+  const barcodesValue = barcodes.value
+  labwareLocations.value = await fetchLocations(barcodesValue)
+})
+
+/*create the labels needed for the print job
+ each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
+@returns {Array[{Object}, {Object} ...]}
+*/
+const createLabels = () => {
+  const date = getCurrentDate()
+  return state.selected.map(({ barcode, source_identifier }) => {
     return {
-      fields: [
-        { key: 'selected', label: '\u2713' },
-        { key: 'id', label: 'Sample ID (Request)', sortable: true },
-        { key: 'sample_name', label: 'Name', sortable: true },
-        { key: 'sample_species', label: 'Species', sortable: true },
-        { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'location', label: 'Location', sortable: true },
-        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
-        { key: 'actions', label: 'Actions' },
-        { key: 'show_details', label: '' },
-      ],
-      field_in_details: [
-        { label: 'Library type', item: 'library_type' },
-        { label: 'Estimate of GB required', item: 'estimate_of_gb_required' },
-        { label: 'Number of SMRT cells', item: 'number_of_smrt_cells' },
-        { label: 'Cost code', item: 'cost_code' },
-        { label: 'External study ID', item: 'external_study_id' },
-      ],
-      filterOptions: [
-        { value: '', text: '' },
-        { value: 'source_identifier', text: 'Source' },
-        { value: 'species', text: 'Species' },
-        { value: 'sample_name', text: 'Name' },
-        // Need to specify filters in json api resources if we want more filters
-      ],
-      selected: [],
-      sortBy: 'created_at',
-      sortDesc: true,
+      // currently don't have a barcode but not causing any harm
+      barcode,
+      first_line: 'Pacbio - Sample',
+      second_line: date,
+      third_line: barcode,
+      fourth_line: source_identifier,
+      label_name: 'main_label',
     }
-  },
-  computed: {
-    ...mapGetters('traction/pacbio/requests', ['requests']),
-    // makes it testable. We can get rid of this when we move over to pinia.
-    printingStore() {
-      return usePrintingStore()
-    },
-    barcodes() {
-      return this.requests.map(({ source_identifier }) => source_identifier)
-    },
-    displayedRequests() {
-      return locationBuilder(this.requests, this.labwareLocations.value)
-    },
-  },
-  watch: {
-    // Watch for changes to the barcodes and fetch locations accordingly
-    barcodes: {
-      handler: async function (newBarcodes) {
-        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    /*
-      create the labels needed for the print job
-      each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
-      @returns {Array[{Object}, {Object} ...]}
-    */
-    createLabels() {
-      const date = getCurrentDate()
-      return this.selected.map(({ barcode, source_identifier }) => {
-        return {
-          // currently don't have a barcode but not causing any harm
-          barcode,
-          first_line: 'Pacbio - Sample',
-          second_line: date,
-          third_line: barcode,
-          fourth_line: source_identifier,
-          label_name: 'main_label',
-        }
-      })
-    },
-    /*
-      Creates the print job and shows a success or failure alert
-      @param {String} printerName The name of the printer to send the print job to
-    */
-    async printLabels(printerName) {
-      const { success, message = {} } = await this.printingStore.createPrintJob({
-        printerName,
-        labels: this.createLabels(),
-        copies: 1,
-      })
+  })
+}
 
-      this.showAlert(message, success ? 'success' : 'danger')
-    },
-    /*
-      Fetches the requests from the api
-      @param {Object} filter The filter to apply to the request
-      @returns {Object} { success: Boolean, errors: Array }
-    */
-    async fetchRequests() {
-      return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
-    },
-    ...mapActions('traction/pacbio/requests', ['setRequests']),
-  },
+/*Creates the print job and shows a success or failure alert
+  @param {String} printerName The name of the printer to send the print job to
+*/
+const printLabels = async (printerName) => {
+  const { success, message = {} } = await printingStore.createPrintJob({
+    printerName,
+    labels: createLabels(),
+    copies: 1,
+  })
+
+  showAlert(message, success ? 'success' : 'danger')
+}
+
+/*Fetches the requests from the api
+  @param {Object} filter The filter to apply to the request
+  @returns {Object} { success: Boolean, errors: Array }*/
+const fetchRequests = async () => {
+  return await fetchWithQueryParams(pacbioRequestsStore.setRequests, state.filterOptions)
 }
 </script>

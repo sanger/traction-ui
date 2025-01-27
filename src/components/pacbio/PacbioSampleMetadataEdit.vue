@@ -55,61 +55,63 @@
   </div>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-import ModalHelper from '@/mixins/ModalHelper'
-import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
-const { mapActions } = createNamespacedHelpers('traction/pacbio/requests')
+<script setup>
+import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
+import { reactive, ref } from 'vue'
+import useAlert from '@/composables/useAlert.js'
+import useModalHelper from '@/composables/useModalHelper.js'
+import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
 
-export default {
-  name: 'PacbioSampleMetadataEdit',
-  components: {
-    LibraryTypeSelect,
+const requestsStore = usePacbioRequestsStore()
+
+// Define the props for the component
+const props = defineProps({
+  req: {
+    type: Object,
+    default: () => ({}),
   },
-  mixins: [ModalHelper],
-  props: {
-    req: {
-      type: [Object],
-      default() {
-        return {}
-      },
-    },
-  },
-  emits: ['alert'],
-  data() {
-    return {
-      request: {
-        library_type: '',
-        estimate_of_gb_required: '',
-        number_of_smrt_cells: '',
-        cost_code: '',
-      },
-      showModal: false,
-    }
-  },
-  methods: {
-    async update() {
-      await this.updateRequest(this.request).then(({ success, errors }) => {
-        success
-          ? this.alert('Sample updated', 'success')
-          : this.alert('Failed to update sample. ' + errors, 'danger')
-      })
-      this.hide()
-    },
-    generateId(text, id) {
-      return `${text}-${id}`
-    },
-    ...mapActions(['updateRequest']),
-    show() {
-      this.showModal = true
-      this.request = { ...this.req }
-    },
-    hide() {
-      this.showModal = false
-    },
-    alert(message, type) {
-      this.$emit('alert', message, type)
-    },
-  },
+})
+
+// Reactive object to hold the request data
+const request = reactive({
+  library_type: '',
+  estimate_of_gb_required: '',
+  number_of_smrt_cells: '',
+  cost_code: '',
+})
+
+// Ref to control the visibility of the modal
+const showModal = ref(false)
+
+const { hideModal } = useModalHelper()
+
+// Function to generate a unique ID
+const generateId = (text, id) => {
+  return `${text}-${id}`
+}
+
+const { showAlert } = useAlert()
+
+// Function to update the request
+const update = async () => {
+  const { success, errors } = await requestsStore.updateRequest(request)
+  if (success) {
+    showAlert('Sample updated', 'success')
+  } else {
+    showAlert('Failed to update sample. ' + errors, 'danger')
+  }
+  hide()
+}
+
+// Function to show the modal and populate the request data
+const show = () => {
+  showModal.value = true
+  Object.assign(request, props.req)
+}
+
+// Function to hide the modal
+const hide = () => {
+  showModal.value = false
+  hideModal()
 }
 </script>
