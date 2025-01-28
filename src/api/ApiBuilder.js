@@ -3,8 +3,8 @@ import createRequest from '@/api/createRequest.js'
 /*
   This will construct the api based on any config that has been passed
   The api will be a nested structure
-  It would create something like { traction: { samples, saphyr: libraries, ... }, ...}
-  So traction.saphyr.libraries would be a callable Request
+  It would create something like { traction: { samples, pacbio: libraries, ... }, ...}
+  So traction.pacbio.libraries would be a callable Request
   See Request for what it can do
   This is a world away from the first pass. It should be a lot easier to understand.
   There is a lot of repetition of the arguments but this makes it more readable.
@@ -30,7 +30,7 @@ const build = ({ config }) => {
  * @param {String} apiNamespace - the namespace of the API e.g. v1
  * @param {String} rootURL -  the base URL of the API
  * @param [*] resources - a list of end points
- * @param [*] pipelines - each api may have a set of pipelines e.g. traction has Saphyr, Pacbio and ONT
+ * @param [*] pipelines - each api may have a set of pipelines e.g. traction has Pacbio and ONT
  * @returns {*} an object which is a set of nested resources
  *
  */
@@ -62,7 +62,7 @@ const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null, hea
   return resources.reduce((result, { name, resources = [] }) => {
     return {
       ...result,
-      // if the resource is part of a pipeline create the relevant path e.g. saphyr/requests otherwise just the resource
+      // if the resource is part of a pipeline create the relevant path e.g. pacbio/requests otherwise just the resource
       [name]: buildRequest({
         apiNamespace,
         rootURL,

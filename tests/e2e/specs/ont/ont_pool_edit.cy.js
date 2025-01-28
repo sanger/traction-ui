@@ -74,7 +74,7 @@ describe('ONT Pool Edit', () => {
     })
   })
 
-  it.only('Updates a pool successfully', () => {
+  it('Updates a pool successfully', () => {
     cy.visit('#/ont/pools')
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()

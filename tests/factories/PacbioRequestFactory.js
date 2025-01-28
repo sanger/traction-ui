@@ -1,14 +1,15 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from './../../src/api/JsonApi'
 
-const createStoreData = (data) => {
-  const requests = dataToObjectById({ data: data.data, includeRelationships: true })
+const createStoreData = (data, includeRelationships) => {
+  const requests = dataToObjectById({ data: data.data, includeRelationships })
   return {
-    requests: Object.values(requests),
+    requestsArray: Object.values(requests),
+    requests,
   }
 }
 
-const PacbioRequestFactory = () => {
+const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
   const data = {
     data: [
       {
@@ -397,7 +398,7 @@ const PacbioRequestFactory = () => {
     },
   }
 
-  return { ...BaseFactory(data), storeData: createStoreData(data) }
+  return { ...BaseFactory(data), storeData: createStoreData(data, includeRelationships) }
 }
 
 export default PacbioRequestFactory

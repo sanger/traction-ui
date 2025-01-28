@@ -1,64 +1,70 @@
-import PacbioSamples from '@/views/pacbio/PacbioSampleIndex.vue'
-import { createTestingPinia, flushPromises, mount, store } from '@support/testHelper.js'
+import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
+import { createTestingPinia, flushPromises, mount } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
+import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
 
-function mountWithStore({ props } = {}) {
-  const wrapperObj = mount(PacbioSamples, {
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
+function mountWithStore({ props, state = {}, stubActions = false, plugins = [] } = {}) {
+  const wrapperObj = mount(PacbioSampleIndex, {
     global: {
-      plugins: [createTestingPinia({})],
+      plugins: [
+        createTestingPinia({
+          state,
+          plugins,
+          stubActions,
+        }),
+      ],
       stubs: {
         PrinterModal: {
           template: '<div ref="printerModal"></div>',
         },
       },
     },
-    store,
     props,
   })
-  return { wrapperObj }
+  const storeObj = usePacbioRequestsStore()
+  return { wrapperObj, storeObj }
 }
 
 const pacbioRequestFactory = PacbioRequestFactory()
 
 describe('PacbioSamples.vue', () => {
-  let wrapper, samples
+  let wrapper
 
   beforeEach(async () => {
-    // Remove the included data in the dummy response as its not needed
-    pacbioRequestFactory.content.data.included = []
-
-    // DataFetcher calls requests get on render so we need to mock the call
-    const requestGet = vi.spyOn(store.state.api.traction.pacbio.requests, 'get')
-    requestGet.mockReturnValue(pacbioRequestFactory.responses.fetch)
-
-    const { wrapperObj } = mountWithStore()
-    wrapper = wrapperObj
-    samples = wrapper.vm
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.requests.get = vi
+            .fn()
+            .mockResolvedValue(pacbioRequestFactory.responses.fetch)
+        }
+      },
+    ]
+    const { wrapperObj } = mountWithStore({
+      plugins,
+    })
     await flushPromises()
+    wrapper = wrapperObj
   })
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
-      for (const field of samples.fields) {
+      for (const field of wrapper.vm.state.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
     it('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
-    })
-  })
-
-  // TODO: this is tested throughout the app and it is exactly the same
-  describe('#showAlert', () => {
-    it('passes the message to function on emit event', () => {
-      samples.showAlert('show this message', 'danger')
-      expect(Object.values(store.state.traction.messages)).toContainEqual({
-        type: 'danger',
-        message: 'show this message',
-      })
     })
   })
 
@@ -79,7 +85,7 @@ describe('PacbioSamples.vue', () => {
 
   describe('Printing labels', () => {
     beforeEach(() => {
-      samples.selected = [
+      wrapper.vm.state.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
         { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
@@ -88,11 +94,11 @@ describe('PacbioSamples.vue', () => {
 
     describe('#createLabels', () => {
       it('will have the correct number of labels', () => {
-        expect(samples.createLabels().length).toEqual(3)
+        expect(wrapper.vm.createLabels().length).toEqual(3)
       })
 
       it('will have the correct text for each label', () => {
-        const label = samples.createLabels()[0]
+        const label = wrapper.vm.createLabels()[0]
         expect(label.barcode).toEqual('TRAC-1')
         expect(label.first_line).toEqual('Pacbio - Sample')
         expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
@@ -104,7 +110,7 @@ describe('PacbioSamples.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        samples.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
+        wrapper.vm.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: true, message: 'success' }
         })
 
@@ -113,9 +119,9 @@ describe('PacbioSamples.vue', () => {
       })
 
       it('should create a print job', () => {
-        expect(samples.printingStore.createPrintJob).toBeCalledWith({
+        expect(wrapper.vm.printingStore.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
-          labels: samples.createLabels(),
+          labels: wrapper.vm.createLabels(),
           copies: 1,
         })
       })

@@ -6,13 +6,6 @@ vi.mock('@/config/PipelinesConfig', () => {
   return {
     default: [
       {
-        name: 'saphyr',
-        title: 'Saphyr',
-        description: 'A LIMS pipeline to support tracking for the Bionano Saphyr instrument',
-        routes: ['samples', 'libraries', 'runs'],
-        active: false,
-      },
-      {
         name: 'pacbio',
         title: 'PacBio',
         description: 'A LIMS pipeline to support tracking for PacBio Long-Read Sequencing',

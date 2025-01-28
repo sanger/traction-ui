@@ -7,9 +7,6 @@
       <router-link id="dashboard-link" :to="{ name: 'Dashboard' }" class="border-r-2 px-2">
         Dashboard
       </router-link>
-      <router-link id="saphyr-link" :to="{ name: 'SaphyrRuns' }" class="border-r-2 px-2">
-        Saphyr Runs
-      </router-link>
       <router-link id="pacbio-link" :to="{ name: 'PacbioRunIndex' }" class="border-r-2 px-2">
         Pacbio Runs
       </router-link>

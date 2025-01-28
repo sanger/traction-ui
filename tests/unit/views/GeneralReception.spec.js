@@ -61,7 +61,10 @@ describe('GeneralReception', () => {
       const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('lw-shelf-1-30451')
-      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(true)
+      const userCodeInput = wrapper.find('[data-attribute=user-code-input]')
+      expect(userCodeInput.exists()).toBe(true)
+      expect(userCodeInput.isVisible()).toBe(true)
+      expect(userCodeInput.attributes('type')).toBe('password')
     })
 
     it('hides user swipecard when a workflow is not selected', async () => {

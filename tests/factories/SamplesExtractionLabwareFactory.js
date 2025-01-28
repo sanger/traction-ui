@@ -19,7 +19,7 @@ const SamplesExtractionLabwareFactory = () => {
           barcode: 'SE108532I',
           sample_uuid: '4008d13c-e8f3-11e9-9231-68b59977951e',
           study_uuid: '123456-e8f3-11e9-9231-68b59977951e',
-          pipeline: 'saphyr',
+          pipeline: 'pacbio',
           library_type: 'type',
           estimate_of_gb_required: '123',
           number_of_smrt_cells: '1',
