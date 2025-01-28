@@ -1,5 +1,6 @@
 <template>
-  <DataFetcher id="pool" :fetcher="provider">
+  <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
+  <DataFetcher id="pool" :key="$route.fullPath" :fetcher="provider">
     <div class="flex flex-col pt-4">
       <div class="flex flex-col w-1/2 px-4">
         <traction-menu :border="true">
