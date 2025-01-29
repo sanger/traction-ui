@@ -1,9 +1,8 @@
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
 import {
-  mount,
   flushPromises,
-  createTestingPinia,
   successfulResponse,
+  mountWithStore,
 } from '@support/testHelper.js'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
@@ -19,23 +18,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLibraryIndex, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          state,
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioLibrariesStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('Libraries.vue', () => {
   let wrapper, libraries, libraryStore
   beforeEach(async () => {
@@ -48,8 +30,9 @@ describe('Libraries.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore({
+    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryIndex, {
       plugins,
+      createStore: () => usePacbioLibrariesStore(),
     })
     await flushPromises()
     wrapper = wrapperObj
@@ -81,7 +64,7 @@ describe('Libraries.vue', () => {
           }
         },
       ]
-      const { wrapperObj } = mountWithStore({
+      const { wrapperObj } = mountWithStore(PacbioLibraryIndex,{
         plugins,
       })
       wrapper = wrapperObj

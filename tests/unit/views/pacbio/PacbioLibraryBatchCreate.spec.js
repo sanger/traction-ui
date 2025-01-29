@@ -1,7 +1,6 @@
 import {
-  mount,
   flushPromises,
-  createTestingPinia,
+  mountWithStore,
   successfulResponse,
 } from '@support/testHelper.js'
 import { expect, it, vi } from 'vitest'
@@ -24,23 +23,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLibraryBatchCreate, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          state,
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const createStoreObj = usePacbioLibraryBatchCreateStore()
-  return { wrapperObj, createStoreObj }
-}
-
 describe('PacbioLibraryBatchCreate.vue', () => {
   let wrapper, pacbioLibraryBatchCreateStore
 
@@ -53,11 +35,12 @@ describe('PacbioLibraryBatchCreate.vue', () => {
         }
       },
     ]
-    const { wrapperObj, createStoreObj } = mountWithStore({
+    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryBatchCreate,{
       plugins,
+      createStore: () => usePacbioLibraryBatchCreateStore(),
     })
     wrapper = wrapperObj
-    pacbioLibraryBatchCreateStore = createStoreObj
+    pacbioLibraryBatchCreateStore = storeObj
     await flushPromises()
   })
 
