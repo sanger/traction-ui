@@ -1,5 +1,6 @@
 <template>
-  <data-fetcher :fetcher="fetchPoolsData">
+  <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
+  <data-fetcher :key="route.fullPath" :fetcher="fetchPoolsData">
     <div class="flex flex-col pt-4">
       <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
         <div class="flex flex-col">
@@ -100,8 +101,7 @@ const aliquotSelectionHighlightLabware = ref(null)
  * @returns {Promise<{ success: Boolean, errors: Array }>
  */
 const fetchPoolsData = async () => {
-  // Clear the pool data
-  pacbioPoolCreateStore.clearPoolData()
+  resetData()
   // Fetch the tag sets
   const { success, errors } = await pacbioRootStore.fetchPacbioTagSets()
   if (!success) {
@@ -179,5 +179,20 @@ const handleAliquotSelection = (aliquot) => {
     )
   }
   aliquotSelectionHighlightLabware.value = { labware, aliquot }
+}
+
+/**
+ * Resets the data of the page. Required for users navigating to pools new from an existing pool
+ * @returns {void}
+ */
+const resetData = () => {
+  // Reset local variables and inputs
+  scannedLabware.value = []
+  searchText.value = ''
+  searchRef.value = null
+  aliquotSelectionHighlightLabware.value = null
+
+  // Reset pool store data
+  pacbioPoolCreateStore.clearPoolData()
 }
 </script>
