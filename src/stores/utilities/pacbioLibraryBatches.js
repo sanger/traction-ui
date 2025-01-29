@@ -38,7 +38,7 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
     return createError(`tag ${tag} not found`)
   }
 
-  const request = requests.find((r) => r.source_identifier === source)
+  const request = requests.find((r) => r.sample_name === source)
   if (!request) {
     return createError(`source ${source} not found`)
   }
@@ -73,7 +73,7 @@ async function fetchTagsAndRequests(sources, tagSet) {
 
   const rootStore = useRootStore()
   let promise = rootStore.api.traction.pacbio.requests.get({
-    filter: { source_identifier: sources.join(',') },
+    filter: { sample_name: sources.join(',') },
   })
   let response = await handleResponse(promise)
 
