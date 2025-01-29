@@ -52,6 +52,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           insert_size: 10191,
           created_at: '2024/11/15 17:38',
           deactivated_at: null,
+          sample_name: '2STDY97',
           source_identifier: 'GEN-1725896371-4:B3',
           pacbio_request_id: 407,
           tag_id: 303,
@@ -89,6 +90,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           insert_size: 10191,
           created_at: '2024/11/15 17:38',
           deactivated_at: null,
+          sample_name: '5049STDY8152830',
           source_identifier: 'DN814327C:A1',
           pacbio_request_id: 407,
           tag_id: 304,
@@ -174,7 +176,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
         duplicate_tags && indx > 0
           ? lines[0].split(',')[1]
           : tagArrr.find((t) => t.id === String(library.tag_id))?.group_id
-      const source = indx === 0 && invalid_source ? 'test' : library.source_identifier
+      const source = indx === 0 && invalid_source ? 'test' : library.sample_name
       lines[indx] = [
         source,
         tag,
@@ -192,7 +194,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
     const tagArrr = Object.values(tags)
     const libraries_attributes = Object.values(storeData.libraries).map((library) => {
       const tag = tagArrr.find((t) => t.id === String(library.tag_id))?.group_id
-      const request = requests.find((r) => r.source_identifier === library.source_identifier)
+      const request = requests.find((r) => r.sample_name === library.sample_name)
       return {
         ...library,
         pacbio_request_id: request?.id,
