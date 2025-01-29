@@ -1,5 +1,5 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
-import {flushPromises, nextTick, router, mountWithStore } from '@support/testHelper'
+import { flushPromises, nextTick, router, mountWithStore } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach, vi } from 'vitest'

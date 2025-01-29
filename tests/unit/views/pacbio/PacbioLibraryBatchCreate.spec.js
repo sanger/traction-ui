@@ -1,8 +1,4 @@
-import {
-  flushPromises,
-  mountWithStore,
-  successfulResponse,
-} from '@support/testHelper.js'
+import { flushPromises, mountWithStore, successfulResponse } from '@support/testHelper.js'
 import { expect, it, vi } from 'vitest'
 import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
 import { usePacbioLibraryBatchCreateStore } from '@/stores/pacbioLibraryBatchCreate.js'
@@ -35,7 +31,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryBatchCreate,{
+    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryBatchCreate, {
       plugins,
       createStore: () => usePacbioLibraryBatchCreateStore(),
     })

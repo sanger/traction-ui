@@ -111,7 +111,7 @@ function mountWithStore(
     plugins = [],
     props,
     createStore = () => {},
-    stubs = {}
+    stubs = {},
   } = {},
 ) {
   const wrapperObj = mount(component, {
