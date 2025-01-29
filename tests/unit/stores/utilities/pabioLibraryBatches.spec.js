@@ -58,7 +58,7 @@ describe('pacbioLibraryBatches', () => {
 
     it('returns an error if tag is not found in tags', () => {
       const record = {
-        source: requests[0].source_identifier,
+        source: requests[0].sample_name,
         tag: 'abc',
         concentration: 10,
         insert_size: 100,
@@ -75,7 +75,7 @@ describe('pacbioLibraryBatches', () => {
       const tag = pacbioTagSetFactory.storeData.selected.tag
       const request = pacbioRequestFactory.content.data[0]
       const record = {
-        source: request.attributes.source_identifier,
+        source: request.attributes.sample_name,
         tag_set: tagSet.name,
         tag: tag.group_id,
         concentration: 10,
@@ -119,14 +119,14 @@ describe('pacbioLibraryBatches', () => {
       }
       tagSet = pacbioTagSetFactory.storeData.selected.tagSet
       requestsData = pacbioRequestFactory.storeData.requestsArray
-      sources = requestsData.map((r) => r.source_identifier)
+      sources = requestsData.map((r) => r.sample_name)
     })
 
     it('fetches requests and tags successfully', async () => {
       const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.traction.pacbio.requests.get).toHaveBeenCalledWith({
-        filter: { source_identifier: sources.join(',') },
+        filter: { sample_name: sources.join(',') },
       })
       expect(rootStore.api.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
         include: 'tags',
@@ -142,7 +142,7 @@ describe('pacbioLibraryBatches', () => {
       const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.traction.pacbio.requests.get).toHaveBeenCalledWith({
-        filter: { source_identifier: sources.join(',') },
+        filter: { sample_name: sources.join(',') },
       })
       expect(rootStore.api.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
         include: 'tags',
@@ -158,7 +158,7 @@ describe('pacbioLibraryBatches', () => {
       const { requests } = await fetchTagsAndRequests(sources, tagSet.name)
 
       expect(rootStore.api.traction.pacbio.requests.get).toHaveBeenCalledWith({
-        filter: { source_identifier: sources.join(',') },
+        filter: { sample_name: sources.join(',') },
       })
       expect(rootStore.api.traction.pacbio.tag_sets.get).toHaveBeenCalledWith({
         include: 'tags',
