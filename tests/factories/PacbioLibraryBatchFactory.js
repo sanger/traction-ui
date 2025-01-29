@@ -155,6 +155,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
       }),
       tubes: tubesObj,
       libraries: librariesObj,
+      librariesArray: Object.values(librariesObj),
     }
   }
 
