@@ -120,8 +120,8 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         )
         expect(success).toBeFalsy()
         expect(errors).toEqual(
-          `Duplicate sources found in the csv: ${
-            pacbioLibraryBatchFactory.storeData.librariesArray.map((batch) => batch.sample_name)
+          `Duplicate sources found in the csv: ${pacbioLibraryBatchFactory.storeData.librariesArray
+            .map((batch) => batch.sample_name)
             .join(', ')}`,
         )
       })
