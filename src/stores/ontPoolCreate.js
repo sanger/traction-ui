@@ -63,45 +63,45 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
   getters: {
     /**
      * Returns the requests
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     requests: (state) => Object.values(state.resources.requests),
 
     /**
      * Returns the pool
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     poolItem: (state) => state.pooling.pool || {},
 
     /**
      * Returns the tube
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     tubeItem: (state) => state.pooling.tube || {},
 
     /**
      * Returns a library
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     libraryItem: (state) => (id) => state.pooling.libraries[id],
 
     /**
      * Returns a list of selected plates
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     selectedPlates: ({ selected, resources }) =>
       mergeRepresentations(selected.plates, resources.plates),
 
     /**
      * Returns a list of selected tubes
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     selectedTubes: ({ selected, resources }) =>
       mergeRepresentations(selected.tubes, resources.tubes),
 
     /**
      * Returns a list of all fetched wells
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     wellList: (state) => (ids) => {
       const wells = state.resources.wells
