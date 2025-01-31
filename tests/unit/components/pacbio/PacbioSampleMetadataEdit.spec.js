@@ -48,8 +48,6 @@ describe('PacbioSampleMetadataEdit.vue', () => {
     mockSamples = pacbioRequestFactory.content.data
     props = { req: mockSamples[0] }
 
-    // store.commit('traction/pacbio/requests/setRequests', mockSamples)
-
     const { wrapperObj, storeObj } = mountWithStore({
       props,
     })
