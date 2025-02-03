@@ -103,32 +103,31 @@ const failedResponse = (statusCode = 500) => {
  * @param {Object} [options.dataProps={}] - Initial data state of the component.
  * @returns {Object} An object containing the mounted wrapper and the store instance.
  */
-function mountWithStore(
-  component,
-  {
+function mountWithStore(component, options = {}) {
+  const {
     initialState = {},
     stubActions = false,
     plugins = [],
-    props,
+    props = {},
     createStore = () => {},
     stubs = {},
-  } = {},
-) {
-  const wrapperObj = mount(component, {
+  } = options
+
+  const createPiniaPlugin = () =>
+    createTestingPinia({
+      stubActions,
+      plugins,
+      initialState,
+    })
+  const wrapper = mount(component, {
     global: {
-      plugins: [
-        createTestingPinia({
-          stubActions,
-          plugins,
-          initialState,
-        }),
-      ],
+      plugins: [createPiniaPlugin()],
       stubs,
     },
     props,
   })
-  const storeObj = createStore()
-  return { wrapperObj, storeObj }
+  const store = createStore()
+  return { wrapper, store }
 }
 
 export {
