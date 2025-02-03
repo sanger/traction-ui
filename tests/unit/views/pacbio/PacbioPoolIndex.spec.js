@@ -26,12 +26,11 @@ describe('PacbioPoolIndex.vue', () => {
       },
     ]
 
-    const { wrapperObj } = mountWithStore(PacbioPoolIndex, {
+    ;({ wrapper } = mountWithStore(PacbioPoolIndex, {
       plugins,
       createStore: () => usePacbioPoolsStore(),
-    })
+    }))
     await flushPromises()
-    wrapper = wrapperObj
     pools = wrapper.vm
   })
 

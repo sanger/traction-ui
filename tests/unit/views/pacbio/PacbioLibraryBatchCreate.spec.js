@@ -31,12 +31,11 @@ describe('PacbioLibraryBatchCreate.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryBatchCreate, {
+    ;({ wrapper, store: pacbioLibraryBatchCreateStore } = mountWithStore(PacbioLibraryBatchCreate, {
       plugins,
       createStore: () => usePacbioLibraryBatchCreateStore(),
-    })
-    wrapper = wrapperObj
-    pacbioLibraryBatchCreateStore = storeObj
+    }))
+
     await flushPromises()
   })
 

@@ -26,13 +26,11 @@ describe('Libraries.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore(PacbioLibraryIndex, {
+    ;({ wrapper, store: libraryStore } = mountWithStore(PacbioLibraryIndex, {
       plugins,
       createStore: () => usePacbioLibrariesStore(),
-    })
+    }))
     await flushPromises()
-    wrapper = wrapperObj
-    libraryStore = storeObj
     libraries = wrapper.vm
   })
 
@@ -60,10 +58,9 @@ describe('Libraries.vue', () => {
           }
         },
       ]
-      const { wrapperObj } = mountWithStore(PacbioLibraryIndex, {
+      ;({ wrapper } = mountWithStore(PacbioLibraryIndex, {
         plugins,
-      })
-      wrapper = wrapperObj
+      }))
       await flushPromises()
       expect(wrapper.find('#exhausted-badge').exists()).toBe(true)
     })

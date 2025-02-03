@@ -1,8 +1,7 @@
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
-import { mount, router, flushPromises, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/stores/utilities/run.js'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 
@@ -23,49 +22,36 @@ const smrtLinkVersions = {
  * @param {*} props - props to be passed to the component while mounting
  *
  */
-function mountWithStore(props) {
-  const wrapper = mount(PacbioRunShow, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: {
-              resources: { smrtLinkVersions },
-            },
-          },
-          stubActions: false,
-          plugins: [
-            ({ store }) => {
-              if (store.$id === 'root') {
-                ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
-                  (store.api.traction.pacbio.runs.find = vi.fn(
-                    () => pacbioRunFactory.responses.fetch,
-                  )),
-                  (store.api.traction.pacbio.tubes.get = vi.fn(
-                    () => pacbioTubeFactory.responses.fetch,
-                  ))
-              }
-            },
-          ],
-        }),
-      ],
-      stubs: {
-        PacbioPlateList: true,
-        PacbioRunPoolLibraryList: true,
-        PacbioRunInfoEdit: true,
-        PacbioRunWellDefaultEdit: true,
+function mountPacbioRunShow(props) {
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
+          (store.api.traction.pacbio.runs.find = vi.fn(() => pacbioRunFactory.responses.fetch)),
+          (store.api.traction.pacbio.tubes.get = vi.fn(() => pacbioTubeFactory.responses.fetch))
+      }
+    },
+  ]
+  return mountWithStore(PacbioRunShow, {
+    initialState: {
+      pacbioRunCreate: {
+        resources: { smrtLinkVersions },
       },
     },
-    router,
+    plugins,
+    stubs: {
+      PacbioPlateList: true,
+      PacbioRunPoolLibraryList: true,
+      PacbioRunInfoEdit: true,
+      PacbioRunWellDefaultEdit: true,
+    },
     props,
   })
-  usePacbioRunCreateStore()
-  return { wrapper }
 }
 describe('PacbioRunShow.vue', () => {
   describe('new', () => {
     it('shows as a new run ', async () => {
-      const { wrapper } = mountWithStore({ id: 'new' })
+      const { wrapper } = mountPacbioRunShow({ id: 'new' })
       await flushPromises()
 
       const type = newRunType
@@ -78,7 +64,7 @@ describe('PacbioRunShow.vue', () => {
 
   describe('existing run', () => {
     it('shows as an existing run ', async () => {
-      const { wrapper } = mountWithStore({ id: pacbioRunFactory.storeData.run.id })
+      const { wrapper } = mountPacbioRunShow({ id: pacbioRunFactory.storeData.run.id })
 
       // ClearData is getting rid of the smrtLinkVersion we manually set
       wrapper.vm.clearData = vi.fn()

@@ -89,12 +89,10 @@ describe('PacbioPoolCreate', () => {
       }
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      const { wrapperObj, storeObj } = mountPacbioPoolCreate({
+      ;({ wrapper, store } = mountPacbioPoolCreate({
         plugins,
         initialState: { pacbioPoolCreate: state },
-      })
-      wrapper = wrapperObj
-      store = storeObj
+      }))
       store.selected.plates = {
         61: { id: '61' },
       }
@@ -134,9 +132,7 @@ describe('PacbioPoolCreate', () => {
       }
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      const { wrapperObj, storeObj } = mountPacbioPoolCreate({ plugins, state })
-      wrapper = wrapperObj
-      store = storeObj
+      ;({ wrapper, store } = mountPacbioPoolCreate({ plugins, state }))
       store.findPacbioPlate = mockFindPacbioPlateFn
       store.findPacbioTube = mockFindPacbioTubeFn
     })
@@ -251,8 +247,7 @@ describe('PacbioPoolCreate', () => {
 
   describe('resetData', () => {
     it('resets the data when called', async () => {
-      const { wrapperObj, storeObj } = mountPacbioPoolCreate()
-      const wrapper = wrapperObj
+      let { wrapper, store } = mountPacbioPoolCreate()
       wrapper.vm.scannedLabware = [
         { barcode: 'DN814327C', type: 'plates' },
         { barcode: 'TRAC-2-20', type: 'tubes' },
@@ -267,7 +262,7 @@ describe('PacbioPoolCreate', () => {
       expect(wrapper.vm.searchRef).toEqual(null)
       expect(wrapper.vm.searchText).toEqual('')
       expect(wrapper.vm.aliquotSelectionHighlightLabware).toEqual(null)
-      expect(storeObj.clearPoolData).toBeCalled()
+      expect(store.clearPoolData).toBeCalled()
     })
   })
 })

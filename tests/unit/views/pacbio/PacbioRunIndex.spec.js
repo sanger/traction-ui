@@ -56,19 +56,16 @@ describe('PacbioRunIndex.vue', () => {
       root: {},
     }
 
-    const { wrapperObj, storeObj } = mountWithStore(PacbioRunIndex, {
+    ;({
+      wrapper,
+      store: { runCreateStore, runsStore },
+    } = mountWithStore(PacbioRunIndex, {
       initialState,
       plugins,
       createStore: () => {
-        const runCreateStoreObj = usePacbioRunCreateStore()
-        const runsStoreObj = usePacbioRunsStore()
-        return { runCreateStoreObj, runsStoreObj }
+        return { runCreateStore: usePacbioRunCreateStore(), runsStore: usePacbioRunsStore() }
       },
-    })
-
-    wrapper = wrapperObj
-    runCreateStore = storeObj.runCreateStoreObj
-    runsStore = storeObj.runsStoreObj
+    }))
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
