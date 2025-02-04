@@ -15,6 +15,7 @@ vi.mock('@/composables/useAlert', () => ({
 const triggerInputEnter = async (wrapper, value) => {
   const input = wrapper.find('#labware-finder-input')
   // Set the value of the input element
+  console.log(input)
   input.element.value = value
   // Create a mock event with event.key set to 'Enter'
   const mockEvent = { key: 'Enter' }
@@ -166,12 +167,14 @@ describe('PacbioPoolCreate', () => {
           errors: [],
         })
         mockFindPacbioTubeFn.mockReturnValue({ success: true, errors: [] })
+        await flushPromises()
         await triggerInputEnter(wrapper, barcode)
 
         expect(mockFindPacbioPlateFn).toBeCalled()
         expect(mockFindPacbioTubeFn).not.toBeCalled()
       })
       it('enables search button on input', async () => {
+        await flushPromises()
         expect(wrapper.find('#labware-finder-button').element.disabled).toBe(true)
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,
@@ -184,6 +187,7 @@ describe('PacbioPoolCreate', () => {
         expect(wrapper.find('#labware-finder-button').element.disabled).toBe(false)
       })
       it('calls findPacbioPlate on search button press', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,
           errors: [],
@@ -199,6 +203,7 @@ describe('PacbioPoolCreate', () => {
       })
 
       it('sets scannedLabware', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: true,
           errors: [],
@@ -209,6 +214,7 @@ describe('PacbioPoolCreate', () => {
         expect(wrapper.vm.scannedLabware).toEqual([{ barcode, type: 'plates' }])
       })
       it('show alert on error', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: false,
           errors: ['Error finding plate'],
@@ -225,6 +231,7 @@ describe('PacbioPoolCreate', () => {
     describe('when a tube barcode is scanned', () => {
       const barcode = 'GEN-1680611780-6'
       it('calls findPacbioPlate', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: false,
           errors: ['Error finding plate'],
@@ -236,6 +243,7 @@ describe('PacbioPoolCreate', () => {
         expect(mockFindPacbioTubeFn).toBeCalled()
       })
       it('sets scannedLabware', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: false,
           errors: ['Error finding plate'],
@@ -246,6 +254,7 @@ describe('PacbioPoolCreate', () => {
         expect(wrapper.vm.scannedLabware).toEqual([{ barcode, type: 'tubes' }])
       })
       it('show alert on error', async () => {
+        await flushPromises()
         mockFindPacbioPlateFn.mockReturnValue({
           success: false,
           errors: ['Error finding plate'],
@@ -260,6 +269,7 @@ describe('PacbioPoolCreate', () => {
     })
     describe('On scanning a plate or tube that is already selected', () => {
       it('will show alert', async () => {
+        await flushPromises()
         wrapper.vm.scannedLabware = [{ barcode: 'DN814327C', type: 'plates' }]
         await triggerInputEnter(wrapper, 'DN814327C')
         expect(mockShowAlert).toBeCalledWith('Labware already scanned', 'danger')
