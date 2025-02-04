@@ -15,7 +15,6 @@ vi.mock('@/composables/useAlert', () => ({
 const triggerInputEnter = async (wrapper, value) => {
   const input = wrapper.find('#labware-finder-input')
   // Set the value of the input element
-  console.log(input)
   input.element.value = value
   // Create a mock event with event.key set to 'Enter'
   const mockEvent = { key: 'Enter' }
