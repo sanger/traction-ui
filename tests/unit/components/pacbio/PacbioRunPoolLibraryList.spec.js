@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import PacbioRunPoolLibraryList from '@/components/pacbio/PacbioRunPoolLibraryList.vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
@@ -11,43 +11,18 @@ const count =
   0 + pacbioRunFactory.storeData.resources.libraries?.length ||
   0
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
- * 'options' allows to define initial state of store while instantiating the component.
- *
- * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * options type is
- * {state :{},stubActions: boolean, plugins:[]}
- *
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(PacbioRunPoolLibraryList, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-  })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PacbioRunPoolLibraryList', () => {
   let wrapper
 
   beforeEach(() => {
-    const { wrapperObj } = mountWithStore({
-      state: {
-        ...pacbioRunFactory.storeData,
+    ;({ wrapper } = mountWithStore(PacbioRunPoolLibraryList, {
+      initialState: {
+        pacbioRunCreate: {
+          ...pacbioRunFactory.storeData,
+        },
       },
-    })
-    wrapper = wrapperObj
+      createStore: () => usePacbioRunCreateStore(),
+    }))
   })
 
   it('should render the component correctly', () => {
