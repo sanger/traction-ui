@@ -266,4 +266,26 @@ describe('PacbioPoolCreate', () => {
       })
     })
   })
+
+  describe('resetData', () => {
+    it('resets the data when called', async () => {
+      const { wrapperObj, storeObj } = mountWithStore()
+      const wrapper = wrapperObj
+      wrapper.vm.scannedLabware = [
+        { barcode: 'DN814327C', type: 'plates' },
+        { barcode: 'TRAC-2-20', type: 'tubes' },
+      ]
+      wrapper.vm.searchText = 'DN814327C'
+      wrapper.vm.searchRef = 'plates'
+      wrapper.vm.aliquotSelectionHighlightLabware = { labware: 'DN814327C', aliquot: { id: 1 } }
+
+      wrapper.vm.resetData()
+
+      expect(wrapper.vm.scannedLabware).toEqual([])
+      expect(wrapper.vm.searchRef).toEqual(null)
+      expect(wrapper.vm.searchText).toEqual('')
+      expect(wrapper.vm.aliquotSelectionHighlightLabware).toEqual(null)
+      expect(storeObj.clearPoolData).toBeCalled()
+    })
+  })
 })
