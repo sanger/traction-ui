@@ -100,7 +100,7 @@ describe('PacbioPoolCreate', () => {
 
   describe('On Pool/Edit', () => {
     let wrapper, store
-    beforeEach(() => {
+    beforeEach(async () => {
       const state = {
         resources: {
           plates,
@@ -119,11 +119,11 @@ describe('PacbioPoolCreate', () => {
       store.selected.tubes = {
         1: { id: '20' },
       }
+      await flushPromises()
     })
 
     describe('when a plate or tube is selected', () => {
       it('calls both mockFetchPacbioTagSets and mockPopulateUsedAliquotsFromPool', async () => {
-        await flushPromises()
         expect(mockFetchPacbioTagSets).toBeCalled()
         expect(mockPopulateUsedAliquotsFromPool).toBeCalled()
       })
@@ -142,7 +142,7 @@ describe('PacbioPoolCreate', () => {
     let wrapper, store
     const mockFindPacbioPlateFn = vi.fn()
     const mockFindPacbioTubeFn = vi.fn()
-    beforeEach(() => {
+    beforeEach(async () => {
       const state = {
         resources: {
           plates,
@@ -157,6 +157,7 @@ describe('PacbioPoolCreate', () => {
       store = storeObj
       store.findPacbioPlate = mockFindPacbioPlateFn
       store.findPacbioTube = mockFindPacbioTubeFn
+      await flushPromises()
     })
     describe('when a plate barcode is scanned', () => {
       const barcode = 'DN814327C'
