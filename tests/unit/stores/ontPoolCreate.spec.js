@@ -9,12 +9,31 @@ import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 // import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
+import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
+const ontPlateFactory = OntPlateFactory()
+const ontPoolFactory = OntPoolFactory()
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))
+
+const tagSets = {
+  1: {
+    id: '1',
+    name: 'tagSet1',
+    pipeline: 'pipeline1',
+    tags: [],
+  },
+  2: {
+    id: '2',
+    name: 'tagSet2',
+    pipeline: 'pipeline1',
+    tags: [],
+  },
+}
 
 describe('useOntPoolCreateStore', () => {
   beforeEach(() => {
@@ -147,6 +166,152 @@ describe('useOntPoolCreateStore', () => {
         store.resources.wells = wells
         const ids = ['1', '2', '3']
         expect(store.wellList(ids).length).toEqual(ids.length)
+      })
+    })
+
+    describe('requestList', () => {
+      const requests = {
+        1: { id: '1', name: 'request1' },
+        2: { id: '2', name: 'request2' },
+        3: { id: '3', name: 'request3' },
+        4: { id: '4', name: 'request4' },
+        5: { id: '5', name: 'request5' },
+      }
+
+      const libraries = {
+        3: {
+          ont_request_id: '3',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          insert_size: null,
+        },
+        4: {
+          ont_request_id: '4',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          insert_size: null,
+        },
+      }
+
+      const mergedRequests = [
+        { id: '1', name: 'request1', selected: false },
+        { id: '2', name: 'request2', selected: false },
+        { id: '3', name: 'request3', selected: true },
+        { id: '4', name: 'request4', selected: true },
+        { id: '5', name: 'request5', selected: false },
+      ]
+
+      it('returns a list of all fetched requests', () => {
+        store.resources.requests = requests
+        store.pooling.libraries = libraries
+        expect(store.requestList()).toEqual(mergedRequests)
+      })
+
+      it('when ids are included', () => {
+        store.resources.requests = requests
+        store.pooling.libraries = libraries
+        const ids = ['1', '2', '3']
+        expect(store.requestList(ids).length).toEqual(ids.length)
+      })
+    })
+    describe('tagSetList', () => {
+      it('returns a list of all fetched tagSet', () => {
+        store.resources.tagSets = tagSets
+        expect(store.tagSetList).toEqual(Object.values(tagSets))
+      })
+    })
+
+    describe('tagList', () => {
+      const tags = {
+        1: { id: '1', name: 'tag1' },
+        2: { id: '2', name: 'tag2' },
+        3: { id: '3', name: 'tag3' },
+        4: { id: '4', name: 'tag4' },
+        5: { id: '5', name: 'tag5' },
+      }
+      it('returns a list of all fetched tagSet', () => {
+        store.resources.tags = tags
+        expect(store.tagList()).toEqual(tags.values)
+      })
+      it('when ids are included', () => {
+        store.resources.tags = tags
+        const ids = ['1', '2', '3']
+        expect(store.tagList(ids).length).toEqual(ids.length)
+      })
+    })
+
+    describe('selectedTagSet', () => {
+      it('returns the selected tag set', () => {
+        const tagSet = { id: '1' }
+        store.selected.tagSet = tagSet
+        store.resources.tagSets = tagSets
+        expect(store.selectedTagSet).toEqual(tagSets['1'])
+      })
+    })
+
+    describe('selectedRequests', () => {
+      const libraries = {
+        8: {
+          ont_request_id: '8',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          insert_size: null,
+        }, // a selected request
+        7: {
+          ont_request_id: '7',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          insert_size: null,
+        }, // a selected request
+        6: {
+          ont_request_id: '6',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          insert_size: null,
+        }, // a selected request
+      }
+
+      it('returns an array of request resources that have been selected', () => {
+        store.pooling.libraries = libraries
+        store.resources = ontPlateFactory.storeData.resources
+        const expectedSelectedRequests = Object.values(libraries).map((library) => ({
+          ...ontPlateFactory.storeData.resources.requests[library.ont_request_id],
+          selected: true,
+        }))
+        expect(store.selectedRequests).toEqual(expectedSelectedRequests)
+      })
+    })
+
+    describe('pools', () => {
+      it('returns an array of request resources that have been selected', () => {
+        store.resources = ontPoolFactory.storeData.resources
+
+        // we need to sort it as they are in opposite order
+        const poolData = ontPoolFactory.content.data.sort((a, b) => a.id - b.id)
+
+        expect(store.pools.length).toEqual(poolData.length)
+
+        expect(store.pools[0].id).toEqual(poolData[0].id)
+        expect(store.pools[1].id).toEqual(poolData[1].id)
+        expect(store.pools[2].id).toEqual(poolData[2].id)
+
+        // this is ugly. Still not worth tacking until we refactor
+        expect(store.pools[0].barcode).toEqual(
+          ontPoolFactory.storeData.tubes.find(
+            (tube) => tube.id === poolData[0].relationships.tube.data.id,
+          ).attributes.barcode,
+        )
+
+        // I degraded this test as to not have to deal with the nested data
+        // this is a good candidate for a refactor
+        expect(store.pools[0].libraries[0].id).toEqual(
+          poolData[0].relationships.libraries.data[0].id,
+        )
       })
     })
   })
