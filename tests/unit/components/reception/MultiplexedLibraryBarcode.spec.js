@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import MultiplexedLibraryBarcode from '@/components/reception/MultiplexedLibraryBarcode.vue'
 import Receptions from '@/lib/receptions'
@@ -19,27 +19,6 @@ vi.mock('@/services/labwhere/client.js')
 const printerFactory = PrinterFactory()
 const ontTagSetFactory = OntTagSetFactory()
 
-async function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(MultiplexedLibraryBarcode, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            printing: state,
-            root: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-
-  await flushPromises()
-  return { wrapperObj }
-}
-
 describe('MultiplexedLibraryBarcode', () => {
   const plugins = [
     ({ store }) => {
@@ -50,7 +29,7 @@ describe('MultiplexedLibraryBarcode', () => {
   ]
 
   const buildWrapper = async (props = {}) => {
-    return await mountWithStore({
+    const { wrapper } = mountWithStore(MultiplexedLibraryBarcode, {
       props: {
         pipeline: 'ONT',
         reception: Receptions['SequencescapeMultiplexedLibraries'],
@@ -63,19 +42,24 @@ describe('MultiplexedLibraryBarcode', () => {
         ...props,
       },
       plugins,
-      state: { resources: { printers: printerFactory.storeData.printers } },
+      initialState: {
+        printing: { resources: { printers: printerFactory.storeData.printers } },
+        root: { resources: { printers: printerFactory.storeData.printers } },
+      },
     })
+    await flushPromises()
+    return { wrapper }
   }
 
   it('has a list of printers', async () => {
-    const { wrapperObj: wrapper } = await buildWrapper()
+    const { wrapper } = await buildWrapper()
     expect(wrapper.vm.printerOptions.length).toBeGreaterThan(0)
   })
 
   describe('barcode', () => {
     describe('single barcode', () => {
       it('should not update importText until barcode is fetched', async () => {
-        const { wrapperObj: wrapper } = await buildWrapper()
+        const { wrapper } = await buildWrapper()
         await wrapper.find('#barcode').setValue('DN1')
         expect(wrapper.vm.barcode).toEqual('DN1')
         expect(wrapper.find('#importText').text()).toEqual(
@@ -84,7 +68,7 @@ describe('MultiplexedLibraryBarcode', () => {
       })
 
       it('should update importText when fetch function is called', async () => {
-        const { wrapperObj: wrapper } = await buildWrapper()
+        const { wrapper } = await buildWrapper()
         await wrapper.find('#barcode').setValue('DN1')
         const mockedFetchFunction = vi
           .fn()
@@ -105,8 +89,7 @@ describe('MultiplexedLibraryBarcode', () => {
     let wrapper
 
     beforeEach(async () => {
-      const { wrapperObj } = await buildWrapper()
-      wrapper = wrapperObj
+      ;({ wrapper } = await buildWrapper())
     })
 
     it('displays all fetched barcodes in print area', async () => {
@@ -163,7 +146,7 @@ describe('MultiplexedLibraryBarcode', () => {
   })
 
   it('has a summary area', async () => {
-    const { wrapperObj: wrapper } = await buildWrapper()
+    const { wrapper } = await buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into ONT from Sequencescape Multiplexed Libraries',
@@ -173,7 +156,7 @@ describe('MultiplexedLibraryBarcode', () => {
   })
 
   describe('Import and scan in labware to abWhere ', async () => {
-    const { wrapperObj: wrapper } = await buildWrapper()
+    const { wrapper } = await buildWrapper()
     sharedTestsForImportAndScanIn(
       wrapper,
       scanBarcodesInLabwhereLocation,
@@ -187,7 +170,7 @@ describe('MultiplexedLibraryBarcode', () => {
     it('will create some labels', async () => {
       const foundBarcodes = new Set(['DN1'])
       const date = getCurrentDate()
-      const { wrapperObj: wrapper } = await buildWrapper()
+      const { wrapper } = await buildWrapper()
       const barcodeLabels = wrapper.vm.createLabels(foundBarcodes, date)
       expect(barcodeLabels.length).toEqual(1)
       const { barcode, second_line } = barcodeLabels[0]

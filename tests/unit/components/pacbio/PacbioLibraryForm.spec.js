@@ -1,4 +1,4 @@
-import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
 import PacbioLibraryForm from '@/components/pacbio/PacbioLibraryForm.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, expect } from 'vitest'
@@ -16,33 +16,12 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLibraryForm, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioLibraries: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
+function mountPacbioLibraryForm({ plugins = [], props } = {}) {
+  return mountWithStore(PacbioLibraryForm, {
+    plugins,
     props,
+    createStore: () => usePacbioLibrariesStore(),
   })
-  const storeObj = usePacbioLibrariesStore()
-  return { wrapperObj, storeObj }
 }
 
 describe('PacbioLibraryForm.vue', () => {
@@ -62,12 +41,11 @@ describe('PacbioLibraryForm.vue', () => {
       },
     ]
 
-    const { wrapperObj } = mountWithStore({
+    ;({ wrapper } = mountPacbioLibraryForm({
       props,
       plugins,
-    })
-    wrapper = wrapperObj
-    modal = wrapperObj.vm
+    }))
+    modal = wrapper.vm
   })
 
   it('will have an form component', async () => {
@@ -118,11 +96,10 @@ describe('PacbioLibraryForm.vue', () => {
         }
       },
     ]
-    const { wrapperObj } = mountWithStore({
+    ;({ wrapper } = mountPacbioLibraryForm({
       props,
       plugins,
-    })
-    wrapper = wrapperObj
+    }))
     await flushPromises()
     expect(mockShowAlert).toHaveBeenCalled()
   })
@@ -150,12 +127,11 @@ describe('PacbioLibraryForm.vue', () => {
           used_volume: 10.4222,
         },
       }
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper } = mountPacbioLibraryForm({
         props,
         plugins,
-      })
-      wrapper = wrapperObj
-      modal = wrapperObj.vm
+      }))
+      modal = wrapper.vm
     })
     it('should display a form with the correct field values', async () => {
       await flushPromises()

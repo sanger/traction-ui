@@ -1,4 +1,4 @@
-import { mount, createTestingPinia, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit.vue'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
@@ -12,48 +12,17 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not. If you do not set this to false it will stub all actions and could cause errors
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioSampleMetadataEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRequests: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioRequestsStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PacbioSampleMetadataEdit.vue', () => {
   let wrapper, props, mockSamples, store
 
   beforeEach(async () => {
     mockSamples = pacbioRequestFactory.content.data
     props = { req: mockSamples[0] }
-
-    const { wrapperObj, storeObj } = mountWithStore({
+    ;({ wrapper, store } = mountWithStore(PacbioSampleMetadataEdit, {
       props,
-    })
+      createStore: () => usePacbioRequestsStore(),
+    }))
     await flushPromises()
-    wrapper = wrapperObj
-    store = storeObj
   })
 
   describe('update', () => {

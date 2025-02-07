@@ -1,5 +1,5 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
-import { mount, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, router, flushPromises } from '@support/testHelper.js'
 import { expect } from 'vitest'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
@@ -20,40 +20,19 @@ const triggerInputEnter = async (wrapper, value) => {
   const mockEvent = { key: 'Enter' }
   await input.wrapperElement.dispatchEvent(new KeyboardEvent('keyup', mockEvent))
 }
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioPoolCreate, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioPoolCreate: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-      stubs: {
-        PacbioTagSetList: true,
-        PacbioTagSetItem: true,
-        PacbioLabwareSelectedList: true,
-        PacbioPoolEdit: true,
-      },
+
+const mountPacbioPoolCreate = (params) =>
+  mountWithStore(PacbioPoolCreate, {
+    ...params,
+    stubs: {
+      PacbioTagSetList: true,
+      PacbioTagSetItem: true,
+      PacbioLabwareSelectedList: true,
+      PacbioPoolEdit: true,
     },
-    props,
+    createStore: () => usePacbioPoolCreateStore(),
   })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
+
 const pacbioPlateFactory = PacbioPlateFactory()
 const pacbioTubeFactory = PacbioTubeFactory()
 
@@ -82,7 +61,7 @@ describe('PacbioPoolCreate', () => {
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
       await router.push('/pacbio/pool/new')
-      mountWithStore({ plugins })
+      mountPacbioPoolCreate({ plugins })
       await flushPromises()
       expect(mockFetchPacbioTagSets).toBeCalled()
       expect(mockPopulateUsedAliquotsFromPool).not.toBeCalled()
@@ -92,7 +71,7 @@ describe('PacbioPoolCreate', () => {
       mockFetchPacbioTagSets.mockReturnValue({ success: false, errors })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
       await router.push('/pacbio/pool/new')
-      mountWithStore({ plugins })
+      mountPacbioPoolCreate({ plugins })
       await flushPromises()
       expect(mockShowAlert).toBeCalledWith(errors, 'danger')
     })
@@ -100,7 +79,7 @@ describe('PacbioPoolCreate', () => {
 
   describe('On Pool/Edit', () => {
     let wrapper, store
-    beforeEach(() => {
+    beforeEach(async () => {
       const state = {
         resources: {
           plates,
@@ -110,20 +89,21 @@ describe('PacbioPoolCreate', () => {
       }
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      const { wrapperObj, storeObj } = mountWithStore({ plugins, state })
-      wrapper = wrapperObj
-      store = storeObj
+      ;({ wrapper, store } = mountPacbioPoolCreate({
+        plugins,
+        initialState: { pacbioPoolCreate: state },
+      }))
       store.selected.plates = {
         61: { id: '61' },
       }
       store.selected.tubes = {
         1: { id: '20' },
       }
+      await flushPromises()
     })
 
     describe('when a plate or tube is selected', () => {
       it('calls both mockFetchPacbioTagSets and mockPopulateUsedAliquotsFromPool', async () => {
-        await flushPromises()
         expect(mockFetchPacbioTagSets).toBeCalled()
         expect(mockPopulateUsedAliquotsFromPool).toBeCalled()
       })
@@ -142,7 +122,7 @@ describe('PacbioPoolCreate', () => {
     let wrapper, store
     const mockFindPacbioPlateFn = vi.fn()
     const mockFindPacbioTubeFn = vi.fn()
-    beforeEach(() => {
+    beforeEach(async () => {
       const state = {
         resources: {
           plates,
@@ -152,11 +132,10 @@ describe('PacbioPoolCreate', () => {
       }
       mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      const { wrapperObj, storeObj } = mountWithStore({ plugins, state })
-      wrapper = wrapperObj
-      store = storeObj
+      ;({ wrapper, store } = mountPacbioPoolCreate({ plugins, state }))
       store.findPacbioPlate = mockFindPacbioPlateFn
       store.findPacbioTube = mockFindPacbioTubeFn
+      await flushPromises()
     })
     describe('when a plate barcode is scanned', () => {
       const barcode = 'DN814327C'
@@ -269,8 +248,7 @@ describe('PacbioPoolCreate', () => {
 
   describe('resetData', () => {
     it('resets the data when called', async () => {
-      const { wrapperObj, storeObj } = mountWithStore()
-      const wrapper = wrapperObj
+      let { wrapper, store } = mountPacbioPoolCreate()
       wrapper.vm.scannedLabware = [
         { barcode: 'DN814327C', type: 'plates' },
         { barcode: 'TRAC-2-20', type: 'tubes' },
@@ -285,7 +263,7 @@ describe('PacbioPoolCreate', () => {
       expect(wrapper.vm.searchRef).toEqual(null)
       expect(wrapper.vm.searchText).toEqual('')
       expect(wrapper.vm.aliquotSelectionHighlightLabware).toEqual(null)
-      expect(storeObj.clearPoolData).toBeCalled()
+      expect(store.clearPoolData).toBeCalled()
     })
   })
 })

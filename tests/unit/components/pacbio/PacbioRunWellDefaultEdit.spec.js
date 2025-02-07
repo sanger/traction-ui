@@ -1,5 +1,5 @@
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit.vue'
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { describe, expect, it } from 'vitest'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
@@ -26,45 +26,24 @@ const smrtLinkVersions = {
   },
 }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
- * 'options' allows to define initial state of store while instantiating the component.
- *
- * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * options type is
- * {state :{},stubActions: boolean, plugins:[]}
- *
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(PacbioRunWellDefaultEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: {
-              resources: { smrtLinkVersions },
-              run: {
-                id: 'new',
-                system_name: 'Sequel IIe',
-                sequencing_kit_box_barcode: null,
-                dna_control_complex_box_barcode: null,
-                comments: null,
-              },
-              ...defaultSmrtLinkAttributes(),
-              ...state,
-            },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
+const mountPacbioRunWellEdit = ({ state = {} } = {}) =>
+  mountWithStore(PacbioRunWellDefaultEdit, {
+    initialState: {
+      pacbioRunCreate: {
+        resources: { smrtLinkVersions },
+        run: {
+          id: 'new',
+          system_name: 'Sequel IIe',
+          sequencing_kit_box_barcode: null,
+          dna_control_complex_box_barcode: null,
+          comments: null,
+        },
+        ...defaultSmrtLinkAttributes(),
+        ...state,
+      },
     },
-    sync: false,
-    attachTo: elem,
+    createStore: () => usePacbioRunCreateStore(),
   })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioRunWellDefaultEdit', () => {
   let wrapper, store
@@ -79,13 +58,11 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioRunWellEdit({
         state: {
           smrtLinkVersion: smrtLinkVersions[1],
         },
-      })
-      wrapper = wrapperObj
-      store = storeObj
+      }))
     })
 
     it('will have a selected smrt link version of v11', () => {
@@ -178,13 +155,11 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v12', () => {
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioRunWellEdit({
         state: {
           smrtLinkVersion: smrtLinkVersions[2],
         },
-      })
-      wrapper = wrapperObj
-      store = storeObj
+      }))
     })
 
     it('will have a selected smrt link version of v12', () => {

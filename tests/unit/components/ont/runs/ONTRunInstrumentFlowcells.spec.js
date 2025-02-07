@@ -1,42 +1,11 @@
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
-import { mount, router, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
+import { mountWithStore } from '../../../../support/testHelper'
 
 const ontInstrumentFactory = OntInstrumentFactory()
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which include
- * state - initial state of the ontRuns store.
- * rootState - initial state of the ontRoot store.
- */
-function mountWithStore({ state = {}, rootState = {} } = {}) {
-  const wrapperObj = mount(ONTRunInstrumentFlowcells, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            ontRuns: { ...state },
-            ontRoot: { resources: { ...rootState } },
-          },
-          stubActions: false,
-          plugins: [],
-        }),
-      ],
-      stubs: {
-        ONTFlowcell: true,
-      },
-    },
-    router,
-  })
-  const storeObj = useOntRunsStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('ONTRunInstrumentFlowcells', () => {
   let wrapper, ontRunInstrumentFlowcell, mockInstruments, mockRun
@@ -49,12 +18,16 @@ describe('ONTRunInstrumentFlowcells', () => {
       state: 'pending',
       flowcell_attributes: [],
     }
-    const { wrapperObj } = mountWithStore({
-      state: { currentRun: mockRun },
-      rootState: { instruments: mockInstruments },
-    })
-
-    wrapper = wrapperObj
+    ;({ wrapper } = mountWithStore(ONTRunInstrumentFlowcells, {
+      initialState: {
+        ontRuns: { currentRun: mockRun },
+        ontRoot: { resources: { instruments: mockInstruments } },
+      },
+      stubs: {
+        ONTFlowcell: true,
+      },
+      createStore: () => useOntRunsStore(),
+    }))
     ontRunInstrumentFlowcell = wrapper.vm
   })
 

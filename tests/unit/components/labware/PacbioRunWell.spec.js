@@ -1,5 +1,5 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
-import { mount, createTestingPinia, nextTick } from '@support/testHelper.js'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
 import { newPlate } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach } from 'vitest'
@@ -79,7 +79,7 @@ const smrtLinkVersions = {
  * {state :{},stubActions: boolean, plugins:[]}
  *
  */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
+function mountPacbioRunWell({ state = {}, plugins = [] } = {}) {
   const { pools, libraries, tubes, aliquots, requests, tags } = pacbioRunFactory.storeData
 
   const defaultOptions = {
@@ -95,32 +95,23 @@ function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) 
     smrtLinkVersion: smrtLinkVersions['v11'],
     resources: { smrtLinkVersions },
   }
-  const wrapperObj = mount(PacbioRunWell, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { ...defaultOptions, ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-      stubs: {
-        WellModal: true,
-      },
+  return mountWithStore(PacbioRunWell, {
+    initialState: {
+      pacbioRunCreate: { ...defaultOptions, ...state },
+    },
+    plugins,
+    stubs: {
+      WellModal: true,
     },
     props,
   })
-  return { wrapperObj }
 }
 
 describe('PacbioRunWell.vue', () => {
   let well, wrapper
 
   beforeEach(() => {
-    const { wrapperObj } = mountWithStore()
-    wrapper = wrapperObj
+    ;({ wrapper } = mountPacbioRunWell())
     well = wrapper.vm
   })
 
@@ -154,15 +145,13 @@ describe('PacbioRunWell.vue', () => {
           },
           {},
         )
-
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountPacbioRunWell({
           state: {
             wells: { 1: { A1: { ...valid_required_fields, used_aliquots: [usedAliquots['1']] } } },
             smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
-        })
+        }))
 
-        wrapper = wrapperObj
         well = wrapper.vm
       })
 
@@ -172,24 +161,24 @@ describe('PacbioRunWell.vue', () => {
       })
 
       it('will be invalid if there are aliquots but no metadata', () => {
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountPacbioRunWell({
           state: {
             wells: { 1: { A1: { used_aliquots: [usedAliquots['1']] } } },
             smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
-        })
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
+        }))
+        const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be invalid if there is metadata but no aliquots', () => {
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountPacbioRunWell({
           state: {
             wells: { 1: { A1: { ...valid_required_fields, used_aliquots: [] } } },
             smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
-        })
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
+        }))
+        const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
@@ -205,7 +194,7 @@ describe('PacbioRunWell.vue', () => {
           {},
         )
 
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountPacbioRunWell({
           state: {
             wells: {
               1: {
@@ -217,9 +206,9 @@ describe('PacbioRunWell.vue', () => {
             },
             smrtLinkVersion: smrtLinkVersions[smrt_link_version],
           },
-        })
+        }))
 
-        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
+        const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-gray-100 text-black')
       })
     })
@@ -230,7 +219,7 @@ describe('PacbioRunWell.vue', () => {
       const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
       const newBarcode = 'TRAC-2-9452'
       const updateWellMockFn = vi.fn()
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper } = mountPacbioRunWell({
         state: {
           wells: {
             1: {
@@ -246,17 +235,16 @@ describe('PacbioRunWell.vue', () => {
           requests,
           tags,
         },
-        stubActions: false,
         plugins: [
           ({ store }) => {
             store.updateWell = updateWellMockFn
           },
         ],
-      })
-      await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
+      }))
+      await wrapper.vm.updateUsedAliquotSource(newBarcode)
       expect(updateWellMockFn).toBeCalled()
       // Check the aliquot exists and contains the correct data
-      expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
+      expect(wrapper.vm.storeWell.used_aliquots[0]).toEqual(
         expect.objectContaining({
           source_id: '12739',
           source_type: 'Pacbio::Library',
@@ -273,7 +261,7 @@ describe('PacbioRunWell.vue', () => {
       const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
       const newBarcode = 'TRAC-2-9452'
       const updateWellMockFn = vi.fn()
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper } = mountPacbioRunWell({
         state: {
           wells: {
             1: {
@@ -289,17 +277,16 @@ describe('PacbioRunWell.vue', () => {
           requests,
           tags,
         },
-        stubActions: false,
         plugins: [
           ({ store }) => {
             store.updateWell = updateWellMockFn
           },
         ],
-      })
-      await wrapperObj.vm.updateUsedAliquotSource(newBarcode)
+      }))
+      await wrapper.vm.updateUsedAliquotSource(newBarcode)
       expect(updateWellMockFn).toBeCalled()
       // Check the aliquot exists and contains the correct data
-      expect(wrapperObj.vm.storeWell.used_aliquots[0]).toEqual(
+      expect(wrapper.vm.storeWell.used_aliquots[0]).toEqual(
         expect.objectContaining({
           source_id: '12739',
           source_type: 'Pacbio::Library',
@@ -314,7 +301,7 @@ describe('PacbioRunWell.vue', () => {
 
   describe('tooltip', () => {
     it('will not be empty if used_aliquots are empty', () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper } = mountPacbioRunWell({
         state: {
           wells: {
             1: {
@@ -325,8 +312,8 @@ describe('PacbioRunWell.vue', () => {
             },
           },
         },
-      })
-      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      }))
+      const tooltip = wrapper.find('[data-attribute=tooltip]')
       expect(tooltip.text()).toEqual('')
     })
 
@@ -342,7 +329,7 @@ describe('PacbioRunWell.vue', () => {
 
     it('will only display aliquot source barcodes if the aliquot is not marked for destruction', async () => {
       const { pools, libraries, tubes, requests, tags } = pacbioRunFactory.storeData
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper } = mountPacbioRunWell({
         state: {
           wells: {
             1: {
@@ -362,12 +349,12 @@ describe('PacbioRunWell.vue', () => {
           tags,
         },
         stubActions: false,
-      })
+      }))
 
-      wrapperObj.vm.hover = true
+      wrapper.vm.hover = true
       await nextTick()
 
-      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
+      const tooltip = wrapper.find('[data-attribute=tooltip]')
       // Only shows barcode of the non-destroyed aliquot
       const expected = 'TRAC-2-9452'
       expect(tooltip.text()).toEqual(expected)

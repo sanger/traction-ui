@@ -1,36 +1,7 @@
 import Tube from '@/components/pacbio/PacbioRunTubeItem.vue'
-import { mount, router, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore, router } from '@support/testHelper.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { expect } from 'vitest'
-
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(Tube, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioRunTubeItem.vue', () => {
   let tube, wrapper, props
@@ -55,13 +26,11 @@ describe('PacbioRunTubeItem.vue', () => {
             errors: [],
           },
         }
-
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountWithStore(Tube, {
           props,
-          router,
-        })
+          createStore: () => usePacbioRunCreateStore(),
+        }))
 
-        wrapper = wrapperObj
         tube = wrapper.vm
       })
 
@@ -136,13 +105,11 @@ describe('PacbioRunTubeItem.vue', () => {
             ],
           },
         }
-
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountWithStore(Tube, {
           props,
-          router,
-        })
+          createStore: () => usePacbioRunCreateStore(),
+        }))
 
-        wrapper = wrapperObj
         tube = wrapper.vm
       })
 
@@ -169,6 +136,7 @@ describe('PacbioRunTubeItem.vue', () => {
   })
 
   describe('when given a library', () => {
+    let wrapper
     describe('when valid', () => {
       beforeEach(() => {
         props = {
@@ -186,13 +154,10 @@ describe('PacbioRunTubeItem.vue', () => {
             errors: [],
           },
         }
-
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountWithStore(Tube, {
           props,
-          router,
-        })
-
-        wrapper = wrapperObj
+          createStore: () => usePacbioRunCreateStore(),
+        }))
         tube = wrapper.vm
       })
 
@@ -254,13 +219,11 @@ describe('PacbioRunTubeItem.vue', () => {
           },
           source_identifier: 'DN1S:A1',
         }
-
-        const { wrapperObj } = mountWithStore({
+        ;({ wrapper } = mountWithStore(Tube, {
           props,
-          router,
-        })
+          createStore: () => usePacbioRunCreateStore(),
+        }))
 
-        wrapper = wrapperObj
         tube = wrapper.vm
       })
 
