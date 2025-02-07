@@ -1,4 +1,4 @@
-import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, nextTick, flushPromises } from '@support/testHelper.js'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
@@ -13,50 +13,20 @@ const plugins = [
   },
 ]
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PrinterModal, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            printing: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePrintingStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PrinterModal.vue', () => {
   let wrapper, modal, store
 
   beforeEach(async () => {
-    const { wrapperObj, storeObj } = mountWithStore({
+    ;({ wrapper, store } = mountWithStore(PrinterModal, {
       plugins,
       props: {
         disabled: true,
         isStatic: true,
       },
-    })
+      createStore: () => usePrintingStore(),
+    }))
 
     await flushPromises()
-    wrapper = wrapperObj
-    store = storeObj
     modal = wrapper.vm
   })
 

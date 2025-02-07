@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
@@ -17,29 +17,14 @@ const pacbioPlateFactory = PacbioPlateFactory()
  * stubActions - boolean to stub actions or not.
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLabwareSelectedList, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioPoolCreate: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
+const mountPacbioLabwareSelected = ({ state = {}, props } = {}) =>
+  mountWithStore(PacbioLabwareSelectedList, {
+    initialState: {
+      pacbioPoolCreate: state,
     },
     props,
-    stubs: {
-      VueSelecto: true,
-      Plate: true,
-      PacbioTubeWell: true,
-    },
+    createStore: () => usePacbioPoolCreateStore(),
   })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
 
 const pacbioTubeFactory = PacbioTubeFactory({ transformTubes: true })
 
@@ -52,12 +37,12 @@ describe('PacbioLabwareSelectedList', () => {
   const { tubes, requests } = pacbioTubeFactory.storeData
 
   it('should not display any labware when there is no labware', () => {
-    const { wrapperObj } = mountWithStore({
+    ;({ wrapper, store } = mountPacbioLabwareSelected({
       props: {
         labware: [],
       },
-    })
-    const label = wrapperObj.find('[data-attribute="warning-label"]')
+    }))
+    const label = wrapper.find('[data-attribute="warning-label"]')
     expect(label.text()).toBe('Please scan labware to view the samples')
   })
 
@@ -69,7 +54,7 @@ describe('PacbioLabwareSelectedList', () => {
           barcode: 'GEN-1680611780-1',
         },
       ]
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioLabwareSelected({
         state: {
           selected: {
             plates: {
@@ -84,10 +69,7 @@ describe('PacbioLabwareSelectedList', () => {
         props: {
           labware,
         },
-      })
-
-      wrapper = wrapperObj
-      store = storeObj
+      }))
     })
     it('should display the plate labware', () => {
       const items = wrapper.findAll('[data-type="selected-labware-item"]')
@@ -131,7 +113,7 @@ describe('PacbioLabwareSelectedList', () => {
           barcode: 'TRAC-2-20',
         },
       ]
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioLabwareSelected({
         state: {
           selected: {
             tubes: {
@@ -146,10 +128,7 @@ describe('PacbioLabwareSelectedList', () => {
         props: {
           labware,
         },
-      })
-
-      wrapper = wrapperObj
-      store = storeObj
+      }))
     })
 
     it('should display the tube labware', async () => {
@@ -187,7 +166,7 @@ describe('PacbioLabwareSelectedList', () => {
           barcode: 'TRAC-2-20',
         },
       ]
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioLabwareSelected({
         state: {
           selected: {
             plates: {
@@ -207,10 +186,7 @@ describe('PacbioLabwareSelectedList', () => {
         props: {
           labware,
         },
-      })
-
-      wrapper = wrapperObj
-      store = storeObj
+      }))
     })
     it('should display all labware in order', async () => {
       const items = wrapper.findAll('[data-type="selected-labware-item"]')

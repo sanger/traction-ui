@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPoolAliquotList from '@/components/pacbio/PacbioPoolAliquotList.vue'
 
@@ -56,82 +56,48 @@ const wells = {
   3: { id: 3, position: 'C1' },
 }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const poolCreateStoreDefaultState = {
-    selected: {
-      tagSet,
-    },
-    resources: {
-      requests,
-      wells,
-    },
-    used_aliquots,
-  }
-  const wrapperObj = mount(PacbioPoolAliquotList, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRoot: {
-              tagSets: { 1: tagSet },
-              tags,
-            },
-            pacbioPoolCreate: { ...poolCreateStoreDefaultState, ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-    stubs: {
-      PacbioPoolAliquotEdit: true,
-    },
-  })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PacbioPoolAliquotList.vue', () => {
-  it('should have a list of aliquots', () => {
-    const { wrapperObj } = mountWithStore({
+  let wrapper
+  beforeEach(() => {
+    const poolCreateStoreDefaultState = {
+      selected: {
+        tagSet,
+      },
+      resources: {
+        requests,
+        wells,
+      },
+      used_aliquots,
+    }
+    ;({ wrapper } = mountWithStore(PacbioPoolAliquotList, {
+      initialState: {
+        pacbioRoot: {
+          tagSets: { 1: tagSet },
+          tags,
+        },
+        pacbioPoolCreate: { ...poolCreateStoreDefaultState },
+      },
       props: {
         notify: () => {},
       },
-    })
-    expect(wrapperObj.findAll('[data-type=pool-aliquot-edit]').length).toEqual(
+      createStore: () => usePacbioPoolCreateStore(),
+    }))
+  })
+  it('should have a list of aliquots', () => {
+    expect(wrapper.findAll('[data-type=pool-aliquot-edit]').length).toEqual(
       Object.values(used_aliquots).length,
     )
   })
-})
-it('emits aliquot-selected event with request', async () => {
-  const { wrapperObj } = mountWithStore({
-    props: {
-      notify: () => {},
-    },
-  })
-  await wrapperObj.vm.notifyAliquotSelection(true, { id: 1 })
-  expect(wrapperObj.emitted()).toHaveProperty('aliquot-selected')
-  expect(wrapperObj.emitted()['aliquot-selected'][0]).toEqual([{ id: 1 }])
-})
 
-it('emits aliquot-selected event with request', async () => {
-  const { wrapperObj } = mountWithStore({
-    props: {
-      notify: () => {},
-    },
+  it('emits aliquot-selected event with request', async () => {
+    await wrapper.vm.notifyAliquotSelection(true, { id: 1 })
+    expect(wrapper.emitted()).toHaveProperty('aliquot-selected')
+    expect(wrapper.emitted()['aliquot-selected'][0]).toEqual([{ id: 1 }])
   })
-  await wrapperObj.vm.notifyAliquotSelection(false, { id: 1 })
-  expect(wrapperObj.emitted()).toHaveProperty('aliquot-selected')
-  expect(wrapperObj.emitted()['aliquot-selected'][0]).toEqual([null])
+
+  it('emits aliquot-selected event with request', async () => {
+    await wrapper.vm.notifyAliquotSelection(false, { id: 1 })
+    expect(wrapper.emitted()).toHaveProperty('aliquot-selected')
+    expect(wrapper.emitted()['aliquot-selected'][0]).toEqual([null])
+  })
 })

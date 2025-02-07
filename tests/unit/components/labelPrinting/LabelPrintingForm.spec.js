@@ -1,6 +1,6 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
 import { createWorkflowDropdownOptions } from '@/lib/LabelPrintingHelpers.js'
-import { mount, createTestingPinia, flushPromises, nextTick } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, nextTick } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { usePrintingStore } from '@/stores/printing.js'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
@@ -32,48 +32,19 @@ const plugins = [
   },
 ]
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(LabelPrintingForm, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            printing: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-  })
-  const storeObj = usePrintingStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('LabelPrintingForm.vue', () => {
   let wrapper, store, labelPrintingForm
 
+  beforeEach(async () => {
+    ;({ wrapper, store } = mountWithStore(LabelPrintingForm, {
+      plugins,
+      createStore: () => usePrintingStore(),
+    }))
+
+    await flushPromises()
+  })
+
   describe('computed properties', () => {
-    beforeEach(async () => {
-      const { wrapperObj, storeObj } = mountWithStore({
-        plugins,
-      })
-
-      await flushPromises()
-      wrapper = wrapperObj
-      store = storeObj
-    })
-
     it('has the correct printer Options', () => {
       expect(wrapper.vm.printerOptions.length).toEqual(store.printers('tube').length)
     })
@@ -92,14 +63,6 @@ describe('LabelPrintingForm.vue', () => {
    */
   describe('labels', () => {
     it('should have the correct number', async () => {
-      const { wrapperObj } = mountWithStore({
-        plugins,
-      })
-
-      await flushPromises()
-
-      wrapper = wrapperObj
-
       // for reactive data we need to set the data on the form
       // you can't reassign the form
       // could we reset this on mount?
@@ -110,14 +73,6 @@ describe('LabelPrintingForm.vue', () => {
     })
 
     it('should remove new lines', async () => {
-      const { wrapperObj } = mountWithStore({
-        plugins,
-      })
-
-      await flushPromises()
-
-      wrapper = wrapperObj
-
       wrapper.vm.printJob.sourceBarcodeList = 'SQSC-1\nSQSC-2\nSQSC-3\n\n'
       wrapper.vm.printJob.numberOfLabels = 1
 
@@ -128,14 +83,6 @@ describe('LabelPrintingForm.vue', () => {
   describe('methods', () => {
     describe('onReset', () => {
       it('resets the forms data', async () => {
-        const { wrapperObj } = mountWithStore({
-          plugins,
-        })
-
-        await flushPromises()
-
-        wrapper = wrapperObj
-
         labelPrintingForm = wrapper.vm
         labelPrintingForm.printJob.printerName = 'stub'
         labelPrintingForm.onReset(evt)
@@ -149,15 +96,6 @@ describe('LabelPrintingForm.vue', () => {
 
     describe('#printLabels', () => {
       it('calls printJob successfully', async () => {
-        const { wrapperObj, storeObj } = mountWithStore({
-          plugins,
-        })
-
-        await flushPromises()
-
-        wrapper = wrapperObj
-        store = storeObj
-
         labelPrintingForm = wrapper.vm
         // the tests pass irrespective of this line??
         Object.assign(labelPrintingForm.printJob, options)
@@ -176,16 +114,6 @@ describe('LabelPrintingForm.vue', () => {
         labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
           return { success: false, message: 'failure' }
         })
-
-        const { wrapperObj, storeObj } = mountWithStore({
-          plugins,
-        })
-
-        await flushPromises()
-
-        wrapper = wrapperObj
-        store = storeObj
-
         labelPrintingForm = wrapper.vm
         Object.assign(labelPrintingForm.printJob, options)
 
@@ -202,15 +130,6 @@ describe('LabelPrintingForm.vue', () => {
 
     describe('label types', () => {
       beforeEach(async () => {
-        const { wrapperObj, storeObj } = mountWithStore({
-          plugins,
-        })
-
-        await flushPromises()
-
-        wrapper = wrapperObj
-        store = storeObj
-
         labelPrintingForm = wrapper.vm
       })
 

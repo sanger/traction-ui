@@ -1,32 +1,8 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
-import { mount, createTestingPinia, flushPromises } from '@support/testHelper'
+import { mountWithStore, flushPromises } from '@support/testHelper'
 import { describe, expect } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
-
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * props - props to pass to the component
- */
-function mountWithStore(props = {}) {
-  const wrapperObj = mount(ONTFlowcell, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          stubActions: false,
-          plugins: [],
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = useOntRunsStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('ONTFlowcell', () => {
   let wrapper, ontFlowcell, props, store
@@ -36,8 +12,10 @@ describe('ONTFlowcell', () => {
       position: 1,
       coordinate: 'A1',
     }
-    const { wrapperObj, storeObj } = mountWithStore(props)
-    store = storeObj
+    ;({ wrapper, store } = mountWithStore(ONTFlowcell, {
+      props,
+      createStore: () => useOntRunsStore(),
+    }))
     store.currentRun.flowcell_attributes = [
       {
         ...flowCellType(),
@@ -46,8 +24,7 @@ describe('ONTFlowcell', () => {
         flowcell_id: 'ABC123',
       },
     ]
-    wrapper = wrapperObj
-    ontFlowcell = wrapperObj.vm
+    ontFlowcell = wrapper.vm
     await flushPromises()
   })
 

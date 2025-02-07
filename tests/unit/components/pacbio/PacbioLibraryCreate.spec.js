@@ -1,4 +1,4 @@
-import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, nextTick } from '@support/testHelper.js'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { expect } from 'vitest'
@@ -13,49 +13,25 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLibraryCreate, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioLibraries: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
+const mountPacbioLibraryCreate = ({ props } = {}) =>
+  mountWithStore(PacbioLibraryCreate, {
+    plugins: [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
+        }
+      },
+    ],
     props,
+    createStore: () => usePacbioLibrariesStore(),
   })
-  const storeObj = usePacbioLibrariesStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioLibraryCreate.vue', () => {
-  const plugins = [
-    ({ store }) => {
-      if (store.$id === 'root') {
-        store.api.traction.pacbio.tag_sets.get = vi.fn(() => pacbioTagSetFactory.responses.fetch)
-      }
-    },
-  ]
   it('disables create library button when sample is empty', async () => {
-    const { wrapperObj } = mountWithStore({
+    const { wrapper } = mountPacbioLibraryCreate({
       props: { selectedSample: {} },
-      plugins,
     })
-    const button = wrapperObj.findComponent('#pacbioLibraryCreate')
+    const button = wrapper.findComponent('#pacbioLibraryCreate')
     await nextTick()
     expect(button.element.disabled).toBe(true)
   })
@@ -66,15 +42,11 @@ describe('PacbioLibraryCreate.vue', () => {
       props = {
         selectedSample: { id: 1, sample_name: 'sample1' },
       }
-
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioLibraryCreate({
         props,
-        plugins,
-      })
+      }))
       await flushPromises()
-      wrapper = wrapperObj
-      store = storeObj
-      cmp = wrapperObj.vm
+      cmp = wrapper.vm
     })
 
     it('will have a Create Library button component', () => {
