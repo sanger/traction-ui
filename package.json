@@ -24,7 +24,7 @@
     "jsdoc": "./node_modules/.bin/jsdoc -a all -r --configure jsdoc.json --destination docs"
   },
   "dependencies": {
-    "@sanger/ui-styling": "^4.1.0",
+    "@sanger/ui-styling": "^4.2.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",
     "csv-parse": "^5.6.0",
