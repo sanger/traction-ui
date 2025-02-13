@@ -128,7 +128,7 @@ describe('LabelPrintingForm.vue', () => {
       })
     })
 
-    describe.only('label types', () => {
+    describe('label types', () => {
       beforeEach(async () => {
         labelPrintingForm = wrapper.vm
       })
