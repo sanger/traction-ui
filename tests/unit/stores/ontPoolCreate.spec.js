@@ -11,10 +11,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
 const ontPoolFactory = OntPoolFactory()
+const ontTagSetFactory = OntTagSetFactory()
 // const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
@@ -346,7 +348,6 @@ describe('useOntPoolCreateStore', () => {
 
     describe('fetchOntPools', () => {
       it('handles success', async () => {
-        // mock dependencies
         const get = vi.fn()
         rootStore.api = { traction: { ont: { pools: { get } } } }
         get.mockResolvedValue(ontPoolFactory.responses.fetch)
@@ -359,12 +360,30 @@ describe('useOntPoolCreateStore', () => {
       })
 
       it('handles failure', async () => {
-        // mock dependencies
         const get = vi.fn()
         rootStore.api = { traction: { ont: { pools: { get } } } }
         get.mockResolvedValue(failedResponse)
-        // apply action
         const { success } = await store.fetchOntPools()
+        expect(success).toEqual(false)
+      })
+    })
+
+    describe('fetchOntTagSets', () => {
+      it('handles success', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { tag_sets: { get } } } }
+        get.mockResolvedValue(ontTagSetFactory.responses.fetch)
+        const { success } = await store.fetchOntTagSets()
+        expect(store.resources.tagSets).toEqual(ontTagSetFactory.storeData.tagSets)
+        expect(store.resources.tags).toEqual(ontTagSetFactory.storeData.tags)
+        expect(success).toEqual(true)
+      })
+
+      it('handles failure', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { tag_sets: { get } } } }
+        get.mockResolvedValue(failedResponse)
+        const { success } = await store.fetchOntTagSets()
         expect(success).toEqual(false)
       })
     })

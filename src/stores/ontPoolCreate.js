@@ -282,5 +282,28 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
       return { success, errors, meta }
     },
+
+    /**
+     * Fetches ONT tag sets from the API.
+     *
+     * @returns {Object} - An object containing the success status, errors, and the response.
+     */
+    async fetchOntTagSets() {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.tag_sets
+      const promise = request.get({ include: 'tags' })
+      const response = await handleResponse(promise)
+
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
+
+      const { tags } = groupIncludedByResource(included)
+
+      if (success) {
+        this.resources.tagSets = dataToObjectById({ data, includeRelationships: true })
+        this.resources.tags = dataToObjectById({ data: tags })
+      }
+
+      return { success, errors, response }
+    },
   },
 })
