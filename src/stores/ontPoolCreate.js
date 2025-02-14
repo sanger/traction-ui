@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
 
 /**
  * Used for combining objects based on id
@@ -30,9 +30,6 @@ const sortRequestByWellColumnIndex = (resources) => (a, b) =>
 export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
   state: () => ({
     resources: {
-      // The main source of request information. Requests are indexed by id.
-      // Populated by the requests included in the request for plates.
-      requests: {},
       // The main plate store. Represents the authoritative source of plate
       // information. Plates are indexed by id.
       plates: {},
@@ -45,7 +42,16 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
        * @example {"id":"1","type":"wells","position":"A1","requests":["1"]}
        */
       wells: {},
-
+      // The main source of request information. Requests are indexed by id.
+      // Populated by the requests included in the request for plates.
+      requests: {},
+      // The main source of tagSet information. tagSets are indexed by id.
+      tagSets: {},
+      // The main source of tagSet information. tagSets are indexed by id.
+      // Populated by the tags from a tag set
+      tags: {},
+      // The main source of pool information. Pools are indexed by id.
+      pools: {},
       // The main source of library information. libraries are indexed by id.
       libraries: {},
     },
@@ -241,6 +247,37 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
       if (success) {
         this.resources.requests = dataToObjectById({ data, includeRelationships: true })
+      }
+
+      return { success, errors, meta }
+    },
+
+    /**
+     * Fetches ONT pools from the API with optional filters and pagination.
+     *
+     * @param {Object} filter - Optional filters to apply to the request.
+     * @param {Object} page - Optional pagination parameters.
+     * @returns {Object} - An object containing the success status, errors, and meta information.
+     */
+    async fetchOntPools(filter = {}, page = {}) {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.get({
+        page,
+        filter,
+        include: 'tube,libraries.tag,libraries.request',
+      })
+      const response = await handleResponse(promise)
+
+      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
+      const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+
+      if (success) {
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
+        this.resources.tags = dataToObjectById({ data: tags, includeRelationships: true })
+        this.resources.pools = dataToObjectById({ data, includeRelationships: true })
       }
 
       return { success, errors, meta }

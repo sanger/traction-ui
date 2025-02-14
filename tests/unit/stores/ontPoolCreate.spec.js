@@ -15,6 +15,7 @@ import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
 const ontPoolFactory = OntPoolFactory()
+// const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
@@ -316,11 +317,14 @@ describe('useOntPoolCreateStore', () => {
   describe('actions', () => {
     let rootStore
 
+    beforeEach(() => {
+      rootStore = useRootStore()
+    })
+
     describe('fetchOntRequests', () => {
       let get
 
       beforeEach(() => {
-        rootStore = useRootStore()
         get = vi.fn()
         rootStore.api = { traction: { ont: { requests: { get } } } }
       })
@@ -336,6 +340,31 @@ describe('useOntPoolCreateStore', () => {
         get.mockResolvedValue(failedResponse)
         const { success } = await store.fetchOntRequests()
         expect(store.resources.requests).toEqual({})
+        expect(success).toEqual(false)
+      })
+    })
+
+    describe('fetchOntPools', () => {
+      it('handles success', async () => {
+        // mock dependencies
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { get } } } }
+        get.mockResolvedValue(ontPoolFactory.responses.fetch)
+        const { success } = await store.fetchOntPools()
+        expect(store.resources.libraries).toEqual(ontPoolFactory.storeData.resources.libraries)
+        expect(store.resources.tags).toEqual(ontPoolFactory.storeData.resources.tags)
+        expect(store.resources.requests).toEqual(ontPoolFactory.storeData.resources.requests)
+        expect(store.resources.tubes).toEqual(ontPoolFactory.storeData.resources.tubes)
+        expect(success).toEqual(true)
+      })
+
+      it('handles failure', async () => {
+        // mock dependencies
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { get } } } }
+        get.mockResolvedValue(failedResponse)
+        // apply action
+        const { success } = await store.fetchOntPools()
         expect(success).toEqual(false)
       })
     })
