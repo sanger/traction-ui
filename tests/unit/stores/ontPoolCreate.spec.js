@@ -2,11 +2,11 @@ import {
   createPinia,
   setActivePinia,
   // successfulResponse,
-  // failedResponse,
+  failedResponse,
 } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 // import { useOntRootStore } from '@/stores/ontRoot.js'
-// import useRootStore from '@/stores'
+import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
@@ -36,20 +36,17 @@ const tagSets = {
 }
 
 describe('useOntPoolCreateStore', () => {
+  let store
+
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
     const pinia = createPinia()
     setActivePinia(pinia)
+    store = useOntPoolCreateStore()
   })
 
   describe('getters', () => {
-    let store
-
-    beforeEach(() => {
-      store = useOntPoolCreateStore()
-    })
-
     describe('requests', () => {
       it('return the requests', () => {
         store.resources.requests = ontRequestFactory.storeData
@@ -312,6 +309,34 @@ describe('useOntPoolCreateStore', () => {
         expect(store.pools[0].libraries[0].id).toEqual(
           poolData[0].relationships.libraries.data[0].id,
         )
+      })
+    })
+  })
+
+  describe('actions', () => {
+    let rootStore
+
+    describe('fetchOntRequests', () => {
+      let get
+
+      beforeEach(() => {
+        rootStore = useRootStore()
+        get = vi.fn()
+        rootStore.api = { traction: { ont: { requests: { get } } } }
+      })
+
+      it('handles success', async () => {
+        get.mockResolvedValue(ontRequestFactory.responses.fetch)
+        const { success } = await store.fetchOntRequests()
+        expect(store.resources.requests).toEqual(ontRequestFactory.storeData)
+        expect(success).toEqual(true)
+      })
+
+      it('handles failure', async () => {
+        get.mockResolvedValue(failedResponse)
+        const { success } = await store.fetchOntRequests()
+        expect(store.resources.requests).toEqual({})
+        expect(success).toEqual(false)
       })
     })
   })

@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import useRootStore from '@/stores/index.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
 /**
  * Used for combining objects based on id
@@ -219,5 +222,28 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       }
     },
   },
-  actions: {},
+  actions: {
+    /**
+     * Fetches ONT requests from the API with optional filters and pagination.
+     *
+     * @param {Object} filter - Optional filters to apply to the request.
+     * @param {Object} page - Optional pagination parameters.
+     * @returns {Object} - An object containing the success status, errors, and meta information.
+     */
+    async fetchOntRequests(filter = {}, page = {}) {
+      const rootStore = useRootStore()
+
+      const request = rootStore.api.traction.ont.requests
+      const promise = request.get({ page, filter })
+      const response = await handleResponse(promise)
+
+      const { success, body: { data, meta = {} } = {}, errors = [] } = response
+
+      if (success) {
+        this.resources.requests = dataToObjectById({ data, includeRelationships: true })
+      }
+
+      return { success, errors, meta }
+    },
+  },
 })
