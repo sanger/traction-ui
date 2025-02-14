@@ -387,5 +387,50 @@ describe('useOntPoolCreateStore', () => {
         expect(success).toEqual(false)
       })
     })
+
+    // TODO: Need to add pool utilities first.
+    describe.skip('selectWellRequests', () => {
+      it('selects requests if unselected', async () => {
+        store.$state = {
+          resources: {
+            wells: {
+              1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
+            },
+          },
+          pooling: {
+            libraries: {},
+          },
+        }
+        store.selectWellRequests('1')
+
+        expect(store.$state.pooling.libraries).toEqual({
+          2: {
+            ont_request_id: '2',
+            tag_id: null,
+            kit_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        })
+      })
+
+      it('deselects requests if selected', async () => {
+        store.$state = {
+          resources: {
+            wells: {
+              1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
+            },
+          },
+          pooling: {
+            libraries: {
+              2: { ont_request_id: '2' },
+            },
+          },
+        }
+        await store.selectWellRequests('1')
+        expect(store.$state.pooling.libraries).toEqual({})
+      })
+    })
   })
 })
