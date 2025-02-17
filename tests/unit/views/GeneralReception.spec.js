@@ -76,12 +76,7 @@ describe('GeneralReception', () => {
         .find('[data-type=source-list]')
         .findAll('option')
         .map((element) => element.text()),
-    ).toEqual([
-      'Sequencescape',
-      'Samples Extraction',
-      'Sequencescape Tubes',
-      'Sequencescape Multiplexed Libraries',
-    ])
+    ).toEqual(['Sequencescape', 'Sequencescape Tubes', 'Sequencescape Multiplexed Libraries'])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
@@ -95,7 +90,7 @@ describe('GeneralReception', () => {
     })
 
     it('only shows ONT for SequencescapeMultiplexedLibraries', async () => {
-      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
     })
@@ -103,7 +98,7 @@ describe('GeneralReception', () => {
     it('sets pipeline to the first available pipeline if the source changes and the pipeline is no longer valid', async () => {
       // This example sets source to SequencescapeMultiplexedLibraries which only has ONT as a pipeline
       expect(wrapper.vm.pipeline).toEqual('PacBio')
-      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
       expect(wrapper.vm.pipeline).toEqual('ONT')
     })
   })
