@@ -58,6 +58,7 @@ describe('Pacbio Libraries view', () => {
         data: {},
       },
     })
+
     cy.visit('#/pacbio/libraries')
     //When clicking on edit again on a librray with no  tag
     cy.get('#show_details').within(() => {
@@ -74,7 +75,7 @@ describe('Pacbio Libraries view', () => {
 
     //It should update the library values
     cy.get('#library-volume').focus().should('not.be.disabled').clear()
-    cy.get('#library-volume').clear().type('2')
+    cy.get('#library-volume').clear().type('3')
     cy.get('#library-concentration').clear().type('2')
     cy.get('#library-insertSize').clear().type('200')
     cy.get('#library-templatePrepKitBoxBarcode').clear().type('LK54321')
@@ -87,7 +88,8 @@ describe('Pacbio Libraries view', () => {
     cy.get('#libraryForm').should('not.exist')
 
     //It should display updated values in table
-    cy.get('#volume').first().should('have.text', '2')
+    cy.get('#volume').first().should('have.text', '3')
+    // cy.get('#available_volume').first().should('have.text', '3')
     cy.get('#concentration').first().should('have.text', '2')
     cy.get('#template_prep_kit_box_barcode').first().should('have.text', 'LK54321')
     cy.get('#insert_size').first().should('have.text', '200')
