@@ -21,7 +21,6 @@ config required:
 
     VITE_TRACTION_BASE_URL=<url>
     VITE_PRINTMYBARCODE_BASE_URL=<url>
-    VITE_SAMPLEEXTRACTION_BASE_URL=<url>
     VITE_LOG=false
 
 Replace `<url>` with relevant URLs
@@ -87,7 +86,6 @@ To run the app and have hot-reloads for development:
     You will need to make the following changes to get it working:
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
     - change `VITE_TRACTION_BASE_URL=REPLACE_VITE_TRACTION_BASE_URL` to `VITE_TRACTION_BASE_URL=http://traction`
-    - change `VITE_SAMPLEEXTRACTION_BASE_URL=REPLACE_VITE_SAMPLEEXTRACTION_BASE_URL` to `VITE_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
     - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ### Test Fixtures
