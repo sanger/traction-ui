@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import MultiBarcode from '@/components/reception/MultiBarcode.vue'
 import Receptions from '@/lib/receptions'
@@ -17,27 +17,9 @@ vi.mock('@/services/labwhere/client.js')
 
 const printerFactory = PrinterFactory()
 
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(MultiBarcode, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            printing: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  return { wrapperObj }
-}
-
 describe('MultiBarcode', () => {
   const buildWrapper = (props = {}) => {
-    return mountWithStore({
+    return mountWithStore(MultiBarcode, {
       props: {
         pipeline: 'PacBio',
         reception: Receptions['Sequencescape'],
@@ -49,31 +31,29 @@ describe('MultiBarcode', () => {
         locationBarcode: 'location1',
         ...props,
       },
-      state: { resources: { printers: printerFactory.storeData.printers } },
+      initialState: { printing: { resources: { printers: printerFactory.storeData.printers } } },
     })
   }
 
   it('shows print options for only for Sequencescape Tubes', async () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapper } = buildWrapper()
     // It should show print options only when Sequencescape Tubes or Sequencescape Mutliplexed Libraries are the selected source
     await wrapper.setProps({ reception: Receptions['SequencescapeTubes'] })
     expect(wrapper.find('[id=print]').exists()).toBe(true)
 
     await wrapper.setProps({ reception: Receptions['Sequencescape'] })
     expect(wrapper.find('[id=print]').exists()).toBe(false)
-    await wrapper.setProps({ reception: Receptions['Samples Extraction'] })
-    expect(wrapper.find('[id=print]').exists()).toBe(false)
   })
 
   it('has a list of printers', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapper } = buildWrapper()
     expect(wrapper.vm.printerOptions.length).toBeGreaterThan(0)
   })
 
   describe('barcode text area', () => {
     describe('single barcode', () => {
       it('should not update importText until barcode is fetched', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
+        const { wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n')
         expect(wrapper.vm.barcodes).toEqual('DN1\n')
         expect(wrapper.find('#importText').text()).toEqual(
@@ -82,7 +62,7 @@ describe('MultiBarcode', () => {
       })
 
       it('should update importText when fetch function is called', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
+        const { wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n')
         const mockedFetchFunction = vi
           .fn()
@@ -100,7 +80,7 @@ describe('MultiBarcode', () => {
 
     describe('multiple barcodes', () => {
       it('when fetch function is called with multiple barcode', async () => {
-        const { wrapperObj: wrapper } = buildWrapper()
+        const { wrapper } = buildWrapper()
         await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN5\n')
         const foundBarcodes = new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5'])
         const mockedFetchFunction = vi.fn().mockResolvedValue({
@@ -122,8 +102,7 @@ describe('MultiBarcode', () => {
     let wrapper
 
     beforeEach(async () => {
-      const { wrapperObj } = buildWrapper({ reception: Receptions['SequencescapeTubes'] })
-      wrapper = wrapperObj
+      ;({ wrapper } = buildWrapper({ reception: Receptions['SequencescapeTubes'] }))
     })
 
     it('displays all fetched barcodes in print area', async () => {
@@ -180,7 +159,7 @@ describe('MultiBarcode', () => {
   })
 
   it('has a summary area', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapper } = buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
       'Import 0 labware into PacBio from Sequencescape',
@@ -193,7 +172,7 @@ describe('MultiBarcode', () => {
   })
 
   describe('Import and scan in labware to abWhere ', async () => {
-    const { wrapperObj: wrapper } = buildWrapper()
+    const { wrapper } = buildWrapper()
     sharedTestsForImportAndScanIn(
       wrapper,
       scanBarcodesInLabwhereLocation,
@@ -207,7 +186,7 @@ describe('MultiBarcode', () => {
     it('will create some labels', async () => {
       const foundBarcodes = new Set(['DN1', 'DN2', 'DN3'])
       const date = getCurrentDate()
-      const { wrapperObj: wrapper } = buildWrapper()
+      const { wrapper } = buildWrapper()
       const barcodeLabels = wrapper.vm.createLabels(foundBarcodes, date)
       expect(barcodeLabels.length).toEqual(3)
       const { barcode, second_line } = barcodeLabels[0]

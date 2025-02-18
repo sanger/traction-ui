@@ -1,9 +1,9 @@
-import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit.vue'
 import * as pacbio from '@/lib/csv/pacbio.js'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
 const pacbioAutoTagFactory = PacbioAutoTagFactory()
 
@@ -19,37 +19,18 @@ const tags = {
   3: { id: '3', group_id: 'tag3' },
 }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioPoolEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioPoolCreate: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
+const mountPacbioPoolEdit = ({ state = {}, props } = {}) =>
+  mountWithStore(PacbioPoolEdit, {
+    initialState: {
+      pacbioPoolCreate: state,
     },
     props,
     stubs: {
       PacbioPoolLibraryList: true,
     },
+    createStore: () => usePacbioPoolCreateStore(),
   })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
+
 vi.mock('swrv', () => ({
   default: vi.fn(() => ({
     data: {
@@ -69,9 +50,7 @@ describe('pacbioPoolEdit#new', () => {
 
   let wrapper, store
   beforeEach(() => {
-    const { wrapperObj, storeObj } = mountWithStore({ state: { pool } })
-    wrapper = wrapperObj
-    store = storeObj
+    ;({ wrapper, store } = mountPacbioPoolEdit({ state: { pool } }))
   })
 
   describe('input', () => {
@@ -107,7 +86,7 @@ describe('pacbioPoolEdit#new', () => {
 
   describe('when inputs are invalid', () => {
     it('volume', async () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioPoolEdit({
         state: {
           pool: {
             ...pool,
@@ -117,16 +96,14 @@ describe('pacbioPoolEdit#new', () => {
             },
           },
         },
-      })
+      }))
       await nextTick()
 
-      expect(wrapperObj.find('[data-attribute=pool-volume-error]').text()).toEqual(
-        'must be present',
-      )
+      expect(wrapper.find('[data-attribute=pool-volume-error]').text()).toEqual('must be present')
     })
 
     it('volume', async () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioPoolEdit({
         state: {
           pool: {
             ...pool,
@@ -137,16 +114,16 @@ describe('pacbioPoolEdit#new', () => {
             },
           },
         },
-      })
+      }))
       await nextTick()
 
-      expect(wrapperObj.find('[data-attribute=pool-volume-error]').text()).toEqual(
+      expect(wrapper.find('[data-attribute=pool-volume-error]').text()).toEqual(
         'must be greater than used volume',
       )
     })
 
     it('concentration', async () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioPoolEdit({
         state: {
           pool: {
             ...pool,
@@ -156,16 +133,16 @@ describe('pacbioPoolEdit#new', () => {
             },
           },
         },
-      })
+      }))
       await nextTick()
 
-      expect(wrapperObj.find('[data-attribute=pool-concentration-error]').text()).toEqual(
+      expect(wrapper.find('[data-attribute=pool-concentration-error]').text()).toEqual(
         'must be present',
       )
     })
 
     it('insert size', async () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioPoolEdit({
         state: {
           pool: {
             ...pool,
@@ -175,15 +152,15 @@ describe('pacbioPoolEdit#new', () => {
             },
           },
         },
-      })
+      }))
       await nextTick()
-      expect(wrapperObj.find('[data-attribute=pool-insert_size-error]').text()).toEqual(
+      expect(wrapper.find('[data-attribute=pool-insert_size-error]').text()).toEqual(
         'must be present',
       )
     })
 
     it('template prep kit box barcode', async () => {
-      const { wrapperObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioPoolEdit({
         state: {
           pool: {
             ...pool,
@@ -193,11 +170,11 @@ describe('pacbioPoolEdit#new', () => {
             },
           },
         },
-      })
+      }))
       await nextTick()
 
       expect(
-        wrapperObj.find('[data-attribute=pool-template-prep-kit-box-barcode-error]').text(),
+        wrapper.find('[data-attribute=pool-template-prep-kit-box-barcode-error]').text(),
       ).toEqual('must be present')
     })
   })
@@ -253,11 +230,9 @@ describe('pacbioPoolEdit#edit', () => {
   let wrapper, store
 
   beforeEach(() => {
-    const { wrapperObj, storeObj } = mountWithStore({
+    ;({ wrapper, store } = mountPacbioPoolEdit({
       state: { pool, tube, used_aliquots: {} },
-    })
-    wrapper = wrapperObj
-    store = storeObj
+    }))
   })
 
   describe('input', () => {

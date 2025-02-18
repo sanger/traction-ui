@@ -1,5 +1,5 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit.vue'
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
@@ -50,46 +50,13 @@ const smrtLinkVersions = {
   },
 }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- *
- * @param {*} props - props to be passed to the component while mounting
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}, props) {
-  const wrapperObj = mount(PacbioRunInfoEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    sync: false,
-    attachTo: elem,
-    props,
-  })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
-
 let runInfo, wrapper, store
 
 describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
-    const { wrapperObj, storeObj } = mountWithStore(
-      {
-        state: {
+    ;({ wrapper, store } = mountWithStore(PacbioRunInfoEdit, {
+      initialState: {
+        pacbioRunCreate: {
           run: {
             id: 'new',
             name: 'TRACTION-RUN-3',
@@ -103,12 +70,11 @@ describe('PacbioRunInfoEdit', () => {
           instrumentType: PacbioInstrumentTypes.Revio,
         },
       },
-      {
+      props: {
         newRecord: true,
       },
-    )
-    wrapper = wrapperObj
-    store = storeObj
+      createStore: () => usePacbioRunCreateStore(),
+    }))
     runInfo = wrapper.vm
   })
 
@@ -204,21 +170,23 @@ describe('PacbioRunInfoEdit', () => {
 
 describe('PacbioRunInfoEdit old run', () => {
   beforeEach(() => {
-    const { wrapperObj } = mountWithStore({
-      state: {
-        run: {
-          id: 'new',
-          name: 'TRACTION-RUN-4',
-          system_name: 'Sequel I',
-          dna_control_complex_box_barcode: null,
-          comments: null,
+    ;({ wrapper, store } = mountWithStore(PacbioRunInfoEdit, {
+      initialState: {
+        pacbioRunCreate: {
+          run: {
+            id: 'new',
+            name: 'TRACTION-RUN-4',
+            system_name: 'Sequel I',
+            dna_control_complex_box_barcode: null,
+            comments: null,
+          },
+          smrtLinkVersion: smrtLinkVersions[4],
+          resources: { smrtLinkVersions },
+          instrumentTypeList: PacbioInstrumentTypes,
         },
-        smrtLinkVersion: smrtLinkVersions[4],
-        resources: { smrtLinkVersions },
-        instrumentTypeList: PacbioInstrumentTypes,
       },
-    })
-    runInfo = wrapperObj.vm
+    }))
+    runInfo = wrapper.vm
   })
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {

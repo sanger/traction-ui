@@ -88,6 +88,48 @@ const failedResponse = (statusCode = 500) => {
   }
 }
 
+/**
+ * Mounts a Vue component with a Pinia store for testing purposes.
+ *
+ * @param {Object} component - The Vue component to be mounted.
+ * @param {Object} options - The options for mounting the component.
+ * @param {Object} [options.initialState={}] - The initial state for the Pinia store.
+ * @param {Object} [options.state={}] - The state overrides for the Pinia store.
+ * @param {boolean} [options.stubActions=false] - Whether to stub actions in the Pinia store.
+ * @param {Array} [options.plugins=[]] - Additional plugins to be used in the Pinia store.
+ * @param {Object} [options.props={}] - Props to be passed to the component.
+ * @param {Function} [options.createStore=() => {}] - Function to create the store instance.
+ * @param {Object} [options.stubs={}] - Components to be stubbed in the component.
+ * @param {Object} [options.dataProps={}] - Initial data state of the component.
+ * @returns {Object} An object containing the mounted wrapper and the store instance.
+ */
+function mountWithStore(component, options = {}) {
+  const {
+    initialState = {},
+    stubActions = false,
+    plugins = [],
+    props = {},
+    createStore = () => {},
+    stubs = {},
+  } = options
+
+  const createPiniaPlugin = () =>
+    createTestingPinia({
+      stubActions,
+      plugins,
+      initialState,
+    })
+  const wrapper = mount(component, {
+    global: {
+      plugins: [createPiniaPlugin()],
+      stubs,
+    },
+    props,
+  })
+  const store = createStore()
+  return { wrapper, store }
+}
+
 export {
   mount,
   store,
@@ -102,4 +144,5 @@ export {
   findByText,
   successfulResponse,
   failedResponse,
+  mountWithStore,
 }

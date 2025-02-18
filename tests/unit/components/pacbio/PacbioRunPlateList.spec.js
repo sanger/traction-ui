@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList.vue'
 import { newWell } from '@/stores/utilities/run.js'
 import { it } from 'vitest'
@@ -19,33 +19,23 @@ const smrtLinkVersions = {
  * stubActions - boolean to stub actions or not.
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(PacbioRunPlateList, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { resources: { smrtLinkVersions }, ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
+const mountPacbioRunPlateList = ({ state = {} } = {}) =>
+  mountWithStore(PacbioRunPlateList, {
+    initialState: {
+      pacbioRunCreate: { resources: { smrtLinkVersions }, ...state },
     },
+    createStore: () => usePacbioRunCreateStore(),
   })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioRunPlateList.vue', () => {
-  let plate, wrapper
+  let plate, wrapper, store
 
   const REVIO = 'Revio'
   const SEQUEL_IIE = 'Sequel IIe'
 
   describe('when run is a Sequel IIe', () => {
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioRunPlateList({
         state: {
           run: { system_name: SEQUEL_IIE },
           plates: { 1: { plate_number: 1, sequencing_kit_box_barcode: 'twentyonecharacters00' } },
@@ -56,10 +46,9 @@ describe('PacbioRunPlateList.vue', () => {
             },
           },
         },
-      })
-      wrapper = wrapperObj
+      }))
       plate = wrapper.vm
-      storeObj.instrumentType = PacbioInstrumentTypes.SequelIIe
+      store.instrumentType = PacbioInstrumentTypes.SequelIIe
     })
 
     it('will be defined', () => {
@@ -74,7 +63,7 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Revio', () => {
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioRunPlateList({
         state: {
           run: { system_name: REVIO },
           plates: {
@@ -102,10 +91,8 @@ describe('PacbioRunPlateList.vue', () => {
             },
           },
         },
-      })
-      wrapper = wrapperObj
-      plate = wrapper.vm
-      storeObj.instrumentType = PacbioInstrumentTypes.Revio
+      }))
+      store.instrumentType = PacbioInstrumentTypes.Revio
     })
 
     it('has the correct number of wells', () => {
@@ -116,7 +103,7 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Revio but there is only 1 plate', () => {
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
+      ;({ wrapper, store } = mountPacbioRunPlateList({
         state: {
           run: { system_name: REVIO },
           plates: {
@@ -133,10 +120,9 @@ describe('PacbioRunPlateList.vue', () => {
           },
           instrumentType: PacbioInstrumentTypes.Revio,
         },
-      })
-      wrapper = wrapperObj
+      }))
       plate = wrapper.vm
-      storeObj.instrumentType = PacbioInstrumentTypes.Revio
+      store.instrumentType = PacbioInstrumentTypes.Revio
     })
 
     it('has the correct number of wells', () => {
