@@ -1,39 +1,58 @@
 /* Import Tailwind's base styles from ui-styling package. Optional if you don't want to use them.**/
-@tailwind base;
+@import 'tailwindcss';
 
-svg.logo {
-    width: 300px;
-    height: 300px;
+@config './tailwind.config.js';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e2e8f0;
+  }
 }
 
-/* Animations */
-svg.logo.loading rect {
+@layer base {
+  svg.logo {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Animations */
+  svg.logo.loading rect {
     animation: sm-pulse;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-duration: 0.6s;
-}
+  }
 
-svg.logo.loading rect:nth-child(odd) {
+  svg.logo.loading rect:nth-child(odd) {
     animation-delay: 0.6s;
-}
+  }
 
-svg.logo.loading rect:nth-child(3n+1) {
+  svg.logo.loading rect:nth-child(3n + 1) {
     animation-delay: 0.3s;
-}
+  }
 
-@keyframes sm-pulse {
+  @keyframes sm-pulse {
     from {
-        opacity: 1
+      opacity: 1;
     }
     to {
-        opacity: 0.5;
+      opacity: 0.5;
     }
+  }
 }
-
-@tailwind components;
-@tailwind utilities;
 
 /* Define your custom styles */
 .success-message {
