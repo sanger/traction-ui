@@ -43,8 +43,6 @@ describe('MultiBarcode', () => {
 
     await wrapper.setProps({ reception: Receptions['Sequencescape'] })
     expect(wrapper.find('[id=print]').exists()).toBe(false)
-    await wrapper.setProps({ reception: Receptions['Samples Extraction'] })
-    expect(wrapper.find('[id=print]').exists()).toBe(false)
   })
 
   it('has a list of printers', () => {
