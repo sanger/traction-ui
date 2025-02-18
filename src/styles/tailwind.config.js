@@ -543,9 +543,8 @@ module.exports = {
     padding: (theme) => theme("spacing"),
     placeholderColor: (theme) => theme("colors"),
     placeholderOpacity: (theme) => theme("opacity"),
-    space: (theme, { negative }) => ({
-      ...theme("spacing"),
-      ...negative(theme("spacing")),
+    space: (theme) => ({
+      ...theme("spacing")
     }),
     stroke: {
       current: "currentColor",
@@ -749,9 +748,8 @@ module.exports = {
       90: "90deg",
       180: "180deg",
     },
-    translate: (theme, { negative }) => ({
+    translate: (theme) => ({
       ...theme("spacing"),
-      ...negative(theme("spacing")),
       "-full": "-100%",
       "-1/2": "-50%",
       "1/2": "50%",
