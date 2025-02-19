@@ -3,24 +3,35 @@
     "text": "Tube - 2d",
     "value": "tube2d",
     "labwareType": "tube",
+    "printLabelType": "tube",
     "labelTemplateName": "traction_tube_label_template"
   },
   "plate961d": {
     "text": "96-Well Plate - 1d",
     "value": "plate961d",
     "labwareType": "plate96",
+    "printLabelType": "plate96",
     "labelTemplateName": "traction_plate_label_template_1d"
   },
   "plate962d": {
     "text": "96-Well Plate - 2d",
     "value": "plate962d",
     "labwareType": "plate96",
+    "printLabelType": "plate96",
     "labelTemplateName": "traction_plate_label_template_2d"
   },
   "plate3842d": {
     "text": "384-Well Plate - 2d",
     "value": "plate3842d",
     "labwareType": "plate384",
+    "printLabelType": "plate384",
     "labelTemplateName": "traction_plate_384_label_template_2d"
+  },
+  "tubebloodvac": {
+    "text": "Blood Vac Tube - 1d (Code 128)",
+    "value": "tubebloodvac",
+    "labwareType": "tubebloodvac",
+    "printLabelType": "plate96",
+    "labelTemplateName": "traction_plate_label_template_1d_code128"
   }
 }
