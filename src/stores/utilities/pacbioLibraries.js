@@ -87,8 +87,8 @@ async function validateAndUpdateLibrary(libraryFields) {
   if (!valid.success) {
     return valid
   }
-  const { success, errors } = await updatePacbioLibraryResource(libraryFields)
-  return { success, errors }
+  const { success, errors, updatedLibrary } = await updatePacbioLibraryResource(libraryFields)
+  return { success, errors, updatedLibrary  }
 }
 
 export {
