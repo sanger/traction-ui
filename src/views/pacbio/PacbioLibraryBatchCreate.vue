@@ -18,7 +18,46 @@
               ></traction-select>
             </div>
             <div class="px-4">
-              <label class="flex text-left" for="csvFieInput">Select csv file</label>
+              <div class="flex flex-row">
+                <label class="flex text-left whitespace-nowrap" for="csvFieInput"
+                  >Select CSV file</label
+                >
+                <traction-tooltip id="csv-tooltip" class="text-blue-600 text-left">
+                  <template #tooltip>
+                    <div class="w-full">
+                      <h1 class="px-2 font-semibold text-lg text-blue-600">
+                        CSV Guidelines
+                      </h1>
+
+                      <ul class="w-full list-disc list-inside p-2">
+                        <li>All columns must contain values.</li>
+                        <li>
+                          <strong>Tag:</strong> All tags must be valid, unique and belong to the
+                          same tag set.
+                        </li>
+                        <li><strong>Source:</strong></li>
+                        <ul class="list-disc list-inside pl-2">
+                          <li>The 'Source' field must correspond to a sample name in Traction.</li>
+                          <li>
+                            The 'Source' field provided must be unique and available in Traction.
+                          </li>
+                        </ul>
+                      </ul>
+                    </div>
+                  </template>
+                  <TractionInfoIcon :size="20" />
+                </traction-tooltip>
+                <div class="whitespace-nowrap">
+                  <a
+                    href="/library-batch-template.csv"
+                    download="PacbioLibraryBatchTemplate.csv"
+                    class="text-blue-500 hover:underline"
+                  >
+                    Download CSV template
+                  </a>
+                </div>
+              </div>
+
               <div class="flex flex-row space-x-2">
                 <div id="borderDiv" class="w-full">
                   <input
