@@ -75,6 +75,13 @@ describe('PacbioLibraryBatchCreate.vue', () => {
 
       const emptyBarcodes = wrapper.find('div[data-type="empty-barcodes"]')
       expect(emptyBarcodes.text()).toBe('No Barcodes to Print Yet')
+
+      // Check for the tooltip and download link
+      const tooltip = wrapper.find('#csv-tooltip')
+      expect(tooltip.exists()).toBe(true)
+      const downloadLink = wrapper.find('a[href="/library-batch-template.csv"]')
+      expect(downloadLink.exists()).toBe(true)
+      expect(downloadLink.text()).toBe('Download CSV template')
     })
 
     it('contains the correct data on mount', async () => {
@@ -91,6 +98,20 @@ describe('PacbioLibraryBatchCreate.vue', () => {
     })
   })
 
+  describe('tooltip and download link', () => {
+    it('displays tooltip text when hovered over', async () => {
+      const tooltip = wrapper.find('#csv-tooltip')
+      await tooltip.trigger('mouseover')
+      expect(tooltip.find('#tooltip').isVisible()).toBe(true)
+      expect(tooltip.find('#tooltip').text()).toContain('All columns must contain values.')
+    })
+
+    it('has a working download link', () => {
+      const downloadLink = wrapper.find('a[href="/library-batch-template.csv"]')
+      expect(downloadLink.exists()).toBe(true)
+      expect(downloadLink.attributes('download')).toBe('PacbioLibraryBatchTemplate.csv')
+    })
+  })
   describe('#onSelectFile', () => {
     it('parses the CSV file and updates state on success', async () => {
       const csvContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
