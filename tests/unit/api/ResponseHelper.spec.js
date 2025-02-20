@@ -177,6 +177,21 @@ describe('ResponseHelper', () => {
       expect(response.body).toEqual(responseData)
     })
 
+    // "204" status code in HTTP - This is used mainly for delete requests
+    it('successful with no content', async () => {
+      const responseData = {}
+      const mockResponse = {
+        ok: true,
+        status: 204,
+        statusText: 'OK',
+        json: () => {},
+      }
+      const promise = Promise.resolve(mockResponse)
+      const response = await handleResponse(promise)
+      expect(response.success).toBeTruthy()
+      expect(response.body).toEqual(responseData)
+    })
+
     it('failure with response', async () => {
       const mockResponse = {
         ok: false,
