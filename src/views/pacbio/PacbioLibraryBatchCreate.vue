@@ -49,7 +49,7 @@
                   <a
                     href="/library-batch-template.csv"
                     download="PacbioLibraryBatchTemplate.csv"
-                    class="text-blue-500 hover:underline"
+                    class="text-blue-500 hover:underline text-sm"
                   >
                     Download CSV template
                   </a>
