@@ -90,7 +90,7 @@ module.exports = {
   ],
 
   prefix: "",
-  important: false,
+  important: true,
   separator: ":",
   theme: {
     extend: {
