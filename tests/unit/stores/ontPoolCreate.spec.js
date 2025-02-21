@@ -431,5 +431,47 @@ describe('useOntPoolCreateStore', () => {
         expect(store.pooling.libraries).toEqual({})
       })
     })
+
+    describe('deselectPlateAndContents', () => {
+      it('selects requests if unselected', async () => {
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            plates: {
+              1: { id: 1, wells: ['10'] },
+              2: { id: 2, wells: ['20'] },
+            },
+            wells: {
+              10: { id: '1', type: 'wells', position: 'A1', requests: ['100', '300'] },
+              20: { id: '1', type: 'wells', position: 'A1', requests: ['200', '400'] },
+            },
+          },
+          selected: {
+            plates: { 1: { id: 1, selected: true }, 2: { id: 2, selected: true } },
+            requests: {
+              100: { id: '100', selected: true },
+              300: { id: '300', selected: true },
+              200: { id: '200', selected: true },
+              400: { id: '400', selected: true },
+            },
+          },
+          pooling: {
+            libraries: {
+              100: { id: '100', selected: true },
+              300: { id: '300', selected: true },
+              200: { id: '200', selected: true },
+              400: { id: '400', selected: true },
+            },
+          },
+        }
+        await store.deselectPlateAndContents('1')
+        expect(store.selected.plates).toEqual({ 2: { id: 2, selected: true } })
+        expect(store.pooling.libraries).toEqual({
+          200: { id: '200', selected: true },
+          400: { id: '400', selected: true },
+        })
+      })
+    })
   })
 })

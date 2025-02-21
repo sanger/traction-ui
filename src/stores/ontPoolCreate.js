@@ -327,5 +327,31 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         }
       }
     },
+
+    /**
+     * Deselects a plate and all its contents (wells and requests) based on the given plate ID.
+     *
+     * This method will:
+     *  * Remove the plate from the selected plates.
+     *  * Remove all wells associated with the plate.
+     *  * Remove all requests associated with each well.
+     *  * Remove all libraries associated with each request in well.
+     *  * Remove the plate from the resources.
+     *
+     * @param {string} plateId - The ID of the plate to be deselected.
+     */
+    deselectPlateAndContents(plateId) {
+      delete this.selected.plates[`${plateId}`]
+      const { wells } = this.resources.plates[plateId]
+      for (const wellId of wells) {
+        const { requests = [] } = this.resources.wells[wellId]
+        for (const requestId of requests) {
+          delete this.pooling.libraries[`${requestId}`]
+          delete this.resources.requests[requestId]
+        }
+        delete this.resources.wells[wellId]
+      }
+      delete this.resources.plates[plateId]
+    },
   },
 })
