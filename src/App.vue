@@ -5,24 +5,24 @@
       <router-view class="text-center" />
     </div>
     <div
-    v-show="hasMessages"
-    class="fixed bottom-0 right-0 z-[1051] p-2 bg-white/75 backdrop-blur-sm rounded-md border shadow m-2 max-w-[500px] max-h-[500px] overflow-y-auto"
-  >
-    <div class="flex justify-end mb-2 border-sp border-b-2 tracking-tight leading-relaxed">
-      <traction-button class="mb-2" data-testid="clear-alerts" @click="clearAlerts()">
-        Clear
-      </traction-button>
+      v-show="hasMessages"
+      class="fixed bottom-0 right-0 z-[1051] p-2 bg-white/75 backdrop-blur-sm rounded-md border shadow m-2 max-w-[500px] max-h-[500px] overflow-y-auto"
+    >
+      <div class="flex justify-end mb-2 border-sp border-b-2 tracking-tight leading-relaxed">
+        <traction-button class="mb-2" data-testid="clear-alerts" @click="clearAlerts()">
+          Clear
+        </traction-button>
+      </div>
+      <div class="w-full break-words">
+        <TractionMessage
+          v-for="(message, index) in messages"
+          ref="alert"
+          :key="index"
+          v-bind="message"
+          @dismissed="dismiss(index)"
+        ></TractionMessage>
+      </div>
     </div>
-    <div class="w-full break-words">
-      <TractionMessage
-        v-for="(message, index) in messages"
-        ref="alert"
-        :key="index"
-        v-bind="message"
-        @dismissed="dismiss(index)"
-      ></TractionMessage>
-    </div>
-  </div>
     <InfoFooter></InfoFooter>
   </div>
 </template>
