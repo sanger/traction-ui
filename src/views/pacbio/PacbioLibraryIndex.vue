@@ -91,7 +91,7 @@
           </traction-button>
         </template>
         <template #row-details="row">
-          <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="() => { handleEditComplete(); row.toggleDetails(); }" />
+          <PacbioLibraryEdit :library="getEditLibrary(row)" @edit-completed="row.toggleDetails()" />
         </template>
       </traction-table>
     </div>
@@ -267,11 +267,6 @@ const fetchLibraries = async () => {
 const getEditLibrary = (row) => {
   const value = libraries.value.find((library) => library.id === row.item.id)
   return value
-}
-
-// Add this function to refetch after editing
-const handleEditComplete = async () => {
-  await fetchLibraries()
 }
 
 const exhausted = (row) => {
