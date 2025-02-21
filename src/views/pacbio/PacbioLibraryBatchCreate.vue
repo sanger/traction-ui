@@ -25,9 +25,7 @@
                 <traction-tooltip id="csv-tooltip" class="text-blue-600 text-left">
                   <template #tooltip>
                     <div class="w-full">
-                      <h1 class="px-2 font-semibold text-lg text-blue-600">
-                        CSV Guidelines
-                      </h1>
+                      <h1 class="px-2 font-semibold text-lg text-blue-600">CSV Guidelines</h1>
 
                       <ul class="w-full list-disc list-inside p-2">
                         <li>All columns must contain values.</li>
