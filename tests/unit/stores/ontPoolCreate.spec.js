@@ -388,8 +388,7 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
-    // TODO: Need to add pool utilities first.
-    describe.skip('selectWellRequests', () => {
+    describe('selectWellRequests', () => {
       it('selects requests if unselected', async () => {
         store.$state = {
           resources: {
@@ -403,7 +402,7 @@ describe('useOntPoolCreateStore', () => {
         }
         store.selectWellRequests('1')
 
-        expect(store.$state.pooling.libraries).toEqual({
+        expect(store.pooling.libraries).toEqual({
           2: {
             ont_request_id: '2',
             tag_id: null,
@@ -429,7 +428,7 @@ describe('useOntPoolCreateStore', () => {
           },
         }
         await store.selectWellRequests('1')
-        expect(store.$state.pooling.libraries).toEqual({})
+        expect(store.pooling.libraries).toEqual({})
       })
     })
   })

@@ -8,7 +8,7 @@ import {
 import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
-} from './../../src/stores/utilities/pool.js'
+} from './../../src/stores/utilities/pacbioPool.js'
 
 /**
  *

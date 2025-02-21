@@ -9,7 +9,7 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
-} from '@/stores/utilities/pool.js'
+} from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 
