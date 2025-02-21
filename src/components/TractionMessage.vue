@@ -10,19 +10,21 @@
     data-attribute="message"
     :data-type="dataType"
     :class="[
-      'flex flex-col rounded rounded-md px-4 py-3 space-x-4 mb-2', // padding
+      'flex flex-col rounded-md px-4 py-3 space-y-4 mb-2', // padding and vertical spacing
       `text-base leading-0`, // text style
       `${color.message}`, // font color, background color
     ]"
   >
-    <div class="flex justify-end items-center">
+    <div class="flex justify-end items-center pb-2">
       <button data-attribute="dismiss" @click="dismiss">
         <traction-close-icon :class-names="`${color.icon}`" />
       </button>
     </div>
-    <div class="inline-block flex-grow text-end mb-[3px]">
-      {{ message }}
-      <div class="text-xs text-gray-500 text-end border-t-2 border-gray-300">
+    <div class="flex flex-col flex-grow text-end mb-[3px] space-y-4">
+      <div>
+        {{ message }}
+      </div>
+      <div class="text-xs text-gray-500 text-end border-t-2 border-gray-300 mt-2 pt-2">
         {{ origin }}{{ time }}
       </div>
     </div>
