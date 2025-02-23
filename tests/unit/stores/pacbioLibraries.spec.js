@@ -211,7 +211,7 @@ describe('usePacbioLibrariesStore', () => {
         rootStore.api.traction.pacbio.libraries.update = update
         await store.fetchLibraries()
         libraryBeforeUpdate = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
-        
+
         library = {
           ...libraryBeforeUpdate,
           concentration: 2.0,
@@ -220,12 +220,12 @@ describe('usePacbioLibrariesStore', () => {
           tag_id: '3',
         }
       })
-      
+
       it('successfully', async () => {
         const mockResponse = successfulResponse()
         update.mockResolvedValue(mockResponse)
         const { success } = await store.updateLibrary(library)
-        expect(success).toBeTruthy() 
+        expect(success).toBeTruthy()
       })
 
       it('should update the values in the store', async () => {
@@ -245,7 +245,7 @@ describe('usePacbioLibrariesStore', () => {
           ok: true,
         }
         update.mockResolvedValue(mockResponse) // Mock API response
-      
+
         await store.fetchLibraries()
 
         expect(store.libraries[libraryBeforeUpdate.id]).toEqual(libraryBeforeUpdate)
