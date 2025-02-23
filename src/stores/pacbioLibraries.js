@@ -145,8 +145,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     async updateLibrary(libraryFields) {
       const { success, errors, updatedLibrary } = await validateAndUpdateLibrary(libraryFields)
+
       if (success) {
         // Update the library in the store if the server update was successful
+        
         this.$patch((state) => {
           state.libraries[updatedLibrary.data.id] = {
             ...state.libraries[updatedLibrary.data.id], // Preserve existing data
@@ -154,6 +156,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           }
         })
       }
+      
       return { success, errors, updatedLibrary }
     },
   },
