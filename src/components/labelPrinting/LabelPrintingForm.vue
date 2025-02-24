@@ -130,6 +130,7 @@ import {
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
   NullWorkflowItem,
+  createTubeBloodVacBarcodeLabel,
 } from '@/lib/LabelPrintingHelpers.js'
 import { nextTick } from 'vue'
 import LabelTypes from '@/config/LabelTypes.json'
@@ -165,6 +166,7 @@ const createLabelFns = {
   tube: createWorkflowTubeBarcodeLabel,
   plate96: createWorkflowPlateBarcodeLabel,
   plate384: createWorkflowPlateBarcodeLabel,
+  tubebloodvac: createTubeBloodVacBarcodeLabel,
 }
 
 /**
@@ -183,7 +185,7 @@ const labelTypeOptions = computed(() => {
  * @returns {Array} printer names
  */
 const printerOptions = computed(() => {
-  return printingStore.printers(labelType.value.labwareType).map(({ name }) => ({
+  return printingStore.printers(labelType.value.printLabelType).map(({ name }) => ({
     text: name,
   }))
 })

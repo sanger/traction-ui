@@ -141,7 +141,7 @@ describe('LabelPrintingForm.vue', () => {
 
       it('should limit printers to the selected label type', () => {
         expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
-          store.printers(labelPrintingForm.labelType.labwareType).length,
+          store.printers(labelPrintingForm.labelType.printLabelType).length,
         )
       })
 
@@ -149,7 +149,7 @@ describe('LabelPrintingForm.vue', () => {
         labelPrintingForm.labelOptions.labelTypeKey = 'plate961d'
         await nextTick()
         expect(wrapper.find('[data-attribute=printer-options]').findAll('option').length).toEqual(
-          store.printers(labelPrintingForm.labelType.labwareType).length,
+          store.printers(labelPrintingForm.labelType.printLabelType).length,
         )
       })
     })

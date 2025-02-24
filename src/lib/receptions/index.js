@@ -1,4 +1,3 @@
-import * as SamplesExtraction from './SamplesExtraction.js'
 import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
@@ -55,12 +54,6 @@ const ReceptionTypes = {
     value: 'Sequencescape',
     pipelines: ['PacBio', 'ONT'],
   },
-  SamplesExtraction: {
-    name: 'samples-extraction',
-    text: 'Samples Extraction',
-    value: 'SamplesExtraction',
-    pipelines: ['PacBio', 'ONT'],
-  },
   SequencescapeTubes: {
     name: 'sequencescape-tubes',
     text: 'Sequencescape Tubes',
@@ -82,12 +75,6 @@ const Receptions = {
     fetchFunction: Sequencescape.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
     getAttributeKeysFunction: Sequencescape.getAttributeKeys,
-  },
-  SamplesExtraction: {
-    ...ReceptionTypes.SamplesExtraction,
-    fetchFunction: SamplesExtraction.fetchLabwareForReception,
-    barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: SamplesExtraction.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
