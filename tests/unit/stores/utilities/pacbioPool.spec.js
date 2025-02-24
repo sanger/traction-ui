@@ -7,7 +7,7 @@ import {
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
   addUsedAliquotsBarcodeAndErrorsToPools,
-} from '@/stores/utilities/pool'
+} from '@/stores/utilities/pacbioPool.js'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { dataToObjectById } from '@/api/JsonApi'

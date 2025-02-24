@@ -3,7 +3,7 @@ import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
-import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pacbioPool.js'
 import { failedResponse } from '@support/testHelper.js'
 
 const pacbioPoolFactory = PacbioPoolFactory()
