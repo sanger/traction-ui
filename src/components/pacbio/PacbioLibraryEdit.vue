@@ -90,7 +90,7 @@ const updateLibrary = async () => {
     formRef.value.formLibrary,
   )
   if (success) {
-    emit('editCompleted', updatedLibrary) // Emits a 'editCompleted' event which the parent component can listen to.
+    emit('editCompleted') // Emits a 'editCompleted' event which the parent component can listen to.
     showAlert('Updated library with barcode ' + props.library.barcode, 'success')
   } else {
     showAlert(`Failed to update library in Traction: ${errors}`, 'danger')

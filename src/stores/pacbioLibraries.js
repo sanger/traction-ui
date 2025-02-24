@@ -148,13 +148,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       if (success) {
         // Update the library in the store if the server update was successful
-
-        this.$patch((state) => {
-          state.libraries[updatedLibrary.data.id] = {
-            ...state.libraries[updatedLibrary.data.id], // Preserve existing data
-            ...updatedLibrary.data.attributes, // Merge with server's updated data
-          }
-        })
+        this.libraries[libraryFields.id] = {
+          ...this.libraries[libraryFields.id],
+          ...updatedLibrary,
+        }
       }
 
       return { success, errors, updatedLibrary }
