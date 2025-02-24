@@ -96,7 +96,11 @@ const buildLibraryResourcePayload = ({
 async function updatePacbioLibraryResource(libraryFields) {
   const request = useRootStore().api.traction.pacbio.libraries
   const promise = request.update(buildLibraryResourcePayload(libraryFields))
-  const { success, body: { data: { attributes: updatedLibrary } = {} } = {}, errors } = await handleResponse(promise)
+  const {
+    success,
+    body: { data: { attributes: updatedLibrary } = {} } = {},
+    errors,
+  } = await handleResponse(promise)
   return { success, errors, updatedLibrary }
 }
 
