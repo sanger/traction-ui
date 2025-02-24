@@ -3,6 +3,27 @@
 
 @config './tailwind.config.js';
 
+@theme {
+  --color-purple-100: oklch(97.68% 0.0142 308.3);
+  --color-purple-200: oklch(90.73% 0.053 306.09);
+  --color-purple-300: oklch(83.8% 0.0893 303.68);
+  --color-purple-400: oklch(73.58% 0.1394 299.78);
+  --color-purple-500: oklch(66.37% 0.1634 296.96);
+  --color-purple-600: oklch(56.89% 0.1812 294.13);
+  --color-purple-700: oklch(59.85% 0.2294 296.96);
+  --color-purple-800: oklch(56.91% 0.2541 296.96);
+  --color-purple-900: oklch(54.56% 0.2787 296.96);
+  --color-gray-50: oklch(98.46% 0.0017 247.84);
+  --color-gray-100: oklch(98.34% 0.0042 236.5);
+  --color-gray-200: oklch(95.88% 0.0086 247.92);
+  --color-gray-300: oklch(92.88% 0.0126 255.51);
+  --color-gray-400: oklch(86.87% 0.0187 250.61);
+  --color-gray-500: oklch(74.57% 0.0304 254.72);
+  --color-gray-600: oklch(59.56% 0.0381 257.87);
+  --color-gray-700: oklch(44.74% 0.0343 261.32);
+  --color-gray-800: oklch(33.51% 0.0331 260.91);
+  --color-gray-900: oklch(24.33% 0.0247 263.95);
+}
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
