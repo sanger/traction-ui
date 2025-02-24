@@ -475,7 +475,7 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
-    describe('createPool', () => {
+    describe('create or update pool', () => {
       const library1 = {
         ont_request_id: '1',
         tag_id: '1',
@@ -501,50 +501,94 @@ describe('useOntPoolCreateStore', () => {
         insert_size: 100,
       }
 
-      // pool should be successfully created
-      it('when the pool is valid', async () => {
-        const mockResponse = successfulResponse({
-          data: {},
-          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+      describe('createPool', () => {
+        // pool should be successfully created
+        it('when the pool is valid', async () => {
+          const mockResponse = successfulResponse({
+            data: {},
+            included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+          })
+          const create = vi.fn()
+          rootStore.api = { traction: { ont: { pools: { create } } } }
+          const libraries = { 1: library1, 2: library2 }
+          store.$state = { pooling: { libraries, pool } }
+          create.mockResolvedValue(mockResponse)
+          const { success, barcode } = await store.createPool()
+          expect(create).toHaveBeenCalledWith({
+            data: payload({ libraries, pool }),
+            include: expect.anything(),
+          })
+          expect(success).toBeTruthy()
+          expect(barcode).toEqual('TRAC-1')
         })
-        const create = vi.fn()
-        rootStore.api = { traction: { ont: { pools: { create } } } }
-        const libraries = { 1: library1, 2: library2 }
-        store.$state = { pooling: { libraries, pool } }
-        create.mockResolvedValue(mockResponse)
-        const { success, barcode } = await store.createPool()
-        expect(create).toHaveBeenCalledWith({
-          data: payload({ libraries, pool }),
-          include: expect.anything(),
+
+        it('when there is an error', async () => {
+          const mockResponse = failedResponse(422)
+          const create = vi.fn(() => Promise.resolve(mockResponse))
+          rootStore.api = { traction: { ont: { pools: { create } } } }
+          const libraries = { 1: library1, 2: library2 }
+          store.$state = { pooling: { libraries, pool } }
+          const { success, errors } = await store.createPool()
+          expect(success).toBeFalsy
+          expect(errors).toEqual(mockResponse.errorSummary)
         })
-        expect(success).toBeTruthy()
-        expect(barcode).toEqual('TRAC-1')
+
+        // validate libraries fails
+        // request is not sent
+        it('when the pool is invalid', async () => {
+          const create = vi.fn()
+          rootStore.api = { traction: { ont: { pools: { create } } } }
+          const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
+          store.$state = { pooling: { libraries, pool } }
+          const { success, errors } = await store.createPool()
+          expect(create).not.toHaveBeenCalled()
+          expect(success).toBeFalsy()
+          console.Conso
+          expect(errors).toEqual('The pool is invalid')
+        })
       })
 
-      it('when there is an error', async () => {
-        const mockResponse = failedResponse(422)
-        const create = vi.fn(() => Promise.resolve(mockResponse))
-        rootStore.api = { traction: { ont: { pools: { create } } } }
+      describe('updatePool', () => {
+        // pool should be successfully created
+        it('when the pool is valid', async () => {
+          const mockResponse = successfulResponse({
+            data: {},
+            included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+          })
+          const update = vi.fn()
+          rootStore.api = { traction: { ont: { pools: { update } } } }
+          const libraries = { 1: library1, 2: library2 }
 
-        const libraries = { 1: library1, 2: library2 }
-        store.$state = { pooling: { libraries, pool } }
-        const { success, errors } = await store.createPool()
-        expect(success).toBeFalsy
-        expect(errors).toEqual(mockResponse.errorSummary)
-      })
+          store.$state = { pooling: { libraries, pool } }
+          update.mockResolvedValue(mockResponse)
+          const { success } = await store.updatePool()
+          expect(update).toHaveBeenCalledWith(payload({ libraries, pool }))
+          expect(success).toBeTruthy()
+        })
 
-      // validate libraries fails
-      // request is not sent
-      it('when the pool is invalid', async () => {
-        const create = vi.fn()
-        rootStore.api = { traction: { ont: { pools: { create } } } }
-        const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
-        store.$state = { pooling: { libraries, pool } }
-        const { success, errors } = await store.createPool()
-        expect(create).not.toHaveBeenCalled()
-        expect(success).toBeFalsy()
-        console.Conso
-        expect(errors).toEqual('The pool is invalid')
+        it('when there is an error', async () => {
+          const mockResponse = failedResponse(422)
+          const update = vi.fn(() => Promise.resolve(mockResponse))
+          rootStore.api = { traction: { ont: { pools: { update } } } }
+          const { success, errors } = await store.updatePool()
+          const libraries = { 1: library1, 2: library2 }
+          store.$state = { pooling: { libraries, pool } }
+          expect(success).toBeFalsy
+          expect(errors).toEqual(mockResponse.errorSummary)
+        })
+
+        // validate libraries fails
+        // request is not sent
+        it('when the pool is invalid', async () => {
+          const update = vi.fn()
+          rootStore.api = { traction: { ont: { pools: { update } } } }
+          const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
+          store.$state = { pooling: { libraries, pool } }
+          const { success, errors } = await store.updatePool()
+          expect(update).not.toHaveBeenCalled()
+          expect(success).toBeFalsy()
+          expect(errors).toEqual('The pool is invalid')
+        })
       })
     })
   })

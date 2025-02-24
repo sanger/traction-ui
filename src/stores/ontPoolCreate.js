@@ -382,5 +382,28 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const { attributes: { barcode = '' } = {} } = tube
       return { success, barcode, errors }
     },
+
+    /**
+     * Updates an existing ONT pool.
+     *
+     * This method will:
+     *  * Validate the libraries in the pool.
+     *  * If the libraries are not valid, it will return an error.
+     *  * If the libraries are valid, it will make an API call to update the pool.
+     *  * The API call will include the libraries and the pool data.
+     *  * The response will be handled to extract the success status and errors.
+     *
+     * @returns {Object} - An object containing the success status and any errors.
+     */
+    async updatePool() {
+      const rootStore = useRootStore()
+      const libraries = this.pooling.libraries
+      validate({ libraries })
+      if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.update(payload({ libraries, pool: this.pooling.pool }))
+      const { success, errors } = await handleResponse(promise)
+      return { success, errors }
+    },
   },
 })
