@@ -3,6 +3,7 @@ import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
+import { newLibrary } from './utilities/ontPool.js'
 
 /**
  * Used for combining objects based on id
@@ -304,6 +305,53 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       }
 
       return { success, errors, response }
+    },
+
+    /**
+     * Selects or deselects well requests based on the given well ID.
+     *
+     * This method will:
+     *  * Add new library requests to the pooling libraries if they are not already selected.
+     *  * Remove library requests from the pooling libraries if they are already selected.
+     *
+     * @param {string} well_id - The ID of the well whose requests are being selected or deselected.
+     */
+    selectWellRequests(well_id) {
+      const { requests } = this.resources.wells[well_id]
+      const selectedRequests = this.pooling.libraries
+      for (const id of requests) {
+        if (!selectedRequests[id]) {
+          this.pooling.libraries[`${id}`] = newLibrary({ ont_request_id: id })
+        } else {
+          delete this.pooling.libraries[`${id}`]
+        }
+      }
+    },
+
+    /**
+     * Deselects a plate and all its contents (wells and requests) based on the given plate ID.
+     *
+     * This method will:
+     *  * Remove the plate from the selected plates.
+     *  * Remove all wells associated with the plate.
+     *  * Remove all requests associated with each well.
+     *  * Remove all libraries associated with each request in well.
+     *  * Remove the plate from the resources.
+     *
+     * @param {string} plateId - The ID of the plate to be deselected.
+     */
+    deselectPlateAndContents(plateId) {
+      delete this.selected.plates[`${plateId}`]
+      const { wells } = this.resources.plates[plateId]
+      for (const wellId of wells) {
+        const { requests = [] } = this.resources.wells[wellId]
+        for (const requestId of requests) {
+          delete this.pooling.libraries[`${requestId}`]
+          delete this.resources.requests[requestId]
+        }
+        delete this.resources.wells[wellId]
+      }
+      delete this.resources.plates[plateId]
     },
   },
 })
