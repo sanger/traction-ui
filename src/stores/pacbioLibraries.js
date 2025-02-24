@@ -154,7 +154,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         }
       }
 
-      return { success, errors, updatedLibrary }
+      return { success, errors }
     },
   },
 })

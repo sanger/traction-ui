@@ -211,7 +211,6 @@ describe('usePacbioLibrariesStore', () => {
         rootStore.api.traction.pacbio.libraries.update = update
         await store.fetchLibraries()
         libraryBeforeUpdate = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
-
         library = {
           ...libraryBeforeUpdate,
           concentration: 2.0,
@@ -238,6 +237,7 @@ describe('usePacbioLibrariesStore', () => {
                 concentration: 2.0,
                 template_prep_kit_box_barcode: 'LK12348',
                 volume: 4.0,
+                available_volume: 4.0,
                 tag_id: '3',
               },
             },
@@ -254,6 +254,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(storeLibrary.concentration).toEqual(2.0)
         expect(storeLibrary.template_prep_kit_box_barcode).toEqual('LK12348')
         expect(storeLibrary.volume).toEqual(4.0)
+        expect(storeLibrary.available_volume).toEqual(4.0)
       })
     })
   })
