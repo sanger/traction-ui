@@ -103,7 +103,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       const tooltip = wrapper.find('#csv-tooltip')
       await tooltip.trigger('mouseover')
       expect(tooltip.find('#tooltip').isVisible()).toBe(true)
-      expect(tooltip.find('#tooltip').text()).toContain('All columns must contain values.')
+      expect(tooltip.find('#tooltip').text()).toContain('All columns must contain values:')
     })
 
     it('has a working download link', () => {

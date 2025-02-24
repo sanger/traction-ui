@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import TractionTooltip from '@/components/shared/TractionTooltip.vue'
+import { expect } from 'vitest'
 
 describe('TractionTooltip.vue', () => {
   it('renders correctly', () => {
@@ -40,7 +41,24 @@ describe('TractionTooltip.vue', () => {
     })
     await wrapper.trigger('mouseover')
     expect(wrapper.get('#tooltip').isVisible()).toBe(true)
+    expect(wrapper.get('#tooltip').classes()).toEqual(
+      expect.arrayContaining(['bg-yellow-400', 'text-gray-700']),
+    )
     expect(wrapper.get('#tooltip').html()).toContain('Slot Tooltip Content')
+  })
+
+  it('applies the provided tooltip colour', async () => {
+    const wrapper = mount(TractionTooltip, {
+      props: {
+        tooltipText: 'Test Tooltip',
+        tooltipBgColour: 'bg-red-500',
+        tooltipTextColour: 'text-white',
+      },
+    })
+    await wrapper.trigger('mouseover')
+    expect(wrapper.get('#tooltip').classes()).toEqual(
+      expect.arrayContaining(['bg-red-500', 'text-white']),
+    )
   })
 
   it('displays default slot content when neither tooltipText nor slot content is provided', async () => {
