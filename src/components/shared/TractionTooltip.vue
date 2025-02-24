@@ -8,7 +8,10 @@
     <div
       v-show="hover"
       id="tooltip"
-      class="text-sm px-1 bg-yellow-400 text-gray-700 absolute rounded bg-opacity-75 shadow-xl left-0 top-[-25px] whitespace-nowrap z-50"
+      :class="[
+        'text-sm px-1 absolute rounded shadow-xl left-0 top-[-25px] whitespace-nowrap z-50',
+        `${tooltipBgColour} ${tooltipTextColour}`,
+      ]"
     >
       <template v-if="tooltipText">
         {{ tooltipText }}
@@ -32,6 +35,16 @@ defineProps({
     type: String,
     required: false,
     default: '',
+  },
+  tooltipBgColour: {
+    type: String,
+    required: false,
+    default: 'bg-yellow-400',
+  },
+  tooltipTextColour: {
+    type: String,
+    required: false,
+    default: 'text-gray-700',
   },
 })
 
