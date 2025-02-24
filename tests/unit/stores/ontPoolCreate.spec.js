@@ -1,7 +1,7 @@
 import {
   createPinia,
   setActivePinia,
-  // successfulResponse,
+  successfulResponse,
   failedResponse,
 } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
@@ -12,6 +12,7 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
@@ -471,6 +472,79 @@ describe('useOntPoolCreateStore', () => {
           200: { id: '200', selected: true },
           400: { id: '400', selected: true },
         })
+      })
+    })
+
+    describe('createPool', () => {
+      const library1 = {
+        ont_request_id: '1',
+        tag_id: '1',
+        kit_barcode: 'ABC1',
+        volume: 1,
+        concentration: 1,
+        insert_size: 100,
+      }
+
+      const library2 = {
+        ont_request_id: '2',
+        tag_id: '2',
+        kit_barcode: 'ABC1',
+        volume: 1,
+        concentration: 1,
+        insert_size: 100,
+      }
+
+      const pool = {
+        kit_barcode: 'ABC1',
+        volume: 1,
+        concentration: 1,
+        insert_size: 100,
+      }
+
+      // pool should be successfully created
+      it('when the pool is valid', async () => {
+        const mockResponse = successfulResponse({
+          data: {},
+          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+        })
+        const create = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { create } } } }
+        const libraries = { 1: library1, 2: library2 }
+        store.$state = { pooling: { libraries, pool } }
+        create.mockResolvedValue(mockResponse)
+        const { success, barcode } = await store.createPool()
+        expect(create).toHaveBeenCalledWith({
+          data: payload({ libraries, pool }),
+          include: expect.anything(),
+        })
+        expect(success).toBeTruthy()
+        expect(barcode).toEqual('TRAC-1')
+      })
+
+      it('when there is an error', async () => {
+        const mockResponse = failedResponse(422)
+        const create = vi.fn(() => Promise.resolve(mockResponse))
+        rootStore.api = { traction: { ont: { pools: { create } } } }
+
+        const libraries = { 1: library1, 2: library2 }
+        store.$state = { pooling: { libraries, pool } }
+        const { success, errors } = await store.createPool()
+        expect(success).toBeFalsy
+        expect(errors).toEqual(mockResponse.errorSummary)
+      })
+
+      // validate libraries fails
+      // request is not sent
+      it('when the pool is invalid', async () => {
+        const create = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { create } } } }
+        const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
+        store.$state = { pooling: { libraries, pool } }
+        const { success, errors } = await store.createPool()
+        expect(create).not.toHaveBeenCalled()
+        expect(success).toBeFalsy()
+        console.Conso
+        expect(errors).toEqual('The pool is invalid')
       })
     })
   })

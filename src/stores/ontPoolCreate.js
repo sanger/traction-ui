@@ -3,7 +3,7 @@ import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
-import { newLibrary } from './utilities/ontPool.js'
+import { newLibrary, validate, valid, payload } from './utilities/ontPool.js'
 
 /**
  * Used for combining objects based on id
@@ -352,6 +352,35 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         delete this.resources.wells[wellId]
       }
       delete this.resources.plates[plateId]
+    },
+
+    /**
+     * Creates a new ONT pool.
+     *
+     * This method will:
+     *  * Validate the libraries in the pool.
+     *  * If the libraries are not valid, it will return an error.
+     *  * If the libraries are valid, it will make an API call to create the pool.
+     *  * The API call will include the libraries and the pool data, and will request to include the tube in the response.
+     *  * The response will be handled to extract the success status, included resources, and errors.
+     *  * The tube's barcode will be extracted from the included resources.
+     *
+     * @returns {Object} - An object containing the success status, the tube's barcode, and any errors.
+     */
+    async createPool() {
+      const rootStore = useRootStore()
+      const libraries = this.pooling.libraries
+      validate({ libraries })
+      if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.create({
+        data: payload({ libraries, pool: this.pooling.pool }),
+        include: 'tube',
+      })
+      const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
+      const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
+      const { attributes: { barcode = '' } = {} } = tube
+      return { success, barcode, errors }
     },
   },
 })
