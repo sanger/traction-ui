@@ -86,7 +86,7 @@ const librariesStore = usePacbioLibrariesStore()
  * If the update is successful, it shows a success message, otherwise shows a failure message.
  */
 const updateLibrary = async () => {
-  const { success, errors, updatedLibrary } = await librariesStore.updateLibrary(
+  const { success, errors } = await librariesStore.updateLibrary(
     formRef.value.formLibrary,
   )
   if (success) {
