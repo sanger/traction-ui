@@ -51,22 +51,21 @@ describe('Pacbio Libraries view', () => {
   })
 
   // it would be better to use the factory to get the values.
-  it('allows editing a library and updates the library values', () => { 
-      cy.intercept('PATCH', '/v1/pacbio/libraries/722', {
-        statusCode: 200,
-        body: {
-          data: {
-            id: "722",
-            attributes: {
-              concentration: 2.0,
-              template_prep_kit_box_barcode: "LK54321",
-              volume: 3.0,
-              available_volume: 3.0,
-              insert_size: 200, 
-        
-              },
-          }
-        }
+  it('allows editing a library and updates the library values', () => {
+    cy.intercept('PATCH', '/v1/pacbio/libraries/722', {
+      statusCode: 200,
+      body: {
+        data: {
+          id: '722',
+          attributes: {
+            concentration: 2.0,
+            template_prep_kit_box_barcode: 'LK54321',
+            volume: 3.0,
+            available_volume: 3.0,
+            insert_size: 200,
+          },
+        },
+      },
     })
 
     cy.visit('#/pacbio/libraries')
