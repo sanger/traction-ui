@@ -86,9 +86,7 @@ const librariesStore = usePacbioLibrariesStore()
  * If the update is successful, it shows a success message, otherwise shows a failure message.
  */
 const updateLibrary = async () => {
-  const { success, errors } = await librariesStore.updateLibrary(
-    formRef.value.formLibrary,
-  )
+  const { success, errors } = await librariesStore.updateLibrary(formRef.value.formLibrary)
   if (success) {
     emit('editCompleted') // Emits a 'editCompleted' event which the parent component can listen to.
     showAlert('Updated library with barcode ' + props.library.barcode, 'success')
