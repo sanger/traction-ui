@@ -22,13 +22,23 @@
                 <label class="flex text-left whitespace-nowrap" for="csvFieInput"
                   >Select CSV file</label
                 >
-                <traction-tooltip id="csv-tooltip" class="text-blue-600 text-left">
+                <traction-tooltip
+                  id="csv-tooltip"
+                  class="text-blue-600 text-left"
+                  tooltip-bg-colour="bg-blue-200"
+                >
                   <template #tooltip>
                     <div class="w-full">
                       <h1 class="px-2 font-semibold text-lg text-blue-600">CSV Guidelines</h1>
 
-                      <ul class="w-full list-disc list-inside p-2">
-                        <li>All columns must contain values.</li>
+                      <ul class="w-full list-disc list-inside p-2 space-y-2">
+                        <li>
+                          All columns must contain values: <br />
+                          <div class="px-4 font-bold">
+                            Source, Tag, Template Prep Kit Box Barcode, Volume, Concentration,
+                            Insert Size
+                          </div>
+                        </li>
                         <li>
                           <strong>Tag:</strong> All tags must be valid, unique and belong to the
                           same tag set.
