@@ -19,7 +19,7 @@
             </div>
             <div class="px-4">
               <div class="flex flex-row">
-                <label class="flex text-left whitespace-nowrap" for="csvFieInput"
+                <label class="flex text-left whitespace-nowrap" for="csvFileInput"
                   >Select CSV file</label
                 >
                 <traction-tooltip
