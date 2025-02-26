@@ -35,7 +35,7 @@
                         <li>
                           All columns must contain values: <br />
                           <div class="px-4 font-bold">
-                            Source, Tag, Template Prep Kit Box Barcode, Volume, Concentration,
+                            Sample Name, Tag, Template Prep Kit Box Barcode, Volume, Concentration,
                             Insert Size
                           </div>
                         </li>
@@ -43,11 +43,14 @@
                           <strong>Tag:</strong> All tags must be valid, unique and belong to the
                           same tag set.
                         </li>
-                        <li><strong>Source:</strong></li>
+                        <li><strong>Sample Name:</strong></li>
                         <ul class="list-disc list-inside pl-2">
-                          <li>The 'Source' field must correspond to a sample name in Traction.</li>
                           <li>
-                            The 'Source' field provided must be unique and available in Traction.
+                            The 'Sample Name' field must correspond to a sample name in Traction.
+                          </li>
+                          <li>
+                            The 'Sample Name' field provided must be unique and available in
+                            Traction.
                           </li>
                         </ul>
                       </ul>
@@ -274,7 +277,7 @@ const printerOptions = computed(() => {
 })
 
 const csvTableFields = [
-  { key: 'source', label: 'Source' },
+  { key: 'sample_name', label: 'Sample Name' },
   { key: 'tag', label: 'Tag' },
   { key: 'template_prep_kit_box_barcode', label: 'Template prep kit box barcode' },
   { key: 'volume', label: 'Volume' },
@@ -285,7 +288,12 @@ const csvTableFields = [
 const state = reactive({
   csvTableFields,
   // Define fields for the table
-  resultTableFields: [{ key: 'barcode', label: 'Barcode' }, ...csvTableFields],
+  resultTableFields: [
+    { key: 'barcode', label: 'Barcode' },
+    ...csvTableFields.map((field) =>
+      field.key === 'sample_name' ? { key: 'source', label: 'Source' } : field,
+    ),
+  ],
   csvData: [],
   resultData: [],
 })
@@ -301,7 +309,7 @@ const onSelectFile = async (evt) => {
     try {
       const csv = await selectedCSVFile.value.text()
       //Parse the csv file
-      const records = eachRecord(csv, () => {})
+      const records = eachRecord(csv, () => {}, false)
       state.csvData = records.map((record) => record.record)
     } catch (error) {
       showAlert(error, 'danger')
