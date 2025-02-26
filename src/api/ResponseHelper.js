@@ -1,3 +1,5 @@
+const HTTP_STATUS_NO_CONTENT = 204
+
 /*
  * @param {Object} errors - for range 4xx-5xx
  * @param {Object} error - when there is no server response
@@ -88,10 +90,8 @@ const newResponse = ({
  */
 const handleResponse = async (promise, errorHandler) => {
   try {
-    // yay it worked.
     const rawResponse = await promise
-    const response = await rawResponse.json()
-
+    const response = rawResponse.status === HTTP_STATUS_NO_CONTENT ? {} : await rawResponse.json()
     // Please check https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
     // for more information on the ok property
     if (!rawResponse.ok) {
