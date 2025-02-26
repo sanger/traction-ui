@@ -64,7 +64,7 @@ describe('Pacbio Libraries view', () => {
               volume: 3.0,
               available_volume: 3.0,
               insert_size: 200,
-              tag_id:pacbioTagSetFactory.storeData.selected.tag.id
+              tag_id: pacbioTagSetFactory.storeData.selected.tag.id,
             },
           },
         },
