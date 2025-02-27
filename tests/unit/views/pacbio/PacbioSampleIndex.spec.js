@@ -1,5 +1,5 @@
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
-import { createTestingPinia, flushPromises, mount } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
@@ -10,28 +10,6 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
-
-function mountWithStore({ props, state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(PacbioSampleIndex, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          state,
-          plugins,
-          stubActions,
-        }),
-      ],
-      stubs: {
-        PrinterModal: {
-          template: '<div ref="printerModal"></div>',
-        },
-      },
-    },
-    props,
-  })
-  const storeObj = usePacbioRequestsStore()
-  return { wrapperObj, storeObj }
-}
 
 const pacbioRequestFactory = PacbioRequestFactory()
 
@@ -48,11 +26,16 @@ describe('PacbioSamples.vue', () => {
         }
       },
     ]
-    const { wrapperObj } = mountWithStore({
+    ;({ wrapper } = mountWithStore(PacbioSampleIndex, {
       plugins,
-    })
+      stubs: {
+        PrinterModal: {
+          template: '<div ref="printerModal"></div>',
+        },
+      },
+      createStore: () => usePacbioRequestsStore(),
+    }))
     await flushPromises()
-    wrapper = wrapperObj
   })
 
   describe('building the table', () => {

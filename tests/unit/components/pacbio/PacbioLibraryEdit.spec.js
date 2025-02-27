@@ -1,4 +1,4 @@
-import { mount, nextTick, createTestingPinia, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, nextTick } from '@support/testHelper.js'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
@@ -11,35 +11,6 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
-
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioLibraryEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioLibraries: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioLibrariesStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioLibraryEdit.vue', () => {
   let wrapper, modal, props, store
@@ -64,14 +35,13 @@ describe('PacbioLibraryEdit.vue', () => {
         }
       },
     ]
-    const { wrapperObj, storeObj } = mountWithStore({
+    ;({ wrapper, store } = mountWithStore(PacbioLibraryEdit, {
       props,
       plugins,
-    })
+      createStore: () => usePacbioLibrariesStore(),
+    }))
     await flushPromises()
-    wrapper = wrapperObj
-    store = storeObj
-    modal = wrapperObj.vm
+    modal = wrapper.vm
   })
 
   it('will have an form component', async () => {

@@ -206,6 +206,15 @@ const createWorkflowPlateBarcodeLabel = (barcodeItem) => {
 }
 
 /**
+ * @param {Object} barcodeItem - an object which contains the barcode and other information
+ * @returns {Object} - { barcode, label_name } label suitable for printing a blood vac tube label to a plate printer
+ */
+const createTubeBloodVacBarcodeLabel = (barcodeItem) => {
+  const { barcode } = barcodeItem
+  return { barcode, label_name: 'main_label' }
+}
+
+/**
  * @param {Array} barcodeItems - an array of objects which contain the barcode and other information
  * @param {String} createLabelFn - the function to create the label
  * @returns {Array} - An array of BarcodeLabelItem objects suitable for printing
@@ -286,6 +295,7 @@ export {
   createBasicTubeBarcodeLabel,
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
+  createTubeBloodVacBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
   createPayload,

@@ -1,4 +1,4 @@
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
@@ -13,35 +13,17 @@ vi.mock('@/composables/useAlert', () => ({
 
 const printerFactory = PrinterFactory()
 
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(GeneralReception, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            printing: state,
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  return { wrapperObj }
-}
-
 describe('GeneralReception', () => {
-  const buildWrapper = () => {
-    return mountWithStore({
+  let wrapper
+  beforeEach(() => {
+    ;({ wrapper } = mountWithStore(GeneralReception, {
       props: { receptions: Receptions },
-      state: { resources: { printers: printerFactory.storeData } },
-    })
-  }
+      initialState: { printing: { resources: { printers: printerFactory.storeData } } },
+    }))
+  })
 
   describe('Workflow Selector', () => {
     it('has a workflow selector', () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       expect(workflowSelect.findAll('option').map((element) => element.text())).toEqual([
         '',
@@ -52,13 +34,11 @@ describe('GeneralReception', () => {
     })
 
     it('defaults to an empty option', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       expect(workflowSelect.element.value).toEqual('')
     })
 
     it('displays user swipecard when a workflow is selected', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('lw-shelf-1-30451')
       const userCodeInput = wrapper.find('[data-attribute=user-code-input]')
@@ -68,14 +48,12 @@ describe('GeneralReception', () => {
     })
 
     it('hides user swipecard when a workflow is not selected', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('')
       expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(false)
     })
 
     it('errors user code fields if not set', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('lw-shelf-1-30451')
       expect(wrapper.find('[data-attribute=user-code-error]').text()).toContain(
@@ -84,7 +62,6 @@ describe('GeneralReception', () => {
     })
 
     it('updates the summary section accordingly on user select', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('lw-shelf-1-30451')
       expect(wrapper.find('[data-testid=workflow-location-text]').text()).toContain(
@@ -94,26 +71,18 @@ describe('GeneralReception', () => {
   })
 
   it('has a source selector', () => {
-    const { wrapperObj: wrapper } = buildWrapper()
-
     expect(
       wrapper
         .find('[data-type=source-list]')
         .findAll('option')
         .map((element) => element.text()),
-    ).toEqual([
-      'Sequencescape',
-      'Samples Extraction',
-      'Sequencescape Tubes',
-      'Sequencescape Multiplexed Libraries',
-    ])
+    ).toEqual(['Sequencescape', 'Sequencescape Tubes', 'Sequencescape Multiplexed Libraries'])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
 
   describe('pipeline selector', () => {
     it('has a pipeline selector', () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[1].text()).toBe('ONT')
       // It defaults to PacBio
@@ -121,29 +90,25 @@ describe('GeneralReception', () => {
     })
 
     it('only shows ONT for SequencescapeMultiplexedLibraries', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
-      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
     })
 
     it('sets pipeline to the first available pipeline if the source changes and the pipeline is no longer valid', async () => {
       // This example sets source to SequencescapeMultiplexedLibraries which only has ONT as a pipeline
-      const { wrapperObj: wrapper } = buildWrapper()
       expect(wrapper.vm.pipeline).toEqual('PacBio')
-      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
       expect(wrapper.vm.pipeline).toEqual('ONT')
     })
   })
 
   describe('request options', () => {
     it('has the a cost code input field', () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       expect(wrapper.find('[data-attribute=cost-code-input]')).toBeTruthy()
     })
 
     it('shows ONT options when ONT is selected', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       // Select ONT pipeline
       await wrapper.find('[data-type=pipeline-list]').findAll('option')[1].setSelected()
 
@@ -162,7 +127,6 @@ describe('GeneralReception', () => {
     })
 
     it('shows PacBio options when PacBio is selected', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       // Select PacBio pipeline
       await wrapper.find('[data-type=pipeline-list]').findAll('option')[0].setSelected()
 
@@ -184,7 +148,6 @@ describe('GeneralReception', () => {
 
   describe('loading modal', () => {
     it('shows the modal when showModal is called', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       const message = 'show modal message'
       wrapper.vm.showModal(message)
       await wrapper.vm.$nextTick()
@@ -193,7 +156,6 @@ describe('GeneralReception', () => {
     })
 
     it('hides the modal when clearModal is called', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       wrapper.vm.showModal('show modal message')
       await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
@@ -203,7 +165,6 @@ describe('GeneralReception', () => {
     })
 
     it('shows the correct data when importStarted is called', async () => {
-      const { wrapperObj: wrapper } = buildWrapper()
       wrapper.vm.importStarted({ barcode_count: 1 })
       await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)

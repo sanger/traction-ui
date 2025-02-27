@@ -1,4 +1,4 @@
-import { mount, nextTick, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
@@ -38,34 +38,6 @@ const props = {
 const position = 'A1'
 const plateNumber = 1
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
- * 'options' allows to define initial state of store while instantiating the component.
- *
- * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * options type is
- * {state :{},stubActions: boolean, plugins:[]}
- *
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
-  const wrapperObj = mount(PacbioRunWellEdit, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRunCreate: { ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioRunCreateStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PacbioRunWellEdit', () => {
   let wrapper
 
@@ -82,17 +54,20 @@ describe('PacbioRunWellEdit', () => {
     */
     describe('if the SMRT Link version is v11', () => {
       beforeEach(async () => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            smrtLinkVersion: smrtLinkVersions['1'],
-            wells: {
-              1: {
-                A1: newWell({ position }),
+        ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+          initialState: {
+            pacbioRunCreate: {
+              smrtLinkVersion: smrtLinkVersions['1'],
+              wells: {
+                1: {
+                  A1: newWell({ position }),
+                },
               },
             },
           },
-        })
-        wrapper = wrapperObj
+          props,
+          createStore: () => usePacbioRunCreateStore(),
+        }))
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -161,17 +136,20 @@ describe('PacbioRunWellEdit', () => {
     // ["movie_acquisition_time", "include_base_kinetics", "library_concentration", "polymerase_kit", "pre_extension_time"]
     describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
-        const { wrapperObj } = mountWithStore({
-          state: {
-            smrtLinkVersion: smrtLinkVersions['2'],
-            wells: {
-              1: {
-                A1: newWell({ position }),
+        ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+          initialState: {
+            pacbioRunCreate: {
+              smrtLinkVersion: smrtLinkVersions['2'],
+              wells: {
+                1: {
+                  A1: newWell({ position }),
+                },
               },
             },
           },
-        })
-        wrapper = wrapperObj
+          props,
+          createStore: () => usePacbioRunCreateStore(),
+        }))
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -244,15 +222,18 @@ describe('PacbioRunWellEdit', () => {
 
   describe('well type', () => {
     it('if it doesnt exist in state (new)', async () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            1: {},
+      ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {},
+            },
           },
         },
-      })
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       wrapper.vm.isShow = true
       wrapper.vm.position = position
       wrapper.vm.plateNumber = plateNumber
@@ -262,17 +243,20 @@ describe('PacbioRunWellEdit', () => {
     })
 
     it('if it is an existing well', async () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            1: {
-              A1: newWell({ attributes: { id: 1 }, position: position }),
+      ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ attributes: { id: 1 }, position: position }),
+              },
             },
           },
         },
-      })
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       wrapper.vm.isShow = true
       wrapper.vm.position = position
       wrapper.vm.plateNumber = plateNumber
@@ -302,73 +286,76 @@ describe('PacbioRunWellEdit', () => {
         },
       })
 
-      const { wrapperObj } = mountWithStore({
-        state: {
-          pools: {
-            1: {
-              id: 1,
-              tube: 1,
-              used_aliquots: [],
-              type: 'pools',
-              volume: 5,
-              concentration: 10,
-              template_prep_kit_box_barcode: 'tpkbb1',
+      ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            pools: {
+              1: {
+                id: 1,
+                tube: 1,
+                used_aliquots: [],
+                type: 'pools',
+                volume: 5,
+                concentration: 10,
+                template_prep_kit_box_barcode: 'tpkbb1',
+              },
+              2: {
+                id: 2,
+                tube: 2,
+                used_aliquots: [],
+                type: 'pools',
+                volume: 6,
+                concentration: 11,
+                template_prep_kit_box_barcode: 'tpkbb1',
+              },
             },
-            2: {
-              id: 2,
-              tube: 2,
-              used_aliquots: [],
-              type: 'pools',
-              volume: 6,
-              concentration: 11,
-              template_prep_kit_box_barcode: 'tpkbb1',
+            libraries: {
+              1: {
+                id: 1,
+                tube: 1,
+                request: 1,
+                type: 'libraries',
+                volume: 7,
+                concentration: 12,
+                available_volume: 10,
+                template_prep_kit_box_barcode: 'tpkbb1',
+              },
+              2: { id: 2, tube: 2, request: 2, type: 'libraries' },
             },
-          },
-          libraries: {
-            1: {
-              id: 1,
-              tube: 1,
-              request: 1,
-              type: 'libraries',
-              volume: 7,
-              concentration: 12,
-              available_volume: 10,
-              template_prep_kit_box_barcode: 'tpkbb1',
+            aliquots: {
+              1: {
+                id: 1,
+                source_id: 1,
+                source_type: 'Pacbio::Pool',
+              },
+              2: {
+                id: 2,
+                source_id: 1,
+                source_type: 'Pacbio::Library',
+              },
             },
-            2: { id: 2, tube: 2, request: 2, type: 'libraries' },
-          },
-          aliquots: {
-            1: {
-              id: 1,
-              source_id: 1,
-              source_type: 'Pacbio::Pool',
+            tubes: {
+              1: { barcode: 'TRAC-1', pools: [1] },
+              2: { barcode: 'TRAC-2', pools: [2] },
+              3: { barcode: 'TRAC-3', libraries: [1] },
             },
-            2: {
-              id: 2,
-              source_id: 1,
-              source_type: 'Pacbio::Library',
+            requests: {
+              1: { id: 1, sample_name: 'sample1' },
+              2: { id: 2, sample_name: 'sample2' },
             },
-          },
-          tubes: {
-            1: { barcode: 'TRAC-1', pools: [1] },
-            2: { barcode: 'TRAC-2', pools: [2] },
-            3: { barcode: 'TRAC-3', libraries: [1] },
-          },
-          requests: {
-            1: { id: 1, sample_name: 'sample1' },
-            2: { id: 2, sample_name: 'sample2' },
-          },
-          smrtLinkVersion: smrtLinkVersions['1'],
-          run: {},
-          plates: { 1: { plate_number: 1 } },
-          wells: {
-            1: {
-              A1: well,
+            smrtLinkVersion: smrtLinkVersions['1'],
+            run: {},
+            plates: { 1: { plate_number: 1 } },
+            wells: {
+              1: {
+                A1: well,
+              },
             },
           },
         },
-      })
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       // This method sets the well data for the modal on show
       await wrapper.vm.showModalForPositionAndPlate('A1', 1)
       wrapper.vm.localUsedAliquots.push(
@@ -430,17 +417,20 @@ describe('PacbioRunWellEdit', () => {
 
   describe('validLocalUsedAliquots', () => {
     it('returns the localUsedAliquots that are not marked for destruction', () => {
-      const { wrapperObj } = mountWithStore({
-        state: {
-          smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            1: {
-              A1: newWell({ attributes: { id: 1 }, position: position }),
+      ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ attributes: { id: 1 }, position: position }),
+              },
             },
           },
         },
-      })
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       const aliquots = [
         createUsedAliquot({ id: 1, _destroy: true }),
         createUsedAliquot({ id: 2 }),
@@ -474,81 +464,82 @@ describe('PacbioRunWellEdit', () => {
         },
       })
 
-      const { wrapperObj, storeObj } = mountWithStore({
-        state: {
-          pools: {
-            1: {
-              id: 1,
-              tube: 1,
-              used_aliquots: [],
-              type: 'pools',
-              volume: 10,
-              concentration: 10,
-              template_prep_kit_box_barcode: 'tpkbb1',
-              available_volume: 10,
+      ;({ wrapper, store } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            pools: {
+              1: {
+                id: 1,
+                tube: 1,
+                used_aliquots: [],
+                type: 'pools',
+                volume: 10,
+                concentration: 10,
+                template_prep_kit_box_barcode: 'tpkbb1',
+                available_volume: 10,
+              },
+              2: {
+                id: 2,
+                tube: 2,
+                used_aliquots: [],
+                type: 'pools',
+                volume: 10,
+                concentration: 11,
+                template_prep_kit_box_barcode: 'tpkbb1',
+                available_volume: 10,
+              },
             },
-            2: {
-              id: 2,
-              tube: 2,
-              used_aliquots: [],
-              type: 'pools',
-              volume: 10,
-              concentration: 11,
-              template_prep_kit_box_barcode: 'tpkbb1',
-              available_volume: 10,
+            libraries: {
+              1: {
+                id: 1,
+                tube: 1,
+                request: 1,
+                type: 'libraries',
+                volume: 10,
+                concentration: 12,
+                template_prep_kit_box_barcode: 'tpkbb1',
+                available_volume: 10,
+              },
+              2: { id: 2, tube: 2, used_aliquots: [], request: 2, type: 'libraries' },
             },
-          },
-          libraries: {
-            1: {
-              id: 1,
-              tube: 1,
-              request: 1,
-              type: 'libraries',
-              volume: 10,
-              concentration: 12,
-              template_prep_kit_box_barcode: 'tpkbb1',
-              available_volume: 10,
+            aliquots: {
+              1: {
+                id: 1,
+                source_id: 1,
+                source_type: 'Pacbio::Pool',
+                used_by_type: 'Pacbio::Well',
+                volume: 5,
+              },
+              2: {
+                id: 2,
+                source_id: 1,
+                source_type: 'Pacbio::Library',
+                used_by_type: 'Pacbio::Well',
+                volume: 5,
+              },
             },
-            2: { id: 2, tube: 2, used_aliquots: [], request: 2, type: 'libraries' },
-          },
-          aliquots: {
-            1: {
-              id: 1,
-              source_id: 1,
-              source_type: 'Pacbio::Pool',
-              used_by_type: 'Pacbio::Well',
-              volume: 5,
+            tubes: {
+              1: { barcode: 'TRAC-1', pools: [1] },
+              2: { barcode: 'TRAC-2', pools: [2] },
+              3: { barcode: 'TRAC-3', libraries: [1] },
             },
-            2: {
-              id: 2,
-              source_id: 1,
-              source_type: 'Pacbio::Library',
-              used_by_type: 'Pacbio::Well',
-              volume: 5,
+            requests: {
+              1: { id: 1, sample_name: 'sample1' },
+              2: { id: 2, sample_name: 'sample2' },
             },
-          },
-          tubes: {
-            1: { barcode: 'TRAC-1', pools: [1] },
-            2: { barcode: 'TRAC-2', pools: [2] },
-            3: { barcode: 'TRAC-3', libraries: [1] },
-          },
-          requests: {
-            1: { id: 1, sample_name: 'sample1' },
-            2: { id: 2, sample_name: 'sample2' },
-          },
-          smrtLinkVersion: smrtLinkVersions['1'],
-          run: {},
-          plates: { 1: { plate_number: 1 } },
-          wells: {
-            1: {
-              A1: well,
+            smrtLinkVersion: smrtLinkVersions['1'],
+            run: {},
+            plates: { 1: { plate_number: 1 } },
+            wells: {
+              1: {
+                A1: well,
+              },
             },
           },
         },
-      })
-
-      store = storeObj
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       wrapper.vm.isShow = true
       wrapper.vm.position = position
       wrapper.vm.plateNumber = plateNumber
@@ -736,18 +727,20 @@ describe('PacbioRunWellEdit', () => {
     let store
 
     beforeEach(() => {
-      const { wrapperObj, storeObj } = mountWithStore({
-        state: {
-          smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            1: {
-              A1: newWell({ position }),
+      ;({ wrapper, store } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ position }),
+              },
             },
           },
         },
-      })
-      store = storeObj
-      wrapper = wrapperObj
+        props,
+        createStore: () => usePacbioRunCreateStore(),
+      }))
       wrapper.vm.isShow = true
       wrapper.vm.position = position
       wrapper.vm.plateNumber = plateNumber

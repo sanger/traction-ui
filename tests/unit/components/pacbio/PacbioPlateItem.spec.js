@@ -1,9 +1,7 @@
 import PacbioPlateItem from '@/components/pacbio/PacbioPlateItem.vue'
-import { mount, createTestingPinia } from '@support/testHelper.js'
+import { mountWithStore } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import useRootStore from '@/stores'
-import { describe } from 'node:test'
-import { expect } from 'chai'
 
 const plates = {
   1: {
@@ -22,53 +20,23 @@ const wells = {
   5: { id: '5', position: 'E1' },
 }
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the store
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
- */
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const defaultState = {
-    resources: {
-      plates,
-      wells,
-    },
-  }
-  const wrapperObj = mount(PacbioPlateItem, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioPoolCreate: { ...defaultState, ...state },
-          },
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-    stubs: {
-      Plate96SVG: true,
-      Well: true,
-    },
-  })
-  const storeObj = usePacbioPoolCreateStore()
-  return { wrapperObj, storeObj }
-}
-
 describe('PacbioPlateItem.vue', () => {
   let wrapper, plate
 
   beforeEach(() => {
-    const { wrapperObj } = mountWithStore({
+    const defaultState = {
+      resources: {
+        plates,
+        wells,
+      },
+    }
+    ;({ wrapper } = mountWithStore(PacbioPlateItem, {
       props: { ...plates['1'] },
-    })
-    wrapper = wrapperObj
+      initialState: {
+        pacbioPoolCreate: { ...defaultState },
+      },
+      createStore: () => usePacbioPoolCreateStore(),
+    }))
     plate = wrapper.vm
   })
 

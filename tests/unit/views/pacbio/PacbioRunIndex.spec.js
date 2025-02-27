@@ -1,5 +1,5 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
-import { mount, flushPromises, nextTick, createTestingPinia, router } from '@support/testHelper'
+import { flushPromises, nextTick, router, mountWithStore } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { beforeEach, vi } from 'vitest'
@@ -23,72 +23,49 @@ const getRunAndButtonForState = (wrapper, state, action) => {
   return { run, button }
 }
 
-/**
- * Helper method for mounting a component 'dataProps' if any and with a mock instance of pinia, with the given 'options'.
- * 'options' allows to define initial state while instantiating the component.
- *
- * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * e.g. initialState, stubActions etc.
- * @param {*} dataProps - data to be passed to the component while mounting
- */
-function factory(options, dataProps) {
-  const spy = vi.fn().mockResolvedValue(pacbioRunFactory.responses.fetch)
-
-  const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
-
-  const wrapperObj = mount(PacbioRunIndex, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            pacbioRuns: {
-              runs: {},
-            },
-            pacbioRunCreate: {
-              resources: {
-                smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData,
-              },
-            },
-            root: {},
-          },
-          stubActions: false,
-          plugins: [
-            ({ store }) => {
-              if (store.$id === 'pacbioRuns') {
-                store.runRequest.get = spy
-              }
-              if (store.$id === 'root') {
-                store.api.traction.pacbio.smrt_link_versions.get = spy2
-                store.api.traction.pacbio.runs = vi
-                  .fn()
-                  .mockReturnValue(pacbioRunFactory.responses.fetch)
-              }
-            },
-          ],
-        }),
-      ],
-    },
-    data() {
-      return {
-        ...dataProps,
-      }
-    },
-  })
-
-  const runCreateStoreObj = usePacbioRunCreateStore()
-  const runsStoreObj = usePacbioRunsStore()
-
-  return { wrapperObj, runCreateStoreObj, runsStoreObj }
-}
-
 describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, runCreateStore, runsStore
 
   beforeEach(async () => {
-    const { wrapperObj, runCreateStoreObj, runsStoreObj } = factory()
-    wrapper = wrapperObj
-    runCreateStore = runCreateStoreObj
-    runsStore = runsStoreObj
+    //const { wrapperObj, runCreateStoreObj, runsStoreObj } = factory()
+
+    const spy = vi.fn().mockResolvedValue(pacbioRunFactory.responses.fetch)
+
+    const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
+
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'pacbioRuns') {
+          store.runRequest.get = spy
+        }
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.smrt_link_versions.get = spy2
+          store.api.traction.pacbio.runs = vi.fn().mockReturnValue(pacbioRunFactory.responses.fetch)
+        }
+      },
+    ]
+    const initialState = {
+      pacbioRuns: {
+        runs: {},
+      },
+      pacbioRunCreate: {
+        resources: {
+          smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData,
+        },
+      },
+      root: {},
+    }
+
+    ;({
+      wrapper,
+      store: { runCreateStore, runsStore },
+    } = mountWithStore(PacbioRunIndex, {
+      initialState,
+      plugins,
+      createStore: () => {
+        return { runCreateStore: usePacbioRunCreateStore(), runsStore: usePacbioRunsStore() }
+      },
+    }))
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })

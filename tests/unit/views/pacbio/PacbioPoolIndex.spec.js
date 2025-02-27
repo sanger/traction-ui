@@ -1,5 +1,5 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import { mount, router, flushPromises, createTestingPinia } from '@support/testHelper'
+import { mountWithStore, router, flushPromises } from '@support/testHelper'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
 
@@ -11,23 +11,6 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
-
-function mountWithStore({ state = {}, stubActions = false, plugins = [], props } = {}) {
-  const wrapperObj = mount(PacbioPoolIndex, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          state,
-          stubActions,
-          plugins,
-        }),
-      ],
-    },
-    props,
-  })
-  const storeObj = usePacbioPoolsStore()
-  return { wrapperObj, storeObj }
-}
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
@@ -42,11 +25,12 @@ describe('PacbioPoolIndex.vue', () => {
         }
       },
     ]
-    const { wrapperObj } = mountWithStore({
+
+    ;({ wrapper } = mountWithStore(PacbioPoolIndex, {
       plugins,
-    })
+      createStore: () => usePacbioPoolsStore(),
+    }))
     await flushPromises()
-    wrapper = wrapperObj
     pools = wrapper.vm
   })
 

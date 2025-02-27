@@ -8,6 +8,7 @@ import {
   createWorkflowTubeBarcodeLabel,
   createWorkflowPlateBarcodeLabel,
   createBasicTubeBarcodeLabel,
+  createTubeBloodVacBarcodeLabel,
   createBarcodeLabels,
   PrintJobType,
   createPayload,
@@ -330,6 +331,14 @@ describe('LabelPrintingHelpers.js', () => {
       expect(first_line).toEqual(workflowItemType.date)
       expect(second_line).toEqual(workflowItemType.sourceBarcode)
     })
+
+    it('#createTubeBloodVacBarcodeLabel', () => {
+      const barcodeItem = { barcode: workflowItemType.sourceBarcode }
+      const { barcode, first_line, second_line } = createTubeBloodVacBarcodeLabel(barcodeItem)
+      expect(barcode).toEqual(workflowItemType.sourceBarcode)
+      expect(first_line).not.toBeDefined()
+      expect(second_line).not.toBeDefined()
+    })
   })
 
   describe('#createBarcodeLabels', () => {
@@ -369,6 +378,18 @@ describe('LabelPrintingHelpers.js', () => {
       expect(plateLabels.length).toEqual(15)
       expect(plateLabels[0]).toEqual(createWorkflowPlateBarcodeLabel(workflowBarcodeItems[0]))
       expect(plateLabels[14]).toEqual(createWorkflowPlateBarcodeLabel(workflowBarcodeItems[14]))
+    })
+
+    it('creates tube blood vac labels', () => {
+      const tubeBloodVacLabels = createBarcodeLabels({
+        barcodeItems: workflowBarcodeItems,
+        createLabelFn: createTubeBloodVacBarcodeLabel,
+      })
+      expect(tubeBloodVacLabels.length).toEqual(15)
+      expect(tubeBloodVacLabels[0]).toEqual(createTubeBloodVacBarcodeLabel(workflowBarcodeItems[0]))
+      expect(tubeBloodVacLabels[14]).toEqual(
+        createTubeBloodVacBarcodeLabel(workflowBarcodeItems[14]),
+      )
     })
   })
 
