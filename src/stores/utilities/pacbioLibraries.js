@@ -79,7 +79,7 @@ const isLibraryExhausted = (library) => library.volume === library.used_volume
  * Updates a library with the given fields and updates the store if successful.
  *
  * @param {Object} libraryFields - The fields of the library to update.
- * @returns {Promise<Object>} - An object containing the success status and any errors.
+ * @returns {<Object>} - An object with the success status, errors, and updated Library.
  */
 async function validateAndUpdateLibrary(libraryFields) {
   //Validate the libraryFields to ensure that all required fields are present

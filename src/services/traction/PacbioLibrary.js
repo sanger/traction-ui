@@ -91,7 +91,7 @@ const buildLibraryResourcePayload = ({
  * Updates a library with the given fields and updates the store if successful.
  *
  * @param {Object} libraryFields - The fields of the library to update.
- * @returns {Promise<Object>} - An object containing the success status and any errors.
+ * @returns {Promise<Object>} - A promise that resolves to an object containing the success status, errors, and updated Library object.
  */
 async function updatePacbioLibraryResource(libraryFields) {
   const request = useRootStore().api.traction.pacbio.libraries
