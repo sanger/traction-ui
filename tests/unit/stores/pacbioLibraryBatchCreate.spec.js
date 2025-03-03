@@ -183,7 +183,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         )
         expect(create).not.toBeCalled()
         expect(success).toBeFalsy()
-        expect(errors).toEqual('Invalid record at line 2: source test not found')
+        expect(errors).toEqual('Invalid record at line 2: sample name test not found')
       })
 
       it('returns errors on failedResponse', async () => {

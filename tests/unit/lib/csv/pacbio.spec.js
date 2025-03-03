@@ -89,6 +89,20 @@ describe('eachRecord', () => {
     )
   })
 
+  it('does not validate headers when isValidateHeaders is false', () => {
+    const csv =
+      'sample_name,tag,genome_size,insert_size,concentration,volume\nDN814597W:A10,bc1059T,6.3,15230,13,15\n'
+    const callback = vi.fn()
+    let thrownErrorMessage
+    try {
+      eachRecord(csv, callback, false)
+    } catch (error) {
+      thrownErrorMessage = String(error)
+    }
+    expect(callback).toHaveBeenCalledTimes(1)
+    expect(thrownErrorMessage).toBeUndefined()
+  })
+
   it('processes each record and returns the results provided by the callback function', () => {
     const csv = fs.readFileSync('./tests/data/csv/pacbio.csv', 'utf8')
     const callback = vi.fn().mockReturnValue('some value')
