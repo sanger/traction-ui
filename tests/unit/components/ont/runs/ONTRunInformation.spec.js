@@ -16,6 +16,7 @@ describe('ONTRunInformation.vue', () => {
       id: 'new',
       instrument_name: '',
       state: '',
+      rebasecalling_process: '',
       flowcell_attributes: [],
     }
     ;({ wrapper, store } = mountWithStore(ONTRunInformation, {
@@ -37,6 +38,12 @@ describe('ONTRunInformation.vue', () => {
   describe('State selection', () => {
     it('will always show', () => {
       expect(wrapper.find('#state-selection').exists()).toBeTruthy()
+    })
+  })
+
+  describe('Rebasecalling process', () => {
+    it('will always show', () => {
+      expect(wrapper.find('#rebasecalling-selection').exists()).toBeTruthy()
     })
   })
 
@@ -95,6 +102,20 @@ describe('ONTRunInformation.vue', () => {
       }))
       const expected = [{ value: null, text: 'Please select a state', disabled: true }, ...options]
       expect(ontRunInfomation.stateOptions).toEqual(expected)
+    })
+  })
+
+  describe('#rebasecallingProcessOptions', () => {
+    it('must have rebasecallingProcessOptions', () => {
+      const options = ontRunInfomation.rebasecallingList.map((rebasecalling) => ({
+        value: rebasecalling,
+        text: rebasecalling,
+      }))
+      const expected = [
+        { value: null, text: 'Please select a rebasecalling process', disabled: true },
+        ...options,
+      ]
+      expect(ontRunInfomation.rebasecallingOptions).toEqual(expected)
     })
   })
 
