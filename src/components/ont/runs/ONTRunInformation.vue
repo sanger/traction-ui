@@ -12,12 +12,21 @@
         ></traction-select>
       </div>
       <div class="flex flex-col gap-y-2 items-start">
-        <label label-for="instrument-selection"> State </label>
+        <label label-for="state-selection"> State </label>
         <traction-select
           id="state-selection"
           :options="stateOptions"
           :model-value="state"
           @update:model-value="setState"
+        ></traction-select>
+      </div>
+      <div class="flex flex-col gap-y-2 items-start">
+        <label label-for="rebasecalling-selection"> Rebasecalling process </label>
+        <traction-select
+          id="rebasecalling-selection"
+          :options="rebasecallingOptions"
+          :model-value="rebasecallingProcess"
+          @update:model-value="setRebasecallingProcess"
         ></traction-select>
       </div>
     </div>
@@ -39,6 +48,7 @@ export default {
   data() {
     return {
       statesList: ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart'],
+      rebasecallingList: ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '6mA all-context'],
     }
   },
   computed: {
@@ -54,7 +64,11 @@ export default {
       const ontRunsStore = useOntRunsStore()
       return ontRunsStore.currentRun.state
     },
-
+    rebasecallingProcess() {
+      //This is to keep currentRun.rebasecalling in sync with the Pinia store state  (option api way)
+      const ontRunsStore = useOntRunsStore()
+      return ontRunsStore.currentRun.rebasecalling_process
+    },
     instrumentOptions() {
       const options = this.instruments.map((instrument) => ({
         value: instrument.name,
@@ -71,6 +85,17 @@ export default {
 
       return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
     },
+    rebasecallingOptions() {
+      const options = this.rebasecallingList.map((rebasecalling) => ({
+        value: rebasecalling,
+        text: rebasecalling,
+      }))
+
+      return [
+        { value: null, text: 'Please select a rebasecalling process', disabled: true },
+        ...options,
+      ]
+    },
     newRecord() {
       return isNaN(this.currentRun.id)
     },
@@ -79,7 +104,7 @@ export default {
     formatState(str) {
       return str.replace(/\s+/g, '_').toLowerCase()
     },
-    ...mapActions(useOntRunsStore, ['setInstrumentName', 'setState']),
+    ...mapActions(useOntRunsStore, ['setInstrumentName', 'setState', 'setRebasecallingProcess']),
   },
 }
 </script>
