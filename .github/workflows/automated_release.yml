@@ -35,7 +35,7 @@ jobs:
           ./compile-build.sh release.tar.gz dist
 
       - name: Create release and upload release.tar.gz
-        uses: ncipollo/release-action@v1.8.8
+        uses: ncipollo/release-action@v1.15.0
         with:
           name: ${{ env.RELEASE_VERSION }}
           tag: v${{ env.RELEASE_VERSION }}

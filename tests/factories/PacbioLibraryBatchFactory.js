@@ -164,7 +164,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
   const createCsvFromLibraryBatchData = (tags, invalid_source = false, duplicate_tags = false) => {
     const tagArrr = Object.values(tags)
     const header = [
-      'source',
+      'sample_name',
       'tag',
       'template_prep_kit_box_barcode',
       'volume',
@@ -177,9 +177,9 @@ const PacbioLibraryBatchFactory = (tags = []) => {
         duplicate_tags && indx > 0
           ? lines[0].split(',')[1]
           : tagArrr.find((t) => t.id === String(library.tag_id))?.group_id
-      const source = indx === 0 && invalid_source ? 'test' : library.sample_name
+      const sample_name = indx === 0 && invalid_source ? 'test' : library.sample_name
       lines[indx] = [
-        source,
+        sample_name,
         tag,
         library.template_prep_kit_box_barcode,
         library.volume,
