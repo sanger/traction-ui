@@ -36,6 +36,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
           state: 'pending',
           volume: 1,
           used_volume: exhausted ? 1 : 0,
+          available_volume: 1 - (exhausted ? 1 : 0), // volume - used_volume
           concentration: 1,
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,

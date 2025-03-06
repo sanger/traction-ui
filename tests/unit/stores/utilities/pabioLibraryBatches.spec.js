@@ -17,7 +17,7 @@ describe('pacbioLibraryBatches', () => {
 
   describe('validateAndFormatAsPayloadData', () => {
     const requiredFields = [
-      'source',
+      'sample_name',
       'tag',
       'concentration',
       'insert_size',
@@ -28,7 +28,7 @@ describe('pacbioLibraryBatches', () => {
     requiredFields.forEach((field) => {
       it(`returns an error if ${field} is missing`, () => {
         const record = {
-          source: 'sample1',
+          sample_name: 'sample1',
           tag: 'abc',
           concentration: 10,
           insert_size: 100,
@@ -42,9 +42,9 @@ describe('pacbioLibraryBatches', () => {
       })
     })
 
-    it('returns an error if source is not found in requests', () => {
+    it('returns an error if sample_name is not found in requests', () => {
       const record = {
-        source: 'sample3',
+        sample_name: 'sample3',
         tag: tags[0].group_id,
         concentration: 10,
         insert_size: 100,
@@ -53,12 +53,12 @@ describe('pacbioLibraryBatches', () => {
       }
       const info = { lines: 1 }
       const result = validateAndFormatAsPayloadData({ record, info }, requests, tags)
-      expect(result).toEqual(new Error('Invalid record at line 1: source sample3 not found'))
+      expect(result).toEqual(new Error('Invalid record at line 1: sample name sample3 not found'))
     })
 
     it('returns an error if tag is not found in tags', () => {
       const record = {
-        source: requests[0].sample_name,
+        sample_name: requests[0].sample_name,
         tag: 'abc',
         concentration: 10,
         insert_size: 100,
@@ -75,7 +75,7 @@ describe('pacbioLibraryBatches', () => {
       const tag = pacbioTagSetFactory.storeData.selected.tag
       const request = pacbioRequestFactory.content.data[0]
       const record = {
-        source: request.attributes.sample_name,
+        sample_name: request.attributes.sample_name,
         tag_set: tagSet.name,
         tag: tag.group_id,
         concentration: 10,
