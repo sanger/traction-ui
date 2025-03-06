@@ -11,6 +11,7 @@
           @update:model-value="setInstrumentName"
         ></traction-select>
       </div>
+
       <div class="flex flex-col gap-y-2 items-start">
         <label label-for="state-selection"> State </label>
         <traction-select
@@ -20,8 +21,9 @@
           @update:model-value="setState"
         ></traction-select>
       </div>
+
       <div class="flex flex-col gap-y-2 items-start">
-        <label label-for="rebasecalling-selection"> Rebasecalling process </label>
+        <label label-for="rebasecalling-selection"> Rebasecalling Process </label>
         <traction-select
           id="rebasecalling-selection"
           :options="rebasecallingOptions"
@@ -33,78 +35,58 @@
   </traction-section>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import useOntRootStore from '@/stores/ontRoot'
 
-/**
- * # ONTRunInformation
- *
- * Displays an information panel allowing the user to select an instrument and state for the run.
- */
-export default {
-  name: 'ONTRunInformation',
-  data() {
-    return {
-      statesList: ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart'],
-      rebasecallingList: ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '6mA all-context'],
-    }
-  },
-  computed: {
-    ...mapState(useOntRootStore, ['instruments']),
-    ...mapState(useOntRunsStore, ['currentRun']),
-    instrumentName() {
-      //This is to keep instrumentName in sync with the Pinia store state  (option api way)
-      const ontRunsStore = useOntRunsStore()
-      return ontRunsStore.currentRun.instrument_name
-    },
-    state() {
-      //This is to keep currentRun.state in sync with the Pinia store state  (option api way)
-      const ontRunsStore = useOntRunsStore()
-      return ontRunsStore.currentRun.state
-    },
-    rebasecallingProcess() {
-      //This is to keep currentRun.rebasecalling in sync with the Pinia store state  (option api way)
-      const ontRunsStore = useOntRunsStore()
-      return ontRunsStore.currentRun.rebasecalling_process
-    },
-    instrumentOptions() {
-      const options = this.instruments.map((instrument) => ({
-        value: instrument.name,
-        text: instrument.name,
-      }))
+// Initialize stores
+const ontRunsStore = useOntRunsStore()
+const ontRootStore = useOntRootStore()
 
-      return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
-    },
-    stateOptions() {
-      const options = this.statesList.map((state) => ({
-        value: this.formatState(state),
-        text: state,
-      }))
+// Extract reactive properties using storeToRefs()
+const { currentRun } = storeToRefs(ontRunsStore)
+const { instruments } = storeToRefs(ontRootStore)
 
-      return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
-    },
-    rebasecallingOptions() {
-      const options = this.rebasecallingList.map((rebasecalling) => ({
-        value: rebasecalling,
-        text: rebasecalling,
-      }))
+// Actions
+const { setInstrumentName, setState, setRebasecallingProcess } = ontRunsStore
 
-      return [
-        { value: null, text: 'Please select a rebasecalling process', disabled: true },
-        ...options,
-      ]
-    },
-    newRecord() {
-      return isNaN(this.currentRun.id)
-    },
-  },
-  methods: {
-    formatState(str) {
-      return str.replace(/\s+/g, '_').toLowerCase()
-    },
-    ...mapActions(useOntRunsStore, ['setInstrumentName', 'setState', 'setRebasecallingProcess']),
-  },
-}
+// Static lists
+const statesList = ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart']
+const rebasecallingList = ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '6mA all-context']
+
+// Computed properties
+const instrumentName = computed(() => currentRun.value.instrument_name)
+const state = computed(() => currentRun.value.state)
+const rebasecallingProcess = computed(() => currentRun.value.rebasecalling_process)
+
+const instrumentOptions = computed(() => [
+  { value: null, text: 'Please select an instrument', disabled: true },
+  ...instruments.value.map((instrument) => ({
+    value: instrument.name,
+    text: instrument.name,
+  })),
+])
+
+const stateOptions = computed(() => [
+  { value: null, text: 'Please select a state', disabled: true },
+  ...statesList.map((state) => ({
+    value: formatState(state),
+    text: state,
+  })),
+])
+
+const rebasecallingOptions = computed(() => [
+  { value: null, text: 'Please select a rebasecalling process', disabled: true },
+  ...rebasecallingList.map((rebasecalling) => ({
+    value: rebasecalling,
+    text: rebasecalling,
+  })),
+])
+
+const newRecord = computed(() => isNaN(currentRun.value.id))
+
+// Helper function to format state values
+const formatState = (str) => str.replace(/\s+/g, '_').toLowerCase()
 </script>

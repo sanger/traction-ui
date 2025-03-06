@@ -41,7 +41,7 @@ describe('ONTRunInformation.vue', () => {
     })
   })
 
-  describe('Rebasecalling process', () => {
+  describe('Rebasecalling selection', () => {
     it('will always show', () => {
       expect(wrapper.find('#rebasecalling-selection').exists()).toBeTruthy()
     })
