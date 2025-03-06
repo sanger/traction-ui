@@ -11,7 +11,7 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
  * @returns {Object|Error} - Returns the formatted payload data or an error if validation fails.
  */
 const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
-  const { source, tag, ...attributes } = record
+  const { sample_name, tag, ...attributes } = record
   /**
    * Creates an error with a specific message.
    *
@@ -26,7 +26,7 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
     'template_prep_kit_box_barcode',
     'volume',
   ]
-  const requiredAttributes = ['source', 'tag', ...measurementAttributes]
+  const requiredAttributes = ['sample_name', 'tag', ...measurementAttributes]
   for (const attr of requiredAttributes) {
     if (!record[attr]) {
       return createError(`${attr} is required`)
@@ -38,9 +38,9 @@ const validateAndFormatAsPayloadData = ({ record, info }, requests, tags) => {
     return createError(`tag ${tag} not found`)
   }
 
-  const request = requests.find((r) => r.sample_name === source)
+  const request = requests.find((r) => r.sample_name === sample_name)
   if (!request) {
-    return createError(`source ${source} not found`)
+    return createError(`sample name ${sample_name} not found`)
   }
 
   const measurementAttributesObj = measurementAttributes.reduce((obj, key) => {

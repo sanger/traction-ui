@@ -118,7 +118,13 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         }
 
         // Validate csv and return results
-        const eachReordRetObj = eachRecord(csv, validateAndFormatAsPayloadData, requests, tags)
+        const eachReordRetObj = eachRecord(
+          csv,
+          validateAndFormatAsPayloadData,
+          false,
+          requests,
+          tags,
+        )
         if (eachReordRetObj.error) {
           return { success: false, errors: eachReordRetObj.error }
         }

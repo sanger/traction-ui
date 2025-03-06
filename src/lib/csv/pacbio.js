@@ -64,11 +64,11 @@ const filterUndefinedValues = (record) =>
  * @param {...any} args - Additional arguments to pass to the callback function.
  * @returns {Array|Object} - The processed records or an error object if an error occurs.
  */
-const eachRecord = (csv, callback, ...args) => {
+const eachRecord = (csv, callback, isValidateHeaders = true, ...args) => {
   const records = parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
-    columns: validateHeaders(normaliseHeaders),
+    columns: isValidateHeaders ? validateHeaders(normaliseHeaders) : normaliseHeaders,
     skip_records_with_empty_values: true,
     skip_empty_lines: true,
     trim: true,
