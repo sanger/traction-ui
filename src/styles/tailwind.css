@@ -20,8 +20,8 @@
 .warning-icon {
   @apply text-warning-dark hover:text-warning-light;
 }
-@theme  {
-  --text-xxs : 0.6rem;
+@theme {
+  --text-xxs: 0.6rem;
   --color-custom-pink: oklch(68.78% 0.1797 1.96);
   --shadow-custom-pink: 6px 6px 0 0 var(--color-custom-pink);
 }
