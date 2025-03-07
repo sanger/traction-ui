@@ -61,7 +61,7 @@ describe('ONTRunInformation.vue', () => {
 
   describe('#mapGetters', () => {
     it('must have currentRun', () => {
-      expect(ontRunInfomation.currentRun).toEqual(mockRun)
+      expect(ontRunInfomation.ontRunsStore.currentRun).toEqual(mockRun)
     })
     it('must have instruments', () => {
       const expected = ontInstrumentFactory.storeData.instrumentsArray.map((i) => {
