@@ -11,7 +11,7 @@
     :data-type="dataType"
     :class="[
       'flex flex-col rounded-md px-4 py-3 space-y-4 mb-2', // padding
-      `text-base leading-0`, // text style
+      `text-base break-word`, // text style
       `${color.message}`, // font color, background color
     ]"
   >
@@ -21,7 +21,7 @@
       </button>
     </div>
     <div class="flex flex-col flex-grow text-end mb-[3px] space-y-4">
-      <div>
+      <div class="break-word">
         {{ message }}
       </div>
       <div class="text-xs text-gray-500 text-end border-t-2 border-gray-300 mt-2 pt-2">
