@@ -3,7 +3,7 @@
     <div class="flex flex-col px-4 gap-y-4">
       <div class="flex flex-col text-left">
         <h1
-          class="text-4xl bg-gradient-to-r from-sp-400 to-sdb-400 inline-block text-transparent bg-clip-text w-40"
+          class="text-4xl bg-linear-to-r from-sp-400 to-sdb-400 inline-block text-transparent bg-clip-text w-40"
         >
           Traction
         </h1>
