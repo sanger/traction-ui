@@ -6,7 +6,7 @@
         <traction-select
           id="instrument-selection"
           :options="instrumentOptions"
-          :model-value="instrumentName"
+          :model-value="currentRun.instrument_name"
           :disabled="!newRecord"
           @update:model-value="setInstrumentName"
         ></traction-select>
@@ -17,7 +17,7 @@
         <traction-select
           id="state-selection"
           :options="stateOptions"
-          :model-value="state"
+          :model-value="currentRun.state"
           @update:model-value="setState"
         ></traction-select>
       </div>
@@ -27,7 +27,7 @@
         <traction-select
           id="rebasecalling-selection"
           :options="rebasecallingOptions"
-          :model-value="rebasecallingProcess"
+          :model-value="currentRun.rebasecalling_process"
           @update:model-value="setRebasecallingProcess"
         ></traction-select>
       </div>
@@ -44,17 +44,12 @@ import useOntRootStore from '@/stores/ontRoot'
 const ontRunsStore = useOntRunsStore()
 const ontRootStore = useOntRootStore()
 
-const { setInstrumentName, setState, setRebasecallingProcess } = ontRunsStore
+const { setInstrumentName, setState, setRebasecallingProcess, currentRun } = ontRunsStore
 const { instruments } = ontRootStore
 
 // Static lists
 const statesList = ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart']
 const rebasecallingList = ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '6mA all-context']
-
-// Computed properties
-const instrumentName = computed(() => ontRunsStore.currentRun.instrument_name)
-const state = computed(() => ontRunsStore.currentRun.state)
-const rebasecallingProcess = computed(() => ontRunsStore.currentRun.rebasecalling_process)
 
 const instrumentOptions = computed(() => [
   { value: null, text: 'Please select an instrument', disabled: true },
@@ -80,7 +75,7 @@ const rebasecallingOptions = computed(() => [
   })),
 ])
 
-const newRecord = computed(() => isNaN(ontRunsStore.currentRun.id))
+const newRecord = computed(() => isNaN(currentRun.id))
 
 // Helper function to format state values
 const formatState = (str) => str.replace(/\s+/g, '_').toLowerCase()

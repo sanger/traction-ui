@@ -61,7 +61,7 @@ describe('ONTRunInformation.vue', () => {
 
   describe('#mapGetters', () => {
     it('must have currentRun', () => {
-      expect(ontRunInfomation.ontRunsStore.currentRun).toEqual(mockRun)
+      expect(ontRunInfomation.currentRun).toEqual(mockRun)
     })
     it('must have instruments', () => {
       const expected = ontInstrumentFactory.storeData.instrumentsArray.map((i) => {
@@ -76,8 +76,8 @@ describe('ONTRunInformation.vue', () => {
   })
   describe('#mapState', () => {
     it('#mapState', () => {
-      expect(ontRunInfomation.instrumentName).toEqual('')
-      expect(ontRunInfomation.state).toEqual('')
+      expect(ontRunInfomation.currentRun.instrument_name).toEqual('')
+      expect(ontRunInfomation.currentRun.state).toEqual('')
     })
   })
   describe('#instrumentOptions', () => {
@@ -120,7 +120,7 @@ describe('ONTRunInformation.vue', () => {
   })
 
   describe('#newRecord', () => {
-    it('returns false when currentRun is a new record', () => {
+    it('returns true when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
     it('returns false when currentRun is not a new record', () => {
@@ -143,11 +143,11 @@ describe('ONTRunInformation.vue', () => {
   describe('#mapMutations', () => {
     it('#setInstrumentName', () => {
       ontRunInfomation.setInstrumentName('gridion')
-      expect(ontRunInfomation.instrumentName).toEqual('gridion')
+      expect(ontRunInfomation.currentRun.instrument_name).toEqual('gridion')
     })
     it('#setState', () => {
       ontRunInfomation.setState('started')
-      expect(ontRunInfomation.state).toEqual('started')
+      expect(ontRunInfomation.currentRun.state).toEqual('started')
     })
   })
 })
