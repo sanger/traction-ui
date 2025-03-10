@@ -123,13 +123,14 @@ describe('ONTRunInformation.vue', () => {
     it('returns true when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
-    it('returns false when currentRun is not a new record', () => {
+    it('returns false when currentRun is not a new record', async () => {
       store.setCurrentRun({
         id: '1',
-        instrument_name: '',
+        instrument_name: 'ABC',
         state: '',
         flowcell_attributes: [],
       })
+
       expect(ontRunInfomation.newRecord).toEqual(false)
     })
   })

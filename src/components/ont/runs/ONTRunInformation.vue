@@ -37,6 +37,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import useOntRootStore from '@/stores/ontRoot'
 
@@ -44,8 +45,12 @@ import useOntRootStore from '@/stores/ontRoot'
 const ontRunsStore = useOntRunsStore()
 const ontRootStore = useOntRootStore()
 
-const { setInstrumentName, setState, setRebasecallingProcess, currentRun } = ontRunsStore
-const { instruments } = ontRootStore
+// Extract reactive properties using storeToRefs()
+const { currentRun } = storeToRefs(ontRunsStore)
+const { instruments } = storeToRefs(ontRootStore)
+
+// Actions
+const { setInstrumentName, setState, setRebasecallingProcess } = ontRunsStore
 
 // Static lists
 const statesList = ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart']
@@ -53,7 +58,7 @@ const rebasecallingList = ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '
 
 const instrumentOptions = computed(() => [
   { value: null, text: 'Please select an instrument', disabled: true },
-  ...instruments.map((instrument) => ({
+  ...instruments.value.map((instrument) => ({
     value: instrument.name,
     text: instrument.name,
   })),
@@ -75,7 +80,7 @@ const rebasecallingOptions = computed(() => [
   })),
 ])
 
-const newRecord = computed(() => isNaN(currentRun.id))
+const newRecord = computed(() => isNaN(currentRun.value.id))
 
 // Helper function to format state values
 const formatState = (str) => str.replace(/\s+/g, '_').toLowerCase()
