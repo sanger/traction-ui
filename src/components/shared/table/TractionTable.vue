@@ -258,7 +258,7 @@ export default {
 
             /**The dimension to display if there is any labware svg displayed in row
              * If not given, the svg are displaying in small dimension and the reason couldn't be found**/
-            detailsDim: '30',
+            detailsDim: '20',
 
             /**Is row selected or not?**/
             selected: false,
