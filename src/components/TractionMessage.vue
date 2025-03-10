@@ -15,7 +15,7 @@
       `${color.message}`, // font color, background color
     ]"
   >
-  <div class="flex justify-end items-center w-full">
+    <div class="flex justify-end items-center w-full">
       <button data-attribute="dismiss" @click="dismiss">
         <traction-close-icon :class-names="`${color.icon}`" />
       </button>
