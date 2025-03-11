@@ -123,15 +123,22 @@ describe('ONTRunInformation.vue', () => {
     it('returns true when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
-    it('returns false when currentRun is not a new record', async () => {
-      store.setCurrentRun({
-        id: '1',
-        instrument_name: 'ABC',
-        state: '',
-        flowcell_attributes: [],
-      })
 
-      expect(ontRunInfomation.newRecord).toEqual(false)
+    it('returns false when currentRun is not a new record', () => {
+      const { wrapper } = mountWithStore(ONTRunInformation, {
+        initialState: {
+          ontRuns: {
+            currentRun: {
+              id: 1,
+              instrument_name: '',
+              state: '',
+              flowcell_attributes: [],
+            },
+          },
+          ontRoot: { resources: { instruments: mockInstruments } },
+        },
+      })
+      expect(wrapper.vm.newRecord).toEqual(false)
     })
   })
 
