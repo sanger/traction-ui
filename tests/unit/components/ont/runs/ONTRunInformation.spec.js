@@ -19,7 +19,7 @@ describe('ONTRunInformation.vue', () => {
       rebasecalling_process: '',
       flowcell_attributes: [],
     }
-    ;({ wrapper, store } = mountWithStore(ONTRunInformation, {
+    ;({ wrapper } = mountWithStore(ONTRunInformation, {
       initialState: {
         ontRuns: { currentRun: mockRun },
         ontRoot: { resources: { instruments: mockInstruments } },
