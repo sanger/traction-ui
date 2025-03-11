@@ -8,7 +8,7 @@ import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 const ontInstrumentFactory = OntInstrumentFactory()
 
 describe('ONTRunInformation.vue', () => {
-  let wrapper, ontRunInfomation, mockInstruments, mockRun, store
+  let wrapper, ontRunInfomation, mockInstruments, mockRun
 
   beforeEach(() => {
     mockInstruments = ontInstrumentFactory.storeData.instruments
