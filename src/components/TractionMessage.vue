@@ -11,11 +11,11 @@
     :data-type="dataType"
     :class="[
       'flex flex-col rounded rounded-md px-4 py-3 space-x-4 mb-2', // padding
-      `text-base leading-0`, // text style
+      'text-base break-word', // text style
       `${color.message}`, // font color, background color
     ]"
   >
-    <div class="flex justify-end items-center">
+    <div class="flex justify-end items-center w-full">
       <button data-attribute="dismiss" @click="dismiss">
         <traction-close-icon :class-names="`${color.icon}`" />
       </button>
