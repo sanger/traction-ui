@@ -32,6 +32,7 @@ describe('useOntRunsStore', () => {
         id: 'new',
         instrument_name: null,
         state: null,
+        rebasecalling_process: null,
       })
       expect(store.pools).toEqual({})
     })
@@ -111,6 +112,7 @@ describe('useOntRunsStore', () => {
           id: 'new',
           instrument_name: null,
           state: null,
+          rebasecalling_process: null,
         })
       })
     })
@@ -126,6 +128,7 @@ describe('useOntRunsStore', () => {
           id: 1,
           instrument_name: 'GXB02004',
           state: 'pending',
+          rebasecalling_process: '6mA all-context',
           flowcell_attributes: [{ tube_barcode: 'TRAC-2-42', flowcell_id: 1 }],
         }
         store.pools = { 1: { id: '1', tube: 1, tube_barcode: 'TRAC-2-42' } }
@@ -145,6 +148,7 @@ describe('useOntRunsStore', () => {
               attributes: {
                 ont_instrument_id: 1,
                 state: 'pending',
+                rebasecalling_process: '6mA all-context',
                 flowcell_attributes: [
                   { tube_barcode: 'TRAC-2-42', flowcell_id: 1, ont_pool_id: '1' },
                 ],
@@ -173,6 +177,7 @@ describe('useOntRunsStore', () => {
         run = {
           id: '16',
           state: 'pending',
+          rebasecalling_process: '6mA all-context',
           instrument_name: 'GXB02004',
           flowcell_attributes: [],
         }
@@ -184,6 +189,7 @@ describe('useOntRunsStore', () => {
             attributes: {
               state: 'pending',
               ont_instrument_id: 1,
+              rebasecalling_process: '6mA all-context',
               flowcell_attributes: [],
             },
           },
