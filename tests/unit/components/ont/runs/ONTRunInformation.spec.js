@@ -8,7 +8,7 @@ import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 const ontInstrumentFactory = OntInstrumentFactory()
 
 describe('ONTRunInformation.vue', () => {
-  let wrapper, ontRunInfomation, mockInstruments, mockRun, store
+  let wrapper, ontRunInfomation, mockInstruments, mockRun
 
   beforeEach(() => {
     mockInstruments = ontInstrumentFactory.storeData.instruments
@@ -16,9 +16,10 @@ describe('ONTRunInformation.vue', () => {
       id: 'new',
       instrument_name: '',
       state: '',
+      rebasecalling_process: '',
       flowcell_attributes: [],
     }
-    ;({ wrapper, store } = mountWithStore(ONTRunInformation, {
+    ;({ wrapper } = mountWithStore(ONTRunInformation, {
       initialState: {
         ontRuns: { currentRun: mockRun },
         ontRoot: { resources: { instruments: mockInstruments } },
@@ -37,6 +38,12 @@ describe('ONTRunInformation.vue', () => {
   describe('State selection', () => {
     it('will always show', () => {
       expect(wrapper.find('#state-selection').exists()).toBeTruthy()
+    })
+  })
+
+  describe('Rebasecalling selection', () => {
+    it('will always show', () => {
+      expect(wrapper.find('#rebasecalling-selection').exists()).toBeTruthy()
     })
   })
 
@@ -69,8 +76,8 @@ describe('ONTRunInformation.vue', () => {
   })
   describe('#mapState', () => {
     it('#mapState', () => {
-      expect(ontRunInfomation.instrumentName).toEqual('')
-      expect(ontRunInfomation.state).toEqual('')
+      expect(ontRunInfomation.currentRun.instrument_name).toEqual('')
+      expect(ontRunInfomation.currentRun.state).toEqual('')
     })
   })
   describe('#instrumentOptions', () => {
@@ -98,18 +105,40 @@ describe('ONTRunInformation.vue', () => {
     })
   })
 
+  describe('#rebasecallingProcessOptions', () => {
+    it('must have rebasecallingProcessOptions', () => {
+      const options = ontRunInfomation.rebasecallingList.map((rebasecalling) => ({
+        value: rebasecalling,
+        text: rebasecalling,
+      }))
+      const expected = [
+        { value: null, text: 'Please select a rebasecalling process', disabled: true },
+        ...options,
+      ]
+      expect(ontRunInfomation.rebasecallingOptions).toEqual(expected)
+    })
+  })
+
   describe('#newRecord', () => {
-    it('returns false when currentRun is a new record', () => {
+    it('returns true when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
+
     it('returns false when currentRun is not a new record', () => {
-      store.setCurrentRun({
-        id: '1',
-        instrument_name: '',
-        state: '',
-        flowcell_attributes: [],
+      const { wrapper } = mountWithStore(ONTRunInformation, {
+        initialState: {
+          ontRuns: {
+            currentRun: {
+              id: 1,
+              instrument_name: '',
+              state: '',
+              flowcell_attributes: [],
+            },
+          },
+          ontRoot: { resources: { instruments: mockInstruments } },
+        },
       })
-      expect(ontRunInfomation.newRecord).toEqual(false)
+      expect(wrapper.vm.newRecord).toEqual(false)
     })
   })
 
@@ -122,11 +151,11 @@ describe('ONTRunInformation.vue', () => {
   describe('#mapMutations', () => {
     it('#setInstrumentName', () => {
       ontRunInfomation.setInstrumentName('gridion')
-      expect(ontRunInfomation.instrumentName).toEqual('gridion')
+      expect(ontRunInfomation.currentRun.instrument_name).toEqual('gridion')
     })
     it('#setState', () => {
       ontRunInfomation.setState('started')
-      expect(ontRunInfomation.state).toEqual('started')
+      expect(ontRunInfomation.currentRun.state).toEqual('started')
     })
   })
 })

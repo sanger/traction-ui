@@ -16,6 +16,7 @@ describe('ONTRunInstrumentFlowcells', () => {
       id: 'new',
       instrument_name: 'PC24B148',
       state: 'pending',
+      rebasecalling_process: '6mA all-context',
       flowcell_attributes: [],
     }
     ;({ wrapper } = mountWithStore(ONTRunInstrumentFlowcells, {

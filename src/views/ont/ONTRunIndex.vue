@@ -73,6 +73,12 @@ export default {
           sortable: true,
           tdClass: 'instrument-name',
         },
+        {
+          key: 'rebasecalling_process',
+          label: 'Rebasecalling Process',
+          sortable: true,
+          tdClass: 'instrument-name',
+        },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
