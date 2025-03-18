@@ -42,7 +42,6 @@ export default {
     // Parent function indiciated what to do when a user changes an attribute
     notify: {
       type: Function,
-      required: true,
       default: () => {},
     },
   },

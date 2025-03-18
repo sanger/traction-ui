@@ -150,7 +150,6 @@ const props = defineProps({
   library: {
     // The library to be edited or created
     type: Object,
-    required: true,
     default() {
       return { tag_id: '', sample: {} }
     },

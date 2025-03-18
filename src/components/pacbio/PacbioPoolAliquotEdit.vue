@@ -147,7 +147,6 @@ const props = defineProps({
    */
   notify: {
     type: Function,
-    required: true,
     default: () => {},
   },
 })
