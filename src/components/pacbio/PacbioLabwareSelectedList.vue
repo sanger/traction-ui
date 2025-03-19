@@ -109,7 +109,6 @@ const props = defineProps({
    */
   labware: {
     type: Array,
-    required: true,
     default: () => [],
   },
   /**

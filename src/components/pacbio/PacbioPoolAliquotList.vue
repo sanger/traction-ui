@@ -42,7 +42,6 @@ const props = defineProps({
   // an attribute in a child component
   notify: {
     type: Function,
-    required: true,
     default: () => {},
   },
 })
