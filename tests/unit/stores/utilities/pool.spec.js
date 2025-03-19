@@ -364,23 +364,6 @@ describe('pool', () => {
 
     const tubes = [
       {
-        id: '12066',
-        type: 'tubes',
-        attributes: {
-          barcode: 'TRAC-2-12066',
-        },
-        relationships: {
-          pools: {
-            data: [
-              {
-                type: 'pools',
-                id: '6011',
-              },
-            ],
-          },
-        },
-      },
-      {
         id: '11877',
         type: 'tubes',
         attributes: {
@@ -731,6 +714,7 @@ describe('pool', () => {
           used_aliquots: ['1', '3'],
           tube: '1',
           type: 'pools',
+          barcode: 'TRAC-2-1',
           source_identifier: 'DN1:A1',
           run_suitability: {
             ready_for_run: true,

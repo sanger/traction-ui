@@ -285,6 +285,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           return { ...request, selected: !!selectedUsedAliquots[`_${source}`] }
         })
       }
+      console.log(source_obj)
+      console.log(val)
       return val
     },
     /**
@@ -294,14 +296,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * @returns {Function} A function that takes an ID and returns the corresponding used_aliquots item.
      */
     usedAliquotItem: (state) => (id) => state.used_aliquots[`_${id}`],
-
-    /**
-     * Retrieves the tube item from the state. If the tibe item does not exist, returns an empty object.
-     *
-     * @param {Object} state - The state object that contains the tube item.
-     * @returns {Object} The tibe item from the state, or an empty object if it does not exist.
-     */
-    tubeItem: (state) => state.tube || {},
 
     sourceTypeForRequest: () => (request) =>
       request.tube || request.well ? 'Pacbio::Request' : 'Pacbio::Library',
@@ -551,11 +545,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const request = rootStore.api.traction.pacbio.pools
       const promise = request.create({
         data: payload({ used_aliquots, pool }),
-        include: 'tube',
       })
-      const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
-      const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
-      const { attributes: { barcode = '' } = {} } = tube
+      const { success, body: { data = {} } = {}, errors } = await handleResponse(promise)
+      const { attributes: { barcode = '' } = {} } = data
       return { success, barcode, errors }
     },
 
@@ -609,7 +601,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const promise = request.find({
         id: poolId,
         include:
-          'used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
+          'used_aliquots.tag.tag_set,requests.tube,libraries.tube,libraries.request,requests.plate.wells.requests',
       })
       const response = await handleResponse(promise)
 
@@ -646,11 +638,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           requests: this.resources.requests,
           tubes,
         })
-
-        // Get the pool tube and remove it from tubes list.
-        // There must be a reason why it is done this way?
-        this.tube = this.resources.tubes[data.relationships.tube.data.id]
-        delete this.resources.tubes[data.relationships.tube.data.id]
 
         //Populate plates
         this.resources.plates = dataToObjectById({

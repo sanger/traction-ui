@@ -37,8 +37,6 @@ const createStoreDataForSinglePool = (data) => {
     tubes,
   })
 
-  delete storeTubes[data.data.relationships.tube.data.id]
-
   const used_aliquots = createUsedAliquotsAndMapToSourceId({
     aliquots,
     libraries: storeLibraries,
@@ -136,18 +134,9 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } 
           used_volume: 15.0,
           available_volume: 0.0,
           source_identifier: 'TRAC-2-11876,TRAC-2-11877',
+          barcode: 'TRAC-2-1',
         },
         relationships: {
-          tube: {
-            links: {
-              self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/pools/6011/relationships/tube',
-              related: 'https://traction.psd.sanger.ac.uk/v1/pacbio/pools/6011/tube',
-            },
-            data: {
-              type: 'tubes',
-              id: '12066',
-            },
-          },
           used_aliquots: {
             links: {
               self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/pools/6011/relationships/used_aliquots',
@@ -215,18 +204,9 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } 
           used_volume: 0,
           available_volume: 20.0,
           source_identifier: 'GEN-1730730210-1:A1-B1',
+          barcode: 'TRAC-2-15',
         },
         relationships: {
-          tube: {
-            links: {
-              self: 'http://localhost:3100/v1/pacbio/pools/15/relationships/tube',
-              related: 'http://localhost:3100/v1/pacbio/pools/15/tube',
-            },
-            data: {
-              type: 'tubes',
-              id: '25',
-            },
-          },
           used_aliquots: {
             links: {
               self: 'http://localhost:3100/v1/pacbio/pools/15/relationships/used_aliquots',
@@ -288,22 +268,13 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } 
           source_identifier: 'DN1:A1',
           created_at: '2021-07-15T15:26:29.000Z',
           updated_at: '2021-07-15T15:26:29.000Z',
+          barcode: 'TRAC-2-5',
           run_suitability: {
             ready_for_run: true,
             errors: [],
           },
         },
         relationships: {
-          tube: {
-            links: {
-              self: '/v1/pacbio/pools/1/relationships/tube',
-              related: '/v1/pacbio/pools/1/tube',
-            },
-            data: {
-              type: 'tubes',
-              id: '1',
-            },
-          },
           used_aliquots: {
             links: {
               self: '/v1/pacbio/pools/1/relationships/aliquots',
@@ -332,22 +303,13 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } 
           source_identifier: 'DN1:B1',
           created_at: '2021-07-15T15:26:29.000Z',
           updated_at: '2021-07-15T15:26:29.000Z',
+          barcode: 'TRAC-2-6',
           run_suitability: {
             ready_for_run: true,
             errors: [],
           },
         },
         relationships: {
-          tube: {
-            links: {
-              self: '/v1/pacbio/pools/2/relationships/tube',
-              related: '/v1/pacbio/pools/2/tube',
-            },
-            data: {
-              type: 'tubes',
-              id: '2',
-            },
-          },
           used_aliquots: {
             links: {
               self: '/v1/pacbio/pools/2/relationships/aliquots',
@@ -563,48 +525,6 @@ const PacbioPoolFactory = ({ count = undefined, includeAll = false, start = 0 } 
                 id: '369',
               },
             ],
-          },
-        },
-      },
-      {
-        id: '12066',
-        type: 'tubes',
-        links: {
-          self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066',
-        },
-        attributes: {
-          barcode: 'TRAC-2-12066',
-        },
-        relationships: {
-          materials: {
-            links: {
-              self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/relationships/materials',
-              related: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/materials',
-            },
-          },
-          pools: {
-            links: {
-              self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/relationships/pools',
-              related: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/pools',
-            },
-            data: [
-              {
-                type: 'pools',
-                id: '6011',
-              },
-            ],
-          },
-          libraries: {
-            links: {
-              self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/relationships/libraries',
-              related: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/libraries',
-            },
-          },
-          requests: {
-            links: {
-              self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/relationships/requests',
-              related: 'https://traction.psd.sanger.ac.uk/v1/pacbio/tubes/12066/requests',
-            },
           },
         },
       },

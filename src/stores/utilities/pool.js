@@ -209,11 +209,9 @@ const createUsedAliquotsFromState = ({ pool, state }) => {
 const addUsedAliquotsBarcodeAndErrorsToPools = (state) => {
   return Object.values(state.pools).map((pool) => {
     const used_aliquots = createUsedAliquotsFromState({ pool, state })
-    const { barcode } = state.tubes[pool.tube]
     return {
       ...pool,
       used_aliquots,
-      barcode,
       run_suitability: {
         ...pool.run_suitability,
         formattedErrors: buildRunSuitabilityErrors({ used_aliquots, pool }),

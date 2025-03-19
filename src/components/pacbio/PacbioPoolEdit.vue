@@ -28,14 +28,10 @@
                 <traction-label>Auto tagging</traction-label>
                 <traction-toggle v-model="autoTag" data-attribute="check-box" />
               </fieldset>
-              <fieldset v-if="!!tubeItem.barcode" class="flex flex-col">
+              <fieldset v-if="!!pool.barcode" class="flex flex-col">
                 <traction-label class="h-full">Pool Barcode</traction-label>
-                <traction-label
-                  v-if="!!tubeItem.barcode"
-                  data-attribute="barcode"
-                  class="font-bold text-nowrap"
-                >
-                  {{ tubeItem.barcode }}
+                <traction-label data-attribute="barcode" class="font-bold text-nowrap">
+                  {{ pool.barcode }}
                 </traction-label>
               </fieldset>
               <fieldset class="flex flex-col">
@@ -146,7 +142,6 @@ const validated = ref(true) // Flag to indicate if the form data is valid
 
 const {
   pool,
-  tubeItem,
   selectedUsedAliquots,
   createPool,
   updatePool,

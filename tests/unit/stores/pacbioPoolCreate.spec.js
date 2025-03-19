@@ -177,23 +177,6 @@ describe('usePacbioPoolCreateStore', () => {
       store.used_aliquots = used_aliquots
       expect(store.usedAliquotItem('3')).toEqual(used_aliquots['_3'])
     })
-
-    describe('tubeItem', () => {
-      const tube = {
-        id: 1,
-        barcode: 'TRAC-1',
-      }
-
-      it('returns the correct data', () => {
-        store.tube = tube
-        expect(store.tubeItem).toEqual(tube)
-      })
-
-      it('when the tube does not exist', () => {
-        store.tube = undefined
-        expect(store.tubeItem).toEqual({})
-      })
-    })
   })
 
   describe('actions', () => {
@@ -523,8 +506,7 @@ describe('usePacbioPoolCreateStore', () => {
       // for now: create a pool state with a simple success message
       it('when the pool is valid', async () => {
         const mockResponse = successfulResponse({
-          data: {},
-          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+          data: { attributes: { barcode: 'TRAC-1' } },
         })
         const used_aliquots = {
           _1: used_aliquot1,
@@ -536,7 +518,6 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, barcode } = await store.createPool()
         expect(create).toHaveBeenCalledWith({
           data: payload({ used_aliquots, pool }),
-          include: expect.anything(),
         })
         expect(success).toBeTruthy()
         expect(barcode).toEqual('TRAC-1')
@@ -587,7 +568,6 @@ describe('usePacbioPoolCreateStore', () => {
 
         expect(create).toHaveBeenCalledWith({
           data: playload,
-          include: expect.anything(),
         })
 
         expect(playload.data.attributes.used_aliquots_attributes[0].source_type).toEqual(
