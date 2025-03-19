@@ -285,8 +285,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           return { ...request, selected: !!selectedUsedAliquots[`_${source}`] }
         })
       }
-      console.log(source_obj)
-      console.log(val)
       return val
     },
     /**
