@@ -94,7 +94,6 @@ describe('run.js', () => {
       // no longer an accepted parameter
       expect(run.sequencing_kit_box_barcode).not.toBeDefined()
       expect(run.dna_control_complex_box_barcode).toEqual(null)
-      expect(run.comments).toEqual(null)
     })
   })
 

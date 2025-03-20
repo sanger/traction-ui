@@ -121,7 +121,7 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Revio',
           created_at: '2024/10/21 13:06',
           state: 'pending',
-          comments:
+          barcodes_and_concentrations:
             ' TRAC-2-10185 212pM  TRAC-2-11561 258pM  TRAC-2-11562 197pM  TRAC-2-11563 221pM',
           pacbio_smrt_link_version_id: 5,
           plates_attributes: null,
@@ -157,7 +157,8 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           system_name: 'Sequel IIe',
           created_at: '2024/09/12 11:31',
           state: 'pending',
-          comments: ' TRAC-2-10797 81pM  TRAC-2-9452 81pM  TRAC-2-10748 81pM  TRAC-2-10483 77pM',
+          barcodes_and_concentrations:
+            ' TRAC-2-10797 81pM  TRAC-2-9452 81pM  TRAC-2-10748 81pM  TRAC-2-10483 77pM',
           pacbio_smrt_link_version_id: 4,
           plates_attributes: null,
           adaptive_loading: false,
