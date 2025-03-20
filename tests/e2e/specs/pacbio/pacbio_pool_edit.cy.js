@@ -19,7 +19,7 @@ describe('Pacbio Pool Edit', () => {
     cy.get('@pacbioPoolFactory').then((pacbioPoolFactory) => {
       cy.intercept(
         'GET',
-        'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
+        'v1/pacbio/pools?page[size]=25&page[number]=1&include=used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
         {
           statusCode: 200,
           body: pacbioPoolFactory.content,

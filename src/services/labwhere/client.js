@@ -113,12 +113,11 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   const fetchAndMergeLibraries = async (barcodes, filterKey) => {
     const filterOptions = { filter: { [filterKey]: barcodes.join(',') } }
 
-    const { success, libraries, tubes, tags, requests } =
-      await getPacbioLibraryResources(filterOptions)
+    const { success, libraries, tags, requests } = await getPacbioLibraryResources(filterOptions)
     if (success) {
       librariesToDestroy = [
         ...librariesToDestroy,
-        ...formatAndTransformLibraries(libraries, tubes, tags, requests),
+        ...formatAndTransformLibraries(libraries, tags, requests),
       ]
     }
   }
