@@ -23,7 +23,7 @@
       </div>
 
       <div class="flex flex-col gap-y-2 items-start">
-        <label label-for="rebasecalling-selection"> Rebasecalling Process </label>
+        <label label-for="rebasecalling-selection"> Modified Basecalling Required </label>
         <traction-select
           id="rebasecalling-selection"
           :options="rebasecallingOptions"
@@ -49,7 +49,14 @@ const { setInstrumentName, setState, setRebasecallingProcess, currentRun } = ont
 
 // Static lists
 const statesList = ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart']
-const rebasecallingList = ['5mC + 5hmC CpG-context', '5mC + 5hmC all-context', '6mA all-context']
+const rebasecallingList = [
+  'None',
+  '5mC and 5hmC (CG-context)',
+  '5mC and 5hmC (all contexts)',
+  '6mA (all contexts)',
+  '5mC, 5hmC and 6mA (all contexts)',
+  '5mC and 5hmC (CG-context) and 6mA (all contexts)',
+]
 
 const instrumentOptions = computed(() => [
   { value: null, text: 'Please select an instrument', disabled: true },
