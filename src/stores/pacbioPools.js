@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
-import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { addUsedAliquotsAndErrorsToPools } from '@/stores/utilities/pool.js'
 
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
@@ -12,7 +12,6 @@ import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.
 export const usePacbioPoolsStore = defineStore('pacbioPools', {
   state: () => ({
     pools: {},
-    tubes: {},
     used_aliquots: {},
     requests: {},
     tags: {},
@@ -21,18 +20,17 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
   getters: {
     /**
      * This function takes a `state` object and returns an array of pools.
-     * It maps over the values of `state.pools`, retrieves the used_aliquots, barcode, and run suitability for each pool, and
+     * It maps over the values of `state.pools`, retrieves the used_aliquots and run suitability for each pool, and
      * returns the pools with the retrieved data.
      * The used_aliquots for each pool are retrieved by mapping over the `pool.used_aliquots`, retrieving the used_aliquot data from `state.used_aliquots`
      * based on the used_aliquot ID, and returning the used_aliquot data with the sample name from `state.requests` and the group ID from `state.tags`.
-     * The barcode for each pool is retrieved from `state.tubes` based on the `pool.tube`.
      * The run suitability for each pool is retrieved from `pool.run_suitability` and formatted with the `buildRunSuitabilityErrors` function.
      *
      * @param {Object} state - The state object.
      * @returns {Object[]} The array of pools with the retrieved data.
      */
     poolsArray: (state) => {
-      return addUsedAliquotsBarcodeAndErrorsToPools(state)
+      return addUsedAliquotsAndErrorsToPools(state)
     },
   },
   actions: {
@@ -53,10 +51,9 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
       const promise = request.get({
         page,
         filter,
-        include: 'tube,used_aliquots.tag,used_aliquots.source,libraries.request',
+        include: 'used_aliquots.tag,used_aliquots.source,libraries.request',
         fields: {
           requests: 'sample_name',
-          tubes: 'barcode',
           tags: 'group_id',
         },
       })
@@ -64,11 +61,10 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
 
       const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
       if (success) {
-        const { tubes, aliquots, tags, requests, libraries } = groupIncludedByResource(included)
+        const { aliquots, tags, requests, libraries } = groupIncludedByResource(included)
 
         this.libraries = dataToObjectById({ data: libraries })
         this.pools = dataToObjectById({ data, includeRelationships: true })
-        this.tubes = dataToObjectById({ data: tubes })
         this.tags = dataToObjectById({ data: tags })
         this.requests = dataToObjectById({ data: requests })
         this.used_aliquots = dataToObjectById({ data: aliquots, includeRelationships: true })

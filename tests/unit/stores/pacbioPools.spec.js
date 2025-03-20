@@ -3,7 +3,7 @@ import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
-import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { addUsedAliquotsAndErrorsToPools } from '@/stores/utilities/pool.js'
 import { failedResponse } from '@support/testHelper.js'
 
 const pacbioPoolFactory = PacbioPoolFactory()
@@ -23,9 +23,7 @@ describe('usePacbioPools', () => {
       store.$state = pacbioPoolFactory.storeData
     })
     it('"poolsArrays" returns denormalized pools from "state.pools"', () => {
-      expect(store.poolsArray).toEqual(
-        addUsedAliquotsBarcodeAndErrorsToPools(pacbioPoolFactory.storeData),
-      )
+      expect(store.poolsArray).toEqual(addUsedAliquotsAndErrorsToPools(pacbioPoolFactory.storeData))
     })
   })
   describe('actions', () => {
@@ -43,7 +41,6 @@ describe('usePacbioPools', () => {
         get.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         await store.fetchPools()
         expect(store.pools).toEqual(pacbioPoolFactory.storeData.pools)
-        expect(store.tubes).toEqual(pacbioPoolFactory.storeData.tubes)
         expect(store.used_aliquots).toEqual(pacbioPoolFactory.storeData.used_aliquots)
         expect(store.tags).toEqual(pacbioPoolFactory.storeData.tags)
         expect(store.requests).toEqual(pacbioPoolFactory.storeData.requests)
