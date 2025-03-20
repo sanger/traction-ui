@@ -44,13 +44,10 @@ describe('Labware Reception page', () => {
 
     cy.wrap(pacbioLibraryFactory).as('pacbioLibraryFactory')
     cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
-      cy.intercept(
-        '/v1/pacbio/libraries?filter[barcode]=barcode1,barcode2&include=request,tag,tube',
-        {
-          statusCode: 200,
-          body: pacbioLibraryFactory.content,
-        },
-      )
+      cy.intercept('/v1/pacbio/libraries?filter[barcode]=barcode1,barcode2&include=request,tag', {
+        statusCode: 200,
+        body: pacbioLibraryFactory.content,
+      })
       cy.intercept('PATCH', '/v1/pacbio/libraries/722', {
         statusCode: 200,
         body: {

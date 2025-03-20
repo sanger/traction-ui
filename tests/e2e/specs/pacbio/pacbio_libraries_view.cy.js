@@ -9,7 +9,7 @@ describe('Pacbio Libraries view', () => {
     cy.wrap(PacbioLibraryFactory()).as('pacbioLibraryFactory')
 
     cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
-      cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag,tube', {
+      cy.intercept('/v1/pacbio/libraries?page[size]=25&page[number]=1&include=request,tag', {
         statusCode: 200,
         body: pacbioLibraryFactory.content,
       })

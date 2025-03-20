@@ -76,11 +76,9 @@ describe('usePacbioLibrariesStore', () => {
       const store = usePacbioLibrariesStore()
 
       store.$state = { ...pacbioLibraryFactory.storeData }
-      const { libraries, tubes, tags, requests } = pacbioLibraryFactory.storeData
+      const { libraries, tags, requests } = pacbioLibraryFactory.storeData
 
-      expect(store.librariesArray).toEqual(
-        formatAndTransformLibraries(libraries, tubes, tags, requests),
-      )
+      expect(store.librariesArray).toEqual(formatAndTransformLibraries(libraries, tags, requests))
     })
   })
   describe('actions', () => {
@@ -108,14 +106,13 @@ describe('usePacbioLibrariesStore', () => {
       })
       it('successfully', async () => {
         const mockResponse = successfulResponse({
-          data: {},
-          included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }],
+          data: { attributes: { barcode: 'TRAC-1' } },
         })
         create.mockResolvedValue(mockResponse)
         const { success, barcode } = await store.createLibrary(formLibrary)
         expect(create).toBeCalledWith({
           data: buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 }),
-          include: 'tube,primary_aliquot',
+          include: 'primary_aliquot',
         })
         expect(success).toBeTruthy()
         expect(barcode).toEqual('TRAC-1')
@@ -171,9 +168,6 @@ describe('usePacbioLibrariesStore', () => {
         const expectedLibrary = Object.values(pacbioLibraryFactory.storeData.libraries)[0]
 
         expect(store.libraries[expectedLibrary.id]).toEqual(expectedLibrary)
-        expect(store.tubes[expectedLibrary.tube]).toEqual(
-          pacbioLibraryFactory.storeData.tubes[expectedLibrary.tube],
-        )
         expect(store.tags[expectedLibrary.tag]).toEqual(
           pacbioLibraryFactory.storeData.tags[expectedLibrary.tag],
         )
@@ -184,7 +178,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(errors).toEqual([])
       })
 
-      it('when the library has no request, tube or tag', async () => {
+      it('when the library has no request, or tag', async () => {
         get.mockResolvedValue(pacbioLibraryWithoutRelationships.responses.fetch)
 
         const { success, errors } = await store.fetchLibraries()
@@ -192,7 +186,6 @@ describe('usePacbioLibrariesStore', () => {
           pacbioLibraryWithoutRelationships.storeData.libraries,
         )[0]
         expect(store.libraries[expectedLibrary.id]).toEqual(expectedLibrary)
-        expect(store.tubes).toEqual({})
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })

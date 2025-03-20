@@ -8,7 +8,7 @@ describe('Pacbio library creation from sample', () => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.wrap(PacbioRequestFactory({ includeRelationships: false })).as('pacbioRequestFactory')
-    cy.wrap(PacbioLibraryFactory()).as('pacbioLibraryFactory')
+    cy.wrap(PacbioLibraryFactory({ count: 1 })).as('pacbioLibraryFactory')
   })
 
   it('Visits the pacbio samples url', () => {
@@ -33,14 +33,17 @@ describe('Pacbio library creation from sample', () => {
       })
     })
 
-    // something not quite right here.
-    // we are not returning the primary aliquot plus we are hard coding the data.
-    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
-      cy.intercept('/v1/pacbio/libraries?include=tube,primary_aliquot', {
-        statusCode: 200,
-        body: pacbioLibraryFactory.content,
-      })
+    cy.intercept('/v1/pacbio/libraries?include=primary_aliquot', {
+      statusCode: 200,
+      body: {
+        data: {
+          attributes: {
+            barcode: 'TRAC-2-721',
+          },
+        },
+      },
     })
+
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')
     cy.get('#samples-table').first().click()
