@@ -12,12 +12,15 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+// import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory.js'
 import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
+// const ontAutoTagFactory = OntAutoTagFactory()
+
 // const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
@@ -588,6 +591,151 @@ describe('useOntPoolCreateStore', () => {
           expect(update).not.toHaveBeenCalled()
           expect(success).toBeFalsy()
           expect(errors).toEqual('The pool is invalid')
+        })
+      })
+
+      describe.skip('applyTags', () => {
+        // const state = ontAutoTagFactory.storeData
+        const library = { ont_request_id: '13', tag_id: '385' } // Starting in E2
+
+        it('applies a single tag when autoTag is false', async () => {
+          const commit = vi.fn()
+          const autoTag = false
+
+          await store.applyTags({ library, autoTag })
+          // Update the changed well
+          expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
+            ont_request_id: '13',
+            tag_id: '385',
+          })
+          // But nothing else
+          expect(commit).toHaveBeenCalledTimes(1)
+
+          // We don't update higher up requests
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({ ont_request_id: '3' }),
+          )
+        })
+
+        it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
+          const commit = vi.fn()
+          const autoTag = true
+
+          await store.applyTags({ library, autoTag })
+
+          // Update the changed well
+          expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
+            ont_request_id: '13',
+            tag_id: '385',
+          })
+
+          // We don't update earlier wells
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '3',
+            }),
+          )
+
+          // We don't update unselected wells
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '1', // A1
+            }),
+          )
+
+          // We update wells further down the plate
+          expect(commit).toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '14', //F2
+              tag_id: '386',
+            }),
+          )
+
+          // We update wells in the next column
+          expect(commit).toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '17', // A4
+              tag_id: '389',
+            }),
+          )
+
+          // But not another plate
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '61', //B1
+            }),
+          )
+
+          // or a tube
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '192', // a tube
+            }),
+          )
+
+          // In total we expect to update wells in this case
+          expect(commit).toHaveBeenCalledTimes(5)
+        })
+
+        it('applies tags to tubes with a higher index when autoTag is true', async () => {
+          const commit = vi.fn()
+          const autoTag = true
+          const library = { ont_request_id: '193', tag_id: '385' }
+
+          // const selectedRequests = Object.values(state.pooling.libraries).map(
+          //   ({ ont_request_id }) => state.resources.requests[ont_request_id],
+          // )
+
+          await store.applyTags({ library, autoTag })
+
+          // Update the changed tube request
+          expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
+            ont_request_id: '193',
+            tag_id: '385',
+          })
+
+          // We don't update earlier wells
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '13',
+            }),
+          )
+
+          // We don't update earlier tubes
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '192',
+            }),
+          )
+
+          // We don't update unselected wells
+          expect(commit).not.toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '1',
+            }),
+          )
+
+          // We do update tubes with higher ids
+          expect(commit).toHaveBeenCalledWith(
+            'updatePoolingLibrary',
+            expect.objectContaining({
+              ont_request_id: '194',
+              tag_id: '386',
+            }),
+          )
+
+          // In total we expect to update 2 tubes in this case
+          expect(commit).toHaveBeenCalledTimes(2)
         })
       })
     })

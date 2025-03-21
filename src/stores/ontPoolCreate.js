@@ -405,5 +405,9 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
     },
+
+    async applyTags() {
+      return {}
+    },
   },
 })

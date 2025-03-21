@@ -3,7 +3,7 @@ import { describe } from 'vitest'
 
 describe('wellHelpers', () => {
   describe('wellFor', () => {
-    it('returns the correct well for a given pacbio_request_id', () => {
+    it('returns the correct well for a given request_id', () => {
       const resources = {
         wells: {
           1: { id: '1', position: 'A1' },
@@ -21,7 +21,7 @@ describe('wellHelpers', () => {
       expect(result).toEqual({ id: '1', position: 'A1' })
     })
   })
-  describe('wellNmaeToCoordinate', () => {
+  describe('wellNameToCoordinate', () => {
     it('returns the correct coordinates for a given well position', () => {
       const result = wellNameToCoordinate('A1')
       expect(result).toEqual([0, 0])
