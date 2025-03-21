@@ -7,10 +7,21 @@
   >
     <div
       v-show="hover"
-      id="tooltip-text"
-      class="text-sm px-1 bg-yellow-400 text-gray-700 absolute rounded bg-opacity-75 shadow-xl left-0 top-[-25px] whitespace-nowrap"
+      id="tooltip"
+      :class="[
+        'text-sm px-1 absolute rounded shadow-xl left-0 top-[-25px] whitespace-nowrap z-50',
+        `${tooltipBgColour} ${tooltipTextColour}`,
+      ]"
     >
-      {{ tooltipText }}
+      <template v-if="tooltipText">
+        {{ tooltipText }}
+      </template>
+      <template v-else>
+        <slot name="tooltip">
+          <!-- Default content if no slot content or tooltipText is provided -->
+          No tooltip content available.
+        </slot>
+      </template>
     </div>
     <slot />
   </div>
@@ -22,7 +33,18 @@ import { ref } from 'vue'
 defineProps({
   tooltipText: {
     type: String,
-    required: true,
+    required: false,
+    default: '',
+  },
+  tooltipBgColour: {
+    type: String,
+    required: false,
+    default: 'bg-yellow-400',
+  },
+  tooltipTextColour: {
+    type: String,
+    required: false,
+    default: 'text-gray-700',
   },
 })
 

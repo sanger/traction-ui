@@ -43,6 +43,7 @@ function createPayload(run, pools) {
       attributes: {
         ont_instrument_id: instrument_id,
         state: run.state,
+        rebasecalling_process: run.rebasecalling_process,
         flowcell_attributes: flowcell_attributes,
       },
     },
@@ -55,6 +56,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       flowcell_attributes: [],
       id: 'new',
       state: null,
+      rebasecalling_process: null,
       instrument_name: null,
     },
     pools: {},
@@ -82,6 +84,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
         id: 'new',
         instrument_name: null,
         state: null,
+        rebasecalling_process: null,
         flowcell_attributes: [],
       }
     },
@@ -158,6 +161,9 @@ export const useOntRunsStore = defineStore('ontRuns', {
     },
     setState(state) {
       this.currentRun.state = state
+    },
+    setRebasecallingProcess(process) {
+      this.currentRun.rebasecalling_process = process
     },
     setNewFlowCell(position) {
       this.currentRun.flowcell_attributes.push({

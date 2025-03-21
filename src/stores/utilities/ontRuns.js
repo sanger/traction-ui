@@ -7,6 +7,7 @@ const buildFormatedOntRun = (instruments, pools, data, included) => {
     id: data.id,
     instrument_name: instrument_name,
     state: data.attributes.state,
+    rebasecalling_process: data.attributes.rebasecalling_process,
     flowcell_attributes: included
       .filter((item) => item.type === 'flowcells')
       .map((fc) => {
