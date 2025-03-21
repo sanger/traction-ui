@@ -75,7 +75,7 @@ export default {
         },
         {
           key: 'rebasecalling_process',
-          label: 'Rebasecalling Process',
+          label: 'Modified Basecalling Required',
           sortable: true,
           tdClass: 'instrument-name',
         },
