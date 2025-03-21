@@ -82,7 +82,12 @@ export default {
           (!fc.tube_barcode && !fc.flowcell_id)
         )
       })
-      return this.currentRun.instrument_name && this.currentRun.state && flowCellsValid && this.currentRun.rebasecalling_process
+      return (
+        this.currentRun.instrument_name &&
+        this.currentRun.state &&
+        this.currentRun.rebasecalling_process &&
+        flowCellsValid
+      )
     },
   },
   methods: {
