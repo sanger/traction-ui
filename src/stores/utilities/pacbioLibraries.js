@@ -37,6 +37,7 @@ const validateLibraryFields = (library) => {
 const formatAndTransformLibraries = (libraries, tags, requests) =>
   Object.values(libraries).map((library) => {
     const { id, request, tag_id, tag, ...attributes } = library
+    // TODO: Look into the below tag lines and see if they can be simplified
     const tagId = tag_id ?? tag
     const tagGroupId = tags[tagId] ? (tags[tagId].group_id ?? '') : ''
     return {

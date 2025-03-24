@@ -524,7 +524,6 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
      * Validates the used_aliquots before proceeding.
      * If the used_aliquots are not valid, returns an error response.
      * Otherwise, sends a request to create the pool and handles the response.
-     * Groups the included resources by type and extracts the barcode from the first tube.
      *
      * @async
      * @returns {Promise<Object>} A promise that resolves to an object containing the success status, barcode, and any errors.
