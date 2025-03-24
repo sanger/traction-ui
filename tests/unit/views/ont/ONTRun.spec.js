@@ -234,6 +234,7 @@ describe('ONTRun.vue', () => {
     it('returns true when all fields are valid', () => {
       ontRun.currentRun.instrument_name = '1'
       ontRun.currentRun.state = 'active'
+      ontRun.currentRun.rebasecalling_process = 'None'
       ontRun.currentRun.flowcell_attributes = [
         { position: '1', flowcell_id: 'ABC1234', tube_barcode: '123', errors: {} },
         // Empty flowcells are fine
