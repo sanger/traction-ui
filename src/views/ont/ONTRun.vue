@@ -74,6 +74,8 @@ export default {
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
+
+    // TO DO: move this to the currentRun in the store
     runValid() {
       const flowCellsValid = this.currentRun.flowcell_attributes?.every((fc) => {
         // If it has a tube barcode or flowcell id, it must have both and no errors
@@ -82,6 +84,7 @@ export default {
           (!fc.tube_barcode && !fc.flowcell_id)
         )
       })
+      // Check if all required fields are filled
       return (
         this.currentRun.instrument_name &&
         this.currentRun.state &&
