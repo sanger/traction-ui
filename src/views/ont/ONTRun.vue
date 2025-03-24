@@ -85,7 +85,7 @@ export default {
      * @name runValid
      * @description This method is used to validate the current run.
      * @returns {Boolean} - True if the run is valid
-     */ 
+     */
     runValid() {
       const flowCellsValid = this.currentRun.flowcell_attributes?.every((fc) => {
         // If it has a tube barcode or flowcell id, it must have both and no errors
