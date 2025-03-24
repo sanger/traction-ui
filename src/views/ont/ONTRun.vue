@@ -28,6 +28,11 @@
   </DataFetcher>
 </template>
 <script>
+/**
+ * @name ONTRun
+ * @description This component is used to display the form for creating a new ONT Run or editing an existing one.
+ * @param {Number|String} id - The id of the run to edit page
+ */
 import DataFetcher from '@/components/DataFetcher.vue'
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
@@ -76,6 +81,11 @@ export default {
     },
 
     // TO DO: move this to the currentRun in the store
+    /**
+     * @name runValid
+     * @description This method is used to validate the current run.
+     * @returns {Boolean} - True if the run is valid
+     */ 
     runValid() {
       const flowCellsValid = this.currentRun.flowcell_attributes?.every((fc) => {
         // If it has a tube barcode or flowcell id, it must have both and no errors
@@ -84,7 +94,7 @@ export default {
           (!fc.tube_barcode && !fc.flowcell_id)
         )
       })
-      // Check if all required fields are filled
+
       return (
         this.currentRun.instrument_name &&
         this.currentRun.state &&
