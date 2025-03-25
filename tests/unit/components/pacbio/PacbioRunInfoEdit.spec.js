@@ -62,7 +62,6 @@ describe('PacbioRunInfoEdit', () => {
             name: 'TRACTION-RUN-3',
             system_name: 'Revio',
             dna_control_complex_box_barcode: null,
-            comments: null,
           },
           smrtLinkVersion: smrtLinkVersions[5],
           resources: { smrtLinkVersions },
@@ -159,12 +158,6 @@ describe('PacbioRunInfoEdit', () => {
       await options[1].setSelected()
       expect(store.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
     })
-
-    it('comments', async () => {
-      const input = wrapper.find('[data-attribute=comments]')
-      await input.setValue('example comment')
-      expect(store.run.comments).toEqual('example comment')
-    })
   })
 })
 
@@ -178,7 +171,6 @@ describe('PacbioRunInfoEdit old run', () => {
             name: 'TRACTION-RUN-4',
             system_name: 'Sequel I',
             dna_control_complex_box_barcode: null,
-            comments: null,
           },
           smrtLinkVersion: smrtLinkVersions[4],
           resources: { smrtLinkVersions },

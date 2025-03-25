@@ -22,7 +22,6 @@ const runAttributes = () => {
     id: 'new',
     system_name: 'Revio',
     dna_control_complex_box_barcode: null,
-    comments: null,
   }
 }
 
@@ -203,8 +202,14 @@ const createWellsPayload = (wells) => {
  */
 const removeReadOnlyAttributes = (run) => {
   // Removes read only attributes
-  // eslint-disable-next-line no-unused-vars
-  const { adaptive_loading, sequencing_kit_box_barcodes, ...filteredRun } = run
+  /* eslint-disable no-unused-vars */
+  const {
+    adaptive_loading,
+    sequencing_kit_box_barcodes,
+    barcodes_and_concentrations,
+    ...filteredRun
+  } = run
+  /* eslint-enable no-unused-vars */
 
   return filteredRun
 }

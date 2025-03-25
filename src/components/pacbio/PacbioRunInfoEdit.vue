@@ -56,16 +56,17 @@
       </traction-field-group>
 
       <traction-field-group
-        label="Comments"
-        for="comments"
+        label="Barcodes and Concentrations"
+        for="barcodes-and-concentrations"
         description="Barcodes & concentrations are automatically appended"
       >
         <traction-input
-          id="comments"
-          v-model="store.run.comments"
-          placeholder="Comments"
+          id="barcodes-and-concentrations"
+          v-model="store.run.barcodes_and_concentrations"
+          placeholder="Barcodes and Concentrations"
           type="text"
-          data-attribute="comments"
+          data-attribute="barcodes-and-concentrations"
+          readonly
         />
       </traction-field-group>
     </traction-section>
