@@ -51,6 +51,7 @@ describe('ONT Run page', () => {
 
     cy.get('#instrument-selection').select('GXB02004')
     cy.get('#state-selection').select('Pending')
+    cy.get('#rebasecalling-selection').select('None')
 
     cy.get('#flowcell-id-1').type('ABC123')
     cy.get('#pool-id-1').type('TRAC-2-42')
@@ -77,6 +78,7 @@ describe('ONT Run page', () => {
 
     cy.get('#instrument-selection').select('GXB02004')
     cy.get('#state-selection').select('Pending')
+    cy.get('#rebasecalling-selection').select('None')
 
     cy.get('#flowcell-id-1').type('123ABC')
     cy.contains('Enter a valid Flowcell ID (3 letters then at least 3 numbers)')
@@ -98,6 +100,7 @@ describe('ONT Run page', () => {
 
     cy.get('#instrument-selection').select('GXB02004')
     cy.get('#state-selection').select('Pending')
+    cy.get('#rebasecalling-selection').select('None')
 
     cy.get('#flowcell-id-1').type('ABC123')
     cy.get('#pool-id-1').type('TRAC-2-42')

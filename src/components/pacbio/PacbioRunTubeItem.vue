@@ -109,17 +109,14 @@ import TractionBadge from '@/components/shared/TractionBadge.vue'
 const props = defineProps({
   id: {
     type: String,
-    required: true,
     default: '',
   },
   type: {
     type: String,
-    required: true,
     default: '',
   },
   barcode: {
     type: String,
-    required: true,
     default: '',
   },
   samples: {

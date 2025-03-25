@@ -50,7 +50,6 @@ const props = defineProps({
   },
   interactive: {
     type: Boolean,
-    required: true,
     default: true,
   },
 })

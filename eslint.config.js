@@ -1,28 +1,22 @@
+// This is the main configuration file for ESLint. It is a JavaScript file that exports an ESLint configuration object.
+// https://eslint.org/docs/user-guide/configuring
 import pluginVue from 'eslint-plugin-vue'
 import js from '@eslint/js'
-import eslintConfigPrettier from 'eslint-config-prettier'
 import globals from 'globals'
+import eslintConfigPrettier from 'eslint-config-prettier'
+import { defineConfig } from 'eslint/config'
 
-export default [
+export default defineConfig([
   ...pluginVue.configs['flat/recommended'],
   js.configs.recommended,
   eslintConfigPrettier,
   {
     files: ['**/*.js,**/*.vue,**/*.cjs'],
-    rules: {
-      'no-console': 'off', // It may be worth re-enabling this is we add proper error logging
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-      'prefer-const': [
-        'error',
-        {
-          destructuring: 'all',
-        },
-      ],
-      'vue/no-v-model-argument': 'off',
-    },
+    // removed rules that seem to have no effect
+    rules: {},
   },
   {
-    ignores: ['dist/**/*.js', 'docs/**/*.js'],
+    ignores: ['dist/**/*.js', 'docs/**/*.js', 'documentation/**/*.js'],
   },
   {
     languageOptions: {
@@ -30,7 +24,10 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.node,
+        // TODO: we are using vitest and there is a plugin e.g. it, expect, describe
         ...globals.jest,
+        // e.g. document, alert, window
+        ...globals.browser,
         // Global vitest and Cypress variables so they don't violate no-undef
         vi: 'readonly',
         cy: 'readonly',
@@ -38,4 +35,4 @@ export default [
       },
     },
   },
-]
+])

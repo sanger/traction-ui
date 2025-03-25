@@ -6,80 +6,84 @@
         <traction-select
           id="instrument-selection"
           :options="instrumentOptions"
-          :model-value="instrumentName"
+          :model-value="currentRun.instrument_name"
           :disabled="!newRecord"
           @update:model-value="setInstrumentName"
         ></traction-select>
       </div>
+
       <div class="flex flex-col gap-y-2 items-start">
-        <label label-for="instrument-selection"> State </label>
+        <label label-for="state-selection"> State </label>
         <traction-select
           id="state-selection"
           :options="stateOptions"
-          :model-value="state"
+          :model-value="currentRun.state"
           @update:model-value="setState"
+        ></traction-select>
+      </div>
+
+      <div class="flex flex-col gap-y-2 items-start">
+        <label label-for="rebasecalling-selection"> Modified Basecalling Required </label>
+        <traction-select
+          id="rebasecalling-selection"
+          :options="rebasecallingOptions"
+          :model-value="currentRun.rebasecalling_process"
+          @update:model-value="setRebasecallingProcess"
         ></traction-select>
       </div>
     </div>
   </traction-section>
 </template>
 
-<script>
-import { mapState, mapActions } from 'pinia'
+<script setup>
+import { computed } from 'vue'
 import { useOntRunsStore } from '@/stores/ontRuns'
 import useOntRootStore from '@/stores/ontRoot'
 
-/**
- * # ONTRunInformation
- *
- * Displays an information panel allowing the user to select an instrument and state for the run.
- */
-export default {
-  name: 'ONTRunInformation',
-  data() {
-    return {
-      statesList: ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart'],
-    }
-  },
-  computed: {
-    ...mapState(useOntRootStore, ['instruments']),
-    ...mapState(useOntRunsStore, ['currentRun']),
-    instrumentName() {
-      //This is to keep instrumentName in sync with the Pinia store state  (option api way)
-      const ontRunsStore = useOntRunsStore()
-      return ontRunsStore.currentRun.instrument_name
-    },
-    state() {
-      //This is to keep currentRun.state in sync with the Pinia store state  (option api way)
-      const ontRunsStore = useOntRunsStore()
-      return ontRunsStore.currentRun.state
-    },
+// Initialize stores
+const ontRunsStore = useOntRunsStore()
+const ontRootStore = useOntRootStore()
 
-    instrumentOptions() {
-      const options = this.instruments.map((instrument) => ({
-        value: instrument.name,
-        text: instrument.name,
-      }))
+const { instruments } = ontRootStore
+const { setInstrumentName, setState, setRebasecallingProcess, currentRun } = ontRunsStore
 
-      return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
-    },
-    stateOptions() {
-      const options = this.statesList.map((state) => ({
-        value: this.formatState(state),
-        text: state,
-      }))
+// Static lists
+const statesList = ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart']
+const rebasecallingList = [
+  'None',
+  '5mC and 5hmC (CG-context)',
+  '5mC and 5hmC (all contexts)',
+  '6mA (all contexts)',
+  '5mC, 5hmC and 6mA (all contexts)',
+  '5mC and 5hmC (CG-context) and 6mA (all contexts)',
+]
 
-      return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
-    },
-    newRecord() {
-      return isNaN(this.currentRun.id)
-    },
-  },
-  methods: {
-    formatState(str) {
-      return str.replace(/\s+/g, '_').toLowerCase()
-    },
-    ...mapActions(useOntRunsStore, ['setInstrumentName', 'setState']),
-  },
-}
+const instrumentOptions = computed(() => [
+  { value: null, text: 'Please select an instrument', disabled: true },
+  ...instruments.map((instrument) => ({
+    value: instrument.name,
+    text: instrument.name,
+  })),
+])
+
+const stateOptions = computed(() => [
+  { value: null, text: 'Please select a state', disabled: true },
+  ...statesList.map((state) => ({
+    value: formatState(state),
+    text: state,
+  })),
+])
+
+const rebasecallingOptions = computed(() => [
+  { value: null, text: 'Please select a rebasecalling process', disabled: true },
+  ...rebasecallingList.map((rebasecalling) => ({
+    value: rebasecalling,
+    text: rebasecalling,
+  })),
+])
+
+const newRecord = computed(() => isNaN(ontRunsStore.currentRun.id))
+
+// Helper function to format state values
+const formatState = (str) => str.replace(/\s+/g, '_').toLowerCase()
 </script>
