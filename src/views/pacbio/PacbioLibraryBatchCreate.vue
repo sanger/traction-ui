@@ -96,7 +96,7 @@
             </div>
             <div class="flex flex-row px-4 space-x-2 h-2">
               <div
-               v-if="isCreationInProgress"
+                v-if="isCreationInProgress"
                 id="progress-indicator"
                 class="flex flex-row items-center"
               >
