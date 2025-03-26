@@ -220,10 +220,6 @@ describe('pacbioPoolEdit#edit', () => {
     concentration: 2.4,
     insert_size: 100,
     used_volume: 2,
-  }
-
-  const tube = {
-    id: '1',
     barcode: 'TRAC-1',
   }
 
@@ -231,7 +227,7 @@ describe('pacbioPoolEdit#edit', () => {
 
   beforeEach(() => {
     ;({ wrapper, store } = mountPacbioPoolEdit({
-      state: { pool, tube, used_aliquots: {} },
+      state: { pool, used_aliquots: {} },
     }))
   })
 
@@ -303,8 +299,8 @@ describe('pacbioPoolEdit#edit', () => {
     })
   })
 
-  describe('tube', () => {
-    it('barcode', async () => {
+  describe('pool barcode', () => {
+    it('is present', async () => {
       const barcode = wrapper.find('[data-attribute=barcode]')
       expect(barcode.text()).toContain('TRAC-1')
     })

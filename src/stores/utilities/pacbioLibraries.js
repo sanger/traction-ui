@@ -30,28 +30,24 @@ const validateLibraryFields = (library) => {
  * Formats and transforms libraries.
  *
  * @param {Object} libraries - The libraries to format and transform.
- * @param {Object} tubes - The tubes associated with the libraries.
  * @param {Object} tags - The tags associated with the libraries.
  * @param {Object} requests - The requests associated with the libraries.
  * @returns {Array<Object>} - The formatted and transformed libraries.
  */
-const formatAndTransformLibraries = (libraries, tubes, tags, requests) =>
-  Object.values(libraries)
-    .filter((library) => library.tube)
-    .map((library) => {
-      const { id, request, tag_id, tag, tube, ...attributes } = library
-      const tagId = tag_id ?? tag
-      const tagGroupId = tags[tagId] ? (tags[tagId].group_id ?? '') : ''
-      return {
-        id,
-        tag_id: String(tagId),
-        tube,
-        ...attributes,
-        tag_group_id: tagGroupId,
-        sample_name: requests[request]?.sample_name,
-        barcode: tubes[tube]?.barcode,
-      }
-    })
+const formatAndTransformLibraries = (libraries, tags, requests) =>
+  Object.values(libraries).map((library) => {
+    const { id, request, tag_id, tag, ...attributes } = library
+    // TODO: Look into the below tag lines and see if they can be simplified
+    const tagId = tag_id ?? tag
+    const tagGroupId = tags[tagId] ? (tags[tagId].group_id ?? '') : ''
+    return {
+      id,
+      tag_id: String(tagId),
+      ...attributes,
+      tag_group_id: tagGroupId,
+      sample_name: requests[request]?.sample_name,
+    }
+  })
 
 /**
  * Exhausts the volume of a library.

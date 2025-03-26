@@ -106,15 +106,13 @@ describe('Pacbio Pool Create', () => {
         })
     })
 
-    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools', {
       statusCode: 201,
       body: {
         data: {
-          pool: {
+          attributes: {
             id: '1',
-            tube: {
-              barcode: 'TRAC-1',
-            },
+            barcode: 'TRAC-1',
           },
         },
       },
@@ -156,7 +154,7 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools', {
       statusCode: 422,
       body: {
         errors: {
@@ -243,15 +241,13 @@ describe('Pacbio Pool Create', () => {
         .should('have.value', tagList[1].id)
     })
 
-    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools', {
       statusCode: 201,
       body: {
         data: {
-          pool: {
+          attributes: {
             id: '1',
-            tube: {
-              barcode: 'TRAC-1',
-            },
+            barcode: 'TRAC-1',
           },
         },
       },
@@ -317,15 +313,13 @@ describe('Pacbio Pool Create', () => {
         .should('have.value', tagList[1].id)
     })
 
-    cy.intercept('POST', '/v1/pacbio/pools?include=tube', {
+    cy.intercept('POST', '/v1/pacbio/pools', {
       statusCode: 201,
       body: {
         data: {
-          pool: {
+          attributes: {
             id: '1',
-            tube: {
-              barcode: 'TRAC-1',
-            },
+            barcode: 'TRAC-1',
           },
         },
       },

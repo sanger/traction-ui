@@ -36,27 +36,26 @@ describe('PacbioLibrary', () => {
     it('calls the api to fetch libraries with default includea', async () => {
       const fetchOptions = { filter: { source_identifier: 'sample1' } }
       await getPacbioLibraryResources(fetchOptions)
-      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'request,tag,tube' })
+      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'request,tag' })
     })
 
     it('calls the api to fetch libraries with custom includes along with default includes', async () => {
       const fetchOptions = { include: 'test' }
       await getPacbioLibraryResources(fetchOptions)
-      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'test,request,tag,tube' })
+      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'test,request,tag' })
     })
     it('calls api to fetch libraries with joined includes if custom includes includes default values', async () => {
-      const fetchOptions = { include: 'request,tag,tube,test' }
+      const fetchOptions = { include: 'request,tag,test' }
       await getPacbioLibraryResources(fetchOptions)
-      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'request,tag,tube,test' })
+      expect(get).toHaveBeenCalledWith({ ...fetchOptions, include: 'request,tag,test' })
     })
 
     it('calls api successfully', async () => {
       get.mockResolvedValue(pacbioLibraryFactory.responses.fetch)
-      const { success, errors, libraries, tubes, requests } = await getPacbioLibraryResources()
+      const { success, errors, libraries, requests } = await getPacbioLibraryResources()
       expect(success).toEqual(true)
       expect(errors).toEqual([])
       expect(libraries).toEqual(pacbioLibraryFactory.storeData.libraries)
-      expect(tubes).toEqual(pacbioLibraryFactory.storeData.tubes)
       expect(requests).toEqual(pacbioLibraryFactory.storeData.requests)
     })
 
@@ -80,7 +79,6 @@ describe('PacbioLibrary', () => {
       const libraryFields = {
         id: 1,
         tag_id: 1,
-        tube: 1,
         concentration: 1,
         volume: 1,
         insert_size: 1,
@@ -95,7 +93,6 @@ describe('PacbioLibrary', () => {
       const libraryFields = {
         id: 1,
         tag_id: 1,
-        tube: 1,
         concentration: 1,
         volume: 1,
         insert_size: 1,

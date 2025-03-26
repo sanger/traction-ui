@@ -6,7 +6,7 @@ import {
   assignRequestIdsToTubes,
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
-  addUsedAliquotsBarcodeAndErrorsToPools,
+  addUsedAliquotsAndErrorsToPools,
 } from '@/stores/utilities/pool'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -364,23 +364,6 @@ describe('pool', () => {
 
     const tubes = [
       {
-        id: '12066',
-        type: 'tubes',
-        attributes: {
-          barcode: 'TRAC-2-12066',
-        },
-        relationships: {
-          pools: {
-            data: [
-              {
-                type: 'pools',
-                id: '6011',
-              },
-            ],
-          },
-        },
-      },
-      {
         id: '11877',
         type: 'tubes',
         attributes: {
@@ -731,6 +714,7 @@ describe('pool', () => {
           used_aliquots: ['1', '3'],
           tube: '1',
           type: 'pools',
+          barcode: 'TRAC-2-1',
           source_identifier: 'DN1:A1',
           run_suitability: {
             ready_for_run: true,
@@ -826,7 +810,7 @@ describe('pool', () => {
       expect(createUsedAliquotsFromState({ pool: state.pools[1], state })).toEqual(expected)
     })
 
-    it('#addUsedAliquotsBarcodeAndErrorsToPools - will produce the correct pools', () => {
+    it('#addUsedAliquotsAndErrorsToPools - will produce the correct pools', () => {
       const expected = [
         {
           2: {
@@ -861,7 +845,7 @@ describe('pool', () => {
           barcode: 'TRAC-2-1',
         },
       ]
-      expect(addUsedAliquotsBarcodeAndErrorsToPools(state)).toEqual(expected)
+      expect(addUsedAliquotsAndErrorsToPools(state)).toEqual(expected)
     })
   })
 })

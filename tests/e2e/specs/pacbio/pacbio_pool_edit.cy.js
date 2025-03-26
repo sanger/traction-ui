@@ -19,7 +19,7 @@ describe('Pacbio Pool Edit', () => {
     cy.get('@pacbioPoolFactory').then((pacbioPoolFactory) => {
       cy.intercept(
         'GET',
-        'v1/pacbio/pools?page[size]=25&page[number]=1&include=tube,used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id',
+        'v1/pacbio/pools?page[size]=25&page[number]=1&include=used_aliquots.tag,used_aliquots.source,libraries.request&fields[requests]=sample_name&fields[tags]=group_id',
         {
           statusCode: 200,
           body: pacbioPoolFactory.content,
@@ -37,7 +37,7 @@ describe('Pacbio Pool Edit', () => {
     cy.wrap(PacbioPoolFactory({ count: 1 })).as('pacbioPoolFactoryForSinglePool')
     cy.get('@pacbioPoolFactoryForSinglePool').then((pacbioPoolFactoryForSinglePool) => {
       cy.intercept(
-        'v1/pacbio/pools/6011?include=used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
+        'v1/pacbio/pools/6011?include=used_aliquots.tag.tag_set,requests.tube,libraries.tube,libraries.request,requests.plate.wells.requests',
         {
           statusCode: 200,
           body: pacbioPoolFactoryForSinglePool.content,
@@ -49,7 +49,7 @@ describe('Pacbio Pool Edit', () => {
     cy.get('@pacbioPoolFactoryForSinglePoolWithPlate').then(
       (pacbioPoolFactoryForSinglePoolWithPlate) => {
         cy.intercept(
-          'v1/pacbio/pools/15?include=used_aliquots.tag.tag_set,requests.tube,tube,libraries.tube,libraries.request,requests.plate.wells.requests',
+          'v1/pacbio/pools/15?include=used_aliquots.tag.tag_set,requests.tube,libraries.tube,libraries.request,requests.plate.wells.requests',
           {
             statusCode: 200,
             body: pacbioPoolFactoryForSinglePoolWithPlate.content,
