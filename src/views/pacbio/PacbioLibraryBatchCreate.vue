@@ -362,6 +362,7 @@ const createLibraryBatch = async () => {
   )
   if (success) {
     state.resultData = result
+    // Clear the csv file input, so that 'Create Libraries' button is disabled
     selectedCSVFile.value = ''
   } else {
     showAlert(errors, 'danger')
