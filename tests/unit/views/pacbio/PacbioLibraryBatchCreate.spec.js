@@ -68,6 +68,8 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       expect(createBtn.exists()).toBe(true)
       expect(createBtn.element.disabled).toBe(true)
 
+      expect(wrapper.find('#progress-indicator').exists()).toBe(false)
+
       const createdLibaries = wrapper.find('div[data-type="created-libraries"]')
       expect(createdLibaries.text()).toBe('No Libraries Created Yet')
 
@@ -213,7 +215,13 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       })
 
       wrapper.find('#create').trigger('click')
+      // Assert that the progress indicator is visible while the creation is in progress
+      expect(wrapper.vm.isCreationInProgress).toBe(true)
+
       await flushPromises()
+      // Assert that the progress indicator is visible while the creation is in progress
+      expect(wrapper.vm.isCreationInProgress).toBe(false)
+
       expect(wrapper.vm.state.resultData).toEqual(expectedResult)
 
       // Check the created libraries

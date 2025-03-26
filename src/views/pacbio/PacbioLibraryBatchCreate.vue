@@ -94,6 +94,16 @@
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>
             </div>
+            <div class="flex flex-row px-4 space-x-2 h-2">
+              <div
+               v-if="isCreationInProgress"
+                id="progress-indicator"
+                class="flex flex-row items-center"
+              >
+                <label class="text-md text-blue-400">Creating Libraries...</label>
+                <traction-spinner classes="h-6 w-6" />
+              </div>
+            </div>
             <div class="flex flex-row space-x-8 py-4 px-4">
               <traction-button id="reset" theme="reset" data-action="reset-form" @click="onReset">
                 Reset
@@ -253,10 +263,13 @@ async function fetchData() {
 }
 
 const selectedCSVFile = ref('') //Reference to the selected csv file
+const isCreationInProgress = ref(false) //Flag to indicate if library creation is in progress
 
 const isDisabledCSVPreview = computed(() => !state.csvData.length)
 
-const isCreateDisabled = computed(() => !selectedTagSet.value || !selectedCSVFile.value)
+const isCreateDisabled = computed(
+  () => !selectedTagSet.value || !selectedCSVFile.value || isCreationInProgress.value,
+)
 
 const printBarcodes = computed(() => state.resultData.map((item) => item.barcode))
 
@@ -341,17 +354,20 @@ const createLibraryBatch = async () => {
     showAlert('Please select a tag set', 'danger')
     return
   }
+  //Set the flag to indicate that library creation is in progress so that the 'Create Libraries' button is disabled
+  isCreationInProgress.value = true
   const { success, errors, result } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
     selectedCSVFile.value,
     selectedTagSetName,
   )
   if (success) {
     state.resultData = result
-    // Clear the csv file input, so that 'Create Libraries' button is disabled
     selectedCSVFile.value = ''
   } else {
     showAlert(errors, 'danger')
   }
+  //Reset the flag
+  isCreationInProgress.value = false
 }
 
 /**
