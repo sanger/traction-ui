@@ -94,15 +94,12 @@
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>
             </div>
-            <div class="flex flex-row px-4 space-x-2 h-2">
-              <div
-                v-if="isCreationInProgress"
-                id="progress-indicator"
-                class="flex flex-row items-center"
-              >
-                <label class="text-md text-blue-400">Creating Libraries...</label>
-                <traction-spinner classes="h-6 w-6" />
-              </div>
+            <div
+              v-if="isCreationInProgress"
+              class="flex flex-row px-4 space-x-2 h-2 text-md text-blue-400"
+              data-testid="progress-indicator"
+            >
+              Library creation in progress...
             </div>
             <div class="flex flex-row space-x-8 py-4 px-4">
               <traction-button id="reset" theme="reset" data-action="reset-form" @click="onReset">
@@ -114,9 +111,11 @@
                 full-width
                 theme="create"
                 data-action="create-libraries"
+                class="space-x-2"
                 @click="createLibraryBatch"
               >
-                Create Libraries
+                <span class="button-text">Create Libraries </span>
+                <traction-spinner v-show="isCreationInProgress"></traction-spinner>
               </traction-button>
             </div>
 

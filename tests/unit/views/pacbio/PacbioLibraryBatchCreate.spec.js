@@ -68,7 +68,7 @@ describe('PacbioLibraryBatchCreate.vue', () => {
       expect(createBtn.exists()).toBe(true)
       expect(createBtn.element.disabled).toBe(true)
 
-      expect(wrapper.find('#progress-indicator').exists()).toBe(false)
+      expect(wrapper.find('[data-testid=progress-indicator]').exists()).toBe(false)
 
       const createdLibaries = wrapper.find('div[data-type="created-libraries"]')
       expect(createdLibaries.text()).toBe('No Libraries Created Yet')
