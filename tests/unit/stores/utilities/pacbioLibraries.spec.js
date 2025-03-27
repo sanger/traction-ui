@@ -23,15 +23,9 @@ describe('pacbioLibraries', () => {
           id: 1,
           request: 1,
           tag_id: 1,
-          tube: 1,
           concentration: 1,
           volume: 1,
           insert_size: 1,
-        },
-      }
-      const tubes = {
-        1: {
-          id: 1,
           barcode: 'tube1',
         },
       }
@@ -48,12 +42,11 @@ describe('pacbioLibraries', () => {
           sample_name: 'request1',
         },
       }
-      const formattedLibraries = formatAndTransformLibraries(libraries, tubes, tags, requests)
+      const formattedLibraries = formatAndTransformLibraries(libraries, tags, requests)
       expect(formattedLibraries).toEqual([
         {
           id: 1,
           tag_id: '1',
-          tube: 1,
           concentration: 1,
           volume: 1,
           insert_size: 1,
@@ -75,7 +68,6 @@ describe('pacbioLibraries', () => {
       const libraryFields = {
         id: 1,
         tag_id: 1,
-        tube: 1,
         concentration: 1,
         volume: 1,
         insert_size: '',
@@ -89,7 +81,6 @@ describe('pacbioLibraries', () => {
       const libraryFields = {
         id: 1,
         tag_id: 1,
-        tube: 1,
         concentration: 1,
         volume: 0,
         insert_size: 1,
@@ -102,7 +93,6 @@ describe('pacbioLibraries', () => {
       const libraryFields = {
         id: 1,
         tag_id: 1,
-        tube: 1,
         concentration: 1,
         volume: 1,
         insert_size: 1,
@@ -116,7 +106,6 @@ describe('pacbioLibraries', () => {
       const libraryFields = {
         id: 1,
         tag_id: null,
-        tube: 1,
         concentration: 1,
         volume: 1,
         insert_size: 1,

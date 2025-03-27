@@ -43,7 +43,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
   })
   describe('exhausted badge display', () => {

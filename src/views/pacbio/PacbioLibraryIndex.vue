@@ -21,7 +21,7 @@
         <!-- Confirmation Modal -->
         <div
           v-if="showConfirmationModal"
-          class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50"
+          class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 z-1"
         >
           <div class="bg-white p-6 rounded shadow-lg">
             <p class="mb-4">Are you sure you want to delete the selected libraries?</p>

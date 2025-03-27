@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import useRootStore from '@/stores/index.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
-import { groupIncludedByResource } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import {
   getPacbioLibraryResources,
@@ -26,10 +25,6 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      */
     libraries: {},
     /**
-     * @property {Object} tubes - An object to store all tubes from all libraries indexed by id.
-     */
-    tubes: {},
-    /**
      * @property {Object} requests - An object to store all requests from all libraries indexed by id.
      */
     requests: {},
@@ -44,7 +39,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * Transforms the libraries in the state into an array with additional properties.
      *
      * @function librariesArray
-     * @param {Object} state - The state object containing libraries, tags, requests, and tubes.
+     * @param {Object} state - The state object containing libraries, tags and requests.
      * @returns {Array<Object>} - An array of library objects, each with id, tag_group_id, sample_name, barcode, and other attributes.
      */
     librariesArray: (state) => {
@@ -58,7 +53,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
           Hence, a search in both places is required to ensure that librariesArray returns the correct tag 
           associated with all libraries."*/
       const tags = { ...state.tags, ...pacbioRootStore.tags }
-      return formatAndTransformLibraries(state.libraries, state.tubes, tags, state.requests)
+      return formatAndTransformLibraries(state.libraries, tags, state.requests)
     },
   },
   actions: {
@@ -92,12 +87,11 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
 
       const promise = request.create({
         data: payload,
-        include: 'tube,primary_aliquot',
+        include: 'primary_aliquot',
       })
 
-      const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
-      const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
-      const { attributes: { barcode = '' } = {} } = tube
+      const { success, body: { data = {} } = {}, errors } = await handleResponse(promise)
+      const { attributes: { barcode = '' } = {} } = data
       return { success, barcode, errors }
     },
 
@@ -124,13 +118,12 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
      * @returns {Promise<{success: boolean, errors: Array}>} - A promise that resolves to an object containing a success boolean and an array of errors.
      */
     async fetchLibraries(filterOptions) {
-      const { success, data, meta, errors, libraries, tubes, tags, requests } =
+      const { success, data, meta, errors, libraries, tags, requests } =
         await getPacbioLibraryResources({
           ...filterOptions,
         })
       if (success && data.length > 0) {
         this.libraries = libraries
-        this.tubes = tubes
         this.tags = tags
         this.requests = requests
       }

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="bg-black fixed inset-0 py-24 bg-opacity-75 select-none"
+    class="bg-black/75 fixed inset-0 py-24 select-none"
     data-type="loading-full-screen-modal"
   >
     <div class="flex flex-col h-full items-center justify-center">
