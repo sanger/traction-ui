@@ -8,12 +8,11 @@ import { groupIncludedByResource, dataToObjectById } from '../../src/api/JsonApi
  * @description A function that creates an object with the libraries, tubes, tags, and requests data.
  */
 const createStoreData = ({ data, included }) => {
-  const { tubes, tags, requests } = groupIncludedByResource(included)
+  const { tags, requests } = groupIncludedByResource(included)
   const libraries = dataToObjectById({ data, includeRelationships: true })
 
   return {
     libraries,
-    tubes: dataToObjectById({ data: tubes }),
     tags: dataToObjectById({ data: tags }),
     requests: dataToObjectById({ data: requests }),
   }
@@ -47,6 +46,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
             ready_for_run: true,
             errors: [],
           },
+          barcode: 'TRAC-2-721',
         },
         relationships: {
           request: {
@@ -79,12 +79,6 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
               id: '1',
             },
           },
-          tube: {
-            data: {
-              type: 'tubes',
-              id: '721',
-            },
-          },
         },
       },
       {
@@ -106,6 +100,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
             ready_for_run: true,
             errors: [],
           },
+          barcode: 'TRAC-2-722',
         },
         relationships: {
           request: {
@@ -138,12 +133,6 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
               id: '2',
             },
           },
-          tube: {
-            data: {
-              type: 'tubes',
-              id: '722',
-            },
-          },
         },
       },
       {
@@ -165,6 +154,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
             ready_for_run: true,
             errors: [],
           },
+          barcode: 'TRAC-2-723',
         },
         relationships: {
           request: {
@@ -218,6 +208,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
             ready_for_run: true,
             errors: [],
           },
+          barcode: 'TRAC-2-724',
         },
         relationships: {
           request: {
@@ -271,6 +262,7 @@ const PacbioLibraryFactory = ({ relationships = true, exhausted = false } = {}) 
             ready_for_run: true,
             errors: [],
           },
+          barcode: 'TRAC-2-725',
         },
         relationships: {
           request: {
