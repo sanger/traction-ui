@@ -115,7 +115,6 @@ const payload = ({ libraries, pool }) => {
  * the initial library's well index and assigns a tag from the selected tag set
  * using a modulo operation to ensure tags wrap around if necessary.
  * The tags are only assigned to libraries on the same plate as the initial library.
- *
  * - Tags are only assigned to libraries on the same plate as the initial library.
  * - Libraries with a negative or zero offset are skipped.
  */
@@ -126,13 +125,15 @@ const autoTagPlate = ({ wells, requests, tagSets, library, selectedTagSet, libra
   const tags = tagSets[selectedTagSet.id].tags
   const initialTagIndex = tags.indexOf(library.tag_id)
   const plate = initialWell.plate
-  //sort object based on keys
 
   return Object.keys(libraries).reduce((result, key) => {
     const otherWell = wellFor(wellRequestObject, libraries[key].ont_request_id)
 
     // Skip if the library is not on the same plate
-    if (otherWell?.plate !== plate) result[key] = { ...libraries[key] }
+    if (otherWell?.plate !== plate) {
+      result[key] = { ...libraries[key] }
+      return result
+    }
 
     // Calculate the offset of the library's well index from the initial library's well index
     const offset = wellToIndex(otherWell) - initialIndex
