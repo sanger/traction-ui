@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validate, valid, payload } from '@/stores/utilities/ontPool.js'
+import { validate, valid, payload, autoTagPlate } from '@/stores/utilities/ontPool.js'
 
 describe('ontPool.js', () => {
   describe('validate', () => {
@@ -104,6 +104,115 @@ describe('ontPool.js', () => {
           },
         },
       })
+    })
+  })
+
+  describe('autoTagPlate', () => {
+    it('assigns unique tags to libraries on the same plate based on their positions', () => {
+      const wells = {
+        1: { plate: 1, position: 'A1' },
+        2: { plate: 1, position: 'B1' },
+        3: { plate: 1, position: 'C1' },
+      }
+      const requests = {
+        1: { id: 1, well: 1 },
+        2: { id: 2, well: 2 },
+        3: { id: 3, well: 3 },
+      }
+      const tagSets = {
+        1: { tags: [101, 102, 103] },
+      }
+      const library = { ont_request_id: 1, tag_id: 101 }
+      const selectedTagSet = { id: 1 }
+      const libraries = {
+        1: { ont_request_id: 1, tag_id: 101 },
+        2: { ont_request_id: 2 },
+        3: { ont_request_id: 3 },
+      }
+
+      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+      expect(result[2].tag_id).toBe(102)
+      expect(result[3].tag_id).toBe(103)
+    })
+
+    it.skip('skips libraries not on the same plate', () => {
+      const wells = {
+        1: { plate: 1, position: 'A1' },
+        2: { plate: 2, position: 'A2' },
+      }
+      const requests = {
+        1: { id: 1, well_id: 1 },
+        2: { id: 2, well_id: 2 },
+      }
+      const tagSets = {
+        1: { tags: [101, 102] },
+      }
+      const library = { ont_request_id: 1, tag_id: 101 }
+      const selectedTagSet = { id: 1 }
+      const libraries = {
+        1: { ont_request_id: 1, tag_id: 101 },
+        2: { ont_request_id: 2 },
+      }
+
+      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+
+      expect(result[2]).toBeUndefined()
+    })
+
+    it.skip('does not assign tags to libraries with negative or zero offset', () => {
+      const wells = {
+        1: { plate: 1, position: 'A1' },
+        2: { plate: 1, position: 'A1' },
+      }
+      const requests = {
+        1: { id: 1, well_id: 1 },
+        2: { id: 2, well_id: 2 },
+      }
+      const tagSets = {
+        1: { tags: [101, 102] },
+      }
+      const library = { ont_request_id: 1, tag_id: 101 }
+      const selectedTagSet = { id: 1 }
+      const libraries = {
+        1: { ont_request_id: 1, tag_id: 101 },
+        2: { ont_request_id: 2 },
+      }
+
+      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+
+      expect(result[2]).toBeUndefined()
+    })
+
+    it.skip('wraps around tags when the offset exceeds the tag set length', () => {
+      const wells = {
+        1: { plate: 1, position: 'A1' },
+        2: { plate: 1, position: 'A2' },
+        3: { plate: 1, position: 'A3' },
+        4: { plate: 1, position: 'A4' },
+      }
+      const requests = {
+        1: { id: 1, well_id: 1 },
+        2: { id: 2, well_id: 2 },
+        3: { id: 3, well_id: 3 },
+        4: { id: 4, well_id: 4 },
+      }
+      const tagSets = {
+        1: { tags: [101, 102, 103] },
+      }
+      const library = { ont_request_id: 1, tag_id: 101 }
+      const selectedTagSet = { id: 1 }
+      const libraries = {
+        1: { ont_request_id: 1, tag_id: 101 },
+        2: { ont_request_id: 2 },
+        3: { ont_request_id: 3 },
+        4: { ont_request_id: 4 },
+      }
+
+      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+
+      expect(result[2].tag_id).toBe(102)
+      expect(result[3].tag_id).toBe(103)
+      expect(result[4].tag_id).toBe(101) // Wraps around
     })
   })
 })
