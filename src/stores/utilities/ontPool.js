@@ -1,3 +1,4 @@
+import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 const libraryAttributes = {
   ont_request_id: null,
   kit_barcode: null,
@@ -96,4 +97,55 @@ const payload = ({ libraries, pool }) => {
   }
 }
 
-export { libraryAttributes, newLibrary, validate, valid, payload }
+/**
+ * Automatically assigns tags to libraries based on their positions on a plate.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {Object} params.wells - The wells data.
+ * @param {Object} params.requests - The requests data.
+ * @param {Object} params.tagSets - The available tag sets.
+ * @param {Object} params.library - The current library being processed.
+ * @param {Object} params.selectedTagSet - The selected tag set containing tags.
+ * @param {Object} params.libraries - The collection of libraries to be tagged.
+ * @returns {Object} - A new collection of libraries with updated tag IDs.
+ *
+ * @description
+ * This function assigns unique tags to libraries on the same plate based on their
+ * relative positions. It calculates the offset of each library's well index from
+ * the initial library's well index and assigns a tag from the selected tag set
+ * using a modulo operation to ensure tags wrap around if necessary.
+ * The tags are only assigned to libraries on the same plate as the initial library.
+ *
+ * - Tags are only assigned to libraries on the same plate as the initial library.
+ * - Libraries with a negative or zero offset are skipped.
+ */
+const autoTagPlate = ({ wells, requests, tagSets, library, selectedTagSet, libraries }) => {
+  const wellRequestObject = { wells, requests }
+  const initialWell = wellFor(wellRequestObject, library.ont_request_id)
+  const initialIndex = wellToIndex(initialWell)
+  const tags = tagSets[selectedTagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+  const plate = initialWell.plate
+  //sort object based on keys
+
+  return Object.keys(libraries).reduce((result, key) => {
+    const otherWell = wellFor(wellRequestObject, libraries[key].ont_request_id)
+
+    // Skip if the library is not on the same plate
+    if (otherWell?.plate !== plate) result[key] = { ...libraries[key] }
+
+    // Calculate the offset of the library's well index from the initial library's well index
+    const offset = wellToIndex(otherWell) - initialIndex
+
+    // Skip if the offset is negative or zero
+    if (offset < 1) result[key] = { ...libraries[key] }
+    else {
+      // Assign a new tag to the library based on the offset
+      const newTag = (initialTagIndex + offset) % tags.length
+      result[key] = { ...libraries[key], tag_id: tags[newTag] }
+    }
+    return result
+  }, {})
+}
+
+export { libraryAttributes, newLibrary, validate, valid, payload, autoTagPlate }
