@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { validate, valid, payload, autoTagPlate } from '@/stores/utilities/ontPool.js'
+import {
+  validate,
+  valid,
+  payload,
+  autoTagPlate,
+  tubeFor,
+  autoTagTube,
+} from '@/stores/utilities/ontPool.js'
 
 describe('ontPool.js', () => {
   describe('validate', () => {
@@ -157,5 +164,139 @@ describe('ontPool.js', () => {
 
       expect(result[2].tag_id).toBeUndefined()
     })
+  })
+})
+
+describe('tubeFor', () => {
+  it('returns the correct tube when the request ID matches', () => {
+    const tubes = {
+      1: { id: 1, requests: ['req1'] },
+      2: { id: 2, requests: ['req2'] },
+      3: { id: 3, requests: ['req3'] },
+    }
+    const requestId = 'req2'
+
+    const result = tubeFor(tubes, requestId)
+
+    expect(result).toEqual({ id: 2, requests: ['req2'] })
+  })
+
+  it('returns undefined when no tube matches the request ID', () => {
+    const tubes = {
+      1: { id: 1, requests: ['req1'] },
+      2: { id: 2, requests: ['req2'] },
+    }
+    const requestId = 'req3'
+
+    const result = tubeFor(tubes, requestId)
+
+    expect(result).toBeUndefined()
+  })
+
+  it('returns undefined when the tubes object is empty', () => {
+    const tubes = {}
+    const requestId = 'req1'
+
+    const result = tubeFor(tubes, requestId)
+
+    expect(result).toBeUndefined()
+  })
+
+  it('returns undefined when the request ID is not provided', () => {
+    const tubes = {
+      1: { id: 1, requests: ['req1'] },
+      2: { id: 2, requests: ['req2'] },
+    }
+
+    const result = tubeFor(tubes, undefined)
+
+    expect(result).toBeUndefined()
+  })
+
+  it('returns undefined when the requests array in a tube is empty', () => {
+    const tubes = {
+      1: { id: 1, requests: [] },
+      2: { id: 2, requests: ['req2'] },
+    }
+    const requestId = 'req1'
+
+    const result = tubeFor(tubes, requestId)
+
+    expect(result).toBeUndefined()
+  })
+})
+
+describe('autoTagTube', () => {
+  const tagSets = {
+    1: { tags: ['tag1', 'tag2', 'tag3'] },
+  }
+
+  const tubes = {
+    1: { id: '1', requests: ['req1'] },
+    2: { id: '2', requests: ['req2'] },
+    3: { id: '3', requests: ['req3'] },
+  }
+
+  const selectedTagSet = { id: 1 }
+  const selectedRequests = {
+    req1: { id: 'req1' },
+    req2: { id: 'req2' },
+    req3: { id: 'req3' },
+  }
+
+  const libraries = {
+    req1: { ont_request_id: 'req1', tag_id: 'tag1' },
+    req2: { ont_request_id: 'req2', tag_id: null },
+    req3: { ont_request_id: 'req3', tag_id: null },
+  }
+
+  it('assigns tags to libraries based on their associated tubes', () => {
+    const library = { ont_request_id: 'req1', tag_id: 'tag1' }
+
+    const result = autoTagTube({
+      tagSets,
+      tubes,
+      selectedTagSet,
+      selectedRequests,
+      libraries,
+      library,
+    })
+
+    expect(result).toEqual({
+      req2: { ont_request_id: 'req2', tag_id: 'tag2' },
+      req3: { ont_request_id: 'req3', tag_id: 'tag3' },
+    })
+  })
+
+  it('skips libraries associated with tubes that have a lower or equal ID', () => {
+    const library = { ont_request_id: 'req2', tag_id: 'tag2' }
+
+    const result = autoTagTube({
+      tagSets,
+      tubes,
+      selectedTagSet,
+      selectedRequests,
+      libraries,
+      library,
+    })
+
+    expect(result).toEqual({
+      req3: { ont_request_id: 'req3', tag_id: 'tag3' },
+    })
+  })
+
+  it('returns an empty object if no matching tubes are found', () => {
+    const library = { ont_request_id: 'req4', tag_id: 'tag1' }
+
+    const result = autoTagTube({
+      tagSets,
+      tubes,
+      selectedTagSet,
+      selectedRequests,
+      libraries,
+      library,
+    })
+
+    expect(result).toEqual({})
   })
 })
