@@ -40,6 +40,13 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#actions').within(() => {
       cy.get('#editRun-1581').click()
     })
+    // check the barcodes and concentration are present
+    cy.get('@revioRunFactory').then((revioRunFactory) => {
+      cy.get('[data-attribute="barcodes-and-concentrations"]').should(
+        'have.value',
+        revioRunFactory.content.data.attributes.barcodes_and_concentrations,
+      )
+    })
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')

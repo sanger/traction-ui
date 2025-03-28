@@ -36,7 +36,6 @@ const mountPacbioRunWellEdit = ({ state = {} } = {}) =>
           system_name: 'Sequel IIe',
           sequencing_kit_box_barcode: null,
           dna_control_complex_box_barcode: null,
-          comments: null,
         },
         ...defaultSmrtLinkAttributes(),
         ...state,

@@ -7,11 +7,11 @@ import useRootStore from '@/stores/index.js'
  *
  * @param {Object} getPacbioLibraryResources - The options to fetch libraries with.
  * The options include page, filter, and include.
- * e.g { page: { "size": "24", "number": "1"}, filter: { source_identifier: 'sample1' }, include: 'request,tag,tube' }
+ * e.g { page: { "size": "24", "number": "1"}, filter: { source_identifier: 'sample1' }, include: 'request,tag' }
  */
 async function getPacbioLibraryResources(fetchOptions = {}) {
   const includes = new Set(fetchOptions.include ? fetchOptions.include.split(',') : [])
-  const requiredIncludes = ['request', 'tag', 'tube']
+  const requiredIncludes = ['request', 'tag']
   requiredIncludes.forEach((item) => includes.add(item))
 
   const fetchOptionsDefaultInclude = {
@@ -23,21 +23,15 @@ async function getPacbioLibraryResources(fetchOptions = {}) {
 
   const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
   let libraries = {},
-    tubes = {},
     tags = {},
     requests = {}
   if (success && data && data.length > 0) {
-    const {
-      tubes: included_tubes,
-      tags: included_tags,
-      requests: included_requests,
-    } = groupIncludedByResource(included)
+    const { tags: included_tags, requests: included_requests } = groupIncludedByResource(included)
     libraries = dataToObjectById({ data, includeRelationships: true })
-    tubes = dataToObjectById({ data: included_tubes })
     tags = dataToObjectById({ data: included_tags })
     requests = dataToObjectById({ data: included_requests })
   }
-  return { success, data, errors, meta, libraries, tubes, tags, requests }
+  return { success, data, errors, meta, libraries, tags, requests }
 }
 
 /**

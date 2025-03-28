@@ -43,7 +43,6 @@ describe('usePacbioPools', () => {
         get.mockResolvedValue(pacbioPoolFactory.responses.fetch)
         await store.fetchPools()
         expect(store.pools).toEqual(pacbioPoolFactory.storeData.pools)
-        expect(store.tubes).toEqual(pacbioPoolFactory.storeData.tubes)
         expect(store.used_aliquots).toEqual(pacbioPoolFactory.storeData.used_aliquots)
         expect(store.tags).toEqual(pacbioPoolFactory.storeData.tags)
         expect(store.requests).toEqual(pacbioPoolFactory.storeData.requests)
