@@ -14,6 +14,8 @@ const csvLogger = (commit, info, level) => (message) =>
   commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
 const tubeFor = ({ resources }, { ont_request_id }) =>
   Object.values(resources.tubes).find((tube) => tube.requests[0] == ont_request_id)
+
+// TODO: Next time move this to stores/utilities/ontPools.js and create tests.
 const autoTagPlate = ({ state, commit }, { library }) => {
   const initialWell = wellFor(state, library)
   const initialIndex = wellToIndex(initialWell)

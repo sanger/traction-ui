@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
-import { addUsedAliquotsAndErrorsToPools } from '@/stores/utilities/pool.js'
+import { addUsedAliquotsBarcodeAndErrorsToPools } from '@/stores/utilities/pacbioPool.js'
 
 /**
  * This store manages the state of PacBio pools which are fetched from the API and used in the PacBio pools page table.
@@ -30,7 +30,7 @@ export const usePacbioPoolsStore = defineStore('pacbioPools', {
      * @returns {Object[]} The array of pools with the retrieved data.
      */
     poolsArray: (state) => {
-      return addUsedAliquotsAndErrorsToPools(state)
+      return addUsedAliquotsBarcodeAndErrorsToPools(state)
     },
   },
   actions: {
