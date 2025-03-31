@@ -94,6 +94,13 @@
                 <traction-table :fields="state.csvTableFields" :items="state.csvData" />
               </div>
             </div>
+            <div
+              v-if="isCreationInProgress"
+              class="flex flex-row px-4 space-x-2 h-2 text-md text-blue-400"
+              data-testid="progress-indicator"
+            >
+              Library creation in progress...
+            </div>
             <div class="flex flex-row space-x-8 py-4 px-4">
               <traction-button id="reset" theme="reset" data-action="reset-form" @click="onReset">
                 Reset
@@ -104,9 +111,11 @@
                 full-width
                 theme="create"
                 data-action="create-libraries"
+                class="space-x-2"
                 @click="createLibraryBatch"
               >
-                Create Libraries
+                <span class="button-text">Create Libraries </span>
+                <traction-spinner v-show="isCreationInProgress"></traction-spinner>
               </traction-button>
             </div>
 
@@ -253,10 +262,13 @@ async function fetchData() {
 }
 
 const selectedCSVFile = ref('') //Reference to the selected csv file
+const isCreationInProgress = ref(false) //Flag to indicate if library creation is in progress
 
 const isDisabledCSVPreview = computed(() => !state.csvData.length)
 
-const isCreateDisabled = computed(() => !selectedTagSet.value || !selectedCSVFile.value)
+const isCreateDisabled = computed(
+  () => !selectedTagSet.value || !selectedCSVFile.value || isCreationInProgress.value,
+)
 
 const printBarcodes = computed(() => state.resultData.map((item) => item.barcode))
 
@@ -341,6 +353,8 @@ const createLibraryBatch = async () => {
     showAlert('Please select a tag set', 'danger')
     return
   }
+  //Set the flag to indicate that library creation is in progress so that the 'Create Libraries' button is disabled
+  isCreationInProgress.value = true
   const { success, errors, result } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
     selectedCSVFile.value,
     selectedTagSetName,
@@ -352,6 +366,8 @@ const createLibraryBatch = async () => {
   } else {
     showAlert(errors, 'danger')
   }
+  //Reset the flag
+  isCreationInProgress.value = false
 }
 
 /**
