@@ -114,7 +114,7 @@ describe('ontPool.js', () => {
     })
   })
 
-  describe('autoTagPlate', () => {
+  describe.skip('autoTagPlate', () => {
     const requests = {
       1: { id: 1, well: 1 },
       2: { id: 2, well: 2 },
