@@ -1,4 +1,4 @@
-import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
+import { wellToIndex, ontWellFor } from '@/stores/utilities/wellHelpers.js'
 const libraryAttributes = {
   ont_request_id: null,
   kit_barcode: null,
@@ -119,8 +119,7 @@ const payload = ({ libraries, pool }) => {
  * - Libraries with a negative or zero offset are skipped.
  */
 const autoTagPlate = ({ wells, requests, tagSets, library, selectedTagSet, libraries }) => {
-  const wellRequestObject = { wells, requests }
-  const initialWell = wellFor(wellRequestObject, library.ont_request_id)
+  const initialWell = ontWellFor({ wells, requests }, library.ont_request_id)
   const initialIndex = wellToIndex(initialWell)
   const tags = tagSets[selectedTagSet.id].tags
   const initialTagIndex = tags.indexOf(library.tag_id)
@@ -129,7 +128,7 @@ const autoTagPlate = ({ wells, requests, tagSets, library, selectedTagSet, libra
   // traverse through libraries and add tags if on the same plate
   // if not return the library without a tag
   return Object.keys(libraries).reduce((result, key) => {
-    const otherWell = wellFor(wellRequestObject, libraries[key].ont_request_id)
+    const otherWell = ontWellFor({ wells, requests }, libraries[key].ont_request_id)
 
     // Skip if the library is not on the same plate
     if (otherWell?.plate !== plate) {

@@ -8,6 +8,14 @@
 const wellFor = ({ wells, requests }, request_id) => wells[requests[request_id].well]
 
 /**
+ * Finds the well associated with a ont_request
+ * @param {Object} resources Ont VueX store resources object
+ * @returns {Object} the matching well from the store
+ */
+const ontWellFor = ({ wells }, request_id) =>
+  Object.values(wells).find((well) => well.requests[0] == request_id)
+
+/**
  * Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
  * @param {String} position the well co-ordinate (eg. A1)
  * @param {Number} numberOfRows number of rows on the plate
@@ -28,4 +36,14 @@ const wellNameToCoordinate = (position) => [
   position.toUpperCase().charCodeAt(0) - 65,
 ]
 
-export { wellFor, wellToIndex, wellNameToCoordinate }
+/**
+ * This regular expression matches string that start with an alphanumeric string or hyphens (captured in a group called 'barcode')
+ * followed by an optional colon and a well name (captured as 'wellName').
+ * The well name is a letter followed by a number or two numbers.
+ *
+ * @type {RegExp}
+ * @example "TRAC-1:A1"
+ */
+const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
+
+export { wellFor, wellToIndex, wellNameToCoordinate, sourceRegex, ontWellFor }

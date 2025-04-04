@@ -1,9 +1,16 @@
 import { defineStore } from 'pinia'
-import { wellToIndex } from './utilities/wellHelpers.js'
+import { wellToIndex, sourceRegex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
-import { newLibrary, validate, valid, payload } from './utilities/ontPool.js'
+import {
+  newLibrary,
+  validate,
+  valid,
+  payload,
+  autoTagPlate,
+  autoTagTube,
+} from './utilities/ontPool.js'
 
 /**
  * Used for combining objects based on id
@@ -406,8 +413,51 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       return { success, errors }
     },
 
-    async applyTags() {
-      return {}
+    /*
+     * Given a tag change to library_a, will automatically apply tags to the remaining wells
+     * on the plate with the following  rules:
+     * - Only apply additional tags if autoTag is true
+     * - Tags applied in column order based on the source well
+     * - Do not apply tags that appear earlier on the plate
+     * - Do not apply tags to request originating from other plates
+     * - Offset tags based on well position, ignoring occupancy. For example
+     *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
+     *   the state of B1.
+     * @param {Object} library - The library object containing the well and tag information.
+     * @param {boolean} autoTag - Flag indicating whether to apply tags automatically.
+     *
+     */
+    async applyTags(library, autoTag) {
+      this.pooling.libraries[`${library.ont_request_id}`] = {
+        ...this.pooling.libraries[library.ont_request_id],
+        ...library,
+      }
+      if (autoTag) {
+        const request = this.resources.requests[library.ont_request_id]
+        const plateMatch = request.source_identifier.match(sourceRegex)?.groups.wellName
+        const { wells, requests, tagSets, tubes } = this.resources
+        if (plateMatch) {
+          const taggedLibraries = autoTagPlate({
+            wells,
+            requests,
+            tagSets,
+            library,
+            selectedTagSet: this.selectedTagSet,
+            libraries: this.pooling.libraries,
+          })
+          this.pooling.libraries = taggedLibraries
+        } else {
+          const taggedLibraries = autoTagTube({
+            tagSets,
+            tubes,
+            selectedTagSet: this.selectedTagSet,
+            selectedRequests: this.selectedRequests,
+            libraries: this.pooling.libraries,
+            library,
+          })
+          this.pooling.libraries = taggedLibraries
+        }
+      }
     },
   },
 })

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
+import { wellToIndex, wellFor, sourceRegex } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
@@ -61,16 +61,6 @@ const sortRequestByLabware = (resources) => (a, b) => {
     return parseInt(a.tube || 0) - parseInt(b.tube || 0)
   }
 }
-
-/**
- * This regular expression matches string that start with an alphanumeric string or hyphens (captured in a group called 'barcode')
- * followed by an optional colon and a well name (captured as 'wellName').
- * The well name is a letter followed by a number or two numbers.
- *
- * @type {RegExp}
- * @example "TRAC-1:A1"
- */
-const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
 /**
  * Generates an error message for a barcode that could not be found.

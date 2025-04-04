@@ -17,6 +17,8 @@ const OntRequestFactory = () => {
           external_study_id: '50ad20f6-2722-434e-b42b-83cec34147f7',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_name: 'sample_name_1',
+          source_identifier: 'TRAC-1:A1',
         },
       },
       {
@@ -32,6 +34,8 @@ const OntRequestFactory = () => {
           external_study_id: '170ef408-bb98-4617-95cd-b65ba6882843',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_name: 'sample_name_2',
+          source_identifier: 'TRAC-2:A1',
         },
       },
       {
@@ -47,6 +51,8 @@ const OntRequestFactory = () => {
           external_study_id: '494adee4-cdea-4cf3-927e-ccb3d269cd9a',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_name: 'sample_name_3',
+          source_identifier: 'TRAC-3:A1',
         },
       },
       {
@@ -62,6 +68,8 @@ const OntRequestFactory = () => {
           external_study_id: '3a87ab1f-7a4b-4028-a4f7-250418c3c0fc',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_name: 'sample_name_4',
+          source_identifier: 'TRAC-4:A1',
         },
       },
       {
@@ -77,6 +85,8 @@ const OntRequestFactory = () => {
           external_study_id: '4dcef3a6-1bf7-40b5-a899-1568dbf58dca',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_name: 'sample_name_5',
+          source_identifier: 'TRAC-5:A1',
         },
       },
     ],
