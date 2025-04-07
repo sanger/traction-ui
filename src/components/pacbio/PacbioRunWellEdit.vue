@@ -256,24 +256,24 @@ const updateUsedAliquotVolume = (row, volume) => {
 const updateUsedAliquotSource = async (row, barcode) => {
   const index = row.index
   await store.findPoolsOrLibrariesByTube({ barcode })
-  const tubeContent = await store.tubeContentByBarcode(barcode)
-  if (tubeContent) {
-    const type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+  const source = await store.sourceByBarcode(barcode)
+  if (source) {
+    const type = source.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
     const available_volume = store.getAvailableVolumeForAliquot({
-      sourceId: tubeContent.id,
+      sourceId: source.id,
       sourceType: type,
       volume: 0,
     })
     const used_aliquot = createUsedAliquot({
       id: row.item.id || '',
-      source_id: tubeContent.id,
+      source_id: source.id,
       source_type: type,
       barcode,
       volume: available_volume,
       available_volume,
-      concentration: tubeContent.concentration,
-      insert_size: tubeContent.insert_size,
-      template_prep_kit_box_barcode: tubeContent.template_prep_kit_box_barcode,
+      concentration: source.concentration,
+      insert_size: source.insert_size,
+      template_prep_kit_box_barcode: source.template_prep_kit_box_barcode,
     })
     localUsedAliquots[index] = used_aliquot
   } else {
@@ -293,8 +293,8 @@ const setupWell = async () => {
   localUsedAliquots.splice(0)
   well.used_aliquots.forEach((aliquot) => {
     const type = aliquot.source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
-    const poolOrLibrary = store.tubeContents.find(
-      (tubeContent) => tubeContent.id == aliquot.source_id && tubeContent.type == type,
+    const poolOrLibrary = store.sourceItems.find(
+      (item) => item.id == aliquot.source_id && item.type == type,
     )
     if (poolOrLibrary) {
       const available_volume = store.getAvailableVolumeForAliquot({

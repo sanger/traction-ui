@@ -46,15 +46,15 @@ describe('usePacbioRunCreateStore', () => {
         )
       })
     })
-    describe('tubeContents', () => {
-      it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
+    describe('sourceItems', () => {
+      it('"sourceItems" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           ...pacbioRunFactory.storeData,
           resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
         }
-        const tubeContents = store.tubeContents
-        expect(tubeContents.length).toEqual(
+        const sourceItems = store.sourceItems
+        expect(sourceItems.length).toEqual(
           Object.values(pacbioRunFactory.storeData.pools).concat(
             Object.values(pacbioRunFactory.storeData.libraries),
           ).length,
@@ -62,7 +62,7 @@ describe('usePacbioRunCreateStore', () => {
       })
 
       // needs refactoring. I am recreating some of the methods in pacbioRunCreate.
-      it('"tubeContentByBarcode" returns the correct library and samples given a barcode', () => {
+      it('"sourceByBarcode" returns the correct library and samples given a barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           ...pacbioRunFactory.storeData,
@@ -72,7 +72,7 @@ describe('usePacbioRunCreateStore', () => {
         const { request, tag } = library
         const { sample_name } = pacbioRunFactory.storeData.requests[request]
         const { group_id = '' } = pacbioRunFactory.storeData.tags[tag] || {}
-        const actual = store.tubeContentByBarcode(library.barcode)
+        const actual = store.sourceByBarcode(library.barcode)
         expect(actual).toEqual({
           ...library,
           samples: [`${sample_name}:${group_id}`],
@@ -80,7 +80,7 @@ describe('usePacbioRunCreateStore', () => {
       })
 
       // need to get run with pools which is the second run
-      it('"tubeContentByBarcode" returns the correct pool and samples given a barcode', () => {
+      it('"sourceByBarcode" returns the correct pool and samples given a barcode', () => {
         const store = usePacbioRunCreateStore()
         const pacbioRunFactoryWithPools = PacbioRunFactory({ findBy: 'Sequel IIe' })
         store.$state = {
@@ -96,7 +96,7 @@ describe('usePacbioRunCreateStore', () => {
           const { group_id = '' } = pacbioRunFactoryWithPools.storeData.tags[tag_id] || {}
           return `${sample_name}:${group_id}`
         })
-        const actual = store.tubeContentByBarcode(pool.barcode)
+        const actual = store.sourceByBarcode(pool.barcode)
         expect(actual).toEqual({
           ...pool,
           // ugh!

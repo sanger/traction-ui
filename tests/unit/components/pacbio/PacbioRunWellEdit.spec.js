@@ -605,7 +605,7 @@ describe('PacbioRunWellEdit', () => {
     describe('updateUsedAliquotSource', () => {
       it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a pool', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'pools',
           barcode: 'TRAC-2-1',
@@ -631,7 +631,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a library', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'libraries',
           barcode: 'TRAC-2-1',
@@ -658,7 +658,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('adds an error if the volume changed to a value less than available volume of the aliquot', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'libraries',
           barcode: 'TRAC-2-1',
@@ -693,7 +693,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('shows an alert if the source does not exist', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue(undefined)
+        store.sourceByBarcode = vi.fn().mockReturnValue(undefined)
 
         wrapper.vm.addRow()
         await wrapper.vm.updateUsedAliquotSource({ index: 1, item: { id: '' } }, 'TRAC-2-1')

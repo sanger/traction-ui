@@ -143,11 +143,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     },
 
     /**
-     * Returns a list of all the tubes with their contents (pool or library)
+     * Returns a list of all the pools and libraries and their samples
      * @param {Object} state the pinia state object
      * @returns {Array} an array of pools and libraries
      */
-    tubeContents: (state) => {
+    sourceItems: (state) => {
       // for each tube
       return Object.values(state.libraries)
         .concat(Object.values(state.pools))
@@ -168,9 +168,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         })
     },
 
-    tubeContentByBarcode: (state) => {
+    sourceByBarcode: (state) => {
       return (barcode) => {
-        return state.tubeContents.find((tubeContent) => tubeContent.barcode === barcode)
+        return state.sourceItems.find((item) => item.barcode === barcode)
       }
     },
 
