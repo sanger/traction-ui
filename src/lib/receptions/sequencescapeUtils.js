@@ -149,6 +149,12 @@ const findIncluded = ({ included, data, type }) => {
  */
 const getIncludedData = ({ labware, included }) => {
   // could we use closures?
+
+  // If the sample does not exist in Sequencescape, we need to err.
+  if (labware.relationships.aliquots.data.length === 0) {
+    throw new Error('Sample with barcode does not exist in Sequencescape.')
+  }
+
   const aliquot = findIncluded({
     included,
     data: labware.relationships.aliquots.data[0],
