@@ -5,6 +5,7 @@ import {
   findIncluded,
   buildLibrary,
   buildPool,
+  getIncludedData,
 } from '@/lib/receptions/sequencescapeUtils.js'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
@@ -143,6 +144,68 @@ describe('sequencescapeUtils', () => {
       const res = findIncluded({ included: data.included, data: receptacle, type: 'wells' })
       const expected = data.included.find((item) => item.id === receptacle.id)
       expect(res).toEqual(expected)
+    })
+  })
+
+  describe('#getIncludedData', () => {
+    it('errs when the sample is not there in Sequencescape', async () => {
+      const labware = {
+        relationships: {
+          aliquots: {
+            data: [], // Simulate no aliquots present
+          },
+        },
+      }
+      const included = []
+
+      await expect(() => getIncludedData({ labware, included })).toThrow(
+        'Unable to find samples in sequencescape for labware barcode.',
+      )
+    })
+    it('returns included data successfully', () => {
+      const labware = {
+        relationships: {
+          aliquots: {
+            data: [{ id: '1', type: 'aliquots' }],
+          },
+        },
+      }
+      const included = [
+        {
+          id: '1',
+          type: 'aliquots',
+          relationships: {
+            study: { data: { id: '2', type: 'studies' } },
+            sample: { data: { id: '3', type: 'samples' } },
+          },
+        },
+        {
+          id: '2',
+          type: 'studies',
+          attributes: { uuid: 'study-uuid' },
+        },
+        {
+          id: '3',
+          type: 'samples',
+          relationships: {
+            sample_metadata: { data: { id: '4', type: 'sample_metadata' } },
+          },
+        },
+        {
+          id: '4',
+          type: 'sample_metadata',
+          attributes: { sample_common_name: 'Human' },
+        },
+      ]
+
+      const result = getIncludedData({ labware, included })
+
+      expect(result).toEqual({
+        aliquot: included[0],
+        study: included[1],
+        sample: included[2],
+        sample_metadata: included[3],
+      })
     })
   })
 
