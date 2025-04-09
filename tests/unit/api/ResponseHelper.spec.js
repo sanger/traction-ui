@@ -215,6 +215,19 @@ describe('ResponseHelper', () => {
       expect(response.errors).toEqual(error)
     })
 
+    it('failure if response is ok but its not json', async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        json: () => Promise.reject(new TypeError('Invalid JSON')),
+      }
+      const promise = Promise.resolve(mockResponse)
+      const response = await handleResponse(promise)
+      expect(response.success).toBeFalsy()
+      expect(response.errors).toEqual('Response is not valid JSON Traction service may be down.')
+    })
+
     it('print my barcode failure', async () => {
       const mockResponse = {
         ok: false,

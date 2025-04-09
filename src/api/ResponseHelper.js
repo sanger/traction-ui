@@ -91,7 +91,20 @@ const newResponse = ({
 const handleResponse = async (promise, errorHandler) => {
   try {
     const rawResponse = await promise
-    const response = rawResponse.status === HTTP_STATUS_NO_CONTENT ? {} : await rawResponse.json()
+    let response = {}
+    // Some responses (e.g. DELETE / 204's) do not return a body but are valid
+    // Response.json() can throw an error if the response is not valid JSON
+    // See https://developer.mozilla.org/en-US/docs/Web/API/Response/json_static#exceptions
+    try {
+      response = rawResponse.status === HTTP_STATUS_NO_CONTENT ? {} : await rawResponse.json()
+    } catch {
+      return newResponse({
+        success: false,
+        errorHandler,
+        errors: { 'Response is not valid JSON': ['Traction service may be down.'] },
+      })
+    }
+
     // Please check https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
     // for more information on the ok property
     if (!rawResponse.ok) {
