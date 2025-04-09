@@ -159,7 +159,7 @@ describe('sequencescapeUtils', () => {
       const included = []
 
       await expect(() => getIncludedData({ labware, included })).toThrow(
-        'Sample with barcode does not exist in Sequencescape.',
+        'Unable to find samples in sequencescape for labware barcode.',
       )
     })
     it('returns included data successfully', () => {
