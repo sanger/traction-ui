@@ -31,7 +31,6 @@ describe('usePacbioLibraryBatchCreateStore', () => {
     describe('librariesInBatch', () => {
       it('returns libraries in batch', () => {
         pacbioLibraryBatchCreateStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
-        pacbioLibraryBatchCreateStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
         pacbioRootStore.tags = pacbioTagSetFactory.storeData.tags
         expect(pacbioLibraryBatchCreateStore.librariesInBatch).toEqual(
           pacbioLibraryBatchFactory.storeData.librariesInBatch,
@@ -43,7 +42,6 @@ describe('usePacbioLibraryBatchCreateStore', () => {
     describe('librariesInfoInPrintFormat', () => {
       it('returns library data in print format', () => {
         pacbioLibraryBatchCreateStore.libraries = pacbioLibraryBatchFactory.storeData.libraries
-        pacbioLibraryBatchCreateStore.tubes = pacbioLibraryBatchFactory.storeData.tubes
         expect(pacbioLibraryBatchCreateStore.librariesInfoInPrintFormat).toEqual(
           pacbioLibraryBatchFactory.storeData.librariesInBatch.map(
             ({ barcode, source: source_identifier }) => ({
@@ -164,9 +162,6 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         expect(success).toBeTruthy()
         expect(pacbioLibraryBatchCreateStore.libraries).toEqual(
           pacbioLibraryBatchFactory.storeData.libraries,
-        )
-        expect(pacbioLibraryBatchCreateStore.tubes).toEqual(
-          pacbioLibraryBatchFactory.storeData.tubes,
         )
         expect(result).toEqual(pacbioLibraryBatchCreateStore.librariesInBatch)
       })

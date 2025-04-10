@@ -55,7 +55,7 @@ describe('Pacbio Library Batch Create', () => {
     cy.get('[data-type=csv-preview]').should('exist')
 
     // Create Libraries
-    cy.intercept('POST', '/v1/pacbio/library_batches?include=libraries.tube', {
+    cy.intercept('POST', '/v1/pacbio/library_batches?include=libraries', {
       statusCode: 200,
       body: pacbioLibraryBatchFactory.content,
     })
@@ -112,7 +112,7 @@ describe('Pacbio Library Batch Create', () => {
     cy.get('[data-type=csv-preview]').should('exist')
 
     // Create Libraries
-    cy.intercept('POST', '/v1/pacbio/library_batches?include=libraries.tube', {
+    cy.intercept('POST', '/v1/pacbio/library_batches?include=libraries', {
       statusCode: 422,
       body: {
         errors: {

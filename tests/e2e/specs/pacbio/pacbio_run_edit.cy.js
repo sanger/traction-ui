@@ -28,7 +28,7 @@ describe('Pacbio Run Edit view', () => {
     cy.wrap(PacbioRunFactory({ findBy: 'Revio' })).as('revioRunFactory')
     cy.get('@revioRunFactory').then((revioRunFactory) => {
       cy.intercept(
-        '/v1/pacbio/runs/1581?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+        '/v1/pacbio/runs/1581?include=plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
         {
           statusCode: 200,
           body: revioRunFactory.content,
@@ -69,7 +69,7 @@ describe('Pacbio Run Edit view', () => {
     cy.wrap(PacbioRunFactory({ findBy: 'Sequel IIe' })).as('sequelRunFactory')
     cy.get('@sequelRunFactory').then((sequelRunFactory) => {
       cy.intercept(
-        'v1/pacbio/runs/1503?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+        'v1/pacbio/runs/1503?include=plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
         {
           statusCode: 200,
           body: sequelRunFactory.content,
@@ -94,7 +94,7 @@ describe('Pacbio Run Edit view', () => {
     cy.wrap(PacbioRunFactory({ findBy: 'Revio' })).as('revioRunFactory')
     cy.get('@revioRunFactory').then((revioRunFactory) => {
       cy.intercept(
-        '/v1/pacbio/runs/1581?include=plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+        '/v1/pacbio/runs/1581?include=plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
         {
           statusCode: 200,
           body: revioRunFactory.content,
