@@ -216,16 +216,21 @@ describe('ResponseHelper', () => {
     })
 
     it('failure if response is ok but its not json', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => {})
       const mockResponse = {
         ok: true,
         status: 200,
         statusText: 'OK',
+        url: 'example-url',
         json: () => Promise.reject(new TypeError('Invalid JSON')),
       }
       const promise = Promise.resolve(mockResponse)
       const response = await handleResponse(promise)
+      expect(console.warn).toHaveBeenCalledWith('Response from example-url is not valid JSON')
       expect(response.success).toBeFalsy()
-      expect(response.errors).toEqual('Response is not valid JSON Traction service may be down.')
+      expect(response.errors).toEqual(
+        'Response is not valid JSON The service you are trying to reach may be down',
+      )
     })
 
     it('print my barcode failure', async () => {

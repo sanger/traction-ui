@@ -98,10 +98,15 @@ const handleResponse = async (promise, errorHandler) => {
     try {
       response = rawResponse.status === HTTP_STATUS_NO_CONTENT ? {} : await rawResponse.json()
     } catch {
+      // Console warn to help with developer debugging
+      console.warn(`Response from ${rawResponse.url} is not valid JSON`)
+      // User friendly error
       return newResponse({
         success: false,
         errorHandler,
-        errors: { 'Response is not valid JSON': ['Traction service may be down.'] },
+        errors: {
+          'Response is not valid JSON': ['The service you are trying to reach may be down'],
+        },
       })
     }
 
