@@ -114,12 +114,7 @@ describe('ontPool.js', () => {
     })
   })
 
-  describe.skip('autoTagPlate', () => {
-    const requests = {
-      1: { id: 1, well: 1 },
-      2: { id: 2, well: 2 },
-      3: { id: 3, well: 3 },
-    }
+  describe('autoTagPlate', () => {
     const tagSets = {
       1: { tags: [101, 102, 103] },
     }
@@ -133,34 +128,34 @@ describe('ontPool.js', () => {
 
     it('assigns unique tags to libraries on the same plate based on their positions', () => {
       const wells = {
-        1: { plate: 1, position: 'A1' },
-        2: { plate: 1, position: 'B1' },
-        3: { plate: 1, position: 'C1' },
+        1: { plate: 1, position: 'A1', requests: ['1'] },
+        2: { plate: 1, position: 'B1', requests: ['2'] },
+        3: { plate: 1, position: 'C1', requests: ['3'] },
       }
 
-      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+      const result = autoTagPlate({ wells, tagSets, library, selectedTagSet, libraries })
       expect(result[2].tag_id).toBe(102)
       expect(result[3].tag_id).toBe(103)
     })
 
     it('skips libraries not on the same plate', () => {
       const wells = {
-        1: { plate: 1, position: 'A1' },
-        2: { plate: 2, position: 'A2' },
+        1: { plate: 1, position: 'A1', requests: ['1'] },
+        2: { plate: 2, position: 'B1', requests: ['2'] },
       }
 
-      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+      const result = autoTagPlate({ wells, tagSets, library, selectedTagSet, libraries })
 
       expect(result[2].tag_id).toBeUndefined()
     })
 
     it('does not assign tags to libraries with negative or zero offset', () => {
       const wells = {
-        1: { plate: 1, position: 'A1' },
-        2: { plate: 1, position: 'A1' },
+        1: { plate: 1, position: 'A1', requests: ['1'] },
+        2: { plate: 1, position: 'A1', requests: ['2'] },
       }
 
-      const result = autoTagPlate({ wells, requests, tagSets, library, selectedTagSet, libraries })
+      const result = autoTagPlate({ wells, tagSets, library, selectedTagSet, libraries })
 
       expect(result[2].tag_id).toBeUndefined()
     })
