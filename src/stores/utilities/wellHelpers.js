@@ -1,12 +1,11 @@
 /**
- * Retrieves a specific well from the resources based on a PacBio request ID.
- *
- * @param {Object} resources - An object containing wells and requests from pacbioPoolCreate store.
- * @param {string|number} pacbio_request_id - The ID of the PacBio request.
- * @returns {Object} The well associated with the given PacBio request ID.
+ * Finds the well associated with a request
+ * @param  {Object} wells store resources wells
+ * @param  {string} request_id the request id to find
+ * @returns {Object} the matching well from the store
  */
-const wellFor = (resources, pacbio_request_id) =>
-  resources.wells[resources.requests[pacbio_request_id].well]
+const wellFor = (wells, request_id) =>
+  Object.values(wells).find((well) => well.requests[0] == request_id)
 
 /**
  * Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
@@ -29,4 +28,14 @@ const wellNameToCoordinate = (position) => [
   position.toUpperCase().charCodeAt(0) - 65,
 ]
 
-export { wellFor, wellToIndex, wellNameToCoordinate }
+/**
+ * This regular expression matches string that start with an alphanumeric string or hyphens (captured in a group called 'barcode')
+ * followed by an optional colon and a well name (captured as 'wellName').
+ * The well name is a letter followed by a number or two numbers.
+ *
+ * @type {RegExp}
+ * @example "TRAC-1:A1"
+ */
+const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
+
+export { wellFor, wellToIndex, wellNameToCoordinate, sourceRegex }
