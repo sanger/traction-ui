@@ -302,7 +302,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       const pacbioRootStore = usePacbioRootStore()
       //Helper function to get the well for a given source_id
-      const initialWell = wellFor(this.resources, used_aliquot.request)
+      const initialWell = wellFor(this.resources.wells, used_aliquot.request)
       //Helper function to get the index of the well
       const initialIndex = wellToIndex(initialWell)
       //Get the tags for the selected tag set
@@ -314,7 +314,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       //Iterate over all used_aliquots and update the tag of each used_aliquot on the same plate and with a higher well index.
       Object.values(this.used_aliquots).forEach((aliquot) => {
-        const otherWell = wellFor(this.resources, aliquot.request)
+        const otherWell = wellFor(this.resources.wells, aliquot.request)
 
         if (otherWell?.plate !== plate) return
 

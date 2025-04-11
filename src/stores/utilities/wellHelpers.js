@@ -1,18 +1,10 @@
 /**
- * Retrieves a specific well from the wells based on a request ID.
- *
- * @param {Object} {wells, requests} - An object containing wells and requests from store.
- * @param {string|number} request_id - The ID of the request.
- * @returns {Object} The well associated with the given request ID.
- */
-const wellFor = ({ wells, requests }, request_id) => wells[requests[request_id].well]
-
-/**
- * Finds the well associated with a ont_request
- * @param {Object} resources Ont VueX store resources object
+ * Finds the well associated with a request
+ * @param  {Object} wells store resources wells
+ * @param  {string} request_id the request id to find
  * @returns {Object} the matching well from the store
  */
-const ontWellFor = ({ wells }, request_id) =>
+const wellFor = (wells, request_id) =>
   Object.values(wells).find((well) => well.requests[0] == request_id)
 
 /**
@@ -46,4 +38,4 @@ const wellNameToCoordinate = (position) => [
  */
 const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
-export { wellFor, wellToIndex, wellNameToCoordinate, sourceRegex, ontWellFor }
+export { wellFor, wellToIndex, wellNameToCoordinate, sourceRegex }
