@@ -162,7 +162,7 @@ const autoTagPlate = ({ wells, tagSets, library, selectedTagSet, libraries }) =>
  * It returns the first tube that matches the condition or `undefined` if no match is found.
  */
 const tubeFor = (tubes, request_id) =>
-  Object.values(tubes).find((tube) => tube.requests[0] == request_id)
+  Object.values(tubes).find((tube) => tube.requests[0] === request_id)
 
 /**
  * Automatically assigns tags to libraries based on their associated tubes.
