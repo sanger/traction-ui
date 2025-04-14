@@ -22,10 +22,6 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
      * @property {Object} libraries - An object to store all libraries indexed by id.
      */
     libraries: {},
-    /**
-     * @property {Object} tubes - An object to store all tubes from all libraries indexed by id.
-     */
-    tubes: {},
   }),
 
   getters: {
@@ -46,12 +42,13 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
           insert_size,
           template_prep_kit_box_barcode,
           source_identifier,
+          barcode,
         } = library
         const tag = pacbioRootStore.tags[tag_id]
         const tagGroupId = tag ? tag.group_id : ''
         return {
           id,
-          barcode: state.tubes[library.tube].barcode,
+          barcode,
           source: source_identifier,
           tag: tagGroupId,
           volume,
@@ -62,8 +59,8 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
       })
     },
     librariesInfoInPrintFormat: (state) =>
-      Object.values(state.libraries).map(({ tube, source_identifier }) => ({
-        barcode: state.tubes[tube].barcode,
+      Object.values(state.libraries).map(({ barcode, source_identifier }) => ({
+        barcode,
         source_identifier,
       })),
   },
@@ -142,11 +139,10 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
               },
             },
           },
-          include: 'libraries.tube',
+          include: 'libraries',
         })
         const { success, body: { included = [] } = {}, errors } = await handleResponse(promise)
-        const { tubes = [], libraries = [] } = groupIncludedByResource(included)
-        this.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        const { libraries = [] } = groupIncludedByResource(included)
         this.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
         return { success, result: this.librariesInBatch, errors }
       } catch (error) {
