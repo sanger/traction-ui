@@ -80,7 +80,7 @@ const smrtLinkVersions = {
  *
  */
 function mountPacbioRunWell({ state = {}, plugins = [] } = {}) {
-  const { pools, libraries, aliquots, requests, tags } = pacbioRunFactory.storeData
+  const { pools, libraries, aliquots, requests, tags, scannedBarcodes } = pacbioRunFactory.storeData
 
   const defaultOptions = {
     run: {},
@@ -90,6 +90,7 @@ function mountPacbioRunWell({ state = {}, plugins = [] } = {}) {
     libraries,
     requests,
     tags,
+    scannedBarcodes,
     aliquots: { ...usedAliquots, ...aliquots },
     smrtLinkVersion: smrtLinkVersions['v11'],
     resources: { smrtLinkVersions },

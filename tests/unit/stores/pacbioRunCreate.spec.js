@@ -61,6 +61,20 @@ describe('usePacbioRunCreateStore', () => {
         )
       })
 
+      it('"sourceItems" only returns scanned in pools and libraries"', () => {
+        const store = usePacbioRunCreateStore()
+        const libraryBarcode = Object.values(pacbioRunFactory.storeData.libraries)[0].barcode
+        store.$state = {
+          ...pacbioRunFactory.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+          scannedBarcodes: [libraryBarcode],
+        }
+
+        const sourceItems = store.sourceItems
+        expect(sourceItems.length).toEqual(1)
+        expect(sourceItems[0].barcode).toEqual(libraryBarcode)
+      })
+
       // needs refactoring. I am recreating some of the methods in pacbioRunCreate.
       it('"sourceByBarcode" returns the correct library and samples given a barcode', () => {
         const store = usePacbioRunCreateStore()
@@ -552,13 +566,16 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           pools: {
-            1: { id: '1', type: 'pools' },
-            2: { id: '2', type: 'pools' },
+            1: { id: '1', type: 'pools', barcode: 'TRAC-2-123' },
+            2: { id: '2', type: 'pools', barcode: 'TRAC-2-124' },
           },
+          scannedBarcodes: ['TRAC-2-123', 'TRAC-2-124'],
         }
-        expect(store.pools[1]).toEqual({ id: '1', type: 'pools' })
+        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', barcode: 'TRAC-2-123' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-123', 'TRAC-2-124'])
         store.removePool(1)
         expect(store.pools[1]).toBeUndefined()
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-124'])
       })
     })
     describe('removeLibrary', () => {
@@ -566,13 +583,16 @@ describe('usePacbioRunCreateStore', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           libraries: {
-            1: { id: '1', type: 'libraries' },
-            2: { id: '2', type: 'libraries' },
+            1: { id: '1', type: 'libraries', barcode: 'TRAC-2-1' },
+            2: { id: '2', type: 'libraries', barcode: 'TRAC-2-2' },
           },
+          scannedBarcodes: ['TRAC-2-1', 'TRAC-2-2'],
         }
-        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries' })
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', barcode: 'TRAC-2-1' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-1', 'TRAC-2-2'])
         store.removeLibrary(1)
         expect(store.libraries[1]).toBeUndefined()
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-2'])
       })
     })
     describe('clearRunData', () => {
@@ -600,6 +620,7 @@ describe('usePacbioRunCreateStore', () => {
           plates: {},
           wells: {},
           aliquots: {},
+          scannedBarcodes: [],
         })
       })
     })

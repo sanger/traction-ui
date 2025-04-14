@@ -123,6 +123,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Aliquots: The aliquots for the run
     aliquots: {},
+
+    // Keep track of the scanned barcodes
+    // This is to prevent libraries used in pools from appearing in the source list
+    scannedBarcodes: [],
   }),
   getters: {
     /**
@@ -148,24 +152,30 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @returns {Array} an array of pools and libraries
      */
     sourceItems: (state) => {
-      // for each tube
-      return Object.values(state.libraries)
-        .concat(Object.values(state.pools))
-        .map((record) => {
-          let fn = null
+      return (
+        Object.values(state.libraries)
+          .concat(Object.values(state.pools))
+          // Ensure we are only calculating samples for the scanned barcodes
+          // This is to prevent libraries used in pools from being calculated
+          .filter((record) => {
+            return state.scannedBarcodes.includes(record.barcode)
+          })
+          .map((record) => {
+            let fn = null
 
-          // determine the function to generate samples based on the record type
-          if (record.type === 'pools') {
-            fn = generateSamplesForPools
-          } else if (record.type === 'libraries') {
-            fn = generateSamplesForLibraries
-          }
+            // determine the function to generate samples based on the record type
+            if (record.type === 'pools') {
+              fn = generateSamplesForPools
+            } else if (record.type === 'libraries') {
+              fn = generateSamplesForLibraries
+            }
 
-          // if the type is known, generate the samples
-          const samples = fn ? fn(state, record) : []
+            // if the type is known, generate the samples
+            const samples = fn ? fn(state, record) : []
 
-          return { ...record, samples }
-        })
+            return { ...record, samples }
+          })
+      )
     },
 
     sourceByBarcode: (state) => {
@@ -260,6 +270,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       if (success && data.length > 0) {
         const { pools, libraries, aliquots, tags, requests } = groupIncludedByResource(included)
 
+        // Add the barcode to the scannedBarcodes list
+        this.scannedBarcodes.push(filter['barcode'])
+
         // populate pools, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
@@ -337,6 +350,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             })
           })
         })
+
+        // Populate the scannedBarcodes based on the well used_aliquots
+        this.scannedBarcodes = [
+          ...new Set(
+            Object.values(this.aliquots)
+              .filter((aliquot) => aliquot.used_by_type == 'Pacbio::Well')
+              .map((aliquot) => {
+                if (aliquot.source_type === 'Pacbio::Pool') {
+                  return this.pools[aliquot.source_id].barcode
+                }
+
+                return this.libraries[aliquot.source_id].barcode
+              }),
+          ),
+        ]
 
         this.wells = wellsByPlate
 
@@ -476,9 +504,22 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
     },
     removePool(id) {
+      // Remove the pool barcode from the scanned barcodes
+      const pool = this.pools[id]
+      this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
+        return pool.barcode !== barcode
+      })
+
+      // Remove the pool from the store
       delete this.pools[id]
     },
     removeLibrary(id) {
+      // Remove the library barcode from the scanned barcodes
+      const library = this.libraries[id]
+      this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
+        return library.barcode !== barcode
+      })
+
       delete this.libraries[id]
     },
     clearRunData() {

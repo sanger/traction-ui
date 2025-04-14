@@ -318,9 +318,9 @@ describe('PacbioRunWellEdit', () => {
                 concentration: 12,
                 available_volume: 10,
                 template_prep_kit_box_barcode: 'tpkbb1',
-                barcode: 'TRAC-1',
+                barcode: 'TRAC-3',
               },
-              2: { id: 2, request: 2, type: 'libraries', barcode: 'TRAC-2' },
+              2: { id: 2, request: 2, type: 'libraries', barcode: 'TRAC-4' },
             },
             aliquots: {
               1: {
@@ -346,6 +346,7 @@ describe('PacbioRunWellEdit', () => {
                 A1: well,
               },
             },
+            scannedBarcodes: ['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4'],
           },
         },
         props,
@@ -493,9 +494,9 @@ describe('PacbioRunWellEdit', () => {
                 concentration: 12,
                 template_prep_kit_box_barcode: 'tpkbb1',
                 available_volume: 10,
-                barcode: 'TRAC-1',
+                barcode: 'TRAC-3',
               },
-              2: { id: 2, used_aliquots: [], request: 2, type: 'libraries', barcode: 'TRAC-2' },
+              2: { id: 2, used_aliquots: [], request: 2, type: 'libraries', barcode: 'TRAC-4' },
             },
             aliquots: {
               1: {
@@ -525,6 +526,7 @@ describe('PacbioRunWellEdit', () => {
                 A1: well,
               },
             },
+            scannedBarcodes: ['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4'],
           },
         },
         props,
