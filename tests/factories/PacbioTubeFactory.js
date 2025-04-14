@@ -1665,7 +1665,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:F4',
           pacbio_request_id: 30,
           available_volume: 20,
-          barcode: 'TRAC-2-30',
+          barcode: 'TRAC-2-20',
         },
         relationships: {
           request: {

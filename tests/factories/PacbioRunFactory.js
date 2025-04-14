@@ -51,6 +51,10 @@ const createStoreDataForSingleRun = (data) => {
   } = groupIncludedByResource(data.included)
 
   const run = extractAttributes(data.data)
+  const scannedBarcodes = []
+    .concat(pools || [])
+    .concat(libraries || [])
+    .map(({ attributes }) => attributes.barcode)
 
   return {
     run,
@@ -62,6 +66,7 @@ const createStoreDataForSingleRun = (data) => {
     requests: dataToObjectById({ data: requests, includeRelationships: true }),
     plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
     wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    scannedBarcodes,
     resources: {
       plates,
       wells,
