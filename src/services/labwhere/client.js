@@ -147,4 +147,19 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   )
   return { success: exhaustedLibraries.length > 0, exhaustedLibraries }
 }
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed }
+
+const scanBarcodesInLabwhereLocationV2 = async () => {
+  return {}
+}
+
+const getLabwhereLocationsV2 = async () => {
+  return {}
+}
+
+export {
+  getLabwhereLocations,
+  scanBarcodesInLabwhereLocation,
+  exhaustLibraryVolumeIfDestroyed,
+  scanBarcodesInLabwhereLocationV2,
+  getLabwhereLocationsV2,
+}
