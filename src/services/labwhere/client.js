@@ -186,15 +186,9 @@ const scanBarcodesInLabwhereLocationV2 = async (
 
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
-
-const getLabwhereLocationsV2 = async () => {
-  return {}
-}
-
 export {
   getLabwhereLocations,
   scanBarcodesInLabwhereLocation,
   exhaustLibraryVolumeIfDestroyed,
   scanBarcodesInLabwhereLocationV2,
-  getLabwhereLocationsV2,
 }
