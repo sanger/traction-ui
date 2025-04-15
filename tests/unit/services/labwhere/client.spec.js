@@ -1,6 +1,7 @@
 import {
   getLabwhereLocations,
   scanBarcodesInLabwhereLocation,
+  scanBarcodesInLabwhereLocationV2,
   exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
@@ -103,6 +104,38 @@ describe('scanBarcodesInLabwhereLocation', () => {
     const callArgs = spyPost.mock.calls[0]
     const params = new URLSearchParams(callArgs[1])
     expect(params.get('scan[start_position]')).toBe('1')
+  })
+})
+
+describe('scanBarcodesInLabwhereLocationV2', () => {
+  it('should return an error if required parameters are missing', async () => {
+    const result = await scanBarcodesInLabwhereLocationV2('', '', mockFetchWrapper)
+    expect(result).toEqual({
+      success: false,
+      errors: ['Required parameters are missing for the Scan In operation'],
+    })
+  })
+
+  it('should return formatted result for post response', async () => {
+    spyPost.mockResolvedValue({
+      success: true,
+      errors: [],
+      data: { message: '1 labwares scanned into location 1' },
+    })
+    const result = await scanBarcodesInLabwhereLocationV2(
+      'location123',
+      'barcode1\nbarcode2',
+      mockFetchWrapper,
+    )
+    expect(spyPost).toHaveBeenCalledWith('/scan', {
+      labware_barcodes: 'barcode1\nbarcode2',
+      location_barcode: 'location123',
+    })
+    expect(result).toEqual({
+      success: true,
+      errors: [],
+      message: '1 labwares scanned into location 1',
+    })
   })
 })
 

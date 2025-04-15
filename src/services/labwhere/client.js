@@ -7,6 +7,7 @@ import {
 import { getPacbioLibraryResources } from '@/services/traction/PacbioLibrary.js'
 
 const labwhereFetch = FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
+const labwhereFetchV2 = FetchWrapper(import.meta.env['VITE_LABWHERE_V2_BASE_URL'], 'LabWhere')
 const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
@@ -148,8 +149,43 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   return { success: exhaustedLibraries.length > 0, exhaustedLibraries }
 }
 
-const scanBarcodesInLabwhereLocationV2 = async () => {
-  return {}
+/**
+ * Scans labware barcodes into a specified location in LabWhere (V2 API with Rust).
+ *
+ * @param {string} locationBarcode - The barcode of the location where labware will be stored.
+ * @param {string} labwareBarcodes - The barcodes of the labware to be stored, separated by newlines.
+ * @param {Object} [fetchWrapper=labwhereFetchV2] - The fetch wrapper to use for the request (optional).
+ * @returns {Promise<{success: boolean, errors: string[], message: string}>} - A promise that resolves to an object containing:
+ * - `success` (boolean): Whether the operation was successful.
+ * - `errors` (string[]): An array of error messages, if any.
+ * - `message` (string): A message describing the result of the operation.
+ *
+ * @example
+ * const locationBarcode = 'location123';
+ * const labwareBarcodes = 'barcode1\nbarcode2';
+ * scanBarcodesInLabwhereLocationV2(locationBarcode, labwareBarcodes).then(response => {
+ *   if (response.success) {
+ *     console.log('Barcodes scanned successfully:', response.message);
+ *   } else {
+ *     console.error('Errors:', response.errors);
+ *   }
+ * });
+ */
+const scanBarcodesInLabwhereLocationV2 = async (
+  locationBarcode,
+  labwareBarcodes,
+  fetchWrapper = labwhereFetchV2,
+) => {
+  if (!labwareBarcodes) {
+    return { success: false, errors: ['Required parameters are missing for the Scan In operation'] }
+  }
+  const body = {
+    labware_barcodes: labwareBarcodes,
+    location_barcode: locationBarcode,
+  }
+  const response = await fetchWrapper.post('/scan', body)
+
+  return { success: response.success, errors: response.errors, message: response.data.message }
 }
 
 const getLabwhereLocationsV2 = async () => {
