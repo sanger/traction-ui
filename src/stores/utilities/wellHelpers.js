@@ -1,11 +1,11 @@
 /**
  * Finds the well associated with a request
  * @param  {Object} wells store resources wells
- * @param  {string} request_id the request id to find
+ * @param  {string | Integer} request_id the request id to find
  * @returns {Object} the matching well from the store
  */
 const wellFor = (wells, request_id) =>
-  Object.values(wells).find((well) => well.requests[0] === request_id)
+  Object.values(wells).find((well) => well.requests[0] === request_id.toString())
 
 /**
  * Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
