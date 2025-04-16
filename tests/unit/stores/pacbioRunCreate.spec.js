@@ -46,50 +46,62 @@ describe('usePacbioRunCreateStore', () => {
         )
       })
     })
-    describe('tubeContents', () => {
-      it('"tubeContents" returns denormalized pools from "state.pools and state.libraries"', () => {
+    describe('sourceItems', () => {
+      it('"sourceItems" returns denormalized pools from "state.pools and state.libraries"', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           ...pacbioRunFactory.storeData,
           resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
         }
-        const tubeContents = store.tubeContents
-        expect(tubeContents.length).toEqual(Object.values(pacbioRunFactory.storeData.tubes).length)
+        const sourceItems = store.sourceItems
+        expect(sourceItems.length).toEqual(
+          Object.values(pacbioRunFactory.storeData.pools).concat(
+            Object.values(pacbioRunFactory.storeData.libraries),
+          ).length,
+        )
+      })
+
+      it('"sourceItems" only returns scanned in pools and libraries"', () => {
+        const store = usePacbioRunCreateStore()
+        const libraryBarcode = Object.values(pacbioRunFactory.storeData.libraries)[0].barcode
+        store.$state = {
+          ...pacbioRunFactory.storeData,
+          resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
+          scannedBarcodes: [libraryBarcode],
+        }
+
+        const sourceItems = store.sourceItems
+        expect(sourceItems.length).toEqual(1)
+        expect(sourceItems[0].barcode).toEqual(libraryBarcode)
       })
 
       // needs refactoring. I am recreating some of the methods in pacbioRunCreate.
-      it('"tubeContentByBarcode" returns the library data with the specified tube barcode', () => {
+      it('"sourceByBarcode" returns the correct library and samples given a barcode', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
           ...pacbioRunFactory.storeData,
           resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
         }
-        const tube = Object.values(pacbioRunFactory.storeData.tubes).find((tube) => tube.libraries)
-        const library = pacbioRunFactory.storeData.libraries[tube.libraries]
+        const library = Object.values(pacbioRunFactory.storeData.libraries)[0]
         const { request, tag } = library
         const { sample_name } = pacbioRunFactory.storeData.requests[request]
         const { group_id = '' } = pacbioRunFactory.storeData.tags[tag] || {}
-        const actual = store.tubeContentByBarcode(tube.barcode)
+        const actual = store.sourceByBarcode(library.barcode)
         expect(actual).toEqual({
-          barcode: tube.barcode,
-          ...pacbioRunFactory.storeData.libraries[tube.libraries],
+          ...library,
           samples: [`${sample_name}:${group_id}`],
         })
       })
 
       // need to get run with pools which is the second run
-      it('"tubeContentByBarcode" returns the pool data with the specified tube barcode', () => {
+      it('"sourceByBarcode" returns the correct pool and samples given a barcode', () => {
         const store = usePacbioRunCreateStore()
         const pacbioRunFactoryWithPools = PacbioRunFactory({ findBy: 'Sequel IIe' })
         store.$state = {
           ...pacbioRunFactoryWithPools.storeData,
           resources: { smrtLinkVersions: pacbioSmrtLinkVersionFactory.storeData },
         }
-        const tube = Object.values(pacbioRunFactoryWithPools.storeData.tubes).find(
-          (tube) => tube.pools,
-        )
-        const actual = store.tubeContentByBarcode(tube.barcode)
-        const pool = pacbioRunFactoryWithPools.storeData.pools[tube.pools]
+        const pool = Object.values(pacbioRunFactoryWithPools.storeData.pools)[0]
         // this is a bit of palava we are practically rewriting the method.
         const samples = pool.libraries.map((library) => {
           const { pacbio_request_id, tag_id } =
@@ -98,8 +110,8 @@ describe('usePacbioRunCreateStore', () => {
           const { group_id = '' } = pacbioRunFactoryWithPools.storeData.tags[tag_id] || {}
           return `${sample_name}:${group_id}`
         })
+        const actual = store.sourceByBarcode(pool.barcode)
         expect(actual).toEqual({
-          barcode: tube.barcode,
           ...pool,
           // ugh!
           samples: samples.reverse(),
@@ -267,7 +279,6 @@ describe('usePacbioRunCreateStore', () => {
 
         expect(store.aliquots).toEqual(pacbioRunFactory.storeData.aliquots)
         expect(store.libraries).toEqual(pacbioRunFactory.storeData.libraries)
-        expect(store.tubes).toEqual(pacbioRunFactory.storeData.tubes)
         expect(store.pools).toEqual(pacbioRunFactory.storeData.pools)
         expect(store.smrtLinkVersion).toEqual(pacbioRunFactory.storeData.smrtLinkVersion)
         expect(store.tags).toEqual(pacbioRunFactory.storeData.tags)
@@ -293,7 +304,6 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.libraries).toEqual({})
         expect(store.tags).toEqual(jsonapi.dataToObjectById({}))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({}))
-        expect(store.tubes).toEqual(jsonapi.dataToObjectById({}))
         expect(store.smrtLinkVersion).toEqual({})
         expect(store.run).toEqual({})
         expect(store.plates).toEqual({})
@@ -317,7 +327,6 @@ describe('usePacbioRunCreateStore', () => {
         })
         expect(success).toBeTruthy()
 
-        expect(store.tubes).toEqual(pacbioTubeFactory.storeData.tubes)
         expect(store.pools).toEqual(pacbioTubeFactory.storeData.pools)
         expect(store.libraries).toEqual(pacbioTubeFactory.storeData.libraries)
         expect(store.requests).toEqual(pacbioTubeFactory.storeData.requests)
@@ -450,14 +459,8 @@ describe('usePacbioRunCreateStore', () => {
 
       it('for an existing run', async () => {
         const id = 1
-        const tubes = {
-          1: { barcode: 'TRAC-2-1' },
-          2: { barcode: 'TRAC-2-2' },
-          3: { barcode: 'TRAC-2-3' },
-        }
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
-        store.tubes = tubes
         store.fetchRun = vi.fn().mockResolvedValue({ success: true })
 
         const { success } = await store.setRun({ id })
@@ -468,14 +471,8 @@ describe('usePacbioRunCreateStore', () => {
 
       it('for an existing run when fetchRun fails', async () => {
         const id = 1
-        const tubes = {
-          1: { barcode: 'TRAC-2-1' },
-          2: { barcode: 'TRAC-2-2' },
-          3: { barcode: 'TRAC-2-3' },
-        }
         const store = usePacbioRunCreateStore()
         store.smrtLinkVersionList.get = defaultSmrtLinkVersion
-        store.tubes = tubes
         store.fetchRun = vi.fn().mockResolvedValue({ success: false })
 
         const { success } = await store.setRun({ id })
@@ -565,41 +562,37 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
     describe('removePool', () => {
-      it('"removePool" removes the given pool id from state.pool and its associated tube', () => {
+      it('"removePool" removes the given pool id from state.pool', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
-          tubes: {
-            3: { id: '3', type: 'tubes' },
-            4: { id: '4', type: 'tubes' },
-          },
           pools: {
-            1: { id: '1', type: 'pools', tube: '3' },
-            2: { id: '2', type: 'pools', tube: '4' },
+            1: { id: '1', type: 'pools', barcode: 'TRAC-2-123' },
+            2: { id: '2', type: 'pools', barcode: 'TRAC-2-124' },
           },
+          scannedBarcodes: ['TRAC-2-123', 'TRAC-2-124'],
         }
-        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', tube: '3' })
+        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', barcode: 'TRAC-2-123' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-123', 'TRAC-2-124'])
         store.removePool(1)
         expect(store.pools[1]).toBeUndefined()
-        expect(store.tubes[3]).toBeUndefined()
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-124'])
       })
     })
     describe('removeLibrary', () => {
-      it('"removeLibrary" removes the given library id from state.library and its assoicated tube', () => {
+      it('"removeLibrary" removes the given library id from state.library', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
-          tubes: {
-            3: { id: '3', type: 'tubes' },
-            4: { id: '4', type: 'tubes' },
-          },
           libraries: {
-            1: { id: '1', type: 'libraries', tube: '3' },
-            2: { id: '2', type: 'libraries', tube: '4' },
+            1: { id: '1', type: 'libraries', barcode: 'TRAC-2-1' },
+            2: { id: '2', type: 'libraries', barcode: 'TRAC-2-2' },
           },
+          scannedBarcodes: ['TRAC-2-1', 'TRAC-2-2'],
         }
-        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', tube: '3' })
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', barcode: 'TRAC-2-1' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-1', 'TRAC-2-2'])
         store.removeLibrary(1)
         expect(store.libraries[1]).toBeUndefined()
-        expect(store.tubes[3]).toBeUndefined()
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-2'])
       })
     })
     describe('clearRunData', () => {
@@ -616,7 +609,6 @@ describe('usePacbioRunCreateStore', () => {
           },
           run: {},
           pools: {},
-          tubes: {},
           libraries: {},
           requests: {},
           tags: {},
@@ -628,6 +620,7 @@ describe('usePacbioRunCreateStore', () => {
           plates: {},
           wells: {},
           aliquots: {},
+          scannedBarcodes: [],
         })
       })
     })

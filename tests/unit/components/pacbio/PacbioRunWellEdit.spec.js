@@ -292,35 +292,35 @@ describe('PacbioRunWellEdit', () => {
             pools: {
               1: {
                 id: 1,
-                tube: 1,
                 used_aliquots: [],
                 type: 'pools',
                 volume: 5,
                 concentration: 10,
                 template_prep_kit_box_barcode: 'tpkbb1',
+                barcode: 'TRAC-1',
               },
               2: {
                 id: 2,
-                tube: 2,
                 used_aliquots: [],
                 type: 'pools',
                 volume: 6,
                 concentration: 11,
                 template_prep_kit_box_barcode: 'tpkbb1',
+                barcode: 'TRAC-2',
               },
             },
             libraries: {
               1: {
                 id: 1,
-                tube: 1,
                 request: 1,
                 type: 'libraries',
                 volume: 7,
                 concentration: 12,
                 available_volume: 10,
                 template_prep_kit_box_barcode: 'tpkbb1',
+                barcode: 'TRAC-3',
               },
-              2: { id: 2, tube: 2, request: 2, type: 'libraries' },
+              2: { id: 2, request: 2, type: 'libraries', barcode: 'TRAC-4' },
             },
             aliquots: {
               1: {
@@ -334,11 +334,6 @@ describe('PacbioRunWellEdit', () => {
                 source_type: 'Pacbio::Library',
               },
             },
-            tubes: {
-              1: { barcode: 'TRAC-1', pools: [1] },
-              2: { barcode: 'TRAC-2', pools: [2] },
-              3: { barcode: 'TRAC-3', libraries: [1] },
-            },
             requests: {
               1: { id: 1, sample_name: 'sample1' },
               2: { id: 2, sample_name: 'sample2' },
@@ -351,6 +346,7 @@ describe('PacbioRunWellEdit', () => {
                 A1: well,
               },
             },
+            scannedBarcodes: ['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4'],
           },
         },
         props,
@@ -470,37 +466,37 @@ describe('PacbioRunWellEdit', () => {
             pools: {
               1: {
                 id: 1,
-                tube: 1,
                 used_aliquots: [],
                 type: 'pools',
                 volume: 10,
                 concentration: 10,
                 template_prep_kit_box_barcode: 'tpkbb1',
                 available_volume: 10,
+                barcode: 'TRAC-1',
               },
               2: {
                 id: 2,
-                tube: 2,
                 used_aliquots: [],
                 type: 'pools',
                 volume: 10,
                 concentration: 11,
                 template_prep_kit_box_barcode: 'tpkbb1',
                 available_volume: 10,
+                barcode: 'TRAC-2',
               },
             },
             libraries: {
               1: {
                 id: 1,
-                tube: 1,
                 request: 1,
                 type: 'libraries',
                 volume: 10,
                 concentration: 12,
                 template_prep_kit_box_barcode: 'tpkbb1',
                 available_volume: 10,
+                barcode: 'TRAC-3',
               },
-              2: { id: 2, tube: 2, used_aliquots: [], request: 2, type: 'libraries' },
+              2: { id: 2, used_aliquots: [], request: 2, type: 'libraries', barcode: 'TRAC-4' },
             },
             aliquots: {
               1: {
@@ -518,11 +514,6 @@ describe('PacbioRunWellEdit', () => {
                 volume: 5,
               },
             },
-            tubes: {
-              1: { barcode: 'TRAC-1', pools: [1] },
-              2: { barcode: 'TRAC-2', pools: [2] },
-              3: { barcode: 'TRAC-3', libraries: [1] },
-            },
             requests: {
               1: { id: 1, sample_name: 'sample1' },
               2: { id: 2, sample_name: 'sample2' },
@@ -535,6 +526,7 @@ describe('PacbioRunWellEdit', () => {
                 A1: well,
               },
             },
+            scannedBarcodes: ['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4'],
           },
         },
         props,
@@ -615,7 +607,7 @@ describe('PacbioRunWellEdit', () => {
     describe('updateUsedAliquotSource', () => {
       it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a pool', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'pools',
           barcode: 'TRAC-2-1',
@@ -641,7 +633,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('updates the source, available_volume and volume of the used aliquot at the given index when the source is a library', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'libraries',
           barcode: 'TRAC-2-1',
@@ -668,7 +660,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('adds an error if the volume changed to a value less than available volume of the aliquot', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue({
+        store.sourceByBarcode = vi.fn().mockReturnValue({
           id: 1,
           type: 'libraries',
           barcode: 'TRAC-2-1',
@@ -703,7 +695,7 @@ describe('PacbioRunWellEdit', () => {
 
       it('shows an alert if the source does not exist', async () => {
         store.findPoolsOrLibrariesByTube = vi.fn()
-        store.tubeContentByBarcode = vi.fn().mockReturnValue(undefined)
+        store.sourceByBarcode = vi.fn().mockReturnValue(undefined)
 
         wrapper.vm.addRow()
         await wrapper.vm.updateUsedAliquotSource({ index: 1, item: { id: '' } }, 'TRAC-2-1')

@@ -100,9 +100,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     //Libraries: The libraries that belong to the wells or the library selected for a new run
     libraries: {},
 
-    //Tubes: The tubes for each pool or the tubes selected for a new run
-    tubes: {},
-
     //Requests: The requests for the libraries or pool libraries
     requests: {},
 
@@ -126,6 +123,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Aliquots: The aliquots for the run
     aliquots: {},
+
+    // Keep track of the scanned barcodes
+    // This is to prevent libraries used in pools from appearing in the source list
+    scannedBarcodes: [],
   }),
   getters: {
     /**
@@ -146,45 +147,40 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     },
 
     /**
-     * Returns a list of all the tubes with their contents (pool or library)
+     * Returns a list of all the pools and libraries and their samples
      * @param {Object} state the pinia state object
      * @returns {Array} an array of pools and libraries
      */
-    tubeContents: (state) => {
-      // for each tube
-      return Object.values(state.tubes).reduce((result, tube) => {
-        // retrieve the barcode, id and type - pool or library
-        const { barcode } = tube
-        const { id, type } = tube.pools?.[0]
-          ? { id: tube.pools[0], type: 'pools' }
-          : { id: tube.libraries, type: 'libraries' }
+    sourceItems: (state) => {
+      return (
+        Object.values(state.libraries)
+          .concat(Object.values(state.pools))
+          // Ensure we are only calculating samples for the scanned barcodes
+          // This is to prevent libraries used in pools from being calculated
+          .filter((record) => {
+            return state.scannedBarcodes.includes(record.barcode)
+          })
+          .map((record) => {
+            let fn = null
 
-        // get the pool or library
-        const record = { barcode, ...state[type][id] }
+            // determine the function to generate samples based on the record type
+            if (record.type === 'pools') {
+              fn = generateSamplesForPools
+            } else if (record.type === 'libraries') {
+              fn = generateSamplesForLibraries
+            }
 
-        let fn = null
+            // if the type is known, generate the samples
+            const samples = fn ? fn(state, record) : []
 
-        // generate the samples function based on the type
-        if (type === 'pools') {
-          fn = generateSamplesForPools
-        }
-        if (type === 'libraries') {
-          fn = generateSamplesForLibraries
-        }
-
-        // if the type is known generate the samples
-        if (fn) {
-          const samples = fn(state, record)
-          result.push({ ...record, samples })
-        }
-
-        return result
-      }, [])
+            return { ...record, samples }
+          })
+      )
     },
 
-    tubeContentByBarcode: (state) => {
+    sourceByBarcode: (state) => {
       return (barcode) => {
-        return state.tubeContents.find((tubeContent) => tubeContent.barcode === barcode)
+        return state.sourceItems.find((item) => item.barcode === barcode)
       }
     },
 
@@ -274,9 +270,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       if (success && data.length > 0) {
         const { pools, libraries, aliquots, tags, requests } = groupIncludedByResource(included)
 
-        // populate pools, tubes, libraries, tags and requests in store
+        // Add the barcode to the scannedBarcodes list
+        this.scannedBarcodes.push(filter['barcode'])
+
+        // populate pools, libraries, tags and requests in store
         this.pools = formatById(this.pools, pools, true)
-        this.tubes = formatById(this.tubes, data, true)
         this.libraries = formatById(this.libraries, libraries, true)
         this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests)
@@ -301,7 +299,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.tube,plates.wells.pools.tube,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
       })
       const response = await handleResponse(promise)
       const { success, body: { data, included = [] } = {}, errors = [] } = response
@@ -312,7 +310,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           wells,
           pools,
           libraries,
-          tubes,
           aliquots,
           requests,
           tags,
@@ -329,7 +326,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         //Populate pools, libraries, tags, requests and tubes
         this.pools = formatById(this.pools, pools, true)
         this.libraries = formatById(this.libraries, libraries, true)
-        this.tubes = formatById(this.tubes, tubes, true)
         this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests, true)
         this.tags = formatById(this.tags, tags)
@@ -354,6 +350,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             })
           })
         })
+
+        // Populate the scannedBarcodes based on the well used_aliquots
+        this.scannedBarcodes = [
+          ...new Set(
+            Object.values(this.aliquots)
+              .filter((aliquot) => aliquot.used_by_type == 'Pacbio::Well')
+              .map((aliquot) => {
+                if (aliquot.source_type === 'Pacbio::Pool') {
+                  return this.pools[aliquot.source_id].barcode
+                }
+
+                return this.libraries[aliquot.source_id].barcode
+              }),
+          ),
+        ]
 
         this.wells = wellsByPlate
 
@@ -493,13 +504,22 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
     },
     removePool(id) {
-      // Delete the tube associated with the pool
-      delete this.tubes[this.pools[id].tube]
+      // Remove the pool barcode from the scanned barcodes
+      const pool = this.pools[id]
+      this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
+        return pool.barcode !== barcode
+      })
+
+      // Remove the pool from the store
       delete this.pools[id]
     },
     removeLibrary(id) {
-      // Delete the tube associated with the library
-      delete this.tubes[this.libraries[id].tube]
+      // Remove the library barcode from the scanned barcodes
+      const library = this.libraries[id]
+      this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
+        return library.barcode !== barcode
+      })
+
       delete this.libraries[id]
     },
     clearRunData() {
