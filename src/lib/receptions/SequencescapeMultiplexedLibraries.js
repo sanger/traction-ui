@@ -8,7 +8,7 @@ const labwareRequestConfig = {
   include:
     'receptacles.aliquots.library.aliquots.sample.sample_metadata,receptacles.aliquots.library.aliquots.study,receptacles.aliquots.library.aliquots,receptacles.aliquots.library.labware.receptacles',
   fields: {
-    tubes: 'labware_barcode,receptacles,retention_instruction',
+    tubes: 'labware_barcode,receptacles',
     labware: 'labware_barcode,receptacles',
     receptacles: 'aliquots',
     samples: 'sample_metadata,name,uuid',
