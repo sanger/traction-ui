@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { wellToIndex, sourceRegex } from './utilities/wellHelpers.js'
+import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
+import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
   validate,
@@ -10,8 +11,9 @@ import {
   payload,
   autoTagPlate,
   autoTagTube,
+  buildTagAttributes,
+  findRequestsForSource,
 } from './utilities/ontPool.js'
-
 /**
  * Used for combining objects based on id
  * TODO: Move to helper
@@ -458,6 +460,73 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           this.pooling.libraries = taggedLibraries
         }
       }
+    },
+    selectPlate(id, selected = true) {
+      if (selected) {
+        this.selected.plates[`${id}`] = { id: id, selected: true }
+      } else {
+        delete this.selected.plates[`${id}`]
+      }
+    },
+    /**
+     * Selects of deselects a tube based on the params
+     * @param state The Vuex state
+     * @param id The id of the tube to select
+     * @param selected Defaults to true, selects or deselects the tube
+     */
+    selectTube(id, selected = true) {
+      if (selected) {
+        this.selected.tubes[`${id}`] = { id: id, selected: true }
+      } else {
+        delete this.selected.tubes[`${id}`]
+      }
+    },
+    updateLibraryFromCsvRecord({ record: { source, tag, ...attributes }, info }) {
+      const rootStore = useRootStore()
+      if (!source) {
+        rootStore.addCSVLogMessage(info, 'has no source')
+        return
+      }
+
+      const match = source.match(sourceRegex)
+      const sourceData = match?.groups || { barcode: source }
+
+      const { success, errors, requestIds, ...labware } = findRequestsForSource({
+        sourceData,
+        resources: this.resources,
+      })
+      if (!success) {
+        rootStore.addCSVLogMessage(info, errors)
+        return
+      }
+      if (requestIds.length === 0) {
+        rootStore.addCSVLogMessage(info, `no requests associated with ${source}`)
+        return
+      }
+
+      const tagAttributes = buildTagAttributes(this.selectedTagSet, tag)
+      if (tagAttributes.error) {
+        rootStore.addCSVLogMessage(info, tagAttributes.error)
+        return
+      }
+
+      //Select the plate or tube based on the source
+      labware.plate
+        ? this.selectPlate(labware.plate.id, true)
+        : this.selectTube(labware.tube.id, true)
+
+      requestIds.forEach((ont_request_id) => {
+        if (!this.pooling.libraries[ont_request_id]) {
+          // We're adding a library
+          rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
+        }
+        this.pooling.libraries[`${ont_request_id}`] = {
+          ...this.pooling.libraries[ont_request_id],
+          ont_request_id,
+          ...tagAttributes,
+          ...attributes,
+        }
+      })
     },
   },
 })
