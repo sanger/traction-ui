@@ -6,8 +6,8 @@ import { fetchLabwareFromSequencescape, labwareTypes } from './sequencescapeUtil
 const labwareRequestConfig = {
   include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
   fields: {
-    plates: 'labware_barcode,receptacles',
-    tubes: 'labware_barcode,receptacles',
+    plates: 'labware_barcode,receptacles,retention_instruction',
+    tubes: 'labware_barcode,receptacles,retention_instruction',
     wells: 'position,aliquots',
     receptacles: 'aliquots',
     samples: 'sample_metadata,name,uuid',

@@ -115,6 +115,7 @@ const transformAllLabware = ({
         requestOptions,
         libraryOptions,
         barcodeAttribute: labwareType.barcodeAttribute,
+        retention_instruction: labware.attributes.retention_instruction,
       }),
     )
 
@@ -183,7 +184,7 @@ const getIncludedData = ({ labware, included }) => {
  * @param {Object} requestOptions Additional request parameters, will over-ride any current attributes
  * @returns {Object} Object containing the request and sample objects
  */
-const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, requestOptions }) => {
+const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, requestOptions,retention_instruction=null }) => {
   return {
     request: {
       external_study_id: study.attributes.uuid,
@@ -194,6 +195,7 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
       external_id: sample.attributes.uuid,
       name: sample.attributes.name,
       species: sample_metadata.attributes.sample_common_name,
+      retention_instruction
     },
   }
 }
@@ -246,7 +248,7 @@ const buildPool = ({ labware, included, barcodeAttribute, libraryOptions }) => {
  * @param {Object} requestOptions Additional request parameters, will over-ride any
  * @returns {Object} tubes_attributes object ready for import into traction
  */
-const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) => {
+const transformTube = ({ labware, included, requestOptions, barcodeAttribute, retention_instruction = null }) => {
   // find the receptacle in the included data
   const receptacle = findIncluded({
     included,
@@ -263,7 +265,7 @@ const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) 
   return {
     barcode: labware.attributes.labware_barcode[barcodeAttribute],
     // build the request and sample objects
-    ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+    ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions, retention_instruction }),
   }
 }
 
@@ -272,6 +274,7 @@ const transformMultiplexedLibraryTube = ({
   requestOptions,
   barcodeAttribute,
   libraryOptions,
+  retention_instruction = null,
 }) => {
   const included_labware = included.filter((item) => item.type === 'labware')
   const child_library_tubes = included_labware.map((child_library_tube) => {
@@ -289,7 +292,7 @@ const transformMultiplexedLibraryTube = ({
     return {
       barcode: child_library_tube.attributes.labware_barcode[barcodeAttribute],
       // build the request and sample objects
-      ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+      ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions, retention_instruction }),
       ...buildLibrary({ aliquot, sample_metadata, libraryOptions }),
     }
   })
@@ -304,7 +307,7 @@ const transformMultiplexedLibraryTube = ({
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * @returns { Object } plates_attributes object ready for import into traction
  */
-const transformPlate = ({ labware, included, requestOptions, barcodeAttribute }) => {
+const transformPlate = ({ labware, included, requestOptions, barcodeAttribute, retention_instruction =null }) => {
   return {
     barcode: labware.attributes.labware_barcode[barcodeAttribute],
     // for the receptacle data, we need to map over the wells and build a request for each
@@ -327,7 +330,7 @@ const transformPlate = ({ labware, included, requestOptions, barcodeAttribute })
         return {
           position: well.attributes.position.name,
           // build the request and sample objects
-          ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+          ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions, retention_instruction }),
         }
         // filter out any wells that don't have aliquots
       })
