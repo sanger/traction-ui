@@ -28,14 +28,4 @@ const wellNameToCoordinate = (position) => [
   position.toUpperCase().charCodeAt(0) - 65,
 ]
 
-/**
- * This regular expression matches string that start with an alphanumeric string or hyphens (captured in a group called 'barcode')
- * followed by an optional colon and a well name (captured as 'wellName').
- * The well name is a letter followed by a number or two numbers.
- *
- * @type {RegExp}
- * @example "TRAC-1:A1"
- */
-const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
-
-export { wellFor, wellToIndex, wellNameToCoordinate, sourceRegex }
+export { wellFor, wellToIndex, wellNameToCoordinate }
