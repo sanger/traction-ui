@@ -5,7 +5,6 @@ import {
   failedResponse,
 } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
-// import { useOntRootStore } from '@/stores/ontRoot.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
@@ -633,15 +632,257 @@ describe('useOntPoolCreateStore', () => {
         })
       })
 
-      it.skip('applies tags to tubes with a higher index when autoTag is true', async () => {
+      it('applies tags to tubes with a higher index when autoTag is true', async () => {
         const autoTag = true
         const library = { ont_request_id: '192', tag_id: '385' }
 
         await store.applyTags(library, autoTag)
-        expect(store.pooling.libraries[library.ont_request_id]).toEqual({
-          ont_request_id: '192',
-          tag_id: '385',
+        // console.log(store.pooling.libraries)
+        const libraries = Object.values(store.pooling.libraries).filter(
+          (lib) => Number(lib.ont_request_id) > Number(library.ont_request_id),
+        )
+        libraries.forEach((lib, index) => {
+          const actualTagId = Number(library.tag_id) + index + 1
+          expect(lib.tag_id).toBe(String(actualTagId))
         })
+      })
+    })
+
+    describe('updateLibraryFromCsvRecord', () => {
+      const info = {
+        lines: 3,
+        records: 2,
+      }
+      beforeEach(() => {
+        store.$state = ontAutoTagFactory.storeData
+        vi.spyOn(store, 'selectedTagSet', 'get').mockReturnValue({
+          id: '8',
+          type: 'tags',
+          name: 'ont_native',
+          pipeline: 'ont',
+          tags: [
+            { id: '385', type: 'tags', oligo: 'CACAAAGACACCGACAACTTTCTT', group_id: 'NB01' },
+            { id: '386', type: 'tags', oligo: 'ACAGACGACTACAAACGGAATCGA', group_id: 'NB02' },
+            { id: '387', type: 'tags', oligo: 'CCTGGTAACTGGGACACAAGACTC', group_id: 'NB03' }, // info
+            { id: '388', type: 'tags', oligo: 'TAGGGAAACACGATAGAATCCGAA', group_id: 'NB04' },
+            { id: '389', type: 'tags', oligo: 'AAGGTTACACAAACCCTGGACAAG', group_id: 'NB05' },
+            { id: '390', type: 'tags', oligo: 'GACTACTTTCTGCCTTTGCGAGAA', group_id: 'NB06' },
+          ],
+        })
+        rootStore.addCSVLogMessage = vi.fn()
+      })
+      it('updates the corresponding library', async () => {
+        const record = {
+          source: 'GEN-1668092750-1:C1',
+          tag: 'NB03',
+          insert_size: 12345,
+          concentration: 10,
+          volume: 20,
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+        expect(store.pooling.libraries).toEqual(
+          expect.objectContaining({
+            3: {
+              ont_request_id: '3',
+              tag_id: '387',
+              insert_size: 12345,
+              concentration: 10,
+              volume: 20,
+            },
+          }),
+        )
+      })
+
+      it('updates the corresponsing library for tubes', async () => {
+        const record = {
+          source: 'GEN-1668092750-5',
+          tag: 'NB03',
+          insert_size: 12345,
+          concentration: 10,
+          volume: 20,
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+
+        expect(store.pooling.libraries).toEqual(
+          expect.objectContaining({
+            193: {
+              ont_request_id: '193',
+              tag_id: '387',
+              insert_size: 12345,
+              concentration: 10,
+              volume: 20,
+            },
+          }),
+        )
+      })
+
+      it('records an error when source is missing', async () => {
+        const record = {
+          tag: 'NB03',
+          insert_size: 12345,
+          concentration: 10,
+          volume: 20,
+        }
+        store.updateLibraryFromCsvRecord({ record, info })
+        expect(rootStore.addCSVLogMessage).toHaveBeenCalledWith(info, 'has no source')
+      })
+
+      it('records an error when the plate cant be found', async () => {
+        const record = {
+          source: 'GEN-1111111111-1:A1',
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+
+        expect(rootStore.addCSVLogMessage).toHaveBeenCalledWith(
+          info,
+          'GEN-1111111111-1 could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
+        )
+      })
+
+      it('records an error when the well cant be found', async () => {
+        const record = {
+          source: 'GEN-1668092750-1:X1',
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+        expect(rootStore.addCSVLogMessage).toHaveBeenCalledWith(
+          info,
+          'A well named X1 could not be found on GEN-1668092750-1',
+        )
+      })
+
+      it('records an error when the tag cant be found', async () => {
+        const record = {
+          source: 'GEN-1668092750-2:B1',
+          tag: 'NB100',
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+
+        expect(rootStore.addCSVLogMessage).toHaveBeenCalledWith(
+          info,
+          'Could not find a tag named NB100 in selected tag group',
+        )
+      })
+
+      it('flags the plate as selected', async () => {
+        const record = {
+          source: 'GEN-1668092750-1:A1',
+          tag: 'NB01',
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+        expect(store.selected.plates).toEqual(
+          expect.objectContaining({ 1: { id: '1', selected: true } }),
+        )
+      })
+
+      it('notifies of request addition', async () => {
+        const record = {
+          source: 'GEN-1668092750-1:F1',
+          tag: 'NB03',
+          insert_size: 12345,
+          concentration: 10,
+          volume: 20,
+        }
+
+        store.updateLibraryFromCsvRecord({ record, info })
+        expect(rootStore.addCSVLogMessage).toHaveBeenCalledWith(
+          info,
+          'Added GEN-1668092750-1:F1 to pool',
+          'info',
+        )
+      })
+    })
+
+    describe('selectPlate', () => {
+      it('selects a plate by default', () => {
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            plates: {
+              1: { id: '1', wells: ['10'] },
+              2: { id: '2', wells: ['20'] },
+            },
+          },
+          selected: {
+            plates: { 2: { id: '2', selected: true } },
+          },
+        }
+        store.selectPlate('1')
+        expect(store.selected.plates).toEqual({
+          1: { id: '1', selected: true },
+          2: { id: '2', selected: true },
+        })
+      })
+
+      it('unselects plates', () => {
+        // mock state
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            plates: {
+              1: { id: '1', wells: ['10'] },
+              2: { id: '2', wells: ['20'] },
+            },
+          },
+          selected: {
+            plates: { 1: { id: '1', selected: true }, 2: { id: '2', selected: true } },
+          },
+        }
+        // apply mutation
+        store.selectPlate('2', false)
+        expect(store.selected.plates).toEqual({ 1: { id: '1', selected: true } })
+      })
+    })
+
+    describe('selectTube', () => {
+      it('selects a tube by default', () => {
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            tubes: {
+              2: { id: '2' },
+            },
+          },
+          selected: {
+            tubes: {
+              2: { id: '2', selected: true },
+            },
+          },
+        }
+
+        store.selectTube('1')
+        expect(store.selected.tubes).toEqual({
+          1: { id: '1', selected: true },
+          2: { id: '2', selected: true },
+        })
+      })
+
+      it('unselects tubes', () => {
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            tubes: {
+              2: { id: '2' },
+            },
+          },
+          selected: {
+            tubes: {
+              2: { id: '2', selected: true },
+            },
+          },
+        }
+        // apply mutation
+        store.selectTube('2', false)
+        expect(store.selected.tubes).toEqual({})
       })
     })
   })
