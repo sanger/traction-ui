@@ -6,6 +6,8 @@ import {
   autoTagPlate,
   tubeFor,
   autoTagTube,
+  buildTagAttributes,
+  findRequestsForSource,
 } from '@/stores/utilities/ontPool.js'
 
 describe('ontPool.js', () => {
@@ -293,5 +295,111 @@ describe('autoTagTube', () => {
     })
 
     expect(result).toEqual({})
+  })
+})
+
+describe('buildTagAttributes', () => {
+  const selectedTagSet = {
+    tags: [
+      { id: '1', group_id: 'NB01' },
+      { id: '2', group_id: 'NB02' },
+    ],
+  }
+
+  it('returns the tag_id when a matching tag is found', () => {
+    const tag = 'NB01'
+
+    const result = buildTagAttributes(selectedTagSet, tag)
+
+    expect(result).toEqual({ tag_id: '1' })
+  })
+
+  it('returns an empty object when no tag is provided', () => {
+    const tag = null
+
+    const result = buildTagAttributes(selectedTagSet, tag)
+
+    expect(result).toEqual({})
+  })
+
+  it('returns an error object when the tag is not found', () => {
+    const tag = 'NB03'
+
+    const result = buildTagAttributes(selectedTagSet, tag)
+
+    expect(result).toEqual({
+      error: 'Could not find a tag named NB03 in selected tag group',
+    })
+  })
+})
+
+describe('findRequestsForSource', () => {
+  const plates = {
+    plate1: { barcode: 'PLATE123', wells: ['well1', 'well2'] },
+  }
+
+  const wells = {
+    well1: { position: 'A1', requests: ['req1'] },
+    well2: { position: 'B1', requests: ['req2'] },
+  }
+
+  const tubes = {
+    tube1: { barcode: 'TUBE123', requests: ['req3'] },
+  }
+
+  it('returns request IDs for a valid plate and well', () => {
+    const sourceData = { barcode: 'PLATE123', wellName: 'A1' }
+    const resources = { plates, wells, tubes }
+
+    const result = findRequestsForSource({ sourceData, resources })
+
+    expect(result).toEqual({ success: true, requestIds: ['req1'], plate: plates.plate1 })
+  })
+
+  it('returns an error if the plate barcode is not found', () => {
+    const sourceData = { barcode: 'INVALID_PLATE', wellName: 'A1' }
+    const resources = { plates, wells, tubes }
+
+    const result = findRequestsForSource({ sourceData, resources })
+
+    expect(result).toEqual({
+      success: false,
+      errors:
+        'INVALID_PLATE could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
+    })
+  })
+
+  it('returns an error if the well name is not found on the plate', () => {
+    const sourceData = { barcode: 'PLATE123', wellName: 'C1' }
+    const resources = { plates, wells, tubes }
+
+    const result = findRequestsForSource({ sourceData, resources })
+
+    expect(result).toEqual({
+      success: false,
+      errors: 'A well named C1 could not be found on PLATE123',
+    })
+  })
+
+  it('returns request IDs for a valid tube', () => {
+    const sourceData = { barcode: 'TUBE123' }
+    const resources = { plates, wells, tubes }
+
+    const result = findRequestsForSource({ sourceData, resources })
+
+    expect(result).toEqual({ success: true, requestIds: ['req3'], tube: tubes.tube1 })
+  })
+
+  it('returns an error if the tube barcode is not found', () => {
+    const sourceData = { barcode: 'INVALID_TUBE' }
+    const resources = { plates, wells, tubes }
+
+    const result = findRequestsForSource({ sourceData, resources })
+
+    expect(result).toEqual({
+      success: false,
+      errors:
+        'INVALID_TUBE could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
+    })
   })
 })
