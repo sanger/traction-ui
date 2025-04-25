@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { wellToIndex, wellFor, sourceRegex } from '@/stores/utilities/wellHelpers.js'
+import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
@@ -12,6 +12,7 @@ import {
 } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { barcodeNotFound, sourceRegex } from '@/stores/utilities/helpers.js'
 
 /**
  * Merge together two representations of the same object.
@@ -61,16 +62,6 @@ const sortRequestByLabware = (resources) => (a, b) => {
     return parseInt(a.tube || 0) - parseInt(b.tube || 0)
   }
 }
-
-/**
- * Generates an error message for a barcode that could not be found.
- * The message includes the format that the barcode should be in for plates and tubes.
- *
- * @param {string} barcode - The barcode that could not be found.
- * @returns {string} The generated error message.
- */
-const barcodeNotFound = (barcode) =>
-  `${barcode} could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.`
 
 /**
  * Defines a store for managing Pacbio pool creation.
