@@ -1,4 +1,6 @@
 import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
+import { barcodeNotFound } from '@/stores/utilities/helpers.js'
+
 const libraryAttributes = {
   ont_request_id: null,
   kit_barcode: null,
@@ -210,6 +212,96 @@ const autoTagTube = ({ tagSets, tubes, selectedTagSet, selectedRequests, librari
   )
 }
 
+/**
+ * Builds the tag attributes for a library based on the selected tag set and tag group ID.
+ *
+ * @param {Object} selectedTagSet - The selected tag set containing available tags.
+ * @param {String} tag - The group ID of the tag to find within the selected tag set.
+ * @param {Function} error - A callback function to handle errors, typically for user feedback.
+ * @returns {Object} - An object containing the `tag_id` if a matching tag is found, or an empty object if no tag is provided.
+ *
+ * @throws Will invoke the `error` callback if the specified tag is not found in the selected tag set.
+ *
+ * @description
+ * This function searches for a tag within the selected tag set using the provided group ID (`tag`).
+ * If a matching tag is found, it returns an object containing the `tag_id` of the matched tag.
+ * If no tag is provided, it returns an empty object.
+ * If the tag is not found, the `error` callback is invoked with a descriptive error message.
+ *
+ * Example:
+ * ```javascript
+ * const selectedTagSet = {
+ *   tags: [
+ *     { id: '1', group_id: 'NB01' },
+ *     { id: '2', group_id: 'NB02' },
+ *   ],
+ * }
+ * const tag = 'NB01'
+ * const error = (message) => console.error(message)
+ * const result = buildTagAttributes(selectedTagSet, tag, error)
+ * console.log(result) // Output: { tag_id: '1' }
+ * ```
+ */
+const buildTagAttributes = (selectedTagSet, tag) => {
+  if (!tag) return {}
+  const matchedTag = selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+  if (matchedTag) {
+    return { tag_id: matchedTag.id }
+  } else {
+    return { error: `Could not find a tag named ${tag} in selected tag group` }
+  }
+}
+
+/**
+ * Finds the requests associated with a given plate
+ * @param {String} barcode - The plate barcode to find requests for
+ * @param wellName the location of the plate well
+ * @param plates a list of the vuex plate resources
+ * @param commit the vuex commit object. Provides access to mutations
+ * @param wells a list of the vuex well resources
+ * @returns {Object} Request ids / errors and success state
+ */
+const requestsForPlate = ({ barcode, wellName, plates, wells }) => {
+  const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+  if (!plate) return { success: false, errors: barcodeNotFound(barcode) }
+  const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+  if (!wellId)
+    return {
+      success: false,
+      errors: `A well named ${wellName} could not be found on ${barcode}`,
+    }
+  return { success: true, plate, requestIds: wells[wellId].requests }
+}
+
+/**
+ * Finds the requests associated with a given tube
+ * @param {String} barcode - The tube barcode to find requests for
+ * @param tubes the list of tube resources from the vuex state
+ * @returns {Object} Request ids / errors and success state
+ */
+const requestsForTube = ({ barcode, tubes }) => {
+  const tube = Object.values(tubes).find((tube) => tube.barcode == barcode)
+  if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
+  return { success: true, tube, requestIds: tube.requests }
+}
+
+/**
+ * Finds the requests associated with a given source
+ * @param {Object} sourceData - Data about the source to find requests for
+ * @param resources the vuex state resources object. Provides access to current state resources
+ * @returns {Object} Request ids / errors and success state
+ */
+const findRequestsForSource = ({
+  sourceData: { barcode, wellName },
+  resources: { plates, wells, tubes },
+}) => {
+  if (wellName) {
+    return requestsForPlate({ barcode, wellName, plates, wells })
+  } else {
+    return requestsForTube({ barcode, tubes })
+  }
+}
+
 export {
   libraryAttributes,
   newLibrary,
@@ -219,4 +311,6 @@ export {
   autoTagPlate,
   tubeFor,
   autoTagTube,
+  buildTagAttributes,
+  findRequestsForSource,
 }
