@@ -19,6 +19,7 @@ const ontPlateFactory = OntPlateFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
+const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
 // const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
@@ -883,6 +884,59 @@ describe('useOntPoolCreateStore', () => {
         // apply mutation
         store.selectTube('2', false)
         expect(store.selected.tubes).toEqual({})
+      })
+    })
+
+    describe.skip('setPoolData', () => {
+      it('sets the pool data for the given pool id', async () => {
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+        // apply action
+        const { success } = await store.setPoolData(3)
+
+        // check pool has been populated
+
+        // check pooling libaries have been populated
+        // check pooling tube has been populated
+        // check requests have been populated
+        // check wells have been populated
+        // check plates have been populated
+        // check tubes have been populated
+        // check tag set has been populated
+
+        // expect(commit).toHaveBeenCalledWith(
+        //   'populatePoolAttributes',
+        //   singleOntPoolFactory.content.data,
+        // )
+        // expect(commit).toHaveBeenCalledWith(
+        //   'populatePoolingLibraries',
+        //   singleOntPoolFactory.storeData.libraries,
+        // )
+        // expect(commit).toHaveBeenCalledWith(
+        //   'populatePoolingTube',
+        //   singleOntPoolFactory.storeData.poolingTube,
+        // )
+        // expect(commit).toHaveBeenCalledWith(
+        //   'populateRequests',
+        //   singleOntPoolFactory.storeData.requests,
+        // )
+        // expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.storeData.wells)
+        // expect(commit).toHaveBeenCalledWith('populatePlates', singleOntPoolFactory.storeData.plates)
+        // expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.storeData.tubes)
+        // expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.storeData.tag_set)
+
+        expect(success).toEqual(true)
+      })
+
+      it('only clears the pool data when the id is not a number', async () => {
+        const find = vi.fn()
+        this.rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+
+        const { success, errors } = await this.setPoolData('new')
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
       })
     })
   })

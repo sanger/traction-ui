@@ -481,20 +481,46 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         delete this.selected.tubes[`${id}`]
       }
     },
+    /**
+     * Updates the library data from a CSV record.
+     *
+     * @param {Object} params - The parameters for the function.
+     * @param {Object} params.record - The CSV record containing the library data.
+     * @param {string} params.record.source - The source identifier (e.g., barcode or well).
+     * @param {string} params.record.tag - The tag associated with the library.
+     * @param {Object} params.record.attributes - Additional attributes for the library.
+     * @param {Object} params.info - Information about the CSV record (e.g., row number).
+     *
+     * @description
+     * This function processes a CSV record to update the library data. It:
+     * - Validates the presence of a source identifier in the record.
+     * - Matches the source identifier to extract relevant data (e.g., barcode or well).
+     * - Finds requests associated with the source and validates their existence.
+     * - Builds tag attributes for the library based on the selected tag set.
+     * - Selects the plate or tube associated with the source.
+     * - Updates the pooling libraries with the new library data, including tag attributes and additional attributes.
+     * - Logs messages for any errors or successful updates.
+     */
     updateLibraryFromCsvRecord({ record: { source, tag, ...attributes }, info }) {
       const rootStore = useRootStore()
+
+      // Validate the presence of a source identifier
       if (!source) {
         rootStore.addCSVLogMessage(info, 'has no source')
         return
       }
 
+      // Match the source identifier to extract relevant data
       const match = source.match(sourceRegex)
       const sourceData = match?.groups || { barcode: source }
 
+      // Find requests associated with the source
       const { success, errors, requestIds, ...labware } = findRequestsForSource({
         sourceData,
         resources: this.resources,
       })
+
+      // Handle errors or missing requests
       if (!success) {
         rootStore.addCSVLogMessage(info, errors)
         return
@@ -504,20 +530,22 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         return
       }
 
+      // Build tag attributes for the library
       const tagAttributes = buildTagAttributes(this.selectedTagSet, tag)
       if (tagAttributes.error) {
         rootStore.addCSVLogMessage(info, tagAttributes.error)
         return
       }
 
-      //Select the plate or tube based on the source
+      // Select the plate or tube associated with the source
       labware.plate
         ? this.selectPlate(labware.plate.id, true)
         : this.selectTube(labware.tube.id, true)
 
+      // Update the pooling libraries with the new library data
       requestIds.forEach((ont_request_id) => {
         if (!this.pooling.libraries[ont_request_id]) {
-          // We're adding a library
+          // Log a message for adding a new library
           rootStore.addCSVLogMessage(info, `Added ${source} to pool`, 'info')
         }
         this.pooling.libraries[`${ont_request_id}`] = {

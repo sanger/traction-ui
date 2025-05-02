@@ -302,6 +302,47 @@ const findRequestsForSource = ({
   }
 }
 
+/**
+ * Populates pooling libraries by transforming the given libraries into a structured format.
+ *
+ * @param {Object} libraries - An object where each key is a library ID and the value is the library data.
+ * @returns {Object} - A new object where each key is the `ont_request_id` (derived from the library's `request` field),
+ *                     and the value is a library object with standardized attributes.
+ *
+ * @description
+ * This function processes a collection of libraries and transforms them into a structured format suitable for pooling.
+ * It:
+ * - Iterates over the provided libraries.
+ * - Creates a new library object for each entry using the `newLibrary` function.
+ * - Maps the `request` field of each library to the `ont_request_id` field in the resulting object.
+ * - Includes the `tag_id` field from the original library data.
+ *
+ * Example:
+ * ```javascript
+ * const libraries = {
+ *   1: { request: 'req1', tag: 'tag1', volume: 10 },
+ *   2: { request: 'req2', tag: 'tag2', volume: 15 },
+ * }
+ * const result = populatePoolingLibraries(libraries)
+ * console.log(result)
+ * // Output:
+ * // {
+ * //   req1: { ont_request_id: 'req1', tag_id: 'tag1', volume: 10, ...defaultAttributes },
+ * //   req2: { ont_request_id: 'req2', tag_id: 'tag2', volume: 15, ...defaultAttributes },
+ * // }
+ * ```
+ */
+const populatePoolingLibraries = (libraries) => {
+  return Object.values(libraries).reduce((result, library) => {
+    const libraryObject = newLibrary({
+      ...library,
+      ont_request_id: library.request,
+      tag_id: library.tag,
+    })
+    return { ...result, [library.request]: libraryObject }
+  }, {})
+}
+
 export {
   libraryAttributes,
   newLibrary,
@@ -313,4 +354,5 @@ export {
   autoTagTube,
   buildTagAttributes,
   findRequestsForSource,
+  populatePoolingLibraries,
 }

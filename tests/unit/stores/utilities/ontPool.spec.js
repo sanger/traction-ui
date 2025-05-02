@@ -8,6 +8,8 @@ import {
   autoTagTube,
   buildTagAttributes,
   findRequestsForSource,
+  populatePoolingLibraries,
+  newLibrary,
 } from '@/stores/utilities/ontPool.js'
 
 describe('ontPool.js', () => {
@@ -400,6 +402,54 @@ describe('findRequestsForSource', () => {
       success: false,
       errors:
         'INVALID_TUBE could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
+    })
+  })
+})
+
+describe('populatePoolingLibraries', () => {
+  it('transforms libraries into a structured format', () => {
+    const libraries = {
+      1: { request: 'req1', tag: 'tag1', volume: 10 },
+      2: { request: 'req2', tag: 'tag2', volume: 15 },
+    }
+
+    const result = populatePoolingLibraries(libraries)
+
+    expect(result).toEqual({
+      req1: { ...newLibrary(), ont_request_id: 'req1', tag_id: 'tag1', ...libraries[1] },
+      req2: { ...newLibrary(), ont_request_id: 'req2', tag_id: 'tag2', ...libraries[2] },
+    })
+  })
+
+  it('handles an empty libraries object', () => {
+    const libraries = {}
+
+    const result = populatePoolingLibraries(libraries)
+
+    expect(result).toEqual({})
+  })
+
+  it('includes default attributes for each library', () => {
+    const libraries = {
+      1: { request: 'req1', tag: 'tag1', volume: 10 },
+    }
+
+    const result = populatePoolingLibraries(libraries)
+
+    expect(result).toEqual({
+      req1: { ...newLibrary(), ont_request_id: 'req1', tag_id: 'tag1', ...libraries[1] },
+    })
+  })
+
+  it('overrides default attributes with provided library data', () => {
+    const libraries = {
+      1: { request: 'req1', tag: 'tag1', volume: 10, concentration: 20 },
+    }
+
+    const result = populatePoolingLibraries(libraries)
+
+    expect(result).toEqual({
+      req1: { ...newLibrary(), ont_request_id: 'req1', tag_id: 'tag1', ...libraries[1] },
     })
   })
 })
