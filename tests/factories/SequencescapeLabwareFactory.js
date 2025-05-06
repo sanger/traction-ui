@@ -17,6 +17,7 @@ const SequencescapeLabwareFactory = () => {
             machine_barcode: 'DN9000002A',
             human_barcode: 'DN9000002A',
           },
+          retention_instruction: 'destroy_after_2_years',
         },
         relationships: {
           receptacles: {
@@ -135,6 +136,7 @@ const SequencescapeLabwareFactory = () => {
             machine_barcode: '3980000001795',
             human_barcode: 'NT1O',
           },
+          retention_instruction: 'return_to_customer_after_2_years',
         },
         relationships: {
           receptacles: {

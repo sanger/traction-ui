@@ -52,6 +52,7 @@ describe('SequencescapeTubes', () => {
               name: '2STDY97',
               external_id: '0db37dd8-94ca-11ec-a9e3-acde48001122',
               species: 'Gryphon',
+              retention_instruction: 'return_to_customer_after_2_years',
             },
           },
         ],
