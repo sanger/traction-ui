@@ -186,8 +186,57 @@ const scanBarcodesInLabwhereLocationV2 = async (
 
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
+
+/**
+ * Fetches labware locations from Labwhere using the provided barcodes.
+ *
+ * @async
+ * @function getLabwhereLocationsV2
+ * @param {string[]} labwhereBarcodes - An array of labware barcodes to search for.
+ * @param {Object} [fetchWrapper=labwhereFetchv2] - An optional fetch wrapper for making HTTP requests.
+ * @param {Function} fetchWrapper.post - A function to perform POST requests.
+ * @returns {Promise<Object>} A promise that resolves to an object containing:
+ *   - `success` {boolean}: Indicates whether the request was successful.
+ *   - `errors` {string[]}: An array of error messages, if any.
+ *   - `data` {Object}: The response data, including extracted locations for the provided barcodes.
+ *
+ * @throws {Error} Throws an error if the fetch request fails.
+ *
+ * @example
+ * const barcodes = ['ABC123', 'DEF456'];
+ * const result = await getLabwhereLocationsV2(barcodes);
+ * if (result.success) {
+ *   console.log('Locations:', result.data);
+ * } else {
+ *   console.error('Errors:', result.errors);
+ * }
+ */
+const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereFetchV2) => {
+  // If no barcodes are provided, return a failed response.
+  if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
+    return { success: false, errors: ['No barcodes provided'], data: {} }
+  }
+
+  console.log('Labwhere barcodes:', labwhereBarcodes)
+
+  const response = await fetchWrapper.post('/searches', {
+    labware_barcodes: labwhereBarcodes.join('\n'),
+  },
+    'application/json',
+  )
+
+  console.log(response)
+
+  if (response.success) {
+    response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
+  }
+  return response
+}
+
+
 export {
   getLabwhereLocations,
+  getLabwhereLocationsV2,
   scanBarcodesInLabwhereLocation,
   exhaustLibraryVolumeIfDestroyed,
   scanBarcodesInLabwhereLocationV2,
