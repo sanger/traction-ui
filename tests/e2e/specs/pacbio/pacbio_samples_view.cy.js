@@ -3,15 +3,13 @@ import PrinterFactory from '../../../factories/PrinterFactory.js'
 import PacbioRequestFactory from '../../../factories/PacbioRequestFactory.js'
 import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
 
-describe('Pacbio library creation from sample', () => {
+describe('Pacbio samples view', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.wrap(PacbioRequestFactory({ includeRelationships: false })).as('pacbioRequestFactory')
     cy.wrap(PacbioLibraryFactory({ count: 1 })).as('pacbioLibraryFactory')
-  })
 
-  it('Visits the pacbio samples url', () => {
     cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
       cy.intercept('/v1/pacbio/requests?page[size]=25&page[number]=1', {
         statusCode: 200,
@@ -43,7 +41,41 @@ describe('Pacbio library creation from sample', () => {
         },
       },
     })
+  })
 
+  it('Visits the pacbio samples url and displays data', () => {
+    cy.visit('#/pacbio/samples')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue')
+      .children()
+      .should('contain', 'Source')
+      .and('contain', 'Species')
+      .and('contain', 'Name')
+
+    cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+      cy.get('#samples-table')
+        .find('tr')
+        .should('have.length', pacbioRequestFactory.content.data.length + 1)
+    })
+    // Define an array of all column keys
+    const columnKeys = [
+      'id',
+      'sample_name',
+      'sample_species',
+      'source_identifier',
+      'location',
+      'sample_retention_instruction',
+      'created_at',
+    ]
+    // Iterate over the column IDs and verify each has a length greater than 0
+    columnKeys.forEach((columnKey) => {
+      cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
+    })
+  })
+
+  it('creates a library  successfully', () => {
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')
     cy.get('#samples-table').first().click()
@@ -54,6 +86,7 @@ describe('Pacbio library creation from sample', () => {
       cy.get('#tag-set-input').select(pacbioTagSetFactory.storeData.selected.tagSet.name)
       cy.get('#tag-input').select(pacbioTagSetFactory.storeData.selected.tag.group_id)
     })
+
     cy.get('#library-volume').type(1)
     cy.get('#library-concentration').type(1)
     cy.get('#library-templatePrepKitBoxBarcode').type('012345678901234567890')
