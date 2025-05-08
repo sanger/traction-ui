@@ -1,7 +1,7 @@
 import { formatRequests } from '@/lib/requestHelpers.js'
 
 describe('formatRequests', () => {
-  it.only('formats requests with humanized sample_retention_instruction', () => {
+  it('formats requests with humanized sample_retention_instruction', () => {
     const requests = [
       { id: 1, sample_retention_instruction: 'return_to_customer_after_2_years', barcode: 'BC123' },
       { id: 2, sample_retention_instruction: 'long_term_storage', barcode: 'BC124' },
