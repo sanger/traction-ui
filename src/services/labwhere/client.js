@@ -37,10 +37,9 @@ const getLabwhereLocations = async (labwhereBarcodes, fetchWrapper = labwhereFet
 
   const response = await fetchWrapper.post('/api/labwares/searches', params, 'multipart/form-data')
 
-  if (response.success) {
-    response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
-  }
-  return response
+  return response.success
+    ? { ...response, data: extractLocationsForLabwares(response.data, labwhereBarcodes) }
+    : response
 }
 
 /**
