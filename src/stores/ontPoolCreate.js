@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi.js'
+import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
 import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
@@ -13,6 +13,7 @@ import {
   autoTagTube,
   buildTagAttributes,
   findRequestsForSource,
+  populatePoolingLibraries,
 } from './utilities/ontPool.js'
 /**
  * Used for combining objects based on id
@@ -555,6 +556,62 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           ...attributes,
         }
       })
+    },
+
+    /**
+     * Clears the pool data while preserving the resources.
+     * Stores the current resources, resets the state, and then restores the resources.
+     *
+     * @example
+     * // Clear the pool data
+     * clearPoolData();
+     */
+    clearPoolData() {
+      const resources = this.resources
+      this.$reset()
+      this.resources = resources
+    },
+
+    async setPoolData(id) {
+      const rootStore = useRootStore()
+      this.clearPoolData()
+      // Guard clause to not run the rest if the id is not a number e.g. 'new'
+      if (isNaN(id)) {
+        return { success: true, errors: [] }
+      }
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.find({
+        id: id,
+        include:
+          'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
+      })
+      const response = await handleResponse(promise)
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
+
+      if (success) {
+        const {
+          libraries,
+          requests,
+          wells,
+          plates = [],
+          tag_sets: [tag_set] = [{}],
+          tubes,
+        } = groupIncludedByResource(included)
+
+        // We need to find the pool tube in the list of returned tubes
+        const poolingTube = tubes.find((tube) => tube.id == data.relationships.tube.data.id)
+        // TODO: Check in UAT if pool fails to update with param error
+        this.pooling.pool = extractAttributes(data)
+        this.pooling.libraries = populatePoolingLibraries(libraries)
+        this.pooling.tube = extractAttributes(poolingTube)
+        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+        this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
+        this.selected.tagSet = { id: tag_set.id }
+      }
+
+      return { success, errors }
     },
   },
 })
