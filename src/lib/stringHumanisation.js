@@ -5,6 +5,6 @@
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
 
 // capitalise first letter and remove dashes (can add more when need be)
-const humanise = (string) => capitalizeFirstLetter(string).replace(/-/g, ' ')
+const humanise = (string) => capitalizeFirstLetter(string).replace(/[-_]/g, ' ')
 
 export { capitalizeFirstLetter, humanise }

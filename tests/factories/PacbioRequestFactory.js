@@ -29,6 +29,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           sample_species: 'human',
           created_at: '2021/06/03 06:59',
           source_identifier: 'DN814327C:A1',
+          sample_retention_instrction: 'destroy_after_2_years',
         },
         relationships: {
           well: {
@@ -66,6 +67,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           sample_species: 'human',
           created_at: '2021/06/03 06:59',
           source_identifier: 'DN814327C:A2',
+          sample_retention_instrction: 'destroy_after_2_years',
         },
         relationships: {
           well: {
@@ -103,6 +105,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           sample_species: 'human',
           created_at: '2021/06/03 14:57',
           source_identifier: 'DN814567Q:A1',
+          sample_retention_instrction: 'long_term_storage',
         },
         relationships: {
           well: {
@@ -140,6 +143,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           sample_species: 'cat',
           created_at: '2021/06/03 14:57',
           source_identifier: 'DN814567Q:B1',
+          sample_retention_instrction: null,
         },
         relationships: {
           well: {
@@ -177,6 +181,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           sample_species: 'Gryphon',
           created_at: '2022/03/01 10:41',
           source_identifier: 'GEN-1725896371-4:B3',
+          sample_retention_instrction: null,
         },
         relationships: {
           well: {
