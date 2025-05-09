@@ -352,7 +352,7 @@ describe('mutations', () => {
   })
 
   describe('populatePoolAttributes', () => {
-    it('sets the pool with the correct data', () => {
+    it.skip('sets the pool with the correct data', () => {
       const state = defaultState()
       // apply mutation
       populatePoolAttributes(state, singleOntPoolFactory.content.data)

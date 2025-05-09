@@ -887,13 +887,47 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
-    describe.skip('setPoolData', () => {
+    describe('clearPoolData', () => {
+      it('clears the pool data', () => {
+        store.clearPoolData()
+        expect(store.resources).toEqual({
+          requests: {},
+          plates: {},
+          wells: {},
+          tubes: {},
+          libraries: {},
+          tagSets: {},
+          tags: {},
+          pools: {},
+        })
+      })
+    })
+
+    describe('setPoolData', () => {
+      it('returns when the pool id is not a number', async () => {
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+        // apply action
+        const { success, errors } = await store.setPoolData('new')
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
       it('sets the pool data for the given pool id', async () => {
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
         // apply action
         const { success } = await store.setPoolData(3)
+        // check pool has been populated
+        expect(store.pooling.pool).toEqual(singleOntPoolFactory.storeData.pooling.pool)
+        expect(store.pooling.libraries).toEqual(singleOntPoolFactory.storeData.pooling.libraries)
+        expect(store.pooling.tube).toEqual(singleOntPoolFactory.storeData.pooling.tube)
+        expect(store.resources.tubes).toEqual(singleOntPoolFactory.storeData.resources.tubes)
+        expect(store.resources.requests).toEqual(singleOntPoolFactory.storeData.resources.requests)
+        expect(store.resources.plates).toEqual(singleOntPoolFactory.storeData.resources.plates)
+        expect(store.resources.wells).toEqual(singleOntPoolFactory.storeData.resources.wells)
+        expect(store.selected.tagSet).toEqual(singleOntPoolFactory.storeData.selected.tagSet)
 
         // check pool has been populated
 
@@ -931,10 +965,10 @@ describe('useOntPoolCreateStore', () => {
 
       it('only clears the pool data when the id is not a number', async () => {
         const find = vi.fn()
-        this.rootStore.api = { traction: { ont: { pools: { find } } } }
+        rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
 
-        const { success, errors } = await this.setPoolData('new')
+        const { success, errors } = await store.setPoolData('new')
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
