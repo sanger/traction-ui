@@ -1,12 +1,11 @@
 /**
- * Retrieves a specific well from the resources based on a PacBio request ID.
- *
- * @param {Object} resources - An object containing wells and requests from pacbioPoolCreate store.
- * @param {string|number} pacbio_request_id - The ID of the PacBio request.
- * @returns {Object} The well associated with the given PacBio request ID.
+ * Finds the well associated with a request
+ * @param  {Object} wells store resources wells
+ * @param  {string | Integer} request_id the request id to find
+ * @returns {Object} the matching well from the store
  */
-const wellFor = (resources, pacbio_request_id) =>
-  resources.wells[resources.requests[pacbio_request_id].well]
+const wellFor = (wells, request_id) =>
+  Object.values(wells).find((well) => well.requests[0] === request_id.toString())
 
 /**
  * Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
