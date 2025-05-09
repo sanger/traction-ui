@@ -1,5 +1,5 @@
-import { wellToIndex, wellFor } from '@/stores/utilities/wellHelpers.js'
-import { barcodeNotFound } from '@/stores/utilities/helpers.js'
+import { wellToIndex, wellFor } from './wellHelpers.js'
+import { barcodeNotFound } from '../utilities/helpers.js'
 
 const libraryAttributes = {
   ont_request_id: null,
