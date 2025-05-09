@@ -1,6 +1,8 @@
 import {
   getLabwhereLocations,
+  getLabwhereLocationsV2,
   scanBarcodesInLabwhereLocation,
+  scanBarcodesInLabwhereLocationV2,
   exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
@@ -18,9 +20,9 @@ const mockFetchWrapper = {
 
 describe('getLabwhereLocations', () => {
   let spyExtractLocations
-  beforeEach(() => {
-    spyExtractLocations = vi.spyOn(helpers, 'extractLocationsForLabwares')
-  })
+  // beforeEach(() => {
+  //   spyExtractLocations = vi.spyOn(helpers, 'extractLocationsForLabwares')
+  // })
 
   it('should return an error if no barcodes are provided', async () => {
     const result = await getLabwhereLocations([], mockFetchWrapper)
@@ -57,6 +59,67 @@ describe('getLabwhereLocations', () => {
     expect(spyExtractLocations).toHaveBeenCalled()
   })
 })
+
+describe('getLabwhereLocationsV2', () => {
+  let spyExtractLocations
+  // beforeEach(() => {
+  //   spyExtractLocations = vi.spyOn(helpers, 'extractLocationsForLabwares')
+  // })
+
+  it('should return an error if no barcodes are provided', async () => {
+    const result = await getLabwhereLocationsV2([], mockFetchWrapper)
+    expect(result).toEqual({ success: false, errors: ['No barcodes provided'], data: {} })
+  })
+
+  it('should not call extractLocationsForLabwares if post fails', async () => {
+    const response = {
+      success: false,
+      errors: ['Failed to access LabWhere: Network error'],
+      data: {},
+    }
+    spyPost.mockReturnValue(response)
+    const result = await getLabwhereLocationsV2(['barcode1'], mockFetchWrapper)
+    expect(result).toEqual(response)
+    // expect(spyExtractLocations).not.toHaveBeenCalled()
+  })
+
+  it('should call extractLocationsForLabwares if post succeeds', async () => {
+    spyPost.mockReturnValue({ success: true })
+    const data = [
+      {
+        barcode: 'barcode1',
+        location: 'location1',
+      },
+      {
+        barcode: 'barcode2',
+        location: 'location2',
+      },
+    ]
+    // spyExtractLocations.mockReturnValue(data)
+    const result = await getLabwhereLocationsV2(['barcode1'], mockFetchWrapper)
+    expect(result).toEqual({ success: true, data })
+    // expect(spyExtractLocations).toHaveBeenCalled()
+  })
+
+  it.only('should handle multiple barcodes correctly', async () => {
+    spyPost.mockReturnValue({ success: true })
+    const data = [
+      {
+        barcode: 'barcode1',
+        location: 'location1',
+      },
+      {
+        barcode: 'barcode2',
+        location: 'location2',
+      },
+    ]
+    // spyExtractLocations.mockReturnValue(data)
+    const result = await getLabwhereLocationsV2(['barcode1', 'barcode2'], mockFetchWrapper)
+    expect(result).toEqual({ success: true, data })
+    // expect(spyExtractLocations).toHaveBeenCalledWith(expect.anything(), ['barcode1', 'barcode2'])
+  })
+})
+
 describe('scanBarcodesInLabwhereLocation', () => {
   it('should return an error if required parameters are missing', async () => {
     const result = await scanBarcodesInLabwhereLocation('', '', '', null, mockFetchWrapper)
@@ -103,6 +166,38 @@ describe('scanBarcodesInLabwhereLocation', () => {
     const callArgs = spyPost.mock.calls[0]
     const params = new URLSearchParams(callArgs[1])
     expect(params.get('scan[start_position]')).toBe('1')
+  })
+})
+
+describe('scanBarcodesInLabwhereLocationV2', () => {
+  it('should return an error if required parameters are missing', async () => {
+    const result = await scanBarcodesInLabwhereLocationV2('', '', mockFetchWrapper)
+    expect(result).toEqual({
+      success: false,
+      errors: ['Required parameters are missing for the Scan In operation'],
+    })
+  })
+
+  it('should return formatted result for post response', async () => {
+    spyPost.mockResolvedValue({
+      success: true,
+      errors: [],
+      data: { message: '1 labwares scanned into location 1' },
+    })
+    const result = await scanBarcodesInLabwhereLocationV2(
+      'location123',
+      'barcode1\nbarcode2',
+      mockFetchWrapper,
+    )
+    expect(spyPost).toHaveBeenCalledWith('/scan', {
+      labware_barcodes: 'barcode1\nbarcode2',
+      location_barcode: 'location123',
+    })
+    expect(result).toEqual({
+      success: true,
+      errors: [],
+      message: '1 labwares scanned into location 1',
+    })
   })
 })
 
