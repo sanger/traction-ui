@@ -52,8 +52,7 @@ describe('getLabwhereLocations', () => {
   })
 })
 
-//TODO: fix issues with posts
-describe.skip('scanBarcodesInLabwhereLocation', () => {
+describe('scanBarcodesInLabwhereLocation', () => {
   it('should return an error if required parameters are missing', async () => {
     const result = await scanBarcodesInLabwhereLocation('', '', '', null, mockFetchWrapper)
     expect(result).toEqual({
@@ -102,6 +101,7 @@ describe.skip('scanBarcodesInLabwhereLocation', () => {
   })
 })
 
+// TODO: remove mocks
 describe('exhaustLibraryVolumeIfDestroyed', () => {
   beforeEach(() => {
     const pinia = createPinia()
