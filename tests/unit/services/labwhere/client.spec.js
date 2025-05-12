@@ -1,6 +1,8 @@
 import {
   getLabwhereLocations,
+  getLabwhereLocationsV2,
   scanBarcodesInLabwhereLocation,
+  scanBarcodesInLabwhereLocationV2,
   exhaustLibraryVolumeIfDestroyed,
 } from '@/services/labwhere/client.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
@@ -45,6 +47,44 @@ describe('getLabwhereLocations', () => {
     const mockResponse = { success: true, errors: [], data }
     mockFetchWrapper.post.mockResolvedValue(mockResponse)
     const result = await getLabwhereLocations(['barcode1', 'barcode2'], mockFetchWrapper)
+    expect(result).toEqual({
+      ...mockResponse,
+      data: { barcode1: 'location1', barcode2: 'location2' },
+    })
+  })
+})
+
+describe('getLabwhereLocationsV2', () => {
+  it('should return an error if no barcodes are provided', async () => {
+    const result = await getLabwhereLocationsV2([], mockFetchWrapper)
+    expect(result).toEqual({ success: false, errors: ['No barcodes provided'], data: {} })
+  })
+
+  it('should not call extractLocationsForLabwares if post fails', async () => {
+    const response = {
+      success: false,
+      errors: ['Failed to access LabWhere: Network error'],
+      data: {},
+    }
+    mockFetchWrapper.post.mockResolvedValue(response)
+    const result = await getLabwhereLocationsV2(['barcode1'], mockFetchWrapper)
+    expect(result).toEqual(response)
+  })
+
+  it('should call extractLocationsForLabwares if post succeeds', async () => {
+    const data = [
+      {
+        barcode: 'barcode1',
+        location: 'location1',
+      },
+      {
+        barcode: 'barcode2',
+        location: 'location2',
+      },
+    ]
+    const mockResponse = { success: true, errors: [], data }
+    mockFetchWrapper.post.mockResolvedValue(mockResponse)
+    const result = await getLabwhereLocationsV2(['barcode1', 'barcode2'], mockFetchWrapper)
     expect(result).toEqual({
       ...mockResponse,
       data: { barcode1: 'location1', barcode2: 'location2' },
@@ -101,7 +141,47 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 })
 
-// TODO: remove mocks
+describe('scanBarcodesInLabwhereLocationV2', () => {
+  it('should return an error if required parameters are missing', async () => {
+    const result = await scanBarcodesInLabwhereLocationV2('', '', mockFetchWrapper)
+    expect(result).toEqual({
+      success: false,
+      errors: ['Required parameters are missing for the Scan In operation'],
+    })
+  })
+
+  it('should return formatted result for post response', async () => {
+    mockFetchWrapper.post.mockResolvedValue({
+      success: true,
+      errors: [],
+      data: { message: 'Labware stored to location 1' },
+    })
+    const result = await scanBarcodesInLabwhereLocation(
+      'user123',
+      'location123',
+      'barcode1',
+      null,
+      mockFetchWrapper,
+    )
+    expect(mockFetchWrapper.post).toHaveBeenCalledWith(
+      '/api/scans',
+      expect.any(String),
+      'application/x-www-form-urlencoded',
+    )
+    const callArgs = mockFetchWrapper.post.mock.calls[0]
+    const params = new URLSearchParams(callArgs[1])
+    expect(params.get('scan[start_position]')).toBe(null)
+    expect(params.get('scan[user_code]')).toBe('user123')
+    expect(params.get('scan[labware_barcodes]')).toBe('barcode1')
+    expect(params.get('scan[location_barcode]')).toBe('location123')
+    expect(result).toEqual({
+      success: true,
+      errors: [],
+      message: 'Labware stored to location 1',
+    })
+  })
+})
+
 describe('exhaustLibraryVolumeIfDestroyed', () => {
   beforeEach(() => {
     const pinia = createPinia()
