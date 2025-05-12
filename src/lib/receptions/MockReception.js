@@ -44,7 +44,7 @@ const fetchPlatesFunction = async ({ requestOptions, barcodes }) => {
 
     for (let i = 0; i < 48; i++) {
       const position = String.fromCharCode(65 + Math.floor(i / 12)) + ((i % 12) + 1)
-      const sample_name = `${barcode}-${i}`
+      const sample_name = `${barcode}-sample-${i}`
       wells_attributes.push({
         type: 'wells',
         position,
@@ -79,7 +79,7 @@ const fetchPlatesFunction = async ({ requestOptions, barcodes }) => {
  */
 const fetchTubesFunction = async ({ requestOptions, barcodes }) => {
   const tubes_attributes = barcodes.map((barcode, index) => {
-    const sample_name = `${barcode}-${index}`
+    const sample_name = `${barcode}-sample-${index}`
     return {
       type: 'tubes',
       barcode,

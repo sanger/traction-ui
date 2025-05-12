@@ -22,7 +22,7 @@ describe('MockReception', () => {
         plate.wells_attributes.forEach((well, index) => {
           expect(well.type).toBe('wells')
           expect(well.position).toBeDefined()
-          expect(well.sample.name).toEqual(`${plate.barcode}-${index}`)
+          expect(well.sample.name).toEqual(`${plate.barcode}-sample-${index}`)
           expect(well.sample.species).toBe('Human')
           expect(well.sample.retention_instruction).toBe('long_term_storage')
           expect(well.sample.external_id).toBeDefined()
@@ -51,7 +51,7 @@ describe('MockReception', () => {
       attributes.tubes_attributes.forEach((tube, index) => {
         expect(tube.type).toBe('tubes')
         expect(tube.barcode).toBe(barcodes[index])
-        expect(tube.sample.name).toEqual(`${tube.barcode}-${index}`)
+        expect(tube.sample.name).toEqual(`${tube.barcode}-sample-${index}`)
         expect(tube.sample.species).toBe('Human')
         expect(tube.sample.retention_instruction).toBe('long_term_storage')
         expect(tube.sample.external_id).toBeDefined()
