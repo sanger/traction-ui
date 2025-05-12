@@ -24,15 +24,23 @@ describe('Ont samples view', () => {
         .find('tr')
         .should('have.length', ontRequestFactory.content.data.length + 1)
     })
-    cy.get('#id').should('have.length.greaterThan', 0)
-    cy.get('#source_identifier').should('have.length.greaterThan', 0)
-    cy.get('#sample_name').should('have.length.greaterThan', 0)
-    cy.get('#source_identifier').should('have.length.greaterThan', 0)
-    cy.get('#library_type').should('have.length.greaterThan', 0)
-    cy.get('#data_type').should('have.length.greaterThan', 0)
-    cy.get('#number_of_flowcells').should('have.length.greaterThan', 0)
-    cy.get('#cost_code').should('have.length.greaterThan', 0)
-    cy.get('#external_study_id').should('have.length.greaterThan', 0)
-    cy.get('#created_at').should('have.length.greaterThan', 0)
+    // Define an array of all column keys
+    const columnKeys = [
+      'id',
+      'source_identifier',
+      'sample_name',
+      'library_type',
+      'data_type',
+      'number_of_flowcells',
+      'cost_code',
+      'external_study_id',
+      'location',
+      'sample_retention_instruction',
+      'created_at',
+    ]
+    // Iterate over the column IDs and verify each has a length greater than 0
+    columnKeys.forEach((columnKey) => {
+      cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
+    })
   })
 })

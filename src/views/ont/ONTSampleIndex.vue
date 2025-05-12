@@ -40,7 +40,7 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
-import { locationBuilder } from '@/services/labwhere/helpers.js'
+import { formatRequests } from '@/lib/requestHelpers'
 
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
@@ -73,6 +73,7 @@ export default {
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
         { key: 'location', label: 'Location', sortable: true },
+        { key: 'sample_retention_instruction', label: 'Retention Instruction', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       filterOptions: [
@@ -94,7 +95,7 @@ export default {
     },
     // Computed property to return updated displayed requests
     displayedRequests() {
-      return locationBuilder(this.requests, this.labwareLocations.value)
+      return formatRequests(this.requests, this.labwareLocations.value)
     },
   },
   watch: {
