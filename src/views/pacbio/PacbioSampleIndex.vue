@@ -21,7 +21,7 @@
         id="samples-table"
         v-model:sort-by="state.sortBy"
         primary_key="id"
-        :items="displayedRequests"
+        :items="formatRequests(pacbioRequestsStore.requestsArray, labwareLocations.value)"
         :fields="state.fields"
         selectable
         select-mode="single"
@@ -76,7 +76,6 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
-import { locationBuilder } from '@/services/labwhere/helpers.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
 
 import useQueryParams from '@/composables/useQueryParams.js'
@@ -86,6 +85,7 @@ import { computed, ref, watchEffect, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
 import useAlert from '@/composables/useAlert.js'
+import { formatRequests } from '@/lib/requestHelpers.js'
 
 const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
@@ -101,6 +101,7 @@ const state = reactive({
     { key: 'sample_species', label: 'Species', sortable: true },
     { key: 'source_identifier', label: 'Source', sortable: true },
     { key: 'location', label: 'Location', sortable: true },
+    { key: 'sample_retention_instruction', label: 'Retention Instruction', sortable: true },
     { key: 'created_at', label: 'Created at (UTC)', sortable: true },
     { key: 'actions', label: 'Actions' },
     { key: 'show_details', label: '' },
@@ -126,13 +127,6 @@ const printingStore = usePrintingStore()
 
 const barcodes = computed(() => {
   return pacbioRequestsStore.requestsArray.map(({ source_identifier }) => source_identifier)
-})
-
-/**
- * @returns {Array} The  locations of requests to display
- */
-const displayedRequests = computed(() => {
-  return locationBuilder(pacbioRequestsStore.requestsArray, labwareLocations.value)
 })
 
 watchEffect(async () => {
