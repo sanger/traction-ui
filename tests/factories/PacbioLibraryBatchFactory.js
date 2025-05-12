@@ -58,6 +58,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           tag_id: 303,
           used_volume: 0,
           available_volume: 10,
+          barcode: 'TRAC-2-121',
         },
         relationships: {
           tube: {
@@ -96,6 +97,7 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           tag_id: 304,
           used_volume: 0,
           available_volume: 10,
+          barcode: 'TRAC-2-122',
         },
         relationships: {
           tube: {
@@ -110,26 +112,6 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           },
         },
       },
-      {
-        id: '121',
-        type: 'tubes',
-        links: {
-          self: 'http://localhost:3100/v1/pacbio/tubes/111',
-        },
-        attributes: {
-          barcode: 'TRAC-2-121',
-        },
-      },
-      {
-        id: '122',
-        type: 'tubes',
-        links: {
-          self: 'http://localhost:3100/v1/pacbio/tubes/111',
-        },
-        attributes: {
-          barcode: 'TRAC-2-122',
-        },
-      },
     ],
     meta: {
       page_count: 1,
@@ -137,15 +119,14 @@ const PacbioLibraryBatchFactory = (tags = []) => {
   }
 
   const createStoreData = ({ included }) => {
-    const { tubes, libraries } = groupIncludedByResource(included)
+    const { libraries } = groupIncludedByResource(included)
     const librariesObj = dataToObjectById({ data: libraries, includeRelationships: true })
-    const tubesObj = dataToObjectById({ data: tubes })
     return {
       librariesInBatch: Object.values(librariesObj).map((library) => {
         return {
           source: library.source_identifier,
           id: library.id,
-          barcode: tubesObj[library.tube].barcode,
+          barcode: library.barcode,
           tag: tags[library.tag_id]?.group_id,
           volume: library.volume,
           concentration: library.concentration,
@@ -153,7 +134,6 @@ const PacbioLibraryBatchFactory = (tags = []) => {
           template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
         }
       }),
-      tubes: tubesObj,
       libraries: librariesObj,
       librariesArray: Object.values(librariesObj),
     }

@@ -57,6 +57,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               external_id: 'cfcc0198-2a3b-11ef-a718-46043cfb1bd9',
               name: '2STDY6',
               species: 'cat',
+              retention_instruction: null,
             },
             library: {
               volume: '10',
@@ -77,6 +78,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               external_id: 'cfe18810-2a3b-11ef-a718-46043cfb1bd9',
               name: '2STDY7',
               species: 'cat',
+              retention_instruction: null,
             },
             library: {
               volume: '10',
@@ -97,6 +99,7 @@ describe('SequencescapeMultiplexedLibraries', () => {
               external_id: 'cfe8fb0e-2a3b-11ef-a718-46043cfb1bd9',
               name: '2STDY8',
               species: 'cat',
+              retention_instruction: null,
             },
             library: {
               volume: '10',

@@ -118,9 +118,7 @@ const tooltip = computed(() => {
           // If the used aliquot has been destroyed, return null
           if (_destroy) return
           const type = source_type === 'Pacbio::Pool' ? 'pools' : 'libraries'
-          return store.tubeContents.find(
-            (tubeContent) => source_id == tubeContent.id && type == tubeContent.type,
-          ).barcode
+          return store.sourceItems.find((item) => source_id == item.id && type == item.type).barcode
         })
         .filter(Boolean)
         .join(',')
@@ -192,20 +190,20 @@ const drop = async (event) => {
  */
 const updateUsedAliquotSource = async (barcode) => {
   const well = await store.getOrCreateWell(props.position, props.plateNumber)
-  const tubeContent = store.tubeContentByBarcode(barcode)
+  const source = store.sourceByBarcode(barcode)
   // Determine the source type for the used aliquot
-  const source_type = tubeContent.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
+  const source_type = source.type === 'pools' ? 'Pacbio::Pool' : 'Pacbio::Library'
   // We get the full available volume from the given source by passing a volume of 0
   // This is used to calculate the initial volume of the used aliquot
   const available_volume = store.getAvailableVolumeForAliquot({
-    sourceId: tubeContent.id,
+    sourceId: source.id,
     sourceType: source_type,
     volume: 0,
   })
   /*id set to null because we are creating a new used aliquot */
   const used_aliquot = createUsedAliquot({
-    ...tubeContent,
-    source_id: tubeContent.id,
+    ...source,
+    source_id: source.id,
     id: null,
     volume: available_volume,
     available_volume,

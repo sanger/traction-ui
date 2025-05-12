@@ -19,6 +19,7 @@ const OntRequestFactory = () => {
           created_at: '2022/07/26 15:01',
           sample_name: 'sample_name_1',
           source_identifier: 'TRAC-1:A1',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -36,6 +37,7 @@ const OntRequestFactory = () => {
           created_at: '2022/07/26 15:01',
           sample_name: 'sample_name_2',
           source_identifier: 'TRAC-2:A1',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -70,6 +72,7 @@ const OntRequestFactory = () => {
           created_at: '2022/07/26 15:01',
           sample_name: 'sample_name_4',
           source_identifier: 'TRAC-4:A1',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -87,6 +90,7 @@ const OntRequestFactory = () => {
           created_at: '2022/07/26 15:01',
           sample_name: 'sample_name_5',
           source_identifier: 'TRAC-5:A1',
+          sample_retention_instruction: null,
         },
       },
     ],
