@@ -212,6 +212,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           created_at: '2024/03/18 15:03',
           updated_at: '2024/03/18 15:03',
           source_identifier: 'GEN-1710774222-1:E5-H5',
+          barcode: 'TRAC-2-24',
         },
         relationships: {
           tube: {
@@ -281,6 +282,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           updated_at: '2024/03/18 15:03',
           source_identifier: 'GEN-1710774222-1:H4-C5',
           available_volume: 20,
+          barcode: 'TRAC-2-22',
         },
         relationships: {
           tube: {
@@ -1015,6 +1017,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:H4',
           pacbio_request_id: 32,
           tag_id: 1,
+          barcode: 'TRAC-2-32',
         },
         relationships: {
           request: {
@@ -1095,6 +1098,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:A5',
           pacbio_request_id: 33,
           tag_id: 2,
+          barcode: 'TRAC-2-33',
         },
         relationships: {
           request: {
@@ -1175,6 +1179,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:B5',
           pacbio_request_id: 34,
           tag_id: 3,
+          barcode: 'TRAC-2-34',
         },
         relationships: {
           request: {
@@ -1255,6 +1260,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:C5',
           pacbio_request_id: 35,
           tag_id: 4,
+          barcode: 'TRAC-2-35',
         },
         relationships: {
           request: {
@@ -1335,6 +1341,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:E5',
           pacbio_request_id: 37,
           tag_id: 1,
+          barcode: 'TRAC-2-37',
         },
         relationships: {
           request: {
@@ -1415,6 +1422,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:F5',
           pacbio_request_id: 38,
           tag_id: 2,
+          barcode: 'TRAC-2-38',
         },
         relationships: {
           request: {
@@ -1495,6 +1503,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:G5',
           pacbio_request_id: 39,
           tag_id: 3,
+          barcode: 'TRAC-2-39',
         },
         relationships: {
           request: {
@@ -1575,6 +1584,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:H5',
           pacbio_request_id: 40,
           tag_id: 4,
+          barcode: 'TRAC-2-40',
         },
         relationships: {
           request: {
@@ -1655,6 +1665,7 @@ const PacbioTubeFactory = ({ findBy = null, transformTubes = false } = {}) => {
           source_identifier: 'GEN-1710774222-1:F4',
           pacbio_request_id: 30,
           available_volume: 20,
+          barcode: 'TRAC-2-20',
         },
         relationships: {
           request: {

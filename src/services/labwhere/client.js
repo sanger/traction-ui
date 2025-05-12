@@ -38,10 +38,9 @@ const getLabwhereLocations = async (labwhereBarcodes, fetchWrapper = labwhereFet
 
   const response = await fetchWrapper.post('/api/labwares/searches', params, 'multipart/form-data')
 
-  if (response.success) {
-    response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
-  }
-  return response
+  return response.success
+    ? { ...response, data: extractLocationsForLabwares(response.data, labwhereBarcodes) }
+    : response
 }
 
 /**
@@ -219,9 +218,11 @@ const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereF
 
   console.log('Labwhere barcodes:', labwhereBarcodes)
 
-  const response = await fetchWrapper.post('/searches', {
-    labware_barcodes: labwhereBarcodes.join('\n'),
-  },
+  const response = await fetchWrapper.post(
+    '/searches',
+    {
+      labware_barcodes: labwhereBarcodes.join('\n'),
+    },
     'application/json',
   )
 
@@ -232,7 +233,6 @@ const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereF
   }
   return response
 }
-
 
 export {
   getLabwhereLocations,

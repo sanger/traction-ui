@@ -17,6 +17,7 @@ const OntRequestFactory = () => {
           external_study_id: '50ad20f6-2722-434e-b42b-83cec34147f7',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -32,6 +33,7 @@ const OntRequestFactory = () => {
           external_study_id: '170ef408-bb98-4617-95cd-b65ba6882843',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -62,6 +64,7 @@ const OntRequestFactory = () => {
           external_study_id: '3a87ab1f-7a4b-4028-a4f7-250418c3c0fc',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_retention_instruction: 'return_to_customer_after_2_years',
         },
       },
       {
@@ -77,6 +80,7 @@ const OntRequestFactory = () => {
           external_study_id: '4dcef3a6-1bf7-40b5-a899-1568dbf58dca',
           number_of_flowcells: 1,
           created_at: '2022/07/26 15:01',
+          sample_retention_instruction: null,
         },
       },
     ],

@@ -5,6 +5,7 @@ import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFa
 describe('Sequencescape', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
+
     const requests = store.getters.api
     let request
 
@@ -29,12 +30,12 @@ describe('Sequencescape', () => {
         include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
         fields: {
           aliquots: 'study,library_type,sample',
-          plates: 'labware_barcode,receptacles',
+          plates: 'labware_barcode,receptacles,retention_instruction',
           receptacles: 'aliquots',
           sample_metadata: 'sample_common_name',
           samples: 'sample_metadata,name,uuid',
           studies: 'uuid',
-          tubes: 'labware_barcode,receptacles',
+          tubes: 'labware_barcode,receptacles,retention_instruction',
           wells: 'position,aliquots',
         },
       })
@@ -57,6 +58,7 @@ describe('Sequencescape', () => {
                   external_id: 'd5008026-94c9-11ec-a9e3-acde48001122',
                   name: '2STDY1',
                   species: 'Dragon',
+                  retention_instruction: 'destroy_after_2_years',
                 },
               },
               {
@@ -70,6 +72,7 @@ describe('Sequencescape', () => {
                   external_id: 'd50bad48-94c9-11ec-a9e3-acde48001122',
                   name: '2STDY2',
                   species: 'Unicorn',
+                  retention_instruction: 'destroy_after_2_years',
                 },
               },
             ],
@@ -87,6 +90,7 @@ describe('Sequencescape', () => {
               name: '2STDY97',
               external_id: '0db37dd8-94ca-11ec-a9e3-acde48001122',
               species: 'Gryphon',
+              retention_instruction: 'return_to_customer_after_2_years',
             },
           },
         ],
