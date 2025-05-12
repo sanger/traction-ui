@@ -84,11 +84,20 @@ const MockReceptionTypes = {
   },
 }
 
+const receptionOptions = () => {
+  const environment = import.meta.env.VITE_ENVIRONMENT
+  if (environment === 'uat' || environment === 'development') {
+    return [
+      ...Object.values(ReceptionTypes),
+      { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
+    ]
+  }
+
+  return [...Object.values(ReceptionTypes)]
+}
+
 const Receptions = {
-  options: [
-    ...Object.values(ReceptionTypes),
-    { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
-  ],
+  options: receptionOptions(),
   Sequencescape: {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
