@@ -97,7 +97,7 @@ function receptionOptions() {
 }
 
 const Receptions = {
-  options: receptionOptions(),
+  options: receptionOptions,
   Sequencescape: {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,

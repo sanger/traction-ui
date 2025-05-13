@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="Receptions.options"
+            :options="Receptions.options()"
             data-type="source-list"
             @update:model-value="updatePipeline()"
           />
