@@ -86,6 +86,7 @@ const MockReceptionTypes = {
 
 const receptionOptions = () => {
   const environment = import.meta.env['VITE_ENVIRONMENT']
+  console.log('Environment:', environment)
   if (environment === 'uat' || environment === 'development') {
     return [
       ...Object.values(ReceptionTypes),
