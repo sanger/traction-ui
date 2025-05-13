@@ -225,7 +225,8 @@ const workflowOptions = computed(() => [
 
 const receptionOptions = () => {
   const environment = import.meta.env['VITE_ENVIRONMENT']
-  if (environment === 'uat' || environment === 'development') {
+  console.log(environment)
+  if (environment == 'uat' || environment == 'development') {
     return [
       ...Object.values(ReceptionTypes),
       { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
