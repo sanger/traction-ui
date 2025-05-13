@@ -462,22 +462,26 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         }
       }
     },
+    /**
+     * Selects of deselects a plate based on the params
+     * @param id The id of the plate to select
+     * @param selected Defaults to true, selects or deselects the plate
+     */
     selectPlate(id, selected = true) {
       if (selected) {
-        this.selected.plates[`${id}`] = { id: id, selected: true }
+        this.selected.plates[`${id}`] = { id, selected: true }
       } else {
         delete this.selected.plates[`${id}`]
       }
     },
     /**
      * Selects of deselects a tube based on the params
-     * @param state The Vuex state
      * @param id The id of the tube to select
      * @param selected Defaults to true, selects or deselects the tube
      */
     selectTube(id, selected = true) {
       if (selected) {
-        this.selected.tubes[`${id}`] = { id: id, selected: true }
+        this.selected.tubes[`${id}`] = { id, selected: true }
       } else {
         delete this.selected.tubes[`${id}`]
       }
@@ -572,13 +576,40 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       this.resources = resources
     },
 
+    /**
+     * Sets the pool data for a given pool ID.
+     *
+     * @param {string|number} id - The ID of the pool to fetch data for. If the ID is not a number (e.g., 'new'), the function will clear the pool data and return early.
+     * @returns {Object} - An object containing the success status and any errors encountered during the operation.
+     *
+     * @description
+     * This function fetches and sets the data for a specific pool. It:
+     * - Clears the current pool data to ensure a clean state.
+     * - Validates the provided ID to ensure it is a number. If not, it skips fetching and returns success.
+     * - Sends a request to the API to fetch the pool data, including related resources such as libraries, requests, wells, plates, and tubes.
+     * - Processes the API response to extract and organize the data into the store's resources.
+     * - Updates the store's `pooling` state with the fetched pool, libraries, and tube data.
+     * - Updates the store's `resources` state with the fetched tubes, requests, wells, and plates.
+     * - Automatically selects the fetched plates and tubes in the store.
+     *
+     * @example
+     * const result = await setPoolData(123)
+     * if (result.success) {
+     *   console.log('Pool data successfully set')
+     * } else {
+     *   console.error(result.errors)
+     * }
+     */
     async setPoolData(id) {
       const rootStore = useRootStore()
       this.clearPoolData()
-      // Guard clause to not run the rest if the id is not a number e.g. 'new'
+
+      // Guard clause to not run the rest if the id is not a number (e.g., 'new')
       if (isNaN(id)) {
         return { success: true, errors: [] }
       }
+
+      // Send a request to the API to fetch the pool data
       const request = rootStore.api.traction.ont.pools
       const promise = request.find({
         id: id,
@@ -598,19 +629,150 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           tubes,
         } = groupIncludedByResource(included)
 
-        // We need to find the pool tube in the list of returned tubes
+        // Find the pool tube in the list of returned tubes
         const poolingTube = tubes.find((tube) => tube.id == data.relationships.tube.data.id)
-        // TODO: Check in UAT if pool fails to update with param error
+
+        // Update the store's pooling state
         this.pooling.pool = extractAttributes(data)
         this.pooling.libraries = populatePoolingLibraries(libraries)
         this.pooling.tube = extractAttributes(poolingTube)
+
+        // Update the store's resources
         this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
         this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
         this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
         this.selected.tagSet = { id: tag_set.id }
+
+        // Automatically select the fetched plates and tubes
+        Object.keys(this.resources.plates).map((id) => this.selectPlate(id))
+        Object.keys(this.resources.tubes).map((id) => this.selectTube(id))
       }
 
+      // Return the success status and any errors
+      return { success, errors }
+    },
+
+    /**
+     * Finds an ONT plate based on the provided filter.
+     *
+     * @param {Object} filter - The filter object used to search for the plate. Must include a `barcode` field.
+     * @returns {Object} - An object containing the success status and any errors encountered during the search.
+     *
+     * @description
+     * This function searches for an ONT plate using the provided filter. It:
+     * - Validates that the filter contains a non-empty `barcode` field.
+     * - Sends a request to the API to fetch plates matching the filter, including their wells and associated requests.
+     * - Processes the API response to extract plates, wells, and requests.
+     * - Updates the store's resources with the fetched data if the search is successful.
+     * - Selects the first plate from the results and updates the selected plates in the store.
+     * - Returns an error if no plates match the filter or if the filter is invalid.
+     *
+     * @example
+     * const filter = { barcode: 'PLATE123' }
+     * const result = await findOntPlate(filter)
+     * if (result.success) {
+     *   console.log('Plate found and resources updated')
+     * } else {
+     *   console.error(result.errors)
+     * }
+     */
+    async findOntPlate(filter) {
+      const rootStore = useRootStore()
+
+      // Validate that the filter contains a non-empty barcode
+      if (filter['barcode'].trim() === '') {
+        return {
+          success: false,
+          errors: ['Please provide a plate barcode'],
+        }
+      }
+
+      // Send a request to the API to fetch plates matching the filter
+      const request = rootStore.api.traction.ont.plates
+      const promise = request.get({ filter, include: 'wells.requests' })
+      const response = await handleResponse(promise)
+
+      // Extract data and included resources from the response
+      let { success, body: { data, included = [] } = {}, errors = [] } = response
+      const { wells, requests } = groupIncludedByResource(included)
+
+      // Return an error if no plates match the filter
+      if (!data.length) {
+        success = false
+        errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
+      }
+
+      // If the search is successful, update the store's resources and select the plate
+      if (success) {
+        this.selectPlate(data[0].id)
+        this.resources.plates = dataToObjectById({ data, includeRelationships: true })
+        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+      }
+
+      // Return the success status and any errors
+      return { success, errors }
+    },
+
+    /**
+     * Finds an ONT tube based on the provided filter.
+     *
+     * @param {Object} filter - The filter object used to search for the tube. Must include a `barcode` field.
+     * @returns {Object} - An object containing the success status and any errors encountered during the search.
+     *
+     * @description
+     * This function searches for an ONT tube using the provided filter. It:
+     * - Validates that the filter contains a non-empty `barcode` field.
+     * - Sends a request to the API to fetch tubes matching the filter, including their associated requests.
+     * - Processes the API response to extract tubes and requests.
+     * - Updates the store's resources with the fetched data if the search is successful.
+     * - Selects the first tube from the results and updates the selected tubes in the store.
+     * - Returns an error if no tubes match the filter or if the filter is invalid.
+     *
+     * @example
+     * const filter = { barcode: 'TUBE123' }
+     * const result = await findOntTube(filter)
+     * if (result.success) {
+     *   console.log('Tube found and resources updated')
+     * } else {
+     *   console.error(result.errors)
+     * }
+     */
+    async findOntTube(filter) {
+      const rootStore = useRootStore()
+
+      // Validate that the filter contains a non-empty barcode
+      if (filter['barcode'].trim() === '') {
+        return {
+          success: false,
+          errors: ['Please provide a tube barcode'],
+        }
+      }
+
+      // Send a request to the API to fetch tubes matching the filter
+      const request = rootStore.api.traction.ont.tubes
+      const promise = request.get({ filter, include: 'requests' })
+      const response = await handleResponse(promise)
+
+      // Extract data and included resources from the response
+      let { success, body: { data, included = [] } = {}, errors = [] } = response
+      const { requests } = groupIncludedByResource(included)
+
+      // Return an error if no tubes match the filter
+      if (!data.length) {
+        success = false
+        errors = [`Unable to find tube with barcode: ${filter['barcode']}`]
+      }
+
+      // If the search is successful, update the store's resources and select the tube
+      if (success) {
+        this.selectTube(data[0].id)
+        this.resources.tubes = dataToObjectById({ data, includeRelationships: true })
+        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+      }
+
+      // Return the success status and any errors
       return { success, errors }
     },
   },

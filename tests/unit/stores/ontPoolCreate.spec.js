@@ -12,16 +12,16 @@ import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
 import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory.js'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
+const ontTubeFactory = OntTubeFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
 const singleOntPoolFactory = OntPoolFactory({ count: 1 })
-
-// const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
@@ -917,9 +917,7 @@ describe('useOntPoolCreateStore', () => {
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
-        // apply action
         const { success } = await store.setPoolData(3)
-        // check pool has been populated
         expect(store.pooling.pool).toEqual(singleOntPoolFactory.storeData.pooling.pool)
         expect(store.pooling.libraries).toEqual(singleOntPoolFactory.storeData.pooling.libraries)
         expect(store.pooling.tube).toEqual(singleOntPoolFactory.storeData.pooling.tube)
@@ -929,36 +927,12 @@ describe('useOntPoolCreateStore', () => {
         expect(store.resources.wells).toEqual(singleOntPoolFactory.storeData.resources.wells)
         expect(store.selected.tagSet).toEqual(singleOntPoolFactory.storeData.selected.tagSet)
 
-        // check pool has been populated
-
-        // check pooling libaries have been populated
-        // check pooling tube has been populated
-        // check requests have been populated
-        // check wells have been populated
-        // check plates have been populated
-        // check tubes have been populated
-        // check tag set has been populated
-
-        // expect(commit).toHaveBeenCalledWith(
-        //   'populatePoolAttributes',
-        //   singleOntPoolFactory.content.data,
-        // )
-        // expect(commit).toHaveBeenCalledWith(
-        //   'populatePoolingLibraries',
-        //   singleOntPoolFactory.storeData.libraries,
-        // )
-        // expect(commit).toHaveBeenCalledWith(
-        //   'populatePoolingTube',
-        //   singleOntPoolFactory.storeData.poolingTube,
-        // )
-        // expect(commit).toHaveBeenCalledWith(
-        //   'populateRequests',
-        //   singleOntPoolFactory.storeData.requests,
-        // )
-        // expect(commit).toHaveBeenCalledWith('populateWells', singleOntPoolFactory.storeData.wells)
-        // expect(commit).toHaveBeenCalledWith('populatePlates', singleOntPoolFactory.storeData.plates)
-        // expect(commit).toHaveBeenCalledWith('populateTubes', singleOntPoolFactory.storeData.tubes)
-        // expect(commit).toHaveBeenCalledWith('selectTagSet', singleOntPoolFactory.storeData.tag_set)
+        expect(Object.keys(store.selected.plates)).toEqual(
+          Object.keys(singleOntPoolFactory.storeData.resources.plates),
+        )
+        expect(Object.keys(store.selected.tubes)).toEqual(
+          Object.keys(singleOntPoolFactory.storeData.resources.tubes),
+        )
 
         expect(success).toEqual(true)
       })
@@ -971,6 +945,78 @@ describe('useOntPoolCreateStore', () => {
         const { success, errors } = await store.setPoolData('new')
         expect(success).toEqual(true)
         expect(errors).toEqual([])
+      })
+    })
+
+    describe('findOntPlate', () => {
+      it('returns the plate that fits the valid plate barcode', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { plates: { get } } } }
+        get.mockResolvedValue(ontPlateFactory.responses.fetch)
+
+        const { success } = await store.findOntPlate({
+          barcode: ontPlateFactory.content.data[0].attributes.barcode,
+        })
+
+        expect(store.resources.plates).toEqual(ontPlateFactory.storeData.resources.plates)
+        expect(store.resources.wells).toEqual(ontPlateFactory.storeData.resources.wells)
+        expect(store.resources.requests).toEqual(ontPlateFactory.storeData.resources.requests)
+
+        const id = ontPlateFactory.content.data[0].id
+        expect(store.selected.plates[id]).toEqual({ id, selected: true })
+        expect(success).toEqual(true)
+      })
+
+      it('returns an error and an empty list when plate barcode cannot be found', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { plates: { get } } } }
+        get.mockResolvedValue(successfulResponse({ statusCode: 200 }))
+
+        const { success, errors } = await store.findOntPlate({ barcode: 'fake-barcode' })
+        expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
+        expect(success).toEqual(false)
+      })
+
+      it('returns an error and an empty list when plate barcode is not provided', async () => {
+        const { success, errors } = await store.findOntPlate({ barcode: '' })
+        expect(errors).toEqual(['Please provide a plate barcode'])
+        expect(success).toEqual(false)
+      })
+    })
+
+    describe('findOntTube', () => {
+      it('returns the tube that fits the valid tube barcode', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { tubes: { get } } } }
+
+        get.mockResolvedValue(ontTubeFactory.responses.fetch)
+
+        const { success } = await store.findOntTube({
+          barcode: ontTubeFactory.content.data[0].attributes.barcode,
+        })
+
+        expect(store.resources.tubes).toEqual(ontTubeFactory.storeData.tubes)
+        expect(store.resources.requests).toEqual(ontTubeFactory.storeData.resources.requests)
+
+        const id = ontTubeFactory.content.data[0].id
+        expect(store.selected.tubes[id]).toEqual({ id, selected: true })
+        expect(success).toEqual(true)
+      })
+
+      it('returns an error and an empty list when tube barcode cannot be found', async () => {
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { tubes: { get } } } }
+        get.mockResolvedValue(successfulResponse({ statusCode: 200 }))
+
+        const { success, errors } = await store.findOntTube({ barcode: 'fake-barcode' })
+        expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])
+        expect(success).toEqual(false)
+      })
+
+      it('returns an error and an empty list when tube barcode is not provided', async () => {
+        const { success, errors } = await store.findOntTube({ barcode: '' })
+        expect(errors).toEqual(['Please provide a tube barcode'])
+        expect(success).toEqual(false)
       })
     })
   })
