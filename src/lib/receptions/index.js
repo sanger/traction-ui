@@ -1,6 +1,7 @@
 import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
+import * as MockReception from './MockReception.js'
 
 import MultiBarcode from '@/components/reception/MultiBarcode.vue'
 import MultiplexedLibraryBarcode from '@/components/reception/MultiplexedLibraryBarcode.vue'
@@ -68,8 +69,22 @@ const ReceptionTypes = {
   },
 }
 
+const MockReceptionTypes = {
+  MockedPlates: {
+    name: 'mocked-plates',
+    text: 'Mocked plates',
+    value: 'MockedPlates',
+    pipelines: ['PacBio', 'ONT'],
+  },
+  MockedTubes: {
+    name: 'mocked-tubes',
+    text: 'Mocked tubes',
+    value: 'MockedTubes',
+    pipelines: ['PacBio', 'ONT'],
+  },
+}
+
 const Receptions = {
-  options: Object.values(ReceptionTypes),
   Sequencescape: {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
@@ -88,7 +103,17 @@ const Receptions = {
     barcodeComponent: MultiplexedLibraryBarcode,
     getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
   },
+  MockedPlates: {
+    ...MockReceptionTypes.MockedPlates,
+    fetchFunction: MockReception.fetchPlatesFunction,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedTubes: {
+    ...MockReceptionTypes.MockedTubes,
+    fetchFunction: MockReception.fetchTubesFunction,
+    barcodeComponent: MultiBarcode,
+  },
 }
 
 export default Receptions
-export { defaultRequestOptions, WorkflowsLocations }
+export { defaultRequestOptions, WorkflowsLocations, ReceptionTypes, MockReceptionTypes }

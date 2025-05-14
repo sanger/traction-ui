@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="Receptions.options"
+            :options="receptionOptions()"
             data-type="source-list"
             @update:model-value="updatePipeline()"
           />
@@ -190,7 +190,7 @@ import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
-import { defaultRequestOptions } from '@/lib/receptions'
+import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -222,6 +222,18 @@ const workflowOptions = computed(() => [
       text: workflow.name,
     })),
 ])
+
+const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
+const receptionOptions = () => {
+  if (environment.value == 'uat' || environment.value == 'development') {
+    return [
+      ...Object.values(ReceptionTypes),
+      { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
+    ]
+  }
+
+  return [...Object.values(ReceptionTypes)]
+}
 
 const workflowLocation = computed(() => {
   const workflowsMap = new Map(
