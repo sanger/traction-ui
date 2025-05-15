@@ -9,9 +9,10 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
-} from '@/stores/utilities/pool.js'
+} from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { barcodeNotFound, sourceRegex } from '@/stores/utilities/helpers.js'
 
 /**
  * Merge together two representations of the same object.
@@ -61,26 +62,6 @@ const sortRequestByLabware = (resources) => (a, b) => {
     return parseInt(a.tube || 0) - parseInt(b.tube || 0)
   }
 }
-
-/**
- * This regular expression matches string that start with an alphanumeric string or hyphens (captured in a group called 'barcode')
- * followed by an optional colon and a well name (captured as 'wellName').
- * The well name is a letter followed by a number or two numbers.
- *
- * @type {RegExp}
- * @example "TRAC-1:A1"
- */
-const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
-
-/**
- * Generates an error message for a barcode that could not be found.
- * The message includes the format that the barcode should be in for plates and tubes.
- *
- * @param {string} barcode - The barcode that could not be found.
- * @returns {string} The generated error message.
- */
-const barcodeNotFound = (barcode) =>
-  `${barcode} could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.`
 
 /**
  * Defines a store for managing Pacbio pool creation.
@@ -312,7 +293,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       const pacbioRootStore = usePacbioRootStore()
       //Helper function to get the well for a given source_id
-      const initialWell = wellFor(this.resources, used_aliquot.request)
+      const initialWell = wellFor(this.resources.wells, used_aliquot.request)
       //Helper function to get the index of the well
       const initialIndex = wellToIndex(initialWell)
       //Get the tags for the selected tag set
@@ -324,7 +305,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       //Iterate over all used_aliquots and update the tag of each used_aliquot on the same plate and with a higher well index.
       Object.values(this.used_aliquots).forEach((aliquot) => {
-        const otherWell = wellFor(this.resources, aliquot.request)
+        const otherWell = wellFor(this.resources.wells, aliquot.request)
 
         if (otherWell?.plate !== plate) return
 
