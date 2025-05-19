@@ -16,7 +16,7 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-const mockCheckFeatureFlag = vi.fn(() => true)
+const mockCheckFeatureFlag = vi.fn(() => false)
 vi.mock('@/api/FeatureFlag', () => ({
   default: () => ({
     checkFeatureFlag: mockCheckFeatureFlag,
