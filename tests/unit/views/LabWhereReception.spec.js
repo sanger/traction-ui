@@ -100,7 +100,7 @@ describe('LabWhereReception', () => {
     expect(wrapper.vm.errors).not.toHaveProperty('user_code')
   })
 
-  it.only('chooses the correct scan function based on the feature flag', async () => {
+  it('chooses the correct scan function based on the feature flag', async () => {
     const wrapper = buildWrapper()
     wrapper.vm.user_code = 'user123'
     wrapper.vm.location_barcode = 'location123'
