@@ -169,8 +169,8 @@ const uniqueBarcodesArray = computed(() => {
  */
 const scanBarcodesToLabwhere = async () => {
   const fn = (await checkFeatureFlag('rust_labwhere_service'))
-    ? scanBarcodesInLabwhereLocation
-    : scanBarcodesInLabwhereLocationV2
+    ? scanBarcodesInLabwhereLocationV2
+    : scanBarcodesInLabwhereLocation
 
   if (validateForm()) {
     const response = await fn(
