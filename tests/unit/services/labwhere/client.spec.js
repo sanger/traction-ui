@@ -156,24 +156,18 @@ describe('scanBarcodesInLabwhereLocationV2', () => {
       errors: [],
       data: { message: 'Labware stored to location 1' },
     })
-    const result = await scanBarcodesInLabwhereLocation(
-      'user123',
-      'location123',
-      'barcode1',
-      null,
-      mockFetchWrapper,
+    const result = await scanBarcodesInLabwhereLocationV2(
+      'location1',
+      'labware1',
+      mockFetchWrapper
     )
     expect(mockFetchWrapper.post).toHaveBeenCalledWith(
-      '/api/scans',
-      expect.any(String),
-      'application/x-www-form-urlencoded',
+      '/scan',
+      {
+        'labware_barcodes': 'labware1',
+        'location_barcode': 'location1',
+      }
     )
-    const callArgs = mockFetchWrapper.post.mock.calls[0]
-    const params = new URLSearchParams(callArgs[1])
-    expect(params.get('scan[start_position]')).toBe(null)
-    expect(params.get('scan[user_code]')).toBe('user123')
-    expect(params.get('scan[labware_barcodes]')).toBe('barcode1')
-    expect(params.get('scan[location_barcode]')).toBe('location123')
     expect(result).toEqual({
       success: true,
       errors: [],
