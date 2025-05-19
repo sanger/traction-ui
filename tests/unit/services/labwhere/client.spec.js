@@ -143,7 +143,13 @@ describe('scanBarcodesInLabwhereLocation', () => {
 
 describe('scanBarcodesInLabwhereLocationV2', () => {
   it('should return an error if required parameters are missing', async () => {
-    const result = await scanBarcodesInLabwhereLocationV2('', '', mockFetchWrapper)
+    const result = await scanBarcodesInLabwhereLocationV2(
+      '',
+      '',
+      '',
+      null,
+      mockFetchWrapper
+    )
     expect(result).toEqual({
       success: false,
       errors: ['Required parameters are missing for the Scan In operation'],
@@ -157,8 +163,10 @@ describe('scanBarcodesInLabwhereLocationV2', () => {
       data: { message: 'Labware stored to location 1' },
     })
     const result = await scanBarcodesInLabwhereLocationV2(
+      '',
       'location1',
       'labware1',
+      null,
       mockFetchWrapper
     )
     expect(mockFetchWrapper.post).toHaveBeenCalledWith(

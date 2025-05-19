@@ -171,8 +171,10 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
  * });
  */
 const scanBarcodesInLabwhereLocationV2 = async (
+  userCode,
   locationBarcode,
   labwareBarcodes,
+  startPosition,
   fetchWrapper = labwhereFetchV2,
 ) => {
   if (!labwareBarcodes) {
