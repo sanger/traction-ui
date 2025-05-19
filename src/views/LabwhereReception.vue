@@ -100,11 +100,11 @@
 import { ref, reactive, computed } from 'vue'
 import {
   scanBarcodesInLabwhereLocation,
-  exhaustLibraryVolumeIfDestroyed, scanBarcodesInLabwhereLocationV2,
+  exhaustLibraryVolumeIfDestroyed,
+  scanBarcodesInLabwhereLocationV2,
 } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
 import checkFeatureFlag from '@/api/FeatureFlag.js'
-
 
 const user_code = ref('') // User code or swipecard
 const location_barcode = ref('') // Location barcode
@@ -168,9 +168,9 @@ const uniqueBarcodesArray = computed(() => {
  *
  */
 const scanBarcodesToLabwhere = async () => {
-  const fn = await checkFeatureFlag('rust_labwhere_service') ?
-    scanBarcodesInLabwhereLocation :
-    scanBarcodesInLabwhereLocationV2
+  const fn = (await checkFeatureFlag('rust_labwhere_service'))
+    ? scanBarcodesInLabwhereLocation
+    : scanBarcodesInLabwhereLocationV2
 
   if (validateForm()) {
     const response = await fn(

@@ -12,4 +12,4 @@ const checkFeatureFlag = async (featureFlag) => {
 
 export { checkFeatureFlag }
 
-export default checkFeatureFlag;
+export default checkFeatureFlag

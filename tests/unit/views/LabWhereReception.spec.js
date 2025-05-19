@@ -1,6 +1,9 @@
 import { mount } from '@support/testHelper'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import { scanBarcodesInLabwhereLocation, scanBarcodesInLabwhereLocationV2 } from '@/services/labwhere/client.js'
+import {
+  scanBarcodesInLabwhereLocation,
+  scanBarcodesInLabwhereLocationV2,
+} from '@/services/labwhere/client.js'
 import * as labwhereClient from '@/services/labwhere/client.js'
 import { beforeEach } from 'vitest'
 
@@ -98,7 +101,6 @@ describe('LabWhereReception', () => {
   })
 
   it('chooses the correct scan function based on the feature flag', async () => {
-
     const wrapper = buildWrapper()
     wrapper.vm.user_code = 'user123'
     wrapper.vm.location_barcode = 'location123'
