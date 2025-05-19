@@ -129,8 +129,6 @@ describe('LabWhereReception', () => {
       'barcode1, barcode2 successfully stored in location123',
       'success',
     )
-
-    console.log(mockCheckFeatureFlag.mock.calls)
   })
 
   it('validates and submits the form successfully', async () => {
