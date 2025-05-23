@@ -575,6 +575,9 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       this.$reset()
       this.resources = resources
     },
+    selectTagSet(id) {
+      this.selected.tagSet = { id }
+    },
 
     /**
      * Sets the pool data for a given pool ID.
@@ -642,7 +645,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
         this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
         this.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
-        this.selected.tagSet = { id: tag_set.id }
+        this.selectTagSet(tag_set.id)
 
         // Automatically select the fetched plates and tubes
         Object.keys(this.resources.plates).map((id) => this.selectPlate(id))
