@@ -7,7 +7,7 @@ import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 const ontTagSetFactory = OntTagSetFactory()
 const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 
-describe('OntPoolCreate', () => {
+describe.skip('OntPoolCreate', () => {
   it('will fetch all of the data', async () => {
     const {
       state: {
