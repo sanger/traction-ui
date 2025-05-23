@@ -76,7 +76,13 @@ describe('GeneralReception', () => {
         .find('[data-type=source-list]')
         .findAll('option')
         .map((element) => element.text()),
-    ).toEqual(['Sequencescape', 'Sequencescape Tubes', 'Sequencescape Multiplexed Libraries'])
+    ).toEqual([
+      'Sequencescape',
+      'Sequencescape Tubes',
+      'Sequencescape Multiplexed Libraries',
+      'Mocked plates',
+      'Mocked tubes',
+    ])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
   })
