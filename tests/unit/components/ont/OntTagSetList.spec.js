@@ -12,27 +12,6 @@ const tagSets = {
 describe('OntTagSetList', () => {
   let wrapper, store
 
-  // This test need to be in the start because for some reason, it fails if we change the order.
-  describe('when there are no tag sets to show', () => {
-    ;({ wrapper, store } = mountWithStore(OntTagSetList, {
-      initialState: {
-        ontPoolCreate: {
-          selected: {
-            tagSet: {},
-          },
-          resources: {
-            tagSets: {},
-          },
-        },
-      },
-      createStore: () => useOntPoolCreateStore(),
-    }))
-
-    it('wont show the list', () => {
-      expect(wrapper.find('[data-type=tag-set-list]').exists()).toBeFalsy()
-    })
-  })
-
   describe('when there are some tag sets to show', () => {
     beforeEach(() => {
       ;({ wrapper, store } = mountWithStore(OntTagSetList, {
@@ -62,6 +41,27 @@ describe('OntTagSetList', () => {
       await options[1].setSelected()
 
       expect(store.selected.tagSet.id).toEqual(tagSets['1'].id)
+    })
+  })
+
+  describe('when there are no tag sets to show', () => {
+    beforeEach(() => {
+      ;({ wrapper, store } = mountWithStore(OntTagSetList, {
+        initialState: {
+          ontPoolCreate: {
+            selected: {
+              tagSet: {},
+            },
+            resources: {
+              tagSets: {},
+            },
+          },
+        },
+        createStore: () => useOntPoolCreateStore(),
+      }))
+    })
+    it('wont show the list', () => {
+      expect(wrapper.find('[data-type=tag-set-list]').exists()).toBeFalsy()
     })
   })
 
