@@ -2,6 +2,9 @@ import PacbioLibraryFactory from '../../factories/PacbioLibraryFactory.js'
 
 describe('Labware Reception page', () => {
   beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
     cy.visit('#/labwhere-reception')
   })
 
