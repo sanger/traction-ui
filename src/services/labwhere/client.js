@@ -218,8 +218,6 @@ const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereF
     return { success: false, errors: ['No barcodes provided'], data: {} }
   }
 
-  console.log('Labwhere barcodes:', labwhereBarcodes)
-
   const response = await fetchWrapper.post(
     '/searches',
     {
@@ -227,8 +225,6 @@ const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereF
     },
     'application/json',
   )
-
-  console.log(response)
 
   if (response.success) {
     response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
