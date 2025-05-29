@@ -104,7 +104,7 @@ import {
   scanBarcodesInLabwhereLocationV2,
 } from '@/services/labwhere/client.js'
 import useAlert from '@/composables/useAlert.js'
-import checkFeatureFlag from '@/api/FeatureFlag.js'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 const user_code = ref('') // User code or swipecard
 const location_barcode = ref('') // Location barcode

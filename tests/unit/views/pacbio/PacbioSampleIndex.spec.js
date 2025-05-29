@@ -11,6 +11,13 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+const mockFetchLocations = vi.fn(() => [])
+vi.mock('@/composables/useLocationFetcher.js', () => ({
+  default: () => ({
+    fetchLocations: mockFetchLocations,
+  }),
+}))
+
 const pacbioRequestFactory = PacbioRequestFactory()
 
 describe('PacbioSamples.vue', () => {

@@ -1,5 +1,6 @@
-import { getLabwhereLocations } from '@/services/labwhere/client.js'
+import { getLabwhereLocations, getLabwhereLocationsV2 } from '@/services/labwhere/client.js'
 import { formatLocations } from '@/services/labwhere/helpers.js'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 /**
  * A composable function to fetch and format location data for given barcodes.
@@ -23,12 +24,16 @@ export default function useLocationFetcher() {
       name: '-', // Default name for missing barcodes
     }))
 
+    const fn = (await checkFeatureFlag('rust_labwhere_service'))
+      ? getLabwhereLocationsV2
+      : getLabwhereLocations
+
     try {
       const trimmedBarcodes = barcodes.map((barcode) =>
         barcode.includes(':') ? barcode.split(':')[0] : barcode,
       )
 
-      const extractedLocations = await getLabwhereLocations(trimmedBarcodes)
+      const extractedLocations = await fn(trimmedBarcodes)
       locationData = formatLocations(extractedLocations)
     } catch (error) {
       console.error('Error fetching locations:', error)
