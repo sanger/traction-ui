@@ -5,6 +5,9 @@ import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
 
 describe('Pacbio samples view', () => {
   beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.wrap(PacbioRequestFactory({ includeRelationships: false })).as('pacbioRequestFactory')
