@@ -1,5 +1,4 @@
 import OntRequestFactory from '../../../factories/OntRequestFactory.js'
-import { beforeEach } from 'vitest'
 
 describe('Ont samples view', () => {
   beforeEach(() => {
