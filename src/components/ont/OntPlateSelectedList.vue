@@ -34,7 +34,6 @@
             class="w-1/2"
           >
             {{ plate.barcode }}
-            <!-- Plate ref="plate" v-bind="plate" :wellData="ontPoolCreateStore.wellList(plate.wells)"></Plate -->
             <Plate ref="plate" v-bind="plate"></Plate>
             <traction-button
               :id="'remove-plate-btn-' + plate.id"

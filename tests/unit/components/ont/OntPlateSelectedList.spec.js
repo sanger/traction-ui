@@ -13,8 +13,8 @@ describe('OntPlateSelectedList', () => {
       initialState: {
         ontPoolCreate: {
           resources: {
-            plates: ontPlateFactory.storeData.plates,
-            wells: ontPlateFactory.storeData.wells,
+            plates: ontPlateFactory.storeData.resources.plates,
+            wells: ontPlateFactory.storeData.resources.wells,
           },
         },
       },
