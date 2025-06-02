@@ -31,7 +31,7 @@
  * @name PacbioTagSetItem
  * @description Renders a tag set item
  */
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { computed } from 'vue'
 
 const store = usePacbioPoolCreateStore()
