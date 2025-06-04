@@ -1,5 +1,6 @@
 import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
+import * as SequencescapeKinnexTubes from './SequencescapeKinnexTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
 import * as MockReception from './MockReception.js'
 
@@ -67,6 +68,12 @@ const ReceptionTypes = {
     value: 'SequencescapeMultiplexedLibraries',
     pipelines: ['ONT'],
   },
+  SequencescapeKinnexTubes: {
+    name: 'sequencescape-kinnex-tubes',
+    text: 'Sequencescape Kinnex Tubes',
+    value: 'SequencescapeKinnexTubes',
+    pipelines: ['PacBio'],
+  },
 }
 
 const MockReceptionTypes = {
@@ -102,6 +109,12 @@ const Receptions = {
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
     barcodeComponent: MultiplexedLibraryBarcode,
     getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
+  },
+  SequencescapeKinnexTubes: {
+    ...ReceptionTypes.SequencescapeKinnexTubes,
+    fetchFunction: SequencescapeKinnexTubes.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
+    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   MockedPlates: {
     ...MockReceptionTypes.MockedPlates,
