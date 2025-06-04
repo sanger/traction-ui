@@ -80,6 +80,7 @@ describe('GeneralReception', () => {
       'Sequencescape',
       'Sequencescape Tubes',
       'Sequencescape Multiplexed Libraries',
+      'Sequencescape Kinnex Tubes',
       'Mocked plates',
       'Mocked tubes',
     ])
@@ -99,6 +100,11 @@ describe('GeneralReception', () => {
       await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
+    })
+    it('only shows Pacbio for Sequencescape Kinnex Tubes', async () => {
+      await wrapper.find('[data-type=source-list]').findAll('option')[3].setSelected()
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
     })
 
     it('sets pipeline to the first available pipeline if the source changes and the pipeline is no longer valid', async () => {
