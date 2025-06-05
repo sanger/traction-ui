@@ -182,19 +182,34 @@ const SequencescapeKinnexTubeFactory = () => {
         id: '212',
         type: 'sample_metadata',
         links: { self: 'http://localhost:3000/api/v2/sample_metadata/212' },
-        attributes: { sample_common_name: 'human' },
+        attributes: {
+          sample_common_name: 'human',
+          supplier_name: 'Supplier A',
+          date_of_sample_collection: '2023-01-01',
+          donor_id: 'Donor 1',
+        },
       },
       {
         id: '213',
         type: 'sample_metadata',
         links: { self: 'http://localhost:3000/api/v2/sample_metadata/213' },
-        attributes: { sample_common_name: 'human' },
+        attributes: {
+          sample_common_name: 'human',
+          supplier_name: 'Supplier A',
+          date_of_sample_collection: '2023-01-02',
+          donor_id: 'Donor 1',
+        },
       },
       {
         id: '214',
         type: 'sample_metadata',
         links: { self: 'http://localhost:3000/api/v2/sample_metadata/214' },
-        attributes: { sample_common_name: 'human' },
+        attributes: {
+          sample_common_name: 'human',
+          supplier_name: 'Supplier A',
+          date_of_sample_collection: '2023-01-03',
+          donor_id: 'Donor 1',
+        },
       },
     ],
     links: {

@@ -1,6 +1,6 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeKinnexTubes.js'
 import { store } from '@support/testHelper.js'
-import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
+import SequencescapeKinnexTubeFactory from '@tests/factories/SequencescapeKinnexTubeFactory.js'
 
 describe('SequencescapeKinnexTubes', () => {
   describe('#fetchLabwareForReception', () => {
@@ -13,7 +13,7 @@ describe('SequencescapeKinnexTubes', () => {
     })
 
     it('successfully', async () => {
-      request.mockResolvedValue(SequencescapeLabwareFactory().responses.fetch)
+      request.mockResolvedValue(SequencescapeKinnexTubeFactory().responses.fetch)
 
       const { attributes, foundBarcodes } = await fetchLabwareForReception({
         requests,
@@ -30,29 +30,31 @@ describe('SequencescapeKinnexTubes', () => {
         fields: {
           aliquots: 'study,library_type,sample',
           receptacles: 'aliquots',
-          sample_metadata: 'sample_common_name',
+          sample_metadata: 'sample_common_name,supplier_name,date_of_sample_collection,donor_id',
           samples: 'sample_metadata,name,uuid',
           studies: 'uuid',
           tubes: 'labware_barcode,receptacles',
         },
       })
 
-      expect(foundBarcodes).toEqual(new Set(['NT1O']))
+      expect(foundBarcodes).toEqual(new Set(['NT67O']))
       expect(attributes).toEqual({
         source: 'traction-ui.sequencescape',
         tubes_attributes: [
           {
-            barcode: 'NT1O',
+            barcode: 'NT67O',
             request: {
-              external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
+              external_study_id: '3b1cf0ac-4079-11f0-805f-e2df7c04b5f2',
               library_type: 'Example',
               cost_code: 'aCostCodeExample',
             },
             sample: {
-              name: '2STDY97',
-              external_id: '0db37dd8-94ca-11ec-a9e3-acde48001122',
-              species: 'Gryphon',
-              retention_instruction: 'return_to_customer_after_2_years',
+              name: 'Supplier A',
+              external_id: 'f3e18688-4142-11f0-ac8e-e2df7c04b5f2',
+              species: 'human',
+              retention_instruction: null,
+              date_of_sample_collection: '2023-01-01',
+              donor_id: 'Donor 1',
             },
           },
         ],
