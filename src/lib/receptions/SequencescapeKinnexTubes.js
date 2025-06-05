@@ -1,8 +1,4 @@
 import { fetchLabwareFromSequencescape, labwareTypes } from './sequencescapeUtils.js'
-// This module replaces by services.Sequencescape which can be removed
-// when the pipeline-specific receptions are retired. While this change results
-// in temporary code duplication, it allows for complete decoupling of old and
-// new paths, greatly simplifying the removal.
 
 /**
  * Request parameters for retrieval of labware from Sequencescape v2 API
