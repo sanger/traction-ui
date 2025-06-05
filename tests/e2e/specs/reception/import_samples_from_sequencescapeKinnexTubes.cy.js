@@ -15,7 +15,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
       })
     })
   })
-  describe('Successfully - V2', () => {
+  describe('Importing samples from Sequencescape Kinnex Tubes - Success', () => {
     beforeEach(() => {
       cy.visit('#/reception')
       cy.get('#workflowSelect').select('Pacbio -20 samples')
@@ -34,7 +34,8 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
             'fields[tubes]': 'labware_barcode,receptacles',
             'fields[aliquots]': 'study,library_type,sample',
             'fields[receptacles]': 'aliquots',
-            'fields[sample_metadata]': 'sample_common_name,donor_id,date_of_sample_collection',
+            'fields[sample_metadata]':
+              'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
             'fields[samples]': 'sample_metadata,name,uuid',
             'fields[studies]': 'uuid',
           },
@@ -57,7 +58,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
         },
       })
     })
-    it.only('successfully import to traction and scanning in to labWhere', () => {
+    it('successfully import to traction and scanning in to labWhere', () => {
       cy.intercept('POST', '/api/scans', {
         statusCode: 201,
         body: {
@@ -101,7 +102,8 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
           'fields[tubes]': 'labware_barcode,receptacles',
           'fields[aliquots]': 'study,library_type,sample',
           'fields[receptacles]': 'aliquots',
-          'fields[sample_metadata]': 'sample_common_name',
+          'fields[sample_metadata]':
+            'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
           'fields[samples]': 'sample_metadata,name,uuid',
           'fields[studies]': 'uuid',
         },
@@ -130,7 +132,8 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
           'fields[tubes]': 'labware_barcode,receptacles',
           'fields[aliquots]': 'study,library_type,sample',
           'fields[receptacles]': 'aliquots',
-          'fields[sample_metadata]': 'sample_common_name',
+          'fields[sample_metadata]':
+            'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
           'fields[samples]': 'sample_metadata,name,uuid',
           'fields[studies]': 'uuid',
         },
