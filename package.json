@@ -31,7 +31,7 @@
     "global": "^4.4.0",
     "lodash-es": "^4.17.21",
     "pinia": "^3.0.2",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "swrv": "^1.1.0",
     "tailwindcss": "4.1.7",
     "vite": "^6.3.5",
