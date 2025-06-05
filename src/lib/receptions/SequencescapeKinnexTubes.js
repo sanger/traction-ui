@@ -13,7 +13,7 @@ const labwareRequestConfig = {
     tubes: 'labware_barcode,receptacles',
     receptacles: 'aliquots',
     samples: 'sample_metadata,name,uuid',
-    sample_metadata: 'sample_common_name',
+    sample_metadata: 'sample_common_name,supplier_name,date_of_sample_collection,donor_id',
     studies: 'uuid',
     aliquots: 'study,library_type,sample',
   },

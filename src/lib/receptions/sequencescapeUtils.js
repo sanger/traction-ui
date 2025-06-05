@@ -230,8 +230,13 @@ const buildKinnexRequestAndSample = ({
     },
     sample: {
       external_id: sample.attributes.uuid,
-      name: sample.attributes.name,
+      // For Kinnex tubes, use supplier_name as the sample name.
+      // All samples in a Kinnex tube share the same supplier_name, which serves as a unique identifier
+      // for the compound sample created in Traction to represent all samples in the tube.
+      name: sample_metadata.attributes.supplier_name,
       species: sample_metadata.attributes.sample_common_name,
+      donor_id: sample_metadata.attributes.donor_id,
+      date_of_sample_collection: sample_metadata.attributes.date_of_sample_collection,
       retention_instruction,
     },
   }
