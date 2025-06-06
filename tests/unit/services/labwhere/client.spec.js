@@ -163,10 +163,13 @@ describe('scanBarcodesInLabwhereLocationV2', () => {
       null,
       mockFetchWrapper,
     )
-    expect(mockFetchWrapper.post).toHaveBeenCalledWith('/scan', {
-      labware_barcodes: 'labware1',
-      location_barcode: 'location1',
-    })
+    expect(mockFetchWrapper.post).toHaveBeenCalledWith(
+      '/scan',
+      JSON.stringify({
+        labware_barcodes: 'labware1',
+        location_barcode: 'location1',
+      }),
+    )
     expect(result).toEqual({
       success: true,
       errors: [],

@@ -180,10 +180,13 @@ const scanBarcodesInLabwhereLocationV2 = async (
   if (!labwareBarcodes) {
     return { success: false, errors: ['Required parameters are missing for the Scan In operation'] }
   }
-  const response = await fetchWrapper.post('/scan', {
-    labware_barcodes: labwareBarcodes,
-    location_barcode: locationBarcode,
-  })
+  const response = await fetchWrapper.post(
+    '/scan',
+    JSON.stringify({
+      labware_barcodes: labwareBarcodes,
+      location_barcode: locationBarcode,
+    }),
+  )
 
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
