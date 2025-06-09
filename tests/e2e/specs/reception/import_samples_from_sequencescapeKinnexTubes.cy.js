@@ -14,6 +14,14 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
         body: printerFactory.content,
       })
     })
+
+
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        kinnex_sample_reception: { enabled: true }
+      },
+    })
   })
   describe('Importing samples from Sequencescape Kinnex Tubes - Success', () => {
     beforeEach(() => {
