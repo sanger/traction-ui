@@ -162,7 +162,12 @@ const WorkflowListType = (attributes = {}) => {
  * This is a basic label with just the barcode and date
  */
 const createBasicTubeBarcodeLabel = (barcodeItem) => {
-  const { barcode, date: first_line, barcode: second_line, barcode: round_label_top_line } = barcodeItem
+  const {
+    barcode,
+    date: first_line,
+    barcode: second_line,
+    barcode: round_label_top_line,
+  } = barcodeItem
   return { barcode, first_line, second_line, round_label_top_line, label_name: 'main_label' }
 }
 
