@@ -27,6 +27,13 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
       fixture: 'tractionDataTypes.json',
     })
+
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        kinnex_sample_reception: { enabled: true },
+      },
+    })
   })
   describe('Successfully - V2', () => {
     beforeEach(() => {
