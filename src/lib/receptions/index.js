@@ -89,6 +89,12 @@ const MockReceptionTypes = {
     value: 'MockedTubes',
     pipelines: ['PacBio', 'ONT'],
   },
+  MockedKinnexTubes: {
+    name: 'mocked-kinnex-tubes',
+    text: 'Mocked Kinnex tubes',
+    value: 'MockedKinnexTubes',
+    pipelines: ['PacBio'],
+  },
 }
 
 const Receptions = {
@@ -124,6 +130,11 @@ const Receptions = {
   MockedTubes: {
     ...MockReceptionTypes.MockedTubes,
     fetchFunction: MockReception.fetchTubesFunction,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedKinnexTubes: {
+    ...MockReceptionTypes.MockedKinnexTubes,
+    fetchFunction: MockReception.fetchCompoundSampleTubesFunction,
     barcodeComponent: MultiBarcode,
   },
 }
