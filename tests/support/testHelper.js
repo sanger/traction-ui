@@ -130,6 +130,22 @@ function mountWithStore(component, options = {}) {
   return { wrapper, store }
 }
 
+/**
+ * Helper to select an option by its visible text.
+ * @param {Wrapper} selectWrapper - The wrapper for the <select> element.
+ * @param {string} text - The visible text of the option to select.
+ */
+async function selectOptionByText(selectWrapper, text) {
+  const option = selectWrapper.findAll('option').find((opt) => opt.text() === text)
+  if (option) {
+    await selectWrapper.setValue(option.element.value)
+  } else {
+    throw new Error(`Option with text "${text}" not found`)
+  }
+}
+
+// ...existing code...
+
 export {
   mount,
   store,
@@ -140,6 +156,7 @@ export {
   setActivePinia,
   createPinia,
   createTestingPinia,
+  selectOptionByText,
   findAllByText,
   findByText,
   successfulResponse,
