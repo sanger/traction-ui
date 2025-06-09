@@ -15,11 +15,10 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
       })
     })
 
-
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        kinnex_sample_reception: { enabled: true }
+        kinnex_sample_reception: { enabled: true },
       },
     })
   })

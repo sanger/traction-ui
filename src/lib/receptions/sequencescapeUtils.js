@@ -257,7 +257,7 @@ const buildKinnexRequestAndSample = ({
       const { sample, sample_metadata } = sample_data
       return {
         external_id: sample.attributes.uuid,
-        name:  sample.attributes.name,
+        name: sample.attributes.name,
         supplier_name: sample_metadata.attributes.supplier_name,
         species: sample_metadata.attributes.sample_common_name,
         donor_id: sample_metadata.attributes.donor_id,

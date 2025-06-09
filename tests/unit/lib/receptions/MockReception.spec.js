@@ -1,4 +1,8 @@
-import { fetchPlatesFunction, fetchTubesFunction, fetchCompoundSampleTubesFunction } from '@/lib/receptions/MockReception'
+import {
+  fetchPlatesFunction,
+  fetchTubesFunction,
+  fetchCompoundSampleTubesFunction,
+} from '@/lib/receptions/MockReception'
 
 describe('MockReception', () => {
   describe('#fetchPlatesFunction', () => {
@@ -81,7 +85,9 @@ describe('MockReception', () => {
         expect(tube.barcode).toBe(barcodes[tubeIndex])
         expect(tube.samples).toHaveLength(3)
         tube.samples.forEach((sampleObj, sampleIndex) => {
-          expect(sampleObj.sample.name).toBe(`${tube.barcode}-sample-${sampleIndex + 1}-${tubeIndex}`)
+          expect(sampleObj.sample.name).toBe(
+            `${tube.barcode}-sample-${sampleIndex + 1}-${tubeIndex}`,
+          )
           expect(sampleObj.sample.species).toBe('Human')
           expect(sampleObj.sample.retention_instruction).toBe('long_term_storage')
           expect(sampleObj.sample.external_id).toBeDefined()

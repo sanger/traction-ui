@@ -228,10 +228,9 @@ const workflowOptions = computed(() => [
 
 const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
 
-
 const receptionOptions = async () => {
   let receptionTypes = Object.values(ReceptionTypes)
-   const isKinnexEnabled = await checkFeatureFlag('kinnex_sample_reception')
+  const isKinnexEnabled = await checkFeatureFlag('kinnex_sample_reception')
   // Filter out SequencescapeKinnexTubes if the feature flag is not enabled
   if (!isKinnexEnabled) {
     receptionTypes = receptionTypes.filter((type) => type.value !== 'SequencescapeKinnexTubes')
@@ -245,7 +244,7 @@ const receptionOptions = async () => {
 
   return [...receptionTypes]
 }
-onMounted( async () => {
+onMounted(async () => {
   receptionOptionsList.value = await receptionOptions()
 })
 

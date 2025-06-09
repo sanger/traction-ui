@@ -45,10 +45,9 @@ const buildMockCompoundSampleAndRequest = (sample_names, requestOptions) => {
         ...requestOptions,
         external_study_id: crypto.randomUUID(),
       },
-    }))
+    })),
   }
 }
-
 
 /**
  * Generates a reception object containing mocked plates_attributes based on the provided barcodes.
@@ -146,7 +145,6 @@ const fetchCompoundSampleTubesFunction = async ({ requestOptions, barcodes }) =>
     foundBarcodes: new Set(barcodes),
   }
 }
-
 
 const MockReception = {
   fetchPlatesFunction,
