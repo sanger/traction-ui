@@ -163,7 +163,7 @@ const WorkflowListType = (attributes = {}) => {
  */
 const createBasicTubeBarcodeLabel = (barcodeItem) => {
   const { barcode, date: first_line, barcode: second_line } = barcodeItem
-  return { barcode, first_line, second_line, label_name: 'main_label' }
+  return { barcode, first_line, second_line, number: barcode, label_name: 'main_label' }
 }
 
 /**
