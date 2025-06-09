@@ -40,7 +40,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
  *
  * @returns {Array} Array of attribute keys
  */
-const getAttributeKeys = () => ['tubes_attributes']
+const getAttributeKeys = () => ['compound_sample_tubes_attributes']
 
 const SequencescapeKinnexTubes = {
   fetchLabwareForReception,
