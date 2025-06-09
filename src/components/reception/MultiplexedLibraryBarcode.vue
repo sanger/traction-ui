@@ -242,7 +242,7 @@ async function fetchPrinters() {
  */
 function createLabels(foundBarcodes, date) {
   const sourceBarcodeList = Array.from(foundBarcodes)
-  const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date, number: barcode }))
+  const barcodeItems = sourceBarcodeList.map((barcode) => ({ barcode, date }))
   return createBarcodeLabels({ barcodeItems, createLabelFn: createBasicTubeBarcodeLabel })
 }
 
