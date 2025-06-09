@@ -176,6 +176,32 @@ const getIncludedData = ({ labware, included }) => {
 }
 
 /**
+ * Returns all samples and their sample_metadata from all aliquots in the provided labware.
+ * @param {Object} labware Labware object from Sequencescape
+ * @param {Array<Object>} included Included objects from Sequencescape
+ * @returns {Array<Object>} Array of objects: { sample, sample_metadata }
+ */
+const getAllSamplesAndMetadataFromAliquots = ({ labware, included }) => {
+  if (!labware.relationships.aliquots?.data?.length) {
+    throw new Error('Unable to find samples in sequencescape for labware barcode.')
+  }
+  return labware.relationships.aliquots.data.map((aliquotData) => {
+    const aliquot = findIncluded({ included, data: aliquotData, type: 'aliquots' })
+    const sample = findIncluded({
+      included,
+      data: aliquot.relationships.sample.data,
+      type: 'samples',
+    })
+    const sample_metadata = findIncluded({
+      included,
+      data: sample.relationships.sample_metadata.data,
+      type: 'sample_metadata',
+    })
+    return { sample, sample_metadata }
+  })
+}
+
+/**
  * @param {Object} aliquot Aliquot object from Sequencescape
  * @param {Object} study Study object from Sequencescape
  * @param {Object} sample Sample object from Sequencescape
@@ -217,8 +243,7 @@ const buildRequestAndSample = ({
 const buildKinnexRequestAndSample = ({
   aliquot,
   study,
-  sample,
-  sample_metadata,
+  samples_data_arr,
   requestOptions,
   retention_instruction = null,
 }) => {
@@ -228,17 +253,18 @@ const buildKinnexRequestAndSample = ({
       library_type: aliquot.attributes.library_type,
       ...requestOptions,
     },
-    sample: {
-      external_id: sample.attributes.uuid,
-      // For Kinnex tubes, use supplier_name as the sample name.
-      // All samples in a Kinnex tube share the same supplier_name, which serves as a unique identifier
-      // for the compound sample created in Traction to represent all samples in the tube.
-      name: sample_metadata.attributes.supplier_name,
-      species: sample_metadata.attributes.sample_common_name,
-      donor_id: sample_metadata.attributes.donor_id,
-      date_of_sample_collection: sample_metadata.attributes.date_of_sample_collection,
-      retention_instruction,
-    },
+    samples: samples_data_arr.map((sample_data) => {
+      const { sample, sample_metadata } = sample_data
+      return {
+        external_id: sample.attributes.uuid,
+        name:  sample.attributes.name,
+        supplier_name: sample_metadata.attributes.supplier_name,
+        species: sample_metadata.attributes.sample_common_name,
+        donor_id: sample_metadata.attributes.donor_id,
+        date_of_sample_collection: sample_metadata.attributes.date_of_sample_collection,
+        retention_instruction,
+      }
+    }),
   }
 }
 
@@ -369,10 +395,11 @@ const transformKinnexTube = (attributes) => {
   })
 
   // get the aliquot, study, sample and sample_metadata from the included data
-  const { aliquot, study, sample, sample_metadata } = getIncludedData({
+  const { aliquot, study } = getIncludedData({
     labware: receptacle,
     included,
   })
+  const samples_data_arr = getAllSamplesAndMetadataFromAliquots({ labware: receptacle, included })
 
   return {
     barcode: labware.attributes.labware_barcode[barcodeAttribute],
@@ -380,8 +407,7 @@ const transformKinnexTube = (attributes) => {
     ...buildKinnexRequestAndSample({
       aliquot,
       study,
-      sample,
-      sample_metadata,
+      samples_data_arr,
       requestOptions,
       retention_instruction,
     }),
@@ -494,7 +520,7 @@ const labwareTypes = {
   },
   kinnex_tubes: {
     type: 'tubes',
-    attributes: 'tubes_attributes',
+    attributes: 'compound_sample_tubes_attributes',
     transformFunction: transformKinnexTube,
     barcodeAttribute: 'human_barcode',
   },
@@ -508,4 +534,5 @@ export {
   buildPool,
   findIncluded,
   labwareTypes,
+  getAllSamplesAndMetadataFromAliquots,
 }
