@@ -62,7 +62,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
       cy.intercept('POST', '/api/scans', {
         statusCode: 201,
         body: {
-          message: 'SE108532I successfully stored in LRT006 Draw 1',
+          message: 'NT1O successfully stored in LRT006 Draw 1',
         },
       })
       cy.get('#barcodes').type('3980000067791\n')
@@ -71,7 +71,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
       cy.get('[data-action="import-labware"]').click()
       cy.contains('DN9000002A imported from Sequencescape Kinnex Tubes')
       cy.contains('NT1O imported from Sequencescape Kinnex Tubes')
-      cy.contains('SE108532I successfully stored in LRT006 Draw 1')
+      cy.contains('NT1O successfully stored in LRT006 Draw 1')
     })
 
     it('successfully import to traction but fails to scan in to labWhere', () => {
