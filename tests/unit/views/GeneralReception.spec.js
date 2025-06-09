@@ -11,6 +11,10 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
+}))
+
 const printerFactory = PrinterFactory()
 
 describe('GeneralReception', () => {
