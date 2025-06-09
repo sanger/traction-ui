@@ -87,6 +87,7 @@ describe('GeneralReception', () => {
       'Sequencescape Kinnex Tubes',
       'Mocked plates',
       'Mocked tubes',
+      'Mocked Kinnex tubes',
     ])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
