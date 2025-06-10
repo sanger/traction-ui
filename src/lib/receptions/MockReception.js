@@ -26,26 +26,16 @@ const buildMockSampleAndRequest = (sample_name, requestOptions) => {
 }
 
 /**
- * A function to help encapsulate the logic of building a mock sample and request object.
+ * A function to help encapsulate the logic of building a mock compound sample and request object.
+ * Uses buildMockSampleAndRequest for each sample name.
  *
- * @param {string} sample_name - The name of the sample to be included in the mock data.
- * @param {Object} requestOptions - An object containing request options to be included in each well's request.
- * @returns {Object} A mock sample and request object.
+ * @param {string[]} sample_names - The names of the samples to be included in the mock data.
+ * @param {Object} requestOptions - An object containing request options to be included in each sample's request.
+ * @returns {Object} A mock compound sample and request object.
  */
 const buildMockCompoundSampleAndRequest = (sample_names, requestOptions) => {
   return {
-    samples: sample_names.map((name) => ({
-      sample: {
-        name,
-        species: 'Human',
-        retention_instruction: 'long_term_storage',
-        external_id: crypto.randomUUID(),
-      },
-      request: {
-        ...requestOptions,
-        external_study_id: crypto.randomUUID(),
-      },
-    })),
+    samples: sample_names.map((name) => buildMockSampleAndRequest(name, requestOptions)),
   }
 }
 
