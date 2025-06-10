@@ -102,25 +102,21 @@ const Receptions = {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: Sequencescape.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   SequencescapeMultiplexedLibraries: {
     ...ReceptionTypes.SequencescapeMultiplexedLibraries,
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
     barcodeComponent: MultiplexedLibraryBarcode,
-    getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
   },
   SequencescapeKinnexTubes: {
     ...ReceptionTypes.SequencescapeKinnexTubes,
     fetchFunction: SequencescapeKinnexTubes.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   MockedPlates: {
     ...MockReceptionTypes.MockedPlates,

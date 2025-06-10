@@ -36,17 +36,11 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
     labwareRequestConfig,
   })
 }
-/**
- *
- * @returns {Array} Array of attribute keys
- */
-const getAttributeKeys = () => ['compound_sample_tubes_attributes']
 
 const SequencescapeKinnexTubes = {
   fetchLabwareForReception,
-  getAttributeKeys,
 }
 
-export { fetchLabwareForReception, getAttributeKeys }
+export { fetchLabwareForReception }
 
 export default SequencescapeKinnexTubes
