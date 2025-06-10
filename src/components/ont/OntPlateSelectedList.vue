@@ -62,7 +62,7 @@
  *
  * Displays a list of tagSets to select from for ont pooling
  */
-import Plate from '@/components/ont/OntPlateItem'
+import Plate from '@/components/ont/OntPlateItem.vue'
 import { VueSelecto } from 'vue3-selecto'
 import { ref, computed } from 'vue'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
