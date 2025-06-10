@@ -19,7 +19,7 @@ describe('OntPlateSelectedList', () => {
         },
       },
       stubs: {
-        Plate: true,
+        //Plate: true,
         VueSelecto: true,
       },
       createStore: () => useOntPoolCreateStore(),

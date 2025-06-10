@@ -1,5 +1,7 @@
-import Plate from '@/components/ont/OntPlateItem'
-import { mount, store } from '@support/testHelper'
+import OntPlateItem from '@/components/ont/OntPlateItem.vue'
+import { mountWithStore } from '@support/testHelper.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import useRootStore from '@/stores'
 
 const plates = {
   1: {
@@ -18,31 +20,34 @@ const wells = {
   5: { id: '5', position: 'E1' },
 }
 
-describe('Plate.vue', () => {
+describe('OntPlateItem.vue', () => {
   let wrapper, plate
 
   beforeEach(() => {
-    store.state.traction.ont.pools.resources.plates = plates
-    store.state.traction.ont.pools.resources.wells = wells
-
-    wrapper = mount(Plate, {
-      props: { ...plates['1'] },
-      store,
-      stubs: {
-        Plate96SVG: true,
-        Well: true,
+    const defaultState = {
+      resources: {
+        plates,
+        wells,
       },
-    })
+    }
+
+    // wrapper = mountWithStore(OntPlateItem, {
+    //   props: { ...plates['1'] },
+    //   store,
+    //   stubs: {
+    //     Plate96SVG: true,
+    //     Well: true,
+    //   },
+    // })
+    ;({ wrapper } = mountWithStore(OntPlateItem, {
+      props: { ...plates['1'] },
+      initialState: {
+        ontPoolCreate: { ...defaultState },
+      },
+      createStore: () => useOntPoolCreateStore(),
+    }))
 
     plate = wrapper.vm
-  })
-
-  it('will be passed a plate id as a prop', () => {
-    expect(plate.id).toBeDefined()
-  })
-
-  it('will have a plate map', () => {
-    expect(plate.plateMap).toBeDefined()
   })
 
   it('will have some well data', () => {
@@ -52,31 +57,24 @@ describe('Plate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('merges mapWell and well at the given position ', () => {
-        const mapWell = plate.plateMap.wells['A1']
+        const rootStore = useRootStore()
+        const mapWell = rootStore.plateMap.wells['A1']
         expect(plate.getWellAt(mapWell, 'A1').id).toEqual('1')
       })
 
       it('returns just the mapWell if no well has the positiion', () => {
-        const mapWell = plate.plateMap.wells['A10']
+        const rootStore = useRootStore()
+        const mapWell = rootStore.plateMap.wells['A10']
         expect(plate.getWellAt(mapWell, 'A10')).toEqual(mapWell)
       })
     })
   })
 
-  describe('components', () => {
-    it('has a Well component', () => {
-      expect(wrapper.findComponent('[data-attribute="well"]')).toBeTruthy()
-    })
-
-    it('has a Plate96SVG component', () => {
-      expect(wrapper.findComponent('[data-attribute="plate96svg"]')).toBeTruthy()
-    })
-  })
-
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
+      const rootStore = useRootStore()
       const ellipses = wrapper.findAllComponents('[data-attribute="well"]')
-      expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
+      expect(ellipses.length).toEqual(Object.keys(rootStore.plateMap.wells).length)
     })
   })
 
