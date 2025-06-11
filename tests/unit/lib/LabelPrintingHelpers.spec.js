@@ -300,6 +300,7 @@ describe('LabelPrintingHelpers.js', () => {
         third_line,
         fourth_line,
         round_label_top_line,
+        round_label_bottom_line,
         label_name,
       } = createWorkflowTubeBarcodeLabel(workflowItemType)
 
@@ -309,6 +310,7 @@ describe('LabelPrintingHelpers.js', () => {
       expect(third_line).toEqual(workflowItemType.sourceBarcode)
       expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
       expect(round_label_top_line).toEqual(workflowItemType.number)
+      expect(round_label_bottom_line).toEqual(workflowItemType.sourceBarcode)
       expect(label_name).toEqual('main_label')
     })
 

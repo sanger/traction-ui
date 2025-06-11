@@ -25,7 +25,7 @@ describe('#usePacbioLibraryPrint', () => {
       second_line: '01-Jan-2023',
       third_line: 'TRAC-1',
       fourth_line: 'SQSC-1',
-      round_label_top_line: 'SQSC-1',
+      round_label_bottom_line: 'SQSC-1',
       label_name: 'main_label',
     },
     {
@@ -34,7 +34,7 @@ describe('#usePacbioLibraryPrint', () => {
       second_line: '01-Jan-2023',
       third_line: 'TRAC-2',
       fourth_line: 'SQSC-2',
-      round_label_top_line: 'SQSC-2',
+      round_label_bottom_line: 'SQSC-2',
       label_name: 'main_label',
     },
   ]

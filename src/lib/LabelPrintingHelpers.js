@@ -166,9 +166,9 @@ const createBasicTubeBarcodeLabel = (barcodeItem) => {
     barcode,
     date: first_line,
     barcode: second_line,
-    barcode: round_label_top_line,
+    barcode: round_label_bottom_line,
   } = barcodeItem
-  return { barcode, first_line, second_line, round_label_top_line, label_name: 'main_label' }
+  return { barcode, first_line, second_line, round_label_bottom_line, label_name: 'main_label' }
 }
 
 /**
@@ -183,6 +183,7 @@ const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
     sourceBarcode: third_line,
     parsedSuffixes: fourth_line,
     number: round_label_top_line,
+    sourceBarcode: round_label_bottom_line,
   } = barcodeItem
   return {
     barcode,
@@ -191,6 +192,7 @@ const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
     third_line,
     fourth_line,
     round_label_top_line,
+    round_label_bottom_line,
     label_name: 'main_label',
   }
 }
