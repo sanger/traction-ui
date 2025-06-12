@@ -16,7 +16,7 @@ export default function usePacbioLibraryPrint() {
         second_line: date,
         third_line: barcode,
         fourth_line: source_identifier,
-        round_label_bottom_line: source_identifier,
+        round_label_bottom_line: barcode,
         label_name: 'main_label',
       }
     })
