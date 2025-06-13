@@ -223,9 +223,9 @@ const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereF
 
   const response = await fetchWrapper.post(
     '/searches',
-    {
+    JSON.stringify({
       labware_barcodes: labwhereBarcodes.join('\n'),
-    },
+    }),
     'application/json',
   )
 
