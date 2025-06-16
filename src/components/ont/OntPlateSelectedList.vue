@@ -38,7 +38,7 @@
             <traction-button
               :id="'remove-plate-btn-' + plate.id"
               class="mt-0"
-              @click="deselectPlateAndContents(plate.id)"
+              @click="ontPoolCreateStore.deselectPlateAndContents(plate.id)"
               >Remove</traction-button
             >
           </div>
@@ -125,6 +125,10 @@ const onSelect = (e) => {
   e.removed.forEach((el) => {
     ontPoolCreateStore.selectWellRequests(el.getAttribute('id'))
   })
+}
+
+const setSource = (index) => {
+  sourceIndex.value = index
 }
 
 // const wellList = ontPoolCreateStore.wellList

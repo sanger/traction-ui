@@ -31,14 +31,6 @@ describe('OntPlateItem.vue', () => {
       },
     }
 
-    // wrapper = mountWithStore(OntPlateItem, {
-    //   props: { ...plates['1'] },
-    //   store,
-    //   stubs: {
-    //     Plate96SVG: true,
-    //     Well: true,
-    //   },
-    // })
     ;({ wrapper } = mountWithStore(OntPlateItem, {
       props: { ...plates['1'] },
       initialState: {
