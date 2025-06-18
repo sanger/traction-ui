@@ -106,6 +106,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     //Tags: The tags for the currently selected libraries
     tags: {},
 
+    //Annotations: The annotations for the run and wells
+    annotations: {},
+
     //Run Type: The type of run either new or existing
     runType: {},
 
@@ -299,7 +302,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version,annotations,plates.wells.annotations',
       })
       const response = await handleResponse(promise)
       const { success, body: { data, included = [] } = {}, errors = [] } = response
@@ -313,6 +316,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           aliquots,
           requests,
           tags,
+          annotations,
           smrt_link_versions: [smrt_link_version = {}] = [],
         } = groupIncludedByResource(included)
 
@@ -329,6 +333,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests, true)
         this.tags = formatById(this.tags, tags)
+        this.annotations = dataToObjectById({ data: annotations, includeRelationships: true })
 
         // Populate the wells
         // Adds the wells to state by plate number and well position, two dimensional array

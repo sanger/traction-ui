@@ -47,6 +47,7 @@ const createStoreDataForSingleRun = (data) => {
     aliquots,
     requests,
     tags,
+    annotations,
     smrt_link_versions: [smrt_link_version = {}] = [],
   } = groupIncludedByResource(data.included)
 
@@ -66,6 +67,7 @@ const createStoreDataForSingleRun = (data) => {
     requests: dataToObjectById({ data: requests, includeRelationships: true }),
     plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
     wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    annotations: dataToObjectById({ data: annotations, includeRelationships: true }),
     scannedBarcodes,
     resources: {
       plates,
@@ -76,6 +78,7 @@ const createStoreDataForSingleRun = (data) => {
       requests,
       tags,
       smrt_link_version,
+      annotations,
     },
   }
 }
@@ -145,6 +148,18 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
               id: '5',
             },
           },
+          annotations: {
+            data: [
+              {
+                type: 'annotations',
+                id: '1',
+              },
+              {
+                type: 'annotations',
+                id: '2',
+              },
+            ],
+          },
         },
       },
       {
@@ -180,6 +195,18 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
               type: 'smrt_link_versions',
               id: '4',
             },
+          },
+          annotations: {
+            data: [
+              {
+                type: 'annotations',
+                id: '3',
+              },
+              {
+                type: 'annotations',
+                id: '4',
+              },
+            ],
           },
         },
       },
@@ -543,6 +570,18 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
           },
           pools: {
             data: [],
+          },
+          annotations: {
+            data: [
+              {
+                type: 'annotations',
+                id: '5',
+              },
+              {
+                type: 'annotations',
+                id: '6',
+              },
+            ],
           },
         },
       },
@@ -1704,6 +1743,18 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
               {
                 type: 'pools',
                 id: '5817',
+              },
+            ],
+          },
+          annotations: {
+            data: [
+              {
+                type: 'annotations',
+                id: '7',
+              },
+              {
+                type: 'annotations',
+                id: '8',
               },
             ],
           },
@@ -3267,6 +3318,126 @@ const PacbioRunFactory = ({ count = undefined, findBy = null } = {}) => {
                 'https://traction.psd.sanger.ac.uk/v1/pacbio/smrt_link_versions/4/smrt_link_option_versions',
             },
           },
+        },
+      },
+      {
+        id: '1',
+        type: 'annotations',
+        links: {
+          self: 'https://traction.psd.sanger.ac.uk/v1/pacbio/runs/annotations/1',
+        },
+        attributes: {
+          comment: 'annotation 1',
+          user: 'si5',
+          created_at: '2025/06/17 15:52',
+          annotation_type_id: 1,
+          annotatable_type: 'Pacbio::Run',
+          annotatable_id: 1581,
+        },
+      },
+      {
+        id: '2',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/2',
+        },
+        attributes: {
+          comment: 'annotation 2',
+          user: 'si5',
+          created_at: '2025/06/17 15:52',
+          annotation_type_id: 2,
+          annotatable_type: 'Pacbio::Run',
+          annotatable_id: 1581,
+        },
+      },
+      {
+        id: '3',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/3',
+        },
+        attributes: {
+          comment: 'annotation 3',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 3,
+          annotatable_type: 'Pacbio::Run',
+          annotatable_id: 1503,
+        },
+      },
+      {
+        id: '4',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/4',
+        },
+        attributes: {
+          comment: 'annotation 4',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 4,
+          annotatable_type: 'Pacbio::Run',
+          annotatable_id: 1503,
+        },
+      },
+      {
+        id: '5',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/5',
+        },
+        attributes: {
+          comment: 'annotation 5',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 5,
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: 6909,
+        },
+      },
+      {
+        id: '6',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/6',
+        },
+        attributes: {
+          comment: 'annotation 6',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 6,
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: 6909,
+        },
+      },
+      {
+        id: '7',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/7',
+        },
+        attributes: {
+          comment: 'annotation 7',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 7,
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: 6552,
+        },
+      },
+      {
+        id: '8',
+        type: 'annotations',
+        links: {
+          self: 'http://localhost:3100/v1/pacbio/runs/annotations/8',
+        },
+        attributes: {
+          comment: 'annotation 8',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+          annotation_type_id: 8,
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: 6552,
         },
       },
     ],

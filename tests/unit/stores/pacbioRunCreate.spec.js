@@ -282,6 +282,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools).toEqual(pacbioRunFactory.storeData.pools)
         expect(store.smrtLinkVersion).toEqual(pacbioRunFactory.storeData.smrtLinkVersion)
         expect(store.tags).toEqual(pacbioRunFactory.storeData.tags)
+        expect(store.annotations).toEqual(pacbioRunFactory.storeData.annotations)
         expect(success).toBeTruthy()
       })
 
@@ -308,6 +309,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.run).toEqual({})
         expect(store.plates).toEqual({})
         expect(store.wells).toEqual({})
+        expect(store.annotations).toEqual({})
       })
     })
 
@@ -620,6 +622,7 @@ describe('usePacbioRunCreateStore', () => {
           plates: {},
           wells: {},
           aliquots: {},
+          annotations: {},
           scannedBarcodes: [],
         })
       })
