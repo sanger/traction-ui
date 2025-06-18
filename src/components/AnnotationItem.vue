@@ -37,7 +37,7 @@ const props = defineProps({
         annotation_type_id: '1',
         annotatable_type: 'Pacbio::Run'
       }
-     */
+    */
   annotation: {
     type: Object,
     default: () => {
