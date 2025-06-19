@@ -16,11 +16,13 @@ import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import { successfulResponse, failedResponse } from '@support/testHelper'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
+const annotationTypeFactory = AnnotationTypeFactory()
 
 describe('usePacbioRunCreateStore', () => {
   beforeEach(() => {
@@ -61,7 +63,7 @@ describe('usePacbioRunCreateStore', () => {
         )
       })
 
-      it('"sourceItems" only returns scanned in pools and libraries"', () => {
+      it('"sourceItems" only returns scanned in pools and libraries', () => {
         const store = usePacbioRunCreateStore()
         const libraryBarcode = Object.values(pacbioRunFactory.storeData.libraries)[0].barcode
         store.$state = {
@@ -243,6 +245,36 @@ describe('usePacbioRunCreateStore', () => {
         // apply action
         const { success } = await store.fetchSmrtLinkVersions()
         expect(store.resources.smrtLinkVersions).toEqual({})
+        expect(success).toBeFalsy()
+      })
+    })
+
+    describe('AnnotationType Store', () => {
+      it('fetches annotation types successfully', async () => {
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(annotationTypeFactory.responses.fetch)
+        rootStore.api = { traction: { annotation_types: { get } } }
+
+        const store = usePacbioRunCreateStore()
+
+        const { success } = await store.fetchAnnotationTypes()
+
+        expect(store.resources.annotationTypes).toEqual(annotationTypeFactory.storeData)
+        expect(success).toBeTruthy()
+        expect(get).toHaveBeenCalled()
+      })
+
+      it('handles fetch annotation types failure', async () => {
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockRejectedValue(failedResponse())
+        rootStore.api = { traction: { annotation_types: { get } } }
+
+        const store = usePacbioRunCreateStore()
+
+        const { success } = await store.fetchAnnotationTypes()
+        expect(store.resources.annotationTypes).toEqual({})
         expect(success).toBeFalsy()
       })
     })

@@ -84,6 +84,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     resources: {
       // The SMRT Link version store.
       smrtLinkVersions: {},
+
+      //AnnotationTypes: The annotation types for the run and wells
+      annotationTypes: {},
     },
     // Run: The current run being edited or created
     run: {},
@@ -240,6 +243,26 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       if (success) {
         // populate smrtLinkVersions in store
         this.resources.smrtLinkVersions = dataToObjectById({ data })
+      }
+
+      return { success, errors }
+    },
+
+    /**
+     * Retrieves a list of annotation types and populates the store
+     * @returns {Object} { success, errors }. Was the request successful? were there any errors?
+     */
+    async fetchAnnotationTypes() {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.annotation_types
+      const promise = request.get({})
+      const response = await handleResponse(promise)
+
+      const { success, body: { data } = {}, errors = [] } = response
+
+      if (success) {
+        // populate annotationTypes in store
+        this.resources.annotationTypes = dataToObjectById({ data })
       }
 
       return { success, errors }
