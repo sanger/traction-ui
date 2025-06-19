@@ -15,11 +15,9 @@ describe('AnnotationItem.vue', () => {
     const wrapper = mount(AnnotationItem, {
       props: { annotation },
     })
-    const comment = wrapper.find('[data-attribute="comment"]')
-    console.log(comment.text())
-    expect(wrapper.find('[data-attribute="comment"]').text()).toEqual('annotation 1')
+    expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual('annotation 1')
+    expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('lulu')
     expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual('2023-10-01T12:00:00Z')
-    expect(wrapper.find('[data-attribute="user"]').text()).toEqual('lulu')
   })
 
   it('is a new record when annotation is empty', () => {

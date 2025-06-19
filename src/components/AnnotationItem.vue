@@ -2,29 +2,30 @@
   <div data-type="annotation">
     <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
       <traction-input
-        id="library-volume"
         v-model="annotation.comment"
         type="text"
-        step="any"
         placeholder="Example: Annotation 1"
         class="w-full"
         :disabled="!!isNewRecord()"
+        data-attribute="comment"
       ></traction-input>
-      <div data-attribute="comment">
-        {{ annotation.comment }}
-      </div>
+      <traction-input
+        v-model="annotation.user"
+        type="text"
+        placeholder="Example: si5"
+        class="w-full"
+        :disabled="!!isNewRecord()"
+        data-attribute="user"
+      ></traction-input>
       <div data-attribute="created-at">
         {{ annotation.created_at }}
-      </div>
-      <div data-attribute="user">
-        {{ annotation.user }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
   /**
@@ -40,20 +41,18 @@ const props = defineProps({
     */
   annotation: {
     type: Object,
-    default: () => {
-      return {
-        id: 'new',
-        comment: '',
-        created_at: '',
-        user: '',
-        annotation_type_id: '',
-        annotatable_type: '',
-      }
-    },
+    default: () => ({
+      id: 'new',
+      comment: '',
+      created_at: '',
+      user: '',
+      annotation_type_id: '',
+      annotatable_type: '',
+    }),
   },
 })
 
-const annotation = reactive(props.annotation)
+const annotation = ref({ ...props.annotation })
 
 const isNewRecord = () => props.annotation.id === 'new'
 </script>
