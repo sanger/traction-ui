@@ -301,6 +301,7 @@ describe('LabelPrintingHelpers.js', () => {
         fourth_line,
         round_label_top_line,
         round_label_bottom_line,
+        round_label_lower_line,
         label_name,
       } = createWorkflowTubeBarcodeLabel(workflowItemType)
 
@@ -311,6 +312,38 @@ describe('LabelPrintingHelpers.js', () => {
       expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
       expect(round_label_top_line).toEqual(workflowItemType.number)
       expect(round_label_bottom_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_lower_line).toEqual('')
+      expect(label_name).toEqual('main_label')
+    })
+
+    it('#createWorkflowTubeBarcodeLabel (NT barcode)', () => {
+      const workflowItemType = {
+        sourceBarcode: 'NT1234',
+        date: getCurrentDate(),
+        stage: 'ST1 - Stage 1',
+        suffixes: ['ST1'],
+        number: 1,
+      }
+      const {
+        barcode,
+        first_line,
+        second_line,
+        third_line,
+        fourth_line,
+        round_label_top_line,
+        round_label_bottom_line,
+        round_label_lower_line,
+        label_name,
+      } = createWorkflowTubeBarcodeLabel(workflowItemType)
+
+      expect(barcode).toEqual(workflowItemType.barcode)
+      expect(first_line).toEqual(workflowItemType.date)
+      expect(second_line).toEqual(workflowItemType.stage)
+      expect(third_line).toEqual(workflowItemType.sourceBarcode)
+      expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
+      expect(round_label_top_line).toEqual(workflowItemType.number)
+      expect(round_label_bottom_line).toEqual('1234')
+      expect(round_label_lower_line).toEqual('NT')
       expect(label_name).toEqual('main_label')
     })
 
@@ -327,11 +360,33 @@ describe('LabelPrintingHelpers.js', () => {
     })
 
     it('#createBasicTubeBarcodeLabel', () => {
+      console.log(workflowItemType)
       const barcodeItem = { barcode: workflowItemType.sourceBarcode, date: workflowItemType.date }
-      const { barcode, first_line, second_line } = createBasicTubeBarcodeLabel(barcodeItem)
+      const { barcode, first_line, second_line, round_label_bottom_line, round_label_lower_line } =
+        createBasicTubeBarcodeLabel(barcodeItem)
       expect(barcode).toEqual(workflowItemType.sourceBarcode)
       expect(first_line).toEqual(workflowItemType.date)
       expect(second_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_bottom_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_lower_line).toEqual('')
+    })
+
+    it('#createBasicTubeBarcodeLabel (NT barcode)', () => {
+      const workflowItemType = {
+        sourceBarcode: 'NT1234',
+        date: getCurrentDate(),
+        stage: 'ST1 - Stage 1',
+        suffixes: ['ST1'],
+        number: 1,
+      }
+      const barcodeItem = { barcode: workflowItemType.sourceBarcode, date: workflowItemType.date }
+      const { barcode, first_line, second_line, round_label_bottom_line, round_label_lower_line } =
+        createBasicTubeBarcodeLabel(barcodeItem)
+      expect(barcode).toEqual(workflowItemType.sourceBarcode)
+      expect(first_line).toEqual(workflowItemType.date)
+      expect(second_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_bottom_line).toEqual('1234')
+      expect(round_label_lower_line).toEqual('NT')
     })
 
     it('#createTubeBloodVacBarcodeLabel', () => {
