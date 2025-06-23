@@ -6,7 +6,7 @@
         type="text"
         placeholder="Example: Annotation 1"
         class="w-full"
-        :disabled="!!isNewRecord()"
+        :disabled="!isNewRecord"
         data-attribute="comment"
       ></traction-input>
       <traction-input
@@ -14,7 +14,7 @@
         type="text"
         placeholder="Example: si5"
         class="w-full"
-        :disabled="!!isNewRecord()"
+        :disabled="!isNewRecord"
         data-attribute="user"
       ></traction-input>
       <div data-attribute="created-at">
@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   /**
@@ -54,5 +54,5 @@ const props = defineProps({
 
 const annotation = ref({ ...props.annotation })
 
-const isNewRecord = () => props.annotation.id === 'new'
+const isNewRecord = computed(() => props.annotation.id === 'new')
 </script>

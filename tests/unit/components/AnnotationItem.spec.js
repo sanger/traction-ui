@@ -30,25 +30,31 @@ const mountComponent = (props = {}) => {
 }
 
 describe('AnnotationItem.vue', () => {
-  it('renders annotation item with correct data', () => {
-    const wrapper = mountComponent({ annotation })
-    expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual('annotation 1')
-    expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('lulu')
-    expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual('2023-10-01T12:00:00Z')
+  describe('for a new annotation', () => {
+    it('is a new record when annotation is empty', () => {
+      const wrapper = mountComponent()
+      expect(wrapper.vm.isNewRecord).toBeTruthy()
+    })
+
+    it('enables input when the annotation is new', () => {
+      const wrapper = mountComponent()
+      expect(wrapper.vm.isNewRecord).toBeTruthy()
+      expect(wrapper.findAll('input:disabled').length).toEqual(0)
+    })
   })
 
-  it('is a new record when annotation is empty', () => {
-    const wrapper = mountComponent()
-    expect(wrapper.vm.isNewRecord).toBeTruthy()
+  describe('for an existing annotation', () => {
+    it('renders annotation item with correct data', () => {
+      const wrapper = mountComponent({ annotation })
+      expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual('annotation 1')
+      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('lulu')
+      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual('2023-10-01T12:00:00Z')
+    })
+
+    it('disables input when the annotation is not new', () => {
+      const wrapper = mountComponent({ annotation })
+      expect(wrapper.vm.isNewRecord).toBeFalsy()
+      expect(wrapper.findAll('input:disabled').length).toEqual(2)
+    })
   })
-
-  it('disables input when the annotation is not new', () => {
-    const wrapper = mountComponent({ annotation: { ...annotation, id: 'new' } })
-    expect(wrapper.vm.isNewRecord).toBeTruthy()
-    expect(wrapper.find('input').attributes('disabled')).toBeDefined()
-  })
-
-  // describe('annotation type', () => {
-
-  // })
 })
