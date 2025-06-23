@@ -17,6 +17,13 @@
         :disabled="!isNewRecord"
         data-attribute="user"
       ></traction-input>
+      <traction-select
+        v-model="annotation.annotation_type_id"
+        :options="annotationTypeSelectOptions"
+        class="w-full"
+        :disabled="!isNewRecord"
+        data-attribute="annotation-type"
+      ></traction-select>
       <div data-attribute="created-at">
         {{ annotation.created_at }}
       </div>
@@ -26,6 +33,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 const props = defineProps({
   /**
@@ -51,6 +59,16 @@ const props = defineProps({
     }),
   },
 })
+
+const store = usePacbioRunCreateStore()
+
+const annotationTypeSelectOptions = computed(() => [
+  { label: 'Select Annotation Type', value: '' },
+  ...Object.values(store.resources.annotationTypes).map((type) => ({
+    label: type.name,
+    value: type.id,
+  })),
+])
 
 const annotation = ref({ ...props.annotation })
 

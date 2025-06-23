@@ -17,7 +17,7 @@ const annotationTypeFactory = AnnotationTypeFactory()
 const mountComponent = (props = {}) => {
   const { wrapper } = mountWithStore(AnnotationItem, {
     initialState: {
-      pscbioRunCreate: {
+      pacbioRunCreate: {
         resources: {
           annotationTypes: annotationTypeFactory.storeData,
         },
@@ -40,6 +40,15 @@ describe('AnnotationItem.vue', () => {
       const wrapper = mountComponent()
       expect(wrapper.vm.isNewRecord).toBeTruthy()
       expect(wrapper.findAll('input:disabled').length).toEqual(0)
+    })
+
+    it('shows the list of annotation types', () => {
+      const wrapper = mountComponent()
+      const annotationTypeSelect = wrapper.find('[data-attribute="annotation-type"]')
+      expect(annotationTypeSelect.exists()).toBeTruthy()
+      expect(annotationTypeSelect.findAll('option').length).toEqual(
+        Object.values(annotationTypeFactory.storeData).length + 1,
+      ) // +1 for the default "Select type" option
     })
   })
 
