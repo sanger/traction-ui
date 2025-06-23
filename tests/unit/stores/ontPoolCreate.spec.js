@@ -887,6 +887,68 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
+    describe('selectRequest', () => {
+      it('selects a request by default', () => {
+        // mock state
+        store.$state = {
+          ...store.$state,
+          pooling: {
+            libraries: {
+              2: {
+                ont_request_id: '2',
+                tag_id: null,
+                kit_barcode: null,
+                volume: null,
+                concentration: null,
+                insert_size: null,
+              },
+            },
+          },
+        }
+
+        store.selectRequest('1')
+        expect(store.pooling.libraries).toEqual({
+          2: {
+            ont_request_id: '2',
+            tag_id: null,
+            kit_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+          1: {
+            ont_request_id: '1',
+            tag_id: null,
+            kit_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        })
+      })
+
+      it('unselects requests', () => {
+        store.$state = {
+          ...store.$state,
+          pooling: {
+            libraries: {
+              2: {
+                ont_request_id: '2',
+                tag_id: null,
+                kit_barcode: null,
+                volume: null,
+                concentration: null,
+                insert_size: null,
+              },
+            },
+          },
+        }
+        // apply mutation
+        store.selectRequest('2', false)
+        expect(store.pooling.libraries).toEqual({})
+      })
+    })
+
     describe('clearPoolData', () => {
       it('clears the pool data', () => {
         store.clearPoolData()

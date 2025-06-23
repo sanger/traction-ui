@@ -487,6 +487,18 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       }
     },
     /**
+     * Given a request id it creates or deletes a pooling library
+     * @param id The id of the tube to select
+     * @param selected Defaults to true, selects or deselects the tube
+     */
+    selectRequest(id, selected = true) {
+      if (selected) {
+        this.pooling.libraries[`${id}`] = newLibrary({ ont_request_id: id })
+      } else {
+        delete this.pooling.libraries[`${id}`]
+      }
+    },
+    /**
      * Updates the library data from a CSV record.
      *
      * @param {Object} params - The parameters for the function.
