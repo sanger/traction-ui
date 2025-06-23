@@ -778,5 +778,18 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       // Return the success status and any errors
       return { success, errors }
     },
+
+    /**
+     * Updates the library with the corresponding data
+     * @param {Object} state The VueXState object
+     * @param {Object} library The library data to update
+     */
+    updatePoolingLibrary(library) {
+      this.pooling.libraries[`${library.ont_request_id}`] = Object.assign(
+        {},
+        this.pooling.libraries[library.ont_request_id],
+        library,
+      )
+    },
   },
 })

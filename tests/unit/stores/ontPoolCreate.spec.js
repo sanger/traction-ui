@@ -1019,5 +1019,20 @@ describe('useOntPoolCreateStore', () => {
         expect(success).toEqual(false)
       })
     })
+
+    describe('updatePoolingLibrary', () => {
+      it('updates the library in the pooling state', () => {
+        const library = {
+          ont_request_id: '1',
+          tag_id: '1',
+          kit_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+        store.updatePoolingLibrary(library)
+        expect(store.pooling.libraries['1']).toEqual(library)
+      })
+    })
   })
 })

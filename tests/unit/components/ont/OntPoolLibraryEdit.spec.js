@@ -1,6 +1,8 @@
-import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit'
-import { mount, store } from '@support/testHelper'
+import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit.vue'
+import { mountWithStore } from '@support/testHelper.js'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import { beforeEach } from 'vitest'
 
 const request = {
   id: '1',
@@ -20,30 +22,39 @@ const tags = {
   3: { id: '3', group_id: 'tag3' },
 }
 
+const props = { id: 1, request }
+
 const library = newLibrary({ ont_request_id: '1' })
+
+const mountComponent = (libraries = {}, props = {}) => {
+  const { wrapper, store } = mountWithStore(OntPoolLibraryEdit, {
+    initialState: {
+      ontPoolCreate: {
+        resources: {
+          tagSets: { 1: tagSet },
+          tags,
+        },
+        selected: {
+          tagSet: { id: tagSet.id },
+        },
+        pooling: {
+          libraries,
+        },
+      },
+    },
+    props,
+    createStore: () => useOntPoolCreateStore(),
+  })
+  return { wrapper, store }
+}
 
 // but that is a bigger job
 describe('OntPoolLibraryEdit.vue', () => {
-  let wrapper
-
-  beforeEach(() => {
-    store.state.traction.ont.pools.resources.tagSets = { 1: tagSet }
-    store.state.traction.ont.pools.resources.tags = tags
-    store.state.traction.ont.pools.selected.tagSet = { id: tagSet.id }
-  })
+  let wrapper, store
 
   describe('valid', () => {
     beforeEach(() => {
-      store.state.traction.ont.pools.pooling.libraries = { 1: library }
-
-      wrapper = mount(OntPoolLibraryEdit, {
-        store,
-        props: {
-          id: 1,
-          request,
-          notify: () => {},
-        },
-      })
+      ;({ wrapper, store } = mountComponent({ 1: library }, props))
     })
 
     it('will have a request', () => {
@@ -77,7 +88,8 @@ describe('OntPoolLibraryEdit.vue', () => {
       it('will updated the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
         await options[1].setSelected()
-        expect(store.state.traction.ont.pools.pooling.libraries['1'].tag_id).toEqual('1')
+        console.log(store.pooling.libraries['1'])
+        expect(store.pooling.libraries['1'].tag_id).toEqual('1')
       })
     })
 
@@ -85,87 +97,59 @@ describe('OntPoolLibraryEdit.vue', () => {
       it('kit barcode id', async () => {
         const input = wrapper.find('[data-attribute=kit-barcode]')
         await input.setValue('017865101789500022821')
-        expect(store.state.traction.ont.pools.pooling.libraries['1'].kit_barcode).toEqual(
-          '017865101789500022821',
-        )
+        expect(store.pooling.libraries['1'].kit_barcode).toEqual('017865101789500022821')
       })
 
       it('volume', async () => {
         const input = wrapper.find('[data-attribute=volume]')
         await input.setValue('10.0')
-        expect(store.state.traction.ont.pools.pooling.libraries['1'].volume).toEqual('10.0')
+        expect(store.pooling.libraries['1'].volume).toEqual('10.0')
       })
 
       it('concentration', async () => {
         const input = wrapper.find('[data-attribute=concentration]')
         await input.setValue('2.4')
-        expect(store.state.traction.ont.pools.pooling.libraries['1'].concentration).toEqual('2.4')
+        expect(store.pooling.libraries['1'].concentration).toEqual('2.4')
       })
 
       it('insert size', async () => {
         const input = wrapper.find('[data-attribute=insert-size]')
         await input.setValue('100')
-        expect(store.state.traction.ont.pools.pooling.libraries['1'].insert_size).toEqual('100')
+        expect(store.pooling.libraries['1'].insert_size).toEqual('100')
       })
     })
   })
 
   describe('invalid', () => {
-    const props = {
-      id: 1,
-      request,
-      notify: () => {},
-    }
-
     it('tag id', () => {
-      store.state.traction.ont.pools.pooling.libraries = {
-        1: { ...library, errors: { tag_id: 'must be present' } },
-      }
-
-      wrapper = mount(OntPoolLibraryEdit, {
-        store,
+      const { wrapper } = mountComponent(
+        { 1: { ...library, errors: { tag_id: 'must be present' } } },
         props,
-      })
-
+      )
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
     })
 
     it('volume', () => {
-      store.state.traction.ont.pools.pooling.libraries = {
-        1: { ...library, errors: { volume: 'must be present' } },
-      }
-
-      wrapper = mount(OntPoolLibraryEdit, {
-        store,
+      const { wrapper } = mountComponent(
+        { 1: { ...library, errors: { volume: 'must be present' } } },
         props,
-      })
-
+      )
       expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
     })
 
     it('concentration', () => {
-      store.state.traction.ont.pools.pooling.libraries = {
-        1: { ...library, errors: { concentration: 'must be present' } },
-      }
-
-      wrapper = mount(OntPoolLibraryEdit, {
-        store,
+      const { wrapper } = mountComponent(
+        { 1: { ...library, errors: { concentration: 'must be present' } } },
         props,
-      })
-
+      )
       expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
     })
 
     it('insert size', () => {
-      store.state.traction.ont.pools.pooling.libraries = {
-        1: { ...library, errors: { insert_size: 'must be present' } },
-      }
-
-      wrapper = mount(OntPoolLibraryEdit, {
-        store,
+      const { wrapper } = mountComponent(
+        { 1: { ...library, errors: { insert_size: 'must be present' } } },
         props,
-      })
-
+      )
       expect(wrapper.find('[data-attribute=insert-size-error]').text()).toEqual('must be present')
     })
   })
