@@ -41,7 +41,7 @@ const wells = {
 }
 
 describe('OntPoolLibraryList.vue', () => {
-  it.skip('should have a list of libraries', () => {
+  it('should have a list of libraries', () => {
     const { wrapper } = mountWithStore(OntPoolLibraryList, {
       initialState: {
         ontPoolCreate: {
