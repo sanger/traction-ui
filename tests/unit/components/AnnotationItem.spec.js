@@ -58,12 +58,14 @@ describe('AnnotationItem.vue', () => {
       expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual('annotation 1')
       expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('lulu')
       expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual('2023-10-01T12:00:00Z')
+      expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual('1')
     })
 
     it('disables input when the annotation is not new', () => {
       const wrapper = mountComponent({ annotation })
       expect(wrapper.vm.isNewRecord).toBeFalsy()
       expect(wrapper.findAll('input:disabled').length).toEqual(2)
+      expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeTruthy()
     })
   })
 })
