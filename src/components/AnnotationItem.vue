@@ -65,7 +65,7 @@ const store = usePacbioRunCreateStore()
 const annotationTypeSelectOptions = computed(() => [
   { label: 'Select Annotation Type', value: '' },
   ...Object.values(store.resources.annotationTypes).map((type) => ({
-    label: type.name,
+    text: type.name,
     value: type.id,
   })),
 ])

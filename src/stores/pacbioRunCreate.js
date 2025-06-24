@@ -151,7 +151,17 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     currentSmrtLinkVersion: (state) => {
       return state.smrtLinkVersion || {}
     },
-
+    // Returns the annotations for the given annotatable type and id
+    annotationsByAnnotatable:
+      (state) =>
+      ({ annotatableType, annotatableId }) => {
+        return Object.values(state.annotations).filter(
+          (annotation) =>
+            annotation.annotatable_type === annotatableType &&
+            // Ensure we are comparing the ids as integers
+            parseInt(annotation.annotatable_id) === parseInt(annotatableId),
+        )
+      },
     /**
      * Returns a list of all the pools and libraries and their samples
      * @param {Object} state the pinia state object

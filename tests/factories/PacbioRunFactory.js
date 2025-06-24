@@ -5,7 +5,7 @@ import {
   find,
   extractAttributes,
   dataToObjectByPlateNumber,
-} from './../../src/api/JsonApi'
+} from './../../src/api/JsonApi.js'
 
 /**
  * Get a run by state

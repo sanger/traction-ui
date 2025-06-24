@@ -1,15 +1,20 @@
 import { mountWithStore } from '@support/testHelper.js'
-import AnnotationList from '@/components/AnnotationItem.vue'
+import AnnotationList from '@/components/AnnotationList.vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
 const annotationTypeFactory = AnnotationTypeFactory()
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
+const { resources, ...storeData } = pacbioRunFactory.storeData
 
 const mountComponent = (props = {}) => {
-  const { wrapper } = mountWithStore(AnnotationList, {
+  const { wrapper, store } = mountWithStore(AnnotationList, {
     initialState: {
       pacbioRunCreate: {
+        ...storeData,
         resources: {
+          ...resources,
           annotationTypes: annotationTypeFactory.storeData,
         },
       },
@@ -17,12 +22,25 @@ const mountComponent = (props = {}) => {
     props,
     createStore: () => usePacbioRunCreateStore(),
   })
-  return wrapper
+  return { wrapper, store }
 }
 
 describe('AnnotationList.vue', () => {
-  it('renders a component', () => {
-    const wrapper = mountComponent()
-    expect(wrapper.exists()).toBe(true)
+  it('renders a list of annotations for a PacBio run', () => {
+    const { wrapper } = mountComponent({
+      annotatableType: 'Pacbio::Run',
+      annotatableId: storeData.run.id,
+    })
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(2)
+  })
+
+  it('renders a list of annotations for a Pacbio Well', () => {
+    const { wrapper } = mountComponent({
+      annotatableType: 'Pacbio::Well',
+      annotatableId: Object.keys(storeData.wells)[0],
+    })
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(2)
   })
 })

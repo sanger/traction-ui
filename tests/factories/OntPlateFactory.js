@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find } from './../../src/api/JsonApi.js'
 
 const createStoreData = (data) => {
   const plates = data.data

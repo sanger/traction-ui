@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from './../../src/api/JsonApi'
+import { dataToObjectById } from './../../src/api/JsonApi.js'
 
 /*
  * Factory for creating a list of smrt link versions
