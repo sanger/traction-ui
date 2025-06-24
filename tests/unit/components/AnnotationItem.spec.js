@@ -50,6 +50,15 @@ describe('AnnotationItem.vue', () => {
         Object.values(annotationTypeFactory.storeData).length + 1,
       ) // +1 for the default "Select type" option
     })
+
+    it('merges data for an annotation to ensure data integrity', () => {
+      const wrapper = mountComponent({ annotation: { comment: 'as old as the hills' } })
+      expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual(
+        'as old as the hills',
+      )
+      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('')
+      expect(wrapper.vm.isNewRecord).toBeTruthy()
+    })
   })
 
   describe('for an existing annotation', () => {

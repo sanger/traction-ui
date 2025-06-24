@@ -6,24 +6,30 @@
       </div>
     </div>
   </div>
+  <traction-button data-action="add-annotation" theme="create" @click="addAnnotation(row)"
+    >+</traction-button
+  >
 </template>
 
 <script setup>
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import AnnotationItem from '@/components/AnnotationItem.vue'
+import { reactive } from 'vue'
 
 const props = defineProps({
   annotatableType: {
     type: String,
-    required: true,
+    default: '',
   },
   annotatableId: {
     type: [String, Number],
-    required: true,
+    default: '',
   },
 })
 
 const pacbioRunCreateStore = usePacbioRunCreateStore()
 
-const annotations = pacbioRunCreateStore.annotationsByAnnotatable({ ...props })
+const annotations = reactive(pacbioRunCreateStore.annotationsByAnnotatable({ ...props }))
+
+const addAnnotation = () => annotations.push({})
 </script>

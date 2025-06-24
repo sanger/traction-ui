@@ -43,4 +43,23 @@ describe('AnnotationList.vue', () => {
     const annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(2)
   })
+
+  it('renders no annotations for a new record', () => {
+    const { wrapper } = mountComponent()
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(0)
+  })
+
+  it('adds a new annotations when the add button is clicked', async () => {
+    const { wrapper } = mountComponent({
+      annotatableType: 'Pacbio::Run',
+      annotatableId: storeData.run.id,
+    })
+    const addButton = wrapper.find('[data-action="add-annotation"]')
+    expect(addButton.exists()).toBeTruthy()
+    await addButton.trigger('click')
+
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(3) // 2 existing + 1 new
+  })
 })

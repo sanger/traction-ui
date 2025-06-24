@@ -32,8 +32,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+
+const newAnnotation = {
+  id: 'new',
+  comment: '',
+  created_at: '',
+  user: '',
+  annotation_type_id: '',
+  annotatable_type: '',
+}
 
 const props = defineProps({
   /**
@@ -49,14 +58,7 @@ const props = defineProps({
     */
   annotation: {
     type: Object,
-    default: () => ({
-      id: 'new',
-      comment: '',
-      created_at: '',
-      user: '',
-      annotation_type_id: '',
-      annotatable_type: '',
-    }),
+    default: () => ({}),
   },
 })
 
@@ -70,7 +72,7 @@ const annotationTypeSelectOptions = computed(() => [
   })),
 ])
 
-const annotation = ref({ ...props.annotation })
+const annotation = reactive({ ...newAnnotation, ...props.annotation })
 
-const isNewRecord = computed(() => props.annotation.id === 'new')
+const isNewRecord = computed(() => annotation.id === 'new')
 </script>
