@@ -3,6 +3,13 @@ import { mount, store, flushPromises, createTestingPinia } from '@support/testHe
 import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
+const mockFetchLocations = vi.fn()
+vi.mock('@/composables/useLocationFetcher.js', () => ({
+  default: () => ({
+    fetchLocations: mockFetchLocations,
+  }),
+}))
+
 const ontPoolFactory = OntPoolFactory()
 
 function mountWithStore({ props } = {}) {
