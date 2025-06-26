@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="receptionOptions()"
+            :options="receptionOptionsList"
             data-type="source-list"
             @update:model-value="updatePipeline()"
           />
@@ -185,12 +185,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
+import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -213,6 +214,8 @@ const user_code = ref('')
 
 const workflow = ref('')
 
+const receptionOptionsList = ref([])
+
 const workflowOptions = computed(() => [
   { value: '', text: '' }, // Empty option
   ...Object.values(WorkflowsLocations)
@@ -224,16 +227,26 @@ const workflowOptions = computed(() => [
 ])
 
 const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
-const receptionOptions = () => {
+
+const receptionOptions = async () => {
+  let receptionTypes = Object.values(ReceptionTypes)
+  const isKinnexEnabled = await checkFeatureFlag('kinnex_sample_reception')
+  // Filter out SequencescapeKinnexTubes if the feature flag is not enabled
+  if (!isKinnexEnabled) {
+    receptionTypes = receptionTypes.filter((type) => type.value !== 'SequencescapeKinnexTubes')
+  }
   if (environment.value == 'uat' || environment.value == 'development') {
     return [
-      ...Object.values(ReceptionTypes),
+      ...receptionTypes,
       { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
     ]
   }
 
-  return [...Object.values(ReceptionTypes)]
+  return [...receptionTypes]
 }
+onMounted(async () => {
+  receptionOptionsList.value = await receptionOptions()
+})
 
 const workflowLocation = computed(() => {
   const workflowsMap = new Map(

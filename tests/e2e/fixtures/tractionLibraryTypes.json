@@ -153,6 +153,17 @@
         "name": "ONT_Ultralong",
         "pipeline": "ont"
       }
+    },
+    {
+      "id": "15",
+      "type": "library_types",
+      "links": {
+        "self": "http://127.0.0.1:3100/v1/library_types/15"
+      },
+      "attributes": {
+        "name": "Kinnex_Single_Cell_5",
+        "pipeline": "pacbio"
+      }
     }
   ]
 }

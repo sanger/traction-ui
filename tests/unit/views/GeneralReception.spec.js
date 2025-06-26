@@ -1,4 +1,4 @@
-import { mountWithStore } from '@support/testHelper.js'
+import { mountWithStore, selectOptionByText } from '@support/testHelper.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
@@ -9,6 +9,10 @@ vi.mock('@/composables/useAlert', () => ({
   default: () => ({
     showAlert: mockShowAlert,
   }),
+}))
+
+vi.mock('@/api/FeatureFlag', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(true),
 }))
 
 const printerFactory = PrinterFactory()
@@ -80,8 +84,10 @@ describe('GeneralReception', () => {
       'Sequencescape',
       'Sequencescape Tubes',
       'Sequencescape Multiplexed Libraries',
+      'Sequencescape Kinnex Tubes',
       'Mocked plates',
       'Mocked tubes',
+      'Mocked Kinnex tubes',
     ])
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
@@ -96,15 +102,30 @@ describe('GeneralReception', () => {
     })
 
     it('only shows ONT for SequencescapeMultiplexedLibraries', async () => {
-      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
+      // Find the option with the desired text and get its value
+      await selectOptionByText(
+        wrapper.find('[data-type=source-list]'),
+        'Sequencescape Multiplexed Libraries',
+      )
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
       expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
+    })
+    it('only shows Pacbio for Sequencescape Kinnex Tubes', async () => {
+      await selectOptionByText(
+        wrapper.find('[data-type=source-list]'),
+        'Sequencescape Kinnex Tubes',
+      )
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
+      expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
     })
 
     it('sets pipeline to the first available pipeline if the source changes and the pipeline is no longer valid', async () => {
       // This example sets source to SequencescapeMultiplexedLibraries which only has ONT as a pipeline
       expect(wrapper.vm.pipeline).toEqual('PacBio')
-      await wrapper.find('[data-type=source-list]').findAll('option')[2].setSelected()
+      await selectOptionByText(
+        wrapper.find('[data-type=source-list]'),
+        'Sequencescape Multiplexed Libraries',
+      )
       expect(wrapper.vm.pipeline).toEqual('ONT')
     })
   })
@@ -116,8 +137,7 @@ describe('GeneralReception', () => {
 
     it('shows ONT options when ONT is selected', async () => {
       // Select ONT pipeline
-      await wrapper.find('[data-type=pipeline-list]').findAll('option')[1].setSelected()
-
+      await selectOptionByText(wrapper.find('[data-type=pipeline-list]'), 'ONT')
       // Library type
       const libraryType = wrapper.find('[data-attribute=library-type-list]')
       expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
@@ -134,7 +154,7 @@ describe('GeneralReception', () => {
 
     it('shows PacBio options when PacBio is selected', async () => {
       // Select PacBio pipeline
-      await wrapper.find('[data-type=pipeline-list]').findAll('option')[0].setSelected()
+      await selectOptionByText(wrapper.find('[data-type=pipeline-list]'), 'PacBio')
 
       // Library type
       const libraryType = wrapper.find('[data-attribute=library-type-list]')

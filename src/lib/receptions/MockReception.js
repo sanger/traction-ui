@@ -26,6 +26,20 @@ const buildMockSampleAndRequest = (sample_name, requestOptions) => {
 }
 
 /**
+ * A function to help encapsulate the logic of building a mock compound sample and request object.
+ * Uses buildMockSampleAndRequest for each sample name.
+ *
+ * @param {string[]} sample_names - The names of the samples to be included in the mock data.
+ * @param {Object} requestOptions - An object containing request options to be included in each sample's request.
+ * @returns {Object} A mock compound sample and request object.
+ */
+const buildMockCompoundSampleAndRequest = (sample_names, requestOptions) => {
+  return {
+    samples: sample_names.map((name) => buildMockSampleAndRequest(name, requestOptions)),
+  }
+}
+
+/**
  * Generates a reception object containing mocked plates_attributes based on the provided barcodes.
  * Each plate contains a barcode and an array of well attributes. Each well
  * attribute includes a position, sample details, and request details.
@@ -93,11 +107,41 @@ const fetchTubesFunction = async ({ requestOptions, barcodes }) => {
   }
 }
 
+/**
+ * Generates a reception object containing mocked tubes_attributes for compound sample tubes based on the provided barcodes.
+ * Each tube contains a barcode and an array of samples, each with its own sample details and request details.
+ * The number of samples per tube is currently set to 3, and each sample name is generated using the barcode and index.
+ *
+ * @param {string[]} barcodes - An array of barcodes to use for the tubes.
+ * @param {Object} requestOptions - An object containing request options to be included in each sample's request.
+ * @returns {Object} A formatted reception object containing the following structure:
+ *   - `attributes` {Object}: The attributes of the reception, including:
+ *      - `source` {string}: The source of the reception, always "traction-ui.mock-reception".
+ *      - `tubes_attributes` {Object[]}: An array of tube attributes, each with a barcode and an array of samples.
+ *   - `foundBarcodes` {Set}: A set of found barcodes.
+ */
+const fetchCompoundSampleTubesFunction = async ({ requestOptions, barcodes }) => {
+  const compound_sample_tubes_attributes = barcodes.map((barcode, index) => {
+    const sample_names = Array.from({ length: 3 }, (_, i) => `${barcode}-sample-${i + 1}-${index}`)
+    return {
+      type: 'tubes',
+      barcode,
+      ...buildMockCompoundSampleAndRequest(sample_names, requestOptions),
+    }
+  })
+
+  return {
+    attributes: { source: 'traction-ui.mock-reception', compound_sample_tubes_attributes },
+    foundBarcodes: new Set(barcodes),
+  }
+}
+
 const MockReception = {
   fetchPlatesFunction,
   fetchTubesFunction,
+  fetchCompoundSampleTubesFunction,
 }
 
-export { fetchPlatesFunction, fetchTubesFunction }
+export { fetchPlatesFunction, fetchTubesFunction, fetchCompoundSampleTubesFunction }
 
 export default MockReception

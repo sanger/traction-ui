@@ -176,6 +176,32 @@ const getIncludedData = ({ labware, included }) => {
 }
 
 /**
+ * Returns all samples and their sample_metadata from all aliquots in the provided labware.
+ * @param {Object} labware Labware object from Sequencescape
+ * @param {Array<Object>} included Included objects from Sequencescape
+ * @returns {Array<Object>} Array of objects: { sample, sample_metadata }
+ */
+const getAllSamplesAndMetadataFromAliquots = ({ labware, included }) => {
+  if (!labware.relationships.aliquots?.data?.length) {
+    throw new Error('Unable to find samples in sequencescape for labware barcode.')
+  }
+  return labware.relationships.aliquots.data.map((aliquotData) => {
+    const aliquot = findIncluded({ included, data: aliquotData, type: 'aliquots' })
+    const sample = findIncluded({
+      included,
+      data: aliquot.relationships.sample.data,
+      type: 'samples',
+    })
+    const sample_metadata = findIncluded({
+      included,
+      data: sample.relationships.sample_metadata.data,
+      type: 'sample_metadata',
+    })
+    return { sample, sample_metadata }
+  })
+}
+
+/**
  * @param {Object} aliquot Aliquot object from Sequencescape
  * @param {Object} study Study object from Sequencescape
  * @param {Object} sample Sample object from Sequencescape
@@ -203,6 +229,42 @@ const buildRequestAndSample = ({
       species: sample_metadata.attributes.sample_common_name,
       retention_instruction,
     },
+  }
+}
+
+/**
+ * @param {Object} aliquot Aliquot object from Sequencescape
+ * @param {Object} study Study object from Sequencescape
+ * @param {Object} sample Sample object from Sequencescape
+ * @param {Object} sample_metadata Sample metadata object from Sequencescape
+ * @param {Object} requestOptions Additional request parameters, will over-ride any current attributes
+ * @returns {Object} Object containing the request and sample objects
+ */
+const buildKinnexRequestAndSample = ({
+  aliquot,
+  study,
+  samples_data_arr,
+  requestOptions,
+  retention_instruction = null,
+}) => {
+  return {
+    request: {
+      external_study_id: study.attributes.uuid,
+      library_type: aliquot.attributes.library_type,
+      ...requestOptions,
+    },
+    samples: samples_data_arr.map((sample_data) => {
+      const { sample, sample_metadata } = sample_data
+      return {
+        external_id: sample.attributes.uuid,
+        name: sample.attributes.name,
+        supplier_name: sample_metadata.attributes.supplier_name,
+        species: sample_metadata.attributes.sample_common_name,
+        donor_id: sample_metadata.attributes.donor_id,
+        date_of_sample_collection: sample_metadata.attributes.date_of_sample_collection,
+        retention_instruction,
+      }
+    }),
   }
 }
 
@@ -313,6 +375,45 @@ const transformTube = (attributes) => {
   }
 }
 
+/**
+ *
+ * @param {Object} labware Labware object from Sequencescape
+ * @param {Array<Object>} included Included objects from Sequencescape
+ * @param {Object} requestOptions Additional request parameters, will over-ride any
+ * @returns {Object} tubes_attributes object ready for import into traction
+ */
+const transformKinnexTube = (attributes) => {
+  // Use labwareTransformAttributes to extract and normalize the arguments
+  const { labware, included, requestOptions, barcodeAttribute, retention_instruction } =
+    labwareTransformAttributes(attributes)
+
+  // find the receptacle in the included data
+  const receptacle = findIncluded({
+    included,
+    data: labware.relationships.receptacles.data[0],
+    type: 'receptacles',
+  })
+
+  // get the aliquot, study, sample and sample_metadata from the included data
+  const { aliquot, study } = getIncludedData({
+    labware: receptacle,
+    included,
+  })
+  const samples_data_arr = getAllSamplesAndMetadataFromAliquots({ labware: receptacle, included })
+
+  return {
+    barcode: labware.attributes.labware_barcode[barcodeAttribute],
+    // build the request and sample objects
+    ...buildKinnexRequestAndSample({
+      aliquot,
+      study,
+      samples_data_arr,
+      requestOptions,
+      retention_instruction,
+    }),
+  }
+}
+
 const transformMultiplexedLibraryTube = ({
   included,
   requestOptions,
@@ -417,6 +518,12 @@ const labwareTypes = {
     transformFunction: transformPlate,
     barcodeAttribute: 'machine_barcode',
   },
+  kinnex_tubes: {
+    type: 'tubes',
+    attributes: 'compound_sample_tubes_attributes',
+    transformFunction: transformKinnexTube,
+    barcodeAttribute: 'human_barcode',
+  },
 }
 
 export {
@@ -427,4 +534,5 @@ export {
   buildPool,
   findIncluded,
   labwareTypes,
+  getAllSamplesAndMetadataFromAliquots,
 }
