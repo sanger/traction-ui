@@ -28,11 +28,19 @@
         {{ annotation.created_at }}
       </div>
     </div>
+
+    <traction-button
+      v-if="isNewRecord"
+      data-action="remove-annotation"
+      theme="destroy"
+      @click="removeAnnotation(localId)"
+      >-</traction-button
+    >
   </div>
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, useId } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 
 const newAnnotation = {
@@ -75,4 +83,6 @@ const annotationTypeSelectOptions = computed(() => [
 const annotation = reactive({ ...newAnnotation, ...props.annotation })
 
 const isNewRecord = computed(() => annotation.id === 'new')
+
+const localId = useId()
 </script>

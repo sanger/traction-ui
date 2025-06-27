@@ -6,7 +6,7 @@
       </div>
     </div>
   </div>
-  <traction-button data-action="add-annotation" theme="create" @click="addAnnotation(row)"
+  <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()"
     >+</traction-button
   >
 </template>
