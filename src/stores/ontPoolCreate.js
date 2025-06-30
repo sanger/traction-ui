@@ -365,6 +365,27 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
     },
 
     /**
+     * Deselects a tube and all its contents (requests) based on the given tube barcode.
+     *
+     * This method will:
+     * * Remove the tube from the selected tubes.
+     * * Remove all requests associated with the tube.
+     * * Remove the tube from the resources.
+     */
+    deselectTubeAndContents(tubeBarcode) {
+      console.log(this.resources)
+      const tube = Object.values(this.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
+      this.selectTube(tube.id, false)
+      const { requests } = this.resources.tubes[tube.id]
+
+      for (const requestId of requests) {
+        this.selectRequest(requestId, false)
+        delete this.resources.requests[requestId]
+      }
+      delete this.resources.tubes[tube.id]
+    },
+
+    /**
      * Creates a new ONT pool.
      *
      * This method will:

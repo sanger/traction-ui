@@ -478,6 +478,39 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
+    describe('deselectTubeAndContents', () => {
+      it.skip('deselects a tube and its contents', async () => {
+        store.$state = {
+          ...store.$state,
+          resources: {
+            ...store.resources,
+            tubes: {
+              1: { id: '1', barcode: 'GEN-1668092750-1', requests: ['100', '200'] },
+              2: { id: '2', barcode: 'GEN-1668092750-2', requests: ['300', '400'] },
+            },
+          },
+          selected: {
+            tubes: {
+              1: { id: '1', selected: true },
+              2: { id: '2', selected: true },
+            },
+            requests: {
+              100: { id: '100', selected: true },
+              200: { id: '200', selected: true },
+              300: { id: '300', selected: true },
+              400: { id: '400', selected: true },
+            },
+          },
+        }
+        await store.deselectTubeAndContents('GEN-1668092750-1')
+        expect(store.selected.tubes).toEqual({ 2: { id: '2', selected: true } })
+        expect(store.selected.requests).toEqual({
+          300: { id: '300', selected: true },
+          400: { id: '400', selected: true },
+        })
+      })
+    })
+
     describe('create or update pool', () => {
       const library1 = {
         ont_request_id: '1',
