@@ -3,7 +3,7 @@
     <div class="w-3/4 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
       <traction-heading level="2" show-border>Sample report</traction-heading>
       <p class="flex justify-left text-sm">
-        This page lets you generate a report of a subset of samples in the system.
+        This page lets you generate a report (csv) on a subset of samples in Traction.
       </p>
       <traction-form @submit="() => {}" @reset="() => {}" @keydown.enter.prevent>
         <fieldset>
@@ -14,7 +14,7 @@
               id="sampleInput"
               v-model="sample_input"
               class="flex py-2 w-full"
-              placeholder="kinnex_sample..."
+              placeholder="sample_1,10STDY1..."
               @enter-key-press="addSample"
             />
             <traction-button
@@ -29,29 +29,42 @@
       </traction-form>
     </div>
     <div
-      class="flex flex-col w-3/4 mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 my-2 overflow-x-auto"
+      class="flex flex-col w-3/4 max-h-svh mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 my-2 space-y-2"
     >
       <traction-heading level="4" show-border class="w-full">Preview</traction-heading>
-      <traction-table id="sample-report-table" :items="samples" :fields="sampleFields">
-        <template #cell(remove)="row">
-          <traction-button
-            :id="'remove-btn-' + row.item.sample_id"
-            size="sm"
-            class="mr-2"
-            theme="accent"
-            @click="removeSample(row.item.sample_id)"
-          >
-            -
-          </traction-button>
-        </template>
-      </traction-table>
-      <div v-show="!samples.length" data-type="scanned-samples" class="text-gray-400">
-        No samples scanned yet
+      <div class="overflow-x-auto overflow-y-auto">
+        <traction-table
+          id="sample-report-table"
+          :items="samples"
+          :fields="sampleFields"
+          empty-text="No samples scanned yet"
+        >
+          <template #cell(remove)="row">
+            <traction-button
+              :id="'remove-btn-' + row.item.sample_id"
+              size="sm"
+              class="mr-2"
+              theme="accent"
+              @click="removeSample(row.item.sample_id)"
+            >
+              -
+            </traction-button>
+          </template>
+        </traction-table>
       </div>
-      <div class="flex flex-row justify-end">
+      <div class="flex flex-row justify-between border-t border-gray-400 pt-4">
+        <traction-button
+          id="download"
+          class="items-center cursor-pointer"
+          theme="default"
+          @click="reset()"
+        >
+          Reset
+        </traction-button>
         <traction-button
           id="download"
           class="items-center cursor-pointer bg-sp-400 hover:bg-sp-300"
+          @click="downloadReport"
         >
           Download
           <download-icon class="pl-1" />
@@ -64,6 +77,9 @@
 <script setup>
 import { ref } from 'vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import useAlert from '@/composables/useAlert'
+
+const { showAlert } = useAlert()
 
 let sample_input = ref('')
 const sampleFields = [
@@ -89,7 +105,7 @@ const sampleFields = [
 const samples = ref([])
 const addSample = () => {
   // Temporary logic
-  if (sample_input.value && !samples.value.includes(sample_input.value)) {
+  if (sample_input.value) {
     samples.value.push({ sample_id: sample_input.value })
   }
 
@@ -101,5 +117,55 @@ const removeSample = (sampleId) => {
   if (sampleIndex !== -1) {
     samples.value.splice(sampleIndex, 1)
   }
+}
+
+const reset = () => {
+  samples.value = []
+}
+
+const arrayToCsv = (data) => {
+  console.log('Converting data to CSV format:', data)
+  return data
+    .map(
+      (row) =>
+        row
+          .map(String) // convert every value to String
+          .map((v) => v.replaceAll('"', '""')) // escape double quotes
+          .map((v) => `"${v}"`) // quote it
+          .join(','), // comma-separated
+    )
+    .join('\r\n') // rows starting on new lines
+}
+
+/**
+ * Download contents as a file
+ * Source: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+ */
+function downloadBlob(content, filename, contentType) {
+  // Create a blob
+  var blob = new Blob([content], { type: contentType })
+  var url = URL.createObjectURL(blob)
+
+  // Create a link to download it
+  var pom = document.createElement('a')
+  pom.href = url
+  pom.setAttribute('download', filename)
+  pom.click()
+}
+
+const downloadReport = () => {
+  if (samples.value.length === 0) {
+    showAlert('No samples selected', 'danger')
+    return
+  }
+
+  const headers = sampleFields.map((field) => field.label)
+
+  // Convert the samples to CSV format
+  const csvContent = arrayToCsv([headers, ...samples.value.map((sample) => Object.values(sample))])
+
+  // Download the CSV file
+  const time = new Date().toLocaleDateString()
+  downloadBlob(csvContent, `traction_sample_report_${time}.csv`, 'text/csv')
 }
 </script>
