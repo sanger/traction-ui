@@ -31,11 +31,20 @@ const buildMockSampleAndRequest = (sample_name, requestOptions) => {
  *
  * @param {string[]} sample_names - The names of the samples to be included in the mock data.
  * @param {Object} requestOptions - An object containing request options to be included in each sample's request.
- * @returns {Object} A mock compound sample and request object.
+ * @returns {Object} A mock compound request and multiple sample objects. NB the sample name is sent as the supplier sample name.
  */
 const buildMockCompoundSampleAndRequest = (sample_names, requestOptions) => {
   return {
-    samples: sample_names.map((name) => buildMockSampleAndRequest(name, requestOptions)),
+    request: {
+      ...requestOptions,
+      external_study_id: crypto.randomUUID(),
+    },
+    samples: sample_names.map((name) => ({
+      supplier_name: name,
+      species: 'Human',
+      retention_instruction: 'long_term_storage',
+      external_id: crypto.randomUUID(),
+    })),
   }
 }
 
