@@ -83,17 +83,16 @@ describe('MockReception', () => {
       attributes.compound_sample_tubes_attributes.forEach((tube, tubeIndex) => {
         expect(tube.type).toBe('tubes')
         expect(tube.barcode).toBe(barcodes[tubeIndex])
-        expect(tube.samples).toHaveLength(3)
+        expect(tube.request.external_study_id).toBeDefined()
+        expect(tube.request.library_type).toBe('Example')
+        expect(tube.request.cost_code).toBe('aCostCodeExample')
         tube.samples.forEach((sampleObj, sampleIndex) => {
-          expect(sampleObj.sample.name).toBe(
+          expect(sampleObj.supplier_name).toBe(
             `${tube.barcode}-sample-${sampleIndex + 1}-${tubeIndex}`,
           )
-          expect(sampleObj.sample.species).toBe('Human')
-          expect(sampleObj.sample.retention_instruction).toBe('long_term_storage')
-          expect(sampleObj.sample.external_id).toBeDefined()
-          expect(sampleObj.request.external_study_id).toBeDefined()
-          expect(sampleObj.request.library_type).toBe('Example')
-          expect(sampleObj.request.cost_code).toBe('aCostCodeExample')
+          expect(sampleObj.species).toBe('Human')
+          expect(sampleObj.retention_instruction).toBe('long_term_storage')
+          expect(sampleObj.external_id).toBeDefined()
         })
       })
     })
