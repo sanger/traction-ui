@@ -5,7 +5,7 @@
       <p class="flex justify-left text-sm">
         This page lets you generate a report (csv) on a subset of samples in Traction.
       </p>
-      <traction-form @submit="() => {}" @reset="() => {}" @keydown.enter.prevent>
+      <traction-form @keydown.enter.prevent>
         <fieldset>
           <traction-heading level="4" show-border>Select samples</traction-heading>
           <p class="flex justify-left text-sm">Enter samples by names or barcode</p>
@@ -78,12 +78,15 @@
 import { ref } from 'vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import useAlert from '@/composables/useAlert'
+import useRootStore from '@/stores'
+import { handleResponse } from '@/api/ResponseHelper'
 
 const { showAlert } = useAlert()
+const api = useRootStore().api
 
 let sample_input = ref('')
 const sampleFields = [
-  { key: 'sample_id', label: 'Sample ID' },
+  { key: 'id', label: 'Sample ID' },
   { key: 'submission_date', label: 'Date Submitted' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_sample_name', label: 'Supplier Sample Name' },
@@ -103,10 +106,42 @@ const sampleFields = [
   { key: 'remove', label: '' },
 ]
 const samples = ref([])
-const addSample = () => {
-  // Temporary logic
+const addSample = async () => {
   if (sample_input.value) {
-    samples.value.push({ sample_id: sample_input.value })
+    const request = api.traction.samples
+    const promise = request.get({ filter: { name: sample_input.value } })
+
+    const response = await handleResponse(promise)
+
+    const { success, body: { data } = {}, errors = [] } = response
+
+    if (!success) {
+      showAlert(`Error fetching samples: ${errors.join(', ')}`, 'danger')
+      return
+    }
+
+    if (data.length === 0) {
+      showAlert('No samples found with the provided input', 'warning')
+      return
+    }
+
+    // Add the fetched samples to the samples array
+    for (const sample of data) {
+      console.log('Adding sample:', sample)
+      // Check if the sample already exists in the samples array
+      const exists = samples.value.some((s) => s.sample_id === sample.sample_id)
+      if (!exists) {
+        // Format the sample attributes according to the sampleFields
+        const formattedSample = sampleFields.reduce((acc, field) => {
+          acc[field.key] = sample.attributes[field.key] || ''
+          return acc
+        }, {})
+        formattedSample.id = sample.id // Add the id field
+        samples.value.push(formattedSample)
+      } else {
+        showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
+      }
+    }
   }
 
   // Clear the input field after adding the sample
