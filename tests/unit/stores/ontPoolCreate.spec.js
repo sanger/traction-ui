@@ -479,7 +479,7 @@ describe('useOntPoolCreateStore', () => {
     })
 
     describe('deselectTubeAndContents', () => {
-      it.skip('deselects a tube and its contents', async () => {
+      it('deselects a tube and its contents', async () => {
         store.$state = {
           ...store.$state,
           resources: {
@@ -488,12 +488,6 @@ describe('useOntPoolCreateStore', () => {
               1: { id: '1', barcode: 'GEN-1668092750-1', requests: ['100', '200'] },
               2: { id: '2', barcode: 'GEN-1668092750-2', requests: ['300', '400'] },
             },
-          },
-          selected: {
-            tubes: {
-              1: { id: '1', selected: true },
-              2: { id: '2', selected: true },
-            },
             requests: {
               100: { id: '100', selected: true },
               200: { id: '200', selected: true },
@@ -501,10 +495,16 @@ describe('useOntPoolCreateStore', () => {
               400: { id: '400', selected: true },
             },
           },
+          selected: {
+            tubes: {
+              1: { id: '1', selected: true },
+              2: { id: '2', selected: true },
+            },
+          },
         }
         await store.deselectTubeAndContents('GEN-1668092750-1')
         expect(store.selected.tubes).toEqual({ 2: { id: '2', selected: true } })
-        expect(store.selected.requests).toEqual({
+        expect(store.resources.requests).toEqual({
           300: { id: '300', selected: true },
           400: { id: '400', selected: true },
         })
@@ -671,7 +671,6 @@ describe('useOntPoolCreateStore', () => {
         const library = { ont_request_id: '192', tag_id: '385' }
 
         await store.applyTags(library, autoTag)
-        // console.log(store.pooling.libraries)
         const libraries = Object.values(store.pooling.libraries).filter(
           (lib) => Number(lib.ont_request_id) > Number(library.ont_request_id),
         )
