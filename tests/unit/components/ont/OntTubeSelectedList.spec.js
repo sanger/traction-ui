@@ -80,27 +80,16 @@ describe('OntTubeSelectedList', () => {
       expect(add_button.element.disabled).toBe(true)
       expect(del_button.element.disabled).toBe(false)
     })
-
-    // TODO; we need to remove spy and use function
     it('call removeTubeFromPool when the - button is clicked', async () => {
-      const removeTubeFromPoolSpy = vi.spyOn(wrapper.vm, 'removeTubeFromPool')
       const button = wrapper.find('#del-btn-191')
       await button.trigger('click')
-
-      expect(removeTubeFromPoolSpy).toHaveBeenCalledWith('191')
-      removeTubeFromPoolSpy.mockRestore()
-    }),
-      // TODO: we need to create deslectPlateAndContents in the store
-      it.skip('deselects the tube and request when the remove button is clicked', async () => {
-        const dispatch = vi.fn()
-        store.dispatch = dispatch
-        await nextTick()
-        const button = wrapper.find('#remove-btn-191')
-        button.trigger('click')
-        expect(dispatch).toHaveBeenCalledWith(
-          'traction/ont/pools/deselectTubeAndContents',
-          'GEN-1668092750-3',
-        )
-      })
+      expect(store.pooling.libraries).toEqual({})
+    })
+    it('deselects the tube and request when the remove button is clicked', async () => {
+      const button = wrapper.find('#remove-btn-191')
+      button.trigger('click')
+      await nextTick()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(0)
+    })
   })
 })
