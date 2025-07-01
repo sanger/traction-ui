@@ -373,7 +373,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * * Remove the tube from the resources.
      */
     deselectTubeAndContents(tubeBarcode) {
-      console.log(this.resources)
       const tube = Object.values(this.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
       this.selectTube(tube.id, false)
       const { requests } = this.resources.tubes[tube.id]
