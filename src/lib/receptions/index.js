@@ -1,5 +1,6 @@
 import * as Sequencescape from './Sequencescape.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
+import * as SequencescapeKinnexTubes from './SequencescapeKinnexTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
 import * as MockReception from './MockReception.js'
 
@@ -67,6 +68,12 @@ const ReceptionTypes = {
     value: 'SequencescapeMultiplexedLibraries',
     pipelines: ['ONT'],
   },
+  SequencescapeKinnexTubes: {
+    name: 'sequencescape-kinnex-tubes',
+    text: 'Sequencescape Kinnex Tubes',
+    value: 'SequencescapeKinnexTubes',
+    pipelines: ['PacBio'],
+  },
 }
 
 const MockReceptionTypes = {
@@ -82,6 +89,12 @@ const MockReceptionTypes = {
     value: 'MockedTubes',
     pipelines: ['PacBio', 'ONT'],
   },
+  MockedKinnexTubes: {
+    name: 'mocked-kinnex-tubes',
+    text: 'Mocked Kinnex tubes',
+    value: 'MockedKinnexTubes',
+    pipelines: ['PacBio'],
+  },
 }
 
 const Receptions = {
@@ -89,19 +102,21 @@ const Receptions = {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: Sequencescape.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   SequencescapeMultiplexedLibraries: {
     ...ReceptionTypes.SequencescapeMultiplexedLibraries,
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
     barcodeComponent: MultiplexedLibraryBarcode,
-    getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
+  },
+  SequencescapeKinnexTubes: {
+    ...ReceptionTypes.SequencescapeKinnexTubes,
+    fetchFunction: SequencescapeKinnexTubes.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
   },
   MockedPlates: {
     ...MockReceptionTypes.MockedPlates,
@@ -111,6 +126,11 @@ const Receptions = {
   MockedTubes: {
     ...MockReceptionTypes.MockedTubes,
     fetchFunction: MockReception.fetchTubesFunction,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedKinnexTubes: {
+    ...MockReceptionTypes.MockedKinnexTubes,
+    fetchFunction: MockReception.fetchCompoundSampleTubesFunction,
     barcodeComponent: MultiBarcode,
   },
 }

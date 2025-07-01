@@ -3,18 +3,15 @@ import { fetchLabwareFromSequencescape, labwareTypes } from './sequencescapeUtil
 /**
  * Request parameters for retrieval of labware from Sequencescape v2 API
  */
-
 const labwareRequestConfig = {
-  include:
-    'receptacles.aliquots.library.aliquots.sample.sample_metadata,receptacles.aliquots.library.aliquots.study,receptacles.aliquots.library.aliquots,receptacles.aliquots.library.labware.receptacles',
+  include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
   fields: {
     tubes: 'labware_barcode,receptacles',
-    labware: 'labware_barcode,receptacles',
     receptacles: 'aliquots',
     samples: 'sample_metadata,name,uuid',
-    sample_metadata: 'sample_common_name,volume,concentration',
+    sample_metadata: 'sample_common_name,supplier_name,date_of_sample_collection,donor_id',
     studies: 'uuid',
-    aliquots: 'study,library_type,sample,insert_size_to,tag_oligo',
+    aliquots: 'study,library_type,sample',
   },
 }
 
@@ -30,21 +27,20 @@ const labwareRequestConfig = {
  * @returns { Object } Reception object ready for import into traction includes attributes and foundBarcodes
  *
  */
-const fetchLabwareForReception = async ({ requests, barcodes, requestOptions, libraryOptions }) => {
+const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) => {
   return fetchLabwareFromSequencescape({
     requests,
     barcodes,
     requestOptions,
-    libraryOptions,
-    labwareTypes: { tubes: { ...labwareTypes.multiplexed_library_tubes } },
+    labwareTypes: { tubes: { ...labwareTypes.kinnex_tubes, barcodeAttribute: 'human_barcode' } },
     labwareRequestConfig,
   })
 }
 
-const SequencescapeMultiplexedLibraries = {
+const SequencescapeKinnexTubes = {
   fetchLabwareForReception,
 }
 
 export { fetchLabwareForReception }
 
-export default SequencescapeMultiplexedLibraries
+export default SequencescapeKinnexTubes
