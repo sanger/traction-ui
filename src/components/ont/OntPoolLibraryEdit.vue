@@ -154,7 +154,6 @@ const kit_barcode = useLibrarySetter('kit_barcode')
 const tag_id = computed({
   get: () => library.value?.tag_id,
   set: (tag_id) => {
-    console.log('Setting tag_id:', tag_id)
     if (tag_id !== tag_id.value) {
       fieldsThatRequireValidation.value['tag_id'] = true
       props.notify()
