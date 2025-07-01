@@ -205,7 +205,7 @@ export default {
     formattedSourceIdentifier(sourceIdentifier) {
       if (!sourceIdentifier) return ''
       const sources = sourceIdentifier.split(',')
-      if (sources.length > 4) return sourceIdentifier
+      if (sources.length < 5) return sourceIdentifier
       return `${sources[0]}  ...   ${sources[sources.length - 1]}`
     },
   },

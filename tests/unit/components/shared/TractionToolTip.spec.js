@@ -47,17 +47,19 @@ describe('TractionTooltip.vue', () => {
     expect(wrapper.get('#tooltip').html()).toContain('Slot Tooltip Content')
   })
 
-  it('applies the provided tooltip colour', async () => {
+  it('applies the provided tooltip classes', async () => {
     const wrapper = mount(TractionTooltip, {
       props: {
         tooltipText: 'Test Tooltip',
         tooltipBgColour: 'bg-red-500',
         tooltipTextColour: 'text-white',
+        tooltipDirection: 'top-[-100px] left-2',
+        tooltipWrap: 'text-wrap',
       },
     })
     await wrapper.trigger('mouseover')
     expect(wrapper.get('#tooltip').classes()).toEqual(
-      expect.arrayContaining(['bg-red-500', 'text-white']),
+      expect.arrayContaining(['bg-red-500', 'text-white', 'top-[-100px]', 'left-2', 'text-wrap']),
     )
   })
 
