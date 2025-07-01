@@ -88,7 +88,6 @@ describe('OntPoolLibraryEdit.vue', () => {
       it('will updated the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
         await options[1].setSelected()
-        console.log(store.pooling.libraries['1'])
         expect(store.pooling.libraries['1'].tag_id).toEqual('1')
       })
     })
