@@ -18,7 +18,7 @@
               @enter-key-press="addSample"
             />
             <traction-button
-              id="search-samples"
+              id="searchSamples"
               class="flex items-center"
               theme="default"
               @click="addSample"
@@ -34,18 +34,18 @@
       <traction-heading level="4" show-border class="w-full">Preview</traction-heading>
       <div class="overflow-x-auto overflow-y-auto">
         <traction-table
-          id="sample-report-table"
+          id="sampleReportTable"
           :items="samples"
-          :fields="sampleFields"
-          empty-text="No samples scanned yet"
+          :fields="fields"
+          empty-text="No samples added yet"
         >
           <template #cell(remove)="row">
             <traction-button
-              :id="'remove-btn-' + row.item.sample_id"
+              :id="'remove-btn-' + row.item.id"
               size="sm"
               class="mr-2"
               theme="accent"
-              @click="removeSample(row.item.sample_id)"
+              @click="removeSample(row.item.id)"
             >
               -
             </traction-button>
@@ -54,7 +54,7 @@
       </div>
       <div class="flex flex-row justify-between border-t border-gray-400 pt-4">
         <traction-button
-          id="download"
+          id="reset"
           class="items-center cursor-pointer"
           theme="default"
           @click="reset()"
@@ -64,6 +64,7 @@
         <traction-button
           id="download"
           class="items-center cursor-pointer bg-sp-400 hover:bg-sp-300"
+          :disabled="samples.length === 0"
           @click="downloadReport"
         >
           Download
@@ -85,7 +86,7 @@ const { showAlert } = useAlert()
 const api = useRootStore().api
 
 let sample_input = ref('')
-const sampleFields = [
+const fields = [
   { key: 'id', label: 'Sample ID' },
   { key: 'submission_date', label: 'Date Submitted' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
@@ -102,7 +103,6 @@ const sampleFields = [
   { key: 'supplied_volume', label: 'Supplied Volume (uL)' },
   { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
-  { key: 'sample_type', label: 'Sample Type' },
   { key: 'remove', label: '' },
 ]
 const samples = ref([])
@@ -116,7 +116,7 @@ const addSample = async () => {
     const { success, body: { data } = {}, errors = [] } = response
 
     if (!success) {
-      showAlert(`Error fetching samples: ${errors.join(', ')}`, 'danger')
+      showAlert(`Error fetching samples: ${errors}`, 'danger')
       return
     }
 
@@ -128,10 +128,10 @@ const addSample = async () => {
     // Add the fetched samples to the samples array
     for (const sample of data) {
       // Check if the sample already exists in the samples array
-      const exists = samples.value.some((s) => s.sample_id === sample.sample_id)
+      const exists = samples.value.some((s) => s.id === sample.id)
       if (!exists) {
-        // Format the sample attributes according to the sampleFields
-        const formattedSample = sampleFields.reduce((acc, field) => {
+        // Format the sample attributes according to the fields
+        const formattedSample = fields.reduce((acc, field) => {
           acc[field.key] = sample.attributes[field.key] || ''
           return acc
         }, {})
@@ -147,7 +147,7 @@ const addSample = async () => {
   sample_input.value = ''
 }
 const removeSample = (sampleId) => {
-  const sampleIndex = samples.value.findIndex((sample) => sample.sample_id == sampleId)
+  const sampleIndex = samples.value.findIndex((sample) => sample.id == sampleId)
   if (sampleIndex !== -1) {
     samples.value.splice(sampleIndex, 1)
   }
@@ -187,12 +187,7 @@ function downloadBlob(content, filename, contentType) {
 }
 
 const downloadReport = () => {
-  if (samples.value.length === 0) {
-    showAlert('No samples selected', 'danger')
-    return
-  }
-
-  const headers = sampleFields.map((field) => field.label)
+  const headers = fields.map((field) => field.label)
 
   // Convert the samples to CSV format
   const csvContent = arrayToCsv([headers, ...samples.value.map((sample) => Object.values(sample))])
