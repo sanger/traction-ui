@@ -88,6 +88,7 @@ const api = useRootStore().api
 let sample_input = ref('')
 const fields = [
   { key: 'id', label: 'Sample ID' },
+  { key: 'name', label: 'Sample Name' },
   { key: 'submission_date', label: 'Date Submitted' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_sample_name', label: 'Supplier Sample Name' },

@@ -20,6 +20,7 @@ describe('SampleReport', () => {
   const sample = {
     id: 1,
     attributes: {
+      name: 'sample1',
       submission_date: '2023-10-01',
       sanger_sample_id: 'SANGER-123',
       supplier_sample_name: 'Supplier Sample',
