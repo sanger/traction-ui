@@ -127,7 +127,6 @@ const addSample = async () => {
 
     // Add the fetched samples to the samples array
     for (const sample of data) {
-      console.log('Adding sample:', sample)
       // Check if the sample already exists in the samples array
       const exists = samples.value.some((s) => s.sample_id === sample.sample_id)
       if (!exists) {
@@ -159,7 +158,6 @@ const reset = () => {
 }
 
 const arrayToCsv = (data) => {
-  console.log('Converting data to CSV format:', data)
   return data
     .map(
       (row) =>
