@@ -1,4 +1,8 @@
-import { fetchPlatesFunction, fetchTubesFunction } from '@/lib/receptions/MockReception'
+import {
+  fetchPlatesFunction,
+  fetchTubesFunction,
+  fetchCompoundSampleTubesFunction,
+} from '@/lib/receptions/MockReception'
 
 describe('MockReception', () => {
   describe('#fetchPlatesFunction', () => {
@@ -58,6 +62,38 @@ describe('MockReception', () => {
         expect(tube.request.external_study_id).toBeDefined()
         expect(tube.request.library_type).toBe('Example')
         expect(tube.request.cost_code).toBe('aCostCodeExample')
+      })
+    })
+  })
+
+  describe('#fetchCompoundSampleTubesFunction', () => {
+    it('returns a reception object with mocked compound sample tubes data', async () => {
+      const barcodes = ['test-compound-tube1', 'test-compound-tube2']
+      const { attributes, foundBarcodes } = await fetchCompoundSampleTubesFunction({
+        barcodes,
+        requestOptions: {
+          library_type: 'Example',
+          cost_code: 'aCostCodeExample',
+        },
+      })
+
+      expect(foundBarcodes).toEqual(new Set(barcodes))
+      expect(attributes.source).toBe('traction-ui.mock-reception')
+      expect(attributes.compound_sample_tubes_attributes).toHaveLength(2)
+      attributes.compound_sample_tubes_attributes.forEach((tube, tubeIndex) => {
+        expect(tube.type).toBe('tubes')
+        expect(tube.barcode).toBe(barcodes[tubeIndex])
+        expect(tube.request.external_study_id).toBeDefined()
+        expect(tube.request.library_type).toBe('Example')
+        expect(tube.request.cost_code).toBe('aCostCodeExample')
+        tube.samples.forEach((sampleObj, sampleIndex) => {
+          expect(sampleObj.supplier_name).toBe(
+            `${tube.barcode}-sample-${sampleIndex + 1}-${tubeIndex}`,
+          )
+          expect(sampleObj.species).toBe('Human')
+          expect(sampleObj.retention_instruction).toBe('long_term_storage')
+          expect(sampleObj.external_id).toBeDefined()
+        })
       })
     })
   })

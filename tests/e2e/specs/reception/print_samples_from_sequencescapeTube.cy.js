@@ -7,6 +7,13 @@ describe('Print samples from Sequencescape Tubes', () => {
       fixture: 'tractionLibraryTypes.json',
     })
 
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        kinnex_sample_reception: { enabled: true },
+      },
+    })
+
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.get('@printerFactory').then((printerFactory) => {
       cy.intercept('GET', '/v1/printers', {

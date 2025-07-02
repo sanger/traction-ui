@@ -1,7 +1,7 @@
-import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+import SequencescapeKinnexTubeFactory from '../../../factories/SequencescapeKinnexTubeFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 
-describe('Import samples from Sequencescape Tubes', () => {
+describe('Import samples from Sequencescape Kinnex Tubes', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
@@ -14,6 +14,7 @@ describe('Import samples from Sequencescape Tubes', () => {
         body: printerFactory.content,
       })
     })
+
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
@@ -21,12 +22,12 @@ describe('Import samples from Sequencescape Tubes', () => {
       },
     })
   })
-  describe('Successfully - V2', () => {
+  describe('Importing samples from Sequencescape Kinnex Tubes - Success', () => {
     beforeEach(() => {
       cy.visit('#/reception')
       cy.get('#workflowSelect').select('Pacbio -20 samples')
       cy.get('#userCode').type('usercodeX')
-      cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
+      cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
 
@@ -35,19 +36,20 @@ describe('Import samples from Sequencescape Tubes', () => {
         {
           url: '/api/v2/labware*',
           query: {
-            'filter[barcode]': '3980000001795',
+            'filter[barcode]': '3980000067791',
             include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
             'fields[tubes]': 'labware_barcode,receptacles',
             'fields[aliquots]': 'study,library_type,sample',
             'fields[receptacles]': 'aliquots',
-            'fields[sample_metadata]': 'sample_common_name',
+            'fields[sample_metadata]':
+              'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
             'fields[samples]': 'sample_metadata,name,uuid',
             'fields[studies]': 'uuid',
           },
         },
         {
           statusCode: 200,
-          body: SequencescapeLabwareFactory().content,
+          body: SequencescapeKinnexTubeFactory().content,
         },
       )
       cy.intercept('POST', '/v1/receptions', {
@@ -67,16 +69,16 @@ describe('Import samples from Sequencescape Tubes', () => {
       cy.intercept('POST', '/api/scans', {
         statusCode: 201,
         body: {
-          message: 'SE108532I successfully stored in LRT006 Draw 1',
+          message: 'NT1O successfully stored in LRT006 Draw 1',
         },
       })
-      cy.get('#barcodes').type('3980000001795\n')
-      cy.contains('Import 1 labware into PacBio from Sequencescape Tubes')
+      cy.get('#barcodes').type('3980000067791\n')
+      cy.contains('Import 1 labware into PacBio from Sequencescape Kinnex Tubes')
       cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
-      cy.contains('DN9000002A imported from Sequencescape')
-      cy.contains('NT1O imported from Sequencescape')
-      cy.contains('SE108532I successfully stored in LRT006 Draw 1')
+      cy.contains('DN9000002A imported from Sequencescape Kinnex Tubes')
+      cy.contains('NT1O imported from Sequencescape Kinnex Tubes')
+      cy.contains('NT1O successfully stored in LRT006 Draw 1')
     })
 
     it('successfully import to traction but fails to scan in to labWhere', () => {
@@ -84,12 +86,12 @@ describe('Import samples from Sequencescape Tubes', () => {
         statusCode: 422,
         errors: ['Failed to access LabWhere'],
       })
-      cy.get('#barcodes').type('3980000001795\n')
-      cy.contains('Import 1 labware into PacBio from Sequencescape Tubes')
+      cy.get('#barcodes').type('3980000067791\n')
+      cy.contains('Import 1 labware into PacBio from Sequencescape Kinnex Tubes')
       cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
-      cy.contains('DN9000002A imported from Sequencescape')
-      cy.contains('NT1O imported from Sequencescape')
+      cy.contains('DN9000002A imported from Sequencescape Kinnex Tubes')
+      cy.contains('NT1O imported from Sequencescape Kinnex Tubes')
       cy.contains('Failed to access LabWhere')
     })
   })
@@ -97,7 +99,7 @@ describe('Import samples from Sequencescape Tubes', () => {
   it('Unsuccessfully - when the tubes do not exist', () => {
     cy.visit('#/reception')
     cy.contains('Scan barcodes')
-    cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
+    cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
     cy.intercept(
       {
         url: '/api/v2/labware*',
@@ -107,7 +109,8 @@ describe('Import samples from Sequencescape Tubes', () => {
           'fields[tubes]': 'labware_barcode,receptacles',
           'fields[aliquots]': 'study,library_type,sample',
           'fields[receptacles]': 'aliquots',
-          'fields[sample_metadata]': 'sample_common_name',
+          'fields[sample_metadata]':
+            'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
           'fields[samples]': 'sample_metadata,name,uuid',
           'fields[studies]': 'uuid',
         },
@@ -118,14 +121,14 @@ describe('Import samples from Sequencescape Tubes', () => {
       },
     )
     cy.get('#barcodes').type('NT10\n')
-    cy.contains('Import 0 labware into PacBio from Sequencescape Tubes')
+    cy.contains('Import 0 labware into PacBio from Sequencescape Kinnex Tubes')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('No labware to import')
   })
 
   it('Unsuccessfully - when there is an error from traction', () => {
     cy.visit('#/reception')
-    cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
+    cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
     cy.contains('Scan barcodes')
     cy.intercept(
       {
@@ -136,14 +139,15 @@ describe('Import samples from Sequencescape Tubes', () => {
           'fields[tubes]': 'labware_barcode,receptacles',
           'fields[aliquots]': 'study,library_type,sample',
           'fields[receptacles]': 'aliquots',
-          'fields[sample_metadata]': 'sample_common_name',
+          'fields[sample_metadata]':
+            'sample_common_name,supplier_name,donor_id,date_of_sample_collection',
           'fields[samples]': 'sample_metadata,name,uuid',
           'fields[studies]': 'uuid',
         },
       },
       {
         statusCode: 200,
-        body: SequencescapeLabwareFactory().content,
+        body: SequencescapeKinnexTubeFactory().content,
       },
     )
     cy.intercept('/v1/receptions', {
@@ -151,7 +155,7 @@ describe('Import samples from Sequencescape Tubes', () => {
       body: { errors: [{ title: 'receptions', detail: 'There was an error.' }] },
     })
     cy.get('#barcodes').type('3980000001795\n')
-    cy.contains('Import 1 labware into PacBio from Sequencescape Tubes')
+    cy.contains('Import 1 labware into PacBio from Sequencescape Kinnex Tubes')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
   })
