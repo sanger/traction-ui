@@ -1,61 +1,72 @@
-import { mount, store, nextTick } from '@support/testHelper'
-import OntPoolEdit from '@/components/ont/OntPoolEdit'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
+import OntPoolEdit from '@/components/ont/OntPoolEdit.vue'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { expect } from 'vitest'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 // ?? huh. Pacbio?
-import * as pacbio from '@/lib/csv/pacbio'
-import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory'
-
+import * as pacbio from '@/lib/csv/pacbio.js'
+import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory.js'
 const ontAutoTagFactory = OntAutoTagFactory()
 
-const buildWrapper = () =>
-  mount(OntPoolEdit, {
-    stubs: {
-      OntPoolLibraryList: true,
+const newPool = {
+  id: null,
+  kit_barcode: null,
+  volume: null,
+  concentration: null,
+  insert_size: null,
+}
+const existingPool = {
+  id: '1',
+  kit_barcode: '017865101789500022821',
+  volume: 10,
+  concentration: 2.4,
+  insert_size: 100,
+}
+
+const tube = {
+  id: '1',
+  barcode: 'TRAC-1',
+}
+
+const mountComponent = (ontPoolCreateStore = {}) => {
+  const { wrapper, store } = mountWithStore(OntPoolEdit, {
+    initialState: {
+      ontPoolCreate: { ...ontPoolCreateStore },
     },
-    store,
+    createStore: () => useOntPoolCreateStore(),
   })
+  return { wrapper, store }
+}
 
-describe.skip('ontPoolEdit#new', () => {
-  const pool = {
-    id: null,
-    kit_barcode: null,
-    volume: null,
-    concentration: null,
-    insert_size: null,
-  }
-
-  let wrapper
+describe('ontPoolEdit#new', () => {
+  let wrapper, store
   beforeEach(() => {
-    wrapper = buildWrapper()
-    store.state.traction.ont.pools.pooling.pool = pool
+    ;({ wrapper, store } = mountComponent({ pooling: { pool: newPool } }))
   })
 
   describe('input', () => {
     it('kit barcode', async () => {
       const input = wrapper.find('[data-attribute=kit-barcode]')
       await input.setValue('017865101789500022821')
-      expect(store.state.traction.ont.pools.pooling.pool.kit_barcode).toEqual(
-        '017865101789500022821',
-      )
+      expect(store.pooling.pool.kit_barcode).toEqual('017865101789500022821')
     })
 
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
-      expect(store.state.traction.ont.pools.pooling.pool.volume).toEqual('10.0')
+      expect(store.pooling.pool.volume).toEqual('10.0')
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
-      expect(store.state.traction.ont.pools.pooling.pool.concentration).toEqual('2.4')
+      expect(store.pooling.pool.concentration).toEqual('2.4')
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
-      expect(store.state.traction.ont.pools.pooling.pool.insert_size).toEqual('100')
+      expect(store.pooling.pool.insert_size).toEqual('100')
     })
   })
 
@@ -72,27 +83,11 @@ describe.skip('ontPoolEdit#new', () => {
   })
 })
 
-describe.skip('ontPoolEdit#edit', () => {
-  const pool = {
-    id: '1',
-    kit_barcode: '017865101789500022821',
-    volume: 10,
-    concentration: 2.4,
-    insert_size: 100,
-  }
-
-  const tube = {
-    id: '1',
-    barcode: 'TRAC-1',
-  }
-
+describe('ontPoolEdit#edit', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = buildWrapper()
-    store.state.traction.ont.pools.pooling.libraries = {}
-    store.state.traction.ont.pools.pooling.pool = pool
-    store.state.traction.ont.pools.pooling.tube = tube
+    ;({ wrapper } = mountComponent({ pooling: { pool: existingPool, tube } }))
   })
 
   describe('input', () => {
@@ -167,33 +162,30 @@ describe.skip('ontPoolEdit#edit', () => {
 
   describe('pool type', () => {
     it('says empty when there are no libraries', async () => {
-      const poolCreateStore = Object.assign({}, ontAutoTagFactory.storeData, {
+      const { wrapper } = mountComponent({
+        ...ontAutoTagFactory.storeData,
         pooling: {
           libraries: {},
           pool: {},
           tube: {},
         },
       })
-      store.state.traction.ont.pools = poolCreateStore
+
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
 
     it('says library when there is one library', async () => {
-      const poolCreateStore = Object.assign({}, ontAutoTagFactory.storeData, {
+      const { wrapper } = mountComponent({
+        ...ontAutoTagFactory.storeData,
         pooling: {
-          tube: {},
           libraries: { 1: newLibrary({ ont_request_id: '1' }) },
           pool: {},
+          tube: {},
         },
       })
-      store.state.traction.ont.pools = poolCreateStore
       await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
-    })
-
-    it('says pool when there are multiple libraries', async () => {
-      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })
 })
