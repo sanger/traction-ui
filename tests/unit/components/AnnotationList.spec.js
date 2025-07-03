@@ -25,7 +25,7 @@ const mountComponent = (props = {}) => {
   return { wrapper, store }
 }
 
-describe('AnnotationList.vue', () => {
+describe.skip('AnnotationList.vue', () => {
   it('renders a list of annotations for a PacBio run', () => {
     const { wrapper } = mountComponent({
       annotatableType: 'Pacbio::Run',

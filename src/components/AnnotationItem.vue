@@ -6,7 +6,7 @@
         type="text"
         placeholder="Example: Annotation 1"
         class="w-full"
-        :disabled="!isNewRecord"
+        :disabled="!annotation.newRecord"
         data-attribute="comment"
       ></traction-input>
       <traction-input
@@ -14,14 +14,14 @@
         type="text"
         placeholder="Example: si5"
         class="w-full"
-        :disabled="!isNewRecord"
+        :disabled="!annotation.newRecord"
         data-attribute="user"
       ></traction-input>
       <traction-select
         v-model="annotation.annotation_type_id"
         :options="annotationTypeSelectOptions"
         class="w-full"
-        :disabled="!isNewRecord"
+        :disabled="!annotation.newRecord"
         data-attribute="annotation-type"
       ></traction-select>
       <div data-attribute="created-at">
@@ -30,9 +30,9 @@
     </div>
 
     <traction-button
-      v-if="isNewRecord"
+      v-if="annotation.newRecord"
       data-action="remove-annotation"
-      theme="destroy"
+      theme="delete"
       @click="removeAnnotation(localId)"
       >-</traction-button
     >
@@ -40,49 +40,56 @@
 </template>
 
 <script setup>
-import { computed, reactive, useId } from 'vue'
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
-
-const newAnnotation = {
-  id: 'new',
-  comment: '',
-  created_at: '',
-  user: '',
-  annotation_type_id: '',
-  annotatable_type: '',
-}
+import { computed, reactive } from 'vue'
 
 const props = defineProps({
   /**
-     * The annotation object containing details about the annotation
-     * @example {
-        id: '1',
-        comment: 'annotation 1',
-        created_at: '2023-10-01T12:00:00Z',
-        user: 'lulu',
-        annotation_type_id: '1',
-        annotatable_type: 'Pacbio::Run'
-      }
-    */
-  annotation: {
+   * The id of the annotation
+   * @type {String}
+   * @required
+   */
+  id: {
+    type: String,
+    required: true,
+  },
+  /**
+   * The parent object to which the annotation belongs
+   * This could be a run, or any other resource that supports annotations.
+   * It will be part of the store
+   * @type {Object}
+   * @required
+   */
+  parent: {
+    type: Object,
+    required: true,
+  },
+  /**
+   * An object of annotation types
+   * This is used to populate the select options for annotation types.
+   * @type {Object}
+   * @default {}
+   * @example
+   * {
+   *   1: { id: 1, name: 'Type 1' },
+   *   2: { id: 2, name: 'Type 2' },
+   *   // ...
+   * }
+   */
+  annotationTypes: {
     type: Object,
     default: () => ({}),
   },
 })
 
-const store = usePacbioRunCreateStore()
-
 const annotationTypeSelectOptions = computed(() => [
   { label: 'Select Annotation Type', value: '' },
-  ...Object.values(store.resources.annotationTypes).map((type) => ({
+  ...Object.values(props.annotationTypes).map((type) => ({
     text: type.name,
     value: type.id,
   })),
 ])
 
-const annotation = reactive({ ...newAnnotation, ...props.annotation })
-
-const isNewRecord = computed(() => annotation.id === 'new')
-
-const localId = useId()
+const annotation = reactive(
+  props.parent.annotations.find((annotation) => annotation.id === props.id),
+)
 </script>

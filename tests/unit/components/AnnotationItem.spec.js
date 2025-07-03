@@ -1,7 +1,9 @@
-import { mountWithStore } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from 'pinia'
+import { mount } from '@support/testHelper.js'
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
+import { annotationType } from '@/stores/utilities/annotation.js'
 
 const annotation = {
   id: '1',
@@ -14,36 +16,40 @@ const annotation = {
 
 const annotationTypeFactory = AnnotationTypeFactory()
 
-const mountComponent = (props = {}) => {
-  const { wrapper } = mountWithStore(AnnotationItem, {
-    initialState: {
-      pacbioRunCreate: {
-        resources: {
-          annotationTypes: annotationTypeFactory.storeData,
-        },
-      },
-    },
-    props,
-    createStore: () => usePacbioRunCreateStore(),
-  })
-  return wrapper
-}
-
 describe('AnnotationItem.vue', () => {
-  describe('for a new annotation', () => {
-    it('is a new record when annotation is empty', () => {
-      const wrapper = mountComponent()
-      expect(wrapper.vm.isNewRecord).toBeTruthy()
-    })
+  let store
 
+  beforeEach(() => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    store = usePacbioRunCreateStore()
+    store.$state = {
+      resources: {
+        annotationTypes: annotationTypeFactory.storeData,
+      },
+      run: {
+        id: '1',
+        name: 'Test Run',
+        annotations: [
+          annotationType({ attributes: annotation, id: '1', newRecord: false }),
+          annotationType({ id: '2', newRecord: true }),
+        ],
+      },
+    }
+  })
+
+  describe('for a new annotation', () => {
     it('enables input when the annotation is new', () => {
-      const wrapper = mountComponent()
-      expect(wrapper.vm.isNewRecord).toBeTruthy()
+      const wrapper = mount(AnnotationItem, {
+        props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
+      })
       expect(wrapper.findAll('input:disabled').length).toEqual(0)
     })
 
     it('shows the list of annotation types', () => {
-      const wrapper = mountComponent()
+      const wrapper = mount(AnnotationItem, {
+        props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
+      })
       const annotationTypeSelect = wrapper.find('[data-attribute="annotation-type"]')
       expect(annotationTypeSelect.exists()).toBeTruthy()
       expect(annotationTypeSelect.findAll('option').length).toEqual(
@@ -51,28 +57,36 @@ describe('AnnotationItem.vue', () => {
       ) // +1 for the default "Select type" option
     })
 
-    it('merges data for an annotation to ensure data integrity', () => {
-      const wrapper = mountComponent({ annotation: { comment: 'as old as the hills' } })
+    it('shows the correct data when the annotation is new', () => {
+      const newAnnotation = annotationType({ id: '2', newRecord: true })
+      const wrapper = mount(AnnotationItem, {
+        props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
+      })
       expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual(
-        'as old as the hills',
+        newAnnotation.comment,
       )
-      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('')
-      expect(wrapper.vm.isNewRecord).toBeTruthy()
+      expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual('')
+      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual(newAnnotation.user)
     })
   })
 
   describe('for an existing annotation', () => {
     it('renders annotation item with correct data', () => {
-      const wrapper = mountComponent({ annotation })
-      expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual('annotation 1')
-      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual('lulu')
-      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual('2023-10-01T12:00:00Z')
-      expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual('1')
+      const wrapper = mount(AnnotationItem, {
+        props: { id: '1', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
+      })
+      expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual(annotation.comment)
+      expect(wrapper.find('[data-attribute="user"]').element.value).toEqual(annotation.user)
+      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual(annotation.created_at)
+      expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual(
+        annotation.annotation_type_id,
+      )
     })
 
     it('disables input when the annotation is not new', () => {
-      const wrapper = mountComponent({ annotation })
-      expect(wrapper.vm.isNewRecord).toBeFalsy()
+      const wrapper = mount(AnnotationItem, {
+        props: { id: '1', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
+      })
       expect(wrapper.findAll('input:disabled').length).toEqual(2)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeTruthy()
     })
