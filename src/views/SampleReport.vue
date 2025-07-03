@@ -8,7 +8,10 @@
       <traction-form @keydown.enter.prevent>
         <fieldset>
           <traction-heading level="4" show-border>Select samples</traction-heading>
-          <p class="flex justify-left text-sm">Enter samples by names or barcode</p>
+          <div class="flex flex-row space-x-2 items-center justify-left">
+            <p class="flex text-sm">Enter samples by names or barcode</p>
+            <p class="flex text-sm font-italic text-sp">(PacBio samples only)</p>
+          </div>
           <div class="flex flex-row space-x-2 items-center">
             <traction-input
               id="sampleInput"
@@ -81,40 +84,45 @@ import DownloadIcon from '@/icons/DownloadIcon.vue'
 import useAlert from '@/composables/useAlert'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper'
-
+import { groupIncludedByResource } from '@/api/JsonApi'
+import { downloadBlob, arrayToCsv } from '@/lib/csv/creator.js'
 const { showAlert } = useAlert()
 const api = useRootStore().api
 
 let sample_input = ref('')
-const fields = [
-  { key: 'id', label: 'Sample ID' },
-  { key: 'name', label: 'Sample Name' },
-  { key: 'submission_date', label: 'Date Submitted' },
-  { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
-  { key: 'supplier_sample_name', label: 'Supplier Sample Name' },
-  { key: 'cohort', label: 'Cohort' },
-  { key: 'study_number', label: 'Study Number' },
-  { key: 'study_name', label: 'Study Name' },
-  { key: 'sample_type', label: 'Sample Type' },
-  { key: 'cost_code', label: 'Cost Code' },
-  { key: 'species', label: 'Species' },
-  { key: 'cell_type', label: 'Cell Type' },
-  { key: 'no_of_requested_cell_type', label: 'Number Of Requested Cell Type' },
-  { key: 'supplied_concentration', label: 'Supplied Concentration (ng/uL)' },
-  { key: 'supplied_volume', label: 'Supplied Volume (uL)' },
-  { key: 'submitting_faculty', label: 'Submitting Faculty' },
-  { key: 'library_type', label: 'Library Type' },
-  { key: 'remove', label: '' },
-]
 const samples = ref([])
+const csvStructure = [
+  { key: 'date_of_sample_collection', label: 'Date of Sample Collection' },
+  // Request id but user facing 'Sample'
+  { key: 'id', label: 'Sample ID' },
+  { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
+  { key: 'supplier_name', label: 'Supplier Sample Name' },
+  // { key: 'cohort', label: 'Cohort' },
+  // { key: 'study_number', label: 'Study Number' },
+  // { key: 'study_name', label: 'Study Name' },
+  { key: 'cost_code', label: 'Cost Code' },
+  { key: 'name', label: 'Sample Name' },
+  { key: 'source_identifier', label: 'Source Identifier' },
+  { key: 'species', label: 'Species' },
+  // { key: 'cell_type', label: 'Cell Type' },
+  // { key: 'no_of_requested_cell_type', label: 'Number Of Requested Cell Type' },
+  // { key: 'supplied_concentration', label: 'Supplied Concentration (ng/uL)' },
+  // { key: 'supplied_volume', label: 'Supplied Volume (uL)' },
+  // { key: 'submitting_faculty', label: 'Submitting Faculty' },
+  { key: 'library_type', label: 'Library Type' },
+  // { key: 'sample_type', label: 'Sample Type' },
+]
+
+const fields = [...csvStructure, { key: 'remove', label: '' }]
+
 const addSample = async () => {
   if (sample_input.value) {
-    const request = api.traction.samples
-    const promise = request.get({ filter: { name: sample_input.value } })
-
+    const request = api.traction.pacbio.requests
+    // TODO support by source identifier (barcode)
+    const promise = request.get({ filter: { sample_name: sample_input.value }, include: 'sample' })
     const response = await handleResponse(promise)
-
-    const { success, body: { data } = {}, errors = [] } = response
+    const { success, body: { data, included = [] } = {}, errors = [] } = response
+    const { samples: serviceSamples } = groupIncludedByResource(included)
 
     if (!success) {
       showAlert(`Error fetching samples: ${errors}`, 'danger')
@@ -126,17 +134,24 @@ const addSample = async () => {
       return
     }
 
-    // Add the fetched samples to the samples array
-    for (const sample of data) {
-      // Check if the sample already exists in the samples array
-      const exists = samples.value.some((s) => s.id === sample.id)
+    // Add the fetched data to the samples array
+    for (const request of data) {
+      // Check if the request (sample) already exists in the samples array
+      const exists = samples.value.some((sample) => sample.id == request.id)
+
       if (!exists) {
-        // Format the sample attributes according to the fields
-        const formattedSample = fields.reduce((acc, field) => {
-          acc[field.key] = sample.attributes[field.key] || ''
+        // Find the corresponding sample
+        const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
+
+        // Format the request/sample attributes according to the csvStructure
+        const formattedSample = csvStructure.reduce((acc, field) => {
+          acc[field.key] = request.attributes[field.key] || sample.attributes[field.key] || ''
           return acc
         }, {})
-        formattedSample.id = sample.id // Add the id field
+        // Add the id field
+        formattedSample.id = request.id
+
+        // Add the sample to the sample list
         samples.value.push(formattedSample)
       } else {
         showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
@@ -147,6 +162,7 @@ const addSample = async () => {
   // Clear the input field after adding the sample
   sample_input.value = ''
 }
+
 const removeSample = (sampleId) => {
   const sampleIndex = samples.value.findIndex((sample) => sample.id == sampleId)
   if (sampleIndex !== -1) {
@@ -158,37 +174,8 @@ const reset = () => {
   samples.value = []
 }
 
-const arrayToCsv = (data) => {
-  return data
-    .map(
-      (row) =>
-        row
-          .map(String) // convert every value to String
-          .map((v) => v.replaceAll('"', '""')) // escape double quotes
-          .map((v) => `"${v}"`) // quote it
-          .join(','), // comma-separated
-    )
-    .join('\r\n') // rows starting on new lines
-}
-
-/**
- * Download contents as a file
- * Source: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
- */
-function downloadBlob(content, filename, contentType) {
-  // Create a blob
-  var blob = new Blob([content], { type: contentType })
-  var url = URL.createObjectURL(blob)
-
-  // Create a link to download it
-  var pom = document.createElement('a')
-  pom.href = url
-  pom.setAttribute('download', filename)
-  pom.click()
-}
-
 const downloadReport = () => {
-  const headers = fields.map((field) => field.label)
+  const headers = csvStructure.map((field) => field.label)
 
   // Convert the samples to CSV format
   const csvContent = arrayToCsv([headers, ...samples.value.map((sample) => Object.values(sample))])

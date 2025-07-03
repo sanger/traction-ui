@@ -8,6 +8,13 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
+vi.mock('@/lib/csv/creator', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    downloadBlob: vi.fn(), // mock the downloadBlob method
+  }
+})
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 
 describe('SampleReport', () => {
@@ -17,28 +24,56 @@ describe('SampleReport', () => {
   }
 
   // TODO: hypothetical sample data for testing
-  const sample = {
+  const request = {
     id: 1,
+    type: 'requests',
     attributes: {
-      name: 'sample1',
-      submission_date: '2023-10-01',
-      sanger_sample_id: 'SANGER-123',
-      supplier_sample_name: 'Supplier Sample',
-      cohort: 'Cohort A',
-      study_number: 'Study 001',
-      study_name: 'Study Name A',
-      sample_type: 'Type A',
-      cost_code: 'Cost-123',
-      species: 'Species A',
-      cell_type: 'Cell Type A',
-      no_of_requested_cell_type: 100,
-      supplied_concentration: 1.5,
-      supplied_volume: 10,
-      submitting_faculty: 'Faculty A',
-      library_type: 'Library Type A',
-      // TODO: this field is a field for the table not the report. This should be removed
-      remove: '',
+      library_type: 'Pacbio_HiFi',
+      estimate_of_gb_required: null,
+      number_of_smrt_cells: null,
+      cost_code: 'aCostCodeExample',
+      external_study_id: '123',
+      sample_name: 'Supplier B',
+      barcode: 'NT6746',
+      sample_species: 'human',
+      created_at: '2025/06/23 13:05',
+      source_identifier: 'NT6746',
+      sample_retention_instruction: null,
     },
+    relationships: {
+      sample: {
+        data: {
+          type: 'samples',
+          id: '2',
+        },
+      },
+    },
+  }
+
+  const sample = {
+    id: '2',
+    type: 'samples',
+    attributes: {
+      name: 'test-sample-1',
+      date_of_sample_collection: '2025-06-23',
+      species: 'human',
+      external_id: '123',
+      retention_instruction: null,
+      supplier_name: 'Supplier B',
+      sanger_sample_id: 'id-123',
+    },
+  }
+
+  const expectedSample = {
+    id: request.id,
+    date_of_sample_collection: sample.attributes.date_of_sample_collection,
+    sanger_sample_id: sample.attributes.sanger_sample_id,
+    supplier_name: sample.attributes.supplier_name,
+    cost_code: request.attributes.cost_code,
+    name: sample.attributes.name,
+    source_identifier: request.attributes.source_identifier,
+    species: sample.attributes.species,
+    library_type: request.attributes.library_type,
   }
 
   beforeEach(() => {
@@ -50,7 +85,7 @@ describe('SampleReport', () => {
     // Mock the root store and its API
     rootStore = useRootStore()
     get = vi.fn()
-    rootStore.api.traction.samples.get = get
+    rootStore.api.traction.pacbio.requests.get = get
   })
 
   describe('sample input', () => {
@@ -60,13 +95,14 @@ describe('SampleReport', () => {
         status: 200,
         statusText: 'OK',
         ok: true,
-        json: () => Promise.resolve({ data: [sample] }),
+        json: () => Promise.resolve({ data: [request], included: [sample] }),
       })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
-      expect(wrapper.vm.samples).toEqual([{ id: sample.id, ...sample.attributes }])
+
+      expect(wrapper.vm.samples).toEqual([expectedSample])
     })
 
     it('does not add a sample when the service returns no data', async () => {
@@ -75,7 +111,7 @@ describe('SampleReport', () => {
         status: 200,
         statusText: 'OK',
         ok: true,
-        json: () => Promise.resolve({ data: [] }),
+        json: () => Promise.resolve({ data: [], included: [] }),
       })
 
       const sampleInput = wrapper.find('#sampleInput')
@@ -91,14 +127,14 @@ describe('SampleReport', () => {
         status: 200,
         statusText: 'OK',
         ok: true,
-        json: () => Promise.resolve({ data: [sample] }),
+        json: () => Promise.resolve({ data: [request], included: [sample] }),
       })
-      wrapper.vm.samples = [{ id: sample.id, ...sample.attributes }]
+      wrapper.vm.samples = [{ id: request.id }]
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
-      expect(wrapper.vm.samples).toEqual([{ id: sample.id, ...sample.attributes }])
+      expect(wrapper.vm.samples).toEqual([{ id: request.id }])
       expect(mockShowAlert).toBeCalledWith('Sample sample1 already exists in the list', 'info')
     })
 
@@ -135,10 +171,7 @@ describe('SampleReport', () => {
 
     it('shows the correct sample data', async () => {
       const wrapper = buildWrapper()
-      wrapper.vm.samples = [
-        { id: sample.id, ...sample.attributes },
-        { id: 2, ...sample.attributes },
-      ]
+      wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
       await wrapper.vm.$nextTick()
       const rows = wrapper.findAll('tr')
       expect(rows.length).toBe(3) // 2 samples + header row
@@ -146,10 +179,7 @@ describe('SampleReport', () => {
 
     it('removes the correct row on remove button click', async () => {
       const wrapper = buildWrapper()
-      wrapper.vm.samples = [
-        { id: sample.id, ...sample.attributes },
-        { id: 2, ...sample.attributes },
-      ]
+      wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
       await wrapper.vm.$nextTick()
       const rows = wrapper.findAll('tr')
       expect(wrapper.vm.samples.length).toBe(2)
@@ -157,7 +187,7 @@ describe('SampleReport', () => {
 
       const removeButton = wrapper.find('#remove-btn-1')
       await removeButton.trigger('click')
-      expect(wrapper.vm.samples).toEqual([{ id: 2, ...sample.attributes }])
+      expect(wrapper.vm.samples).toEqual([{ id: 2 }])
       expect(wrapper.findAll('tr').length).toBe(2) // 1 sample + header row
     })
   })
@@ -166,10 +196,7 @@ describe('SampleReport', () => {
     describe('Reset', () => {
       it('resets the sample list when reset button is clicked', async () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [
-          { id: sample.id, ...sample.attributes },
-          { id: 2, ...sample.attributes },
-        ]
+        wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.samples.length).toBe(2)
 
@@ -188,10 +215,68 @@ describe('SampleReport', () => {
 
       it('is enabled when samples are present', async () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ id: sample.id, ...sample.attributes }]
+        wrapper.vm.samples = [{ id: request.id }]
         await wrapper.vm.$nextTick()
         expect(wrapper.find('#download').element.disabled).toBe(false)
       })
     })
+  })
+
+  describe('methods', () => {
+    describe('downloadReport', () => {
+      it('downloads a CSV file with the correct content', async () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [expectedSample]
+        await wrapper.vm.$nextTick()
+
+        // Get the mocked downloadBlob from the module mock
+        const { downloadBlob } = await import('@/lib/csv/creator')
+
+        await wrapper.find('#download').trigger('click')
+
+        const time = new Date().toLocaleDateString()
+
+        expect(downloadBlob).toHaveBeenCalledWith(
+          // Just check headers as this is testing elswhere
+          expect.stringContaining(
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cost Code","Sample Name","Source Identifier","Species","Library Type"',
+          ),
+          `traction_sample_report_${time}.csv`,
+          'text/csv',
+        )
+      })
+    })
+
+    describe('reset', () => {
+      it('clears the sample list', () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [expectedSample]
+        expect(wrapper.vm.samples.length).toBe(1)
+        wrapper.vm.reset()
+        expect(wrapper.vm.samples.length).toBe(0)
+      })
+    })
+
+    describe('removeSample', () => {
+      it('removes the sample at the specified index', () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
+        expect(wrapper.vm.samples.length).toBe(2)
+
+        wrapper.vm.removeSample(1)
+        expect(wrapper.vm.samples.length).toBe(1)
+        expect(wrapper.vm.samples[0].id).toBe(2)
+      })
+
+      it('does not throw an error if the index is out of bounds', () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [{ id: request.id }]
+        expect(() => wrapper.vm.removeSample(5)).not.toThrow()
+      })
+    })
+
+    // TODO addSample tests
+    // describe('addSample', () => {
+    // })
   })
 })
