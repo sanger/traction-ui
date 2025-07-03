@@ -13,53 +13,45 @@
   </div>
 </template>
 
-<script>
-import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit'
-import { createNamespacedHelpers } from 'vuex'
-
-const { mapGetters } = createNamespacedHelpers('traction/ont/pools')
-
+<script setup>
 /**
  * # OntPoolLibraryList
  *
- * Displays a list of libraries from the ont pool libraries store
+ * Displays a list of libraries from the ont pool libraries store.
+ * Uses the Pinia ontPoolCreate store for state.
  */
-export default {
-  name: 'OntPoolLibraryList',
-  components: {
-    OntPoolLibraryEdit,
+import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit.vue'
+import { computed } from 'vue'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+
+// Props
+defineProps({
+  autoTag: {
+    type: Boolean,
+    default: false,
   },
-  props: {
-    autoTag: {
-      type: Boolean,
-      default: false,
-    },
-    // Indicates whether the values in this component have been validated
-    validated: {
-      type: Boolean,
-      default: false,
-    },
-    // Parent function indiciated what to do when a user changes an attribute
-    notify: {
-      type: Function,
-      default: () => {},
-    },
+  validated: {
+    type: Boolean,
+    default: false,
   },
-  data() {
-    return {
-      headerFields: [
-        'Sample Name',
-        'Source',
-        'Tag',
-        'Kit barcode',
-        'Volume',
-        'Concentration',
-        'Insert Size',
-      ],
-    }
+  notify: {
+    type: Function,
+    default: () => {},
   },
-  computed: {
-    ...mapGetters(['selectedRequests']),
-  },
-}
+})
+
+// Local state
+const headerFields = [
+  'Sample Name',
+  'Source',
+  'Tag',
+  'Kit barcode',
+  'Volume',
+  'Concentration',
+  'Insert Size',
+]
+
+// Pinia store
+const ontPoolCreateStore = useOntPoolCreateStore()
+const selectedRequests = computed(() => ontPoolCreateStore.selectedRequests)
 </script>

@@ -13,7 +13,8 @@ const errorFor = ({ lines, records }, message) => `Library ${records} on line ${
 const csvLogger = (commit, info, level) => (message) =>
   commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
 const tubeFor = ({ resources }, { ont_request_id }) =>
-  Object.values(resources.tubes).find((tube) => tube.requests[0] == ont_request_id)
+  Object.values(resources.tubes).find((tube) => tube.requests[0] === ont_request_id)
+
 const autoTagPlate = ({ state, commit }, { library }) => {
   const initialWell = wellFor(state, library)
   const initialIndex = wellToIndex(initialWell)

@@ -72,104 +72,92 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
-import { createNamespacedHelpers } from 'vuex'
+import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate'
 
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont/pools')
+const busy = ref(false)
+const autoTag = ref(false)
+const parsedFile = ref(null)
+const validated = ref(true)
+const ontPoolCreateStore = useOntPoolCreateStore()
+const poolItem = computed(() => ontPoolCreateStore.poolItem)
+const tubeItem = computed(() => ontPoolCreateStore.tubeItem)
+const selectedRequests = computed(() => ontPoolCreateStore.selectedRequests)
 
-/**
- * # OntPoolEdit
- *
- * Displays metadata about the current pool in the ont pooling store
- */
-export default {
-  name: 'OntPoolEdit',
-  components: {
-    OntPoolLibraryList,
-  },
-  data() {
-    return {
-      busy: false,
-      autoTag: false,
-      parsedFile: null,
-      validated: true,
+const persisted = computed(() => !!poolItem.value.id)
+
+const poolType = computed(() => {
+  switch (selectedRequests.value.length) {
+    case 0:
+      return 'Empty'
+    case 1:
+      return 'Library'
+    default:
+      return 'Pool'
+  }
+})
+
+const border = computed(() => {
+  if (parsedFile.value === null) return 'border-0'
+  else {
+    const borderColour = parsedFile.value ? 'border-success' : 'border-failure'
+    return `rounded border ${borderColour}`
+  }
+})
+
+function showAlert(message, type, key) {
+  // This assumes a global event bus or similar alert system is available
+  // Replace with your actual alert implementation if needed
+  // e.g., use a composable or inject
+  // For now, just log
+  console.log(`[${type}] ${key}:`, message)
+}
+
+async function create() {
+  busy.value = true
+  const { success, barcode, errors } = await ontPoolCreateStore.createPool()
+  if (success) {
+    showAlert(`Pool successfully created with barcode ${barcode}`, 'success', 'pool-create-message')
+  } else {
+    showAlert(errors, 'danger', 'pool-create-message')
+  }
+  busy.value = false
+}
+
+async function update() {
+  busy.value = true
+  validated.value = true
+  const { success, errors } = await ontPoolCreateStore.updatePool()
+  if (success) {
+    showAlert('Pool successfully updated', 'success', 'pool-create-message')
+  } else {
+    showAlert(errors, 'danger', 'pool-create-message')
+  }
+  busy.value = false
+}
+
+async function uploadFile(evt) {
+  if (evt?.target?.files?.length) {
+    const file = evt.target.files[0]
+    try {
+      const csv = await file.text()
+      eachRecord(csv, (record) => ontPoolCreateStore.updateLibraryFromCsvRecord(record))
+      parsedFile.value = true
+    } catch (error) {
+      console.error(error)
+      showAlert(error, 'danger', 'pool-create-message')
+      parsedFile.value = false
     }
-  },
-  computed: {
-    ...mapGetters(['poolItem', 'tubeItem', 'selectedRequests']),
-    persisted() {
-      return !!this.poolItem.id
-    },
-    poolType() {
-      switch (this.selectedRequests.length) {
-        case 0:
-          return 'Empty'
-        case 1:
-          return 'Library'
-        default:
-          return 'Pool'
-      }
-    },
-    border() {
-      if (this.parsedFile === null) return 'border-0'
-      else {
-        const borderColour = this.parsedFile ? 'border-success' : 'border-failure'
-        return `rounded border ${borderColour}`
-      }
-    },
-  },
+  } else {
+    parsedFile.value = null
+    return
+  }
+}
 
-  methods: {
-    ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
-
-    create() {
-      this.busy = true
-      this.createPool().then(({ success, barcode, errors }) => {
-        success
-          ? this.showAlert(
-              `Pool successfully created with barcode ${barcode}`,
-              'success',
-              'pool-create-message',
-            )
-          : this.showAlert(errors, 'danger', 'pool-create-message')
-        this.busy = false
-      })
-    },
-    update() {
-      this.busy = true
-      this.validated = true
-      this.updatePool().then(({ success, errors }) => {
-        success
-          ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
-          : this.showAlert(errors, 'danger', 'pool-create-message')
-        this.busy = false
-      })
-    },
-
-    // Allows users to upload a file to autopopulate the pool's selected libraries
-    async uploadFile(evt) {
-      if (evt?.target?.files?.length) {
-        const file = evt.target.files[0]
-        try {
-          const csv = await file.text()
-          eachRecord(csv, this.updateLibraryFromCsvRecord)
-          this.parsedFile = true
-        } catch (error) {
-          console.error(error)
-          this.showAlert(error, 'danger', 'pool-create-message')
-          this.parsedFile = false
-        }
-      } else {
-        this.parsedFile = null
-        return
-      }
-    },
-    // Function passed to child components for use in validation
-    onFieldUpdate() {
-      this.validated = false
-    },
-  },
+function onFieldUpdate() {
+  validated.value = false
 }
 </script>

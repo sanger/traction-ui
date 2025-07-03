@@ -21,7 +21,7 @@
  * @description Renders a list of tag sets
  */
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { computed } from 'vue'
 
 // composables

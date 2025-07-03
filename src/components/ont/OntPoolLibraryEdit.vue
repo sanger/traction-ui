@@ -72,116 +72,116 @@
   </traction-table-row>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
-const librarySetter = (attr) => {
-  return {
-    get() {
-      return this.library[attr]
-    },
-    set(newValue) {
-      if (newValue !== this.library[attr]) {
-        this.fieldsThatRequireValidation[attr] = true
-        this.notify()
-      }
-      this.updatePoolingLibrary({ ont_request_id: this.library.ont_request_id, [attr]: newValue })
-    },
-  }
-}
+<script setup>
 /**
  * # OntPoolLibraryEdit
  *
- * Displays a library from the ont store pool libraies
+ * Displays a library from the ont store pool libraries.
+ * Uses Pinia ontPoolCreate store for state and actions.
  */
-export default {
-  name: 'OntPoolLibraryEdit',
-  props: {
-    id: {
-      type: [String, Number],
-      default: '',
-    },
-    request: {
-      type: Object,
-      default() {
-        return { id: null }
-      },
-    },
-    autoTag: {
-      type: Boolean,
-      default: false,
-    },
-    // Indicates whether the values in this component have been validated
-    validated: {
-      type: Boolean,
-      default: false,
-    },
-    // Parent function indiciated what to do when a user changes an attribute
-    notify: {
-      type: Function,
-      default: () => {},
-    },
+import { computed, ref } from 'vue'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+
+// Props
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    default: '',
   },
-  data() {
-    return {
-      fieldsThatRequireValidation: [],
+  request: {
+    type: Object,
+    default: () => ({ id: null }),
+  },
+  autoTag: {
+    type: Boolean,
+    default: false,
+  },
+  validated: {
+    type: Boolean,
+    default: false,
+  },
+  notify: {
+    type: Function,
+    default: () => {},
+  },
+})
+
+// Store
+const ontPoolCreateStore = useOntPoolCreateStore()
+
+// Local state
+const fieldsThatRequireValidation = ref([])
+
+// Computed: store getters
+const selectedTagSet = computed(() => ontPoolCreateStore.selectedTagSet)
+const libraryItem = ontPoolCreateStore.libraryItem
+
+// Computed: tag list and options
+const tagList = computed(
+  () => selectedTagSet.value?.tags?.map(({ id: value, group_id: text }) => ({ value, text })) ?? [],
+)
+const tagListOptions = computed(() => [
+  { value: null, text: 'Please select a tag' },
+  ...tagList.value,
+])
+
+// Computed: library for this request
+const library = computed(() => libraryItem(props.request.id))
+
+// Two-way binding helpers for library fields
+function useLibrarySetter(attr) {
+  return computed({
+    get: () => library.value?.[attr],
+    set: (newValue) => {
+      if (newValue !== library.value?.[attr]) {
+        fieldsThatRequireValidation.value[attr] = true
+        props.notify()
+      }
+      ontPoolCreateStore.updatePoolingLibrary({
+        ont_request_id: library.value?.ont_request_id,
+        [attr]: newValue,
+      })
+    },
+  })
+}
+
+const volume = useLibrarySetter('volume')
+const insert_size = useLibrarySetter('insert_size')
+const concentration = useLibrarySetter('concentration')
+const kit_barcode = useLibrarySetter('kit_barcode')
+
+// Tag ID setter (special logic for tags)
+const tag_id = computed({
+  get: () => library.value?.tag_id,
+  set: (tag_id) => {
+    if (tag_id !== tag_id.value) {
+      fieldsThatRequireValidation.value['tag_id'] = true
+      props.notify()
     }
+    ontPoolCreateStore.applyTags(
+      { tag_id, ont_request_id: library.value?.ont_request_id },
+      props.autoTag,
+    )
   },
-  computed: {
-    ...mapGetters(['selectedTagSet', 'libraryItem']),
-    tagList() {
-      return this.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
-    },
-    tagListOptions() {
-      return [{ value: null, text: 'Please select a tag' }, ...this.tagList]
-    },
-    library() {
-      return this.libraryItem(this.request.id)
-    },
-    volume: librarySetter('volume'),
-    insert_size: librarySetter('insert_size'),
-    concentration: librarySetter('concentration'),
-    kit_barcode: librarySetter('kit_barcode'),
-    tag_id: {
-      get() {
-        return this.library.tag_id
-      },
-      set(tag_id) {
-        if (tag_id !== this.tag_id) {
-          this.fieldsThatRequireValidation['tag_id'] = true
-          this.notify()
-        }
-        this.applyTags({
-          library: { tag_id, ont_request_id: this.library.ont_request_id },
-          autoTag: this.autoTag,
-        })
-      },
-    },
-  },
-  methods: {
-    ...mapMutations(['updatePoolingLibrary']),
-    ...mapActions(['applyTags']),
-    //return any errors exist in library for the given attribute
-    errorsFor(attribute) {
-      this.setValidationRequired()
-      return this.library?.errors?.[attribute]
-    },
-    attributeValueExists(attribute) {
-      this.setValidationRequired()
-      return this.library?.[attribute]?.length > 0
-    },
-    isValidationExists(attribute) {
-      if (this.validated) {
-        return true
-      } else {
-        return !this.fieldsThatRequireValidation[attribute]
-      }
-    },
-    setValidationRequired() {
-      if (this.validated) {
-        this.fieldsThatRequireValidation = []
-      }
-    },
-  },
+})
+
+// Methods
+function errorsFor(attribute) {
+  setValidationRequired()
+  return library.value?.errors?.[attribute]
+}
+
+function isValidationExists(attribute) {
+  if (props.validated) {
+    return true
+  } else {
+    return !fieldsThatRequireValidation.value[attribute]
+  }
+}
+
+function setValidationRequired() {
+  if (props.validated) {
+    fieldsThatRequireValidation.value = []
+  }
 }
 </script>

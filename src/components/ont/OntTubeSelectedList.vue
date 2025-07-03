@@ -32,7 +32,7 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="deselectTubeAndContents(row.item.source_identifier)"
+            @click="ontPoolCreateStore.deselectTubeAndContents(row.item.source_identifier)"
           >
             Remove
           </traction-button>
@@ -42,61 +42,45 @@
   </div>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-
-// TODO: Does this need to be moved to top level ONT?
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
-
+<script setup>
 /**
  * # OntTubeSelectedList
  *
  * Displays a list of tube requests that are in the ont selected store
  */
-export default {
-  name: 'OntTubeSelectedList',
-  data() {
-    return {
-      requestFields: [
-        { key: 'id', label: 'id' },
-        { key: 'sample_name', label: 'Sample name' },
-        { key: 'source_identifier', label: 'Source identifier' },
-        { key: 'data_type', label: 'Data type' },
-        { key: 'library_type', label: 'Library type' },
-        { key: 'number_of_flowcells', label: 'Number of flowcells' },
-        { key: 'action', label: 'Action' },
-      ],
-    }
-  },
-  computed: {
-    ...mapGetters(['selectedTubes', 'requestList', 'selectedRequests']),
-    selectedTubeRequests() {
-      return this.selectedTubes.flatMap((tube) => {
-        return this.requestList(tube.requests || [])
-      })
-    },
-  },
-  methods: {
-    ...mapMutations(['selectTube', 'selectRequest']),
-    ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
+import { computed } from 'vue'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
-    isButtonDisabled(id) {
-      return this.selectedRequests.find((request) => request.id === id)
-    },
+// Pinia store
+const ontPoolCreateStore = useOntPoolCreateStore()
 
-    addTubeToPool(id) {
-      this.selectRequest({ id })
-    },
+const requestFields = [
+  { key: 'id', label: 'ID' },
+  { key: 'sample_name', label: 'Sample Name' },
+  { key: 'source_identifier', label: 'Source Identifier' },
+  { key: 'data_type', label: 'Data Type' },
+  { key: 'library_type', label: 'Library Type' },
+  { key: 'number_of_flowcells', label: 'Number of Flowcells' },
+  { key: 'action', label: 'Action' },
+]
 
-    removeTubeFromPool(id) {
-      this.selectRequest({ id, selected: false })
-    },
+// Computed properties
+const selectedTubeRequests = computed(() => {
+  return ontPoolCreateStore.selectedTubes.flatMap((tube) => {
+    return ontPoolCreateStore.requestList(tube.requests || [])
+  })
+})
 
-    rowClass(item) {
-      if (item && item.selected) {
-        return 'bg-gray-400'
-      }
-    },
-  },
+// Methods
+const isButtonDisabled = (id) => {
+  return ontPoolCreateStore.selectedRequests.find((request) => request.id === id)
+}
+
+const addTubeToPool = (id) => {
+  ontPoolCreateStore.selectRequest(id)
+}
+
+const removeTubeFromPool = (id) => {
+  ontPoolCreateStore.selectRequest(id, false)
 }
 </script>
