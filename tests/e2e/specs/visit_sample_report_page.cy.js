@@ -1,50 +1,82 @@
 // TODO: hypothetical sample data for testing
-const sample = {
+const request = {
   id: 1,
+  type: 'requests',
   attributes: {
-    name: 'sample-1',
-    submission_date: '2023-10-01',
-    sanger_sample_id: 'SANGER-123',
-    supplier_sample_name: 'Supplier Sample',
-    cohort: 'Cohort A',
-    study_number: 'Study 001',
-    study_name: 'Study Name A',
-    sample_type: 'Type A',
-    cost_code: 'Cost-123',
-    species: 'Species A',
-    cell_type: 'Cell Type A',
-    no_of_requested_cell_type: 100,
-    supplied_concentration: 1.5,
-    supplied_volume: 10,
-    submitting_faculty: 'Faculty A',
-    library_type: 'Library Type A',
-    // TODO: this field is a field for the table not the report. This should be removed
-    remove: '',
+    library_type: 'Pacbio_HiFi',
+    estimate_of_gb_required: null,
+    number_of_smrt_cells: null,
+    cost_code: 'aCostCodeExample',
+    external_study_id: '123',
+    sample_name: 'sample-1',
+    barcode: 'NT6746',
+    sample_species: 'human',
+    created_at: '2025/06/23 13:05',
+    source_identifier: 'NT6746',
+    sample_retention_instruction: null,
+  },
+  relationships: {
+    sample: {
+      data: {
+        type: 'samples',
+        id: '2',
+      },
+    },
+  },
+}
+
+const sample = {
+  id: '2',
+  type: 'samples',
+  attributes: {
+    name: 'sample-11',
+    date_of_sample_collection: '2025-06-23',
+    species: 'human',
+    external_id: '123',
+    retention_instruction: null,
+    supplier_name: 'Supplier B',
+    sanger_sample_id: 'id-123',
   },
 }
 
 // Sample with some missing data
-const sample2 = {
+const request2 = {
   id: 2,
+  type: 'requests',
+  attributes: {
+    library_type: '',
+    estimate_of_gb_required: null,
+    number_of_smrt_cells: null,
+    cost_code: '',
+    external_study_id: '123',
+    sample_name: 'sample-2',
+    barcode: 'NT6746',
+    sample_species: 'human',
+    created_at: '2025/06/23 13:05',
+    source_identifier: 'NT6746',
+    sample_retention_instruction: null,
+  },
+  relationships: {
+    sample: {
+      data: {
+        type: 'samples',
+        id: '3',
+      },
+    },
+  },
+}
+
+const sample2 = {
+  id: '3',
+  type: 'samples',
   attributes: {
     name: 'sample-2',
-    submission_date: '2023-10-01',
-    sanger_sample_id: 'SANGER-123',
-    supplier_sample_name: '',
-    cohort: '',
-    study_number: 'Study 001',
-    study_name: 'Study Name A',
-    sample_type: 'Type A',
-    cost_code: 'Cost-123',
-    species: 'Species A',
-    cell_type: 'Cell Type A',
-    no_of_requested_cell_type: 100,
-    supplied_concentration: 1.5,
-    supplied_volume: 10,
-    submitting_faculty: '',
-    library_type: 'Library Type A',
-    // TODO: this field is a field for the table not the report. This should be removed
-    remove: '',
+    date_of_sample_collection: '2025-06-23',
+    species: 'human',
+    external_id: '123',
+    retention_instruction: null,
+    supplier_name: 'Supplier B',
+    sanger_sample_id: 'id-123',
   },
 }
 
@@ -67,19 +99,21 @@ describe('Sample Report page', () => {
 
   describe('Sample scanning', () => {
     it('Successfully - when the sample exists', () => {
-      cy.intercept('v1/samples?filter[name]=sample-1', {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
         statusCode: 200,
         body: {
-          data: [sample],
+          data: [request],
+          included: [sample],
         },
       })
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
 
-      cy.intercept('v1/samples?filter[name]=sample-2', {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-2&include=sample', {
         statusCode: 200,
         body: {
-          data: [sample2],
+          data: [request2],
+          included: [sample2],
         },
       })
       cy.get('#sampleInput').type('sample-2')
@@ -96,13 +130,13 @@ describe('Sample Report page', () => {
         (csv) => {
           csv = csv.split('\n')
           expect(csv[0]).to.include(
-            '"Sample ID","Sample Name","Date Submitted","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Sample Type","Cost Code","Species","Cell Type","Number Of Requested Cell Type","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type",""',
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cost Code","Sample Name","Source Identifier","Species","Library Type"\r',
           )
           expect(csv[1]).to.include(
-            '"1","sample-1","2023-10-01","SANGER-123","Supplier Sample","Cohort A","Study 001","Study Name A","Type A","Cost-123","Species A","Cell Type A","100","1.5","10","Faculty A","Library Type A",""',
+            '"2025-06-23","1","id-123","Supplier B","aCostCodeExample","sample-11","NT6746","human","Pacbio_HiFi"\r',
           )
           expect(csv[2]).to.include(
-            '"2","sample-2","2023-10-01","SANGER-123","","","Study 001","Study Name A","Type A","Cost-123","Species A","Cell Type A","100","1.5","10","","Library Type A",""',
+            '"2025-06-23","2","id-123","Supplier B","","sample-2","NT6746","human",""',
           )
         },
       )
@@ -112,9 +146,9 @@ describe('Sample Report page', () => {
     })
 
     it('Unsuccessfully - when the sample does not exists', () => {
-      cy.intercept('v1/samples?filter[name]=sample-1', {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
         statusCode: 200,
-        body: { data: [] },
+        body: { data: [], included: [] },
       })
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
@@ -123,7 +157,7 @@ describe('Sample Report page', () => {
     })
 
     it('Unsuccessfully - when the server returns an error', () => {
-      cy.intercept('v1/samples?filter[name]=sample-1', {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
         statusCode: 422,
         body: {
           errors: {
