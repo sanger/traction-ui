@@ -33,7 +33,7 @@
       v-if="annotation.newRecord"
       data-action="remove-annotation"
       theme="delete"
-      @click="removeAnnotation(localId)"
+      @click="removeAnnotation(id)"
       >-</traction-button
     >
   </div>

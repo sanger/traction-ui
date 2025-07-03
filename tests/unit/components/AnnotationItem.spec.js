@@ -44,6 +44,8 @@ describe('AnnotationItem.vue', () => {
         props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
       })
       expect(wrapper.findAll('input:disabled').length).toEqual(0)
+      expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeFalsy()
+      expect(wrapper.find('[data-action="remove-annotation"]').element.disabled).toBeFalsy()
     })
 
     it('shows the list of annotation types', () => {
@@ -89,6 +91,7 @@ describe('AnnotationItem.vue', () => {
       })
       expect(wrapper.findAll('input:disabled').length).toEqual(2)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeTruthy()
+      expect(wrapper.find('[data-action="remove-annotation"]').exists()).toBeFalsy()
     })
   })
 })
