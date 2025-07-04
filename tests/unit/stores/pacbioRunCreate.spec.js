@@ -194,18 +194,6 @@ describe('usePacbioRunCreateStore', () => {
         expect(gottenWell).toBeUndefined()
       })
     })
-
-    describe('annotationsByAnnotatable', () => {
-      it('returns annotations for a given annotatable', () => {
-        const store = usePacbioRunCreateStore()
-        store.annotations = pacbioRunFactory.storeData.annotations
-        const annotations = store.annotationsByAnnotatable({
-          annotatableType: 'Pacbio::Run',
-          annotatableId: pacbioRunFactory.storeData.run.id,
-        })
-        expect(annotations.length).toEqual(2)
-      })
-    })
   })
   describe('actions', () => {
     const plateNumber = 1

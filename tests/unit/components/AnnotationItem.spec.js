@@ -43,6 +43,7 @@ describe('AnnotationItem.vue', () => {
       const wrapper = mount(AnnotationItem, {
         props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
       })
+      console.log(wrapper.vm.annotationTypeSelectOptions())
       expect(wrapper.findAll('input:disabled').length).toEqual(0)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeFalsy()
       expect(wrapper.find('[data-action="remove-annotation"]').element.disabled).toBeFalsy()

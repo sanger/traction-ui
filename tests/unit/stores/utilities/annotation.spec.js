@@ -1,5 +1,8 @@
-import { annotationType } from '@/stores/utilities/annotation.js'
+import { annotationType, annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 import { describe, it } from 'vitest'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 
 describe('annotation.js', () => {
   describe('annotationType', () => {
@@ -36,6 +39,20 @@ describe('annotation.js', () => {
       expect(annotation.newRecord).toBeFalsy()
       annotation = annotationType({ newRecord: true })
       expect(annotation.newRecord).toBeTruthy()
+    })
+  })
+
+  describe('annotationsByAnnotatable', () => {
+    it('returns annotations for a given annotatable', () => {
+      const annotations = annotationsByAnnotatable({
+        annotations: Object.values(pacbioRunFactory.storeData.annotations),
+        annotatableType: 'Pacbio::Run',
+        annotatableId: pacbioRunFactory.storeData.run.id,
+      })
+      expect(annotations.length).toEqual(2)
+      // we need to ensure the actual value is false
+      expect(annotations.every((annotation) => annotation.newRecord === false)).toBeTruthy()
+      expect(annotations.map((annotation) => annotation.id)).toEqual(['1', '2'])
     })
   })
 })

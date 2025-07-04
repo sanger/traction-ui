@@ -30,4 +30,30 @@ const annotationType = ({ attributes = {}, id, newRecord } = {}) => {
   return instance
 }
 
-export { annotationType }
+/**
+ * Filters annotations by the specified annotatable type and ID.
+ *
+ * @param {Object} params - The parameters for filtering annotations.
+ * @param {Array} params.annotations - The list of annotations to filter.
+ * @param {string} params.annotatableType - The type of the annotatable entity (e.g., 'Pacbio::Run').
+ * @param {string|number} params.annotatableId - The ID of the annotatable entity.
+ * @returns {Array} The filtered list of annotations.
+ */
+const annotationsByAnnotatable = ({ annotations, annotatableType, annotatableId }) => {
+  return annotations
+    .filter(
+      (annotation) =>
+        annotation.annotatable_type === annotatableType &&
+        // Ensure we are comparing the ids as integers
+        parseInt(annotation.annotatable_id) === parseInt(annotatableId),
+    )
+    .map((annotation) =>
+      annotationType({
+        attributes: annotation,
+        id: annotation.id,
+        newRecord: false, // Assuming existing annotations are not new records
+      }),
+    )
+}
+
+export { annotationType, annotationsByAnnotatable }

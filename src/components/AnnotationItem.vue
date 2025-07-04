@@ -19,7 +19,7 @@
       ></traction-input>
       <traction-select
         v-model="annotation.annotation_type_id"
-        :options="annotationTypeSelectOptions"
+        :options="annotationTypeSelectOptions()"
         class="w-full"
         :disabled="!annotation.newRecord"
         data-attribute="annotation-type"
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue'
+import { reactive } from 'vue'
 
 const props = defineProps({
   /**
@@ -81,13 +81,13 @@ const props = defineProps({
   },
 })
 
-const annotationTypeSelectOptions = computed(() => [
+const annotationTypeSelectOptions = () => [
   { label: 'Select Annotation Type', value: '' },
   ...Object.values(props.annotationTypes).map((type) => ({
     text: type.name,
     value: type.id,
   })),
-])
+]
 
 const annotation = reactive(
   props.parent.annotations.find((annotation) => annotation.id === props.id),
