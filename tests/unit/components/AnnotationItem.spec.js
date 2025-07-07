@@ -3,7 +3,7 @@ import { mount } from '@support/testHelper.js'
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
-import { annotationType } from '@/stores/utilities/annotation.js'
+import { AnnotationItemType } from '@/stores/utilities/annotation.js'
 
 const annotation = {
   id: '1',
@@ -31,8 +31,8 @@ describe('AnnotationItem.vue', () => {
         id: '1',
         name: 'Test Run',
         annotations: [
-          annotationType({ attributes: annotation, id: '1', newRecord: false }),
-          annotationType({ id: '2', newRecord: true }),
+          AnnotationItemType({ attributes: annotation, id: '1', newRecord: false }),
+          AnnotationItemType({ id: '2', newRecord: true }),
         ],
       },
     }
@@ -61,7 +61,7 @@ describe('AnnotationItem.vue', () => {
     })
 
     it('shows the correct data when the annotation is new', () => {
-      const newAnnotation = annotationType({ id: '2', newRecord: true })
+      const newAnnotation = AnnotationItemType({ id: '2', newRecord: true })
       const wrapper = mount(AnnotationItem, {
         props: { id: '2', parent: store.run, annotationTypes: annotationTypeFactory.storeData },
       })

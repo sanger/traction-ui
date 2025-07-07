@@ -12,8 +12,8 @@
 </template>
 
 <script setup>
-import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import AnnotationItem from '@/components/AnnotationItem.vue'
+import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 import { reactive } from 'vue'
 
 const props = defineProps({
@@ -25,11 +25,13 @@ const props = defineProps({
     type: [String, Number],
     default: '',
   },
+  annotations: {
+    type: Array,
+    default: () => [],
+  },
 })
 
-const pacbioRunCreateStore = usePacbioRunCreateStore()
-
-const annotations = reactive(pacbioRunCreateStore.annotationsByAnnotatable({ ...props }))
+const annotations = reactive(annotationsByAnnotatable({ ...props }))
 
 const addAnnotation = () => annotations.push({})
 </script>

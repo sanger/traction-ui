@@ -1,21 +1,21 @@
-import { annotationType, annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
+import { AnnotationItemType, annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 import { describe, it } from 'vitest'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 
 describe('annotation.js', () => {
-  describe('annotationType', () => {
-    it('will assign default attributes to the annotationType if none are passed', () => {
-      const annotation = annotationType()
+  describe('AnnotationItemType', () => {
+    it('will assign default attributes to the AnnotationItemType if none are passed', () => {
+      const annotation = AnnotationItemType()
       expect(annotation.comment).toEqual('')
       expect(annotation.annotatation_type_id).toBeNull()
       expect(annotation.created_at).toEqual('')
       expect(annotation.user).toEqual('')
     })
 
-    it('will assign the attributes to the annotationType', () => {
-      const annotation = annotationType({
+    it('will assign the attributes to the AnnotationItemType', () => {
+      const annotation = AnnotationItemType({
         attributes: {
           comment: 'comment1',
           annotatation_type_id: 1,
@@ -29,15 +29,15 @@ describe('annotation.js', () => {
       expect(annotation.user).toEqual('si5')
     })
 
-    it('will assign an id to the annotationType', () => {
-      const annotation = annotationType({ id: 123 })
+    it('will assign an id to the AnnotationItemType', () => {
+      const annotation = AnnotationItemType({ id: 123 })
       expect(annotation.id).toEqual(123)
     })
 
-    it('will assign a newRecord property to the annotationType', () => {
-      let annotation = annotationType()
+    it('will assign a newRecord property to the AnnotationItemType', () => {
+      let annotation = AnnotationItemType()
       expect(annotation.newRecord).toBeFalsy()
-      annotation = annotationType({ newRecord: true })
+      annotation = AnnotationItemType({ newRecord: true })
       expect(annotation.newRecord).toBeTruthy()
     })
   })
