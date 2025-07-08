@@ -9,7 +9,7 @@
         <fieldset>
           <traction-heading level="4" show-border>Select samples</traction-heading>
           <div class="flex flex-row space-x-2 items-center justify-left">
-            <p class="flex text-sm">Enter samples by names or barcode</p>
+            <p class="flex text-sm">Enter samples by names or container barcode</p>
             <p class="flex text-sm font-italic text-sp">(PacBio samples only)</p>
           </div>
           <div class="flex flex-row space-x-2 items-center">
@@ -78,6 +78,17 @@
   </div>
 </template>
 
+<!--
+  SampleReport page
+  This page allows users to generate a report of samples from Traction.
+  Users can search for samples by name or container barcode, and the report will include
+  relevant information from both Traction and Sequencescape.
+
+
+  Currently this is setup for Kinnex samples but to extend to other report types we can abstract
+  the csvStructure and the fetching of samples from Traction and Sequencescape and create a dropdown
+  to select the report type.
+-->
 <script setup>
 import { ref } from 'vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
@@ -97,7 +108,7 @@ const csvStructure = [
   { key: 'id', label: 'Sample ID' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_name', label: 'Supplier Sample Name' },
-  // { key: 'cohort', label: 'Cohort' },
+  { key: 'cohort', label: 'Cohort' },
   // { key: 'study_number', label: 'Study Number' },
   // { key: 'study_name', label: 'Study Name' },
   { key: 'cost_code', label: 'Cost Code' },
@@ -106,61 +117,127 @@ const csvStructure = [
   { key: 'species', label: 'Species' },
   // { key: 'cell_type', label: 'Cell Type' },
   // { key: 'no_of_requested_cell_type', label: 'Number Of Requested Cell Type' },
-  // { key: 'supplied_concentration', label: 'Supplied Concentration (ng/uL)' },
-  // { key: 'supplied_volume', label: 'Supplied Volume (uL)' },
+  { key: 'concentration', label: 'Supplied Concentration (ng/uL)' },
+  { key: 'volume', label: 'Supplied Volume (uL)' },
   // { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
-  // { key: 'sample_type', label: 'Sample Type' },
+  { key: 'donor_id', label: 'Sample Type' },
 ]
 
 const fields = [...csvStructure, { key: 'remove', label: '' }]
 
 const addSample = async () => {
   if (sample_input.value) {
-    const request = api.traction.pacbio.requests
-    // TODO support by source identifier (barcode)
-    const promise = request.get({ filter: { sample_name: sample_input.value }, include: 'sample' })
-    const response = await handleResponse(promise)
-    const { success, body: { data, included = [] } = {}, errors = [] } = response
-    const { samples: serviceSamples } = groupIncludedByResource(included)
-
-    if (!success) {
-      showAlert(`Error fetching samples: ${errors}`, 'danger')
+    const tractionSamples = await fetchTractionSamples()
+    if (!tractionSamples) {
+      showAlert('No samples found in Traction with the provided input', 'warning')
+      sample_input.value = ''
       return
     }
 
-    if (data.length === 0) {
-      showAlert('No samples found with the provided input', 'warning')
+    const sequencescapeSamples = await fetchSequencescapeSamples(tractionSamples)
+    if (!sequencescapeSamples) {
+      showAlert('No samples found in Sequencescape with the provided input', 'warning')
+      sample_input.value = ''
       return
     }
 
-    // Add the fetched data to the samples array
-    for (const request of data) {
-      // Check if the request (sample) already exists in the samples array
-      const exists = samples.value.some((sample) => sample.id == request.id)
-
-      if (!exists) {
-        // Find the corresponding sample
-        const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
-
-        // Format the request/sample attributes according to the csvStructure
-        const formattedSample = csvStructure.reduce((acc, field) => {
-          acc[field.key] = request.attributes[field.key] || sample.attributes[field.key] || ''
-          return acc
-        }, {})
-        // Add the id field
-        formattedSample.id = request.id
-
-        // Add the sample to the sample list
-        samples.value.push(formattedSample)
-      } else {
-        showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
+    // Combine the traction samples and sequencescape samples
+    const combinedSamples = tractionSamples.map((sample) => {
+      const seqSample = sequencescapeSamples.find((s) => s.uuid === sample.external_id)
+      return {
+        ...sample,
+        ...seqSample,
       }
-    }
+    })
+
+    samples.value.push(...combinedSamples)
+
+    // Clear the input field after adding samples
+    sample_input.value = ''
+  }
+}
+
+const fetchTractionSamples = async () => {
+  const tractionSamples = []
+  const request = api.traction.pacbio.requests
+  // TODO support by source identifier (barcode)
+  const promise = request.get({ filter: { sample_name: sample_input.value }, include: 'sample' })
+  const response = await handleResponse(promise)
+  const { success, body: { data, included = [] } = {}, errors = [] } = response
+  const { samples: serviceSamples } = groupIncludedByResource(included)
+
+  if (!success) {
+    showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
+    return
   }
 
-  // Clear the input field after adding the sample
-  sample_input.value = ''
+  // Add the fetched data to the samples array
+  for (const request of data) {
+    // Check if the request (sample) already exists in the samples array
+    const exists = samples.value.some((sample) => sample.id == request.id)
+
+    if (!exists) {
+      // Find the corresponding sample
+      const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
+
+      const formattedSample = {
+        id: request.id,
+        date_of_sample_collection: request.attributes.date_of_sample_collection || '',
+        sanger_sample_id: request.attributes.sanger_sample_id || '',
+        supplier_name: request.attributes.supplier_name || '',
+        cost_code: request.attributes.cost_code || '',
+        library_type: request.attributes.library_type || '',
+        source_identifier: request.attributes.source_identifier || '',
+        name: sample.attributes.name || '',
+        donor_id: sample.attributes.donor_id || '',
+        species: sample.attributes.species || '',
+        external_id: sample.attributes.external_id || '',
+      }
+
+      // Add the sample to the sample list
+      tractionSamples.push(formattedSample)
+    } else {
+      showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
+    }
+  }
+  return tractionSamples
+}
+
+const fetchSequencescapeSamples = async (samples) => {
+  const sequencescapeSamples = []
+  const sampleUuids = samples.map((sample) => sample.external_id).join(',')
+  const request = api.sequencescape.samples
+
+  const promise = request.get({ filter: { uuid: sampleUuids }, include: 'sample_metadata' })
+  const response = await handleResponse(promise)
+  const { success, body: { data, included = [] } = {}, errors = [] } = response
+  const { sample_metadata } = groupIncludedByResource(included)
+
+  if (!success) {
+    showAlert(`Error fetching samples from Sequencescape: ${errors}`, 'danger')
+    return
+  }
+
+  // Add the fetched data to the samples array
+  for (const sample of data) {
+    // Find the corresponding metadata
+    const s_metadata = sample_metadata.find(
+      (s) => s.id == sample.relationships.sample_metadata.data.id,
+    )
+
+    // Format the sample/sample_metadata attributes according to the csvStructure
+    const formattedSample = {
+      cohort: s_metadata.attributes.cohort || '',
+      concentration: s_metadata.attributes.concentration || '',
+      volume: s_metadata.attributes.volume || '',
+      uuid: sample.attributes.uuid || '',
+    }
+
+    // Add the sample to the sample list
+    sequencescapeSamples.push(formattedSample)
+  }
+  return sequencescapeSamples
 }
 
 const removeSample = (sampleId) => {
@@ -177,8 +254,17 @@ const reset = () => {
 const downloadReport = () => {
   const headers = csvStructure.map((field) => field.label)
 
+  // format the samples to match the csvStructure
+  const formattedSamples = samples.value.map((sample) => {
+    const formattedSample = {}
+    csvStructure.forEach((field) => {
+      formattedSample[field.key] = sample[field.key] || ''
+    })
+    return Object.values(formattedSample)
+  })
+
   // Convert the samples to CSV format
-  const csvContent = arrayToCsv([headers, ...samples.value.map((sample) => Object.values(sample))])
+  const csvContent = arrayToCsv([headers, ...formattedSamples])
 
   // Download the CSV file
   const time = new Date().toLocaleDateString()
