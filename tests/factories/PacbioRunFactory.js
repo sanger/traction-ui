@@ -5,6 +5,8 @@ import {
   find,
   extractAttributes,
   dataToObjectByPlateNumber,
+  dataToObjectByPosition,
+  splitDataByParent,
 } from './../../src/api/JsonApi.js'
 
 /**
@@ -57,6 +59,15 @@ const createStoreDataForSingleRun = (data) => {
     .concat(libraries || [])
     .map(({ attributes }) => attributes.barcode)
 
+  // Populate the wells
+  // Adds the wells to state by plate number and well position, two dimensional array
+  const wellsByPlate = splitDataByParent({
+    data: wells,
+    fn: dataToObjectByPosition,
+    includeRelationships: true,
+    parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+  })
+
   return {
     run,
     smrtLinkVersion: extractAttributes(smrt_link_version),
@@ -66,7 +77,8 @@ const createStoreDataForSingleRun = (data) => {
     tags: dataToObjectById({ data: tags, includeRelationships: true }),
     requests: dataToObjectById({ data: requests, includeRelationships: true }),
     plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
-    wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    // wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    wells: wellsByPlate,
     annotations: dataToObjectById({ data: annotations, includeRelationships: true }),
     scannedBarcodes,
     resources: {

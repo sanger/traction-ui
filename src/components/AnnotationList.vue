@@ -2,7 +2,11 @@
   <div data-type="annotation-list">
     <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
       <div v-for="annotation in annotations" :key="annotation.id">
-        <AnnotationItem :annotation="annotation" />
+        <AnnotationItem
+          :id="annotation.id"
+          :parent="props.parent"
+          :annotation-type-select-options="selectOptions"
+        />
       </div>
     </div>
   </div>
@@ -13,25 +17,39 @@
 
 <script setup>
 import AnnotationItem from '@/components/AnnotationItem.vue'
-import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
-import { reactive } from 'vue'
+import { annotationTypeSelectOptions, AnnotationItemType } from '@/stores/utilities/annotation.js'
+import { computed } from 'vue'
 
 const props = defineProps({
-  annotatableType: {
-    type: String,
-    default: '',
+  /**
+   * The parent object to which the annotations belong.
+   * This could be a run, or any other resource that supports annotations.
+   * It will be part of the store.
+   * @type {Object}
+   * @required
+   */
+  parent: {
+    type: Object,
+    required: true,
   },
-  annotatableId: {
-    type: [String, Number],
-    default: '',
-  },
-  annotations: {
+  /**
+   * The list of annotation types available for selection.
+   * This is used to populate the select options for each annotation.
+   * @type {Array}
+   * @required
+   */
+  annotationTypes: {
     type: Array,
-    default: () => [],
+    required: true,
   },
 })
 
-const annotations = reactive(annotationsByAnnotatable({ ...props }))
+const selectOptions = annotationTypeSelectOptions(props.annotationTypes)
 
-const addAnnotation = () => annotations.push({})
+const annotations = computed(() => props.parent.annotations)
+
+const addAnnotation = () => {
+  const id = crypto.randomUUID()
+  annotations.value.push(AnnotationItemType({ id, newRecord: true }))
+}
 </script>
