@@ -104,22 +104,17 @@ let sample_input = ref('')
 const samples = ref([])
 const csvStructure = [
   { key: 'date_of_sample_collection', label: 'Date of Sample Collection' },
-  // Request id but user facing 'Sample'
   { key: 'id', label: 'Sample ID' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_name', label: 'Supplier Sample Name' },
   { key: 'cohort', label: 'Cohort' },
-  // { key: 'study_number', label: 'Study Number' },
-  // { key: 'study_name', label: 'Study Name' },
+  { key: 'study_number', label: 'Study Number' },
+  { key: 'study_name', label: 'Study Name' },
   { key: 'cost_code', label: 'Cost Code' },
-  { key: 'name', label: 'Sample Name' },
-  { key: 'source_identifier', label: 'Source Identifier' },
   { key: 'species', label: 'Species' },
-  // { key: 'cell_type', label: 'Cell Type' },
-  // { key: 'no_of_requested_cell_type', label: 'Number Of Requested Cell Type' },
   { key: 'concentration', label: 'Supplied Concentration (ng/uL)' },
   { key: 'volume', label: 'Supplied Volume (uL)' },
-  // { key: 'submitting_faculty', label: 'Submitting Faculty' },
+  { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
   { key: 'donor_id', label: 'Sample Type' },
 ]
@@ -129,14 +124,14 @@ const fields = [...csvStructure, { key: 'remove', label: '' }]
 const addSample = async () => {
   if (sample_input.value) {
     const tractionSamples = await fetchTractionSamples()
-    if (!tractionSamples) {
+    if (!tractionSamples.length) {
       showAlert('No samples found in Traction with the provided input', 'warning')
       sample_input.value = ''
       return
     }
 
     const sequencescapeSamples = await fetchSequencescapeSamples(tractionSamples)
-    if (!sequencescapeSamples) {
+    if (!sequencescapeSamples.length) {
       showAlert('No samples found in Sequencescape with the provided input', 'warning')
       sample_input.value = ''
       return
@@ -169,7 +164,7 @@ const fetchTractionSamples = async () => {
 
   if (!success) {
     showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
-    return
+    return []
   }
 
   // Add the fetched data to the samples array
@@ -182,14 +177,10 @@ const fetchTractionSamples = async () => {
       const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
 
       const formattedSample = {
-        id: request.id,
         date_of_sample_collection: request.attributes.date_of_sample_collection || '',
-        sanger_sample_id: request.attributes.sanger_sample_id || '',
         supplier_name: request.attributes.supplier_name || '',
         cost_code: request.attributes.cost_code || '',
         library_type: request.attributes.library_type || '',
-        source_identifier: request.attributes.source_identifier || '',
-        name: sample.attributes.name || '',
         donor_id: sample.attributes.donor_id || '',
         species: sample.attributes.species || '',
         external_id: sample.attributes.external_id || '',
@@ -209,14 +200,18 @@ const fetchSequencescapeSamples = async (samples) => {
   const sampleUuids = samples.map((sample) => sample.external_id).join(',')
   const request = api.sequencescape.samples
 
-  const promise = request.get({ filter: { uuid: sampleUuids }, include: 'sample_metadata' })
+  const promise = request.get({
+    filter: { uuid: sampleUuids },
+    include: 'sample_metadata,studies.study_metadata.faculty_sponsor',
+  })
   const response = await handleResponse(promise)
   const { success, body: { data, included = [] } = {}, errors = [] } = response
-  const { sample_metadata } = groupIncludedByResource(included)
+  const { sample_metadata, studies, study_metadata, faculty_sponsors } =
+    groupIncludedByResource(included)
 
   if (!success) {
     showAlert(`Error fetching samples from Sequencescape: ${errors}`, 'danger')
-    return
+    return []
   }
 
   // Add the fetched data to the samples array
@@ -226,12 +221,27 @@ const fetchSequencescapeSamples = async (samples) => {
       (s) => s.id == sample.relationships.sample_metadata.data.id,
     )
 
+    // Find the corresponding study
+    // Note: This assumes that each sample has only one study associated with it
+    const study = studies.find((s) => s.id == sample.relationships.studies.data[0].id)
+    const stdy_metadata = study_metadata.find(
+      (s) => s.id == study.relationships.study_metadata.data.id,
+    )
+    const faculty_sponsor = faculty_sponsors.find(
+      (s) => s.id == stdy_metadata.relationships.faculty_sponsor.data.id,
+    )
+
     // Format the sample/sample_metadata attributes according to the csvStructure
     const formattedSample = {
+      id: sample.id || '',
+      sanger_sample_id: sample.attributes.sanger_sample_id || '',
+      uuid: sample.attributes.uuid || '',
       cohort: s_metadata.attributes.cohort || '',
       concentration: s_metadata.attributes.concentration || '',
       volume: s_metadata.attributes.volume || '',
-      uuid: sample.attributes.uuid || '',
+      study_number: study.id || '',
+      study_name: study.attributes.name || '',
+      submitting_faculty: faculty_sponsor.attributes.name || '',
     }
 
     // Add the sample to the sample list

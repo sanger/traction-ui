@@ -15,10 +15,10 @@ vi.mock('@/lib/csv/creator', async (importOriginal) => {
     downloadBlob: vi.fn(), // mock the downloadBlob method
   }
 })
-import { createPinia, setActivePinia } from '@support/testHelper.js'
+import { createPinia, setActivePinia, flushPromises } from '@support/testHelper.js'
 
 describe('SampleReport', () => {
-  let rootStore, get
+  let rootStore, get, ss_get
   const buildWrapper = () => {
     return mount(SampleReport)
   }
@@ -86,6 +86,9 @@ describe('SampleReport', () => {
     rootStore = useRootStore()
     get = vi.fn()
     rootStore.api.traction.pacbio.requests.get = get
+
+    ss_get = vi.fn()
+    rootStore.api.sequencescape.samples.get = ss_get
   })
 
   describe('sample input', () => {
@@ -117,8 +120,13 @@ describe('SampleReport', () => {
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('123')
       await wrapper.find('#searchSamples').trigger('click')
+      await flushPromises()
+
       expect(wrapper.vm.samples).toEqual([])
-      expect(mockShowAlert).toBeCalledWith('No samples found with the provided input', 'warning')
+      expect(mockShowAlert).toBeCalledWith(
+        'No samples found in Traction with the provided input',
+        'warning',
+      )
     })
 
     it('does not add a sample if it already exists in the list', async () => {
@@ -145,9 +153,44 @@ describe('SampleReport', () => {
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('errorSample')
       await wrapper.find('#searchSamples').trigger('click')
+      await flushPromises()
+
       expect(mockShowAlert).toBeCalledWith(
-        'Error fetching samples: Internal Server Error',
+        'Error fetching samples from Traction: Internal Server Error',
         'danger',
+      )
+      // TODO remove this second call as the first one is sufficient
+      expect(mockShowAlert).toBeCalledWith(
+        'No samples found in Traction with the provided input',
+        'warning',
+      )
+    })
+
+    it('shows an error alert if sequencescape returns an error', async () => {
+      const wrapper = buildWrapper()
+      // Traction success
+      get.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [request], included: [sample] }),
+      })
+      // Sequencescape error
+      ss_get.mockRejectedValue('Internal Server Error')
+
+      const sampleInput = wrapper.find('#sampleInput')
+      await sampleInput.setValue('errorSample')
+      await wrapper.find('#searchSamples').trigger('click')
+      await flushPromises()
+
+      expect(mockShowAlert).toBeCalledWith(
+        'Error fetching samples from Sequencescape: Internal Server Error',
+        'danger',
+      )
+      // TODO remove this second call as the first one is sufficient
+      expect(mockShowAlert).toBeCalledWith(
+        'No samples found in Sequencescape with the provided input',
+        'warning',
       )
     })
   })
@@ -239,7 +282,7 @@ describe('SampleReport', () => {
         expect(downloadBlob).toHaveBeenCalledWith(
           // Just check headers as this is testing elswhere
           expect.stringContaining(
-            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cost Code","Sample Name","Source Identifier","Species","Library Type"',
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Cost Code","Species","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type","Sample Type"',
           ),
           `traction_sample_report_${time}.csv`,
           'text/csv',
