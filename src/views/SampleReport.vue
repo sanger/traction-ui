@@ -123,16 +123,22 @@ const fields = [...csvStructure, { key: 'remove', label: '' }]
 
 const addSample = async () => {
   if (sample_input.value) {
-    const tractionSamples = await fetchTractionSamples()
+    const { success, tractionSamples } = await fetchTractionSamples()
     if (!tractionSamples.length) {
-      showAlert('No samples found in Traction with the provided input', 'warning')
+      // If it was successful but no samples were found, show a warning
+      if (success) {
+        showAlert('No samples found in Traction with the provided input', 'warning')
+      }
       sample_input.value = ''
       return
     }
-
-    const sequencescapeSamples = await fetchSequencescapeSamples(tractionSamples)
+    const { success: ss_success, sequencescapeSamples } =
+      await fetchSequencescapeSamples(tractionSamples)
     if (!sequencescapeSamples.length) {
-      showAlert('No samples found in Sequencescape with the provided input', 'warning')
+      if (ss_success) {
+        // If it was successful but no samples were found, show a warning
+        showAlert('No samples found in Sequencescape with the provided input', 'warning')
+      }
       sample_input.value = ''
       return
     }
@@ -164,7 +170,7 @@ const fetchTractionSamples = async () => {
 
   if (!success) {
     showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
-    return []
+    return { success, tractionSamples: [] }
   }
 
   // Add the fetched data to the samples array
@@ -194,7 +200,7 @@ const fetchTractionSamples = async () => {
       showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
     }
   }
-  return tractionSamples
+  return { success, tractionSamples }
 }
 
 const fetchSequencescapeSamples = async (samples) => {
@@ -213,7 +219,7 @@ const fetchSequencescapeSamples = async (samples) => {
 
   if (!success) {
     showAlert(`Error fetching samples from Sequencescape: ${errors}`, 'danger')
-    return []
+    return { success, sequencescapeSamples: [] }
   }
 
   // Add the fetched data to the samples array
@@ -249,7 +255,7 @@ const fetchSequencescapeSamples = async (samples) => {
     // Add the sample to the sample list
     sequencescapeSamples.push(formattedSample)
   }
-  return sequencescapeSamples
+  return { success, sequencescapeSamples }
 }
 
 const removeSample = (sampleId) => {

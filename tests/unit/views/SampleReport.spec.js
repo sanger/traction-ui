@@ -254,11 +254,6 @@ describe('SampleReport', () => {
         'Error fetching samples from Traction: Internal Server Error',
         'danger',
       )
-      // TODO remove this second call as the first one is sufficient
-      expect(mockShowAlert).toBeCalledWith(
-        'No samples found in Traction with the provided input',
-        'warning',
-      )
     })
 
     it('shows an error alert if sequencescape returns an error', async () => {
@@ -281,11 +276,6 @@ describe('SampleReport', () => {
       expect(mockShowAlert).toBeCalledWith(
         'Error fetching samples from Sequencescape: Internal Server Error',
         'danger',
-      )
-      // TODO remove this second call as the first one is sufficient
-      expect(mockShowAlert).toBeCalledWith(
-        'No samples found in Sequencescape with the provided input',
-        'warning',
       )
     })
   })
@@ -414,7 +404,6 @@ describe('SampleReport', () => {
     })
 
     describe('fetchTractionSamples', () => {
-      // TODO test with multiple samples to ensure they are paired back up correctly
       it('fetches samples from Traction API', async () => {
         const wrapper = buildWrapper()
         wrapper.vm.sample_input = 'sample1'
@@ -425,8 +414,8 @@ describe('SampleReport', () => {
           json: () => Promise.resolve({ data: [request], included: [sample] }),
         })
 
-        const samples = await wrapper.vm.fetchTractionSamples()
-        expect(samples).toEqual([
+        const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
+        expect(tractionSamples).toEqual([
           {
             request_id: request.id,
             cost_code: request.attributes.cost_code,
@@ -438,8 +427,71 @@ describe('SampleReport', () => {
             external_id: sample.attributes.external_id,
           },
         ])
+        expect(success).toBe(true)
         expect(get).toHaveBeenCalledWith({
           filter: { sample_name: 'sample1' },
+          include: 'sample',
+        })
+      })
+
+      it('fetches multiple samples from Traction API', async () => {
+        const wrapper = buildWrapper()
+        const sample2 = {
+          ...sample,
+          id: '3',
+          attributes: { ...sample.attributes, name: 'sample2', donor_id: 'another-id' },
+        }
+        const request2 = {
+          ...request,
+          id: 2,
+          attributes: {
+            ...request.attributes,
+            sample_name: 'sample2',
+            supplier_name: 'Supplier C',
+            library_type: 'PacBio-2',
+          },
+          relationships: {
+            sample: {
+              data: {
+                type: 'samples',
+                id: '3',
+              },
+            },
+          },
+        }
+        wrapper.vm.sample_input = 'sample1,sample2'
+        get.mockResolvedValue({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () => Promise.resolve({ data: [request, request2], included: [sample, sample2] }),
+        })
+        const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
+        expect(tractionSamples).toEqual([
+          {
+            request_id: request.id,
+            cost_code: request.attributes.cost_code,
+            date_of_sample_collection: sample.attributes.date_of_sample_collection,
+            donor_id: sample.attributes.donor_id,
+            library_type: request.attributes.library_type,
+            species: sample.attributes.species,
+            supplier_name: sample.attributes.supplier_name,
+            external_id: sample.attributes.external_id,
+          },
+          {
+            request_id: request2.id,
+            cost_code: request2.attributes.cost_code,
+            date_of_sample_collection: sample2.attributes.date_of_sample_collection,
+            donor_id: sample2.attributes.donor_id,
+            library_type: request2.attributes.library_type,
+            species: sample2.attributes.species,
+            supplier_name: sample2.attributes.supplier_name,
+            external_id: sample2.attributes.external_id,
+          },
+        ])
+        expect(success).toBe(true)
+        expect(get).toHaveBeenCalledWith({
+          filter: { sample_name: 'sample1,sample2' },
           include: 'sample',
         })
       })
@@ -486,7 +538,9 @@ describe('SampleReport', () => {
             }),
         })
 
-        const sequencescapeSamples = await wrapper.vm.fetchSequencescapeSamples(wrapper.vm.samples)
+        const { success, sequencescapeSamples } = await wrapper.vm.fetchSequencescapeSamples(
+          wrapper.vm.samples,
+        )
         expect(sequencescapeSamples).toEqual([
           {
             id: ss_sample.id,
@@ -500,6 +554,7 @@ describe('SampleReport', () => {
             submitting_faculty: ss_facultySponsor.attributes.name,
           },
         ])
+        expect(success).toBe(true)
         expect(ss_get).toHaveBeenCalledWith({
           filter: { uuid: expectedSample.external_id },
           include: 'sample_metadata,studies.study_metadata.faculty_sponsor',
