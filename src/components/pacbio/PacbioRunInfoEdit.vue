@@ -70,6 +70,16 @@
         />
       </traction-field-group>
     </traction-section>
+    <traction-section title="Run Annotations">
+      <traction-button data-action="show-annotations" theme="show" @click="showAnnotations()">
+        Annotations
+      </traction-button>
+      <!-- <annotation-list
+        v-if="store.annotations.length > 0"
+        :parent="store.run"
+        :annotation-types="store.annotationTypes"
+      /> -->
+    </traction-section>
   </div>
 </template>
 
@@ -109,4 +119,6 @@ const instrumentTypeSelectOptions = computed(() =>
 )
 
 const isRevio = computed(() => store.instrumentType.key === PacbioInstrumentTypes.Revio.key)
+
+const showAnnotations = () => {}
 </script>

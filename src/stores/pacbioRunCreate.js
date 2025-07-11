@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import {
   groupIncludedByResource,
   extractAttributes,
@@ -10,8 +10,9 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run'
+import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run.js'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -623,6 +624,24 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           well.use_adaptive_loading = value
         })
       })
+    },
+
+    /**
+     * Sets the annotations for a given parent
+     * @param {Object} params the parameters for setting the annotations
+     * @param {Object} params.parent the parent well to set the annotations for
+     * @param {String} params.annotatableType the type of the annotatable object
+     */
+    setAnnotations({ parent, annotatableType }) {
+      // Get the annotations for the parent based on the annotatable type
+      const annotations = annotationsByAnnotatable({
+        annotations: Object.values(this.annotations),
+        annotatableType,
+        annotatableId: parent.id,
+      })
+
+      // Set the annotations on the parent well
+      parent.annotations = annotations
     },
   },
 })

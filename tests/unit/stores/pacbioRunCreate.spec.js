@@ -14,10 +14,11 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
-import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
-import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import { successfulResponse, failedResponse } from '@support/testHelper'
+import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
@@ -997,6 +998,71 @@ describe('usePacbioRunCreateStore', () => {
             expect(well.use_adaptive_loading).toEqual('True')
           })
         })
+      })
+    })
+
+    describe('getAnnotations', () => {
+      const annotations = {
+        1: {
+          id: '1',
+          type: 'annotations',
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: '1',
+          comment: 'annotation 1',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+        },
+        2: {
+          id: '2',
+          type: 'annotations',
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: '1',
+          comment: 'annotation 2',
+          user: 'si5',
+          created_at: '2025/06/17 15:55',
+        },
+      }
+
+      it('returns the annotations for a given well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+        expect(store.wells['1']['A1'].annotations).toEqual(
+          annotationsByAnnotatable({
+            annotations: Object.values(store.annotations),
+            annotatableType: 'Pacbio::Well',
+            annotatableId: store.wells['1']['A1'].id,
+          }),
+        )
+      })
+
+      it('returns an empty array if no annotations are found for the well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '999',
+                type: 'wells',
+                position: 'A1',
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+        expect(store.wells['1']['A1'].annotations).toEqual([])
       })
     })
   })

@@ -77,7 +77,6 @@ const createStoreDataForSingleRun = (data) => {
     tags: dataToObjectById({ data: tags, includeRelationships: true }),
     requests: dataToObjectById({ data: requests, includeRelationships: true }),
     plates: dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
-    // wells: dataToObjectById({ data: wells, includeRelationships: true }),
     wells: wellsByPlate,
     annotations: dataToObjectById({ data: annotations, includeRelationships: true }),
     scannedBarcodes,
