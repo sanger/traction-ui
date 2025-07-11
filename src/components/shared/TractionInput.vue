@@ -79,9 +79,6 @@ export default {
         event.target.value = this.formatter(event.target.value)
       }
 
-      if (event.key === 'Enter') {
-        this.$emit('enterKeyPress', event.target.value)
-      }
       // If debounce is supplied we want to debounce the update events
       if (this.debounce > 0) {
         if (this.debounceTimer) clearTimeout(this.debounceTimer)
@@ -91,6 +88,10 @@ export default {
       } else {
         // Emit text data the payload event
         this.$emit('update:modelValue', event.target.value)
+      }
+
+      if (event.key === 'Enter') {
+        this.$emit('enterKeyPress', event.target.value)
       }
     },
     displayValue() {
