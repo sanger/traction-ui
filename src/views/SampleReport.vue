@@ -129,22 +129,14 @@ const fields = [...csvStructure, { key: 'remove', label: '' }]
  */
 const addSample = async () => {
   if (sample_input.value) {
-    const { success, tractionSamples } = await fetchTractionSamples()
+    const tractionSamples = await fetchTractionSamples()
     if (!tractionSamples.length) {
-      // If it was successful but no samples were found, show a warning
-      if (success) {
-        showAlert('No samples found in Traction with the provided input', 'warning')
-      }
       sample_input.value = ''
       return
     }
-    const { success: ss_success, sequencescapeSamples } =
-      await fetchSequencescapeSamples(tractionSamples)
+
+    const sequencescapeSamples = await fetchSequencescapeSamples(tractionSamples)
     if (!sequencescapeSamples.length) {
-      if (ss_success) {
-        // If it was successful but no samples were found, show a warning
-        showAlert('No samples found in Sequencescape with the provided input', 'warning')
-      }
       sample_input.value = ''
       return
     }
@@ -197,7 +189,7 @@ const fetchTractionSamples = async () => {
   if (source_response.errors && source_response.errors != response.errors)
     errors.push(source_response.errors)
 
-  const data = [...(response.body?.data || []), ...(source_response.body?.data || [])]
+  let data = [...(response.body?.data || []), ...(source_response.body?.data || [])]
   const included = [...(response.body?.included || []), ...(source_response.body?.included || [])]
   const { samples: serviceSamples } = groupIncludedByResource(included)
 
@@ -205,8 +197,22 @@ const fetchTractionSamples = async () => {
   // and we don't want to misrepresent the data with incomplete samples
   if (!success || errors.length) {
     showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
-    return { success, tractionSamples: [] }
+    return tractionSamples
   }
+
+  if (!data.length) {
+    showAlert('No samples found in Traction with the provided input', 'warning')
+    return tractionSamples
+  }
+
+  // Remove duplicates from the data array based on request_id
+  // Duplicates can occur if the same sample is found in both requests
+  data = data.reduce((acc, request) => {
+    if (!acc.some((r) => r.id === request.id)) {
+      acc.push(request)
+    }
+    return acc
+  }, [])
 
   // Add the fetched data to the samples array
   for (const request of data) {
@@ -232,10 +238,12 @@ const fetchTractionSamples = async () => {
       // Add the sample to the sample list
       tractionSamples.push(formattedSample)
     } else {
+      // TODO improve this error message for source_identifier inputs (this may print the same thing multiple times)
       showAlert(`Sample ${sample_input.value} already exists in the list`, 'info')
     }
   }
-  return { success, tractionSamples }
+
+  return tractionSamples
 }
 
 /**
@@ -258,7 +266,12 @@ const fetchSequencescapeSamples = async (samples) => {
 
   if (!success) {
     showAlert(`Error fetching samples from Sequencescape: ${errors}`, 'danger')
-    return { success, sequencescapeSamples: [] }
+    return []
+  }
+
+  if (!data.length) {
+    showAlert('No samples found in Sequencescape with the provided input', 'warning')
+    return []
   }
 
   // Add the fetched data to the samples array
@@ -294,7 +307,8 @@ const fetchSequencescapeSamples = async (samples) => {
     // Add the sample to the sample list
     sequencescapeSamples.push(formattedSample)
   }
-  return { success, sequencescapeSamples }
+
+  return sequencescapeSamples
 }
 
 /**

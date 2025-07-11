@@ -437,7 +437,7 @@ describe('SampleReport', () => {
           json: () => Promise.resolve({ data: [], included: [] }),
         })
 
-        const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
+        const tractionSamples = await wrapper.vm.fetchTractionSamples()
         expect(tractionSamples).toEqual([
           {
             request_id: request.id,
@@ -450,7 +450,6 @@ describe('SampleReport', () => {
             external_id: sample.attributes.external_id,
           },
         ])
-        expect(success).toBe(true)
         expect(get).toHaveBeenCalledWith({
           filter: { sample_name: 'sample1' },
           include: 'sample',
@@ -496,7 +495,7 @@ describe('SampleReport', () => {
           ok: true,
           json: () => Promise.resolve({ data: [request2], included: [sample2] }),
         })
-        const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
+        const tractionSamples = await wrapper.vm.fetchTractionSamples()
         expect(tractionSamples).toEqual([
           {
             request_id: request.id,
@@ -519,7 +518,6 @@ describe('SampleReport', () => {
             external_id: sample2.attributes.external_id,
           },
         ])
-        expect(success).toBe(true)
         expect(get).toHaveBeenCalledWith({
           filter: { sample_name: 'sample1,sample2' },
           include: 'sample',
@@ -568,9 +566,7 @@ describe('SampleReport', () => {
             }),
         })
 
-        const { success, sequencescapeSamples } = await wrapper.vm.fetchSequencescapeSamples(
-          wrapper.vm.samples,
-        )
+        const sequencescapeSamples = await wrapper.vm.fetchSequencescapeSamples(wrapper.vm.samples)
         expect(sequencescapeSamples).toEqual([
           {
             id: ss_sample.id,
@@ -584,7 +580,6 @@ describe('SampleReport', () => {
             submitting_faculty: ss_facultySponsor.attributes.name,
           },
         ])
-        expect(success).toBe(true)
         expect(ss_get).toHaveBeenCalledWith({
           filter: { uuid: expectedSample.external_id },
           include: 'sample_metadata,studies.study_metadata.faculty_sponsor',
