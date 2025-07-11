@@ -188,3 +188,34 @@ describe('PacbioRunInfoEdit old run', () => {
     })
   })
 })
+
+describe('annotations', () => {
+  beforeEach(() => {
+    ;({ wrapper, store } = mountWithStore(PacbioRunInfoEdit, {
+      initialState: {
+        pacbioRunCreate: {
+          run: {
+            id: 'new',
+            name: 'TRACTION-RUN-5',
+            system_name: 'Revio',
+            dna_control_complex_box_barcode: null,
+          },
+          smrtLinkVersion: smrtLinkVersions[5],
+          resources: { smrtLinkVersions },
+          instrumentTypeList: PacbioInstrumentTypes,
+          instrumentType: PacbioInstrumentTypes.Revio,
+        },
+      },
+    }))
+    runInfo = wrapper.vm
+  })
+
+  it.skip('should show the annotations when the button is clicked', async () => {
+    const button = wrapper.find('[data-action="get-annotations"]')
+    await button.trigger('click')
+    const annotationList = wrapper.findAll('[data-type="annotation-list"]')
+    expect(annotationList.exists()).toBeTruthy()
+    const annotations = annotationList.findAll('[data-type="annotation-item"]')
+    expect(annotations.length).toEqual(0)
+  })
+})

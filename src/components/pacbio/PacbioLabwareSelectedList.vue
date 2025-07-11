@@ -96,9 +96,8 @@
 import Plate from '@/components/pacbio/PacbioPlateItem.vue'
 import PacbioTubeWell from '@/components/labware/PacbioTubeWell.vue'
 import { VueSelecto } from 'vue3-selecto'
-import { computed } from 'vue'
+import { computed, ref, reactive } from 'vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import { ref, reactive } from 'vue'
 
 const props = defineProps({
   /**
