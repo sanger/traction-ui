@@ -23,7 +23,7 @@ describe('SampleReport', () => {
     return mount(SampleReport)
   }
 
-  // TODO: hypothetical sample data for testing
+  // TODO: hypothetical sample data for testing - move to factories or fixtures
   const request = {
     id: 1,
     type: 'requests',
@@ -56,6 +56,7 @@ describe('SampleReport', () => {
     attributes: {
       name: 'test-sample-1',
       date_of_sample_collection: '2025-06-23',
+      donor_id: 'donor-123',
       species: 'human',
       external_id: '123',
       retention_instruction: null,
@@ -64,16 +65,99 @@ describe('SampleReport', () => {
     },
   }
 
+  const ss_sample = {
+    id: '2',
+    type: 'samples',
+    attributes: {
+      uuid: '123',
+      sanger_sample_id: 'id-123',
+    },
+    relationships: {
+      sample_metadata: {
+        data: {
+          type: 'sample_metadata',
+          id: '1',
+        },
+      },
+      studies: {
+        data: [
+          {
+            type: 'studies',
+            id: '1',
+          },
+        ],
+      },
+    },
+  }
+
+  const ss_study = {
+    id: '1',
+    type: 'studies',
+    attributes: {
+      name: 'Study 1',
+    },
+    relationships: {
+      study_metadata: {
+        data: {
+          type: 'study_metadata',
+          id: '1',
+        },
+      },
+    },
+  }
+
+  const ss_studyMetadata = {
+    id: '1',
+    type: 'study_metadata',
+    relationships: {
+      faculty_sponsor: {
+        data: {
+          type: 'faculty_sponsors',
+          id: '1',
+        },
+      },
+    },
+  }
+
+  const ss_sampleMetadata = {
+    id: '1',
+    type: 'sample_metadata',
+    attributes: {
+      cohort: 'Cohort 1',
+      concentration: 50,
+      volume: 100,
+    },
+  }
+
+  const ss_facultySponsor = {
+    id: '1',
+    type: 'faculty_sponsors',
+    attributes: {
+      name: 'Faculty Sponsor 1',
+    },
+  }
+
   const expectedSample = {
-    id: request.id,
-    date_of_sample_collection: sample.attributes.date_of_sample_collection,
-    sanger_sample_id: sample.attributes.sanger_sample_id,
-    supplier_name: sample.attributes.supplier_name,
+    // SS Attributes
+    id: ss_sample.id,
+    sanger_sample_id: ss_sample.attributes.sanger_sample_id,
+    uuid: ss_sample.attributes.uuid,
+    cohort: ss_sampleMetadata.attributes.cohort,
+    concentration: ss_sampleMetadata.attributes.concentration,
+    volume: ss_sampleMetadata.attributes.volume,
+    study_number: ss_study.id,
+    study_name: ss_study.attributes.name,
+    submitting_faculty: ss_facultySponsor.attributes.name,
+
+    // Traction attributes
+    request_id: request.id,
     cost_code: request.attributes.cost_code,
-    name: sample.attributes.name,
-    source_identifier: request.attributes.source_identifier,
-    species: sample.attributes.species,
     library_type: request.attributes.library_type,
+    date_of_sample_collection: sample.attributes.date_of_sample_collection,
+    supplier_name: sample.attributes.supplier_name,
+    donor_id: sample.attributes.donor_id,
+    species: sample.attributes.species,
+    external_id: sample.attributes.external_id,
   }
 
   beforeEach(() => {
@@ -100,10 +184,21 @@ describe('SampleReport', () => {
         ok: true,
         json: () => Promise.resolve({ data: [request], included: [sample] }),
       })
+      ss_get.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: [ss_sample],
+            included: [ss_facultySponsor, ss_sampleMetadata, ss_studyMetadata, ss_study],
+          }),
+      })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
+      await flushPromises()
 
       expect(wrapper.vm.samples).toEqual([expectedSample])
     })
@@ -137,12 +232,12 @@ describe('SampleReport', () => {
         ok: true,
         json: () => Promise.resolve({ data: [request], included: [sample] }),
       })
-      wrapper.vm.samples = [{ id: request.id }]
+      wrapper.vm.samples = [{ request_id: request.id }]
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
-      expect(wrapper.vm.samples).toEqual([{ id: request.id }])
+      expect(wrapper.vm.samples).toEqual([{ request_id: request.id }])
       expect(mockShowAlert).toBeCalledWith('Sample sample1 already exists in the list', 'info')
     })
 
@@ -318,8 +413,109 @@ describe('SampleReport', () => {
       })
     })
 
-    // TODO addSample tests
-    // describe('addSample', () => {
-    // })
+    describe('fetchTractionSamples', () => {
+      // TODO test with multiple samples to ensure they are paired back up correctly
+      it('fetches samples from Traction API', async () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.sample_input = 'sample1'
+        get.mockResolvedValue({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () => Promise.resolve({ data: [request], included: [sample] }),
+        })
+
+        const samples = await wrapper.vm.fetchTractionSamples()
+        expect(samples).toEqual([
+          {
+            request_id: request.id,
+            cost_code: request.attributes.cost_code,
+            date_of_sample_collection: sample.attributes.date_of_sample_collection,
+            donor_id: sample.attributes.donor_id,
+            library_type: request.attributes.library_type,
+            species: sample.attributes.species,
+            supplier_name: sample.attributes.supplier_name,
+            external_id: sample.attributes.external_id,
+          },
+        ])
+        expect(get).toHaveBeenCalledWith({
+          filter: { sample_name: 'sample1' },
+          include: 'sample',
+        })
+      })
+
+      it('shows an error alert if Traction API returns an error', async () => {
+        const wrapper = buildWrapper()
+        get.mockRejectedValue('Internal Server Error')
+
+        await wrapper.vm.fetchTractionSamples()
+        expect(mockShowAlert).toBeCalledWith(
+          'Error fetching samples from Traction: Internal Server Error',
+          'danger',
+        )
+      })
+
+      it('shows a warning if the sample already exists', async () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [{ request_id: request.id }]
+        wrapper.vm.sample_input = 'sample1'
+        get.mockResolvedValue({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () => Promise.resolve({ data: [request], included: [sample] }),
+        })
+
+        await wrapper.vm.fetchTractionSamples()
+        expect(mockShowAlert).toBeCalledWith('Sample sample1 already exists in the list', 'info')
+      })
+    })
+
+    describe('fetchSequencescapeSamples', () => {
+      it('fetches samples from Sequencescape API', async () => {
+        const wrapper = buildWrapper()
+        wrapper.vm.samples = [expectedSample]
+        ss_get.mockResolvedValue({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              data: [ss_sample],
+              included: [ss_facultySponsor, ss_sampleMetadata, ss_studyMetadata, ss_study],
+            }),
+        })
+
+        const sequencescapeSamples = await wrapper.vm.fetchSequencescapeSamples(wrapper.vm.samples)
+        expect(sequencescapeSamples).toEqual([
+          {
+            id: ss_sample.id,
+            sanger_sample_id: ss_sample.attributes.sanger_sample_id,
+            uuid: ss_sample.attributes.uuid,
+            cohort: ss_sampleMetadata.attributes.cohort,
+            concentration: ss_sampleMetadata.attributes.concentration,
+            volume: ss_sampleMetadata.attributes.volume,
+            study_number: ss_study.id,
+            study_name: ss_study.attributes.name,
+            submitting_faculty: ss_facultySponsor.attributes.name,
+          },
+        ])
+        expect(ss_get).toHaveBeenCalledWith({
+          filter: { uuid: expectedSample.external_id },
+          include: 'sample_metadata,studies.study_metadata.faculty_sponsor',
+        })
+      })
+
+      it('shows an error alert if Sequencescape API returns an error', async () => {
+        const wrapper = buildWrapper()
+        ss_get.mockRejectedValue('Internal Server Error')
+
+        await wrapper.vm.fetchSequencescapeSamples([expectedSample])
+        expect(mockShowAlert).toBeCalledWith(
+          'Error fetching samples from Sequencescape: Internal Server Error',
+          'danger',
+        )
+      })
+    })
   })
 })

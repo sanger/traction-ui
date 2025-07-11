@@ -170,17 +170,19 @@ const fetchTractionSamples = async () => {
   // Add the fetched data to the samples array
   for (const request of data) {
     // Check if the request (sample) already exists in the samples array
-    const exists = samples.value.some((sample) => sample.id == request.id)
+    const exists = samples.value.some((sample) => sample.request_id == request.id)
 
     if (!exists) {
       // Find the corresponding sample
       const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
 
       const formattedSample = {
-        date_of_sample_collection: request.attributes.date_of_sample_collection || '',
-        supplier_name: request.attributes.supplier_name || '',
+        // Include request_id so we can check for duplicates
+        request_id: request.id || '',
         cost_code: request.attributes.cost_code || '',
         library_type: request.attributes.library_type || '',
+        date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
+        supplier_name: sample.attributes.supplier_name || '',
         donor_id: sample.attributes.donor_id || '',
         species: sample.attributes.species || '',
         external_id: sample.attributes.external_id || '',
