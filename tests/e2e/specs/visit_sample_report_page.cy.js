@@ -44,7 +44,7 @@ const request2 = {
   id: 2,
   type: 'requests',
   attributes: {
-    library_type: '',
+    library_type: 'Pacbio_HiFi_mplx',
     estimate_of_gb_required: null,
     number_of_smrt_cells: null,
     cost_code: '',
@@ -80,6 +80,78 @@ const sample2 = {
   },
 }
 
+const ss_sample = {
+  id: '2',
+  type: 'samples',
+  attributes: {
+    uuid: '123',
+    sanger_sample_id: 'id-123',
+  },
+  relationships: {
+    sample_metadata: {
+      data: {
+        type: 'sample_metadata',
+        id: '1',
+      },
+    },
+    studies: {
+      data: [
+        {
+          type: 'studies',
+          id: '1',
+        },
+      ],
+    },
+  },
+}
+
+const ss_study = {
+  id: '1',
+  type: 'studies',
+  attributes: {
+    name: 'Study 1',
+  },
+  relationships: {
+    study_metadata: {
+      data: {
+        type: 'study_metadata',
+        id: '1',
+      },
+    },
+  },
+}
+
+const ss_studyMetadata = {
+  id: '1',
+  type: 'study_metadata',
+  relationships: {
+    faculty_sponsor: {
+      data: {
+        type: 'faculty_sponsors',
+        id: '1',
+      },
+    },
+  },
+}
+
+const ss_sampleMetadata = {
+  id: '1',
+  type: 'sample_metadata',
+  attributes: {
+    cohort: 'Cohort 1',
+    concentration: 50,
+    volume: 100,
+  },
+}
+
+const ss_facultySponsor = {
+  id: '1',
+  type: 'faculty_sponsors',
+  attributes: {
+    name: 'Faculty Sponsor 1',
+  },
+}
+
 describe('Sample Report page', () => {
   beforeEach(() => {
     cy.visit('#/sample-report')
@@ -106,6 +178,17 @@ describe('Sample Report page', () => {
           included: [sample],
         },
       })
+      // Both samples have the same external_id, so they will be grouped together
+      cy.intercept(
+        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        {
+          statusCode: 200,
+          body: {
+            data: [ss_sample],
+            included: [ss_sampleMetadata, ss_study, ss_studyMetadata, ss_facultySponsor],
+          },
+        },
+      )
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
 
@@ -120,8 +203,8 @@ describe('Sample Report page', () => {
       // Simulate pressing Enter to add the sample
       cy.get('#sampleInput').type('{enter}')
 
-      cy.get('#sampleReportTable').contains('sample-1')
-      cy.get('#sampleReportTable').contains('sample-2')
+      cy.get('#sampleReportTable').contains('Pacbio_HiFi')
+      cy.get('#sampleReportTable').contains('Pacbio_HiFi_mplx')
 
       cy.get('#download').click()
 
@@ -130,13 +213,13 @@ describe('Sample Report page', () => {
         (csv) => {
           csv = csv.split('\n')
           expect(csv[0]).to.include(
-            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cost Code","Sample Name","Source Identifier","Species","Library Type"\r',
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Cost Code","Species","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type","Sample Type"\r',
           )
           expect(csv[1]).to.include(
-            '"2025-06-23","1","id-123","Supplier B","aCostCodeExample","sample-11","NT6746","human","Pacbio_HiFi"\r',
+            '"2025-06-23","2","id-123","Supplier B","Cohort 1","1","Study 1","aCostCodeExample","human","50","100","Faculty Sponsor 1","Pacbio_HiFi",""\r',
           )
           expect(csv[2]).to.include(
-            '"2025-06-23","2","id-123","Supplier B","","sample-2","NT6746","human",""',
+            '"2025-06-23","2","id-123","Supplier B","Cohort 1","1","Study 1","","human","50","100","Faculty Sponsor 1","Pacbio_HiFi_mplx",""',
           )
         },
       )
@@ -145,18 +228,18 @@ describe('Sample Report page', () => {
       cy.task('deleteFolder', Cypress.config('downloadsFolder'))
     })
 
-    it('Unsuccessfully - when the sample does not exists', () => {
+    it('Unsuccessfully - when the sample does not exist in traction', () => {
       cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
         statusCode: 200,
         body: { data: [], included: [] },
       })
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
-      cy.contains('No samples found with the provided input')
+      cy.contains('No samples found in Traction with the provided input')
       cy.contains('No samples added yet')
     })
 
-    it('Unsuccessfully - when the server returns an error', () => {
+    it('Unsuccessfully - when the traction server returns an error', () => {
       cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
         statusCode: 422,
         body: {
@@ -167,7 +250,58 @@ describe('Sample Report page', () => {
       })
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
-      cy.contains('Error fetching samples: InternalServerError A failure occured')
+      cy.contains('Error fetching samples from Traction: InternalServerError A failure occured')
+      cy.contains('No samples added yet')
+    })
+
+    it('Unsuccessfully - when the sample does not exist in sequencescape', () => {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [request],
+          included: [sample],
+        },
+      })
+      cy.intercept(
+        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        {
+          statusCode: 200,
+          body: {
+            data: [],
+            included: [],
+          },
+        },
+      )
+      cy.get('#sampleInput').type('sample-1')
+      cy.get('#searchSamples').click()
+      cy.contains('No samples found in Sequencescape with the provided input')
+      cy.contains('No samples added yet')
+    })
+
+    it('Unsuccessfully - when the sequencescape server returns an error', () => {
+      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [request],
+          included: [sample],
+        },
+      })
+      cy.intercept(
+        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        {
+          statusCode: 422,
+          body: {
+            errors: {
+              InternalServerError: ['A failure occured'],
+            },
+          },
+        },
+      )
+      cy.get('#sampleInput').type('sample-1')
+      cy.get('#searchSamples').click()
+      cy.contains(
+        'Error fetching samples from Sequencescape: InternalServerError A failure occured',
+      )
       cy.contains('No samples added yet')
     })
   })
