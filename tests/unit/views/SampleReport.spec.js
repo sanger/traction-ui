@@ -178,11 +178,18 @@ describe('SampleReport', () => {
   describe('sample input', () => {
     it('adds a sample when the input is not empty', async () => {
       const wrapper = buildWrapper()
-      get.mockResolvedValue({
+      get.mockResolvedValueOnce({
         status: 200,
         statusText: 'OK',
         ok: true,
         json: () => Promise.resolve({ data: [request], included: [sample] }),
+      })
+      // Second call is for source_identifier fetch
+      get.mockResolvedValueOnce({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [], included: [] }),
       })
       ss_get.mockResolvedValue({
         status: 200,
@@ -226,17 +233,26 @@ describe('SampleReport', () => {
 
     it('does not add a sample if it already exists in the list', async () => {
       const wrapper = buildWrapper()
-      get.mockResolvedValue({
+      get.mockResolvedValueOnce({
         status: 200,
         statusText: 'OK',
         ok: true,
         json: () => Promise.resolve({ data: [request], included: [sample] }),
+      })
+      // Second call is for source_identifier fetch
+      get.mockResolvedValueOnce({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [], included: [] }),
       })
       wrapper.vm.samples = [{ request_id: request.id }]
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
+      await flushPromises()
+
       expect(wrapper.vm.samples).toEqual([{ request_id: request.id }])
       expect(mockShowAlert).toBeCalledWith('Sample sample1 already exists in the list', 'info')
     })
@@ -324,7 +340,7 @@ describe('SampleReport', () => {
     describe('Reset', () => {
       it('resets the sample list when reset button is clicked', async () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
+        wrapper.vm.samples = [{ request_id: request.id }, { request_id: 2 }]
         await wrapper.vm.$nextTick()
         expect(wrapper.vm.samples.length).toBe(2)
 
@@ -386,19 +402,19 @@ describe('SampleReport', () => {
     })
 
     describe('removeSample', () => {
-      it('removes the sample at the specified index', () => {
+      it('removes the sample given the request_id', () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ id: request.id }, { id: 2 }]
+        wrapper.vm.samples = [{ request_id: request.id }, { request_id: 2 }]
         expect(wrapper.vm.samples.length).toBe(2)
 
-        wrapper.vm.removeSample(1)
+        wrapper.vm.removeSample(request.id)
         expect(wrapper.vm.samples.length).toBe(1)
-        expect(wrapper.vm.samples[0].id).toBe(2)
+        expect(wrapper.vm.samples[0].request_id).toBe(2)
       })
 
       it('does not throw an error if the index is out of bounds', () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ id: request.id }]
+        wrapper.vm.samples = [{ request_id: request.id }]
         expect(() => wrapper.vm.removeSample(5)).not.toThrow()
       })
     })
@@ -407,11 +423,18 @@ describe('SampleReport', () => {
       it('fetches samples from Traction API', async () => {
         const wrapper = buildWrapper()
         wrapper.vm.sample_input = 'sample1'
-        get.mockResolvedValue({
+        get.mockResolvedValueOnce({
           status: 200,
           statusText: 'OK',
           ok: true,
           json: () => Promise.resolve({ data: [request], included: [sample] }),
+        })
+        // Second call is for source_identifier fetch
+        get.mockResolvedValueOnce({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () => Promise.resolve({ data: [], included: [] }),
         })
 
         const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
@@ -434,7 +457,7 @@ describe('SampleReport', () => {
         })
       })
 
-      it('fetches multiple samples from Traction API', async () => {
+      it('fetches multiple samples from Traction API across filter types', async () => {
         const wrapper = buildWrapper()
         const sample2 = {
           ...sample,
@@ -460,11 +483,18 @@ describe('SampleReport', () => {
           },
         }
         wrapper.vm.sample_input = 'sample1,sample2'
-        get.mockResolvedValue({
+        get.mockResolvedValueOnce({
           status: 200,
           statusText: 'OK',
           ok: true,
-          json: () => Promise.resolve({ data: [request, request2], included: [sample, sample2] }),
+          json: () => Promise.resolve({ data: [request], included: [sample] }),
+        })
+        // Second call is for source_identifier fetch
+        get.mockResolvedValueOnce({
+          status: 200,
+          statusText: 'OK',
+          ok: true,
+          json: () => Promise.resolve({ data: [request2], included: [sample2] }),
         })
         const { success, tractionSamples } = await wrapper.vm.fetchTractionSamples()
         expect(tractionSamples).toEqual([

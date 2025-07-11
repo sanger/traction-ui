@@ -178,6 +178,13 @@ describe('Sample Report page', () => {
           included: [sample],
         },
       })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [],
+          included: [],
+        },
+      })
       // Both samples have the same external_id, so they will be grouped together
       cy.intercept(
         '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
@@ -197,6 +204,13 @@ describe('Sample Report page', () => {
         body: {
           data: [request2],
           included: [sample2],
+        },
+      })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-2&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [],
+          included: [],
         },
       })
       cy.get('#sampleInput').type('sample-2')
@@ -233,6 +247,13 @@ describe('Sample Report page', () => {
         statusCode: 200,
         body: { data: [], included: [] },
       })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [],
+          included: [],
+        },
+      })
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains('No samples found in Traction with the provided input')
@@ -241,6 +262,14 @@ describe('Sample Report page', () => {
 
     it('Unsuccessfully - when the traction server returns an error', () => {
       cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+        statusCode: 422,
+        body: {
+          errors: {
+            InternalServerError: ['A failure occured'],
+          },
+        },
+      })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
         statusCode: 422,
         body: {
           errors: {
@@ -260,6 +289,13 @@ describe('Sample Report page', () => {
         body: {
           data: [request],
           included: [sample],
+        },
+      })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [],
+          included: [],
         },
       })
       cy.intercept(
@@ -284,6 +320,13 @@ describe('Sample Report page', () => {
         body: {
           data: [request],
           included: [sample],
+        },
+      })
+      cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
+        statusCode: 200,
+        body: {
+          data: [],
+          included: [],
         },
       })
       cy.intercept(

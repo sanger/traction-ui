@@ -48,7 +48,7 @@
               size="sm"
               class="mr-2"
               theme="accent"
-              @click="removeSample(row.item.id)"
+              @click="removeSample(row.item.request_id)"
             >
               -
             </traction-button>
@@ -121,6 +121,12 @@ const csvStructure = [
 
 const fields = [...csvStructure, { key: 'remove', label: '' }]
 
+/**
+ * Function to add a sample to the report.
+ * It fetches samples from Traction and Sequencescape based on the input.
+ * If samples are found, they are added to the samples array.
+ * If no samples are found, a warning is shown.
+ */
 const addSample = async () => {
   if (sample_input.value) {
     const { success, tractionSamples } = await fetchTractionSamples()
@@ -159,16 +165,45 @@ const addSample = async () => {
   }
 }
 
+/**
+ * Function to fetch samples from Traction API based on the input.
+ * It makes two sample requests: one for sample names and another for source identifiers.
+ * It combines the results and returns the samples found.
+ */
 const fetchTractionSamples = async () => {
   const tractionSamples = []
   const request = api.traction.pacbio.requests
-  // TODO support by source identifier (barcode)
+
+  // We cant search by both sample name and source identifier at the same time, so we make two requests
+  // This can result in overfetching, but it is necessary to ensure we get all relevant samples
   const promise = request.get({ filter: { sample_name: sample_input.value }, include: 'sample' })
-  const response = await handleResponse(promise)
-  const { success, body: { data, included = [] } = {}, errors = [] } = response
+  const source_promise = request.get({
+    filter: { source_identifier: sample_input.value },
+    include: 'sample',
+  })
+  // Await both promises
+  const [response, source_response] = await Promise.all([
+    handleResponse(promise),
+    handleResponse(source_promise),
+  ])
+
+  // Combine data and included arrays from both responses
+  // If either response is successful, we can proceed
+  const success = response.success || source_response.success
+  // Add errors from both responses to a single array
+  const errors = []
+  if (response.errors) errors.push(response.errors)
+  // If they both have the same errors, we only want to show them once
+  if (source_response.errors && source_response.errors != response.errors)
+    errors.push(source_response.errors)
+
+  const data = [...(response.body?.data || []), ...(source_response.body?.data || [])]
+  const included = [...(response.body?.included || []), ...(source_response.body?.included || [])]
   const { samples: serviceSamples } = groupIncludedByResource(included)
 
-  if (!success) {
+  // If either response has errors, we show an alert and return as it means something went wrong
+  // and we don't want to misrepresent the data with incomplete samples
+  if (!success || errors.length) {
     showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
     return { success, tractionSamples: [] }
   }
@@ -203,6 +238,10 @@ const fetchTractionSamples = async () => {
   return { success, tractionSamples }
 }
 
+/**
+ * Function to fetch samples from Sequencescape API based on the traction samples found.
+ * It retrieves sample metadata, studies, and faculty sponsors for each sample.
+ */
 const fetchSequencescapeSamples = async (samples) => {
   const sequencescapeSamples = []
   const sampleUuids = samples.map((sample) => sample.external_id).join(',')
@@ -258,17 +297,28 @@ const fetchSequencescapeSamples = async (samples) => {
   return { success, sequencescapeSamples }
 }
 
-const removeSample = (sampleId) => {
-  const sampleIndex = samples.value.findIndex((sample) => sample.id == sampleId)
+/**
+ * Function to remove a sample from the report.
+ * It finds the sample by its request_id and removes it from the samples array.
+ */
+const removeSample = (request_id) => {
+  const sampleIndex = samples.value.findIndex((sample) => sample.request_id == request_id)
   if (sampleIndex !== -1) {
     samples.value.splice(sampleIndex, 1)
   }
 }
 
+/**
+ * Function to reset the samples array.
+ */
 const reset = () => {
   samples.value = []
 }
 
+/**
+ * Function to download the report as a CSV file.
+ * It formats the samples according to the csvStructure and triggers a download.
+ */
 const downloadReport = () => {
   const headers = csvStructure.map((field) => field.label)
 
