@@ -111,4 +111,20 @@ describe('AnnotationItem.vue', () => {
       expect(wrapper.find('[data-action="remove-annotation"]').exists()).toBeFalsy()
     })
   })
+
+  describe('annotationItem@click', () => {
+    it('emits a removeAnnotation event with the annotation id', async () => {
+      const wrapper = mount(AnnotationItem, {
+        props: {
+          id: '2',
+          parent: store.run,
+          annotationTypeSelectOptions: selectOptions,
+        },
+      })
+      const button = wrapper.find('[data-action="remove-annotation"]')
+      await button.trigger('click')
+      expect(wrapper.emitted()['remove-annotation'].length).toBe(1)
+      expect(wrapper.emitted()['remove-annotation'][0]).toEqual(['2'])
+    })
+  })
 })

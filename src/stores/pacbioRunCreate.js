@@ -629,7 +629,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     /**
      * Sets the annotations for a given parent
      * @param {Object} params the parameters for setting the annotations
-     * @param {Object} params.parent the parent well to set the annotations for
+     * @param {Object} params.parent the parent to set the annotations for
      * @param {String} params.annotatableType the type of the annotatable object
      */
     setAnnotations({ parent, annotatableType }) {
@@ -640,7 +640,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         annotatableId: parent.id,
       })
 
-      // Set the annotations on the parent well
+      // Set the annotations on the parent
       parent.annotations = annotations
     },
   },

@@ -3,6 +3,7 @@ import { mountWithStore } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -49,6 +50,8 @@ const smrtLinkVersions = {
     active: true,
   },
 }
+
+const annotationTypes = AnnotationTypeFactory()
 
 let runInfo, wrapper, store
 
@@ -201,7 +204,7 @@ describe('annotations', () => {
             dna_control_complex_box_barcode: null,
           },
           smrtLinkVersion: smrtLinkVersions[5],
-          resources: { smrtLinkVersions },
+          resources: { smrtLinkVersions, annotationTypes },
           instrumentTypeList: PacbioInstrumentTypes,
           instrumentType: PacbioInstrumentTypes.Revio,
         },
@@ -210,10 +213,10 @@ describe('annotations', () => {
     runInfo = wrapper.vm
   })
 
-  it.skip('should show the annotations when the button is clicked', async () => {
+  it('should show the annotations when the button is clicked', async () => {
     const button = wrapper.find('[data-action="get-annotations"]')
     await button.trigger('click')
-    const annotationList = wrapper.findAll('[data-type="annotation-list"]')
+    const annotationList = wrapper.find('[data-type="annotation-list"]')
     expect(annotationList.exists()).toBeTruthy()
     const annotations = annotationList.findAll('[data-type="annotation-item"]')
     expect(annotations.length).toEqual(0)

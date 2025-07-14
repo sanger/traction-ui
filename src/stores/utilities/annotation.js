@@ -39,7 +39,7 @@ const annotationsByAnnotatable = ({ annotations, annotatableType, annotatableId 
  * //   { text: 'Flag', value: 2 }
  * // ]
  */
-const annotationTypeSelectOptions = (annotationTypes) => [
+const annotationTypeSelectOptions = (annotationTypes = []) => [
   { text: 'Select Annotation Type', value: '' },
   ...annotationTypes.map((type) => ({
     text: type.name,

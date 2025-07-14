@@ -1,5 +1,5 @@
 <template>
-  <div data-type="annotation-list">
+  <div data-type="annotation-list" @remove-annotation="removeAnnotation(id)">
     <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
       <div v-for="annotation in annotations" :key="annotation.id">
         <AnnotationItem
@@ -50,6 +50,15 @@ const annotations = computed(() => props.parent.annotations)
 
 const addAnnotation = () => {
   const id = crypto.randomUUID()
+  console.log('Adding annotation with id:', id)
   annotations.value.push(AnnotationItemType({ id, newRecord: true }))
+}
+
+const removeAnnotation = (id) => {
+  console.log('Removing annotation with id:', id)
+  const index = annotations.value.findIndex((annotation) => annotation.id === id)
+  if (index !== -1) {
+    annotations.value.splice(index, 1)
+  }
 }
 </script>

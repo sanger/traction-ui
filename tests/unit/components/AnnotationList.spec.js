@@ -33,7 +33,7 @@ describe('AnnotationList.vue', () => {
     setActivePinia(pinia)
     store = usePacbioRunCreateStore()
     store.$state = {
-      run: { ...pacbioRunFactory.storeData.run, annotations: annotationsByRun },
+      run: { ...pacbioRunFactory.storeData.run, annotations: [...annotationsByRun] },
       wells: { [well.id]: { ...well, annotations: annotationsByWell } },
     }
   })
@@ -78,7 +78,6 @@ describe('AnnotationList.vue', () => {
     expect(annotations.length).toEqual(3) // 2 existing + 1 new
   })
 
-  // TODO: update to work
   // we also need to change the adding of annotations as there is 1 extra
   it.skip('removes an annotation when the remove button is clicked', async () => {
     let annotations
@@ -90,13 +89,13 @@ describe('AnnotationList.vue', () => {
     await addButton.trigger('click')
 
     annotations = wrapper.findAll('[data-type="annotation"]')
-    expect(annotations.length).toEqual(4)
+    expect(annotations.length).toEqual(3)
 
-    const removeButton = annotations[3].find('[data-action="remove-annotation"]')
+    const removeButton = annotations[2].find('[data-action="remove-annotation"]')
     expect(removeButton.exists()).toBeTruthy()
     await removeButton.trigger('click')
 
     annotations = wrapper.findAll('[data-type="annotation"]')
-    expect(annotations.length).toEqual(3)
+    expect(annotations.length).toEqual(2)
   })
 })

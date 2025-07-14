@@ -33,7 +33,7 @@
       v-if="annotation.newRecord"
       data-action="remove-annotation"
       theme="delete"
-      @click="removeAnnotation(id)"
+      @click="removeAnnotation"
       >-</traction-button
     >
   </div>
@@ -84,4 +84,10 @@ const props = defineProps({
 const annotation = reactive(
   props.parent.annotations.find((annotation) => annotation.id === props.id),
 )
+
+const emit = defineEmits(['remove-annotation'])
+
+const removeAnnotation = () => {
+  emit('remove-annotation', props.id)
+}
 </script>
