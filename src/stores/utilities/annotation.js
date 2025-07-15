@@ -70,12 +70,12 @@ const payloadForAnnotations = (annotations = []) => {
  *
  * @example
  * const annotation = annotationItemType({ attributes: { comment: 'Test' }, id: 1, newRecord: true })
- * // annotation = { comment: 'Test', annotatation_type_id: null, created_at: '', user: '', newRecord: true, id: 1 }
+ * // annotation = { comment: 'Test', annotation_type_id: null, created_at: '', user: '', newRecord: true, id: 1 }
  */
 const AnnotationItemType = ({ attributes = {}, id, newRecord } = {}) => {
   const defaultAttributes = {
     comment: '',
-    annotatation_type_id: null,
+    annotation_type_id: null,
     created_at: '',
     user: '',
   }
@@ -90,10 +90,10 @@ const AnnotationItemType = ({ attributes = {}, id, newRecord } = {}) => {
 
   // Ensure the instance has a payload method for API requests
   instance.payload = () => {
-    const { comment, annotatation_type_id, user } = instance
+    const { comment, annotation_type_id, user } = instance
     return {
       comment,
-      annotatation_type_id,
+      annotation_type_id,
       user,
     }
   }

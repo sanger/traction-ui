@@ -16,7 +16,7 @@ describe('annotation.js', () => {
     it('will assign default attributes to the AnnotationItemType if none are passed', () => {
       const annotation = AnnotationItemType()
       expect(annotation.comment).toEqual('')
-      expect(annotation.annotatation_type_id).toBeNull()
+      expect(annotation.annotation_type_id).toBeNull()
       expect(annotation.created_at).toEqual('')
       expect(annotation.user).toEqual('')
     })
@@ -25,13 +25,13 @@ describe('annotation.js', () => {
       const annotation = AnnotationItemType({
         attributes: {
           comment: 'comment1',
-          annotatation_type_id: 1,
+          annotation_type_id: 1,
           created_at: '2025-10-25',
           user: 'si5',
         },
       })
       expect(annotation.comment).toEqual('comment1')
-      expect(annotation.annotatation_type_id).toEqual(1)
+      expect(annotation.annotation_type_id).toEqual(1)
       expect(annotation.created_at).toEqual('2025-10-25')
       expect(annotation.user).toEqual('si5')
     })
@@ -57,7 +57,7 @@ describe('annotation.js', () => {
     it('produces a payload that can be used in API requests', () => {
       const attributes = {
         comment: 'Test comment',
-        annotatation_type_id: 2,
+        annotation_type_id: 2,
         user: 'lulu',
       }
 
@@ -101,15 +101,15 @@ describe('annotation.js', () => {
     it('returns the correct payload structure', () => {
       const annotations = {
         1: AnnotationItemType({
-          attributes: { comment: 'Test comment', annotatation_type_id: 1, user: 'user1' },
+          attributes: { comment: 'Test comment', annotation_type_id: 1, user: 'user1' },
           newRecord: true,
         }),
         2: AnnotationItemType({
-          attributes: { comment: 'Another comment', annotatation_type_id: 2, user: 'user2' },
+          attributes: { comment: 'Another comment', annotation_type_id: 2, user: 'user2' },
           newRecord: true,
         }),
         3: AnnotationItemType({
-          attributes: { comment: 'Yet another comment', annotatation_type_id: 3, user: 'user3' },
+          attributes: { comment: 'Yet another comment', annotation_type_id: 3, user: 'user3' },
         }),
       }
 

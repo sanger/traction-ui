@@ -28,12 +28,12 @@ function mountPacbioRunShow(props) {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
+        ;((store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
           (store.api.traction.pacbio.runs.find = vi.fn(() => pacbioRunFactory.responses.fetch)),
           (store.api.traction.pacbio.tubes.get = vi.fn(() => pacbioTubeFactory.responses.fetch)),
           (store.api.traction.annotation_types.get = vi.fn(
             () => annotationTypeFactory.responses.fetch,
-          ))
+          )))
       }
     },
   ]
