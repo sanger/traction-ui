@@ -1,11 +1,12 @@
 <template>
-  <div data-type="annotation-list" @remove-annotation="removeAnnotation(id)">
+  <div data-type="annotation-list">
     <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
       <div v-for="annotation in annotations" :key="annotation.id">
         <AnnotationItem
           :id="annotation.id"
           :parent="props.parent"
           :annotation-type-select-options="selectOptions"
+          @remove-annotation="removeAnnotation($event)"
         />
       </div>
     </div>
@@ -48,14 +49,24 @@ const selectOptions = annotationTypeSelectOptions(props.annotationTypes)
 
 const annotations = computed(() => props.parent.annotations)
 
+/**
+ * Adds a new annotation to the list.
+ * The new annotation will have a unique ID and be marked as a new record.
+ * It will be added to the parent object's annotations.
+ * @returns {void}
+ */
 const addAnnotation = () => {
   const id = crypto.randomUUID()
-  console.log('Adding annotation with id:', id)
   annotations.value.push(AnnotationItemType({ id, newRecord: true }))
 }
 
+/**
+ *
+ * @param id
+ * Removes an annotation from the list by its ID.
+ * @returns {void}
+ */
 const removeAnnotation = (id) => {
-  console.log('Removing annotation with id:', id)
   const index = annotations.value.findIndex((annotation) => annotation.id === id)
   if (index !== -1) {
     annotations.value.splice(index, 1)

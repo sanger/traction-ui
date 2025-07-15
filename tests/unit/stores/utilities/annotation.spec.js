@@ -2,6 +2,7 @@ import {
   annotationsByAnnotatable,
   AnnotationItemType,
   annotationTypeSelectOptions,
+  payloadForAnnotations,
 } from '@/stores/utilities/annotation.js'
 import { describe, expect, it } from 'vitest'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
@@ -46,6 +47,28 @@ describe('annotation.js', () => {
       annotation = AnnotationItemType({ newRecord: true })
       expect(annotation.newRecord).toBeTruthy()
     })
+
+    it('allows updating of attributes after creation', () => {
+      const annotation = AnnotationItemType()
+      annotation.comment = 'Updated comment'
+      expect(annotation.comment).toEqual('Updated comment')
+    })
+
+    it('produces a payload that can be used in API requests', () => {
+      const attributes = {
+        comment: 'Test comment',
+        annotatation_type_id: 2,
+        user: 'lulu',
+      }
+
+      const annotation = AnnotationItemType({ attributes: { ...attributes } })
+
+      expect(annotation.payload()).toEqual(attributes)
+
+      // check reactivity of the payload
+      annotation.comment = 'Updated comment'
+      expect(annotation.payload()).toEqual({ ...attributes, comment: 'Updated comment' })
+    })
   })
 
   describe('annotationsByAnnotatable', () => {
@@ -71,6 +94,27 @@ describe('annotation.js', () => {
       const annotationType = Object.values(annotationTypeFactory.storeData)[0]
       expect(options[1].value).toEqual(annotationType.id)
       expect(options[1].text).toEqual(annotationType.name)
+    })
+  })
+
+  describe('payloadForAnnotations - produces a payload that can be used in API requests', () => {
+    it('returns the correct payload structure', () => {
+      const annotations = {
+        1: AnnotationItemType({
+          attributes: { comment: 'Test comment', annotatation_type_id: 1, user: 'user1' },
+          newRecord: true,
+        }),
+        2: AnnotationItemType({
+          attributes: { comment: 'Another comment', annotatation_type_id: 2, user: 'user2' },
+          newRecord: true,
+        }),
+        3: AnnotationItemType({
+          attributes: { comment: 'Yet another comment', annotatation_type_id: 3, user: 'user3' },
+        }),
+      }
+
+      const result = payloadForAnnotations(Object.values(annotations))
+      expect(result).toEqual([annotations[1].payload(), annotations[2].payload()])
     })
   })
 })

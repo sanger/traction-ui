@@ -79,7 +79,7 @@ describe('AnnotationList.vue', () => {
   })
 
   // we also need to change the adding of annotations as there is 1 extra
-  it.skip('removes an annotation when the remove button is clicked', async () => {
+  it('removes an annotation when the remove button is clicked', async () => {
     let annotations
     const wrapper = mount(AnnotationList, {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },

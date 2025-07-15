@@ -65,6 +65,21 @@
 
     <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
+    <traction-section title="Well Annotations">
+      <traction-button data-action="get-annotations" theme="default" @click="getAnnotations()">
+        Annotations
+      </traction-button>
+      <div
+        v-if="showAnnotations"
+        class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+      >
+        <annotation-list
+          :parent="store.wells[plateNumber][position]"
+          :annotation-types="annotationTypes"
+        />
+      </div>
+    </traction-section>
+
     <template #modal-footer="{}">
       <traction-button
         v-if="!newWell"
@@ -91,6 +106,7 @@ import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import AnnotationList from '@/components/AnnotationList.vue'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -343,5 +359,21 @@ const handleCustomEvents = (component) => {
     }
   }
   return { ...component.events }
+}
+
+const showAnnotations = ref(false)
+
+const toggleAnnotations = () => {
+  showAnnotations.value = !showAnnotations.value
+}
+
+const annotationTypes = computed(() => Object.values(store.resources.annotationTypes))
+
+const getAnnotations = () => {
+  store.setAnnotations({
+    parent: store.wells[plateNumber.value][position.value],
+    annotatableType: 'Pacbio::Well',
+  })
+  toggleAnnotations()
 }
 </script>

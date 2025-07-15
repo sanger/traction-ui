@@ -48,6 +48,18 @@ const annotationTypeSelectOptions = (annotationTypes = []) => [
 ]
 
 /**
+ * Generates a payload for annotations that can be used in API requests.
+ * @param {Array} annotations - An array of annotation objects.
+ * @returns {Array} An array of payload objects for annotations that are marked as new records.
+ * Each payload object contains the necessary attributes for API requests.
+ */
+const payloadForAnnotations = (annotations = []) => {
+  return annotations
+    .filter((annotation) => annotation.newRecord)
+    .map((annotation) => annotation.payload())
+}
+
+/**
  * Creates an annotation object with default and provided attributes.
  *
  * @param {Object} params - The parameters for the annotation.
@@ -76,7 +88,22 @@ const AnnotationItemType = ({ attributes = {}, id, newRecord } = {}) => {
     newRecord: newRecord || false,
   })
 
+  // Ensure the instance has a payload method for API requests
+  instance.payload = () => {
+    const { comment, annotatation_type_id, user } = instance
+    return {
+      comment,
+      annotatation_type_id,
+      user,
+    }
+  }
+
   return instance
 }
 
-export { annotationsByAnnotatable, annotationTypeSelectOptions, AnnotationItemType }
+export {
+  annotationsByAnnotatable,
+  annotationTypeSelectOptions,
+  AnnotationItemType,
+  payloadForAnnotations,
+}

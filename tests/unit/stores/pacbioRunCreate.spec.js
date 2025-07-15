@@ -1038,12 +1038,17 @@ describe('usePacbioRunCreateStore', () => {
           },
         }
         store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
-        expect(store.wells['1']['A1'].annotations).toEqual(
-          annotationsByAnnotatable({
-            annotations: Object.values(store.annotations),
-            annotatableType: 'Pacbio::Well',
-            annotatableId: store.wells['1']['A1'].id,
-          }),
+
+        const expectedAnnotations = annotationsByAnnotatable({
+          annotations: Object.values(store.annotations),
+          annotatableType: 'Pacbio::Well',
+          annotatableId: store.wells['1']['A1'].id,
+        })
+
+        // we can't use equality as the object has methods
+        expect(store.wells['1']['A1'].annotations.length).toEqual(expectedAnnotations.length)
+        expect(JSON.stringify(store.wells['1']['A1'].annotations[0])).toEqual(
+          JSON.stringify(expectedAnnotations[0]),
         )
       })
 
