@@ -360,7 +360,6 @@ describe('LabelPrintingHelpers.js', () => {
     })
 
     it('#createBasicTubeBarcodeLabel', () => {
-      console.log(workflowItemType)
       const barcodeItem = { barcode: workflowItemType.sourceBarcode, date: workflowItemType.date }
       const { barcode, first_line, second_line, round_label_bottom_line, round_label_lower_line } =
         createBasicTubeBarcodeLabel(barcodeItem)

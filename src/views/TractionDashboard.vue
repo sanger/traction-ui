@@ -148,6 +148,10 @@ const toolRoutes = [
     name: 'LabWhere Reception',
     link: 'labwhere-reception',
   },
+  {
+    name: 'Sample Report',
+    link: 'sample-report',
+  },
 ]
 const pipelines = computed(() => PipelinesConfig.filter(({ active }) => active))
 </script>
