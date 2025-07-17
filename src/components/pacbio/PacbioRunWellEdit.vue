@@ -65,7 +65,7 @@
 
     <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
-    <traction-section title="Well Annotations">
+    <div>
       <traction-button data-action="get-annotations" theme="default" @click="getAnnotations()">
         Annotations
       </traction-button>
@@ -78,7 +78,7 @@
           :annotation-types="annotationTypes"
         />
       </div>
-    </traction-section>
+    </div>
 
     <template #modal-footer="{}">
       <traction-button

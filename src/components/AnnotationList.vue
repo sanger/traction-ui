@@ -1,28 +1,31 @@
 <template>
-  <div
-    data-type="annotation-list"
-    class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
-  >
-    <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
-      <div v-for="annotation in annotations" :key="annotation.id">
-        <AnnotationItem
-          :id="annotation.id"
-          :parent="props.parent"
-          :annotation-type-select-options="selectOptions"
-          @remove-annotation="removeAnnotation($event)"
-        />
+  <traction-section :title="title">
+    <div
+      data-type="annotation-list"
+      class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
+    >
+      <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
+        <div v-for="annotation in annotations" :key="annotation.id">
+          <AnnotationItem
+            :id="annotation.id"
+            :parent="props.parent"
+            :annotation-type-select-options="selectOptions"
+            @remove-annotation="removeAnnotation($event)"
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()"
-    >+</traction-button
-  >
+    <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()"
+      >+</traction-button
+    >
+  </traction-section>
 </template>
 
 <script setup>
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import { annotationTypeSelectOptions, AnnotationItemType } from '@/stores/utilities/annotation.js'
 import { computed } from 'vue'
+import { capitalizeFirstLetter, singularise } from '@/lib/stringHumanisation.js'
 
 const props = defineProps({
   /**
@@ -51,6 +54,10 @@ const props = defineProps({
 const selectOptions = annotationTypeSelectOptions(props.annotationTypes)
 
 const annotations = computed(() => props.parent.annotations)
+
+const title = computed(() => {
+  return `${singularise(capitalizeFirstLetter(props.parent.type))} Annotations`
+})
 
 /**
  * Adds a new annotation to the list.

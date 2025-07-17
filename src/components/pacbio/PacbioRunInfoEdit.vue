@@ -70,7 +70,7 @@
         />
       </traction-field-group>
     </traction-section>
-    <traction-section title="Run Annotations">
+    <div>
       <traction-button data-action="get-annotations" theme="default" @click="getAnnotations()">
         Annotations
       </traction-button>
@@ -80,7 +80,7 @@
       >
         <annotation-list :parent="store.run" :annotation-types="annotationTypes" />
       </div>
-    </traction-section>
+    </div>
   </div>
 </template>
 

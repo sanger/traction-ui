@@ -631,8 +631,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param {Object} params the parameters for setting the annotations
      * @param {Object} params.parent the parent to set the annotations for
      * @param {String} params.annotatableType the type of the annotatable object
+     * @returns {void}
+     * @description This function checks if the parent already has annotations.
+     * If it does not, it retrieves the annotations for the parent based on the annotatable type
      */
     setAnnotations({ parent, annotatableType }) {
+      if (parent.annotations) return
       // Get the annotations for the parent based on the annotatable type
       const annotations = annotationsByAnnotatable({
         annotations: Object.values(this.annotations),

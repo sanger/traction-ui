@@ -17,7 +17,7 @@ const annotationsByRun = annotationsByAnnotatable({
   annotatableId: pacbioRunFactory.storeData.run.id,
 })
 
-const well = Object.values(pacbioRunFactory.storeData.wells)[0]
+const well = Object.values(Object.values(pacbioRunFactory.storeData.wells)[0])[0]
 
 const annotationsByWell = annotationsByAnnotatable({
   annotations,
@@ -78,7 +78,6 @@ describe('AnnotationList.vue', () => {
     expect(annotations.length).toEqual(3) // 2 existing + 1 new
   })
 
-  // we also need to change the adding of annotations as there is 1 extra
   it('removes an annotation when the remove button is clicked', async () => {
     let annotations
     const wrapper = mount(AnnotationList, {
@@ -97,5 +96,14 @@ describe('AnnotationList.vue', () => {
 
     annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(2)
+  })
+
+  it('shows the type of the annotations', () => {
+    const wrapper = mount(AnnotationList, {
+      props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
+    })
+
+    const title = wrapper.find('header')
+    expect(title.text()).toContain('Run Annotations')
   })
 })

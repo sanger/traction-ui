@@ -1001,7 +1001,7 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
 
-    describe('getAnnotations', () => {
+    describe('setAnnotations', () => {
       const annotations = {
         1: {
           id: '1',
@@ -1068,6 +1068,34 @@ describe('usePacbioRunCreateStore', () => {
         }
         store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
         expect(store.wells['1']['A1'].annotations).toEqual([])
+      })
+
+      it("doesn't change the annotations if they are already set", () => {
+        const store = usePacbioRunCreateStore()
+        const wellAnnotations = [
+          ...Object.values(annotations),
+          {
+            id: '999',
+            type: 'annotations',
+            comment: 'annotation 1',
+            user: 'si5',
+          },
+        ]
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                annotations: wellAnnotations,
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+        expect(store.wells['1']['A1'].annotations).toEqual(wellAnnotations)
       })
     })
   })

@@ -1,41 +1,54 @@
 <template>
   <div data-type="annotation">
-    <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
-      <traction-input
-        v-model="annotation.comment"
-        type="text"
-        placeholder="Example: Annotation 1"
-        class="w-full"
-        :disabled="!annotation.newRecord"
-        data-attribute="comment"
-      ></traction-input>
-      <traction-input
-        v-model="annotation.user"
-        type="text"
-        placeholder="Example: si5"
-        class="w-full"
-        :disabled="!annotation.newRecord"
-        data-attribute="user"
-      ></traction-input>
-      <traction-select
-        v-model="annotation.annotation_type_id"
-        :options="annotationTypeSelectOptions"
-        class="w-full"
-        :disabled="!annotation.newRecord"
-        data-attribute="annotation-type"
-      ></traction-select>
-      <div data-attribute="created-at">
-        {{ annotation.created_at }}
-      </div>
+    <div class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200">
+      <fieldset>
+        <traction-label class="ml-1">Comment</traction-label>
+        <traction-input
+          v-model="annotation.comment"
+          type="text"
+          placeholder="Example: Annotation 1"
+          class="w-full"
+          :disabled="!annotation.newRecord"
+          data-attribute="comment"
+        ></traction-input>
+      </fieldset>
+      <fieldset>
+        <traction-label class="ml-1">User</traction-label>
+        <traction-input
+          v-model="annotation.user"
+          type="text"
+          placeholder="Example: si5"
+          class="w-full"
+          :disabled="!annotation.newRecord"
+          data-attribute="user"
+        ></traction-input>
+      </fieldset>
+      <fieldset>
+        <traction-label class="ml-1">Annotation Type</traction-label>
+        <traction-select
+          v-model="annotation.annotation_type_id"
+          :options="annotationTypeSelectOptions"
+          class="w-full"
+          :disabled="!annotation.newRecord"
+          data-attribute="annotation-type"
+        ></traction-select>
+      </fieldset>
+      <fieldset>
+        <traction-label class="ml-1">Created At</traction-label>
+        <div class="ml-1" data-attribute="created-at">
+          {{ annotation.created_at }}
+        </div>
+      </fieldset>
+      <fieldset>
+        <traction-button
+          v-if="annotation.newRecord"
+          data-action="remove-annotation"
+          theme="delete"
+          @click="removeAnnotation"
+          >-</traction-button
+        >
+      </fieldset>
     </div>
-
-    <traction-button
-      v-if="annotation.newRecord"
-      data-action="remove-annotation"
-      theme="delete"
-      @click="removeAnnotation"
-      >-</traction-button
-    >
   </div>
 </template>
 
