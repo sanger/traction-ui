@@ -71,11 +71,13 @@
       </traction-field-group>
     </traction-section>
     <div>
-      <traction-button data-action="get-annotations" theme="default" @click="getAnnotations()">
-        Annotations
-      </traction-button>
+      <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
+        <traction-button data-action="show-annotations" theme="default" @click="showAnnotations()">
+          {{ annotationsVisible ? 'Hide Annotations' : 'Show Annotations' }}
+        </traction-button>
+      </div>
       <div
-        v-if="showAnnotations"
+        v-if="annotationsVisible"
         class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
       >
         <annotation-list :parent="store.run" :annotation-types="annotationTypes" />
@@ -122,15 +124,15 @@ const instrumentTypeSelectOptions = computed(() =>
 
 const isRevio = computed(() => store.instrumentType.key === PacbioInstrumentTypes.Revio.key)
 
-const showAnnotations = ref(false)
+const annotationsVisible = ref(false)
 
 const toggleAnnotations = () => {
-  showAnnotations.value = !showAnnotations.value
+  annotationsVisible.value = !annotationsVisible.value
 }
 
 const annotationTypes = computed(() => Object.values(store.resources.annotationTypes))
 
-const getAnnotations = () => {
+const showAnnotations = () => {
   store.setAnnotations({
     parent: store.run,
     annotatableType: 'Pacbio::Run',

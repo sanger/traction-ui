@@ -214,7 +214,7 @@ describe('annotations', () => {
   })
 
   it('should show the annotations when the button is clicked', async () => {
-    const button = wrapper.find('[data-action="get-annotations"]')
+    const button = wrapper.find('[data-action="show-annotations"]')
     await button.trigger('click')
     const annotationList = wrapper.find('[data-type="annotation-list"]')
     expect(annotationList.exists()).toBeTruthy()
