@@ -21,6 +21,7 @@ const newPlate = (plateNumber) => {
 const runAttributes = () => {
   return {
     id: 'new',
+    type: 'runs',
     system_name: 'Revio',
     dna_control_complex_box_barcode: null,
   }
@@ -29,9 +30,10 @@ const runAttributes = () => {
 /**
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
  */
-const newRun = () => {
+const newRun = (attributes = {}) => {
   return {
     ...runAttributes(),
+    ...attributes,
   }
 }
 
@@ -56,6 +58,7 @@ const newWell = ({ position, ...attributes }) => {
   return {
     ...defaultSmrtLinkAttributes(),
     used_aliquots: [],
+    type: 'wells',
     ...attributes,
     position,
     row,
@@ -101,11 +104,10 @@ const existingRunType = {
   payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // the type should not be in the attributes.
     //might need further refactoring but this is enough for a hot fix
-    const { id, type, ...attributes } = run
+    const { id, ...attributes } = run
 
     return createPayload({
       id,
-      type,
       run: attributes,
       plates,
       wells,
@@ -141,12 +143,13 @@ const createRunType = ({ id }) => {
  * creates a JSONAPI payload for a run
  */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
+  const { type, ...attributes } = run
   return {
     data: {
-      type: 'runs',
+      type,
       id,
       attributes: {
-        ...removeReadOnlyAttributes(run),
+        ...removeReadOnlyAttributes(attributes),
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
         annotations_attributes: payloadForAnnotations(run.annotations),

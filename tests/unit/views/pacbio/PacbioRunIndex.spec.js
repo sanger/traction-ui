@@ -13,7 +13,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-// TODO: This needs a refactor to include the way the store data is being created.
 const pacbioRunFactory = PacbioRunFactory()
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 

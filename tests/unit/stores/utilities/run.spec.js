@@ -92,6 +92,7 @@ describe('run.js', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
       expect(run.system_name).toEqual('Revio')
+      expect(run.type).toEqual('runs')
       // no longer an accepted parameter
       expect(run.sequencing_kit_box_barcode).not.toBeDefined()
       expect(run.dna_control_complex_box_barcode).toEqual(null)
@@ -102,6 +103,7 @@ describe('run.js', () => {
     it('will have the default well attributes if nothing is changed', () => {
       expect(newWell({ position: 'A1' })).toEqual({
         ...defaultSmrtLinkAttributes(),
+        type: 'wells',
         position: 'A1',
         row: 'A',
         column: '1',
@@ -118,6 +120,7 @@ describe('run.js', () => {
       expect(newWell({ position: 'A1', ...attributes })).toEqual({
         ...defaultSmrtLinkAttributes(),
         ...attributes,
+        type: 'wells',
         position: 'A1',
         row: 'A',
         column: '1',
@@ -201,10 +204,10 @@ describe('run.js', () => {
       })
 
       it('will create the correct payload', () => {
-        const runType = createRunType({ id: 1 })
-        // type should not be in attributes. Bug fix
-        const aRun = { ...newRun(), type: 'runs' }
-        const { id, type, ...attributes } = aRun
+        const id = 1
+        const runType = createRunType({ id })
+        const aRun = { ...newRun(), id }
+        const { id: runId, ...attributes } = aRun
 
         expect(
           runType.payload({
@@ -216,8 +219,7 @@ describe('run.js', () => {
           }),
         ).toEqual(
           createPayload({
-            id,
-            type,
+            id: runId,
             plates: plates.existing,
             wells: wells.existing,
             run: attributes,
@@ -281,14 +283,17 @@ describe('run.js', () => {
         AnnotationItemType({ newRecord: true }),
         AnnotationItemType({ newRecord: true }),
       ]
-      const run = {
+      const run = newRun({
         system_name: 'Sequel IIe',
         dna_control_complex_box_barcode: 'to keep',
         annotations,
-      }
+      })
+
+      const { id, ...attributes } = run
 
       const payload = createPayload({
-        run,
+        id,
+        run: attributes,
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['1'],
@@ -297,6 +302,7 @@ describe('run.js', () => {
 
       expect(payload).toEqual({
         data: {
+          id: 'new',
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
@@ -319,7 +325,7 @@ describe('run.js', () => {
     })
 
     it('will remove read-only run attributes', () => {
-      const run = {
+      const run = newRun({
         id: 1,
         system_name: 'Revio',
         dna_control_complex_box_barcode: null,
@@ -327,10 +333,13 @@ describe('run.js', () => {
         adaptive_loading: 'True',
         sequencing_kit_box_barcodes: ['Plate 1: test'],
         annotations: [],
-      }
+      })
+
+      const { id, ...attributes } = run
 
       const payload = createPayload({
-        run,
+        id,
+        run: attributes,
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['1'],
@@ -340,8 +349,8 @@ describe('run.js', () => {
       expect(payload).toEqual({
         data: {
           type: 'runs',
+          id: 1,
           attributes: {
-            id: 1,
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
             dna_control_complex_box_barcode: null,
@@ -366,12 +375,12 @@ describe('run.js', () => {
         AnnotationItemType({ newRecord: true }),
         AnnotationItemType({ newRecord: true }),
       ]
-      const aRun = {
+      const aRun = newRun({
         system_name: 'Revio',
         id: 1,
         dna_control_complex_box_barcode: null,
         annotations,
-      }
+      })
       const { id, ...attributes } = aRun
       const payload = createPayload({
         id,
@@ -406,10 +415,13 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when there are 2 plates but 1 is empty', () => {
-      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
+      const run = newRun({ system_name: 'Revio', dna_control_complex_box_barcode: null })
+
+      const { id, ...attributes } = run
 
       const payload = createPayload({
-        run,
+        id,
+        run: attributes,
         plates: plates.single,
         wells: wells.single,
         smrtLinkVersion: smrtLinkVersions['1'],
@@ -418,6 +430,7 @@ describe('run.js', () => {
 
       expect(payload).toEqual({
         data: {
+          id,
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
@@ -493,10 +506,13 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Sequel IIe', () => {
-      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'to keep' }
+      const run = newRun({ system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'to keep' })
+
+      const { id, ...attributes } = run
 
       const payload = createPayload({
-        run,
+        id,
+        run: attributes,
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['3'],
@@ -505,6 +521,7 @@ describe('run.js', () => {
 
       expect(payload).toEqual({
         data: {
+          id,
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['3'].id,
@@ -527,10 +544,11 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Revio', () => {
-      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
-
+      const run = newRun({ system_name: 'Revio', dna_control_complex_box_barcode: null })
+      const { id, ...attributes } = run
       const payload = createPayload({
-        run,
+        id,
+        run: attributes,
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['2'],
@@ -539,6 +557,7 @@ describe('run.js', () => {
 
       expect(payload).toEqual({
         data: {
+          id,
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['2'].id,
