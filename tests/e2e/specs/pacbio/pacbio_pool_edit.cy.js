@@ -5,6 +5,9 @@ import PacbioPlateFactory from '../../../factories/PacbioPlateFactory.js'
 
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
 

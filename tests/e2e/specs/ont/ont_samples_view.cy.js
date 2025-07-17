@@ -1,6 +1,11 @@
 import OntRequestFactory from '../../../factories/OntRequestFactory.js'
 
 describe('Ont samples view', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
+  })
   it('Visits the ont samples url', () => {
     cy.wrap(OntRequestFactory()).as('ontRequestFactory')
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {
