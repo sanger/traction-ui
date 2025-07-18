@@ -42,6 +42,7 @@ describe('AnnotationList.vue', () => {
     const wrapper = mount(AnnotationList, {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
+    expect(wrapper.find('[data-list="run-annotations"]').exists()).toBeTruthy()
     const annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(annotationsByRun.length)
   })
@@ -53,6 +54,7 @@ describe('AnnotationList.vue', () => {
         annotationTypes: Object.values(annotationTypeFactory.storeData),
       },
     })
+    expect(wrapper.find('[data-list="well-annotations"]').exists()).toBeTruthy()
     const annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(annotationsByWell.length)
   })

@@ -9,6 +9,6 @@ const humanise = (string) => capitalizeFirstLetter(string).replace(/[-_]/g, ' ')
 
 // singularise a string by removing the trailing 's'
 // this is a very simple implementation and may not work for all cases
-const singularise = (string) => string.replace(/s$/, '')
+const singularise = (string = '') => string.replace(/s$/, '')
 
 export { capitalizeFirstLetter, humanise, singularise }

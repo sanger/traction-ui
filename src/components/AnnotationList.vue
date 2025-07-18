@@ -1,6 +1,7 @@
 <template>
   <traction-section :title="title">
     <div
+      :data-list="dataList"
       data-type="annotation-list"
       class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
     >
@@ -14,10 +15,10 @@
           />
         </div>
       </div>
+      <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()">
+        +</traction-button
+      >
     </div>
-    <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()"
-      >+</traction-button
-    >
   </traction-section>
 </template>
 
@@ -57,6 +58,10 @@ const annotations = computed(() => props.parent.annotations)
 
 const title = computed(() => {
   return `${singularise(capitalizeFirstLetter(props.parent.type))} Annotations`
+})
+
+const dataList = computed(() => {
+  return `${singularise(props.parent.type)}-annotations`
 })
 
 /**

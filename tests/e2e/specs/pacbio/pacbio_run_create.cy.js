@@ -1,6 +1,7 @@
 import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '../../../factories/PacbioRunFactory.js'
 import PacbioTubeFactory from '../../../factories/PacbioTubeFactory.js'
+import AnnotationTypeFactory from '../../../factories/AnnotationTypeFactory.js'
 
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
@@ -39,6 +40,14 @@ describe('Pacbio Run Create view', () => {
           body: pacbioTubeFactoryWithLibrary.content,
         },
       )
+    })
+
+    cy.wrap(AnnotationTypeFactory()).as('annotationTypeFactory')
+    cy.get('@annotationTypeFactory').then((annotationTypeFactory) => {
+      cy.intercept('GET', '/v1/annotation_types', {
+        statusCode: 200,
+        body: annotationTypeFactory.content,
+      })
     })
 
     // Message on successful creation or edit of the run
@@ -132,6 +141,20 @@ describe('Pacbio Run Create view', () => {
     // Type in the barcode of the pool/library being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-22')
     cy.get('button').contains('Search').click()
+
+    //adds run annotations
+    cy.get('[data-action="show-annotations"]').click()
+
+    cy.get('[data-list=run-annotations]').within(() => {
+      cy.get('[data-action="add-annotation"]').trigger('click')
+      cy.get('[data-type="annotation"]')
+        .first()
+        .within(() => {
+          cy.get('[data-attribute="comment"]').type('Test annotation')
+          cy.get('[data-attribute="user"]').type('Test User')
+          cy.get('[data-attribute="annotation-type"]').select('Top up')
+        })
+    })
 
     // Add the plate metadata
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
