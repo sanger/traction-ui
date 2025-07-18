@@ -70,6 +70,19 @@
         />
       </traction-field-group>
     </traction-section>
+    <div>
+      <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
+        <traction-button data-action="show-annotations" theme="default" @click="showAnnotations()">
+          {{ annotationsVisible ? 'Hide Annotations' : 'Show Annotations' }}
+        </traction-button>
+      </div>
+      <div
+        v-if="annotationsVisible"
+        class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+      >
+        <annotation-list :parent="store.run" :annotation-types="annotationTypes" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -80,7 +93,8 @@ import {
   InstrumentTypeSelectOptionsType,
   SmrtLinkVersionSelectOptionsType,
 } from '@/lib/SelectOptionsTypes'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import AnnotationList from '@/components/AnnotationList.vue'
 
 const store = usePacbioRunCreateStore()
 
@@ -109,4 +123,20 @@ const instrumentTypeSelectOptions = computed(() =>
 )
 
 const isRevio = computed(() => store.instrumentType.key === PacbioInstrumentTypes.Revio.key)
+
+const annotationsVisible = ref(false)
+
+const toggleAnnotations = () => {
+  annotationsVisible.value = !annotationsVisible.value
+}
+
+const annotationTypes = computed(() => Object.values(store.resources.annotationTypes))
+
+const showAnnotations = () => {
+  store.setAnnotations({
+    parent: store.run,
+    annotatableType: 'Pacbio::Run',
+  })
+  toggleAnnotations()
+}
 </script>

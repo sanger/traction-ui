@@ -125,6 +125,7 @@ const save = () => {
  */
 const provider = async () => {
   await store.fetchSmrtLinkVersions()
+  await store.fetchAnnotationTypes()
   store.clearRunData()
   await store.setRun({ id: props.id })
   await store.setDefaultWellAttributes()

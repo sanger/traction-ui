@@ -23,4 +23,11 @@ describe('stringHumanisation', () => {
     // Test for strings with both dashes and underscores
     expect(stringHumanisation.humanise('destroy_after-2_years')).toEqual('Destroy after 2 years')
   })
+
+  it('#singularise', () => {
+    expect(stringHumanisation.singularise('wells')).toEqual('well')
+    expect(stringHumanisation.singularise('plates')).toEqual('plate')
+    expect(stringHumanisation.singularise('runs')).toEqual('run')
+    expect(stringHumanisation.singularise('samples')).toEqual('sample')
+  })
 })

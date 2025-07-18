@@ -1,4 +1,5 @@
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { payloadForAnnotations } from '@/stores/utilities/annotation.js'
 
 /**
  *
@@ -20,6 +21,7 @@ const newPlate = (plateNumber) => {
 const runAttributes = () => {
   return {
     id: 'new',
+    type: 'runs',
     system_name: 'Revio',
     dna_control_complex_box_barcode: null,
   }
@@ -28,9 +30,10 @@ const runAttributes = () => {
 /**
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
  */
-const newRun = () => {
+const newRun = (attributes = {}) => {
   return {
     ...runAttributes(),
+    ...attributes,
   }
 }
 
@@ -55,6 +58,7 @@ const newWell = ({ position, ...attributes }) => {
   return {
     ...defaultSmrtLinkAttributes(),
     used_aliquots: [],
+    type: 'wells',
     ...attributes,
     position,
     row,
@@ -100,11 +104,10 @@ const existingRunType = {
   payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // the type should not be in the attributes.
     //might need further refactoring but this is enough for a hot fix
-    const { id, type, ...attributes } = run
+    const { id, ...attributes } = run
 
     return createPayload({
       id,
-      type,
       run: attributes,
       plates,
       wells,
@@ -140,14 +143,16 @@ const createRunType = ({ id }) => {
  * creates a JSONAPI payload for a run
  */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
+  const { type, ...attributes } = run
   return {
     data: {
-      type: 'runs',
+      type,
       id,
       attributes: {
-        ...removeReadOnlyAttributes(run),
+        ...removeReadOnlyAttributes(attributes),
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
+        annotations_attributes: payloadForAnnotations(run.annotations),
         plates_attributes: Object.values(plates)
           .map(({ plate_number, ...plate }) => {
             return {
@@ -186,8 +191,12 @@ const createWellsPayload = (wells) => {
   // return the wells with the used_aliquots replaced by used_aliquots_attributes
   return (
     Object.values(rest)
-      .map(({ used_aliquots: used_aliquots_attributes, ...attributes }) => {
-        return { ...attributes, used_aliquots_attributes }
+      .map(({ used_aliquots: used_aliquots_attributes, annotations, ...attributes }) => {
+        return {
+          ...attributes,
+          used_aliquots_attributes,
+          annotations_attributes: payloadForAnnotations(annotations),
+        }
       })
       // add the _destroy attribute back to the wells
       .concat(_destroy || [])
@@ -207,6 +216,7 @@ const removeReadOnlyAttributes = (run) => {
     adaptive_loading,
     sequencing_kit_box_barcodes,
     barcodes_and_concentrations,
+    annotations,
     ...filteredRun
   } = run
   /* eslint-enable no-unused-vars */

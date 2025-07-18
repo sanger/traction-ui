@@ -388,7 +388,7 @@ describe('actions.js', () => {
     })
   })
 
-  // TODO: This needs some work. Autotagging is na bit of a mess
+  // This needs some work. Autotagging is na bit of a mess
   // and the tests are unweildy.
   describe('applyTags', () => {
     const state = ontAutoTagFactory.storeData

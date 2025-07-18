@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById, groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource, find } from './../../src/api/JsonApi.js'
 import { assignRequestIdsToTubes } from './../../src/stores/utilities/pool.js'
 
 /**
