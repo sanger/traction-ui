@@ -1,4 +1,4 @@
-import * as Sequencescape from './Sequencescape.js'
+import * as SequencescapePlates from './SequencescapePlates.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
 import * as SequencescapeKinnexTubes from './SequencescapeKinnexTubes.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
@@ -50,10 +50,10 @@ const WorkflowsLocations = {
 }
 
 const ReceptionTypes = {
-  Sequencescape: {
-    name: 'sequencescape',
-    text: 'Sequencescape',
-    value: 'Sequencescape',
+  SequencescapePlates: {
+    name: 'sequencescape-plates',
+    text: 'Sequencescape Plates',
+    value: 'SequencescapePlates',
     pipelines: ['PacBio', 'ONT'],
   },
   SequencescapeTubes: {
@@ -98,9 +98,9 @@ const MockReceptionTypes = {
 }
 
 const Receptions = {
-  Sequencescape: {
-    ...ReceptionTypes.Sequencescape,
-    fetchFunction: Sequencescape.fetchLabwareForReception,
+  SequencescapePlates: {
+    ...ReceptionTypes.SequencescapePlates,
+    fetchFunction: SequencescapePlates.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
   },
   SequencescapeTubes: {
