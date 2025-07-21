@@ -41,7 +41,7 @@ describe('MultiBarcode', () => {
     await wrapper.setProps({ reception: Receptions['SequencescapeTubes'] })
     expect(wrapper.find('[id=print]').exists()).toBe(true)
 
-    await wrapper.setProps({ reception: Receptions['Sequencescape'] })
+    await wrapper.setProps({ reception: Receptions['SequencescapePlates'] })
     expect(wrapper.find('[id=print]').exists()).toBe(false)
   })
 
