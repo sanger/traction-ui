@@ -164,22 +164,31 @@
       </div>
     </div>
     <div class="w-1/2 space-y-4">
-      <component
-        :is="reception.barcodeComponent"
-        :pipeline="pipeline"
-        :reception="reception"
-        :request-options="requestOptions"
-        :workflow-location-text="
-          workflowLocation
-            ? `The imported labware will be scanned into ${workflowLocation}`
-            : 'No location selected to scan into'
-        "
-        :user-code="user_code"
-        :location-barcode="location_barcode"
-        @import-started="importStarted"
-        @import-finished="clearModal"
-        @reset="reset"
-      />
+      <template v-if="!source">
+        <div
+          class="flex items-center justify-center h-full text-gray-500 bg-gray-100 rounded border border-dashed border-gray-300 p-8"
+        >
+          <span>Please select a source to continue.</span>
+        </div>
+      </template>
+      <template v-else>
+        <component
+          :is="reception.barcodeComponent"
+          :pipeline="pipeline"
+          :reception="reception"
+          :request-options="requestOptions"
+          :workflow-location-text="
+            workflowLocation
+              ? `The imported labware will be scanned into ${workflowLocation}`
+              : 'No location selected to scan into'
+          "
+          :user-code="user_code"
+          :location-barcode="location_barcode"
+          @import-started="importStarted"
+          @import-finished="clearModal"
+          @reset="reset"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -200,13 +209,13 @@ const stuckModal =
 const defaultModal = () => ({ visible: false, message: stuckModal })
 
 // Default source to sequencescape
-const source = ref('Sequencescape')
+const source = ref('')
 const requestOptions = ref(defaultRequestOptions())
 const modalState = ref(defaultModal())
 
-const reception = computed(() => Receptions[source.value])
+const reception = computed(() => Receptions[source.value] || { pipelines: [] })
 // Default pipeline to PacBio
-const pipeline = ref(reception.value.pipelines[0])
+const pipeline = ref('')
 const pipelineOptions = computed(() =>
   reception.value.pipelines.map((pipeline) => ({ value: pipeline, text: pipeline })),
 )
@@ -245,7 +254,11 @@ const receptionOptions = async () => {
   return [...receptionTypes]
 }
 onMounted(async () => {
-  receptionOptionsList.value = await receptionOptions()
+  const options = await receptionOptions()
+  receptionOptionsList.value = [
+    { value: '', text: '' }, // Add this empty option at the top
+    ...options,
+  ]
 })
 
 const workflowLocation = computed(() => {
