@@ -37,6 +37,7 @@
             :options="pipelineOptions"
             class="inline-block w-full"
             data-type="pipeline-list"
+            :disabled="!source"
             @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
@@ -54,6 +55,7 @@
               class="mt-1 mr-2"
               :options="workflowOptions"
               data-type="workflow-list"
+              :disabled="!source"
             />
           </div>
           <!-- Only displaying the swipecard field when the user selects a workflow -->
@@ -166,9 +168,10 @@
     <div class="w-1/2 space-y-4">
       <template v-if="!source">
         <div
-          class="flex items-center justify-center h-full text-gray-500 bg-gray-100 rounded border border-dashed border-gray-300 p-8"
+          class="flex flex-row items-center justify-center h-full rounded p-8 bg-white"
         >
-          <span>Please select a source to continue.</span>
+          <TractionInfoIcon class="text-gray-500" :size="32"/>
+          <span class="px-2 text-xl text-gray-500 font-bold">Please select a source to continue.</span>
         </div>
       </template>
       <template v-else>
@@ -201,6 +204,7 @@ import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
 import { checkFeatureFlag } from '@/api/FeatureFlag.js'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -276,6 +280,11 @@ const location_barcode = computed(() => {
 })
 
 function updatePipeline() {
+  // If no source is selected, reset pipeline to blank
+  if (!source.value) {
+    pipeline.value = ''
+    return
+  }
   // If the current reception doesn't include the current pipeline then update the pipeline to a valid one
   if (!reception.value.pipelines.includes(pipeline.value)) {
     pipeline.value = reception.value.pipelines[0]
