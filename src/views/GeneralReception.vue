@@ -167,11 +167,11 @@
     </div>
     <div class="w-1/2 space-y-4">
       <template v-if="!source">
-        <div
-          class="flex flex-row items-center justify-center h-full rounded p-8 bg-white"
-        >
-          <TractionInfoIcon class="text-gray-500" :size="32"/>
-          <span class="px-2 text-xl text-gray-500 font-bold">Please select a source to continue.</span>
+        <div class="flex flex-row items-center justify-center h-full rounded p-8 bg-white">
+          <TractionInfoIcon class="text-gray-500" :size="32" />
+          <span class="px-2 text-xl text-gray-500 font-bold"
+            >Please select a source to continue.</span
+          >
         </div>
       </template>
       <template v-else>

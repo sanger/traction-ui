@@ -27,8 +27,8 @@ describe('Import samples from Sequencescape', () => {
         kinnex_sample_reception: { enabled: true },
       },
     })
-     cy.visit('#/reception')
-     cy.get('[data-type="source-list"]').select('Sequencescape Plates')
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Sequencescape Plates')
   })
   describe('Successfully - V2', () => {
     beforeEach(() => {

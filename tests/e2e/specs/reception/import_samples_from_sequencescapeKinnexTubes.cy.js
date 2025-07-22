@@ -28,7 +28,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
     beforeEach(() => {
       cy.get('#workflowSelect').select('Pacbio -20 samples')
       cy.get('#userCode').type('usercodeX')
-     
+
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
 
