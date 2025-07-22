@@ -84,7 +84,7 @@ describe('OntTubeSelectedList', () => {
       expect(add_button.element.disabled).toBe(true)
       expect(del_button.element.disabled).toBe(false)
     })
-    it('call removeTubeFromPool when the - button is clicked', async () => {
+    ;(it('call removeTubeFromPool when the - button is clicked', async () => {
       const removeTubeFromPoolSpy = vi.spyOn(wrapper.vm, 'removeTubeFromPool')
       const button = wrapper.find('#del-btn-191')
       await button.trigger('click')
@@ -102,6 +102,6 @@ describe('OntTubeSelectedList', () => {
           'traction/ont/pools/deselectTubeAndContents',
           'GEN-1668092750-3',
         )
-      })
+      }))
   })
 })
