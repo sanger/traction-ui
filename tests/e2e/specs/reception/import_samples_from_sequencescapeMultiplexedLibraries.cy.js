@@ -34,11 +34,11 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         kinnex_sample_reception: { enabled: true },
       },
     })
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
   })
   describe('Successfully - V2', () => {
     beforeEach(() => {
-      cy.visit('#/reception')
-      cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
       cy.get('#workflowSelect').select('ONT -20 samples')
       cy.get('#userCode').type('usercodeX')
       cy.contains('Scan barcodes')
@@ -113,9 +113,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   })
 
   it('Unsuccessfully - when the libraries do not exist', () => {
-    cy.visit('#/reception')
     cy.contains('Scan barcodes')
-    cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
     cy.intercept(
       {
         url: '/api/v2/labware*',

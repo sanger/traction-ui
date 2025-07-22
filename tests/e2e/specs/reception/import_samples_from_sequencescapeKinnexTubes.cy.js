@@ -21,13 +21,14 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
         kinnex_sample_reception: { enabled: true },
       },
     })
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
   })
   describe('Importing samples from Sequencescape Kinnex Tubes - Success', () => {
     beforeEach(() => {
-      cy.visit('#/reception')
       cy.get('#workflowSelect').select('Pacbio -20 samples')
       cy.get('#userCode').type('usercodeX')
-      cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
+     
       cy.contains('Scan barcodes')
       cy.get('#cost_code').type('aCostCodeExample')
 
@@ -97,9 +98,7 @@ describe('Import samples from Sequencescape Kinnex Tubes', () => {
   })
 
   it('Unsuccessfully - when the tubes do not exist', () => {
-    cy.visit('#/reception')
     cy.contains('Scan barcodes')
-    cy.get('[data-type="source-list"]').select('Sequencescape Kinnex Tubes')
     cy.intercept(
       {
         url: '/api/v2/labware*',
