@@ -258,7 +258,7 @@ describe('run.js', () => {
         }),
       ).toBeTruthy()
     })
-    ;(it('when the wells_attributes are not empty', () => {
+    it('when the wells_attributes are not empty', () => {
       expect(
         hasPlateAttributes({ ...newPlate(1), wells_attributes: [newWell({ position: 'A1' })] }),
       ).toBeTruthy()
@@ -271,7 +271,7 @@ describe('run.js', () => {
             wells_attributes: [newWell({ position: 'A1' })],
           }),
         ).toBeTruthy()
-      }))
+      })
   })
 
   describe('createPayload', () => {

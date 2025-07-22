@@ -18,7 +18,6 @@ vi.mock('@/services/labwhere/client.js')
 const printerFactory = PrinterFactory()
 
 describe('MultiBarcode', () => {
-  
   const buildWrapper = (props = {}) => {
     return mountWithStore(MultiBarcode, {
       props: {
