@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+
+  test:
+    name: Run unit tests using Vitest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: sanger/.github/.github/actions/setup/checkout@master
+     
+    - name: Setup Node
+      uses: sanger/.github/.github/actions/setup/node@master
+
+    - name: Install dependencies with npm
+      uses: sanger/.github/.github/actions/install/npm@master
+
+    - name: Run unit tests
+      run: >-
+        npm run test:unit
+
+  cypress:
+    name: Run Cypress tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+     
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Install dependencies with npm
+        uses: sanger/.github/.github/actions/install/npm@master
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm run start:host
+          wait-on: http://localhost:5173/
+          spec: "tests/e2e/**/*"
+          config-file: cypress.config.js
+          config: video=false
+          install: false
+          browser: chrome
+      # after the test run completes
+      # store any screenshots
+      # NOTE: screenshots will be generated only if E2E test failed
+      # thus we store screenshots only on failures
+      # Alternative: create and commit an empty cypress/screenshots folder
+      # to always have something to upload
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/e2e/screenshots
