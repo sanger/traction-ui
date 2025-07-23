@@ -28,21 +28,13 @@ describe('GeneralReception', () => {
 
   describe('Source Selector', () => {
     it('has a source selector which defaults to an empty option', () => {
+      const expectedOptions = ['', ...Object.values(Receptions).map((r) => r.text)]
       expect(
         wrapper
           .find('[data-type=source-list]')
           .findAll('option')
           .map((element) => element.text()),
-      ).toEqual([
-        '',
-        'Sequencescape Plates',
-        'Sequencescape Tubes',
-        'Sequencescape Multiplexed Libraries',
-        'Sequencescape Kinnex Tubes',
-        'Mocked plates',
-        'Mocked tubes',
-        'Mocked Kinnex tubes',
-      ])
+      ).toEqual(expectedOptions)
       // It defaults to empty option
       expect(wrapper.find('[data-type=source-list]').element.value).toEqual('')
       expect(wrapper.find('#workflowSelect').attributes('disabled')).toBeDefined()
