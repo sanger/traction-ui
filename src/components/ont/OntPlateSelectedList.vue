@@ -96,15 +96,18 @@ const tabTitles = ref(['Plates', 'Requests'])
  * This is used to display all requests related to the currently selected plates in the UI.
  */
 const selectedPlateRequests = computed(() => {
-  return ontPoolCreateStore.selectedPlates.flatMap((plate) => {
-    return ontPoolCreateStore.wellList(plate.wells).flatMap((well) => {
-      return ontPoolCreateStore.requestList(well.requests || [])
+  const val = ontPoolCreateStore.selectedPlates
+    .flatMap((plate) => {
+      return ontPoolCreateStore.wellList(plate.wells).flatMap((well) => {
+        return ontPoolCreateStore.requestList(well.requests || [])
+      })
     })
-  })
+    .filter((request) => request.id !== undefined && request.id !== null)
+  return val
 })
 
 const requestClicked = ({ id, selected }) => {
-  ontPoolCreateStore.selectRequest({ id, selected: !selected })
+  ontPoolCreateStore.selectRequest(id, !selected)
 }
 
 const selectedPlates = computed(() => ontPoolCreateStore.selectedPlates)
