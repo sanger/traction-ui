@@ -669,7 +669,8 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
         // Update the store's pooling state
         this.pooling.pool = extractAttributes(data)
-        this.pooling.libraries = populatePoolingLibraries(libraries)
+        const poolingLibraries = dataToObjectById({ data: libraries, includeRelationships: true })
+        this.pooling.libraries = populatePoolingLibraries(poolingLibraries)
         this.pooling.tube = extractAttributes(poolingTube)
 
         // Update the store's resources
