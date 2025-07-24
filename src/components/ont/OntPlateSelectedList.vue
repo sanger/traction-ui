@@ -133,5 +133,4 @@ const onSelect = (e) => {
 const setSource = (index) => {
   sourceIndex.value = index
 }
-
 </script>
