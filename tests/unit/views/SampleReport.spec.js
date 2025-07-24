@@ -84,8 +84,14 @@ describe('SampleReport', () => {
   describe('sample input', () => {
     it('adds a sample when the input is not empty', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue([tractionExpectedSample])
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue([ssExpectedSample])
+      vi.mocked(fetchTractionSamples).mockResolvedValue({
+        data: [tractionExpectedSample],
+        errors: {},
+      })
+      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
+        data: [ssExpectedSample],
+        errors: {},
+      })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
@@ -97,20 +103,26 @@ describe('SampleReport', () => {
 
     it('correctly combines multiple samples', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue([
-        tractionExpectedSample,
-        // only include information required for linking and some metadata
-        { cost_code: 'cost-code-2', species: 'species-1', external_id: 'sample2-id' },
-        { cost_code: 'cost-code-3', species: 'species-2', external_id: 'sample3-id' },
-        // Sample with no matching Sequencescape data
-        { cost_code: 'cost-code-4', species: 'species-3', external_id: 'sample4-id' },
-      ])
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue([
-        ssExpectedSample,
-        // only include information required for linking and some metadata
-        { concentration: 5, volume: 10, uuid: 'sample2-id' },
-        { concentration: 1, volume: 1, uuid: 'sample3-id' },
-      ])
+      vi.mocked(fetchTractionSamples).mockResolvedValue({
+        data: [
+          tractionExpectedSample,
+          // only include information required for linking and some metadata
+          { cost_code: 'cost-code-2', species: 'species-1', external_id: 'sample2-id' },
+          { cost_code: 'cost-code-3', species: 'species-2', external_id: 'sample3-id' },
+          // Sample with no matching Sequencescape data
+          { cost_code: 'cost-code-4', species: 'species-3', external_id: 'sample4-id' },
+        ],
+        errors: {},
+      })
+      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
+        data: [
+          ssExpectedSample,
+          // only include information required for linking and some metadata
+          { concentration: 5, volume: 10, uuid: 'sample2-id' },
+          { concentration: 1, volume: 1, uuid: 'sample3-id' },
+        ],
+        errors: {},
+      })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1,sample2,sample3')
@@ -141,26 +153,49 @@ describe('SampleReport', () => {
 
     it('does not add a sample if traction returns empty', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue([])
+      vi.mocked(fetchTractionSamples).mockResolvedValue({
+        data: [],
+        errors: {
+          message: 'No samples found in Traction with the provided input',
+          type: 'warning',
+        },
+      })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
 
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'No samples found in Traction with the provided input',
+        'warning',
+      )
       expect(wrapper.vm.samples).toEqual([])
     })
 
     it('does not add a sample if traction returns but sequencescape does not', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue([tractionExpectedSample])
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue([])
+      vi.mocked(fetchTractionSamples).mockResolvedValue({
+        data: [tractionExpectedSample],
+        errors: {},
+      })
+      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
+        data: [],
+        errors: {
+          message: 'No samples found in Sequencescape with the provided input',
+          type: 'warning',
+        },
+      })
 
       const sampleInput = wrapper.find('#sampleInput')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
 
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'No samples found in Sequencescape with the provided input',
+        'warning',
+      )
       expect(wrapper.vm.samples).toEqual([])
     })
   })

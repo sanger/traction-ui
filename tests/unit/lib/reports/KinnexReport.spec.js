@@ -106,12 +106,12 @@ describe('KinnexReport', () => {
     it('returns empty array and shows alert if both responses fail', async () => {
       get.mockRejectedValue('Internal Server Error')
 
-      const result = await fetchTractionSamples('input', [])
-      expect(result).toEqual([])
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'Error fetching samples from Traction: Internal Server Error',
-        'danger',
-      )
+      const { data, errors } = await fetchTractionSamples('input', [])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'Error fetching samples from Traction: Internal Server Error',
+        type: 'danger',
+      })
     })
 
     it('returns empty array and shows alert if no data found', async () => {
@@ -122,12 +122,12 @@ describe('KinnexReport', () => {
         json: () => Promise.resolve({ data: [], included: [] }),
       })
 
-      const result = await fetchTractionSamples('input', [])
-      expect(result).toEqual([])
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'No samples found in Traction with the provided input',
-        'warning',
-      )
+      const { data, errors } = await fetchTractionSamples('input', [])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'No samples found in Traction with the provided input',
+        type: 'warning',
+      })
     })
 
     it('removes duplicates and returns formatted samples', async () => {
@@ -139,9 +139,10 @@ describe('KinnexReport', () => {
         json: () => Promise.resolve({ data: [request], included: [sample] }),
       })
 
-      const result = await fetchTractionSamples('input', [])
-      expect(result).toHaveLength(1)
-      expect(result[0]).toEqual({
+      const { data, errors } = await fetchTractionSamples('input', [])
+      expect(errors).toEqual({})
+      expect(data).toHaveLength(1)
+      expect(data[0]).toEqual({
         request_id: request.id,
         cost_code: request.attributes.cost_code,
         library_type: request.attributes.library_type,
@@ -168,9 +169,10 @@ describe('KinnexReport', () => {
         json: () => Promise.resolve({ data: [], included: [] }),
       })
 
-      const result = await fetchTractionSamples('input', [])
-      expect(result).toHaveLength(1)
-      expect(result[0]).toEqual({
+      const { data, errors } = await fetchTractionSamples('input', [])
+      expect(errors).toEqual({})
+      expect(data).toHaveLength(1)
+      expect(data[0]).toEqual({
         request_id: request.id,
         cost_code: request.attributes.cost_code,
         library_type: request.attributes.library_type,
@@ -219,8 +221,9 @@ describe('KinnexReport', () => {
         ok: true,
         json: () => Promise.resolve({ data: [request2], included: [sample2] }),
       })
-      const result = await fetchTractionSamples('sample1,sample2', [])
-      expect(result).toEqual([
+      const { data, errors } = await fetchTractionSamples('sample1,sample2', [])
+      expect(errors).toEqual({})
+      expect(data).toEqual([
         {
           request_id: request.id,
           cost_code: request.attributes.cost_code,
@@ -256,12 +259,12 @@ describe('KinnexReport', () => {
   describe('fetchSequencescapeSamples', () => {
     it('returns empty array and shows alert if response fails', async () => {
       ssGet.mockRejectedValue('Internal Server Error')
-      const result = await fetchSequencescapeSamples([{ external_id: 'ext' }])
-      expect(result).toEqual([])
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        expect.stringContaining('Error fetching samples from Sequencescape: Internal Server Error'),
-        'danger',
-      )
+      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'ext' }])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'Error fetching samples from Sequencescape: Internal Server Error',
+        type: 'danger',
+      })
     })
 
     it('returns empty array and shows alert if no data found', async () => {
@@ -271,12 +274,12 @@ describe('KinnexReport', () => {
         ok: true,
         json: () => Promise.resolve({ data: [], included: [] }),
       })
-      const result = await fetchSequencescapeSamples([{ external_id: 'ext' }])
-      expect(result).toEqual([])
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'No samples found in Sequencescape with the provided input',
-        'warning',
-      )
+      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'ext' }])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'No samples found in Sequencescape with the provided input',
+        type: 'warning',
+      })
     })
 
     it('returns formatted samples from Sequencescape', async () => {
@@ -291,9 +294,10 @@ describe('KinnexReport', () => {
           }),
       })
 
-      const result = await fetchSequencescapeSamples([{ external_id: 'uuid' }])
-      expect(result).toHaveLength(1)
-      expect(result[0]).toEqual({
+      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'uuid' }])
+      expect(errors).toEqual({})
+      expect(data).toHaveLength(1)
+      expect(data[0]).toEqual({
         id: ssSample.id,
         sanger_sample_id: ssSample.attributes.sanger_sample_id,
         uuid: ssSample.attributes.uuid,

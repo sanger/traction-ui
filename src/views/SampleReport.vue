@@ -92,17 +92,17 @@
 <script setup>
 import { ref } from 'vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import useAlert from '@/composables/useAlert'
 import { downloadBlob, arrayToCsv } from '@/lib/csv/creator.js'
 import {
   fetchTractionSamples,
   fetchSequencescapeSamples,
   csvStructure,
 } from '@/lib/reports/KinnexReport.js'
-
 let sample_input = ref('')
 const samples = ref([])
 const fields = [...csvStructure, { key: 'remove', label: '' }]
-
+const { showAlert } = useAlert()
 /**
  * Function to add a sample to the report.
  * It fetches samples from Traction and Sequencescape based on the input.
@@ -111,14 +111,24 @@ const fields = [...csvStructure, { key: 'remove', label: '' }]
  */
 const addSample = async () => {
   if (sample_input.value) {
-    const tractionSamples = await fetchTractionSamples(sample_input.value, samples.value)
+    const { data: tractionSamples, errors } = await fetchTractionSamples(
+      sample_input.value,
+      samples.value,
+    )
     if (!tractionSamples.length) {
+      if (errors && errors.message) {
+        showAlert(errors.message, errors.type)
+      }
       sample_input.value = ''
       return
     }
 
-    const sequencescapeSamples = await fetchSequencescapeSamples(tractionSamples)
+    const { data: sequencescapeSamples, errors: ssError } =
+      await fetchSequencescapeSamples(tractionSamples)
     if (!sequencescapeSamples.length) {
+      if (ssError && ssError.message) {
+        showAlert(ssError.message, ssError.type)
+      }
       sample_input.value = ''
       return
     }

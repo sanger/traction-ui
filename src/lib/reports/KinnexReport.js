@@ -1,16 +1,18 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
-import useAlert from '@/composables/useAlert'
 import useRootStore from '@/stores'
 
 /**
  * Function to fetch samples from Traction API based on the input.
  * It makes two sample requests: one for sample names and another for source identifiers.
  * It combines the results and returns the samples found.
+ *
+ * @param {string} sample_input - The input to search for samples.
+ * @param {Array} samples - The array of existing samples to avoid duplicates.
+ * @returns {Object} An object containing the fetched samples and any errors encountered.
  */
 const fetchTractionSamples = async (sample_input, samples) => {
   const api = useRootStore().api
-  const { showAlert } = useAlert()
 
   const tractionSamples = []
   const request = api.traction.pacbio.requests
@@ -45,13 +47,17 @@ const fetchTractionSamples = async (sample_input, samples) => {
   // If either response has errors, we show an alert and return as it means something went wrong
   // and we don't want to misrepresent the data with incomplete samples
   if (!success || errors.length) {
-    showAlert(`Error fetching samples from Traction: ${errors}`, 'danger')
-    return tractionSamples
+    return {
+      data: [],
+      errors: { message: `Error fetching samples from Traction: ${errors}`, type: 'danger' },
+    }
   }
 
   if (!data.length) {
-    showAlert('No samples found in Traction with the provided input', 'warning')
-    return tractionSamples
+    return {
+      data: [],
+      errors: { message: 'No samples found in Traction with the provided input', type: 'warning' },
+    }
   }
 
   // Remove duplicates from the data array based on request_id
@@ -89,16 +95,18 @@ const fetchTractionSamples = async (sample_input, samples) => {
     }
   }
 
-  return tractionSamples
+  return { data: tractionSamples, errors: {} }
 }
 
 /**
  * Function to fetch samples from Sequencescape API based on the traction samples found.
  * It retrieves sample metadata, studies, and faculty sponsors for each sample.
+ *
+ * @param {Array} samples - The array of samples to fetch from Sequencescape.
+ * @returns {Object} An object containing the formatted samples and any errors encountered.
  */
 const fetchSequencescapeSamples = async (samples) => {
   const api = useRootStore().api
-  const { showAlert } = useAlert()
 
   const sequencescapeSamples = []
   const sampleUuids = samples.map((sample) => sample.external_id).join(',')
@@ -114,13 +122,20 @@ const fetchSequencescapeSamples = async (samples) => {
     groupIncludedByResource(included)
 
   if (!success) {
-    showAlert(`Error fetching samples from Sequencescape: ${errors}`, 'danger')
-    return []
+    return {
+      data: [],
+      errors: { message: `Error fetching samples from Sequencescape: ${errors}`, type: 'danger' },
+    }
   }
 
   if (!data.length) {
-    showAlert('No samples found in Sequencescape with the provided input', 'warning')
-    return []
+    return {
+      data: [],
+      errors: {
+        message: 'No samples found in Sequencescape with the provided input',
+        type: 'warning',
+      },
+    }
   }
 
   // Add the fetched data to the samples array
@@ -157,7 +172,7 @@ const fetchSequencescapeSamples = async (samples) => {
     sequencescapeSamples.push(formattedSample)
   }
 
-  return sequencescapeSamples
+  return { data: sequencescapeSamples, errors: {} }
 }
 
 const csvStructure = [
