@@ -1,7 +1,8 @@
 import { fetchTractionSamples, fetchSequencescapeSamples } from '@/lib/reports/KinnexReport'
 import useRootStore from '@/stores'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
-import { expect } from 'vitest'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
+const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: true })
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -10,49 +11,11 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-// TODO: hypothetical sample data for testing - move to factories or fixtures
-const request = {
-  id: 1,
-  type: 'requests',
-  attributes: {
-    library_type: 'Pacbio_HiFi',
-    estimate_of_gb_required: null,
-    number_of_smrt_cells: null,
-    cost_code: 'aCostCodeExample',
-    external_study_id: '123',
-    sample_name: 'Supplier B',
-    barcode: 'NT6746',
-    sample_species: 'human',
-    created_at: '2025/06/23 13:05',
-    source_identifier: 'NT6746',
-    sample_retention_instruction: null,
-  },
-  relationships: {
-    sample: {
-      data: {
-        type: 'samples',
-        id: '2',
-      },
-    },
-  },
-}
+const request = pacbioRequestFactory.content.data[0]
+const sample = pacbioRequestFactory.content.included[7]
 
-const sample = {
-  id: '2',
-  type: 'samples',
-  attributes: {
-    name: 'test-sample-1',
-    date_of_sample_collection: '2025-06-23',
-    donor_id: 'donor-123',
-    species: 'human',
-    external_id: '123',
-    retention_instruction: null,
-    supplier_name: 'Supplier B',
-    sanger_sample_id: 'id-123',
-  },
-}
-
-const ss_sample = {
+// Mocked data from Sequencescape
+const ssSample = {
   id: '2',
   type: 'samples',
   attributes: {
@@ -77,7 +40,7 @@ const ss_sample = {
   },
 }
 
-const ss_study = {
+const ssStudy = {
   id: '1',
   type: 'studies',
   attributes: {
@@ -93,7 +56,7 @@ const ss_study = {
   },
 }
 
-const ss_studyMetadata = {
+const ssStudyMetadata = {
   id: '1',
   type: 'study_metadata',
   relationships: {
@@ -106,7 +69,7 @@ const ss_studyMetadata = {
   },
 }
 
-const ss_sampleMetadata = {
+const ssSampleMetadata = {
   id: '1',
   type: 'sample_metadata',
   attributes: {
@@ -116,7 +79,7 @@ const ss_sampleMetadata = {
   },
 }
 
-const ss_facultySponsor = {
+const ssFacultySponsor = {
   id: '1',
   type: 'faculty_sponsors',
   attributes: {
@@ -125,7 +88,7 @@ const ss_facultySponsor = {
 }
 
 describe('KinnexReport', () => {
-  let rootStore, get, ss_get
+  let rootStore, get, ssGet
 
   beforeEach(() => {
     const pinia = createPinia()
@@ -135,8 +98,8 @@ describe('KinnexReport', () => {
     get = vi.fn()
     rootStore.api.traction.pacbio.requests.get = get
 
-    ss_get = vi.fn()
-    rootStore.api.sequencescape.samples.get = ss_get
+    ssGet = vi.fn()
+    rootStore.api.sequencescape.samples.get = ssGet
   })
 
   describe('fetchTractionSamples', () => {
@@ -188,24 +151,6 @@ describe('KinnexReport', () => {
         species: sample.attributes.species,
         external_id: sample.attributes.external_id,
       })
-    })
-
-    it('shows info alert if sample already exists', async () => {
-      // Duplicates because the same sample is found in both requests
-      get.mockResolvedValue({
-        status: 200,
-        statusText: 'OK',
-        ok: true,
-        json: () => Promise.resolve({ data: [request], included: [sample] }),
-      })
-
-      // Set the returned request to be one that already exists
-      const result = await fetchTractionSamples('input', [{ request_id: request.id }])
-      expect(result).toEqual([])
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        expect.stringContaining('Sample input already exists in the list'),
-        'info',
-      )
     })
 
     it('successful if only one of the requests returns data', async () => {
@@ -310,7 +255,7 @@ describe('KinnexReport', () => {
 
   describe('fetchSequencescapeSamples', () => {
     it('returns empty array and shows alert if response fails', async () => {
-      ss_get.mockRejectedValue('Internal Server Error')
+      ssGet.mockRejectedValue('Internal Server Error')
       const result = await fetchSequencescapeSamples([{ external_id: 'ext' }])
       expect(result).toEqual([])
       expect(mockShowAlert).toHaveBeenCalledWith(
@@ -320,7 +265,7 @@ describe('KinnexReport', () => {
     })
 
     it('returns empty array and shows alert if no data found', async () => {
-      ss_get.mockResolvedValue({
+      ssGet.mockResolvedValue({
         status: 200,
         statusText: 'OK',
         ok: true,
@@ -335,29 +280,29 @@ describe('KinnexReport', () => {
     })
 
     it('returns formatted samples from Sequencescape', async () => {
-      ss_get.mockResolvedValue({
+      ssGet.mockResolvedValue({
         status: 200,
         statusText: 'OK',
         ok: true,
         json: () =>
           Promise.resolve({
-            data: [ss_sample],
-            included: [ss_facultySponsor, ss_sampleMetadata, ss_studyMetadata, ss_study],
+            data: [ssSample],
+            included: [ssFacultySponsor, ssSampleMetadata, ssStudyMetadata, ssStudy],
           }),
       })
 
       const result = await fetchSequencescapeSamples([{ external_id: 'uuid' }])
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({
-        id: ss_sample.id,
-        sanger_sample_id: ss_sample.attributes.sanger_sample_id,
-        uuid: ss_sample.attributes.uuid,
-        cohort: ss_sampleMetadata.attributes.cohort,
-        concentration: ss_sampleMetadata.attributes.concentration,
-        volume: ss_sampleMetadata.attributes.volume,
-        study_number: ss_study.id,
-        study_name: ss_study.attributes.name,
-        submitting_faculty: ss_facultySponsor.attributes.name,
+        id: ssSample.id,
+        sanger_sample_id: ssSample.attributes.sanger_sample_id,
+        uuid: ssSample.attributes.uuid,
+        cohort: ssSampleMetadata.attributes.cohort,
+        concentration: ssSampleMetadata.attributes.concentration,
+        volume: ssSampleMetadata.attributes.volume,
+        study_number: ssStudy.id,
+        study_name: ssStudy.attributes.name,
+        submitting_faculty: ssFacultySponsor.attributes.name,
       })
     })
   })

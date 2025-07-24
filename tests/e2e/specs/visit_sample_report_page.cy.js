@@ -1,90 +1,11 @@
-// TODO: hypothetical sample data for testing
-const request = {
-  id: 1,
-  type: 'requests',
-  attributes: {
-    library_type: 'Pacbio_HiFi',
-    estimate_of_gb_required: null,
-    number_of_smrt_cells: null,
-    cost_code: 'aCostCodeExample',
-    external_study_id: '123',
-    sample_name: 'sample-1',
-    barcode: 'NT6746',
-    sample_species: 'human',
-    created_at: '2025/06/23 13:05',
-    source_identifier: 'NT6746',
-    sample_retention_instruction: null,
-  },
-  relationships: {
-    sample: {
-      data: {
-        type: 'samples',
-        id: '2',
-      },
-    },
-  },
-}
+import PacbioRequestFactory from '../../factories/PacbioRequestFactory.js'
 
-const sample = {
+// Data for mocked Sequencescape responses
+const ssSample = {
   id: '2',
   type: 'samples',
   attributes: {
-    name: 'sample-11',
-    date_of_sample_collection: '2025-06-23',
-    species: 'human',
-    external_id: '123',
-    retention_instruction: null,
-    supplier_name: 'Supplier B',
-    sanger_sample_id: 'id-123',
-  },
-}
-
-// Sample with some missing data
-const request2 = {
-  id: 2,
-  type: 'requests',
-  attributes: {
-    library_type: 'Pacbio_HiFi_mplx',
-    estimate_of_gb_required: null,
-    number_of_smrt_cells: null,
-    cost_code: '',
-    external_study_id: '123',
-    sample_name: 'sample-2',
-    barcode: 'NT6746',
-    sample_species: 'human',
-    created_at: '2025/06/23 13:05',
-    source_identifier: 'NT6746',
-    sample_retention_instruction: null,
-  },
-  relationships: {
-    sample: {
-      data: {
-        type: 'samples',
-        id: '3',
-      },
-    },
-  },
-}
-
-const sample2 = {
-  id: '3',
-  type: 'samples',
-  attributes: {
-    name: 'sample-2',
-    date_of_sample_collection: '2025-06-23',
-    species: 'human',
-    external_id: '123',
-    retention_instruction: null,
-    supplier_name: 'Supplier B',
-    sanger_sample_id: 'id-123',
-  },
-}
-
-const ss_sample = {
-  id: '2',
-  type: 'samples',
-  attributes: {
-    uuid: '123',
+    uuid: 'external-id-122',
     sanger_sample_id: 'id-123',
   },
   relationships: {
@@ -105,7 +26,32 @@ const ss_sample = {
   },
 }
 
-const ss_study = {
+const ssSample2 = {
+  id: '2',
+  type: 'samples',
+  attributes: {
+    uuid: 'external-id-123',
+    sanger_sample_id: 'id-123',
+  },
+  relationships: {
+    sample_metadata: {
+      data: {
+        type: 'sample_metadata',
+        id: '1',
+      },
+    },
+    studies: {
+      data: [
+        {
+          type: 'studies',
+          id: '1',
+        },
+      ],
+    },
+  },
+}
+
+const ssStudy = {
   id: '1',
   type: 'studies',
   attributes: {
@@ -121,7 +67,7 @@ const ss_study = {
   },
 }
 
-const ss_studyMetadata = {
+const ssStudyMetadata = {
   id: '1',
   type: 'study_metadata',
   relationships: {
@@ -134,7 +80,7 @@ const ss_studyMetadata = {
   },
 }
 
-const ss_sampleMetadata = {
+const ssSampleMetadata = {
   id: '1',
   type: 'sample_metadata',
   attributes: {
@@ -144,7 +90,7 @@ const ss_sampleMetadata = {
   },
 }
 
-const ss_facultySponsor = {
+const ssFacultySponsor = {
   id: '1',
   type: 'faculty_sponsors',
   attributes: {
@@ -154,6 +100,8 @@ const ss_facultySponsor = {
 
 describe('Sample Report page', () => {
   beforeEach(() => {
+    cy.wrap(PacbioRequestFactory({ includeRelationships: true })).as('pacbioRequestFactory')
+
     cy.visit('#/sample-report')
   })
 
@@ -171,12 +119,15 @@ describe('Sample Report page', () => {
 
   describe('Sample scanning', () => {
     it('Successfully - when the sample exists', () => {
-      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
-        statusCode: 200,
-        body: {
-          data: [request],
-          included: [sample],
-        },
+      cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+        cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+          statusCode: 200,
+          body: {
+            data: [pacbioRequestFactory.content.data[0]],
+            // Sample included
+            included: [pacbioRequestFactory.content.included[7]],
+          },
+        })
       })
       cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
         statusCode: 200,
@@ -185,27 +136,39 @@ describe('Sample Report page', () => {
           included: [],
         },
       })
-      // Both samples have the same external_id, so they will be grouped together
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
         {
           statusCode: 200,
           body: {
-            data: [ss_sample],
-            included: [ss_sampleMetadata, ss_study, ss_studyMetadata, ss_facultySponsor],
+            data: [ssSample],
+            included: [ssSampleMetadata, ssStudy, ssStudyMetadata, ssFacultySponsor],
           },
         },
       )
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
 
-      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-2&include=sample', {
-        statusCode: 200,
-        body: {
-          data: [request2],
-          included: [sample2],
-        },
+      cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+        cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-2&include=sample', {
+          statusCode: 200,
+          body: {
+            data: [pacbioRequestFactory.content.data[1]],
+            // Sample included
+            included: [pacbioRequestFactory.content.included[8]],
+          },
+        })
       })
+      cy.intercept(
+        '/api/v2/samples?filter[uuid]=external-id-123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        {
+          statusCode: 200,
+          body: {
+            data: [ssSample2],
+            included: [ssSampleMetadata, ssStudy, ssStudyMetadata, ssFacultySponsor],
+          },
+        },
+      )
       cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-2&include=sample', {
         statusCode: 200,
         body: {
@@ -217,6 +180,7 @@ describe('Sample Report page', () => {
       // Simulate pressing Enter to add the sample
       cy.get('#sampleInput').type('{enter}')
 
+      // Check some sample data is displayed
       cy.get('#sampleReportTable').contains('Pacbio_HiFi')
       cy.get('#sampleReportTable').contains('Pacbio_HiFi_mplx')
 
@@ -230,10 +194,10 @@ describe('Sample Report page', () => {
             '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Cost Code","Species","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type","Sample Type"\r',
           )
           expect(csv[1]).to.include(
-            '"2025-06-23","2","id-123","Supplier B","Cohort 1","1","Study 1","aCostCodeExample","human","50","100","Faculty Sponsor 1","Pacbio_HiFi",""\r',
+            '"2021-01-01","2","id-123","Supplier Name","Cohort 1","1","Study 1","cost-code-1","human","50","100","Faculty Sponsor 1","Pacbio_HiFi","donor-id-123"\r',
           )
           expect(csv[2]).to.include(
-            '"2025-06-23","2","id-123","Supplier B","Cohort 1","1","Study 1","","human","50","100","Faculty Sponsor 1","Pacbio_HiFi_mplx",""',
+            '"2021-01-03","2","id-123","Supplier Name 2","Cohort 1","1","Study 1","cost-code-2","human","50","100","Faculty Sponsor 1","Pacbio_HiFi_mplx","donor-id-123"',
           )
         },
       )
@@ -284,12 +248,14 @@ describe('Sample Report page', () => {
     })
 
     it('Unsuccessfully - when the sample does not exist in sequencescape', () => {
-      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
-        statusCode: 200,
-        body: {
-          data: [request],
-          included: [sample],
-        },
+      cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+        cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+          statusCode: 200,
+          body: {
+            data: [pacbioRequestFactory.content.data[0]],
+            included: [pacbioRequestFactory.content.included[7]],
+          },
+        })
       })
       cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
         statusCode: 200,
@@ -299,7 +265,7 @@ describe('Sample Report page', () => {
         },
       })
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
         {
           statusCode: 200,
           body: {
@@ -315,12 +281,14 @@ describe('Sample Report page', () => {
     })
 
     it('Unsuccessfully - when the sequencescape server returns an error', () => {
-      cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
-        statusCode: 200,
-        body: {
-          data: [request],
-          included: [sample],
-        },
+      cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+        cy.intercept('v1/pacbio/requests?filter[sample_name]=sample-1&include=sample', {
+          statusCode: 200,
+          body: {
+            data: [pacbioRequestFactory.content.data[0]],
+            included: [pacbioRequestFactory.content.included[7]],
+          },
+        })
       })
       cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-1&include=sample', {
         statusCode: 200,
@@ -330,7 +298,7 @@ describe('Sample Report page', () => {
         },
       })
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
         {
           statusCode: 422,
           body: {

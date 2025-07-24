@@ -86,9 +86,6 @@ const fetchTractionSamples = async (sample_input, samples) => {
 
       // Add the sample to the sample list
       tractionSamples.push(formattedSample)
-    } else {
-      // TODO improve this error message for source_identifier inputs (this may print the same thing multiple times)
-      showAlert(`Sample ${sample_input} already exists in the list`, 'info')
     }
   }
 
