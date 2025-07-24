@@ -107,7 +107,6 @@ const props = defineProps({
 
 const emit = defineEmits(['click'])
 const store = useOntPoolCreateStore()
-
 /**
  * Computes the request object for this well from the store, if any.
  * @returns {Object|String} The request object or an empty string if none found.
