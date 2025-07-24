@@ -73,10 +73,11 @@
 </template>
 
 <script setup>
-import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
+import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList.vue'
 import { ref, computed } from 'vue'
-import { eachRecord } from '@/lib/csv/pacbio'
-import { useOntPoolCreateStore } from '@/stores/ontPoolCreate'
+import { eachRecord } from '@/lib/csv/pacbio.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import useAlert from '@/composables/useAlert.js'
 
 const busy = ref(false)
 const autoTag = ref(false)
@@ -88,6 +89,8 @@ const tubeItem = computed(() => ontPoolCreateStore.tubeItem)
 const selectedRequests = computed(() => ontPoolCreateStore.selectedRequests)
 
 const persisted = computed(() => !!poolItem.value.id)
+
+const { showAlert } = useAlert() // useAlert is a composable function that is used to create an alert.It is used to show a success or failure message.
 
 const poolType = computed(() => {
   switch (selectedRequests.value.length) {
@@ -107,14 +110,6 @@ const border = computed(() => {
     return `rounded border ${borderColour}`
   }
 })
-
-function showAlert(message, type, key) {
-  // This assumes a global event bus or similar alert system is available
-  // Replace with your actual alert implementation if needed
-  // e.g., use a composable or inject
-  // For now, just log
-  console.log(`[${type}] ${key}:`, message)
-}
 
 async function create() {
   busy.value = true
