@@ -186,7 +186,7 @@ describe('TractionTable', () => {
       )
     })
   })
-  describe('Custom field components', () => {
+  ;(describe('Custom field components', () => {
     const fields = [
       { key: 'name', label: 'Name', sortable: true },
       { key: 'age', label: 'Age', sortable: true },
@@ -260,7 +260,7 @@ describe('TractionTable', () => {
         expect(tableWrapper.vm.rows[0].detailsShowing).toBe(true)
         expect(tableWrapper.find('[data-testid=details]').exists()).toBe(true)
       })
-    })
+    }))
   describe('simple table', () => {
     const tableWrapper = (props = {}) => {
       return mount(TractionTable, {

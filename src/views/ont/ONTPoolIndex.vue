@@ -55,6 +55,17 @@
             </traction-table>
           </div>
         </template>
+
+        <template #cell(source_identifier)="row">
+          <traction-tooltip
+            v-if="row.item.source_identifier.split(',').length > 4"
+            :tooltip-text="row.item.source_identifier"
+            :tooltip-direction="'top-[25px] left-0'"
+            :tooltip-wrap="'text-wrap'"
+          >
+            <p>{{ formattedSourceIdentifier(row.item.source_identifier) }}</p>
+          </traction-tooltip>
+        </template>
       </traction-table>
 
       <div class="clearfix">
@@ -191,6 +202,12 @@ export default {
       return await this.fetchWithQueryParams(this.fetchOntPools, this.filterOptions)
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
+    formattedSourceIdentifier(sourceIdentifier) {
+      if (!sourceIdentifier) return ''
+      const sources = sourceIdentifier.split(',')
+      if (sources.length < 5) return sourceIdentifier
+      return `${sources[0]}  ...   ${sources[sources.length - 1]}`
+    },
   },
 }
 </script>

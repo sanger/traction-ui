@@ -9,8 +9,8 @@
       v-show="hover"
       id="tooltip"
       :class="[
-        'text-sm px-1 absolute rounded shadow-xl left-0 top-[-25px] whitespace-nowrap z-50',
-        `${tooltipBgColour} ${tooltipTextColour}`,
+        'text-sm px-1 absolute rounded shadow-xl z-50',
+        `${tooltipBgColour} ${tooltipTextColour} ${tooltipDirection} ${tooltipWrap}`,
       ]"
     >
       <template v-if="tooltipText">
@@ -45,6 +45,16 @@ defineProps({
     type: String,
     required: false,
     default: 'text-gray-700',
+  },
+  tooltipDirection: {
+    type: String,
+    required: false,
+    default: 'top-[-25px] left-0', // Default position above the element
+  },
+  tooltipWrap: {
+    type: String,
+    required: false,
+    default: 'whitespace-nowrap', // Default text wrap
   },
 })
 
