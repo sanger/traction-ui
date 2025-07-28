@@ -22,7 +22,7 @@ jobs:
       uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
 
     - name: Install npm dependencies
-      uses: sanger/.github/.github/actions/install/npm/npm@y25-098-updates-on-actions-1
+      uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
 
     - name: Run unit tests
       run: >-
