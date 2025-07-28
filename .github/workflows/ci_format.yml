@@ -1,0 +1,45 @@
+name: CI Format
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+  prettier:
+    name: Check format with prettier
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+     
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+
+      - name: Install npm dependencies
+        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+
+      - name: Run npm pretty
+        run: >-
+          npm run pretty
+
+  eslint:
+    name: Lint with ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+     
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+
+      - name: Install npm dependencies
+        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+
+      - name: Lint using ESLint
+        run: >-
+          npm run lint
