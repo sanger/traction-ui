@@ -2,7 +2,7 @@ import { useOntRunsStore } from '@/stores/ontRuns.js'
 import useOntRootStore from '@/stores/ontRoot.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
-import { createPinia, setActivePinia, store as vuexStore } from '@support/testHelper.js'
+import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
@@ -13,8 +13,6 @@ import * as ontRuns from '@/stores/utilities/ontRuns.js'
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
 const ontPoolFactory = OntPoolFactory()
-
-vuexStore.state.traction.ont.pools.resources = { ...ontPoolFactory.storeData.resources }
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
