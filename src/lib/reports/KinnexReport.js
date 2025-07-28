@@ -81,13 +81,16 @@ const fetchTractionSamples = async (sample_input, samples) => {
       const formattedSample = {
         // Include request_id so we can check for duplicates
         request_id: request.id || '',
+        // Sample id in the kinnex report is the barcode
+        barcode: request.attributes.barcode,
         cost_code: request.attributes.cost_code || '',
         library_type: request.attributes.library_type || '',
+        external_study_id: request.attributes.external_study_id || '',
         date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
         supplier_name: sample.attributes.supplier_name || '',
         donor_id: sample.attributes.donor_id || '',
         species: sample.attributes.species || '',
-        external_id: sample.attributes.external_id || '',
+        sanger_sample_id: sample.attributes.sanger_sample_id || '',
       }
 
       // Add the sample to the sample list
@@ -99,32 +102,31 @@ const fetchTractionSamples = async (sample_input, samples) => {
 }
 
 /**
- * Function to fetch samples from Sequencescape API based on the traction samples found.
+ * Function to fetch studies from Sequencescape API based on the traction samples found.
  * It retrieves sample metadata, studies, and faculty sponsors for each sample.
  *
  * @param {Array} samples - The array of samples to fetch from Sequencescape.
- * @returns {Object} An object containing the formatted samples and any errors encountered.
+ * @returns {Object} An object containing the formatted studies and any errors encountered.
  */
-const fetchSequencescapeSamples = async (samples) => {
+const fetchSequencescapeStudies = async (samples) => {
   const api = useRootStore().api
 
-  const sequencescapeSamples = []
-  const sampleUuids = samples.map((sample) => sample.external_id).join(',')
-  const request = api.sequencescape.samples
+  const sequencescapeStudies = []
+  const studyUuids = samples.map((sample) => sample.external_study_id).join(',')
+  const request = api.sequencescape.studies
 
   const promise = request.get({
-    filter: { uuid: sampleUuids },
-    include: 'sample_metadata,studies.study_metadata.faculty_sponsor',
+    filter: { uuid: studyUuids },
+    include: 'study_metadata.faculty_sponsor',
   })
   const response = await handleResponse(promise)
   const { success, body: { data, included = [] } = {}, errors = [] } = response
-  const { sample_metadata, studies, study_metadata, faculty_sponsors } =
-    groupIncludedByResource(included)
+  const { study_metadata, faculty_sponsors } = groupIncludedByResource(included)
 
   if (!success) {
     return {
       data: [],
-      errors: { message: `Error fetching samples from Sequencescape: ${errors}`, type: 'danger' },
+      errors: { message: `Error fetching studies from Sequencescape: ${errors}`, type: 'danger' },
     }
   }
 
@@ -132,22 +134,15 @@ const fetchSequencescapeSamples = async (samples) => {
     return {
       data: [],
       errors: {
-        message: 'No samples found in Sequencescape with the provided input',
+        message: 'No studies found in Sequencescape with the provided input',
         type: 'warning',
       },
     }
   }
 
   // Add the fetched data to the samples array
-  for (const sample of data) {
-    // Find the corresponding metadata
-    const s_metadata = sample_metadata.find(
-      (s) => s.id == sample.relationships.sample_metadata.data.id,
-    )
-
+  for (const study of data) {
     // Find the corresponding study
-    // Note: This assumes that each sample has only one study associated with it
-    const study = studies.find((s) => s.id == sample.relationships.studies.data[0].id)
     const stdy_metadata = study_metadata.find(
       (s) => s.id == study.relationships.study_metadata.data.id,
     )
@@ -155,41 +150,42 @@ const fetchSequencescapeSamples = async (samples) => {
       (s) => s.id == stdy_metadata.relationships.faculty_sponsor.data.id,
     )
 
-    // Format the sample/sample_metadata attributes according to the csvStructure
-    const formattedSample = {
-      id: sample.id || '',
-      sanger_sample_id: sample.attributes.sanger_sample_id || '',
-      uuid: sample.attributes.uuid || '',
-      cohort: s_metadata.attributes.cohort || '',
-      concentration: s_metadata.attributes.concentration || '',
-      volume: s_metadata.attributes.volume || '',
+    // Format the study attributes according to the csvStructure
+    const formattedStudy = {
       study_number: study.id || '',
+      uuid: study.attributes.uuid || '',
       study_name: study.attributes.name || '',
       submitting_faculty: faculty_sponsor.attributes.name || '',
     }
 
     // Add the sample to the sample list
-    sequencescapeSamples.push(formattedSample)
+    sequencescapeStudies.push(formattedStudy)
   }
 
-  return { data: sequencescapeSamples, errors: {} }
+  return { data: sequencescapeStudies, errors: {} }
 }
 
+// CSV structure for the report
+// This structure defines the keys and labels for the CSV export
+//
+// Commented out fields were requested by the users but not feasible.
+// This is because these fields require knowledge about the individual samples
+// that make up the Kinnex Compound Samples which we don't have access to
 const csvStructure = [
   { key: 'date_of_sample_collection', label: 'Date of Sample Collection' },
-  { key: 'id', label: 'Sample ID' },
+  { key: 'barcode', label: 'Sample ID' },
   { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_name', label: 'Supplier Sample Name' },
-  { key: 'cohort', label: 'Cohort' },
+  // { key: 'cohort', label: 'Cohort' },
   { key: 'study_number', label: 'Study Number' },
   { key: 'study_name', label: 'Study Name' },
   { key: 'cost_code', label: 'Cost Code' },
   { key: 'species', label: 'Species' },
-  { key: 'concentration', label: 'Supplied Concentration (ng/uL)' },
-  { key: 'volume', label: 'Supplied Volume (uL)' },
+  // { key: 'concentration', label: 'Supplied Concentration (ng/uL)' },
+  // { key: 'volume', label: 'Supplied Volume (uL)' },
   { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
   { key: 'donor_id', label: 'Sample Type' },
 ]
 
-export { csvStructure, fetchTractionSamples, fetchSequencescapeSamples }
+export { csvStructure, fetchTractionSamples, fetchSequencescapeStudies }

@@ -96,7 +96,7 @@ import useAlert from '@/composables/useAlert'
 import { downloadBlob, arrayToCsv } from '@/lib/csv/creator.js'
 import {
   fetchTractionSamples,
-  fetchSequencescapeSamples,
+  fetchSequencescapeStudies,
   csvStructure,
 } from '@/lib/reports/KinnexReport.js'
 let sample_input = ref('')
@@ -123,9 +123,9 @@ const addSample = async () => {
       return
     }
 
-    const { data: sequencescapeSamples, errors: ssError } =
-      await fetchSequencescapeSamples(tractionSamples)
-    if (!sequencescapeSamples.length) {
+    const { data: sequencescapeStudies, errors: ssError } =
+      await fetchSequencescapeStudies(tractionSamples)
+    if (!sequencescapeStudies.length) {
       if (ssError && ssError.message) {
         showAlert(ssError.message, ssError.type)
       }
@@ -133,14 +133,14 @@ const addSample = async () => {
       return
     }
 
-    // Combine the traction samples and sequencescape samples
-    // N.B We might get traction requests that do not have a corresponding sequencescape sample
+    // Combine the traction samples and sequencescape studies
+    // N.B We might get traction requests that do not have a corresponding sequencescape study
     // But we should still show the traction sample in the report as it contains useful information
     const combinedSamples = tractionSamples.map((sample) => {
-      const seqSample = sequencescapeSamples.find((s) => s.uuid === sample.external_id)
+      const seqStudy = sequencescapeStudies.find((s) => s.uuid === sample.external_study_id)
       return {
         ...sample,
-        ...seqSample,
+        ...seqStudy,
       }
     })
 

@@ -1,4 +1,4 @@
-import { fetchTractionSamples, fetchSequencescapeSamples } from '@/lib/reports/KinnexReport'
+import { fetchTractionSamples, fetchSequencescapeStudies } from '@/lib/reports/KinnexReport'
 import useRootStore from '@/stores'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
@@ -15,36 +15,12 @@ const request = pacbioRequestFactory.content.data[0]
 const sample = pacbioRequestFactory.content.included[7]
 
 // Mocked data from Sequencescape
-const ssSample = {
-  id: '2',
-  type: 'samples',
-  attributes: {
-    uuid: '123',
-    sanger_sample_id: 'id-123',
-  },
-  relationships: {
-    sample_metadata: {
-      data: {
-        type: 'sample_metadata',
-        id: '1',
-      },
-    },
-    studies: {
-      data: [
-        {
-          type: 'studies',
-          id: '1',
-        },
-      ],
-    },
-  },
-}
-
 const ssStudy = {
   id: '1',
   type: 'studies',
   attributes: {
     name: 'Study 1',
+    uuid: 'ext',
   },
   relationships: {
     study_metadata: {
@@ -69,16 +45,6 @@ const ssStudyMetadata = {
   },
 }
 
-const ssSampleMetadata = {
-  id: '1',
-  type: 'sample_metadata',
-  attributes: {
-    cohort: 'Cohort 1',
-    concentration: 50,
-    volume: 100,
-  },
-}
-
 const ssFacultySponsor = {
   id: '1',
   type: 'faculty_sponsors',
@@ -99,7 +65,7 @@ describe('KinnexReport', () => {
     rootStore.api.traction.pacbio.requests.get = get
 
     ssGet = vi.fn()
-    rootStore.api.sequencescape.samples.get = ssGet
+    rootStore.api.sequencescape.studies.get = ssGet
   })
 
   describe('fetchTractionSamples', () => {
@@ -144,13 +110,15 @@ describe('KinnexReport', () => {
       expect(data).toHaveLength(1)
       expect(data[0]).toEqual({
         request_id: request.id,
+        barcode: request.attributes.barcode,
         cost_code: request.attributes.cost_code,
         library_type: request.attributes.library_type,
+        external_study_id: request.attributes.external_study_id,
         date_of_sample_collection: sample.attributes.date_of_sample_collection,
         supplier_name: sample.attributes.supplier_name,
         donor_id: sample.attributes.donor_id,
         species: sample.attributes.species,
-        external_id: sample.attributes.external_id,
+        sanger_sample_id: sample.attributes.sanger_sample_id,
       })
     })
 
@@ -174,13 +142,15 @@ describe('KinnexReport', () => {
       expect(data).toHaveLength(1)
       expect(data[0]).toEqual({
         request_id: request.id,
+        barcode: request.attributes.barcode,
         cost_code: request.attributes.cost_code,
         library_type: request.attributes.library_type,
+        external_study_id: request.attributes.external_study_id,
         date_of_sample_collection: sample.attributes.date_of_sample_collection,
         supplier_name: sample.attributes.supplier_name,
         donor_id: sample.attributes.donor_id,
         species: sample.attributes.species,
-        external_id: sample.attributes.external_id,
+        sanger_sample_id: sample.attributes.sanger_sample_id,
       })
     })
 
@@ -226,23 +196,27 @@ describe('KinnexReport', () => {
       expect(data).toEqual([
         {
           request_id: request.id,
+          barcode: request.attributes.barcode,
           cost_code: request.attributes.cost_code,
-          date_of_sample_collection: sample.attributes.date_of_sample_collection,
-          donor_id: sample.attributes.donor_id,
           library_type: request.attributes.library_type,
-          species: sample.attributes.species,
+          external_study_id: request.attributes.external_study_id,
+          date_of_sample_collection: sample.attributes.date_of_sample_collection,
           supplier_name: sample.attributes.supplier_name,
-          external_id: sample.attributes.external_id,
+          donor_id: sample.attributes.donor_id,
+          species: sample.attributes.species,
+          sanger_sample_id: sample.attributes.sanger_sample_id,
         },
         {
           request_id: request2.id,
+          barcode: request2.attributes.barcode,
           cost_code: request2.attributes.cost_code,
-          date_of_sample_collection: sample2.attributes.date_of_sample_collection,
-          donor_id: sample2.attributes.donor_id,
           library_type: request2.attributes.library_type,
-          species: sample2.attributes.species,
+          external_study_id: request2.attributes.external_study_id,
+          date_of_sample_collection: sample2.attributes.date_of_sample_collection,
           supplier_name: sample2.attributes.supplier_name,
-          external_id: sample2.attributes.external_id,
+          donor_id: sample2.attributes.donor_id,
+          species: sample2.attributes.species,
+          sanger_sample_id: sample2.attributes.sanger_sample_id,
         },
       ])
       expect(get).toHaveBeenCalledWith({
@@ -256,13 +230,13 @@ describe('KinnexReport', () => {
     })
   })
 
-  describe('fetchSequencescapeSamples', () => {
+  describe('fetchSequencescapeStudies', () => {
     it('returns empty array and shows alert if response fails', async () => {
       ssGet.mockRejectedValue('Internal Server Error')
-      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'ext' }])
+      const { data, errors } = await fetchSequencescapeStudies([{ external_study_id: 'ext' }])
       expect(data).toEqual([])
       expect(errors).toEqual({
-        message: 'Error fetching samples from Sequencescape: Internal Server Error',
+        message: 'Error fetching studies from Sequencescape: Internal Server Error',
         type: 'danger',
       })
     })
@@ -274,37 +248,32 @@ describe('KinnexReport', () => {
         ok: true,
         json: () => Promise.resolve({ data: [], included: [] }),
       })
-      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'ext' }])
+      const { data, errors } = await fetchSequencescapeStudies([{ external_study_id: 'ext' }])
       expect(data).toEqual([])
       expect(errors).toEqual({
-        message: 'No samples found in Sequencescape with the provided input',
+        message: 'No studies found in Sequencescape with the provided input',
         type: 'warning',
       })
     })
 
-    it('returns formatted samples from Sequencescape', async () => {
+    it('returns formatted studies from Sequencescape', async () => {
       ssGet.mockResolvedValue({
         status: 200,
         statusText: 'OK',
         ok: true,
         json: () =>
           Promise.resolve({
-            data: [ssSample],
-            included: [ssFacultySponsor, ssSampleMetadata, ssStudyMetadata, ssStudy],
+            data: [ssStudy],
+            included: [ssFacultySponsor, ssStudyMetadata],
           }),
       })
 
-      const { data, errors } = await fetchSequencescapeSamples([{ external_id: 'uuid' }])
+      const { data, errors } = await fetchSequencescapeStudies([{ external_study_id: 'ext' }])
       expect(errors).toEqual({})
       expect(data).toHaveLength(1)
       expect(data[0]).toEqual({
-        id: ssSample.id,
-        sanger_sample_id: ssSample.attributes.sanger_sample_id,
-        uuid: ssSample.attributes.uuid,
-        cohort: ssSampleMetadata.attributes.cohort,
-        concentration: ssSampleMetadata.attributes.concentration,
-        volume: ssSampleMetadata.attributes.volume,
         study_number: ssStudy.id,
+        uuid: ssStudy.attributes.uuid,
         study_name: ssStudy.attributes.name,
         submitting_faculty: ssFacultySponsor.attributes.name,
       })

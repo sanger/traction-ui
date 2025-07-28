@@ -1,61 +1,12 @@
 import PacbioRequestFactory from '../../factories/PacbioRequestFactory.js'
 
 // Data for mocked Sequencescape responses
-const ssSample = {
-  id: '2',
-  type: 'samples',
-  attributes: {
-    uuid: 'external-id-122',
-    sanger_sample_id: 'id-123',
-  },
-  relationships: {
-    sample_metadata: {
-      data: {
-        type: 'sample_metadata',
-        id: '1',
-      },
-    },
-    studies: {
-      data: [
-        {
-          type: 'studies',
-          id: '1',
-        },
-      ],
-    },
-  },
-}
-
-const ssSample2 = {
-  id: '2',
-  type: 'samples',
-  attributes: {
-    uuid: 'external-id-123',
-    sanger_sample_id: 'id-123',
-  },
-  relationships: {
-    sample_metadata: {
-      data: {
-        type: 'sample_metadata',
-        id: '1',
-      },
-    },
-    studies: {
-      data: [
-        {
-          type: 'studies',
-          id: '1',
-        },
-      ],
-    },
-  },
-}
-
 const ssStudy = {
   id: '1',
   type: 'studies',
   attributes: {
     name: 'Study 1',
+    uuid: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
   },
   relationships: {
     study_metadata: {
@@ -77,16 +28,6 @@ const ssStudyMetadata = {
         id: '1',
       },
     },
-  },
-}
-
-const ssSampleMetadata = {
-  id: '1',
-  type: 'sample_metadata',
-  attributes: {
-    cohort: 'Cohort 1',
-    concentration: 50,
-    volume: 100,
   },
 }
 
@@ -137,12 +78,12 @@ describe('Sample Report page', () => {
         },
       })
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/studies?filter[uuid]=fec8a1fa-b9e2-11e9-9123-fa163e99b035&include=study_metadata.faculty_sponsor',
         {
           statusCode: 200,
           body: {
-            data: [ssSample],
-            included: [ssSampleMetadata, ssStudy, ssStudyMetadata, ssFacultySponsor],
+            data: [ssStudy],
+            included: [ssStudyMetadata, ssFacultySponsor],
           },
         },
       )
@@ -159,16 +100,7 @@ describe('Sample Report page', () => {
           },
         })
       })
-      cy.intercept(
-        '/api/v2/samples?filter[uuid]=external-id-123&include=sample_metadata,studies.study_metadata.faculty_sponsor',
-        {
-          statusCode: 200,
-          body: {
-            data: [ssSample2],
-            included: [ssSampleMetadata, ssStudy, ssStudyMetadata, ssFacultySponsor],
-          },
-        },
-      )
+      // We don't need to intercept SS request here as it is the same as above
       cy.intercept('v1/pacbio/requests?filter[source_identifier]=sample-2&include=sample', {
         statusCode: 200,
         body: {
@@ -191,13 +123,13 @@ describe('Sample Report page', () => {
         (csv) => {
           csv = csv.split('\n')
           expect(csv[0]).to.include(
-            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Cost Code","Species","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type","Sample Type"\r',
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Study Number","Study Name","Cost Code","Species","Submitting Faculty","Library Type","Sample Type"\r',
           )
           expect(csv[1]).to.include(
-            '"2021-01-01","2","id-123","Supplier Name","Cohort 1","1","Study 1","cost-code-1","human","50","100","Faculty Sponsor 1","Pacbio_HiFi","donor-id-123"\r',
+            '"2021-01-01","","id-122","Supplier Name","1","Study 1","cost-code-1","human","Faculty Sponsor 1","Pacbio_HiFi","donor-id-123"\r',
           )
           expect(csv[2]).to.include(
-            '"2021-01-03","2","id-123","Supplier Name 2","Cohort 1","1","Study 1","cost-code-2","human","50","100","Faculty Sponsor 1","Pacbio_HiFi_mplx","donor-id-123"',
+            '"2021-01-03","","id-123","Supplier Name 2","1","Study 1","cost-code-2","human","Faculty Sponsor 1","Pacbio_HiFi_mplx","donor-id-123"',
           )
         },
       )
@@ -265,7 +197,7 @@ describe('Sample Report page', () => {
         },
       })
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/studies?filter[uuid]=fec8a1fa-b9e2-11e9-9123-fa163e99b035&include=study_metadata.faculty_sponsor',
         {
           statusCode: 200,
           body: {
@@ -276,7 +208,7 @@ describe('Sample Report page', () => {
       )
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
-      cy.contains('No samples found in Sequencescape with the provided input')
+      cy.contains('No studies found in Sequencescape with the provided input')
       cy.contains('No samples added yet')
     })
 
@@ -298,7 +230,7 @@ describe('Sample Report page', () => {
         },
       })
       cy.intercept(
-        '/api/v2/samples?filter[uuid]=external-id-122&include=sample_metadata,studies.study_metadata.faculty_sponsor',
+        '/api/v2/studies?filter[uuid]=fec8a1fa-b9e2-11e9-9123-fa163e99b035&include=study_metadata.faculty_sponsor',
         {
           statusCode: 422,
           body: {
@@ -311,7 +243,7 @@ describe('Sample Report page', () => {
       cy.get('#sampleInput').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains(
-        'Error fetching samples from Sequencescape: InternalServerError A failure occured',
+        'Error fetching studies from Sequencescape: InternalServerError A failure occured',
       )
       cy.contains('No samples added yet')
     })

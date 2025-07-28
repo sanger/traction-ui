@@ -134,7 +134,7 @@ const config = [
         name: 'labware',
       },
       {
-        name: 'samples',
+        name: 'studies',
       },
     ],
   },

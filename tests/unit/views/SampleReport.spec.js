@@ -2,7 +2,7 @@ import { mount } from '@support/testHelper'
 import useRootStore from '@/stores'
 import SampleReport from '@/views/SampleReport.vue'
 import { createPinia, setActivePinia, flushPromises } from '@support/testHelper.js'
-import { fetchTractionSamples, fetchSequencescapeSamples } from '@/lib/reports/KinnexReport.js'
+import { fetchTractionSamples, fetchSequencescapeStudies } from '@/lib/reports/KinnexReport.js'
 
 const mockShowAlert = vi.fn()
 
@@ -11,7 +11,7 @@ const mockShowAlert = vi.fn()
 // See https://vitest.dev/api/vi.html#vi-mock
 const mocks = vi.hoisted(() => {
   return {
-    fetchSequencescapeSamples: vi.fn(),
+    fetchSequencescapeStudies: vi.fn(),
     fetchTractionSamples: vi.fn(),
   }
 })
@@ -32,30 +32,27 @@ vi.mock('@/lib/reports/KinnexReport.js', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
-    fetchSequencescapeSamples: mocks.fetchSequencescapeSamples,
+    fetchSequencescapeStudies: mocks.fetchSequencescapeStudies,
     fetchTractionSamples: mocks.fetchTractionSamples,
   }
 })
 
 const tractionExpectedSample = {
   request_id: 1,
+  barcode: 'NT123',
   cost_code: 'aCostCodeExample',
   library_type: 'Pacbio_HiFi',
   date_of_sample_collection: '2025-06-23',
   supplier_name: 'Supplier B',
   donor_id: 'donor-123',
   species: 'human',
-  external_id: '123',
+  external_study_id: '123',
+  sanger_sample_id: 'sanger-123',
 }
 
-const ssExpectedSample = {
-  id: '2',
-  sanger_sample_id: 'id-123',
-  uuid: '123',
-  cohort: 'Cohort 1',
-  concentration: 50,
-  volume: 100,
+const ssExpectedStudy = {
   study_number: '1',
+  uuid: '123',
   study_name: 'Study 1',
   submitting_faculty: 'Faculty Sponsor 1',
 }
@@ -78,7 +75,7 @@ describe('SampleReport', () => {
     rootStore.api.traction.pacbio.requests.get = get
 
     ss_get = vi.fn()
-    rootStore.api.sequencescape.samples.get = ss_get
+    rootStore.api.sequencescape.studies.get = ss_get
   })
 
   describe('sample input', () => {
@@ -88,8 +85,8 @@ describe('SampleReport', () => {
         data: [tractionExpectedSample],
         errors: {},
       })
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
-        data: [ssExpectedSample],
+      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
+        data: [ssExpectedStudy],
         errors: {},
       })
 
@@ -98,7 +95,7 @@ describe('SampleReport', () => {
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
 
-      expect(wrapper.vm.samples).toEqual([{ ...tractionExpectedSample, ...ssExpectedSample }])
+      expect(wrapper.vm.samples).toEqual([{ ...tractionExpectedSample, ...ssExpectedStudy }])
     })
 
     it('correctly combines multiple samples', async () => {
@@ -107,19 +104,19 @@ describe('SampleReport', () => {
         data: [
           tractionExpectedSample,
           // only include information required for linking and some metadata
-          { cost_code: 'cost-code-2', species: 'species-1', external_id: 'sample2-id' },
-          { cost_code: 'cost-code-3', species: 'species-2', external_id: 'sample3-id' },
+          { cost_code: 'cost-code-2', species: 'species-1', external_study_id: 'study2-id' },
+          { cost_code: 'cost-code-3', species: 'species-2', external_study_id: 'study3-id' },
           // Sample with no matching Sequencescape data
-          { cost_code: 'cost-code-4', species: 'species-3', external_id: 'sample4-id' },
+          { cost_code: 'cost-code-4', species: 'species-3', external_study_id: 'study4-id' },
         ],
         errors: {},
       })
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
+      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
         data: [
-          ssExpectedSample,
+          ssExpectedStudy,
           // only include information required for linking and some metadata
-          { concentration: 5, volume: 10, uuid: 'sample2-id' },
-          { concentration: 1, volume: 1, uuid: 'sample3-id' },
+          { study_name: 'study-2', uuid: 'study2-id' },
+          { study_name: 'study-3', uuid: 'study3-id' },
         ],
         errors: {},
       })
@@ -130,24 +127,22 @@ describe('SampleReport', () => {
       await flushPromises()
 
       expect(wrapper.vm.samples).toEqual([
-        { ...tractionExpectedSample, ...ssExpectedSample },
+        { ...tractionExpectedSample, ...ssExpectedStudy },
         {
           cost_code: 'cost-code-2',
           species: 'species-1',
-          external_id: 'sample2-id',
-          concentration: 5,
-          volume: 10,
-          uuid: 'sample2-id',
+          external_study_id: 'study2-id',
+          uuid: 'study2-id',
+          study_name: 'study-2',
         },
         {
           cost_code: 'cost-code-3',
           species: 'species-2',
-          external_id: 'sample3-id',
-          concentration: 1,
-          volume: 1,
-          uuid: 'sample3-id',
+          external_study_id: 'study3-id',
+          uuid: 'study3-id',
+          study_name: 'study-3',
         },
-        { cost_code: 'cost-code-4', species: 'species-3', external_id: 'sample4-id' },
+        { cost_code: 'cost-code-4', species: 'species-3', external_study_id: 'study4-id' },
       ])
     })
 
@@ -179,10 +174,10 @@ describe('SampleReport', () => {
         data: [tractionExpectedSample],
         errors: {},
       })
-      vi.mocked(fetchSequencescapeSamples).mockResolvedValue({
+      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
         data: [],
         errors: {
-          message: 'No samples found in Sequencescape with the provided input',
+          message: 'No studies found in Sequencescape with the provided input',
           type: 'warning',
         },
       })
@@ -193,7 +188,7 @@ describe('SampleReport', () => {
       await flushPromises()
 
       expect(mockShowAlert).toHaveBeenCalledWith(
-        'No samples found in Sequencescape with the provided input',
+        'No studies found in Sequencescape with the provided input',
         'warning',
       )
       expect(wrapper.vm.samples).toEqual([])
@@ -274,7 +269,7 @@ describe('SampleReport', () => {
     describe('downloadReport', () => {
       it('downloads a CSV file with the correct content', async () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedSample }]
+        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedStudy }]
         await wrapper.vm.$nextTick()
 
         // Get the mocked downloadBlob from the module mock
@@ -287,7 +282,7 @@ describe('SampleReport', () => {
         expect(downloadBlob).toHaveBeenCalledWith(
           // Just check headers as this is testing elswhere
           expect.stringContaining(
-            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Cohort","Study Number","Study Name","Cost Code","Species","Supplied Concentration (ng/uL)","Supplied Volume (uL)","Submitting Faculty","Library Type","Sample Type"',
+            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Study Number","Study Name","Cost Code","Species","Submitting Faculty","Library Type","Sample Type"',
           ),
           `traction_sample_report_${time}.csv`,
           'text/csv',
@@ -298,7 +293,7 @@ describe('SampleReport', () => {
     describe('reset', () => {
       it('clears the sample list', () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedSample }]
+        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedStudy }]
         expect(wrapper.vm.samples.length).toBe(1)
         wrapper.vm.reset()
         expect(wrapper.vm.samples.length).toBe(0)
