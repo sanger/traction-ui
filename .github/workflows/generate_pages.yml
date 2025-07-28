@@ -26,10 +26,15 @@ jobs:
         uses: sanger/.github/.github/actions/install/npm@master
             
       - name: Run jsdoc and organize docs
-        uses: sanger/.github/.github/actions/docs/run/jsdoc@master
+        run: |
+          npm run jsdoc
+          mkdir -p docs/public
+          cp -r public docs/public
+          cp public/favicon.ico docs/
+          cp -r style_guide.md docs/style_guide.md
             
       - name: Install Python dependencies
-        uses: sanger/.github/.github/actions/install/python@master
+        uses: sanger/.github/.github/actions/install/python/dev@master
 
       - name: Generate docs
         run: |
