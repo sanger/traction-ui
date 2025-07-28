@@ -24,15 +24,4 @@ export default {
 
     return { success, errors, meta }
   },
-  setInstruments: async ({ commit, rootState }) => {
-    const request = rootState.api.traction.ont.instruments
-    const promise = request.get()
-    const response = await handleResponse(promise)
-    const { success, body: { data } = {}, errors = [] } = response
-
-    if (success) {
-      commit('setInstruments', data)
-    }
-    return { success, errors, response }
-  },
 }
