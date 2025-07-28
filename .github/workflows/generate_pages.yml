@@ -34,7 +34,7 @@ jobs:
           cp -r style_guide.md docs/style_guide.md
             
       - name: Install Python dependencies
-        uses: sanger/.github/.github/actions/install/python/dev@master
+        uses: sanger/.github/.github/actions/install/python/dev@y25-098-updates-on-actions-1
 
       - name: Generate docs
         run: |
