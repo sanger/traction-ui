@@ -377,10 +377,14 @@ const toggleAnnotations = () => {
 const annotationTypes = computed(() => Object.values(store.resources.annotationTypes))
 
 const showAnnotations = () => {
-  store.setAnnotations({
-    parent: store.wells[plateNumber.value][position.value],
-    annotatableType: 'Pacbio::Well',
-  })
-  toggleAnnotations()
+  // not sure if this is the correct way as slightly confused by getting well.
+  const well = store.getWell(plateNumber.value, position.value)
+  if (well) {
+    store.setAnnotations({
+      parent: store.wells[plateNumber.value][position.value],
+      annotatableType: 'Pacbio::Well',
+    })
+    toggleAnnotations()
+  }
 }
 </script>

@@ -1,4 +1,4 @@
-import { mountWithStore, nextTick } from '@support/testHelper.js'
+import { mountWithStore, nextTick, flushPromises } from '@support/testHelper.js'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
@@ -807,8 +807,8 @@ describe('PacbioRunWellEdit', () => {
   })
 
   describe('annotations', () => {
-    beforeEach(async () => {
-      ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
+    it('should show the annotations when the button is clicked', async () => {
+      const { wrapper } = mountWithStore(PacbioRunWellEdit, {
         initialState: {
           pacbioRunCreate: {
             smrtLinkVersion: smrtLinkVersions['1'],
@@ -819,21 +819,40 @@ describe('PacbioRunWellEdit', () => {
             },
           },
         },
-        props,
         createStore: () => usePacbioRunCreateStore(),
-      }))
+      })
+
       wrapper.vm.isShow = true
       wrapper.vm.position = position
       wrapper.vm.plateNumber = plateNumber
-    })
-
-    it('should show the annotations when the button is clicked', async () => {
+      await flushPromises()
       const button = wrapper.find('[data-action="show-annotations"]')
       await button.trigger('click')
       const annotationList = wrapper.find('[data-type="annotation-list"]')
       expect(annotationList.exists()).toBeTruthy()
       const annotations = annotationList.findAll('[data-type="annotation-item"]')
       expect(annotations.length).toEqual(0)
+    })
+
+    it("won't show the annotations if the well is not present", async () => {
+      const { wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {},
+          },
+        },
+        createStore: () => usePacbioRunCreateStore(),
+      })
+
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+      await flushPromises()
+      const button = wrapper.find('[data-action="show-annotations"]')
+      await button.trigger('click')
+      const annotationList = wrapper.find('[data-type="annotation-list"]')
+      expect(annotationList.exists()).toBeFalsy()
     })
   })
 })
