@@ -21,9 +21,8 @@ jobs:
     - name: Setup Node
       uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
 
-    - name: Install dependencies
-      run: >-
-        npm ci --legacy-peer-deps
+    - name: Install npm dependencies
+      uses: sanger/.github/.github/actions/install/npm/npm@y25-098-updates-on-actions-1
 
     - name: Run unit tests
       run: >-
