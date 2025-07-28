@@ -24,7 +24,7 @@ jobs:
 
       # Actually run our build
       - name: Compile Build
-        run: ./compile-build
+        run: ./compile-build.sh
 
       # Create a GitHub release with the release asset as an artifact
       - name: Create release and upload release.tar.gz
