@@ -1,7 +1,6 @@
 import OntTagSetList from '@/components/ont/OntTagSetList.vue'
 import { mountWithStore } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
-import useRootStore from '@/stores'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: [] },
@@ -62,34 +61,6 @@ describe('OntTagSetList', () => {
     })
     it('wont show the list', () => {
       expect(wrapper.find('[data-type=tag-set-list]').exists()).toBeFalsy()
-    })
-  })
-
-  describe.skip('when there is an error', () => {
-    beforeEach(() => {
-      ;({ wrapper, store } = mountWithStore(OntTagSetList, {
-        initialState: {
-          ontPoolCreate: {
-            selected: {
-              tagSet: { id: '1' },
-            },
-            resources: {
-              tagSets: {},
-            },
-          },
-        },
-        createStore: () => useOntPoolCreateStore(),
-      }))
-
-      wrapper.vm.showAlert('Bad stuff happened', 'danger')
-    })
-
-    it('should show an appropriate message', () => {
-      const rootStore = useRootStore()
-      expect(Object.values(rootStore.messages)).toContainEqual({
-        type: 'danger',
-        message: 'Bad stuff happened',
-      })
     })
   })
 })
