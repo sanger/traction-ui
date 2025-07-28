@@ -1,5 +1,6 @@
 import PacbioSmrtLinkVersionFactory from '../../../factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '../../../factories/PacbioRunFactory.js'
+import AnnotationTypeFactory from '../../../factories/AnnotationTypeFactory.js'
 
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
@@ -13,6 +14,11 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('GET', '/v1/pacbio/smrt_link_versions', {
       statusCode: 200,
       body: PacbioSmrtLinkVersionFactory().content,
+    })
+
+    cy.intercept('GET', '/v1/annotation_types', {
+      statusCode: 200,
+      body: AnnotationTypeFactory().content,
     })
   })
 
@@ -47,6 +53,28 @@ describe('Pacbio Run Edit view', () => {
         revioRunFactory.content.data.attributes.barcodes_and_concentrations,
       )
     })
+
+    // check the annotations are present
+    cy.get('[data-action="show-annotations"]').click()
+
+    cy.get('[data-list=run-annotations]').within(() => {
+      cy.get('@revioRunFactory').then((revioRunFactory) => {
+        cy.get('[data-type="annotation"]').should(
+          'have.length',
+          revioRunFactory.content.data.relationships.annotations.data.length,
+        )
+
+        cy.get('[data-action="add-annotation"]').trigger('click')
+        cy.get('[data-type="annotation"]')
+          .last()
+          .within(() => {
+            cy.get('[data-attribute="comment"]').type('Test annotation')
+            cy.get('[data-attribute="user"]').type('Test User')
+            cy.get('[data-attribute="annotation-type"]').select('Top up')
+          })
+      })
+    })
+
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
