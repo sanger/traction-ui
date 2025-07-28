@@ -16,40 +16,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-            node-version-file: '.nvmrc'
-            cache: 'npm'
-      - name: Install dependencides
-        run: >-
-            npm ci --legacy-peer-deps
-      - name: Run jsdoc
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+
+      - name: Install npm dependencies
+        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+
+      - name: Run jsdoc and organize docs
         run: |
-            npm run jsdoc
-            mkdir -p docs/public
-            cp -r public docs/public
-            cp public/favicon.ico docs/
-            cp -r style_guide.md docs/style_guide.md
+          npm run jsdoc
+          mkdir -p docs/public
+          cp -r public docs/public
+          cp public/favicon.ico docs/
+          cp -r style_guide.md docs/style_guide.md
             
-      - name: Install Python Dependencies
-        run: |
-          pip install mkdocs
-          pip install mkdocs-material
-          pip install mkdocs-glightbox
-          pip install mkdocs-git-revision-date-localized-plugin
+      - name: Install Python dependencies
+        uses: sanger/.github/.github/actions/install/python/dev@y25-098-updates-on-actions-1
 
       - name: Generate docs
         run: |
           ./generate-docs.sh
 
       - name: Upload artifact to GitHub Pages
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: sanger/.github/.github/actions/docs/upload@master
         with:
-          path: docs  # Path to the folder containing the JS documentation (default is 'docs')
+          path: docs
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,4 +51,4 @@ jobs:
 
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4.0.5
+        uses: sanger/.github/.github/actions/docs/deploy@master
