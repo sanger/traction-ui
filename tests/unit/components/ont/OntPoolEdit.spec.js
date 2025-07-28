@@ -1,6 +1,6 @@
 import { mountWithStore, nextTick } from '@support/testHelper.js'
 import OntPoolEdit from '@/components/ont/OntPoolEdit.vue'
-import { newLibrary } from '@/store/traction/ont/pools/pool.js'
+import { newLibrary } from '@/stores/utilities/ontPool.js'
 import { expect } from 'vitest'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 // ?? huh. Pacbio?

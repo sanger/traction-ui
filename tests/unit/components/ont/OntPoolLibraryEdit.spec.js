@@ -1,6 +1,6 @@
 import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit.vue'
 import { mountWithStore } from '@support/testHelper.js'
-import { newLibrary } from '@/store/traction/ont/pools/pool.js'
+import { newLibrary } from '@/stores/utilities/ontPool.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import { beforeEach } from 'vitest'
 
