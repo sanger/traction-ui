@@ -38,9 +38,9 @@ jobs:
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
 
-       - name: Install dependencies
-         run: >-
-           npm ci --legacy-peer-deps
+      - name: Install dependencies
+        run: >-
+          npm ci --legacy-peer-deps
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
