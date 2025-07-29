@@ -4,6 +4,7 @@ import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { expect } from 'vitest'
 
 const annotationTypeFactory = AnnotationTypeFactory()
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
@@ -71,13 +72,26 @@ describe('AnnotationList.vue', () => {
     const wrapper = mount(AnnotationList, {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
-
-    const addButton = wrapper.find('[data-action="add-annotation"]')
-    expect(addButton.exists()).toBeTruthy()
+    const annotationsLength = wrapper.findAll('[data-type="annotation"]').length
+    const annotationId = wrapper.vm.parent.annotations[annotationsLength - 1].id
+    const addButton = wrapper.find(`[data-action="add-annotation-${annotationId}"]`)
     await addButton.trigger('click')
 
     const annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(3) // 2 existing + 1 new
+  })
+
+  it('displays the add button only for the last annotation', () => {
+    const wrapper = mount(AnnotationList, {
+      props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
+    })
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(2) // 2 existing annotations
+    const addButtons = wrapper.findAll('[data-action^="add-annotation"]')
+    expect(addButtons.length).toEqual(1)
+
+    let addButton = wrapper.find(`[data-action="add-annotation-2"]`)
+    expect(addButton.exists()).toBeTruthy()
   })
 
   it('removes an annotation when the remove button is clicked', async () => {
@@ -86,13 +100,18 @@ describe('AnnotationList.vue', () => {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
 
-    const addButton = wrapper.find('[data-action="add-annotation"]')
+    // let removeButtons = wrapper.findAll('[data-action^="remove-annotation"]')
+    // expect(removeButtons.length).toEqual(3)
+
+    // Get the annotation id for the newly added annotation
+    const annotationId = wrapper.vm.parent.annotations[1].id
+    const addButton = wrapper.find(`[data-action="add-annotation-${annotationId}"]`)
     await addButton.trigger('click')
 
     annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(3)
 
-    const removeButton = annotations[2].find('[data-action="remove-annotation"]')
+    const removeButton = wrapper.find(`[data-action="remove-annotation-${annotationId}"]`)
     expect(removeButton.exists()).toBeTruthy()
     await removeButton.trigger('click')
 
