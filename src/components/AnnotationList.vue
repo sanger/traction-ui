@@ -3,25 +3,67 @@
     <div
       :data-list="dataList"
       data-type="annotation-list"
-      class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
+      class="w-full p-2 bg-gray-200 rounded-md"
     >
-      <div class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm">
-        <div v-for="annotation in annotations" :key="annotation.id">
-          <AnnotationItem
-            :id="annotation.id"
-            :parent="props.parent"
-            :annotation-type-select-options="selectOptions"
-            @remove-annotation="removeAnnotation($event)"
-          />
+      <!-- Header row -->
+      <div class="flex w-full">
+        <div class="w-5/6">
+          <div
+            :class="`grid gap-2 mb-2 w-full items-start ${isDisplayCreatedAt ? 'grid-cols-4' : 'grid-cols-3'}`"
+          >
+            <traction-label class="text-left">Comment</traction-label>
+            <traction-label class="text-left">User</traction-label>
+            <traction-label class="text-left">Annotation Type</traction-label>
+            <traction-label v-if="isDisplayCreatedAt" class="ml-1">Created At</traction-label>
+          </div>
+        </div>
+        <div class="w-1/6 flex justify-end gap-2">
+          <traction-button
+            v-if="!annotations?.length"
+            data-action="add-annotation"
+            theme="create"
+            @click="addAnnotation()"
+          >
+            +
+          </traction-button>
         </div>
       </div>
-      <traction-button data-action="add-annotation" theme="create" @click="addAnnotation()">
-        +</traction-button
-      >
+      <!-- Annotation items -->
+
+      <div class="flex flex-col w-full">
+        <div v-for="(annotation, idx) in annotations" :key="annotation.id">
+          <div class="flex flex-row">
+            <div class="flex w-5/6">
+              <AnnotationItem
+                :id="annotation.id"
+                :parent="props.parent"
+                :annotation-type-select-options="selectOptions"
+                @remove-annotation="removeAnnotation($event)"
+              />
+            </div>
+            <div class="flex flex-row justify-end items-center p-2 gap-2 w-1/6">
+              <traction-button
+                :data-action="`remove-annotation-${annotation.id}`"
+                theme="delete"
+                class="h-18 min-h-0"
+                @click="removeAnnotation(annotation.id)"
+                >-</traction-button
+              >
+              <traction-button
+                v-if="idx === annotations.length - 1"
+                :data-action="`add-annotation-${annotation.id}`"
+                theme="create"
+                @click="addAnnotation()"
+              >
+                +
+              </traction-button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </traction-section>
 </template>
-
 <script setup>
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import { annotationTypeSelectOptions, AnnotationItemType } from '@/stores/utilities/annotation.js'
@@ -87,4 +129,9 @@ const removeAnnotation = (id) => {
     annotations.value.splice(index, 1)
   }
 }
+
+const isDisplayCreatedAt = computed(() => {
+  // Return true if any annotation has a created_at field, else false
+  return !!annotations.value?.some?.((annotation) => annotation.created_at)
+})
 </script>
