@@ -1,23 +1,34 @@
-import PacbioPlates from '@/views/pacbio/PacbioPlateIndex.vue'
-import { mount, store, router, flushPromises } from '@support/testHelper.js'
+import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
 
-describe.skip('PacbioPlates.vue', () => {
+const pacbioPlateFactory = PacbioPlateFactory()
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
+describe('PacbioPlates.vue', () => {
   let wrapper, plates
-  const pacbioPlateFactory = PacbioPlateFactory()
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
-    get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
-
-    wrapper = mount(PacbioPlates, {
-      store,
-      router,
-      stubs: {
-        // Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.plates.get = vi
+            .fn()
+            .mockResolvedValue(pacbioPlateFactory.responses.fetch)
+        }
       },
-    })
+    ]
 
-    wrapper.setData({ sortDesc: false })
+    ;({ wrapper } = mountWithStore(PacbioPlateIndex, {
+      plugins,
+      createStore: () => usePacbioPlatesStore(),
+    }))
     plates = wrapper.vm
     await flushPromises()
   })
@@ -56,9 +67,8 @@ describe.skip('PacbioPlates.vue', () => {
 
   describe('#alert', () => {
     it('shows an alert', () => {
-      plates.showAlert = vi.fn()
       plates.alert('message', 'type')
-      expect(plates.showAlert).toBeCalledWith('message', 'type')
+      expect(mockShowAlert).toBeCalledWith('message', 'type')
     })
   })
 })

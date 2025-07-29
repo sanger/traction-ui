@@ -50,6 +50,9 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import { ref, computed } from 'vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
+import useAlert from '@/composables/useAlert.js'
+
+const { showAlert } = useAlert()
 
 const { fetchWithQueryParams } = useQueryParams()
 const store = usePacbioPlatesStore()
@@ -74,9 +77,7 @@ const plates = computed(() => store.getPlates)
 
 // Alert handler
 function alert(message, type) {
-  // You may want to use a global alert or event bus here
-  // For now, just log
-  console.log(`[${type}] ${message}`)
+  showAlert(message, type)
 }
 
 // Toggle details for a row and fetch plate details
@@ -92,6 +93,6 @@ async function getPlate(barcode) {
 
 // Fetch plates with query params and update store
 async function fetchPlates() {
-  return await fetchWithQueryParams(store.setPlates, filterOptions)
+  return await fetchWithQueryParams(store.fetchPlates, filterOptions)
 }
 </script>
