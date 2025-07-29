@@ -59,12 +59,10 @@ describe('Pacbio Run Edit view', () => {
 
     cy.get('[data-list=run-annotations]').within(() => {
       cy.get('@revioRunFactory').then((revioRunFactory) => {
-        cy.get('[data-type="annotation"]').should(
-          'have.length',
-          revioRunFactory.content.data.relationships.annotations.data.length,
-        )
+        const length = revioRunFactory.content.data.relationships.annotations.data.length
+        cy.get('[data-type="annotation"]').should('have.length', length)
 
-        cy.get('[data-action="add-annotation"]').trigger('click')
+        cy.get(`[data-action="add-annotation-${length}"]`).trigger('click')
         cy.get('[data-type="annotation"]')
           .last()
           .within(() => {
