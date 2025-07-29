@@ -65,6 +65,19 @@
   </traction-section>
 </template>
 <script setup>
+/**
+ * AnnotationList Component
+ * -----------------------
+ * Renders a list of annotations for a given parent resource (e.g., run, well, etc.).
+ * Provides UI for viewing, adding, and removing annotations, with dynamic columns and controls.
+ *
+ * Features:
+ * - Displays annotation rows with fields: Comment, User, Annotation Type, and optionally Created At.
+ * - Dynamically shows/hides the 'Created At' column if any annotation has a created_at value.
+ * - Allows adding new annotations via a '+' button, which appears for the last annotation or when none exist.
+ * - Allows removing annotations via a '-' button, which is rendered for each annotation row.
+ */
+
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import { annotationTypeSelectOptions, AnnotationItemType } from '@/stores/utilities/annotation.js'
 import { computed } from 'vue'
@@ -94,14 +107,30 @@ const props = defineProps({
   },
 })
 
+/**
+ * Computed property for select options for annotation types.
+ * @type {Array}
+ */
 const selectOptions = annotationTypeSelectOptions(props.annotationTypes)
 
+/**
+ * Computed property for the list of annotations from the parent object.
+ * @type {import('vue').ComputedRef<Array>}
+ */
 const annotations = computed(() => props.parent.annotations)
 
+/**
+ * Computed property for the section title.
+ * @type {import('vue').ComputedRef<string>}
+ */
 const title = computed(() => {
   return `${singularise(capitalizeFirstLetter(props.parent.type))} Annotations`
 })
 
+/**
+ * Computed property for the data-list attribute value.
+ * @type {import('vue').ComputedRef<string>}
+ */
 const dataList = computed(() => {
   return `${singularise(props.parent.type)}-annotations`
 })
@@ -110,6 +139,7 @@ const dataList = computed(() => {
  * Adds a new annotation to the list.
  * The new annotation will have a unique ID and be marked as a new record.
  * It will be added to the parent object's annotations.
+ * @function
  * @returns {void}
  */
 const addAnnotation = () => {
@@ -118,9 +148,9 @@ const addAnnotation = () => {
 }
 
 /**
- *
- * @param id
  * Removes an annotation from the list by its ID.
+ * @function
+ * @param {string} id - The ID of the annotation to remove.
  * @returns {void}
  */
 const removeAnnotation = (id) => {
@@ -130,8 +160,12 @@ const removeAnnotation = (id) => {
   }
 }
 
+/**
+ * Computed property to determine if the 'Created At' column should be displayed.
+ * Returns true if any annotation has a created_at field, else false.
+ * @type {import('vue').ComputedRef<boolean>}
+ */
 const isDisplayCreatedAt = computed(() => {
-  // Return true if any annotation has a created_at field, else false
   return !!annotations.value?.some?.((annotation) => annotation.created_at)
 })
 </script>
