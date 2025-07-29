@@ -49,13 +49,13 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
-import OntTagSetList from '@/components/ont/OntTagSetList'
-import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
-import OntTagSetItem from '@/components/ont/OntTagSetItem'
-import OntPoolEdit from '@/components/ont/OntPoolEdit'
-import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
-import LabwareFinder from '@/components/LabwareFinder'
-import DataFetcher from '@/components/DataFetcher'
+import OntTagSetList from '@/components/ont/OntTagSetList.vue'
+import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList.vue'
+import OntTagSetItem from '@/components/ont/OntTagSetItem.vue'
+import OntPoolEdit from '@/components/ont/OntPoolEdit.vue'
+import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList.vue'
+import LabwareFinder from '@/components/LabwareFinder.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
 
 /**
  * Composition API setup for ONTPoolCreate view.
