@@ -17,11 +17,13 @@ import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
-const ontTubeFactory = OntTubeFactory()
+// const ontTubeFactory = OntTubeFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
 const singleOntPoolFactory = OntPoolFactory({ count: 1 })
+const singleOntPlateFactory = OntPlateFactory({ count: 1 })
+const singleOntTubeFactory = OntTubeFactory({ count: 1 })
 
 vi.mock('@/api/FeatureFlag', () => ({
   checkFeatureFlag: vi.fn().mockReturnValue(true),
@@ -1046,17 +1048,17 @@ describe('useOntPoolCreateStore', () => {
       it('returns the plate that fits the valid plate barcode', async () => {
         const get = vi.fn()
         rootStore.api = { traction: { ont: { plates: { get } } } }
-        get.mockResolvedValue(ontPlateFactory.responses.fetch)
+        get.mockResolvedValue(singleOntPlateFactory.responses.fetch)
 
         const { success } = await store.findOntPlate({
-          barcode: ontPlateFactory.content.data[0].attributes.barcode,
+          barcode: singleOntPlateFactory.content.data[0].attributes.barcode,
         })
 
-        expect(store.resources.plates).toEqual(ontPlateFactory.storeData.resources.plates)
-        expect(store.resources.wells).toEqual(ontPlateFactory.storeData.resources.wells)
-        expect(store.resources.requests).toEqual(ontPlateFactory.storeData.resources.requests)
+        expect(store.resources.plates).toEqual(singleOntPlateFactory.storeData.resources.plates)
+        expect(store.resources.wells).toEqual(singleOntPlateFactory.storeData.resources.wells)
+        expect(store.resources.requests).toEqual(singleOntPlateFactory.storeData.resources.requests)
 
-        const id = ontPlateFactory.content.data[0].id
+        const id = singleOntPlateFactory.content.data[0].id
         expect(store.selected.plates[id]).toEqual({ id, selected: true })
         expect(success).toEqual(true)
       })
@@ -1076,6 +1078,43 @@ describe('useOntPoolCreateStore', () => {
         expect(errors).toEqual(['Please provide a plate barcode'])
         expect(success).toEqual(false)
       })
+
+      it('adds the plate to the resources if some exist', async () => {
+        const resources = {
+          plates: {
+            9999: { id: '9999', wells: ['9999'] },
+          },
+          wells: { 9999: { id: '9999', position: 'A1', requests: ['9999'] } },
+          requests: { 9999: { id: '9999', name: 'request9999' } },
+        }
+
+        store.$state = { ...store.$state, resources: { ...resources } }
+
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { plates: { get } } } }
+        get.mockResolvedValue(singleOntPlateFactory.responses.fetch)
+
+        const { success } = await store.findOntPlate({
+          barcode: singleOntPlateFactory.content.data[0].attributes.barcode,
+        })
+
+        expect(store.resources.plates).toEqual({
+          ...singleOntPlateFactory.storeData.resources.plates,
+          ...resources.plates,
+        })
+        expect(store.resources.wells).toEqual({
+          ...singleOntPlateFactory.storeData.resources.wells,
+          ...resources.wells,
+        })
+        expect(store.resources.requests).toEqual({
+          ...singleOntPlateFactory.storeData.resources.requests,
+          ...resources.requests,
+        })
+
+        const id = singleOntPlateFactory.content.data[0].id
+        expect(store.selected.plates[id]).toEqual({ id, selected: true })
+        expect(success).toEqual(true)
+      })
     })
 
     describe('findOntTube', () => {
@@ -1083,16 +1122,16 @@ describe('useOntPoolCreateStore', () => {
         const get = vi.fn()
         rootStore.api = { traction: { ont: { tubes: { get } } } }
 
-        get.mockResolvedValue(ontTubeFactory.responses.fetch)
+        get.mockResolvedValue(singleOntTubeFactory.responses.fetch)
 
         const { success } = await store.findOntTube({
-          barcode: ontTubeFactory.content.data[0].attributes.barcode,
+          barcode: singleOntTubeFactory.content.data[0].attributes.barcode,
         })
 
-        expect(store.resources.tubes).toEqual(ontTubeFactory.storeData.tubes)
-        expect(store.resources.requests).toEqual(ontTubeFactory.storeData.resources.requests)
+        expect(store.resources.tubes).toEqual(singleOntTubeFactory.storeData.tubes)
+        expect(store.resources.requests).toEqual(singleOntTubeFactory.storeData.resources.requests)
 
-        const id = ontTubeFactory.content.data[0].id
+        const id = singleOntTubeFactory.content.data[0].id
         expect(store.selected.tubes[id]).toEqual({ id, selected: true })
         expect(success).toEqual(true)
       })
@@ -1111,6 +1150,40 @@ describe('useOntPoolCreateStore', () => {
         const { success, errors } = await store.findOntTube({ barcode: '' })
         expect(errors).toEqual(['Please provide a tube barcode'])
         expect(success).toEqual(false)
+      })
+
+      it('adds the tube to the resources if some exist', async () => {
+        const resources = {
+          tubes: {
+            9999: { id: '9999', barcode: 'GEN-9999' },
+          },
+          requests: { 9999: { id: '9999', name: 'request9999' } },
+        }
+
+        store.$state = { ...store.$state, resources: { ...resources } }
+
+        const get = vi.fn()
+        rootStore.api = { traction: { ont: { tubes: { get } } } }
+        get.mockResolvedValue(singleOntTubeFactory.responses.fetch)
+
+        const { success } = await store.findOntTube({
+          barcode: singleOntTubeFactory.content.data[0].attributes.barcode,
+        })
+
+        console.log(resources.tubes)
+
+        expect(store.resources.tubes).toEqual({
+          ...singleOntTubeFactory.storeData.tubes,
+          ...resources.tubes,
+        })
+        expect(store.resources.requests).toEqual({
+          ...singleOntTubeFactory.storeData.resources.requests,
+          ...resources.requests,
+        })
+
+        const id = singleOntTubeFactory.content.data[0].id
+        expect(store.selected.tubes[id]).toEqual({ id, selected: true })
+        expect(success).toEqual(true)
       })
     })
 

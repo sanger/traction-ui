@@ -2,7 +2,12 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
+import {
+  dataToObjectById,
+  extractAttributes,
+  groupIncludedByResource,
+  populateById,
+} from '@/api/JsonApi.js'
 import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
@@ -742,9 +747,10 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       // If the search is successful, update the store's resources and select the plate
       if (success) {
         this.selectPlate(data[0].id)
-        this.resources.plates = dataToObjectById({ data, includeRelationships: true })
-        this.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+
+        populateById('plates', { includeRelationships: true })(this, data)
+        populateById('wells', { includeRelationships: true })(this, wells)
+        populateById('requests', { includeRelationships: true })(this, requests)
       }
 
       // Return the success status and any errors
@@ -804,8 +810,8 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       // If the search is successful, update the store's resources and select the tube
       if (success) {
         this.selectTube(data[0].id)
-        this.resources.tubes = dataToObjectById({ data, includeRelationships: true })
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        populateById('tubes', { includeRelationships: true })(this, data)
+        populateById('requests', { includeRelationships: true })(this, requests)
       }
 
       // Return the success status and any errors
