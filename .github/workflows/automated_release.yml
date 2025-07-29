@@ -25,10 +25,10 @@ jobs:
           github_run_id: ${{ github.run_id }}
 
       - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Install npm dependencies
-        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/install/npm@master
 
       # Run our build
       - name: Compile Build

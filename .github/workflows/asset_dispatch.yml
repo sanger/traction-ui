@@ -17,10 +17,10 @@ jobs:
         uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Install npm dependencies
-        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/install/npm@master
 
       # Actually run our build
       - name: Compile Build

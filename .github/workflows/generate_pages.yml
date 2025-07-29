@@ -20,10 +20,10 @@ jobs:
         uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Install npm dependencies
-        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/install/npm@master
 
       - name: Run jsdoc and organize docs
         run: |
@@ -34,7 +34,7 @@ jobs:
           cp -r style_guide.md docs/style_guide.md
             
       - name: Install Python dependencies
-        uses: sanger/.github/.github/actions/install/python/dev@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/install/python/dev@master
 
       - name: Generate docs
         run: |

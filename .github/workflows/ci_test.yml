@@ -19,10 +19,10 @@ jobs:
       uses: sanger/.github/.github/actions/setup/checkout@master
      
     - name: Setup Node
-      uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+      uses: sanger/.github/.github/actions/setup/node@master
 
     - name: Install npm dependencies
-      uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+      uses: sanger/.github/.github/actions/install/npm@master
 
     - name: Run unit tests
       run: >-
@@ -36,10 +36,10 @@ jobs:
         uses: sanger/.github/.github/actions/setup/checkout@master
      
       - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Install npm dependencies
-        uses: sanger/.github/.github/actions/install/npm@y25-098-updates-on-actions-1
+        uses: sanger/.github/.github/actions/install/npm@master
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
