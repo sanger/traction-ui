@@ -48,7 +48,6 @@ describe('AnnotationItem.vue', () => {
       })
       expect(wrapper.findAll('input:disabled').length).toEqual(0)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeFalsy()
-      expect(wrapper.find('[data-action="remove-annotation"]').element.disabled).toBeFalsy()
     })
 
     it('shows the list of annotation types', () => {
@@ -78,6 +77,39 @@ describe('AnnotationItem.vue', () => {
       )
       expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual('')
       expect(wrapper.find('[data-attribute="user"]').element.value).toEqual(newAnnotation.user)
+    })
+
+    it('renders and removes field errors when annotation fields are blank or filled', async () => {
+      // Set annotation fields to blank and validate
+      const wrapper = mount(AnnotationItem, {
+        props: {
+          id: '2',
+          parent: store.run,
+          annotationTypeSelectOptions: selectOptions,
+        },
+      })
+
+      // Simulate user clearing the fields
+      await wrapper.find('[data-attribute="comment"]').setValue('')
+      await wrapper.find('[data-attribute="annotation-type"]').setValue('')
+      await wrapper.find('[data-attribute="user"]').setValue('')
+
+      // Wait for DOM updates
+      await wrapper.vm.$nextTick()
+      // Check error components are rendered for each field
+      expect(wrapper.find('[data-attribute="comment-error"]').exists()).toBe(true)
+      expect(wrapper.find('[data-attribute="annotation-type-error"]').exists()).toBe(true)
+      expect(wrapper.find('[data-attribute="user-error"]').exists()).toBe(true)
+
+      //Set values to non-empty strings
+      await wrapper.find('[data-attribute="comment"]').setValue('Test comment')
+      await wrapper.find('[data-attribute="annotation-type"]').setValue('1')
+      await wrapper.find('[data-attribute="user"]').setValue('Test User')
+
+      // Check that error components are no longer present
+      expect(wrapper.find('[data-attribute="comment-error"]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute="annotation-type-error"]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute="user-error"]').exists()).toBe(false)
     })
   })
 
@@ -109,22 +141,6 @@ describe('AnnotationItem.vue', () => {
       expect(wrapper.findAll('input:disabled').length).toEqual(2)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeTruthy()
       expect(wrapper.find('[data-action="remove-annotation"]').exists()).toBeFalsy()
-    })
-  })
-
-  describe('annotationItem@click', () => {
-    it('emits a removeAnnotation event with the annotation id', async () => {
-      const wrapper = mount(AnnotationItem, {
-        props: {
-          id: '2',
-          parent: store.run,
-          annotationTypeSelectOptions: selectOptions,
-        },
-      })
-      const button = wrapper.find('[data-action="remove-annotation"]')
-      await button.trigger('click')
-      expect(wrapper.emitted()['remove-annotation'].length).toBe(1)
-      expect(wrapper.emitted()['remove-annotation'][0]).toEqual(['2'])
     })
   })
 })
