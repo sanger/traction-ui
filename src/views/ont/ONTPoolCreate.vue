@@ -24,7 +24,7 @@
         <div v-else>
           <traction-section title="Tubes" number="2a" class="mb-2">
             <div class="text-left">Find Tubes</div>
-            <LabwareFinder :fetcher="storefindOntTube" filter="barcode" class="mb-6" />
+            <LabwareFinder :fetcher="store.findOntTube" filter="barcode" class="mb-6" />
           </traction-section>
         </div>
         <div>
