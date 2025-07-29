@@ -165,6 +165,39 @@ const fetchSequencescapeStudies = async (samples) => {
   return { data: sequencescapeStudies, errors: {} }
 }
 
+const fetchFunction = async (sample_input, samples) => {
+  const { data: tractionSamples, errors } = await fetchTractionSamples(sample_input, samples)
+
+  if (!tractionSamples.length) {
+    if (errors && errors.message) {
+      return { data: [], errors: errors }
+    }
+    return
+  }
+
+  const { data: sequencescapeStudies, errors: ssError } =
+    await fetchSequencescapeStudies(tractionSamples)
+  if (!sequencescapeStudies.length) {
+    if (ssError && ssError.message) {
+      return { data: [], errors: ssError }
+    }
+    return
+  }
+
+  // Combine the traction samples and sequencescape studies
+  // N.B We might get traction requests that do not have a corresponding sequencescape study
+  // But we should still show the traction sample in the report as it contains useful information
+  const newSamples = tractionSamples.map((sample) => {
+    const seqStudy = sequencescapeStudies.find((s) => s.uuid === sample.external_study_id)
+    return {
+      ...sample,
+      ...seqStudy,
+    }
+  })
+
+  return { data: newSamples, errors: {} }
+}
+
 // CSV structure for the report
 // This structure defines the keys and labels for the CSV export
 //
@@ -188,4 +221,4 @@ const csvStructure = [
   { key: 'donor_id', label: 'Sample Type' },
 ]
 
-export { csvStructure, fetchTractionSamples, fetchSequencescapeStudies }
+export { csvStructure, fetchFunction, fetchSequencescapeStudies, fetchTractionSamples }

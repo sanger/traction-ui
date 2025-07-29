@@ -2,7 +2,8 @@ import { mount } from '@support/testHelper'
 import useRootStore from '@/stores'
 import SampleReport from '@/views/SampleReport.vue'
 import { createPinia, setActivePinia, flushPromises } from '@support/testHelper.js'
-import { fetchTractionSamples, fetchSequencescapeStudies } from '@/lib/reports/KinnexReport.js'
+import { fetchFunction } from '@/lib/reports/KinnexReport.js'
+import Reports from '@/lib/reports'
 
 const mockShowAlert = vi.fn()
 
@@ -11,8 +12,7 @@ const mockShowAlert = vi.fn()
 // See https://vitest.dev/api/vi.html#vi-mock
 const mocks = vi.hoisted(() => {
   return {
-    fetchSequencescapeStudies: vi.fn(),
-    fetchTractionSamples: vi.fn(),
+    fetchFunction: vi.fn(),
   }
 })
 
@@ -32,30 +32,9 @@ vi.mock('@/lib/reports/KinnexReport.js', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
-    fetchSequencescapeStudies: mocks.fetchSequencescapeStudies,
-    fetchTractionSamples: mocks.fetchTractionSamples,
+    fetchFunction: mocks.fetchFunction,
   }
 })
-
-const tractionExpectedSample = {
-  request_id: 1,
-  barcode: 'NT123',
-  cost_code: 'aCostCodeExample',
-  library_type: 'Pacbio_HiFi',
-  date_of_sample_collection: '2025-06-23',
-  supplier_name: 'Supplier B',
-  donor_id: 'donor-123',
-  species: 'human',
-  external_study_id: '123',
-  sanger_sample_id: 'sanger-123',
-}
-
-const ssExpectedStudy = {
-  study_number: '1',
-  uuid: '123',
-  study_name: 'Study 1',
-  submitting_faculty: 'Faculty Sponsor 1',
-}
 
 describe('SampleReport', () => {
   let rootStore, get, ss_get
@@ -78,15 +57,35 @@ describe('SampleReport', () => {
     rootStore.api.sequencescape.studies.get = ss_get
   })
 
+  describe('report type', () => {
+    it('contains a list of report types', () => {
+      const expectedOptions = [...Object.values(Reports).map((r) => r.text)]
+      const wrapper = buildWrapper()
+      expect(
+        wrapper
+          .find('[data-type=report-type]')
+          .findAll('option')
+          .map((element) => element.text()),
+      ).toEqual(expectedOptions)
+    })
+
+    it('resets the sample list when the report type changes', async () => {
+      const wrapper = buildWrapper()
+      wrapper.vm.samples = [{ request_id: 1 }, { request_id: 2 }]
+      expect(wrapper.vm.samples.length).toBe(2)
+
+      const select = wrapper.find('[data-type=report-type]')
+      await select.setValue('mock-report-type')
+
+      expect(wrapper.vm.samples.length).toBe(0)
+    })
+  })
+
   describe('sample input', () => {
     it('adds a sample when the input is not empty', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue({
-        data: [tractionExpectedSample],
-        errors: {},
-      })
-      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
-        data: [ssExpectedStudy],
+      vi.mocked(fetchFunction).mockResolvedValue({
+        data: [{ request_id: 1 }],
         errors: {},
       })
 
@@ -95,103 +94,32 @@ describe('SampleReport', () => {
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
 
-      expect(wrapper.vm.samples).toEqual([{ ...tractionExpectedSample, ...ssExpectedStudy }])
+      expect(wrapper.vm.samples).toEqual([{ request_id: 1 }])
     })
 
-    it('correctly combines multiple samples', async () => {
+    it('is disabled when the report type is not set', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue({
-        data: [
-          tractionExpectedSample,
-          // only include information required for linking and some metadata
-          { cost_code: 'cost-code-2', species: 'species-1', external_study_id: 'study2-id' },
-          { cost_code: 'cost-code-3', species: 'species-2', external_study_id: 'study3-id' },
-          // Sample with no matching Sequencescape data
-          { cost_code: 'cost-code-4', species: 'species-3', external_study_id: 'study4-id' },
-        ],
-        errors: {},
-      })
-      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
-        data: [
-          ssExpectedStudy,
-          // only include information required for linking and some metadata
-          { study_name: 'study-2', uuid: 'study2-id' },
-          { study_name: 'study-3', uuid: 'study3-id' },
-        ],
-        errors: {},
-      })
+      wrapper.vm.report_type = null
+      await wrapper.vm.$nextTick()
 
-      const sampleInput = wrapper.find('#sampleInput')
-      await sampleInput.setValue('sample1,sample2,sample3')
-      await wrapper.find('#searchSamples').trigger('click')
-      await flushPromises()
-
-      expect(wrapper.vm.samples).toEqual([
-        { ...tractionExpectedSample, ...ssExpectedStudy },
-        {
-          cost_code: 'cost-code-2',
-          species: 'species-1',
-          external_study_id: 'study2-id',
-          uuid: 'study2-id',
-          study_name: 'study-2',
-        },
-        {
-          cost_code: 'cost-code-3',
-          species: 'species-2',
-          external_study_id: 'study3-id',
-          uuid: 'study3-id',
-          study_name: 'study-3',
-        },
-        { cost_code: 'cost-code-4', species: 'species-3', external_study_id: 'study4-id' },
-      ])
+      expect(wrapper.find('#sampleInput').element.disabled).toBe(true)
+      expect(wrapper.find('#searchSamples').element.disabled).toBe(true)
     })
 
-    it('does not add a sample if traction returns empty', async () => {
+    it('shows the correct error message when no samples are found', async () => {
       const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue({
+      vi.mocked(fetchFunction).mockResolvedValue({
         data: [],
-        errors: {
-          message: 'No samples found in Traction with the provided input',
-          type: 'warning',
-        },
+        errors: { message: 'Internal server error', type: 'danger' },
       })
 
       const sampleInput = wrapper.find('#sampleInput')
-      await sampleInput.setValue('sample1')
+      await sampleInput.setValue('nonexistent-sample')
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
 
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'No samples found in Traction with the provided input',
-        'warning',
-      )
       expect(wrapper.vm.samples).toEqual([])
-    })
-
-    it('does not add a sample if traction returns but sequencescape does not', async () => {
-      const wrapper = buildWrapper()
-      vi.mocked(fetchTractionSamples).mockResolvedValue({
-        data: [tractionExpectedSample],
-        errors: {},
-      })
-      vi.mocked(fetchSequencescapeStudies).mockResolvedValue({
-        data: [],
-        errors: {
-          message: 'No studies found in Sequencescape with the provided input',
-          type: 'warning',
-        },
-      })
-
-      const sampleInput = wrapper.find('#sampleInput')
-      await sampleInput.setValue('sample1')
-      await wrapper.find('#searchSamples').trigger('click')
-      await flushPromises()
-
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'No studies found in Sequencescape with the provided input',
-        'warning',
-      )
-      expect(wrapper.vm.samples).toEqual([])
+      expect(mockShowAlert).toHaveBeenCalledWith('Internal server error', 'danger')
     })
   })
 
@@ -204,6 +132,17 @@ describe('SampleReport', () => {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
       expect(headers.length).toBe(wrapper.vm.fields.length)
+    })
+
+    it('does not show the table when a report has not been selected', async () => {
+      const wrapper = buildWrapper()
+      wrapper.vm.report_type = null
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('#sampleReportTable').exists()).toBe(false)
+      expect(wrapper.text()).toContain(
+        'Please select a report type to start generating your sample report',
+      )
     })
 
     it('shows no samples when the list is empty', () => {
@@ -269,7 +208,7 @@ describe('SampleReport', () => {
     describe('downloadReport', () => {
       it('downloads a CSV file with the correct content', async () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedStudy }]
+        wrapper.vm.samples = [{ request_id: 1 }]
         await wrapper.vm.$nextTick()
 
         // Get the mocked downloadBlob from the module mock
@@ -293,8 +232,8 @@ describe('SampleReport', () => {
     describe('reset', () => {
       it('clears the sample list', () => {
         const wrapper = buildWrapper()
-        wrapper.vm.samples = [{ ...tractionExpectedSample, ...ssExpectedStudy }]
-        expect(wrapper.vm.samples.length).toBe(1)
+        wrapper.vm.samples = [{ request_id: 1 }, { request_id: 2 }]
+        expect(wrapper.vm.samples.length).toBe(2)
         wrapper.vm.reset()
         expect(wrapper.vm.samples.length).toBe(0)
       })

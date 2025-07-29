@@ -7,10 +7,22 @@
       </p>
       <traction-form @keydown.enter.prevent>
         <fieldset>
+          <traction-heading level="4" show-border>Report type</traction-heading>
+          <div class="flex flex-row space-x-2 items-center justify-left">
+            <p class="flex text-sm">Pre-defined structures for the data and data fetching logic.</p>
+          </div>
+          <traction-select
+            v-model="report_type"
+            data-type="report-type"
+            class="flex py-2 w-full"
+            :options="report_options"
+            @change="reset()"
+          />
+        </fieldset>
+        <fieldset>
           <traction-heading level="4" show-border>Select samples</traction-heading>
           <div class="flex flex-row space-x-2 items-center justify-left">
             <p class="flex text-sm">Enter samples by names or container barcode</p>
-            <p class="flex text-sm font-italic text-sp">(PacBio samples only)</p>
           </div>
           <div class="flex flex-row space-x-2 items-center">
             <traction-input
@@ -18,12 +30,14 @@
               v-model="sample_input"
               class="flex py-2 w-full"
               placeholder="sample_1,10STDY1..."
+              :disabled="!report_type"
               @enter-key-press="addSample"
             />
             <traction-button
               id="searchSamples"
               class="flex items-center"
               theme="default"
+              :disabled="!report_type"
               @click="addSample"
               >Add</traction-button
             >
@@ -32,6 +46,7 @@
       </traction-form>
     </div>
     <div
+      v-if="report_type"
       class="flex flex-col w-3/4 max-h-svh mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 my-2 space-y-2"
     >
       <traction-heading level="4" show-border class="w-full">Preview</traction-heading>
@@ -55,7 +70,7 @@
           </template>
         </traction-table>
       </div>
-      <div class="flex flex-row justify-between border-t border-gray-400 pt-4">
+      <div class="flex flex-row justify-between">
         <traction-button
           id="reset"
           class="items-center cursor-pointer"
@@ -75,6 +90,11 @@
         </traction-button>
       </div>
     </div>
+    <div v-else class="w-3/4 mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 my-2">
+      <p class="flex justify-left text-sm">
+        Please select a report type to start generating your sample report.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -83,26 +103,30 @@
   This page allows users to generate a report of samples from Traction.
   Users can search for samples by name or container barcode, and the report will include
   relevant information from both Traction and Sequencescape.
-
-
-  Currently this is setup for Kinnex samples but to extend to other report types we can abstract
-  can create a dropdown to select the report type and update the report lib to handle different structures.
-  Similar to how the reception works.
 -->
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import useAlert from '@/composables/useAlert'
 import { downloadBlob, arrayToCsv } from '@/lib/csv/creator.js'
-import {
-  fetchTractionSamples,
-  fetchSequencescapeStudies,
-  csvStructure,
-} from '@/lib/reports/KinnexReport.js'
+import Reports from '@/lib/reports'
+
 let sample_input = ref('')
+const report_type = ref('KinnexSamples') // Default report type, can be extended later
+const report_options = ref([...Object.values(Reports)])
 const samples = ref([])
-const fields = [...csvStructure, { key: 'remove', label: '' }]
+const report = computed(() => Reports[report_type.value])
+const fields = computed(() => {
+  return [
+    ...report.value.csvStructure.map((field) => ({
+      key: field.key,
+      label: field.label,
+    })),
+    { key: 'remove', label: '' },
+  ] // Add a remove button column
+})
 const { showAlert } = useAlert()
+
 /**
  * Function to add a sample to the report.
  * It fetches samples from Traction and Sequencescape based on the input.
@@ -111,41 +135,13 @@ const { showAlert } = useAlert()
  */
 const addSample = async () => {
   if (sample_input.value) {
-    const { data: tractionSamples, errors } = await fetchTractionSamples(
-      sample_input.value,
-      samples.value,
-    )
-    if (!tractionSamples.length) {
-      if (errors && errors.message) {
-        showAlert(errors.message, errors.type)
-      }
-      sample_input.value = ''
+    const fetchedSamples = await report.value.fetchFunction(sample_input.value, samples.value)
+    if (fetchedSamples.errors && fetchedSamples.errors.message) {
+      showAlert(fetchedSamples.errors.message, fetchedSamples.errors.type)
       return
     }
 
-    const { data: sequencescapeStudies, errors: ssError } =
-      await fetchSequencescapeStudies(tractionSamples)
-    if (!sequencescapeStudies.length) {
-      if (ssError && ssError.message) {
-        showAlert(ssError.message, ssError.type)
-      }
-      sample_input.value = ''
-      return
-    }
-
-    // Combine the traction samples and sequencescape studies
-    // N.B We might get traction requests that do not have a corresponding sequencescape study
-    // But we should still show the traction sample in the report as it contains useful information
-    const combinedSamples = tractionSamples.map((sample) => {
-      const seqStudy = sequencescapeStudies.find((s) => s.uuid === sample.external_study_id)
-      return {
-        ...sample,
-        ...seqStudy,
-      }
-    })
-
-    samples.value.push(...combinedSamples)
-
+    samples.value.push(...fetchedSamples.data)
     // Clear the input field after adding samples
     sample_input.value = ''
   }
@@ -174,12 +170,12 @@ const reset = () => {
  * It formats the samples according to the csvStructure and triggers a download.
  */
 const downloadReport = () => {
-  const headers = csvStructure.map((field) => field.label)
+  const headers = report.value.csvStructure.map((field) => field.label)
 
   // format the samples to match the csvStructure
   const formattedSamples = samples.value.map((sample) => {
     const formattedSample = {}
-    csvStructure.forEach((field) => {
+    report.value.csvStructure.forEach((field) => {
       formattedSample[field.key] = sample[field.key] || ''
     })
     return Object.values(formattedSample)
@@ -190,6 +186,7 @@ const downloadReport = () => {
 
   // Download the CSV file
   const time = new Date().toLocaleDateString()
+
   downloadBlob(csvContent, `traction_sample_report_${time}.csv`, 'text/csv')
 }
 </script>

@@ -1,4 +1,8 @@
-import { fetchTractionSamples, fetchSequencescapeStudies } from '@/lib/reports/KinnexReport'
+import {
+  fetchTractionSamples,
+  fetchSequencescapeStudies,
+  fetchFunction,
+} from '@/lib/reports/KinnexReport.js'
 import useRootStore from '@/stores'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
@@ -20,7 +24,7 @@ const ssStudy = {
   type: 'studies',
   attributes: {
     name: 'Study 1',
-    uuid: 'ext',
+    uuid: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
   },
   relationships: {
     study_metadata: {
@@ -155,29 +159,9 @@ describe('KinnexReport', () => {
     })
 
     it('fetches multiple samples from Traction API across filter types', async () => {
-      const sample2 = {
-        ...sample,
-        id: '3',
-        attributes: { ...sample.attributes, name: 'sample2', donor_id: 'another-id' },
-      }
-      const request2 = {
-        ...request,
-        id: 2,
-        attributes: {
-          ...request.attributes,
-          sample_name: 'sample2',
-          supplier_name: 'Supplier C',
-          library_type: 'PacBio-2',
-        },
-        relationships: {
-          sample: {
-            data: {
-              type: 'samples',
-              id: '3',
-            },
-          },
-        },
-      }
+      const request2 = pacbioRequestFactory.content.data[1]
+      const sample2 = pacbioRequestFactory.content.included[8]
+
       get.mockResolvedValueOnce({
         status: 200,
         statusText: 'OK',
@@ -276,6 +260,117 @@ describe('KinnexReport', () => {
         uuid: ssStudy.attributes.uuid,
         study_name: ssStudy.attributes.name,
         submitting_faculty: ssFacultySponsor.attributes.name,
+      })
+    })
+  })
+
+  describe('fetchFunction', () => {
+    it('correctly combines multiple samples and studies', async () => {
+      const request2 = pacbioRequestFactory.content.data[1]
+      const sample2 = pacbioRequestFactory.content.included[8]
+
+      get.mockResolvedValueOnce({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [request], included: [sample] }),
+      })
+      // Second call is for source_identifier fetch
+      get.mockResolvedValueOnce({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [request2], included: [sample2] }),
+      })
+      ssGet.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: [ssStudy],
+            included: [ssFacultySponsor, ssStudyMetadata],
+          }),
+      })
+
+      const result = await fetchFunction('sample1,sample2', [])
+
+      expect(result.data).toEqual([
+        {
+          request_id: request.id,
+          barcode: request.attributes.barcode,
+          cost_code: request.attributes.cost_code,
+          library_type: request.attributes.library_type,
+          external_study_id: request.attributes.external_study_id,
+          date_of_sample_collection: sample.attributes.date_of_sample_collection,
+          supplier_name: sample.attributes.supplier_name,
+          donor_id: sample.attributes.donor_id,
+          species: sample.attributes.species,
+          sanger_sample_id: sample.attributes.sanger_sample_id,
+          study_number: ssStudy.id,
+          uuid: ssStudy.attributes.uuid,
+          study_name: ssStudy.attributes.name,
+          submitting_faculty: ssFacultySponsor.attributes.name,
+        },
+        {
+          request_id: request2.id,
+          barcode: request2.attributes.barcode,
+          cost_code: request2.attributes.cost_code,
+          library_type: request2.attributes.library_type,
+          external_study_id: request2.attributes.external_study_id,
+          date_of_sample_collection: sample2.attributes.date_of_sample_collection,
+          supplier_name: sample2.attributes.supplier_name,
+          donor_id: sample2.attributes.donor_id,
+          species: sample2.attributes.species,
+          sanger_sample_id: sample2.attributes.sanger_sample_id,
+          study_number: ssStudy.id,
+          uuid: ssStudy.attributes.uuid,
+          study_name: ssStudy.attributes.name,
+          submitting_faculty: ssFacultySponsor.attributes.name,
+        },
+      ])
+      expect(result.errors).toEqual({})
+    })
+
+    it('returns errors if traction returns no samples', async () => {
+      get.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [], included: [] }),
+      })
+
+      const { data, errors } = await fetchFunction('input', [])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'No samples found in Traction with the provided input',
+        type: 'warning',
+      })
+    })
+
+    it('returns errors if traction returns but sequencescape does not', async () => {
+      get.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () => Promise.resolve({ data: [request], included: [sample] }),
+      })
+      ssGet.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: [],
+            included: [],
+          }),
+      })
+
+      const { data, errors } = await fetchFunction('input', [])
+      expect(data).toEqual([])
+      expect(errors).toEqual({
+        message: 'No studies found in Sequencescape with the provided input',
+        type: 'warning',
       })
     })
   })
