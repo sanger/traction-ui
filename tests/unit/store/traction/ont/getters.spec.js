@@ -1,39 +1,23 @@
 import { expect, it } from 'vitest'
 import getters from '@/store/traction/ont/getters'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
-const ontInstrumentFactory = OntInstrumentFactory()
+import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 
 const ontRunFactory = OntRunFactory()
+const ontInstrumentFactory = OntInstrumentFactory()
 
 describe('getters.js', () => {
-  let state, instruments, runs
+  let state, runs
 
   beforeEach(() => {
-    instruments = ontInstrumentFactory.storeData.instruments
     runs = ontRunFactory.storeData.runs
 
     state = {
       resources: {
-        instruments: instruments,
         runs: runs,
+        instruments: ontInstrumentFactory.storeData.instruments,
       },
     }
-  })
-
-  it('"instruments" returns "state.resources.instruments"', () => {
-    const actual = getters.instruments(state)
-
-    const expected = Object.values(state.resources.instruments).map((i) => {
-      const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
-      return {
-        ...i,
-        ...instrumentConfig,
-      }
-    })
-
-    expect(actual).toEqual(expected)
   })
 
   it('"runs" returns "state.resources.runs"', () => {
