@@ -5,13 +5,6 @@ import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
 
 const pacbioPlateFactory = PacbioPlateFactory()
 
-const mockShowAlert = vi.fn()
-vi.mock('@/composables/useAlert', () => ({
-  default: () => ({
-    showAlert: mockShowAlert,
-  }),
-}))
-
 describe('PacbioPlates.vue', () => {
   let wrapper, plates
   beforeEach(async () => {
@@ -62,13 +55,6 @@ describe('PacbioPlates.vue', () => {
       await flushPromises()
       expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
       expect(button.text()).toEqual('Hide Plate')
-    })
-  })
-
-  describe('#alert', () => {
-    it('shows an alert', () => {
-      plates.alert('message', 'type')
-      expect(mockShowAlert).toBeCalledWith('message', 'type')
     })
   })
 })

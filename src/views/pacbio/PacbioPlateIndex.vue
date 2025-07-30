@@ -30,7 +30,6 @@
             :height="row.detailsDim"
             :width="row.detailsDim"
             :plate="currentPlate"
-            @alert="alert"
           ></Plate>
         </template>
       </traction-table>
@@ -50,9 +49,6 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import { ref, computed } from 'vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
-import useAlert from '@/composables/useAlert.js'
-
-const { showAlert } = useAlert()
 
 const { fetchWithQueryParams } = useQueryParams()
 const store = usePacbioPlatesStore()
@@ -74,11 +70,6 @@ const currentPlate = ref({})
 
 // Plates from store
 const plates = computed(() => store.getPlates)
-
-// Alert handler
-function alert(message, type) {
-  showAlert(message, type)
-}
 
 // Toggle details for a row and fetch plate details
 function handleTogleDetails(row) {

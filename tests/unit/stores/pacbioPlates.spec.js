@@ -8,19 +8,21 @@ const pacbioPlateFactory = PacbioPlateFactory()
 const pacbioPlateFactorySingle = PacbioPlateFactory({ count: 1 })
 
 describe('pacbioPlates', () => {
+  let get, rootStore, store
+
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
         up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
     const pinia = createPinia()
     setActivePinia(pinia)
+    rootStore = useRootStore()
+    store = usePacbioPlatesStore()
+    get = vi.fn()
   })
 
   describe('actions', () => {
     describe('fetchPlates', () => {
       it('handles success and adds plates to the store', async () => {
-        const rootStore = useRootStore()
-        const store = usePacbioPlatesStore()
-        const get = vi.fn()
         get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
         rootStore.api = { traction: { pacbio: { plates: { get } } } }
 
@@ -31,9 +33,6 @@ describe('pacbioPlates', () => {
       })
 
       it('handles errors fetching the plates', async () => {
-        const rootStore = useRootStore()
-        const store = usePacbioPlatesStore()
-        const get = vi.fn()
         get.mockResolvedValue(failedResponse())
         rootStore.api = { traction: { pacbio: { plates: { get } } } }
 
@@ -45,9 +44,6 @@ describe('pacbioPlates', () => {
 
     describe('findPlate', () => {
       it('handles success', async () => {
-        const rootStore = useRootStore()
-        const store = usePacbioPlatesStore()
-        const get = vi.fn()
         get.mockResolvedValue(pacbioPlateFactorySingle.responses.fetch)
         rootStore.api = { traction: { pacbio: { plates: { get } } } }
 
@@ -59,9 +55,6 @@ describe('pacbioPlates', () => {
       })
 
       it('handles errors', async () => {
-        const rootStore = useRootStore()
-        const store = usePacbioPlatesStore()
-        const get = vi.fn()
         get.mockResolvedValue(failedResponse())
         rootStore.api = { traction: { pacbio: { plates: { get } } } }
 
