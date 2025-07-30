@@ -2,6 +2,7 @@ import {
   fetchTractionSamples,
   fetchSequencescapeStudies,
   fetchFunction,
+  formatTractionSample,
 } from '@/lib/reports/KinnexReport.js'
 import useRootStore from '@/stores'
 import {
@@ -29,18 +30,7 @@ const ssStudyMetadata = sequencescapeStudyFactory.content.included[0]
 const ssFacultySponsor = sequencescapeStudyFactory.content.included[1]
 
 const formattedSample = (sample, request, study, facultySponsor) => {
-  const s = {
-    request_id: request.id,
-    barcode: request.attributes.barcode,
-    cost_code: request.attributes.cost_code,
-    library_type: request.attributes.library_type,
-    external_study_id: request.attributes.external_study_id,
-    date_of_sample_collection: sample.attributes.date_of_sample_collection,
-    supplier_name: sample.attributes.supplier_name,
-    donor_id: sample.attributes.donor_id,
-    species: sample.attributes.species,
-    sanger_sample_id: sample.attributes.sanger_sample_id,
-  }
+  const s = formatTractionSample({ sample, request })
   if (study && facultySponsor) {
     return {
       ...s,

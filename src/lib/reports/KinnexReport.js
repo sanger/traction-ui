@@ -3,6 +3,30 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 import useRootStore from '@/stores'
 
 /**
+ * Function to format the sample data from Traction API.
+ * It extracts relevant attributes from the sample and request objects.
+ * @param {Object} sample - The sample object from Traction API.
+ * @param {Object} request - The request object from Traction API.
+ * @returns {Object} An object containing formatted sample data.
+ */
+const formatTractionSample = ({ sample, request }) => {
+  return {
+    // Include request_id so we can check for duplicates
+    request_id: request.id || '',
+    // Sample id in the kinnex report is the barcode
+    barcode: request.attributes.barcode || '',
+    cost_code: request.attributes.cost_code || '',
+    library_type: request.attributes.library_type || '',
+    external_study_id: request.attributes.external_study_id || '',
+    date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
+    supplier_name: sample.attributes.supplier_name || '',
+    donor_id: sample.attributes.donor_id || '',
+    species: sample.attributes.species || '',
+    sanger_sample_id: sample.attributes.sanger_sample_id || '',
+  }
+}
+
+/**
  * Function to fetch samples from Traction API based on the input.
  * It makes two sample requests: one for sample names and another for source identifiers.
  * It combines the results and returns the samples found.
@@ -30,7 +54,6 @@ const fetchTractionSamples = async (sample_input, samples) => {
     handleResponse(source_promise),
   ])
 
-  // Combine data and included arrays from both responses
   // If either response is successful, we can proceed
   const success = response.success || source_response.success
   // Add errors from both responses to a single array
@@ -40,6 +63,7 @@ const fetchTractionSamples = async (sample_input, samples) => {
   if (source_response.errors && source_response.errors != response.errors)
     errors.push(source_response.errors)
 
+  // Combine data and included arrays from both responses
   let data = [...(response.body?.data || []), ...(source_response.body?.data || [])]
   const included = [...(response.body?.included || []), ...(source_response.body?.included || [])]
   const { samples: serviceSamples } = groupIncludedByResource(included)
@@ -53,6 +77,7 @@ const fetchTractionSamples = async (sample_input, samples) => {
     }
   }
 
+  // If no data is found, we show a warning and return an empty array
   if (!data.length) {
     return {
       data: [],
@@ -77,24 +102,8 @@ const fetchTractionSamples = async (sample_input, samples) => {
     if (!exists) {
       // Find the corresponding sample
       const sample = serviceSamples.find((s) => s.id == request.relationships.sample.data.id)
-
-      const formattedSample = {
-        // Include request_id so we can check for duplicates
-        request_id: request.id || '',
-        // Sample id in the kinnex report is the barcode
-        barcode: request.attributes.barcode,
-        cost_code: request.attributes.cost_code || '',
-        library_type: request.attributes.library_type || '',
-        external_study_id: request.attributes.external_study_id || '',
-        date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
-        supplier_name: sample.attributes.supplier_name || '',
-        donor_id: sample.attributes.donor_id || '',
-        species: sample.attributes.species || '',
-        sanger_sample_id: sample.attributes.sanger_sample_id || '',
-      }
-
-      // Add the sample to the sample list
-      tractionSamples.push(formattedSample)
+      // Add the formatted sample to the sample list
+      tractionSamples.push(formatTractionSample({ sample, request }))
     }
   }
 
@@ -221,4 +230,10 @@ const csvStructure = [
   { key: 'donor_id', label: 'Sample Type' },
 ]
 
-export { csvStructure, fetchFunction, fetchSequencescapeStudies, fetchTractionSamples }
+export {
+  csvStructure,
+  fetchFunction,
+  fetchSequencescapeStudies,
+  fetchTractionSamples,
+  formatTractionSample,
+}
