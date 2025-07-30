@@ -89,7 +89,7 @@ describe('SampleReport', () => {
         errors: {},
       })
 
-      const sampleInput = wrapper.find('#sampleInput')
+      const sampleInput = wrapper.find('[data-attribute=sample-input]')
       await sampleInput.setValue('sample1')
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()
@@ -102,7 +102,7 @@ describe('SampleReport', () => {
       wrapper.vm.report_type = null
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.find('#sampleInput').element.disabled).toBe(true)
+      expect(wrapper.find('[data-attribute=sample-input]').element.disabled).toBe(true)
       expect(wrapper.find('#searchSamples').element.disabled).toBe(true)
     })
 
@@ -113,7 +113,7 @@ describe('SampleReport', () => {
         errors: { message: 'Internal server error', type: 'danger' },
       })
 
-      const sampleInput = wrapper.find('#sampleInput')
+      const sampleInput = wrapper.find('[data-attribute=sample-input]')
       await sampleInput.setValue('nonexistent-sample')
       await wrapper.find('#searchSamples').trigger('click')
       await flushPromises()

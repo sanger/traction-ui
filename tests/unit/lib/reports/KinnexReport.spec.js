@@ -11,7 +11,9 @@ import {
   failedResponse,
 } from '@support/testHelper.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
+import SequencescapeStudyFactory from '@tests/factories/SequencescapeStudyFactory.js'
 const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: true })
+const sequencescapeStudyFactory = SequencescapeStudyFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -22,6 +24,9 @@ vi.mock('@/composables/useAlert', () => ({
 
 const request = pacbioRequestFactory.content.data[0]
 const sample = pacbioRequestFactory.content.included[7]
+const ssStudy = sequencescapeStudyFactory.content.data[0]
+const ssStudyMetadata = sequencescapeStudyFactory.content.included[0]
+const ssFacultySponsor = sequencescapeStudyFactory.content.included[1]
 
 const formattedSample = (sample, request, study, facultySponsor) => {
   const s = {
@@ -46,45 +51,6 @@ const formattedSample = (sample, request, study, facultySponsor) => {
     }
   }
   return s
-}
-
-// Mocked data from Sequencescape
-const ssStudy = {
-  id: '1',
-  type: 'studies',
-  attributes: {
-    name: 'Study 1',
-    uuid: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-  },
-  relationships: {
-    study_metadata: {
-      data: {
-        type: 'study_metadata',
-        id: '1',
-      },
-    },
-  },
-}
-
-const ssStudyMetadata = {
-  id: '1',
-  type: 'study_metadata',
-  relationships: {
-    faculty_sponsor: {
-      data: {
-        type: 'faculty_sponsors',
-        id: '1',
-      },
-    },
-  },
-}
-
-const ssFacultySponsor = {
-  id: '1',
-  type: 'faculty_sponsors',
-  attributes: {
-    name: 'Faculty Sponsor 1',
-  },
 }
 
 describe('KinnexReport', () => {

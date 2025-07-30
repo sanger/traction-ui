@@ -26,8 +26,8 @@
           </div>
           <div class="flex flex-row space-x-2 items-center">
             <traction-input
-              id="sampleInput"
               v-model="sample_input"
+              data-attribute="sample-input"
               class="flex py-2 w-full"
               placeholder="sample_1,10STDY1..."
               :disabled="!report_type"

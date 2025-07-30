@@ -1,47 +1,10 @@
 import PacbioRequestFactory from '../../factories/PacbioRequestFactory.js'
-
-// Data for mocked Sequencescape responses
-const ssStudy = {
-  id: '1',
-  type: 'studies',
-  attributes: {
-    name: 'Study 1',
-    uuid: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-  },
-  relationships: {
-    study_metadata: {
-      data: {
-        type: 'study_metadata',
-        id: '1',
-      },
-    },
-  },
-}
-
-const ssStudyMetadata = {
-  id: '1',
-  type: 'study_metadata',
-  relationships: {
-    faculty_sponsor: {
-      data: {
-        type: 'faculty_sponsors',
-        id: '1',
-      },
-    },
-  },
-}
-
-const ssFacultySponsor = {
-  id: '1',
-  type: 'faculty_sponsors',
-  attributes: {
-    name: 'Faculty Sponsor 1',
-  },
-}
+import SequencescapeStudyFactory from '../../factories/SequencescapeStudyFactory.js'
 
 describe('Sample Report page', () => {
   beforeEach(() => {
     cy.wrap(PacbioRequestFactory({ includeRelationships: true })).as('pacbioRequestFactory')
+    cy.wrap(SequencescapeStudyFactory()).as('sequencescapeStudyFactory')
 
     cy.visit('#/sample-report')
   })
@@ -51,7 +14,7 @@ describe('Sample Report page', () => {
     cy.contains('Select samples')
     cy.contains('Preview')
     cy.contains('No samples added yet')
-    cy.get('#sampleInput').should('exist')
+    cy.get('[data-attribute=sample-input]').should('exist')
     cy.get('#searchSamples').should('exist')
     cy.get('#sampleReportTable').should('exist')
     cy.get('#download').should('exist')
@@ -77,17 +40,23 @@ describe('Sample Report page', () => {
           included: [],
         },
       })
-      cy.intercept(
-        '/api/v2/studies?filter[uuid]=fec8a1fa-b9e2-11e9-9123-fa163e99b035&include=study_metadata.faculty_sponsor',
-        {
-          statusCode: 200,
-          body: {
-            data: [ssStudy],
-            included: [ssStudyMetadata, ssFacultySponsor],
+
+      cy.get('@sequencescapeStudyFactory').then((sequencescapeStudyFactory) => {
+        cy.intercept(
+          '/api/v2/studies?filter[uuid]=fec8a1fa-b9e2-11e9-9123-fa163e99b035&include=study_metadata.faculty_sponsor',
+          {
+            statusCode: 200,
+            body: {
+              data: [sequencescapeStudyFactory.content.data[0]],
+              included: [
+                sequencescapeStudyFactory.content.included[0],
+                sequencescapeStudyFactory.content.included[1],
+              ],
+            },
           },
-        },
-      )
-      cy.get('#sampleInput').type('sample-1')
+        )
+      })
+      cy.get('[data-attribute=sample-input]').type('sample-1')
       cy.get('#searchSamples').click()
 
       cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
@@ -108,9 +77,9 @@ describe('Sample Report page', () => {
           included: [],
         },
       })
-      cy.get('#sampleInput').type('sample-2')
+      cy.get('[data-attribute=sample-input]').type('sample-2')
       // Simulate pressing Enter to add the sample
-      cy.get('#sampleInput').type('{enter}')
+      cy.get('[data-attribute=sample-input]').type('{enter}')
 
       // Check some sample data is displayed
       cy.get('#sampleReportTable').contains('Pacbio_HiFi')
@@ -150,7 +119,7 @@ describe('Sample Report page', () => {
           included: [],
         },
       })
-      cy.get('#sampleInput').type('sample-1')
+      cy.get('[data-attribute=sample-input]').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains('No samples found in Traction with the provided input')
       cy.contains('No samples added yet')
@@ -173,7 +142,7 @@ describe('Sample Report page', () => {
           },
         },
       })
-      cy.get('#sampleInput').type('sample-1')
+      cy.get('[data-attribute=sample-input]').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains('Error fetching samples from Traction: InternalServerError A failure occured')
       cy.contains('No samples added yet')
@@ -206,7 +175,7 @@ describe('Sample Report page', () => {
           },
         },
       )
-      cy.get('#sampleInput').type('sample-1')
+      cy.get('[data-attribute=sample-input]').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains('No studies found in Sequencescape with the provided input')
       cy.contains('No samples added yet')
@@ -240,7 +209,7 @@ describe('Sample Report page', () => {
           },
         },
       )
-      cy.get('#sampleInput').type('sample-1')
+      cy.get('[data-attribute=sample-input]').type('sample-1')
       cy.get('#searchSamples').click()
       cy.contains(
         'Error fetching studies from Sequencescape: InternalServerError A failure occured',
