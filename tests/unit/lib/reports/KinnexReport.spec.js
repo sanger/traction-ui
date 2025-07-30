@@ -23,6 +23,9 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+// Its not ideal to extract information based on position in the included array,
+// but we need to ensure we are getting the correct sample and study data due
+// to relationship look ups in the Kinnex Report
 const request = pacbioRequestFactory.content.data[0]
 const sample = pacbioRequestFactory.content.included[7]
 const ssStudy = sequencescapeStudyFactory.content.data[0]
