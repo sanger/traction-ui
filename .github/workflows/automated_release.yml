@@ -6,40 +6,39 @@ on:
     branches:
       - master
       - develop
-      
+env:
+  BRANCH_NAME: ${{ github.ref_name }}
+
 jobs:
-  build:
+  automated_release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: nelonoel/branch-name@v1.0.1
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Set release tag
-        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
-        # On the develop branch this might create RELEASE_VERSION=2.4.6-987654321-develop
-        # On the master branch this would then only create RELEASE_VERSION=2.4.6
-        run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
-
-      - name: Setup node
-        uses: actions/setup-node@v4
+        id: set_tag
+        uses: sanger/.github/.github/actions/release/set-release-tag@master
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
+          branch_name: ${{ env.BRANCH_NAME }}
+          release_version: ${{ env.RELEASE_VERSION }}
+          github_run_id: ${{ github.run_id }}
 
-      - name: Install
-        run: >-
-          npm ci --legacy-peer-deps
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
 
+      - name: Install npm dependencies
+        uses: sanger/.github/.github/actions/install/npm@master
+
+      # Run our build
       - name: Compile Build
-        run: >-
-          ./compile-build.sh release.tar.gz dist
+        run: ./compile-build '' v${{ env.RELEASE_VERSION }} ${{ env.BRANCH_NAME }}
 
+
+      # Create a GitHub release with the release asset as an artifact
       - name: Create release and upload release.tar.gz
-        uses: ncipollo/release-action@v1.15.0
+        uses: sanger/.github/.github/actions/release/create-release@master
         with:
-          name: ${{ env.RELEASE_VERSION }}
-          tag: v${{ env.RELEASE_VERSION }}
-          prerelease: ${{ !(github.ref == 'refs/heads/master') }}
-          commit: ${{ github.sha }}
-          artifacts: release.tar.gz
-          artifactErrorsFailBuild: true
+          release_name: ${{ steps.set_tag.outputs.release_version_tag }}
+          github_ref: ${{ github.ref }}
+          commit_sha: ${{ github.sha }}
