@@ -1,4 +1,4 @@
-import { arrayToCsv } from '@/lib/csv/creator'
+import { arrayToCsv } from '@/lib/csv/creator.js'
 
 describe('arrayToCsv', () => {
   it('converts a simple 2D array to CSV', () => {

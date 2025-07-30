@@ -1,4 +1,4 @@
-import { mount } from '@support/testHelper'
+import { mount } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 import SampleReport from '@/views/SampleReport.vue'
 import { createPinia, setActivePinia, flushPromises } from '@support/testHelper.js'
@@ -16,12 +16,12 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@/composables/useAlert', () => ({
+vi.mock('@/composables/useAlert.js', () => ({
   default: () => ({
     showAlert: mockShowAlert,
   }),
 }))
-vi.mock('@/lib/csv/creator', async (importOriginal) => {
+vi.mock('@/lib/csv/creator.js', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
