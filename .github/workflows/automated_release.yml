@@ -32,7 +32,7 @@ jobs:
 
       # Run our build
       - name: Compile Build
-        run: ./compile-build '' v${{ env.RELEASE_VERSION }} ${{ env.BRANCH_NAME }}
+        run: ./compile-build.sh '' v${{ env.RELEASE_VERSION }} ${{ env.BRANCH_NAME }}
 
 
       # Create a GitHub release with the release asset as an artifact
