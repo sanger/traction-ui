@@ -1,5 +1,6 @@
-import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
-import { mount, store } from '@support/testHelper'
+import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList.vue'
+import { mountWithStore } from '@support/testHelper.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const libraryAttributes = {
   kit_barcode: 'ABC1',
@@ -39,20 +40,27 @@ const wells = {
   3: { id: 3, position: 'C1' },
 }
 
-store.state.traction.ont.pools.selected.tagSet = tagSet
-store.state.traction.ont.pools.resources.tagSets = { 1: tagSet }
-store.state.traction.ont.pools.resources.tags = tags
-store.state.traction.ont.pools.resources.requests = requests
-store.state.traction.ont.pools.resources.wells = wells
-
 describe('OntPoolLibraryList.vue', () => {
   it('should have a list of libraries', () => {
-    store.state.traction.ont.pools.pooling.libraries = libraries
-    const wrapper = mount(OntPoolLibraryList, {
-      store,
-      props: {
-        notify: () => {},
+    const { wrapper } = mountWithStore(OntPoolLibraryList, {
+      initialState: {
+        ontPoolCreate: {
+          resources: {
+            libraries,
+            requests,
+            wells,
+            tags,
+            tagSets: { 1: tagSet },
+          },
+          selected: {
+            tagSet: tagSet,
+          },
+          pooling: {
+            libraries,
+          },
+        },
       },
+      createStore: () => useOntPoolCreateStore(),
     })
     expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
       Object.values(libraries).length,

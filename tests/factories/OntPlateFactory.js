@@ -1,10 +1,20 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi'
 
 const createStoreData = (data) => {
   const plates = data.data
   const { requests, wells } = groupIncludedByResource(data.included)
-  return { plates, requests, wells }
+
+  return {
+    plates,
+    requests,
+    wells,
+    resources: {
+      plates: dataToObjectById({ data: plates, includeRelationships: true }),
+      requests: dataToObjectById({ data: requests, includeRelationships: true }),
+      wells: dataToObjectById({ data: wells, includeRelationships: true }),
+    },
+  }
 }
 
 const OntPlateFactory = ({ count = undefined } = {}) => {

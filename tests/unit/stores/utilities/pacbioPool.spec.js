@@ -6,8 +6,8 @@ import {
   assignRequestIdsToTubes,
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
-  addUsedAliquotsAndErrorsToPools,
-} from '@/stores/utilities/pool'
+  addUsedAliquotsBarcodeAndErrorsToPools,
+} from '@/stores/utilities/pacbioPool.js'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { dataToObjectById } from '@/api/JsonApi'
@@ -845,7 +845,7 @@ describe('pool', () => {
           barcode: 'TRAC-2-1',
         },
       ]
-      expect(addUsedAliquotsAndErrorsToPools(state)).toEqual(expected)
+      expect(addUsedAliquotsBarcodeAndErrorsToPools(state)).toEqual(expected)
     })
   })
 })
