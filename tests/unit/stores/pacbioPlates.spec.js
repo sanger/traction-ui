@@ -15,9 +15,6 @@ describe('pacbioPlates', () => {
     setActivePinia(pinia)
   })
 
-  // describe('getters', () => {
-  // })
-
   describe('actions', () => {
     describe('fetchPlates', () => {
       it('handles success and adds plates to the store', async () => {
