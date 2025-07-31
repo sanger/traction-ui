@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import useRootStore from '@/stores'
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper.js'
 import {
   groupIncludedByResource,
   extractAttributes,
@@ -10,8 +10,9 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run'
+import { newRun, createRunType, RunTypeEnum, newWell, newPlate } from '@/stores/utilities/run.js'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -84,6 +85,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     resources: {
       // The SMRT Link version store.
       smrtLinkVersions: {},
+
+      //AnnotationTypes: The annotation types for the run and wells
+      annotationTypes: {},
     },
     // Run: The current run being edited or created
     run: {},
@@ -105,6 +109,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     //Tags: The tags for the currently selected libraries
     tags: {},
+
+    //Annotations: The annotations for the run and wells
+    annotations: {},
 
     //Run Type: The type of run either new or existing
     runType: {},
@@ -145,7 +152,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     currentSmrtLinkVersion: (state) => {
       return state.smrtLinkVersion || {}
     },
-
     /**
      * Returns a list of all the pools and libraries and their samples
      * @param {Object} state the pinia state object
@@ -193,7 +199,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     getWell: (state) => (plateNumber, position) => {
       // get the well from the state
-      return state.wells[plateNumber][position]
+      return state.wells[plateNumber]?.[position]
     },
 
     /**
@@ -237,6 +243,26 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       if (success) {
         // populate smrtLinkVersions in store
         this.resources.smrtLinkVersions = dataToObjectById({ data })
+      }
+
+      return { success, errors }
+    },
+
+    /**
+     * Retrieves a list of annotation types and populates the store
+     * @returns {Object} { success, errors }. Was the request successful? were there any errors?
+     */
+    async fetchAnnotationTypes() {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.annotation_types
+      const promise = request.get({})
+      const response = await handleResponse(promise)
+
+      const { success, body: { data } = {}, errors = [] } = response
+
+      if (success) {
+        // populate annotationTypes in store
+        this.resources.annotationTypes = dataToObjectById({ data })
       }
 
       return { success, errors }
@@ -299,7 +325,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const promise = request.find({
         id,
         include:
-          'plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version',
+          'plates.wells.used_aliquots,plates.wells.libraries.request,plates.wells.pools.requests,plates.wells.pools.libraries.request,plates.wells.pools.used_aliquots.tag,plates.wells.libraries.used_aliquots.tag,smrt_link_version,annotations,plates.wells.annotations',
       })
       const response = await handleResponse(promise)
       const { success, body: { data, included = [] } = {}, errors = [] } = response
@@ -313,6 +339,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           aliquots,
           requests,
           tags,
+          annotations,
           smrt_link_versions: [smrt_link_version = {}] = [],
         } = groupIncludedByResource(included)
 
@@ -329,6 +356,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         this.aliquots = formatById(this.aliquots, aliquots, true)
         this.requests = formatById(this.requests, requests, true)
         this.tags = formatById(this.tags, tags)
+        this.annotations = dataToObjectById({ data: annotations, includeRelationships: true })
 
         // Populate the wells
         // Adds the wells to state by plate number and well position, two dimensional array
@@ -596,6 +624,28 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           well.use_adaptive_loading = value
         })
       })
+    },
+
+    /**
+     * Sets the annotations for a given parent
+     * @param {Object} params the parameters for setting the annotations
+     * @param {Object} params.parent the parent to set the annotations for
+     * @param {String} params.annotatableType the type of the annotatable object
+     * @returns {void}
+     * @description This function checks if the parent already has annotations.
+     * If it does not, it retrieves the annotations for the parent based on the annotatable type
+     */
+    setAnnotations({ parent, annotatableType }) {
+      if (parent.annotations) return
+      // Get the annotations for the parent based on the annotatable type
+      const annotations = annotationsByAnnotatable({
+        annotations: Object.values(this.annotations),
+        annotatableType,
+        annotatableId: parent.id,
+      })
+
+      // Set the annotations on the parent
+      parent.annotations = annotations
     },
   },
 })

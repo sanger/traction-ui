@@ -65,6 +65,28 @@
 
     <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
+    <div>
+      <div>
+        <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
+          <traction-button
+            data-action="show-annotations"
+            theme="default"
+            @click="showAnnotations()"
+          >
+            {{ annotationsVisible ? 'Hide Annotations' : 'Show Annotations' }}
+          </traction-button>
+        </div>
+        <div
+          v-if="annotationsVisible"
+          class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+        >
+          <annotation-list
+            :parent="store.wells[plateNumber][position]"
+            :annotation-types="annotationTypes"
+          />
+        </div>
+      </div>
+    </div>
     <template #modal-footer="{}">
       <traction-button
         v-if="!newWell"
@@ -91,6 +113,7 @@ import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import { ref, computed, reactive } from 'vue'
 import useAlert from '@/composables/useAlert.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import AnnotationList from '@/components/AnnotationList.vue'
 
 // Create a store instance of the pacbioRunCreateStore
 const store = usePacbioRunCreateStore()
@@ -343,5 +366,25 @@ const handleCustomEvents = (component) => {
     }
   }
   return { ...component.events }
+}
+
+const annotationsVisible = ref(false)
+
+const toggleAnnotations = () => {
+  annotationsVisible.value = !annotationsVisible.value
+}
+
+const annotationTypes = computed(() => Object.values(store.resources.annotationTypes))
+
+const showAnnotations = () => {
+  // not sure if this is the correct way as slightly confused by getting well.
+  const well = store.getWell(plateNumber.value, position.value)
+  if (well) {
+    store.setAnnotations({
+      parent: store.wells[plateNumber.value][position.value],
+      annotatableType: 'Pacbio::Well',
+    })
+    toggleAnnotations()
+  }
 }
 </script>
