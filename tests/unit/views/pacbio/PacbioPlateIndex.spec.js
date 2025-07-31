@@ -1,32 +1,32 @@
-import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, store, router, flushPromises } from '@support/testHelper'
-import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory'
+import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
+import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
+import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
+
+const pacbioPlateFactory = PacbioPlateFactory()
 
 describe('PacbioPlates.vue', () => {
   let wrapper, plates
-  const pacbioPlateFactory = PacbioPlateFactory()
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
-    get.mockResolvedValue(pacbioPlateFactory.responses.fetch)
-
-    wrapper = mount(PacbioPlates, {
-      store,
-      router,
-      stubs: {
-        // Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.pacbio.plates.get = vi
+            .fn()
+            .mockResolvedValue(pacbioPlateFactory.responses.fetch)
+        }
       },
-    })
+    ]
 
-    wrapper.setData({ sortDesc: false })
+    ;({ wrapper } = mountWithStore(PacbioPlateIndex, {
+      plugins,
+      createStore: () => usePacbioPlatesStore(),
+    }))
     plates = wrapper.vm
     await flushPromises()
   })
 
   describe('building the table', () => {
-    it('will have a table', () => {
-      expect(wrapper.find('table').exists()).toBeTruthy()
-    })
-
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
       for (const field of plates.fields) {
@@ -55,14 +55,6 @@ describe('PacbioPlates.vue', () => {
       await flushPromises()
       expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
       expect(button.text()).toEqual('Hide Plate')
-    })
-  })
-
-  describe('#alert', () => {
-    it('shows an alert', () => {
-      plates.showAlert = vi.fn()
-      plates.alert('message', 'type')
-      expect(plates.showAlert).toBeCalledWith('message', 'type')
     })
   })
 })
