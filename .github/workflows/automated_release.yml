@@ -16,6 +16,10 @@ jobs:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@master
 
+      - name: Get release version
+        id: get_version
+        run: echo "RELEASE_VERSION=$(cat .release-version)" >> "$GITHUB_ENV"
+
       - name: Set release tag
         id: set_tag
         uses: sanger/.github/.github/actions/release/set-release-tag@master
