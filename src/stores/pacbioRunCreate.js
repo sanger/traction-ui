@@ -636,7 +636,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * If it does not, it retrieves the annotations for the parent based on the annotatable type
      */
     setAnnotations({ parent, annotatableType }) {
-      if (parent.annotations) return
+      if (parent.annotationList) return
       // Get the annotations for the parent based on the annotatable type
       const annotations = annotationsByAnnotatable({
         annotations: Object.values(this.annotations),
@@ -645,7 +645,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       })
 
       // Set the annotations on the parent
-      parent.annotations = annotations
+      parent.annotationList = annotations
     },
   },
 })

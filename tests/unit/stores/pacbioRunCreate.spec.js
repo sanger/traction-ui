@@ -1046,8 +1046,8 @@ describe('usePacbioRunCreateStore', () => {
         })
 
         // we can't use equality as the object has methods
-        expect(store.wells['1']['A1'].annotations.length).toEqual(expectedAnnotations.length)
-        expect(JSON.stringify(store.wells['1']['A1'].annotations[0])).toEqual(
+        expect(store.wells['1']['A1'].annotationList.length).toEqual(expectedAnnotations.length)
+        expect(JSON.stringify(store.wells['1']['A1'].annotationList[0])).toEqual(
           JSON.stringify(expectedAnnotations[0]),
         )
       })
@@ -1067,7 +1067,7 @@ describe('usePacbioRunCreateStore', () => {
           },
         }
         store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
-        expect(store.wells['1']['A1'].annotations).toEqual([])
+        expect(store.wells['1']['A1'].annotationList).toEqual([])
       })
 
       it("doesn't change the annotations if they are already set", () => {
@@ -1089,13 +1089,13 @@ describe('usePacbioRunCreateStore', () => {
                 id: '1',
                 type: 'wells',
                 position: 'A1',
-                annotations: wellAnnotations,
+                annotationList: wellAnnotations,
               },
             },
           },
         }
         store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
-        expect(store.wells['1']['A1'].annotations).toEqual(wellAnnotations)
+        expect(store.wells['1']['A1'].annotationList).toEqual(wellAnnotations)
       })
     })
   })

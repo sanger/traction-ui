@@ -34,8 +34,8 @@ describe('AnnotationList.vue', () => {
     setActivePinia(pinia)
     store = usePacbioRunCreateStore()
     store.$state = {
-      run: { ...pacbioRunFactory.storeData.run, annotations: [...annotationsByRun] },
-      wells: { [well.id]: { ...well, annotations: annotationsByWell } },
+      run: { ...pacbioRunFactory.storeData.run, annotationList: [...annotationsByRun] },
+      wells: { [well.id]: { ...well, annotationList: annotationsByWell } },
     }
   })
 
@@ -73,7 +73,7 @@ describe('AnnotationList.vue', () => {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
     const annotationsLength = wrapper.findAll('[data-type="annotation"]').length
-    const annotationId = wrapper.vm.parent.annotations[annotationsLength - 1].id
+    const annotationId = wrapper.vm.parent.annotationList[annotationsLength - 1].id
     const addButton = wrapper.find(`[data-action="add-annotation-${annotationId}"]`)
     await addButton.trigger('click')
 
@@ -100,11 +100,8 @@ describe('AnnotationList.vue', () => {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
 
-    // let removeButtons = wrapper.findAll('[data-action^="remove-annotation"]')
-    // expect(removeButtons.length).toEqual(3)
-
     // Get the annotation id for the newly added annotation
-    const annotationId = wrapper.vm.parent.annotations[1].id
+    const annotationId = wrapper.vm.parent.annotationList[1].id
     const addButton = wrapper.find(`[data-action="add-annotation-${annotationId}"]`)
     await addButton.trigger('click')
 

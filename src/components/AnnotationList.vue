@@ -117,7 +117,7 @@ const selectOptions = annotationTypeSelectOptions(props.annotationTypes)
  * Computed property for the list of annotations from the parent object.
  * @type {import('vue').ComputedRef<Array>}
  */
-const annotations = computed(() => props.parent.annotations)
+const annotations = computed(() => props.parent.annotationList)
 
 /**
  * Computed property for the section title.

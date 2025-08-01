@@ -152,7 +152,7 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType
         ...removeReadOnlyAttributes(attributes),
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
-        annotations_attributes: payloadForAnnotations(run.annotations),
+        annotations_attributes: payloadForAnnotations(run.annotationList),
         plates_attributes: Object.values(plates)
           .map(({ plate_number, ...plate }) => {
             return {
@@ -191,11 +191,11 @@ const createWellsPayload = (wells) => {
   // return the wells with the used_aliquots replaced by used_aliquots_attributes
   return (
     Object.values(rest)
-      .map(({ used_aliquots: used_aliquots_attributes, annotations, ...attributes }) => {
+      .map(({ used_aliquots: used_aliquots_attributes, annotationList, ...attributes }) => {
         return {
           ...attributes,
           used_aliquots_attributes,
-          annotations_attributes: payloadForAnnotations(annotations),
+          annotations_attributes: payloadForAnnotations(annotationList),
         }
       })
       // add the _destroy attribute back to the wells
@@ -216,6 +216,7 @@ const removeReadOnlyAttributes = (run) => {
     adaptive_loading,
     sequencing_kit_box_barcodes,
     barcodes_and_concentrations,
+    annotationList,
     annotations,
     ...filteredRun
   } = run

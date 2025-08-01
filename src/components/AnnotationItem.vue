@@ -86,7 +86,7 @@ import { reactive } from 'vue'
  */
 const props = defineProps({
   id: {
-    type: String,
+    type: [String, Number],
     required: true,
   },
   parent: {
@@ -115,6 +115,6 @@ const errorsFor = (attribute) => {
  * @type {import('vue').ReactiveEffect}
  */
 const annotation = reactive(
-  props.parent.annotations.find((annotation) => annotation.id === props.id),
+  props.parent.annotationList.find((annotation) => annotation.id === props.id),
 )
 </script>
