@@ -279,14 +279,14 @@ describe('run.js', () => {
 
   describe('createPayload', () => {
     it('will create a new run payload', () => {
-      const annotations = [
+      const annotationList = [
         AnnotationItemType({ newRecord: true }),
         AnnotationItemType({ newRecord: true }),
       ]
       const run = newRun({
         system_name: 'Sequel IIe',
         dna_control_complex_box_barcode: 'to keep',
-        annotations,
+        annotationList,
       })
 
       const { id, ...attributes } = run
@@ -308,7 +308,7 @@ describe('run.js', () => {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.SequelIIe.name,
             dna_control_complex_box_barcode: 'to keep',
-            annotations_attributes: payloadForAnnotations(annotations),
+            annotations_attributes: payloadForAnnotations(annotationList),
             plates_attributes: [
               {
                 ...plates.new[1],
@@ -371,7 +371,7 @@ describe('run.js', () => {
     })
 
     it('will create an existing run payload', () => {
-      const annotations = [
+      const annotationList = [
         AnnotationItemType({ newRecord: true }),
         AnnotationItemType({ newRecord: true }),
       ]
@@ -379,7 +379,7 @@ describe('run.js', () => {
         system_name: 'Revio',
         id: 1,
         dna_control_complex_box_barcode: null,
-        annotations,
+        annotationList,
       })
       const { id, ...attributes } = aRun
       const payload = createPayload({
@@ -398,7 +398,7 @@ describe('run.js', () => {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
             dna_control_complex_box_barcode: null,
-            annotations_attributes: payloadForAnnotations(annotations),
+            annotations_attributes: payloadForAnnotations(annotationList),
             plates_attributes: [
               {
                 ...plates.existing[1],
@@ -468,9 +468,9 @@ describe('run.js', () => {
         expect(payload).toEqual(expected)
       })
 
-      it('will add the annotations attributes', () => {
+      it('will add the annotations_attributes', () => {
         const A1 = newWell({ position: 'A1' })
-        A1.annotations = [
+        A1.annotationList = [
           AnnotationItemType({
             id: 1,
             attributes: { annotation_type_id: 1, comment: 'Test annotation', user: 'user1' },
@@ -489,13 +489,13 @@ describe('run.js', () => {
         ]
 
         // eslint-disable-next-line no-unused-vars
-        const { annotations, used_aliquots, ...rest } = A1
+        const { annotationList, used_aliquots, ...rest } = A1
 
         const expected = [
           {
             ...rest,
             used_aliquots_attributes: [],
-            annotations_attributes: payloadForAnnotations(A1.annotations),
+            annotations_attributes: payloadForAnnotations(A1.annotationList),
           },
         ]
 
