@@ -19,7 +19,7 @@ const annotation = {
 const run = {
   id: '1',
   name: 'Test Run',
-  annotations: [
+  annotationList: [
     AnnotationItemType({ attributes: annotation, id: '1', newRecord: false }),
     AnnotationItemType({ id: '2', newRecord: true }),
   ],
@@ -64,7 +64,7 @@ describe('AnnotationItem.vue', () => {
     })
 
     it('shows the correct data for a new annotation', () => {
-      const newAnnotation = run.annotations[1]
+      const newAnnotation = run.annotationList[1]
       const wrapper = mount(AnnotationItem, {
         props: {
           id: '2',
