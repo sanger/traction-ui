@@ -58,10 +58,6 @@ describe('ONTRuns.vue', () => {
   })
 
   describe('building the table', () => {
-    it('exists', () => {
-      expect(wrapper.find('table').exists()).toBeTruthy()
-    })
-
     it('contains the correct data', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })

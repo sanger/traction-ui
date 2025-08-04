@@ -37,80 +37,74 @@
   </DataFetcher>
 </template>
 
-<script>
+<script setup>
+/**
+ * ONTRunIndex view
+ * Displays a table of ONT runs with filtering, sorting, and actions.
+ * Uses Pinia store for state and actions.
+ */
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useOntRunsStore from '@/stores/ontRuns.js'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-  name: 'ONTRuns',
-  components: {
-    DataFetcher,
-    FilterCard,
-    DownloadIcon,
+const { fetchWithQueryParams } = useQueryParams()
+const ontRunsStore = useOntRunsStore()
+const router = useRouter()
+
+const fields = [
+  { key: 'id', label: 'Run ID', sortable: true },
+  {
+    key: 'experiment_name',
+    label: 'Experiment ID',
+    sortable: true,
+    tdClass: 'experiment-name',
   },
-  setup() {
-    const { fetchWithQueryParams } = useQueryParams()
-    const ontRunsStore = useOntRunsStore() // Initialize the store here
-    return { fetchWithQueryParams, ontRunsStore }
+  { key: 'state', label: 'State', sortable: true },
+  {
+    key: 'instrument_name',
+    label: 'Instrument Name',
+    sortable: true,
+    tdClass: 'instrument-name',
   },
-  data() {
-    return {
-      fields: [
-        { key: 'id', label: 'Run ID', sortable: true },
-        {
-          key: 'experiment_name',
-          label: 'Experiment ID',
-          sortable: true,
-          tdClass: 'experiment-name',
-        },
-        { key: 'state', label: 'State', sortable: true },
-        {
-          key: 'instrument_name',
-          label: 'Instrument Name',
-          sortable: true,
-          tdClass: 'instrument-name',
-        },
-        {
-          key: 'rebasecalling_process',
-          label: 'Modified Basecalling Required',
-          sortable: true,
-          tdClass: 'instrument-name',
-        },
-        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
-        { key: 'actions', label: 'Actions', tdClass: 'actions' },
-      ],
-      filterOptions: [
-        { value: '', text: '' },
-        { value: 'experiment_name', text: 'Experiment ID' },
-        { value: 'state', text: 'State' },
-        // Need to specify filters in json api resources if we want more filters
-      ],
-      sortBy: 'created_at',
-      sortDesc: true,
-    }
+  {
+    key: 'rebasecalling_process',
+    label: 'Modified Basecalling Required',
+    sortable: true,
+    tdClass: 'instrument-name',
   },
-  computed: {
-    runs() {
-      return this.ontRunsStore.runs
-    },
-  },
-  methods: {
-    generateId(text, id) {
-      return `${text}-${id}`
-    },
-    generateSampleSheetPath(id) {
-      return import.meta.env.VITE_TRACTION_BASE_URL + `/v1/ont/runs/${id}/sample_sheet`
-    },
-    redirectToRun(runId) {
-      this.$router.push({ path: `/ont/run/${runId || 'new'}` })
-    },
-    async fetchRuns() {
-      return await this.fetchWithQueryParams(this.ontRunsStore.fetchOntRuns, this.filterOptions)
-    },
-  },
+  { key: 'created_at', label: 'Created at (UTC)', sortable: true },
+  { key: 'actions', label: 'Actions', tdClass: 'actions' },
+]
+
+const filterOptions = [
+  { value: '', text: '' },
+  { value: 'experiment_name', text: 'Experiment ID' },
+  { value: 'state', text: 'State' },
+  // Add more filters as needed
+]
+
+const sortBy = ref('created_at')
+
+const runs = computed(() => ontRunsStore.runs)
+
+function generateId(text, id) {
+  return `${text}-${id}`
+}
+
+function generateSampleSheetPath(id) {
+  return import.meta.env.VITE_TRACTION_BASE_URL + `/v1/ont/runs/${id}/sample_sheet`
+}
+
+function redirectToRun(runId) {
+  router.push({ path: `/ont/run/${runId || 'new'}` })
+}
+
+async function fetchRuns() {
+  return await fetchWithQueryParams(ontRunsStore.fetchOntRuns, filterOptions)
 }
 </script>
 

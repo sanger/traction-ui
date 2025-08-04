@@ -27,7 +27,7 @@
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
   </DataFetcher>
 </template>
-<script>
+<script setup>
 /**
  * @name ONTRun
  * @description This component is used to display the form for creating a new ONT Run or editing an existing one.
@@ -36,103 +36,97 @@
 import DataFetcher from '@/components/DataFetcher.vue'
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation.vue'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells.vue'
-import { mapState, mapActions as mapActionsPinia } from 'pinia'
-import { mapActions } from 'vuex'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import useOntRunsStore from '@/stores/ontRuns.js'
 
-export default {
-  name: 'ONTRun',
-  components: {
-    ONTRunInformation,
-    ONTRunInstrumentFlowcells,
-    DataFetcher,
+// Props
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    default: 0,
   },
-  props: {
-    id: {
-      type: [String, Number],
-      default: 0,
-    },
-  },
-  data() {
-    return {
-      newRecord: isNaN(this.id),
-      actions: {
-        create: {
-          id: 'create',
-          theme: 'create',
-          label: 'Create',
-          method: 'createRun',
-        },
-        update: {
-          id: 'update',
-          theme: 'update',
-          label: 'Update',
-          method: 'updateRun',
-        },
-      },
-    }
-  },
-  computed: {
-    ...mapState(useOntRunCreateStore, ['currentRun']),
-    ...mapState(useOntRunsStore, ['instruments']),
-    currentAction() {
-      return this.actions[this.newRecord ? 'create' : 'update']
-    },
+})
 
-    // TO DO: move this to the currentRun in the store
-    /**
-     * @name runValid
-     * @description This method is used to validate the current run. The run must have an instrument name, state, rebasecalling process, and flowcells with tube barcodes and flowcell ids if they exist.
-     * @returns {Boolean} - True if the run is valid
-     */
-    runValid() {
-      const flowCellsValid = this.currentRun.flowcell_attributes?.every((fc) => {
-        // If it has a tube barcode or flowcell id, it must have both and no errors
-        return (
-          (!!fc.tube_barcode && !!fc.flowcell_id && Object.values(fc.errors).length == 0) ||
-          (!fc.tube_barcode && !fc.flowcell_id)
-        )
-      })
+// Stores
+const ontRunCreateStore = useOntRunCreateStore()
+const ontRunsStore = useOntRunsStore()
+const router = useRouter()
 
-      return (
-        this.currentRun.instrument_name &&
-        this.currentRun.state &&
-        this.currentRun.rebasecalling_process &&
-        flowCellsValid
-      )
-    },
+// State
+const newRecord = ref(isNaN(props.id))
+const actions = {
+  create: {
+    id: 'create',
+    theme: 'create',
+    label: 'Create',
+    method: 'createRun',
   },
-  methods: {
-    ...mapActionsPinia(useOntRunCreateStore, ['createRun', 'fetchRun', 'newRun', 'updateRun']),
-    ...mapActionsPinia(useOntRunsStore, ['setInstruments']),
-    ...mapActions('traction/ont/pools', ['fetchOntPools']),
-    async runAction() {
-      const response = await this[this.currentAction.method]()
-      if (response.success) {
-        this.redirectToRuns()
-      } else {
-        const action = this.newRecord ? 'create' : 'update'
-        this.showAlert(
-          `Failed to ${action} run in Traction: ${response.errors}`,
-          'danger',
-          'run-validation-message',
-        )
-      }
-    },
-    redirectToRuns() {
-      this.$router.push({ name: 'ONTRunIndex' })
-    },
-    async provider() {
-      await this.setInstruments()
-
-      if (this.id === 'new') {
-        this.newRun()
-      } else if (!this.newRecord) {
-        await this.fetchRun(parseInt(this.id))
-      }
-      return { success: true }
-    },
+  update: {
+    id: 'update',
+    theme: 'update',
+    label: 'Update',
+    method: 'updateRun',
   },
 }
+
+// Computed
+const currentRun = computed(() => ontRunCreateStore.currentRun)
+// const instruments = computed(() => ontRunsStore.instruments)
+const currentAction = computed(() => actions[newRecord.value ? 'create' : 'update'])
+
+// Validate the run
+const runValid = computed(() => {
+  const flowCellsValid = currentRun.value.flowcell_attributes?.every((fc) => {
+    return (
+      (!!fc.tube_barcode && !!fc.flowcell_id && Object.values(fc.errors).length === 0) ||
+      (!fc.tube_barcode && !fc.flowcell_id)
+    )
+  })
+  return (
+    currentRun.value.instrument_name &&
+    currentRun.value.state &&
+    currentRun.value.rebasecalling_process &&
+    flowCellsValid
+  )
+})
+
+// Methods
+async function runAction() {
+  const response = await ontRunCreateStore[currentAction.value.method]()
+  if (response.success) {
+    redirectToRuns()
+  } else {
+    const action = newRecord.value ? 'create' : 'update'
+    // You may want to use a global alert or event bus here
+    // For now, just log
+    // showAlert is not defined in this context, so use console.error or implement your own
+    console.error(
+      `Failed to ${action} run in Traction: ${response.errors}`,
+      'danger',
+      'run-validation-message',
+    )
+  }
+}
+
+function redirectToRuns() {
+  router.push({ name: 'ONTRunIndex' })
+}
+
+async function provider() {
+  await ontRunsStore.setInstruments()
+  console.log('Fetching run with id:', props.id)
+  if (props.id === 'new') {
+    ontRunCreateStore.newRun()
+    newRecord.value = true
+  } else if (!newRecord.value) {
+    await ontRunCreateStore.fetchRun(parseInt(props.id))
+    newRecord.value = false
+  }
+  return { success: true }
+}
+
+// Expose for template if needed
+// (not required in <script setup>, but left here for clarity)
 </script>
