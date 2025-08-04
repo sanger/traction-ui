@@ -1,5 +1,3 @@
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-
 export default {
   runs: (state) => {
     try {
@@ -16,22 +14,4 @@ export default {
       return []
     }
   },
-  instruments: (state) => {
-    try {
-      return Object.values(state.resources.instruments).map((i) => {
-        const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
-        return {
-          ...i,
-          ...instrumentConfig,
-        }
-      })
-    } catch {
-      return []
-    }
-  },
-  instrumentByName:
-    (state, { instruments }) =>
-    (name) => {
-      return instruments.find((i) => i.name == name)
-    },
 }

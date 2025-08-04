@@ -30,7 +30,6 @@
             :height="row.detailsDim"
             :width="row.detailsDim"
             :plate="currentPlate"
-            @alert="alert"
           ></Plate>
         </template>
       </traction-table>
@@ -38,59 +37,53 @@
   </DataFetcher>
 </template>
 
-<script>
-import Plate from '@/components/plates/PlateItem'
-import FilterCard from '@/components/FilterCard'
-import DataFetcher from '@/components/DataFetcher'
-import { createNamespacedHelpers } from 'vuex'
-import useQueryParams from '@/composables/useQueryParams'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
+<script setup>
+/**
+ * PacbioPlateIndex view
+ * Displays a table of Pacbio plates with filtering, sorting, and details.
+ * Uses Pinia store for state and actions.
+ */
+import Plate from '@/components/plates/PlateItem.vue'
+import FilterCard from '@/components/FilterCard.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import { ref, computed } from 'vue'
+import useQueryParams from '@/composables/useQueryParams.js'
+import { usePacbioPlatesStore } from '@/stores/pacbioPlates.js'
 
-export default {
-  name: 'PacbioPlates',
-  components: {
-    Plate,
-    FilterCard,
-    DataFetcher,
-  },
-  setup() {
-    const { fetchWithQueryParams } = useQueryParams()
-    return { fetchWithQueryParams }
-  },
-  data() {
-    return {
-      fields: [
-        { key: 'id', label: 'Plate ID', sortable: true },
-        { key: 'barcode', label: 'Plate Barcode', sortable: true },
-        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
-        { key: 'show_details', label: 'Show Details' },
-      ],
-      filterOptions: [
-        { value: '', text: '' },
-        { value: 'barcode', text: 'Barcode' },
-      ],
-      sortBy: 'created_at',
-      currentPlate: {},
-    }
-  },
-  computed: {
-    ...mapGetters(['plates']),
-  },
-  methods: {
-    alert(message, type) {
-      this.showAlert(message, type)
-    },
-    handleTogleDetails(row) {
-      row.toggleDetails()
-      this.getPlate(row.item.barcode)
-    },
-    async getPlate(barcode) {
-      this.currentPlate = await this.findPlate({ barcode: barcode })
-    },
-    async fetchPlates() {
-      return await this.fetchWithQueryParams(this.setPlates, this.filterOptions)
-    },
-    ...mapActions(['setPlates', 'findPlate']),
-  },
+const { fetchWithQueryParams } = useQueryParams()
+const store = usePacbioPlatesStore()
+
+const fields = [
+  { key: 'id', label: 'Plate ID', sortable: true },
+  { key: 'barcode', label: 'Plate Barcode', sortable: true },
+  { key: 'created_at', label: 'Created at (UTC)', sortable: true },
+  { key: 'show_details', label: 'Show Details' },
+]
+
+const filterOptions = [
+  { value: '', text: '' },
+  { value: 'barcode', text: 'Barcode' },
+]
+
+const sortBy = ref('created_at')
+const currentPlate = ref({})
+
+// Plates from store
+const plates = computed(() => store.getPlates)
+
+// Toggle details for a row and fetch plate details
+function handleTogleDetails(row) {
+  row.toggleDetails()
+  getPlate(row.item.barcode)
+}
+
+// Fetch a plate by barcode and set as currentPlate
+async function getPlate(barcode) {
+  currentPlate.value = await store.findPlate({ barcode })
+}
+
+// Fetch plates with query params and update store
+async function fetchPlates() {
+  return await fetchWithQueryParams(store.fetchPlates, filterOptions)
 }
 </script>

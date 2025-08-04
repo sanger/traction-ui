@@ -1,34 +1,36 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, store, flushPromises, createTestingPinia } from '@support/testHelper'
+import { flushPromises, mountWithStore } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const ontPoolFactory = OntPoolFactory()
 
-function mountWithStore({ props } = {}) {
-  const wrapperObj = mount(ONTPoolIndex, {
-    global: {
-      plugins: [createTestingPinia({})],
-      stubs: {
-        PrinterModal: {
-          template: '<div ref="printerModal"></div>',
-        },
+const mountComponent = () => {
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        store.api.traction.ont.pools.get = vi.fn().mockResolvedValue(ontPoolFactory.responses.fetch)
+      }
+    },
+  ]
+  const { wrapper } = mountWithStore(ONTPoolIndex, {
+    plugins,
+    createStore: () => useOntPoolCreateStore(),
+    stubs: {
+      PrinterModal: {
+        template: '<div ref="printerModal"></div>',
       },
     },
-    store,
-    props,
   })
-  return { wrapperObj }
+  return wrapper
 }
 
 describe('OntPoolIndex', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
-    get.mockResolvedValue(ontPoolFactory.responses.fetch)
-    const { wrapperObj } = mountWithStore()
-    wrapper = wrapperObj
+    wrapper = mountComponent()
     await flushPromises()
   })
 

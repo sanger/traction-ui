@@ -1,7 +1,8 @@
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import { mount, store, flushPromises } from '@support/testHelper'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const ontRequestFactory = OntRequestFactory()
 
@@ -11,16 +12,29 @@ vi.mock('@/composables/useLocationFetcher', () => ({
   }),
 }))
 
+const mountComponent = () => {
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        store.api.traction.ont.requests.get = vi
+          .fn()
+          .mockResolvedValue(ontRequestFactory.responses.fetch)
+      }
+    },
+  ]
+  const { wrapper } = mountWithStore(ONTSampleIndex, {
+    plugins,
+    createStore: () => useOntPoolCreateStore(),
+  })
+
+  return wrapper
+}
+
 describe('OntSampleIndex', () => {
   let wrapper
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.ont.requests, 'get')
-    get.mockReturnValue(ontRequestFactory.responses.fetch)
-
-    wrapper = mount(ONTSampleIndex, {
-      store,
-    })
+    wrapper = mountComponent()
     await flushPromises()
   })
 

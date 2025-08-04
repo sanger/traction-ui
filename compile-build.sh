@@ -8,7 +8,9 @@ set -ev
 npm run build
 
 # Storing revision hash
-git rev-parse HEAD > $2/REVISION
+git rev-parse HEAD > REVISION
+git tag -l --points-at HEAD --sort -version:refname | head -1 > TAG
+git rev-parse --abbrev-ref HEAD > BRANCH
 
-# Creating tar.gz
+echo 'Compiling tar.gz'
 tar -zcvf $1 -C $2 .

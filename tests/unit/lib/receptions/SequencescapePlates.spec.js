@@ -1,8 +1,8 @@
-import { fetchLabwareForReception } from '@/lib/receptions/Sequencescape'
-import { store } from '@support/testHelper'
+import { fetchLabwareForReception } from '@/lib/receptions/SequencescapePlates.js'
+import { store } from '@support/testHelper.js'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
-describe('Sequencescape', () => {
+describe('SequencescapePlates', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
 
