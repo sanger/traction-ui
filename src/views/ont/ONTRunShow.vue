@@ -34,12 +34,12 @@
  * @param {Number|String} id - The id of the run to edit page
  */
 import DataFetcher from '@/components/DataFetcher.vue'
-import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
+import ONTRunInformation from '@/components/ont/runs/ONTRunInformation.vue'
+import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells.vue'
 import { mapState, mapActions as mapActionsPinia } from 'pinia'
 import { mapActions } from 'vuex'
-import { useOntRunsStore } from '@/stores/ontRuns'
-import useOntRootStore from '@/stores/ontRoot'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
+import useOntRootStore from '@/stores/ontRoot.js'
 
 export default {
   name: 'ONTRun',
@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useOntRunsStore, ['currentRun']),
+    ...mapState(useOntRunCreateStore, ['currentRun']),
     ...mapState(useOntRootStore, ['instruments']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    ...mapActionsPinia(useOntRunsStore, ['createRun', 'fetchRun', 'newRun', 'updateRun']),
+    ...mapActionsPinia(useOntRunCreateStore, ['createRun', 'fetchRun', 'newRun', 'updateRun']),
     ...mapActionsPinia(useOntRootStore, ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {

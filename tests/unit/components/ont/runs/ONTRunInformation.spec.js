@@ -1,8 +1,8 @@
-import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import { mountWithStore } from '@support/testHelper'
+import ONTRunInformation from '@/components/ont/runs/ONTRunInformation.vue'
+import { mountWithStore } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { useOntRunsStore } from '@/stores/ontRuns'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
@@ -21,10 +21,10 @@ describe('ONTRunInformation.vue', () => {
     }
     ;({ wrapper } = mountWithStore(ONTRunInformation, {
       initialState: {
-        ontRuns: { currentRun: mockRun },
+        ontRunCreate: { currentRun: mockRun },
         ontRoot: { resources: { instruments: mockInstruments } },
       },
-      createStore: () => useOntRunsStore(),
+      createStore: () => useOntRunCreateStore(),
     }))
     ontRunInfomation = wrapper.vm
   })
@@ -127,7 +127,7 @@ describe('ONTRunInformation.vue', () => {
     it('returns false when currentRun is not a new record', () => {
       const { wrapper } = mountWithStore(ONTRunInformation, {
         initialState: {
-          ontRuns: {
+          ontRunCreate: {
             currentRun: {
               id: 1,
               instrument_name: '',

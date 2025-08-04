@@ -17,7 +17,7 @@ import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
-import ONTRun from '@/views/ont/ONTRun.vue'
+import ONTRunShow from '@/views/ont/ONTRunShow.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
@@ -182,8 +182,8 @@ const router = createRouter({
         },
         {
           path: 'run/:id',
-          name: 'ONTRun',
-          component: ONTRun,
+          name: 'ONTRunShow',
+          component: ONTRunShow,
           props: true,
           meta: { page: 'Run' },
         },

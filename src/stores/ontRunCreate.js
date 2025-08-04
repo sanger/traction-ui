@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import useOntRootStore from '@/stores/ontRoot'
-import { flowCellType } from '@/stores/utilities/flowCell'
-import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
+import useOntRootStore from '@/stores/ontRoot.js'
+import { flowCellType } from '@/stores/utilities/flowCell.js'
+import { buildFormatedOntRun } from '@/stores/utilities/ontRuns.js'
 
 // Helper function for setting pool and library data
 const formatById = (obj, data, includeRelationships = false) => {
@@ -50,7 +50,7 @@ function createPayload(run, pools) {
   }
   return runPayload
 }
-export const useOntRunsStore = defineStore('ontRuns', {
+export const useOntRunCreateStore = defineStore('ontRunCreate', {
   state: () => ({
     currentRun: {
       flowcell_attributes: [],

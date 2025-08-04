@@ -1,7 +1,7 @@
-import ONTRun from '@/views/ont/ONTRun'
-import { mount, store, router, flushPromises, createTestingPinia } from '@support/testHelper'
+import ONTRunShow from '@/views/ont/ONTRunShow.vue'
+import { mount, store, router, flushPromises, createTestingPinia } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
-import { useOntRunsStore } from '@/stores/ontRuns'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
@@ -21,7 +21,7 @@ function mountWithStore(props) {
   vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(
     ontPoolFactory.responses.fetch,
   )
-  const wrapperObj = mount(ONTRun, {
+  const wrapperObj = mount(ONTRunShow, {
     global: {
       plugins: [
         createTestingPinia({
@@ -47,7 +47,7 @@ function mountWithStore(props) {
     store,
     router,
   })
-  const storeObj = useOntRunsStore()
+  const storeObj = useOntRunCreateStore()
   return { wrapperObj, storeObj }
 }
 

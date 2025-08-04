@@ -1,9 +1,9 @@
-import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
+import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells.vue'
 import { beforeEach, describe, expect, it } from 'vitest'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { useOntRunsStore } from '@/stores/ontRuns'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
-import { mountWithStore } from '../../../../support/testHelper'
+import { mountWithStore } from '../../../../support/testHelper.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 
@@ -21,13 +21,13 @@ describe('ONTRunInstrumentFlowcells', () => {
     }
     ;({ wrapper } = mountWithStore(ONTRunInstrumentFlowcells, {
       initialState: {
-        ontRuns: { currentRun: mockRun },
+        ontRunCreate: { currentRun: mockRun },
         ontRoot: { resources: { instruments: mockInstruments } },
       },
       stubs: {
         ONTFlowcell: true,
       },
-      createStore: () => useOntRunsStore(),
+      createStore: () => useOntRunCreateStore(),
     }))
     ontRunInstrumentFlowcell = wrapper.vm
   })
