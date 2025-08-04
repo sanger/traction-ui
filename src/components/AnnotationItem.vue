@@ -1,21 +1,26 @@
 <template>
   <div data-type="annotation" class="flex flex-row w-full">
     <div
-      :class="`grid ${annotation.created_at ? 'grid-cols-4' : 'grid-cols-3'} gap-2 items-center  mt-1 bg-gray-200 rounded-md`"
+      :class="`grid ${annotation.created_at ? 'grid-cols-4' : 'grid-cols-3'} gap-2 p-2 items-center  mt-1 bg-gray-200 rounded-md`"
     >
       <traction-field-error
         data-attribute="comment-error"
         :error="errorsFor('comment')"
         :with-icon="!!errorsFor('comment')"
       >
-        <traction-input
-          v-model="annotation.comment"
-          type="text"
-          placeholder="Example: Annotation 1"
-          class="w-full"
-          :disabled="!annotation.newRecord"
-          data-attribute="comment"
-        ></traction-input>
+        <div class="flex flex-col py-2">
+          <textarea
+            v-model="annotation.comment"
+            placeholder="Example: Annotation 1"
+            class="w-full h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
+            :disabled="!annotation.newRecord"
+            maxlength="500"
+            data-attribute="comment"
+          ></textarea>
+          <div class="text-xs text-gray-500 mt-1" data-attribute="comment-char-count">
+            {{ (annotation.comment || '').length }} / 500 characters
+          </div>
+        </div>
       </traction-field-error>
       <traction-field-error
         data-attribute="user-error"
