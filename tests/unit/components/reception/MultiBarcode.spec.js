@@ -22,7 +22,7 @@ describe('MultiBarcode', () => {
     return mountWithStore(MultiBarcode, {
       props: {
         pipeline: 'PacBio',
-        reception: Receptions['Sequencescape'],
+        reception: Receptions['SequencescapePlates'],
         requestOptions: {
           costCode: '1234',
         },
@@ -41,7 +41,7 @@ describe('MultiBarcode', () => {
     await wrapper.setProps({ reception: Receptions['SequencescapeTubes'] })
     expect(wrapper.find('[id=print]').exists()).toBe(true)
 
-    await wrapper.setProps({ reception: Receptions['Sequencescape'] })
+    await wrapper.setProps({ reception: Receptions['SequencescapePlates'] })
     expect(wrapper.find('[id=print]').exists()).toBe(false)
   })
 
@@ -57,7 +57,7 @@ describe('MultiBarcode', () => {
         await wrapper.find('#barcodes').setValue('DN1\n')
         expect(wrapper.vm.barcodes).toEqual('DN1\n')
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 0 labware into PacBio from Sequencescape',
+          'Import 0 labware into PacBio from Sequencescape Plates',
         )
       })
 
@@ -73,7 +73,7 @@ describe('MultiBarcode', () => {
         expect(mockedFetchFunction).toBeCalled()
         expect(wrapper.vm.labwareData.foundBarcodes).toEqual(new Set(['DN1']))
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 1 labware into PacBio from Sequencescape',
+          'Import 1 labware into PacBio from Sequencescape Plates',
         )
       })
     })
@@ -92,7 +92,7 @@ describe('MultiBarcode', () => {
         expect(mockedFetchFunction).toBeCalled()
         expect(wrapper.vm.labwareData.foundBarcodes).toEqual(foundBarcodes)
         expect(wrapper.find('#importText').text()).toEqual(
-          'Import 5 labware into PacBio from Sequencescape',
+          'Import 5 labware into PacBio from Sequencescape Plates',
         )
       })
     })
@@ -162,7 +162,7 @@ describe('MultiBarcode', () => {
     const { wrapper } = buildWrapper()
     expect(wrapper.text()).toContain('Summary')
     expect(wrapper.find('#importText').text()).toEqual(
-      'Import 0 labware into PacBio from Sequencescape',
+      'Import 0 labware into PacBio from Sequencescape Plates',
     )
     expect(wrapper.find('[data-testid=workflow-location-text]').text()).toEqual(
       'The imported labware will be scanned into LRT020 Draw 1',
@@ -177,7 +177,7 @@ describe('MultiBarcode', () => {
       wrapper,
       scanBarcodesInLabwhereLocation,
       mockShowAlert,
-      'Sequencescape',
+      'Sequencescape Plates',
     )
   })
 

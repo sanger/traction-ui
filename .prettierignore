@@ -22,3 +22,5 @@ release.tar.gz
 *.svg
 LICENSE
 documentation/
+generate-docs.sh
+*.txt
