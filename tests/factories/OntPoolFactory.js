@@ -1,5 +1,11 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi.js'
+import {
+  groupIncludedByResource,
+  find,
+  dataToObjectById,
+  extractAttributes,
+} from './../../src/api/JsonApi.js'
+import { populatePoolingLibraries } from './../../src/stores/utilities/ontPool.js'
 
 /**
  *
@@ -19,16 +25,24 @@ const createStoreDataForSinglePool = (data) => {
 
   // We need to find the pool tube in the list of returned tubes
   const poolingTube = tubes.find((tube) => tube.id === data.data.relationships.tube.data.id)
-  const pool = { id: data.data.id, ...data.data.attributes }
+  const pool = extractAttributes(data.data)
   return {
-    libraries,
-    requests,
-    wells,
-    plates,
-    tag_set,
-    poolingTube,
-    tubes,
-    pooling: { pool },
+    resources: {
+      libraries,
+      requests: dataToObjectById({ data: requests, includeRelationships: true }),
+      wells: dataToObjectById({ data: wells, includeRelationships: true }),
+      plates: dataToObjectById({ data: plates, includeRelationships: true }),
+      tag_set,
+      tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
+    },
+    selected: { tagSet: { id: tag_set.id } },
+    pooling: {
+      pool,
+      libraries: populatePoolingLibraries(
+        dataToObjectById({ data: libraries, includeRelationships: true }),
+      ),
+      tube: extractAttributes(poolingTube),
+    },
   }
 }
 

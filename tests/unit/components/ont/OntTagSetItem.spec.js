@@ -1,13 +1,12 @@
-import OntTagSetItem from '@/components/ont/OntTagSetItem'
-import { mount, store } from '@support/testHelper'
+import OntTagSetItem from '@/components/ont/OntTagSetItem.vue'
+import { mountWithStore } from '@support/testHelper.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: ['1', '2', '3', '4', '5', '6'] },
   2: { id: '2', name: 'TagSet2' },
   3: { id: '3', name: 'TagSet3' },
 }
-
-store.state.traction.ont.pools.resources.tagSets = tagSets
 
 const tags = {
   1: { id: '1', group_id: 'Tag1' },
@@ -24,20 +23,35 @@ const tags = {
   12: { id: '12', group_id: 'Tag12' },
 }
 
+const mountComponent = (selectedTagSet = {}) => {
+  const { wrapper, store } = mountWithStore(OntTagSetItem, {
+    initialState: {
+      ontPoolCreate: {
+        resources: {
+          tagSets,
+          tags,
+        },
+        selected: {
+          tagSet: selectedTagSet,
+        },
+      },
+    },
+    stubs: {
+      VueSelecto: true,
+    },
+    createStore: () => useOntPoolCreateStore(),
+  })
+  return { wrapper, store }
+}
+
 const expectedTagSet = { ...tagSets['1'], tags: Object.values(tags).slice(0, 6) }
 
-store.state.traction.ont.pools.resources.tags = tags
-
 describe('OntTagSetItem', () => {
-  let wrapper
-
   describe('when there is a selected tag list', () => {
-    beforeEach(() => {
-      store.commit('traction/ont/pools/selectTagSet', { id: '1' })
+    let wrapper
 
-      wrapper = mount(OntTagSetItem, {
-        store,
-      })
+    beforeEach(() => {
+      ;({ wrapper } = mountComponent({ id: '1' }))
     })
 
     it('has the selected tag set', () => {
@@ -62,12 +76,10 @@ describe('OntTagSetItem', () => {
   })
 
   describe('when there is no selected tag list', () => {
-    beforeEach(() => {
-      store.state.traction.ont.pools.selected.tagSet = {}
+    let wrapper
 
-      wrapper = mount(OntTagSetItem, {
-        store,
-      })
+    beforeEach(() => {
+      ;({ wrapper } = mountComponent())
     })
 
     it('wont show the the tags', () => {

@@ -15,39 +15,32 @@
   </div>
 </template>
 
-<script>
+<script setup>
 /**
  * # OntTagSetList
  *
  * Displays a list of tagSets to select from for ont pooling
  */
-// TODO: ONT store: Does this need to be moved to top level ONT?
-export default {
-  name: 'OntTagSetList',
-  computed: {
-    isEmpty() {
-      return this.tagSets.length === 0
-    },
-    tagSets() {
-      return this.$store.getters['traction/ont/pools/tagSetList'].map(
-        ({ id: value, name: text }) => ({
-          value,
-          text,
-        }),
-      )
-    },
-    options() {
-      return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
-    },
-    selected() {
-      const { id = null } = this.$store.getters['traction/ont/pools/selectedTagSet']
-      return id
-    },
-  },
-  methods: {
-    updateSelected(id) {
-      this.$store.commit('traction/ont/pools/selectTagSet', { id })
-    },
-  },
+import { computed } from 'vue'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js' // <-- Create/use this Pinia store
+
+const ontPoolCreateStore = useOntPoolCreateStore()
+
+const isEmpty = computed(() => ontPoolCreateStore.tagSetList.length === 0)
+
+const tagSets = computed(() =>
+  ontPoolCreateStore.tagSetList.map(({ id: value, name: text }) => ({ value, text })),
+)
+
+const options = computed(() => [{ value: null, text: 'Please select a tag set' }, ...tagSets.value])
+
+const selected = computed(() => {
+  const selectedTagSetId = ontPoolCreateStore.selectedTagSet?.id
+  const tagSet = ontPoolCreateStore.tagSetList.find((tagSet) => tagSet.id === selectedTagSetId)
+  return tagSet ? tagSet.id : null
+})
+
+const updateSelected = (id) => {
+  ontPoolCreateStore.selectTagSet(id)
 }
 </script>
