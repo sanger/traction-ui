@@ -3,6 +3,7 @@ import AnnotationItem from '@/components/AnnotationItem.vue'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import { AnnotationItemType, annotationTypeSelectOptions } from '@/stores/utilities/annotation.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import { expect } from 'vitest'
 
 const annotationTypeFactory = AnnotationTypeFactory()
 
@@ -138,7 +139,8 @@ describe('AnnotationItem.vue', () => {
           annotationTypeSelectOptions: selectOptions,
         },
       })
-      expect(wrapper.findAll('input:disabled').length).toEqual(2)
+      expect(wrapper.find('[data-attribute="comment"]').element.disabled).toBeTruthy()
+      expect(wrapper.find('[data-attribute="user"]').element.disabled).toBeTruthy()
       expect(wrapper.find('[data-attribute="annotation-type"]').element.disabled).toBeTruthy()
       expect(wrapper.find('[data-action="remove-annotation"]').exists()).toBeFalsy()
     })
