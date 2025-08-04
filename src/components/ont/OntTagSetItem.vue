@@ -26,25 +26,19 @@
   </div>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-// TODO: ONT store: Does this need to be moved to top level ONT?
-const { mapGetters } = createNamespacedHelpers('traction/ont/pools')
+<script setup>
 /**
  * # OntTagSetItem
  *
- * Displays a single tag that is present in the ont store selected tagset
+ * Displays a single tag that is present in the ont store selected tagset.
+ * Uses the Pinia ontPoolCreate store for state.
  */
-export default {
-  name: 'OntTagSetItem',
-  computed: {
-    ...mapGetters(['selectedTagSet']),
-    tagSetName() {
-      return this.selectedTagSet.name
-    },
-    tagCount() {
-      return this.selectedTagSet.tags.length
-    },
-  },
-}
+import { computed } from 'vue'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+
+const ontPoolCreateStore = useOntPoolCreateStore()
+
+const selectedTagSet = computed(() => ontPoolCreateStore.selectedTagSet)
+const tagSetName = computed(() => selectedTagSet.value?.name)
+const tagCount = computed(() => selectedTagSet.value?.tags?.length ?? 0)
 </script>

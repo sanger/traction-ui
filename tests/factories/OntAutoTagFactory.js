@@ -2765,55 +2765,55 @@ const OntAutoTagFactory = () => {
     },
     pooling: {
       libraries: {
-        _3: {
+        3: {
           ont_request_id: '3',
           tag_id: '386',
         },
-        _4: {
+        4: {
           ont_request_id: '4',
           tag_id: '387',
         },
-        _12: {
+        12: {
           ont_request_id: '12',
           tag_id: null,
         },
-        _13: {
+        13: {
           ont_request_id: '13',
           tag_id: null,
         },
-        _14: {
+        14: {
           ont_request_id: '14',
           tag_id: null,
         },
-        _15: {
+        15: {
           ont_request_id: '15',
           tag_id: null,
         },
-        _16: {
+        16: {
           ont_request_id: '16',
           tag_id: null,
         },
-        _17: {
+        17: {
           ont_request_id: '17',
           tag_id: null,
         },
-        _96: {
+        96: {
           ont_request_id: '96',
           tag_id: null,
         },
-        _97: {
+        97: {
           ont_request_id: '97',
           tag_id: null,
         },
-        _192: {
+        192: {
           ont_request_id: '192',
           tag_id: null,
         },
-        _193: {
+        193: {
           ont_request_id: '193',
           tag_id: null,
         },
-        _194: {
+        194: {
           ont_request_id: '194',
           tag_id: null,
         },

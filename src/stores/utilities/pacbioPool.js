@@ -205,7 +205,7 @@ const createUsedAliquotsFromState = ({ pool, state }) => {
  * It maps over the values of the pools object, and for each pool, it creates an array of used aliquots using the `createUsedAliquotsFromState` function.
  * It returns the pools with the retrieved data, including the used aliquots, barcode, and run suitability
  */
-const addUsedAliquotsAndErrorsToPools = (state) => {
+const addUsedAliquotsBarcodeAndErrorsToPools = (state) => {
   return Object.values(state.pools).map((pool) => {
     const used_aliquots = createUsedAliquotsFromState({ pool, state })
     return {
@@ -227,5 +227,5 @@ export {
   assignRequestIdsToTubes,
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
-  addUsedAliquotsAndErrorsToPools,
+  addUsedAliquotsBarcodeAndErrorsToPools,
 }
