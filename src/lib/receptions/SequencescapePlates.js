@@ -40,10 +40,10 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
   })
 }
 
-const Sequencescape = {
+const SequencescapePlates = {
   fetchLabwareForReception,
 }
 
 export { fetchLabwareForReception }
 
-export default Sequencescape
+export default SequencescapePlates

@@ -27,12 +27,11 @@ describe('Import samples from Sequencescape', () => {
         kinnex_sample_reception: { enabled: true },
       },
     })
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Sequencescape Plates')
   })
   describe('Successfully - V2', () => {
     beforeEach(() => {
-      cy.visit('#/reception')
-      cy.get('[data-type="source-list"]').select('Sequencescape')
-
       cy.get('#workflowSelect').select('Pacbio -20 samples')
       cy.get('#userCode').type('usercodeX')
       cy.contains('Scan barcodes')
@@ -66,8 +65,8 @@ describe('Import samples from Sequencescape', () => {
       cy.contains('Import 2 labware into PacBio from Sequencescape')
       cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
-      cy.contains('DN9000002A imported from Sequencescape')
-      cy.contains('NT1O imported from Sequencescape')
+      cy.contains('DN9000002A imported from Sequencescape Plates')
+      cy.contains('NT1O imported from Sequencescape Plates')
       cy.contains('SE108532I successfully stored in LRT006 Draw 1')
     })
 
@@ -80,14 +79,13 @@ describe('Import samples from Sequencescape', () => {
       cy.contains('Import 2 labware into PacBio from Sequencescape')
       cy.contains('The imported labware will be scanned into LRT006 Draw 1')
       cy.get('[data-action="import-labware"]').click()
-      cy.contains('DN9000002A imported from Sequencescape')
-      cy.contains('NT1O imported from Sequencescape')
+      cy.contains('DN9000002A imported from Sequencescape Plates')
+      cy.contains('NT1O imported from Sequencescape Plates')
       cy.contains('Failed to access LabWhere')
     })
   })
   // TODO - we need to change this to a warning.
   it('Unsuccessfully - when the plates do not exist', () => {
-    cy.visit('#/reception')
     cy.contains('Scan barcodes')
     cy.intercept(sequencescapeRequest, {
       statusCode: 200,
@@ -97,7 +95,7 @@ describe('Import samples from Sequencescape', () => {
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.get('#workflowSelect').select('Pacbio -20 samples')
     cy.get('#userCode').type('usercodeX')
-    cy.contains('Import 0 labware into PacBio from Sequencescape')
+    cy.contains('Import 0 labware into PacBio from Sequencescape Plates')
     cy.get('[data-action="import-labware"]').click()
     // TODO: We might need to change the error if it causes issues.
     cy.contains('No labware to import')
@@ -117,7 +115,7 @@ describe('Import samples from Sequencescape', () => {
       body: { errors: [{ title: 'receptions', detail: 'There was an error.' }] },
     })
     cy.get('#barcodes').type('DN9000002A\nNT1O\n')
-    cy.contains('Import 2 labware into PacBio from Sequencescape')
+    cy.contains('Import 2 labware into PacBio from Sequencescape Plates')
     cy.contains('The imported labware will be scanned into LRT006 Draw 1')
     cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
