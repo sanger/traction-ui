@@ -9,11 +9,11 @@
       <div class="flex w-full">
         <div class="w-5/6">
           <div
-            :class="`grid gap-2 mb-2 w-full items-start ${isDisplayCreatedAt ? 'grid-cols-4' : 'grid-cols-3'}`"
+            :class="`grid gap-2 mb-2 w-full items-start p-2 rounded-t-md font-bold text-base ${isDisplayCreatedAt ? 'grid-cols-4' : 'grid-cols-3'}`"
           >
-            <traction-label class="text-left">Comment</traction-label>
-            <traction-label class="text-left">User</traction-label>
-            <traction-label class="text-left">Annotation Type</traction-label>
+            <traction-label class="px-1 text-left">Comment</traction-label>
+            <traction-label class="px-1 text-left">User</traction-label>
+            <traction-label class="px-1 text-left">Annotation Type</traction-label>
             <traction-label v-if="isDisplayCreatedAt" class="ml-1">Created At</traction-label>
           </div>
         </div>
@@ -32,8 +32,8 @@
 
       <div class="flex flex-col w-full">
         <div v-for="(annotation, idx) in annotations" :key="annotation.id">
-          <div class="flex flex-row">
-            <div class="flex w-5/6">
+          <div class="flex flex-row items-center">
+            <div class="flex w-5/6 border border-gray-200 shadow-sm bg-white rounded-md p-2">
               <AnnotationItem
                 :id="annotation.id"
                 :parent="props.parent"
@@ -45,7 +45,6 @@
               <traction-button
                 :data-action="`remove-annotation-${annotation.id}`"
                 theme="delete"
-                class="h-18 min-h-0"
                 @click="removeAnnotation(annotation.id)"
                 >-</traction-button
               >
