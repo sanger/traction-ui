@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 import { buildFormatedOntRun } from '@/stores/utilities/ontRuns.js'
 
@@ -24,8 +24,8 @@ const formatById = (obj, data, includeRelationships = false) => {
  * and for update request the id field is added in the updateRun action
  */
 function createPayload(run, pools) {
-  const ontRootStore = useOntRootStore()
-  const existingInstruments = ontRootStore.instruments
+  const ontRunsStore = useOntRunsStore()
+  const existingInstruments = ontRunsStore.instruments
   const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
   const flowcell_attributes = run.flowcell_attributes
@@ -113,8 +113,8 @@ export const useOntRunCreateStore = defineStore('ontRunCreate', {
       const { success, body: { data, included = [] } = {}, errors = {} } = response
 
       if (success && !data.empty) {
-        const ontRootStore = useOntRootStore()
-        const existingInstruments = ontRootStore.instruments
+        const ontRunsStore = useOntRunsStore()
+        const existingInstruments = ontRunsStore.instruments
 
         const { pools } = groupIncludedByResource(included)
         this.pools = formatById(this.pools, pools, true)

@@ -22,7 +22,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     ;({ wrapper } = mountWithStore(ONTRunInstrumentFlowcells, {
       initialState: {
         ontRunCreate: { currentRun: mockRun },
-        ontRoot: { resources: { instruments: mockInstruments } },
+        ontRuns: { resources: { instruments: mockInstruments } },
       },
       stubs: {
         ONTFlowcell: true,

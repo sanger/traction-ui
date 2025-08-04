@@ -1,5 +1,5 @@
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
@@ -130,8 +130,8 @@ describe('useOntRunCreateStore', () => {
           flowcell_attributes: [{ tube_barcode: 'TRAC-2-42', flowcell_id: 1 }],
         }
         store.pools = { 1: { id: '1', tube: 1, tube_barcode: 'TRAC-2-42' } }
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
       // TODO: tidy this up so we are pulling the data from the factory
@@ -195,8 +195,8 @@ describe('useOntRunCreateStore', () => {
         update = vi.fn()
         store = useOntRunCreateStore()
         store.currentRun = run
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
       it('successfully', async () => {
@@ -227,9 +227,9 @@ describe('useOntRunCreateStore', () => {
       let store
       beforeEach(() => {
         store = useOntRunCreateStore()
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = ontInstrumentFactory.storeData.instruments
-        ontRootStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = ontInstrumentFactory.storeData.instruments
+        ontRunsStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
       })
 
       it('runs successfully', async () => {

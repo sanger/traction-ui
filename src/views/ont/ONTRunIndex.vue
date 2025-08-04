@@ -42,7 +42,7 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 
 export default {
   name: 'ONTRuns',
@@ -53,8 +53,8 @@ export default {
   },
   setup() {
     const { fetchWithQueryParams } = useQueryParams()
-    const ontRootStore = useOntRootStore() // Initialize the store here
-    return { fetchWithQueryParams, ontRootStore }
+    const ontRunsStore = useOntRunsStore() // Initialize the store here
+    return { fetchWithQueryParams, ontRunsStore }
   },
   data() {
     return {
@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     runs() {
-      return this.ontRootStore.runs
+      return this.ontRunsStore.runs
     },
   },
   methods: {
@@ -108,7 +108,7 @@ export default {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
     async fetchRuns() {
-      return await this.fetchWithQueryParams(this.ontRootStore.fetchOntRuns, this.filterOptions)
+      return await this.fetchWithQueryParams(this.ontRunsStore.fetchOntRuns, this.filterOptions)
     },
   },
 }

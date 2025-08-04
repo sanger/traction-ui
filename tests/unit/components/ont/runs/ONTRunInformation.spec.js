@@ -22,7 +22,7 @@ describe('ONTRunInformation.vue', () => {
     ;({ wrapper } = mountWithStore(ONTRunInformation, {
       initialState: {
         ontRunCreate: { currentRun: mockRun },
-        ontRoot: { resources: { instruments: mockInstruments } },
+        ontRuns: { resources: { instruments: mockInstruments } },
       },
       createStore: () => useOntRunCreateStore(),
     }))
@@ -135,7 +135,7 @@ describe('ONTRunInformation.vue', () => {
               flowcell_attributes: [],
             },
           },
-          ontRoot: { resources: { instruments: mockInstruments } },
+          ontRuns: { resources: { instruments: mockInstruments } },
         },
       })
       expect(wrapper.vm.newRecord).toEqual(false)

@@ -39,7 +39,7 @@ import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlo
 import { mapState, mapActions as mapActionsPinia } from 'pinia'
 import { mapActions } from 'vuex'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 
 export default {
   name: 'ONTRun',
@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     ...mapState(useOntRunCreateStore, ['currentRun']),
-    ...mapState(useOntRootStore, ['instruments']),
+    ...mapState(useOntRunsStore, ['instruments']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     ...mapActionsPinia(useOntRunCreateStore, ['createRun', 'fetchRun', 'newRun', 'updateRun']),
-    ...mapActionsPinia(useOntRootStore, ['setInstruments']),
+    ...mapActionsPinia(useOntRunsStore, ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
       const response = await this[this.currentAction.method]()

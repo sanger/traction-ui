@@ -38,13 +38,13 @@
 <script setup>
 import { computed } from 'vue'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 
 // Initialize stores
 const ontRunCreateStore = useOntRunCreateStore()
-const ontRootStore = useOntRootStore()
+const ontRunsStore = useOntRunsStore()
 
-const { instruments } = ontRootStore
+const { instruments } = ontRunsStore
 const { setInstrumentName, setState, setRebasecallingProcess, currentRun } = ontRunCreateStore
 
 // Static lists

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 
 /**
@@ -16,7 +16,7 @@ const formatById = (obj, data, includeRelationships = false) => {
     ...dataToObjectById({ data, includeRelationships }),
   }
 }
-const useOntRootStore = defineStore('ontRoot', {
+const useOntRunsStore = defineStore('ontRuns', {
   state: () => ({
     // Resources returned by the server, each key represents a resource type.
     // resource types are indexed by their id.
@@ -98,4 +98,4 @@ const useOntRootStore = defineStore('ontRoot', {
     },
   },
 })
-export default useOntRootStore
+export default useOntRunsStore

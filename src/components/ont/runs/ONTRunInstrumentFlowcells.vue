@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'pinia'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import useOntRunsStore from '@/stores/ontRuns.js'
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell.vue'
 /**
  * # ONTRunInstrumentFlowcells
@@ -36,7 +36,7 @@ export default {
   props: {},
   computed: {
     ...mapState(useOntRunCreateStore, ['currentRun']),
-    ...mapState(useOntRootStore, ['instruments', 'instrumentByName']),
+    ...mapState(useOntRunsStore, ['instruments', 'instrumentByName']),
     instrument() {
       return this.instrumentByName(this.currentRun.instrument_name)
     },
