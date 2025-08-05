@@ -95,10 +95,10 @@ describe('Sample Report page', () => {
             '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Study Number","Study Name","Cost Code","Species","Submitting Faculty","Library Type","Sample Type"\r',
           )
           expect(csv[1]).to.include(
-            '"2021-01-01","","id-122","Supplier Name","1","Study 1","cost-code-1","human","Faculty Sponsor 1","Pacbio_HiFi","donor-id-123"\r',
+            '"2021-01-01","","id-122","sample_DN814327C_A1","1","Study 1","cost-code-1","human","Faculty Sponsor 1","Pacbio_HiFi","donor-id-123"\r',
           )
           expect(csv[2]).to.include(
-            '"2021-01-03","","id-123","Supplier Name 2","1","Study 1","cost-code-2","human","Faculty Sponsor 1","Pacbio_HiFi_mplx","donor-id-123"',
+            '"2021-01-03","","id-123","sample_DN814327C_A2","1","Study 1","cost-code-2","human","Faculty Sponsor 1","Pacbio_HiFi_mplx","donor-id-123"',
           )
         },
       )
