@@ -13,7 +13,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-// TODO: This needs a refactor to include the way the store data is being created.
 const pacbioRunFactory = PacbioRunFactory()
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 
@@ -27,20 +26,15 @@ describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, runCreateStore, runsStore
 
   beforeEach(async () => {
-    //const { wrapperObj, runCreateStoreObj, runsStoreObj } = factory()
-
-    const spy = vi.fn().mockResolvedValue(pacbioRunFactory.responses.fetch)
-
-    const spy2 = vi.fn().mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
-
     const plugins = [
       ({ store }) => {
-        if (store.$id === 'pacbioRuns') {
-          store.runRequest.get = spy
-        }
         if (store.$id === 'root') {
-          store.api.traction.pacbio.smrt_link_versions.get = spy2
-          store.api.traction.pacbio.runs = vi.fn().mockReturnValue(pacbioRunFactory.responses.fetch)
+          store.api.traction.pacbio.smrt_link_versions.get = vi
+            .fn()
+            .mockResolvedValue(pacbioSmrtLinkVersionFactory.responses.fetch)
+          store.api.traction.pacbio.runs.get = vi
+            .fn()
+            .mockReturnValue(pacbioRunFactory.responses.fetch)
         }
       },
     ]
