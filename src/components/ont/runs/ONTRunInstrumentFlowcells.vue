@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'pinia'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell.vue'
 /**
  * # ONTRunInstrumentFlowcells

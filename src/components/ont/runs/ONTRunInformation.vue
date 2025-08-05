@@ -38,7 +38,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 
 // Initialize stores
 const ontRunCreateStore = useOntRunCreateStore()

@@ -1,7 +1,7 @@
 import ONTRuns from '@/views/ont/ONTRunIndex.vue'
 import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 
 const ontRunFactory = OntRunFactory()
 

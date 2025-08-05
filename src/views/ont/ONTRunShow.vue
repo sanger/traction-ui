@@ -10,7 +10,7 @@
         type="reset"
         theme="default"
         class="float-right"
-        @click="newRun"
+        @click="ontRunCreateStore.newRun"
         >Reset</traction-button
       >
 
@@ -39,7 +39,8 @@ import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlo
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
+import useAlert from '@/composables/useAlert.js'
 
 // Props
 const props = defineProps({
@@ -71,9 +72,10 @@ const actions = {
   },
 }
 
+const { showAlert } = useAlert()
+
 // Computed
 const currentRun = computed(() => ontRunCreateStore.currentRun)
-// const instruments = computed(() => ontRunsStore.instruments)
 const currentAction = computed(() => actions[newRecord.value ? 'create' : 'update'])
 
 // Validate the run
@@ -102,7 +104,7 @@ async function runAction() {
     // You may want to use a global alert or event bus here
     // For now, just log
     // showAlert is not defined in this context, so use console.error or implement your own
-    console.error(
+    showAlert(
       `Failed to ${action} run in Traction: ${response.errors}`,
       'danger',
       'run-validation-message',
@@ -126,7 +128,4 @@ async function provider() {
   }
   return { success: true }
 }
-
-// Expose for template if needed
-// (not required in <script setup>, but left here for clarity)
 </script>

@@ -65,38 +65,7 @@ describe('ONTRun.vue', () => {
     })
   })
 
-  describe.skip('#provider', () => {
-    describe('when it is a new run', () => {
-      beforeEach(() => {
-        ontRun.newRun = vi.fn()
-        ontRun.setInstruments = vi.fn()
-      })
-
-      it('calls sets required data successfully', async () => {
-        await ontRun.provider()
-        expect(ontRun.newRun).toBeCalled()
-        expect(ontRun.setInstruments).toBeCalled()
-      })
-    })
-
-    describe('when it is an existing run', () => {
-      beforeEach(() => {
-        const { wrapperObj } = mountComponent({ id: '1' })
-        wrapper = wrapperObj
-        ontRun = wrapper.vm
-
-        ontRun.setInstruments = vi.fn(() => Promise.resolve())
-        ontRun.fetchRun = vi.fn()
-      })
-
-      it('calls sets required data successfully', async () => {
-        await ontRun.provider()
-        expect(ontRun.fetchRun).toBeCalledWith(1)
-        expect(ontRun.setInstruments).toBeCalled()
-      })
-    })
-  })
-
+  // move to e2e tests
   describe.skip('#runValid', () => {
     it('returns true when all fields are valid', () => {
       ontRun.currentRun.instrument_name = '1'

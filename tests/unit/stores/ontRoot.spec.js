@@ -1,4 +1,4 @@
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { createPinia, setActivePinia } from '@support/testHelper.js'

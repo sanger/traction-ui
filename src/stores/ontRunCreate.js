@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import useOntRunsStore from '@/stores/ontRuns.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 import { buildFormatedOntRun } from '@/stores/utilities/ontRuns.js'
 
