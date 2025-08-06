@@ -1,4 +1,3 @@
-
 import useRootStore from '@/stores'
 import { useRoute } from 'vue-router'
 

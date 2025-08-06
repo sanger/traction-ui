@@ -76,7 +76,6 @@ const useRootStore = defineStore('root', {
       this.messages = {}
     },
 
-
     /**
      * Adds a CSV log message with the given information, error, and type.
      * The type defaults to 'danger' if not provided.
