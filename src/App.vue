@@ -31,6 +31,7 @@
 import InfoFooter from '@/components/InfoFooter'
 import TractionMessage from '@/components/TractionMessage'
 import TractionHeader from '@/components/TractionHeader'
+import useRootStore from '@/stores'
 
 export default {
   components: {
@@ -50,7 +51,10 @@ export default {
       return this.mergedRoute.page
     },
     messages() {
-      return this.$store.getters['traction/messages']
+      // Access the messages from the root store
+      const rootStore = useRootStore()
+      // Return the messages from the traction module
+      return rootStore.messages || {}
     },
     hasMessages() {
       return !!Object.keys(this.messages).length
@@ -58,10 +62,12 @@ export default {
   },
   methods: {
     dismiss(messageIndex) {
-      this.$store.commit('traction/removeMessage', messageIndex)
+      const rootStore = useRootStore()
+      rootStore.removeMessage(messageIndex)
     },
     clearAlerts() {
-      this.$store.commit('traction/clearMessages')
+      const rootStore = useRootStore()
+      rootStore.clearMessages()
     },
   },
 }
