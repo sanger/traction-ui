@@ -2,7 +2,7 @@ import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePrintingStore } from '@/stores/printing.js'
 import { beforeEach, describe, it } from 'vitest'
 import useRootStore from '@/stores'
-import * as jsonapi from '@/api/JsonApi'
+import * as jsonapi from '@/api/JsonApi.js'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
 
