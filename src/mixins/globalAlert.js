@@ -1,3 +1,4 @@
+import useRootStore from '@/stores'
 export default {
   name: 'Helper',
   methods: {
@@ -7,7 +8,8 @@ export default {
      * @param {string} type the variant (colour) of the alert
      */
     showAlert(message, type, dataType) {
-      this.$store.commit('traction/addMessage', { type, message: String(message), dataType })
+      const rootStore = useRootStore()
+      rootStore.addMessage({ type, message: String(message), dataType })
     },
   },
 }
