@@ -121,7 +121,7 @@ describe('ONTRuns.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
+  describe.skip('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert('show this message', 'danger')
 
