@@ -1,4 +1,5 @@
-import store from '@/store'
+
+import useRootStore from '@/stores'
 import { useRoute } from 'vue-router'
 
 /**
@@ -14,9 +15,10 @@ export default function useAlert() {
   const showAlert = (message, type, dataType) => {
     const origin = route?.name + ' - ' || ''
     const time = new Date().toLocaleTimeString()
+    const rootStore = useRootStore()
 
     // Commit the mutation  to the Vuex store
-    store.commit('traction/addMessage', { type, message, dataType, origin, time })
+    rootStore.addMessage({ type, message, dataType, origin, time })
   }
 
   // Return the showAlert method

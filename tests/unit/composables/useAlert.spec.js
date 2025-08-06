@@ -1,5 +1,6 @@
 import useAlert from '@/composables/useAlert.js'
-import store from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import useRootStore from '@/stores'
 import { useRouter } from 'vue-router'
 
 // we need to mock the vue-router to avoid the following warning:
@@ -13,19 +14,23 @@ describe('#useAlert', () => {
 
   beforeEach(() => {
     useRouter().push.mockReset()
+
+    const pinia = createPinia()
+    setActivePinia(pinia)
   })
 
   it('commits addMessage on show Alert call', () => {
-    const mockCommit = vi.fn().mockResolvedValue({})
-    store.commit = mockCommit
+    const rootStore = useRootStore()
     const { showAlert } = useAlert()
     showAlert('show this message', 'success')
-    expect(mockCommit).toHaveBeenCalledWith('traction/addMessage', {
-      type: 'success',
-      message: 'show this message',
-      dataType: undefined,
-      origin: 'undefined - ',
-      time: expect.any(String),
+    expect(rootStore.messages).toEqual({
+      1: {
+        type: 'success',
+        message: 'show this message',
+        dataType: undefined,
+        origin: 'undefined - ',
+        time: expect.any(String),
+      },
     })
   })
 })
