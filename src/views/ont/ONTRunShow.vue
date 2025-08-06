@@ -118,7 +118,6 @@ function redirectToRuns() {
 
 async function provider() {
   await ontRunsStore.setInstruments()
-  console.log('Fetching run with id:', props.id)
   if (props.id === 'new') {
     ontRunCreateStore.newRun()
     newRecord.value = true

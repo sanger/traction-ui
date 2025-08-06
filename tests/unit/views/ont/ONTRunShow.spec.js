@@ -29,7 +29,7 @@ const mountComponent = (props) => {
   return { wrapper, store }
 }
 
-describe('ONTRun.vue', () => {
+describe('ONTRunShow.vue', () => {
   let wrapper
 
   describe('new record', () => {
