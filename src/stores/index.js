@@ -4,7 +4,6 @@ import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
-import store from '@/store'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
@@ -77,10 +76,6 @@ const useRootStore = defineStore('root', {
       this.messages = {}
     },
 
-    //TODO: This need to be removed once we converted all stores to Pinia
-    addVuexMessage({ type, message }) {
-      store.commit('traction/addMessage', { type, message })
-    },
 
     /**
      * Adds a CSV log message with the given information, error, and type.
@@ -98,8 +93,6 @@ const useRootStore = defineStore('root', {
      */
     addCSVLogMessage(info, error, type = 'danger') {
       this.addMessage({ type, message: errorFor(info, error) }, { root: true })
-      //TODO: This need to be removed once we converted all stores to Pinia
-      this.addVuexMessage({ type, message: errorFor(info, error) })
     },
   },
 })
