@@ -990,7 +990,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
           // If the selectedTagSet is not the same as the tagSet and the tag exists, add a message and remove the tag from the library
           if (this.selected.tagSet.id !== tagSet.id && libraryAttributes.tag_id) {
-            rootStore.addVuexMessage({
+            rootStore.addMessage({
               type: 'warning',
               message: `Library tag not populated as ${tag.group_id || 'tag'} is not in the selected tag group`,
             })
