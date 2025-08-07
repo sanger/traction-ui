@@ -1,6 +1,6 @@
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 import { describe, expect, it } from 'vitest'
-import { useOntRunsStore } from '@/stores/ontRuns.js'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
 
 describe('flowCell.js', () => {
@@ -41,7 +41,7 @@ describe('flowCell.js', () => {
     beforeEach(() => {
       const pinia = createPinia()
       setActivePinia(pinia)
-      store = useOntRunsStore()
+      store = useOntRunCreateStore()
     })
 
     it('returns valid if tube_barcode is valid and removes existing errors', () => {

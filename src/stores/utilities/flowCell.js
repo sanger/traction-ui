@@ -1,4 +1,4 @@
-import { useOntRunsStore } from '@/stores/ontRuns.js'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 
 /**
  * flowcell object type with following attributes and methods
@@ -47,7 +47,7 @@ function flowCellType() {
         return true
       }
 
-      const store = useOntRunsStore()
+      const store = useOntRunCreateStore()
       const storeBarcode = Object.values(store.pools).find(
         (p) => p.tube_barcode == this.tube_barcode,
       )

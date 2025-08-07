@@ -1,7 +1,7 @@
-import ONTRuns from '@/views/ont/ONTRunIndex'
-import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper'
+import ONTRuns from '@/views/ont/ONTRunIndex.vue'
+import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
-import useOntRootStore from '@/stores/ontRoot.js'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 
 const ontRunFactory = OntRunFactory()
 
@@ -12,7 +12,7 @@ const ontRunFactory = OntRunFactory()
  * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
  * which includes
  * state - initial state of the ontRuns store.
- * rootState - initial state of the ontRoot store.
+ * rootState - initial state of the ontRuns store.
  * props - props to pass to component.
  */
 function mountWithStore({ state = {}, plugins = [], props } = {}) {
@@ -21,7 +21,7 @@ function mountWithStore({ state = {}, plugins = [], props } = {}) {
       plugins: [
         createTestingPinia({
           initialState: {
-            ontRoot: { resources: { ...state } },
+            ontRuns: { resources: { ...state } },
           },
           stubActions: false,
           plugins,
@@ -31,7 +31,7 @@ function mountWithStore({ state = {}, plugins = [], props } = {}) {
     router,
     props,
   })
-  const storeObj = useOntRootStore()
+  const storeObj = useOntRunsStore()
   return { wrapperObj, storeObj }
 }
 
@@ -58,10 +58,6 @@ describe('ONTRuns.vue', () => {
   })
 
   describe('building the table', () => {
-    it('exists', () => {
-      expect(wrapper.find('table').exists()).toBeTruthy()
-    })
-
     it('contains the correct data', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })

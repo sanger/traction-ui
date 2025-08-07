@@ -68,7 +68,7 @@
  * white - if both flowcellId and barcode fields are empty
  * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
-import { useOntRunsStore } from '@/stores/ontRuns'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -82,9 +82,9 @@ const props = defineProps({
   },
 })
 
-const ontRunsStore = useOntRunsStore()
+const ontRunCreateStore = useOntRunCreateStore()
 
-const flowCell = computed(() => ontRunsStore.getOrCreateFlowCell(props.position))
+const flowCell = computed(() => ontRunCreateStore.getOrCreateFlowCell(props.position))
 
 const barcode = computed({
   get() {
@@ -92,7 +92,7 @@ const barcode = computed({
   },
   async set(value) {
     flowCell.value.tube_barcode = value
-    await ontRunsStore.fetchPool(value)
+    await ontRunCreateStore.fetchPool(value)
     flowCell.value.validateBarcode()
   },
 })
