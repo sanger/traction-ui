@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import InfoFooter from '@/components/InfoFooter'
-import TractionMessage from '@/components/TractionMessage'
-import TractionHeader from '@/components/TractionHeader'
+import InfoFooter from '@/components/InfoFooter.vue'
+import TractionMessage from '@/components/TractionMessage.vue'
+import TractionHeader from '@/components/TractionHeader.vue'
 import useRootStore from '@/stores'
 
 export default {
@@ -72,34 +72,3 @@ export default {
   },
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-}
-nav {
-  margin-bottom: 5px;
-}
-#nav {
-  margin-bottom: 5px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-    &.router-link-active {
-      color: #42b983;
-    }
-  }
-}
-a {
-  color: black;
-  &:hover {
-    text-decoration: none;
-    color: black;
-  }
-}
-</style>
