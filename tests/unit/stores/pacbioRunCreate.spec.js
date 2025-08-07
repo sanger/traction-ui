@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useRootStore from '@/stores'
 import * as jsonapi from '@/api/JsonApi.js'
@@ -10,7 +9,7 @@ import {
   newRunType,
   existingRunType,
 } from '@/stores/utilities/run'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
@@ -23,12 +22,6 @@ const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
 
 describe('usePacbioRunCreateStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   describe('getters', () => {
     describe('smrtLinkVersionList', () => {
       it('returns a list of smrt link version resources', () => {

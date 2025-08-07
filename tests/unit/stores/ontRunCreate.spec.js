@@ -2,7 +2,6 @@ import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import { useOntRunsStore } from '@/stores/ontRuns.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
-import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
@@ -15,13 +14,6 @@ const ontRunFactory = OntRunFactory()
 const ontPoolFactory = OntPoolFactory()
 
 describe('useOntRunCreateStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('state', () => {
     it('should have the correct initialised state', () => {
       const store = useOntRunCreateStore()

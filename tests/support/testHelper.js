@@ -1,12 +1,6 @@
 // Useful imports for testing
 import { mount, shallowMount, flushPromises, config } from '@vue/test-utils'
 
-/*createPinia is for creating a Pinia instance to test pinia stores.
-setActivePinia sets the newly created Pinia instance as the active Pinia instance.
-This is necessary to allow useStore to pick up the any other pinia instance other than default global instance
-More documentation available on https://pinia.vuejs.org/cookbook/testing.html*/
-import { setActivePinia, createPinia } from 'pinia'
-
 //createTestingPinia is to mock a Pinia store while testing a component that uses Pinia store.
 import { createTestingPinia } from '@pinia/testing'
 
@@ -151,8 +145,6 @@ export {
   router,
   flushPromises,
   nextTick,
-  setActivePinia,
-  createPinia,
   createTestingPinia,
   selectOptionByText,
   findAllByText,

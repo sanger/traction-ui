@@ -1,5 +1,5 @@
 import useRootStore from '@/stores'
-import { createPinia, setActivePinia, successfulResponse } from '@support/testHelper.js'
+import { successfulResponse } from '@support/testHelper.js'
 import {
   formatAndTransformLibraries,
   validateAndUpdateLibrary,
@@ -10,12 +10,6 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 describe('pacbioLibraries', () => {
   let rootStore
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-        up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   describe('formatAndTransformLibraries', () => {
     it('formats and transforms libraries', () => {
       const libraries = {

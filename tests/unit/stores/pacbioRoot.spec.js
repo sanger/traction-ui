@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import { beforeEach } from 'vitest'
@@ -8,12 +7,6 @@ import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('usePacbioRootStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   describe('getters', () => {
     let store
     beforeEach(() => {

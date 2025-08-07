@@ -1,9 +1,4 @@
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -17,7 +12,6 @@ import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
-// const ontTubeFactory = OntTubeFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
@@ -48,10 +42,6 @@ describe('useOntPoolCreateStore', () => {
   let store
 
   beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
     store = useOntPoolCreateStore()
   })
 

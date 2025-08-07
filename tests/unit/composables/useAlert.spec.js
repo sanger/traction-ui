@@ -1,5 +1,4 @@
 import useAlert from '@/composables/useAlert.js'
-import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
 import { useRouter } from 'vue-router'
 
@@ -14,9 +13,6 @@ describe('#useAlert', () => {
 
   beforeEach(() => {
     useRouter().push.mockReset()
-
-    const pinia = createPinia()
-    setActivePinia(pinia)
   })
 
   it('commits addMessage on show Alert call', () => {

@@ -5,7 +5,6 @@ import {
 } from '@/services/labwhere/client.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
 import * as pacbioLibraryService from '@/services/traction/PacbioLibrary.js'
-import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
 
 const mockFetchWrapper = {
@@ -103,10 +102,6 @@ describe('scanBarcodesInLabwhereLocation', () => {
 
 // TODO: remove mocks
 describe('exhaustLibraryVolumeIfDestroyed', () => {
-  beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
   const labwareBarcodes = ['barcode1', 'barcode2', 'barcode3']
   let mockFetchLibraries, mockFormatAndTransformLibraries, mockExhaustLibrayVolume
