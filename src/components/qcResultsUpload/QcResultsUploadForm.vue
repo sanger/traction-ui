@@ -51,84 +51,87 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
 import UploadIcon from '@/icons/UploadIcon.vue'
 import useRootStore from '@/stores'
-export default {
-  name: 'QcResultsUploadForm',
-  components: {
-    UploadIcon,
-  },
-  data() {
-    return {
-      usedByOptions: [
-        { value: null, text: 'Please select a option' },
-        { value: 'extraction', text: 'Extraction' },
-      ],
-      file: null,
-      usedBySelected: 'extraction',
-      busy: null,
-      disableUpload: null,
-      uploadSuccessful: null, // possible values: true, false and null
-    }
-  },
-  computed: {
-    api() {
-      const rootStore = useRootStore()
-      return rootStore.api
-    },
-    qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
-    border() {
-      // If upload is successful, highlight the input box in green
-      // If upload is not successful, highlight the input box in red
-      // Otherwise, uploadSuccessful is null and provide no colouring
-      if (this.uploadSuccessful === true) {
-        return 'rounded border border-success'
-      } else if (this.uploadSuccessful === false) {
-        return 'rounded border border-failure'
-      }
-      return 'border-0'
-    },
-  },
-  methods: {
-    reEnable() {
-      this.$refs.qcResultsUploadFile.value = ''
-      this.uploadSuccessful = null
-      this.file = null
-      this.disableUpload = !this.disableUpload
-    },
-    async fileSelected(evt) {
-      if (evt?.target?.files?.length) {
-        this.file = evt.target.files[0]
-      } else {
-        this.file = null
-        return
-      }
-    },
-    async onSubmit() {
-      await this.postCSV()
-    },
-    async postCSV() {
-      // We want to keep the button disabled after every upload, unless refreshed or "Re-enable" clicked
-      this.busy = true
-      this.disableUpload = true
+import useAlert from '@/composables/useAlert.js'
 
-      const csv = await this.file.text()
-      const data = { csv: csv, usedBySelected: this.usedBySelected }
-      const { success, errors } = await createQcResultsUploadResource(
-        this.qcResultUploadsRequest,
-        data,
-      )
-      this.uploadSuccessful = success
+// Options for the select input
+const usedByOptions = [
+  { value: null, text: 'Please select a option' },
+  { value: 'extraction', text: 'Extraction' },
+]
 
-      if (success) {
-        this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
-      } else {
-        this.showAlert(errors || 'Unable to upload QC File', 'danger')
-      }
-      this.busy = false
-    },
-  },
+// State
+const file = ref(null)
+const usedBySelected = ref('extraction')
+const busy = ref(false)
+const disableUpload = ref(false)
+const uploadSuccessful = ref(null) // true, false, or null
+
+// Refs for DOM elements
+const qcResultsUploadFile = ref(null)
+
+// Store and API
+const rootStore = useRootStore()
+const api = computed(() => rootStore.api)
+const qcResultUploadsRequest = computed(() => api.value.traction.qc_results_uploads.create)
+
+// Alert composable
+const { showAlert } = useAlert()
+
+// Border class for file input based on upload status
+const border = computed(() => {
+  if (uploadSuccessful.value === true) {
+    return 'rounded border border-success'
+  } else if (uploadSuccessful.value === false) {
+    return 'rounded border border-failure'
+  }
+  return 'border-0'
+})
+
+// Methods
+function reEnable() {
+  if (qcResultsUploadFile.value) {
+    qcResultsUploadFile.value.value = ''
+  }
+  uploadSuccessful.value = null
+  file.value = null
+  disableUpload.value = !disableUpload.value
+}
+
+const fileSelected = (evt) => {
+  if (evt?.target?.files?.length) {
+    file.value = evt.target.files[0]
+  } else {
+    file.value = null
+    return
+  }
+}
+
+const onSubmit = async () => {
+  await postCSV()
+}
+
+const postCSV = async () => {
+  busy.value = true
+  disableUpload.value = true
+
+  const csv = await file.value?.text()
+  const data = { csv, usedBySelected: usedBySelected.value }
+  const { success, errors } = await createQcResultsUploadResource(
+    qcResultUploadsRequest.value,
+    data,
+  )
+  uploadSuccessful.value = success
+
+  if (success) {
+    showAlert(`Successfully imported: ${file.value.name}`, 'success')
+  } else {
+    showAlert(errors || 'Unable to upload QC File', 'danger')
+  }
+  busy.value = false
 }
 </script>
