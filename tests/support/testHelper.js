@@ -147,7 +147,6 @@ async function selectOptionByText(selectWrapper, text) {
 
 export {
   mount,
-  store,
   shallowMount,
   router,
   flushPromises,
