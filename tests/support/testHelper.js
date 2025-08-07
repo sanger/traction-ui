@@ -10,7 +10,6 @@ import { setActivePinia, createPinia } from 'pinia'
 //createTestingPinia is to mock a Pinia store while testing a component that uses Pinia store.
 import { createTestingPinia } from '@pinia/testing'
 
-import store from '@/store'
 import router from '@/router'
 import { nextTick } from 'vue'
 import globalAlert from '@/mixins/globalAlert'
@@ -23,7 +22,7 @@ import { components } from '@/components/shared'
     e.g. tests/unit/lib/csv/pacbio.spec.js
 */
 config.global.mixins = [globalAlert]
-config.global.plugins = [router, store]
+config.global.plugins = [router]
 config.global.components = components
 
 /* Helper functions to simplify tests */
