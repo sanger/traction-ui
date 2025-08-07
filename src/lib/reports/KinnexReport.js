@@ -19,7 +19,9 @@ const formatTractionSample = ({ sample, request }) => {
     library_type: request.attributes.library_type || '',
     external_study_id: request.attributes.external_study_id || '',
     date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
-    supplier_name: sample.attributes.supplier_name || '',
+    // Kinnex samples use the sample name as the supplier name
+    // This is because the supplier name is the same for all samples in a Kinnex Compound Sample
+    supplier_name: sample.attributes.name || '',
     donor_id: sample.attributes.donor_id || '',
     species: sample.attributes.species || '',
     sanger_sample_id: sample.attributes.sanger_sample_id || '',
