@@ -1,15 +1,16 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapePlates.js'
-import { store } from '@support/testHelper.js'
+import useRootStore from '@/stores'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
 
 describe('SequencescapePlates', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
 
-    const requests = store.getters.api
-    let request
+    let request, requests
 
     beforeEach(() => {
+      const rootStore = useRootStore()
+      requests = rootStore.api
       request = vi.spyOn(requests.sequencescape.labware, 'get')
     })
 
