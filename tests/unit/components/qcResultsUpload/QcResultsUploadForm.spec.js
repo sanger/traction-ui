@@ -1,7 +1,8 @@
 import QcResultsUploadForm from '@/components/qcResultsUpload/QcResultsUploadForm'
-import { mount, store } from '@support/testHelper'
+import { mountWithStore } from '@support/testHelper'
 import { describe } from 'vitest'
 import * as QcResultsUpload from '@/services/traction/QcResultsUpload'
+import useRootStore from '@/stores'
 
 // TODO: stderr | tests/unit/components/qcResultsUpload/QcResultsUploadForm.spec.js > QcResultsUploadForm.vue > #postCSV > handles a failed import
 // [Vue warn]: Invalid prop: type check failed for prop "value". Expected Array, , got Object
@@ -18,14 +19,18 @@ const evt = {
   },
 }
 
+const mountComponent = () => {
+  const { wrapper, store } = mountWithStore(QcResultsUploadForm, {
+    createStore: () => useRootStore(),
+  })
+  return { wrapper, store }
+}
+
 describe('QcResultsUploadForm.vue', () => {
-  let wrapper, form
+  let wrapper, form, store
 
   beforeEach(() => {
-    wrapper = mount(QcResultsUploadForm, {
-      store,
-      props: {},
-    })
+    ;({ wrapper, store } = mountComponent())
     form = wrapper.vm
   })
 
@@ -67,9 +72,7 @@ describe('QcResultsUploadForm.vue', () => {
 
   describe('#computed', () => {
     it('gets the api request', () => {
-      expect(form.qcResultUploadsRequest).toEqual(
-        store.getters.api.traction.qc_results_uploads.create,
-      )
+      expect(form.qcResultUploadsRequest).toEqual(store.api.traction.qc_results_uploads.create)
     })
 
     it('returns the correct border colour', () => {
@@ -106,7 +109,7 @@ describe('QcResultsUploadForm.vue', () => {
       })
       form.showAlert = vi.fn()
 
-      create = store.getters.api.traction.qc_results_uploads.create
+      create = store.api.traction.qc_results_uploads.create
     })
 
     it('handles a successful import', async () => {
