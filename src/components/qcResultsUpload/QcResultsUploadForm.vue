@@ -54,7 +54,7 @@
 <script>
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
 import UploadIcon from '@/icons/UploadIcon.vue'
-
+import useRootStore from '@/stores'
 export default {
   name: 'QcResultsUploadForm',
   components: {
@@ -75,7 +75,8 @@ export default {
   },
   computed: {
     api() {
-      return this.$store.getters.api
+      const rootStore = useRootStore()
+      return rootStore.api
     },
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
