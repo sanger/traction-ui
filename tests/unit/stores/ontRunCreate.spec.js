@@ -1,5 +1,5 @@
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import { useOntRunsStore } from '@/stores/ontRuns.js'
-import useOntRootStore from '@/stores/ontRoot.js'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { createPinia, setActivePinia } from '@support/testHelper.js'
@@ -14,7 +14,7 @@ const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
 const ontPoolFactory = OntPoolFactory()
 
-describe('useOntRunsStore', () => {
+describe('useOntRunCreateStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
     up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
@@ -24,7 +24,7 @@ describe('useOntRunsStore', () => {
 
   describe('state', () => {
     it('should have the correct initialised state', () => {
-      const store = useOntRunsStore()
+      const store = useOntRunCreateStore()
       expect(store.currentRun).toEqual({
         flowcell_attributes: [],
         id: 'new',
@@ -39,7 +39,7 @@ describe('useOntRunsStore', () => {
   describe('getters', () => {
     let store
     beforeEach(() => {
-      store = useOntRunsStore()
+      store = useOntRunCreateStore()
       store.currentRun = {
         id: 1,
       }
@@ -103,7 +103,7 @@ describe('useOntRunsStore', () => {
 
     describe('#newRun', () => {
       it('runs successfully', () => {
-        const store = useOntRunsStore()
+        const store = useOntRunCreateStore()
         store.newRun()
         expect(store.currentRun).toEqual({
           flowcell_attributes: [],
@@ -121,7 +121,7 @@ describe('useOntRunsStore', () => {
       beforeEach(() => {
         create = vi.fn()
 
-        store = useOntRunsStore()
+        store = useOntRunCreateStore()
         store.currentRun = {
           id: 1,
           instrument_name: 'GXB02004',
@@ -130,8 +130,8 @@ describe('useOntRunsStore', () => {
           flowcell_attributes: [{ tube_barcode: 'TRAC-2-42', flowcell_id: 1 }],
         }
         store.pools = { 1: { id: '1', tube: 1, tube_barcode: 'TRAC-2-42' } }
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
       // TODO: tidy this up so we are pulling the data from the factory
@@ -193,10 +193,10 @@ describe('useOntRunsStore', () => {
           },
         }
         update = vi.fn()
-        store = useOntRunsStore()
+        store = useOntRunCreateStore()
         store.currentRun = run
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
       it('successfully', async () => {
@@ -226,10 +226,10 @@ describe('useOntRunsStore', () => {
     describe('#fetchRun', () => {
       let store
       beforeEach(() => {
-        store = useOntRunsStore()
-        const ontRootStore = useOntRootStore()
-        ontRootStore.resources.instruments = ontInstrumentFactory.storeData.instruments
-        ontRootStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
+        store = useOntRunCreateStore()
+        const ontRunsStore = useOntRunsStore()
+        ontRunsStore.resources.instruments = ontInstrumentFactory.storeData.instruments
+        ontRunsStore.instrumentFlowcellLayout = InstrumentFlowcellLayout
       })
 
       it('runs successfully', async () => {
@@ -270,7 +270,7 @@ describe('useOntRunsStore', () => {
       let store
 
       beforeEach(() => {
-        store = useOntRunsStore()
+        store = useOntRunCreateStore()
       })
 
       it('returns success true if the barcode is empty', async () => {
@@ -310,7 +310,7 @@ describe('useOntRunsStore', () => {
 
     describe('#setInstrumentName', () => {
       it('sets instrument run in current run', () => {
-        const store = useOntRunsStore()
+        const store = useOntRunCreateStore()
         store.currentRun = {
           id: '1',
           instrument_name: '',
@@ -324,7 +324,7 @@ describe('useOntRunsStore', () => {
 
     describe('#setCurrentRun', () => {
       it('sets current run', () => {
-        const store = useOntRunsStore()
+        const store = useOntRunCreateStore()
         store.currentRun = {
           id: '',
           instrument_name: '',
@@ -344,7 +344,7 @@ describe('useOntRunsStore', () => {
 
     describe('#setState', () => {
       it('sets state of current run', () => {
-        const store = useOntRunsStore()
+        const store = useOntRunCreateStore()
         store.currentRun = {
           id: '',
           instrument_name: '',
@@ -358,7 +358,7 @@ describe('useOntRunsStore', () => {
 
     describe('#setNewFlowCell', () => {
       it('adds a new flowcell to the current run', () => {
-        const store = useOntRunsStore()
+        const store = useOntRunCreateStore()
         store.currentRun = {
           id: '',
           instrument_name: '',

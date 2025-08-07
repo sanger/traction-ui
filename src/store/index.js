@@ -61,7 +61,6 @@
 import { createStore } from 'vuex'
 import config from '@/api/Config'
 import build from '@/api/ApiBuilder'
-import traction from '@/store/traction'
 import PlateMap from '@/config/PlateMap'
 
 const store = createStore({
@@ -73,9 +72,6 @@ const store = createStore({
   getters: {
     api: (state) => state.api,
     plateMap: (state) => state.plateMap,
-  },
-  modules: {
-    traction,
   },
 })
 
