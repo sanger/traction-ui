@@ -22,10 +22,6 @@ const pacbioAutoTagFactory = PacbioAutoTagFactory()
 const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory({ findBy: 'libraries', transformTubes: true })
 
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
-
 describe('usePacbioPoolCreateStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked

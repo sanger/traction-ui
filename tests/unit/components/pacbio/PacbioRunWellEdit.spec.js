@@ -12,10 +12,6 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
-
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
   1: {
