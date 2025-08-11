@@ -10,7 +10,6 @@ import { setActivePinia, createPinia } from 'pinia'
 
 // https://vitest.dev/api/vi.html#vi-mock
 vi.mock('swrv')
-vi.mock('axios')
 
 beforeEach(() => {
   setActivePinia(createPinia())
