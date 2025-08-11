@@ -1,7 +1,7 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 import { mountWithStore, flushPromises } from '@support/testHelper'
 import { describe, expect } from 'vitest'
-import { useOntRunsStore } from '@/stores/ontRuns'
+import { useOntRunCreateStore } from '@/stores/ontRunCreate.js'
 import { flowCellType } from '@/stores/utilities/flowCell.js'
 
 describe('ONTFlowcell', () => {
@@ -14,7 +14,7 @@ describe('ONTFlowcell', () => {
     }
     ;({ wrapper, store } = mountWithStore(ONTFlowcell, {
       props,
-      createStore: () => useOntRunsStore(),
+      createStore: () => useOntRunCreateStore(),
     }))
     store.currentRun.flowcell_attributes = [
       {

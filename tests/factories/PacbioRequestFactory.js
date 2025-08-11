@@ -19,10 +19,10 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           self: '/v1/pacbio/requests/40',
         },
         attributes: {
-          library_type: null,
+          library_type: 'Pacbio_HiFi',
           estimate_of_gb_required: null,
           number_of_smrt_cells: null,
-          cost_code: null,
+          cost_code: 'cost-code-1',
           external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
           sample_name: 'sample_DN814327C_A1',
           barcode: null,
@@ -48,6 +48,12 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
               },
             ],
           },
+          sample: {
+            data: {
+              type: 'samples',
+              id: '2',
+            },
+          },
         },
       },
       {
@@ -57,10 +63,10 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           self: '/v1/pacbio/requests/41',
         },
         attributes: {
-          library_type: null,
+          library_type: 'Pacbio_HiFi_mplx',
           estimate_of_gb_required: null,
           number_of_smrt_cells: null,
-          cost_code: null,
+          cost_code: 'cost-code-2',
           external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
           sample_name: 'sample_DN814327C_A2',
           barcode: null,
@@ -85,6 +91,12 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
                 id: '61',
               },
             ],
+          },
+          sample: {
+            data: {
+              type: 'samples',
+              id: '3',
+            },
           },
         },
       },
@@ -124,6 +136,12 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
               },
             ],
           },
+          sample: {
+            data: {
+              type: 'samples',
+              id: '4',
+            },
+          },
         },
       },
       {
@@ -161,6 +179,12 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
                 id: '62',
               },
             ],
+          },
+        },
+        sample: {
+          data: {
+            type: 'samples',
+            id: '2',
           },
         },
       },
@@ -205,6 +229,12 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
             data: {
               type: 'tubes',
               id: '1',
+            },
+          },
+          sample: {
+            data: {
+              type: 'samples',
+              id: '3',
             },
           },
         },
@@ -395,6 +425,57 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
               },
             ],
           },
+        },
+      },
+      {
+        id: '2',
+        type: 'samples',
+        links: {
+          self: '/v1/pacbio/samples/2',
+        },
+        attributes: {
+          name: 'sample_DN814327C_A1',
+          sanger_sample_id: 'id-122',
+          species: 'human',
+          external_id: 'external-id-122',
+          date_of_sample_collection: '2021-01-01',
+          supplier_name: 'Supplier Name',
+          donor_id: 'donor-id-123',
+          retention_instruction: null,
+        },
+      },
+      {
+        id: '3',
+        type: 'samples',
+        links: {
+          self: '/v1/pacbio/samples/3',
+        },
+        attributes: {
+          name: 'sample_DN814327C_A2',
+          sanger_sample_id: 'id-123',
+          species: 'human',
+          external_id: 'external-id-123',
+          date_of_sample_collection: '2021-01-03',
+          supplier_name: 'Supplier Name 2',
+          donor_id: 'donor-id-123',
+          retention_instruction: null,
+        },
+      },
+      {
+        id: '4',
+        type: 'samples',
+        links: {
+          self: '/v1/pacbio/samples/4',
+        },
+        attributes: {
+          name: '5049STDY8152829',
+          sanger_sample_id: 'id-124',
+          species: 'human',
+          external_id: 'external-id-124',
+          date_of_sample_collection: '2021-01-04',
+          supplier_name: 'Supplier Name 3',
+          donor_id: 'donor-id-123',
+          retention_instruction: null,
         },
       },
     ],

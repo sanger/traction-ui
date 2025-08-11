@@ -27,73 +27,23 @@
   </div>
 </template>
 
-<script>
-import InfoFooter from '@/components/InfoFooter'
-import TractionMessage from '@/components/TractionMessage'
-import TractionHeader from '@/components/TractionHeader'
+<script setup>
+import InfoFooter from '@/components/InfoFooter.vue'
+import TractionMessage from '@/components/TractionMessage.vue'
+import TractionHeader from '@/components/TractionHeader.vue'
+import useRootStore from '@/stores'
+import { computed } from 'vue'
 
-export default {
-  components: {
-    InfoFooter,
-    TractionMessage,
-    TractionHeader,
-  },
-  computed: {
-    mergedRoute() {
-      return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
-    },
-    pipeline() {
-      // Merge the route meta attributes and pull out the pipeline
-      return this.mergedRoute.pipeline
-    },
-    page() {
-      return this.mergedRoute.page
-    },
-    messages() {
-      return this.$store.getters['traction/messages']
-    },
-    hasMessages() {
-      return !!Object.keys(this.messages).length
-    },
-  },
-  methods: {
-    dismiss(messageIndex) {
-      this.$store.commit('traction/removeMessage', messageIndex)
-    },
-    clearAlerts() {
-      this.$store.commit('traction/clearMessages')
-    },
-  },
+const rootStore = useRootStore()
+
+// Access the messages from the root store
+const messages = computed(() => rootStore.messages)
+const hasMessages = computed(() => !!Object.keys(messages.value).length)
+
+function dismiss(messageIndex) {
+  rootStore.removeMessage(messageIndex)
+}
+function clearAlerts() {
+  rootStore.clearMessages()
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-}
-nav {
-  margin-bottom: 5px;
-}
-#nav {
-  margin-bottom: 5px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-    &.router-link-active {
-      color: #42b983;
-    }
-  }
-}
-a {
-  color: black;
-  &:hover {
-    text-decoration: none;
-    color: black;
-  }
-}
-</style>

@@ -4,6 +4,8 @@ import TractionDashboard from '@/views/TractionDashboard.vue'
 import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
+import LabwhereReception from '@/views/LabwhereReception.vue'
+import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
@@ -13,14 +15,13 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
+import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
 import ONT from '@/views/ONT.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
-import ONTRun from '@/views/ont/ONTRun.vue'
+import ONTRunShow from '@/views/ont/ONTRunShow.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import LabwhereReception from '@/views/LabwhereReception.vue'
-import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -67,6 +68,12 @@ const router = createRouter({
       name: 'QcResultsUpload',
       meta: { page: 'QC Results Upload' },
       component: QcResultsUpload,
+    },
+    {
+      path: '/sample-report',
+      name: 'SampleReport',
+      meta: { page: 'Sample Report' },
+      component: SampleReport,
     },
     {
       path: '/pacbio',
@@ -182,8 +189,8 @@ const router = createRouter({
         },
         {
           path: 'run/:id',
-          name: 'ONTRun',
-          component: ONTRun,
+          name: 'ONTRunShow',
+          component: ONTRunShow,
           props: true,
           meta: { page: 'Run' },
         },
