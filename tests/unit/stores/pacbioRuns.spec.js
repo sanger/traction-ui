@@ -1,10 +1,5 @@
 import { usePacbioRunsStore } from '@/stores/pacbioRuns.js'
-import {
-  createPinia,
-  setActivePinia,
-  failedResponse,
-  successfulResponse,
-} from '@support/testHelper.js'
+import { failedResponse, successfulResponse } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { extractAttributes } from '@/api/JsonApi.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
@@ -13,11 +8,6 @@ import useRootStore from '@/stores'
 const pacbioRunsFactory = PacbioRunFactory()
 
 describe('usePacbioRunsStore', () => {
-  beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('actions', () => {
     let rootStore, store
 

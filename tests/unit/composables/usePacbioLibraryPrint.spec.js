@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { vi, describe, beforeEach, it, expect } from 'vitest'
 import usePacbioLibraryPrint from '@/composables/usePacbioLibraryPrint.js'
 import { usePrintingStore } from '@/stores/printing.js'
@@ -37,8 +36,6 @@ describe('#usePacbioLibraryPrint', () => {
     },
   ]
   beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
     getCurrentDate.mockReturnValue('01-Jan-2023')
   })
 

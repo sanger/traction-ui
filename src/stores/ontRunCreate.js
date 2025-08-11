@@ -63,10 +63,6 @@ export const useOntRunCreateStore = defineStore('ontRunCreate', {
     tubes: {},
   }),
   getters: {
-    runRequest: () => {
-      const rootStore = useRootStore()
-      return rootStore.api.traction.ont.runs
-    },
     getOrCreateFlowCell: (state) => (position) => {
       // Find the flowcell with the given position
       let flowcell = state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
@@ -89,7 +85,9 @@ export const useOntRunCreateStore = defineStore('ontRunCreate', {
       }
     },
     async createRun() {
-      const promise = this.runRequest.create({
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.runs
+      const promise = request.create({
         data: createPayload(this.currentRun, this.pools),
       })
       return await handleResponse(promise)
@@ -102,11 +100,14 @@ export const useOntRunCreateStore = defineStore('ontRunCreate', {
           ...createPayload(this.currentRun, this.pools).data,
         },
       }
-      const promise = this.runRequest.update(payload)
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.runs
+      const promise = request.update(payload)
       return await handleResponse(promise)
     },
     async fetchRun(runId) {
-      const request = this.runRequest
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.runs
       const promise = request.find({ id: runId, include: 'flowcells.pool' })
       const response = await handleResponse(promise)
 

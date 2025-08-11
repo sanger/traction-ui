@@ -1,9 +1,4 @@
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
@@ -27,13 +22,6 @@ vi.mock('@/api/FeatureFlag', () => ({
 }))
 
 describe('usePacbioPoolCreateStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('getters', () => {
     let store
 

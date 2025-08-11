@@ -1,10 +1,5 @@
 import useRootStore from '@/stores'
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioLibraryBatchCreateStore } from '@/stores/pacbioLibraryBatchCreate.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import PacbioLibraryBatchFactory from '@tests/factories/PacbioLibraryBatchFactory.js'
@@ -18,10 +13,6 @@ const pacbioLibraryBatchFactory = PacbioLibraryBatchFactory(pacbioTagSetFactory.
 describe('usePacbioLibraryBatchCreateStore', () => {
   let rootStore, pacbioLibraryBatchCreateStore, pacbioRootStore
   beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-      up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
     rootStore = useRootStore()
     pacbioLibraryBatchCreateStore = usePacbioLibraryBatchCreateStore()
     pacbioRootStore = usePacbioRootStore()
