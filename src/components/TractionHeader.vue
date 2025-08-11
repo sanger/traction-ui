@@ -10,6 +10,7 @@
           <TractionLink name="QC Results Upload" link="/qc-results-upload" view-type="2" />
           <TractionLink name="Reception" link="/reception" view-type="2" />
           <TractionLink name="LabWhere Reception" link="/labwhere-reception" view-type="2" />
+          <TractionLink name="Sample Report" link="/sample-report" view-type="2" />
         </div>
       </div>
     </div>
