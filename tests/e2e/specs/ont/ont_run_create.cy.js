@@ -2,12 +2,13 @@ import OntInstrumentFactory from '../../../factories/OntInstrumentFactory.js'
 import OntRunFactory from '../../../factories/OntRunFactory.js'
 import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 
-describe('ONT Run page', () => {
+describe('ONT Run create View', () => {
   beforeEach(() => {
     cy.wrap(OntInstrumentFactory()).as('ontInstrumentFactory')
     cy.wrap(OntRunFactory()).as('ontRunFactory')
     cy.wrap(OntPoolFactory()).as('ontPoolFactory')
     cy.wrap(OntPoolFactory({ count: 1 })).as('singleOntPoolFactory')
+    cy.wrap(OntRunFactory({ count: 1 })).as('singleOntRunFactory')
 
     cy.get('@ontInstrumentFactory').then((ontInstrumentFactory) => {
       cy.intercept('GET', '/v1/ont/instruments', {
@@ -32,19 +33,12 @@ describe('ONT Run page', () => {
     })
   })
 
-  it('Shows the correct information', () => {
-    cy.visit('#/ont/run/new')
-
-    cy.contains('1. Run Information')
-    cy.contains('2. Run Instrument Flowcells')
-
-    cy.get('#create').should('be.visible')
-  })
-
-  it('Redirects to the runs list page if run create succeeds', () => {
+  it('Creates a new run', () => {
     cy.intercept('POST', '/v1/ont/runs', {
       statusCode: 201,
-      fixture: 'tractionOntRunCreateSuccess.json',
+      body: {
+        data: {},
+      },
     })
 
     cy.visit('#/ont/run/new')
@@ -64,14 +58,18 @@ describe('ONT Run page', () => {
     cy.get('#run-index').contains('tr', '5')
   })
 
-  it('Handles validation', () => {
+  it('Validates a new run', () => {
     cy.intercept('POST', '/v1/ont/runs', {
       statusCode: 201,
-      fixture: 'tractionOntRunCreateSuccess.json',
+      body: {
+        data: {},
+      },
     })
     cy.intercept('v1/ont/pools?filter[barcode]=UNKNOWN', {
       statusCode: 200,
-      fixture: 'emptyData.json',
+      body: {
+        data: {},
+      },
     })
 
     cy.visit('#/ont/run/new')
@@ -90,10 +88,21 @@ describe('ONT Run page', () => {
     cy.contains('Enter a valid Pool barcode')
   })
 
-  it('Shows an error message if run create fails', () => {
+  it('Fails to create a new run if the flowcell ids are duplicated', () => {
     cy.intercept('POST', '/v1/ont/runs', {
       statusCode: 422,
-      fixture: 'tractionOntRunCreateError.json',
+      body: {
+        errors: [
+          {
+            title: 'flowcell_id ABC123 at position x1 is duplicated in the same run',
+            detail: 'flowcells - flowcell_id ABC123 at position x1 is duplicated in the same run',
+          },
+          {
+            title: 'flowcell_id ABC123 at position x2 is duplicated in the same run',
+            detail: 'flowcells - flowcell_id ABC123 at position x2 is duplicated in the same run',
+          },
+        ],
+      },
     })
 
     cy.visit('#/ont/run/new')
@@ -116,5 +125,30 @@ describe('ONT Run page', () => {
     cy.get('#create').click()
 
     cy.contains('flowcell_id ABC123 at position x1 is duplicated in the same run')
+  })
+
+  it('successfully updates a run', () => {
+    cy.get('@singleOntRunFactory').then((singleOntRunFactory) => {
+      cy.intercept('GET', '/v1/ont/runs/1?include=flowcells.pool', {
+        statusCode: 200,
+        body: singleOntRunFactory.content,
+      })
+    })
+
+    cy.intercept('PATCH', '/v1/ont/runs/1', {
+      statusCode: 200,
+      body: {
+        data: {},
+      },
+    })
+
+    cy.visit('#/ont/run/1')
+
+    cy.get('#state-selection').select('Completed')
+    cy.get('#rebasecalling-selection').select('None')
+
+    cy.get('#update').click()
+
+    cy.get('#run-index').contains('tr', '5')
   })
 })

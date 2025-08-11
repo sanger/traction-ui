@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useRootStore from '@/stores'
-import * as jsonapi from '@/api/JsonApi'
+import * as jsonapi from '@/api/JsonApi.js'
 import {
   newRun,
   newPlate,
