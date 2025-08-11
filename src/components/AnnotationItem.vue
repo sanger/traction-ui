@@ -117,7 +117,6 @@ const errorsFor = (attribute) => {
 
 /**
  * Reactive annotation object for this item, found by id in parent.annotations.
- * @type {import('vue').ReactiveEffect}
  */
 const annotation = reactive(
   props.parent.annotationList.find((annotation) => annotation.id === props.id),

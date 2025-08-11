@@ -107,7 +107,7 @@ const props = defineProps({
 })
 
 /**
- * Computed property for select options for annotation types.
+ * Property for select options for annotation types.
  * @type {Array}
  */
 const selectOptions = annotationTypeSelectOptions(props.annotationTypes)

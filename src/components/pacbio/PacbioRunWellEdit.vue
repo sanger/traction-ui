@@ -66,25 +66,19 @@
     <traction-button data-action="add-row" theme="create" @click="addRow">+</traction-button>
 
     <div>
-      <div>
-        <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
-          <traction-button
-            data-action="show-annotations"
-            theme="default"
-            @click="showAnnotations()"
-          >
-            {{ annotationsVisible ? 'Hide Annotations' : 'Show Annotations' }}
-          </traction-button>
-        </div>
-        <div
-          v-if="annotationsVisible"
-          class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
-        >
-          <annotation-list
-            :parent="store.wells[plateNumber][position]"
-            :annotation-types="annotationTypes"
-          />
-        </div>
+      <div class="flex flex-row w-full w-1/2 space-x-2 justify-end px-2">
+        <traction-button data-action="show-annotations" theme="default" @click="showAnnotations()">
+          {{ annotationsVisible ? 'Hide Annotations' : 'Show Annotations' }}
+        </traction-button>
+      </div>
+      <div
+        v-if="annotationsVisible"
+        class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+      >
+        <annotation-list
+          :parent="store.wells[plateNumber][position]"
+          :annotation-types="annotationTypes"
+        />
       </div>
     </div>
     <template #modal-footer="{}">
