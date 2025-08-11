@@ -19,10 +19,6 @@ const singleOntPoolFactory = OntPoolFactory({ count: 1 })
 const singleOntPlateFactory = OntPlateFactory({ count: 1 })
 const singleOntTubeFactory = OntTubeFactory({ count: 1 })
 
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
-
 const tagSets = {
   1: {
     id: '1',

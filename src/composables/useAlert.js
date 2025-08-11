@@ -2,8 +2,8 @@ import useRootStore from '@/stores'
 import { useRoute } from 'vue-router'
 
 /**
- * A composable function to commit a mutation to the Vuex store.
- * @returns {Function} .showAlert A method that shows an alert. It commits a mutation to the Vuex store.
+ * A composable function to commit a mutation to the store.
+ * @returns {Function} .showAlert A method that shows an alert. It commits a mutation to the store.
  * @param {string} message - The message to show in the alert.
  * @param {string} type - The type of the alert.
  * @param {string} dataType - The data type of the alert.
@@ -16,7 +16,7 @@ export default function useAlert() {
     const time = new Date().toLocaleTimeString()
     const rootStore = useRootStore()
 
-    // Commit the mutation  to the Vuex store
+    // Commit the mutation  to the store
     rootStore.addMessage({ type, message, dataType, origin, time })
   }
 

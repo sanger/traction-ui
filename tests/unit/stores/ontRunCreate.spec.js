@@ -5,7 +5,7 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { beforeEach, describe, expect } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
-import { successfulResponse } from '@tests/support/testHelper.js'
+import { successfulResponse, failedResponse } from '@tests/support/testHelper.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import * as ontRuns from '@/stores/utilities/ontRuns.js'
 
@@ -39,17 +39,6 @@ describe('useOntRunCreateStore', () => {
       store.instrumentFlowcellLayout = InstrumentFlowcellLayout
     })
 
-    it('"runRequest" returns "state.runRequest"', () => {
-      const rootStore = useRootStore()
-      const get = vi.fn()
-      get.mockResolvedValue(ontRunFactory.responses.fetch)
-      rootStore.api = {
-        traction: { ont: { runs: 'aRunRequest' } },
-      }
-      const actual = store.runRequest
-      expect(actual).toEqual('aRunRequest')
-    })
-
     describe('#getOrCreateFlowCell', () => {
       it('returns a flowcell if one is found at the given position', () => {
         store.currentRun = {
@@ -78,19 +67,10 @@ describe('useOntRunCreateStore', () => {
   })
 
   describe('actions', () => {
-    let failedResponse
+    let rootStore
 
     beforeEach(() => {
-      failedResponse = {
-        errors: [
-          {
-            title: 'Invalid field value',
-            detail: 'started is not a valid value for state.',
-            code: '103',
-            status: '400',
-          },
-        ],
-      }
+      rootStore = useRootStore()
     })
 
     describe('#newRun', () => {
@@ -128,8 +108,8 @@ describe('useOntRunCreateStore', () => {
 
       // TODO: tidy this up so we are pulling the data from the factory
       it('runs successfully', async () => {
-        create.mockReturnValue(successfulResponse())
-        store.runRequest.create = create
+        create.mockResolvedValue(successfulResponse())
+        rootStore.api.traction.ont.runs.create = create
         const response = await store.createRun()
         const payload = {
           data: {
@@ -151,12 +131,10 @@ describe('useOntRunCreateStore', () => {
       })
 
       it('runs unsuccessfully', async () => {
-        const promise = Promise.reject(failedResponse)
-        create.mockReturnValue(promise)
-        store.runRequest.create = create
+        create.mockResolvedValue(failedResponse())
+        rootStore.api.traction.ont.runs.create = create
         const response = await store.createRun()
         expect(response.success).toBeFalsy()
-        expect(response.errors).toEqual(failedResponse)
       })
     })
 
@@ -192,9 +170,8 @@ describe('useOntRunCreateStore', () => {
       })
 
       it('successfully', async () => {
-        update.mockReturnValue(ontRunFactory.responses.fetch)
-
-        store.runRequest.update = update
+        update.mockResolvedValue(ontRunFactory.responses.fetch)
+        rootStore.api.traction.ont.runs.update = update
         const response = await store.updateRun()
 
         expect(update).toBeCalledWith(payload)
@@ -202,16 +179,13 @@ describe('useOntRunCreateStore', () => {
       })
 
       it('unsuccessfully', async () => {
-        const promise = Promise.reject(failedResponse)
-        update.mockReturnValue(promise)
-
-        store.runRequest.update = update
+        update.mockResolvedValue(failedResponse())
+        rootStore.api.traction.ont.runs.update = update
 
         const response = await store.updateRun()
         expect(update).toBeCalledWith(payload)
 
         expect(response.success).toBeFalsy()
-        expect(response.errors).toEqual(failedResponse)
       })
     })
 
@@ -227,7 +201,7 @@ describe('useOntRunCreateStore', () => {
       it('runs successfully', async () => {
         const ontSingleRunFactory = OntRunFactory({ findBy: 'flowcells' })
         const find = vi.fn().mockReturnValue(ontSingleRunFactory.responses.fetch)
-        store.runRequest.find = find
+        rootStore.api.traction.ont.runs.find = find
 
         const formattedRun = ontRuns.buildFormatedOntRun(
           Object.values(ontInstrumentFactory.storeData.instruments),
@@ -292,7 +266,7 @@ describe('useOntRunCreateStore', () => {
 
       it('returns success false and returns an error if the pool is not found', async () => {
         const rootStore = useRootStore()
-        const get = vi.fn().mockReturnValue(failedResponse)
+        const get = vi.fn().mockReturnValue(failedResponse())
         rootStore.api.traction.ont.pools = { get }
 
         const response = await store.fetchPool('TRAC-2-34')

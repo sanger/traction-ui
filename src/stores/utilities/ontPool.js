@@ -256,9 +256,8 @@ const buildTagAttributes = (selectedTagSet, tag) => {
  * Finds the requests associated with a given plate
  * @param {String} barcode - The plate barcode to find requests for
  * @param wellName the location of the plate well
- * @param plates a list of the vuex plate resources
- * @param commit the vuex commit object. Provides access to mutations
- * @param wells a list of the vuex well resources
+ * @param plates a list of the plate resources
+ * @param wells a list of the well resources
  * @returns {Object} Request ids / errors and success state
  */
 const requestsForPlate = ({ barcode, wellName, plates, wells }) => {
@@ -276,7 +275,7 @@ const requestsForPlate = ({ barcode, wellName, plates, wells }) => {
 /**
  * Finds the requests associated with a given tube
  * @param {String} barcode - The tube barcode to find requests for
- * @param tubes the list of tube resources from the vuex state
+ * @param tubes the list of tube resources from the state
  * @returns {Object} Request ids / errors and success state
  */
 const requestsForTube = ({ barcode, tubes }) => {
@@ -288,7 +287,7 @@ const requestsForTube = ({ barcode, tubes }) => {
 /**
  * Finds the requests associated with a given source
  * @param {Object} sourceData - Data about the source to find requests for
- * @param resources the vuex state resources object. Provides access to current state resources
+ * @param resources the state resources object. Provides access to current state resources
  * @returns {Object} Request ids / errors and success state
  */
 const findRequestsForSource = ({
