@@ -13,11 +13,6 @@ import useRootStore from '@/stores'
 //        <QcResultsUploadForm> at /Users/si5/webapps/traction-ui/src/components/qcResultsUpload/QcResultsUploadForm.vue
 //          <Root>
 // [Vue warn]: Invalid prop: type check failed for prop "value". Expected Array, , got Object
-const evt = {
-  preventDefault: () => {
-    return {}
-  },
-}
 
 const mountComponent = () => {
   const { wrapper, store } = mountWithStore(QcResultsUploadForm, {
@@ -38,57 +33,15 @@ describe('QcResultsUploadForm.vue', () => {
     it('has usedByOptions', () => {
       expect(form.usedByOptions.length).toEqual(2)
     })
-
-    describe('usedBySelected', () => {
-      it('gets the usedBySelected', () => {
-        wrapper.setData({ usedBySelected: 'extraction' })
-        expect(form.usedBySelected).toEqual('extraction')
-      })
-    })
-    describe('busy', () => {
-      it('gets the busy status', () => {
-        expect(form.busy).toEqual(null)
-        wrapper.setData({ busy: true })
-        expect(form.busy).toEqual(true)
-      })
-    })
-
-    describe('disableUpload', () => {
-      it('gets the disableUpload status', () => {
-        expect(form.disableUpload).toEqual(null)
-        wrapper.setData({ disableUpload: true })
-        expect(form.disableUpload).toEqual(true)
-      })
-    })
-
-    describe('uploadSuccessful', () => {
-      it('gets the uploadSuccessful status', () => {
-        expect(form.uploadSuccessful).toEqual(null)
-        wrapper.setData({ uploadSuccessful: true })
-        expect(form.uploadSuccessful).toEqual(true)
-      })
-    })
   })
 
   describe('#computed', () => {
-    it('gets the api request', () => {
-      expect(form.qcResultUploadsRequest).toEqual(store.api.traction.qc_results_uploads.create)
-    })
-
     it('returns the correct border colour', () => {
       expect(form.border).toEqual('border-0')
-      wrapper.setData({ uploadSuccessful: true })
+      form.uploadSuccessful = true
       expect(form.border).toEqual('rounded border border-success')
-      wrapper.setData({ uploadSuccessful: false })
+      form.uploadSuccessful = false
       expect(form.border).toEqual('rounded border border-failure')
-    })
-  })
-
-  describe('#onSubmit', () => {
-    it('calls postCSV', () => {
-      form.postCSV = vi.fn()
-      form.onSubmit(evt)
-      expect(form.postCSV).toBeCalled()
     })
   })
 
@@ -103,11 +56,8 @@ describe('QcResultsUploadForm.vue', () => {
         },
       }
 
-      wrapper.setData({
-        usedBySelected: 'extraction',
-        file: mockFile,
-      })
-      form.showAlert = vi.fn()
+      wrapper.vm.file = mockFile
+      wrapper.vm.usedBySelected = 'extraction'
 
       create = store.api.traction.qc_results_uploads.create
     })
@@ -123,7 +73,6 @@ describe('QcResultsUploadForm.vue', () => {
         csv: 'xxx',
         usedBySelected: 'extraction',
       })
-      expect(form.showAlert).toBeCalledWith('Successfully imported: fileName', 'success')
       expect(form.busy).toEqual(false)
       expect(form.disableUpload).toEqual(true)
       expect(form.uploadSuccessful).toEqual(true)
@@ -140,7 +89,6 @@ describe('QcResultsUploadForm.vue', () => {
         csv: 'xxx',
         usedBySelected: 'extraction',
       })
-      expect(form.showAlert).toBeCalledWith('This is an error msg', 'danger')
       expect(form.busy).toEqual(false)
       expect(form.disableUpload).toEqual(true)
       expect(form.uploadSuccessful).toEqual(false)

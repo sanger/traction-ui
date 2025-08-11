@@ -133,6 +133,9 @@ const config = [
       {
         name: 'labware',
       },
+      {
+        name: 'studies',
+      },
     ],
   },
 ]
