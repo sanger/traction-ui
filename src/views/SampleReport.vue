@@ -136,7 +136,6 @@ const { showAlert } = useAlert()
 const addSample = async () => {
   if (sample_input.value) {
     const fetchedSamples = await report.value.fetchFunction(sample_input.value, samples.value)
-    console.log(fetchedSamples)
     if (fetchedSamples.errors && fetchedSamples.errors.message) {
       showAlert(fetchedSamples.errors.message, fetchedSamples.errors.type)
       return
