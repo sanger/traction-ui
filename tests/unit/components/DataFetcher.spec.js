@@ -42,14 +42,11 @@ describe('DataFetcher.vue', () => {
         fetcher: mockFetch,
       },
     })
-    // Here we mock the global showAlert method to check its being called
-    wrapper.vm.showAlert = vi.fn()
 
     expect(mockFetch).toHaveBeenCalledOnce()
     await flushPromises()
     expect(wrapper.vm.isLoading).toBe(false)
     expect(wrapper.vm.isError).toBe(true)
     expect(wrapper.find('button').text()).toBe('Retry')
-    expect(wrapper.vm.showAlert).toHaveBeenCalled()
   })
 })

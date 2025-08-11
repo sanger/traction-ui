@@ -1,58 +1,40 @@
-import ONTRuns from '@/views/ont/ONTRunIndex.vue'
-import { mount, store, createTestingPinia, router, flushPromises } from '@support/testHelper.js'
+import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
+import { mountWithStore, router, flushPromises } from '@support/testHelper.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
 import { useOntRunsStore } from '@/stores/ontRuns.js'
 
 const ontRunFactory = OntRunFactory()
 
-/**
- * Helper method for mounting a component with a mock instance of pinia, with the given props.
- * This method also returns the wrapper and the store object for further testing.
- *
- * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
- * which includes
- * state - initial state of the ontRuns store.
- * rootState - initial state of the ontRuns store.
- * props - props to pass to component.
- */
-function mountWithStore({ state = {}, plugins = [], props } = {}) {
-  const wrapperObj = mount(ONTRuns, {
-    global: {
-      plugins: [
-        createTestingPinia({
-          initialState: {
-            ontRuns: { resources: { ...state } },
-          },
-          stubActions: false,
-          plugins,
-        }),
-      ],
+const mountComponent = () => {
+  const plugins = [
+    ({ store }) => {
+      if (store.$id === 'root') {
+        store.api.traction.ont.runs.get = vi.fn(() => ontRunFactory.responses.fetch)
+      }
     },
-    router,
-    props,
+  ]
+  const initialState = {
+    ontRuns: { resources: { runs: ontRunFactory.storeData.runs } },
+  }
+
+  const { wrapper } = mountWithStore(ONTRunIndex, {
+    initialState,
+    plugins,
+    createStore: () => useOntRunsStore(),
+    stubs: {
+      PrinterModal: {
+        template: '<div ref="printerModal"></div>',
+      },
+    },
   })
-  const storeObj = useOntRunsStore()
-  return { wrapperObj, storeObj }
+  return wrapper
 }
 
-describe('ONTRuns.vue', () => {
-  let wrapper, runs, mockRuns
+describe('ONTRunIndex.vue', () => {
+  let wrapper, runs
 
   beforeEach(async () => {
-    mockRuns = ontRunFactory.storeData.runs
-    const plugins = [
-      ({ store }) => {
-        if (store.$id === 'root') {
-          // this was api. but didn't fail so is it needed?
-          store.api.traction.ont.runs.get = vi.fn(() => ontRunFactory.responses.fetch)
-        }
-      },
-    ]
-    const { wrapperObj } = mountWithStore({
-      state: { runs: mockRuns },
-      plugins,
-    })
-    wrapper = wrapperObj
+    wrapper = mountComponent()
     runs = wrapper.vm
     await flushPromises()
   })
@@ -117,20 +99,9 @@ describe('ONTRuns.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
-    it('emits an event with the message', () => {
-      runs.showAlert('show this message', 'danger')
-
-      expect(Object.values(store.state.traction.messages)).toContainEqual({
-        type: 'danger',
-        message: 'show this message',
-      })
-    })
-  })
-
   describe('#mapGetters', () => {
     it('sets the runs data', () => {
-      expect(runs.runs.length).toEqual(Object.values(mockRuns).length)
+      expect(runs.runs.length).toEqual(Object.values(ontRunFactory.storeData.runs).length)
     })
   })
 

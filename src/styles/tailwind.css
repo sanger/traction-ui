@@ -25,6 +25,11 @@
   --color-custom-pink: oklch(68.78% 0.1797 1.96);
   --shadow-custom-pink: 6px 6px 0 0 var(--color-custom-pink);
 }
+@layer base {
+  html {
+    color: #2c3e50;
+  }
+}
 
 input[type='file']::file-selector-button {
   background-color: oklch(94.61% 0 0);

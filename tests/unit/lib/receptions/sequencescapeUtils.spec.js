@@ -1,4 +1,3 @@
-import { store } from '@support/testHelper.js'
 import { expect, vi } from 'vitest'
 import {
   fetchLabwareFromSequencescape,
@@ -8,6 +7,7 @@ import {
   getIncludedData,
 } from '@/lib/receptions/sequencescapeUtils.js'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
+import useRootStore from '@/stores'
 
 const retAttributes = {
   plates_attributes: [
@@ -90,10 +90,11 @@ describe('sequencescapeUtils', () => {
       },
     }
 
-    const requests = store.getters.api
-    let request
+    let request, requests
 
     beforeEach(() => {
+      const rootStore = useRootStore()
+      requests = rootStore.api
       request = vi.spyOn(requests.sequencescape.labware, 'get')
     })
 

@@ -1,6 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
-import rootVuexStore from '@/store/index.js'
 import PlateMap from '@/config/PlateMap.json'
 import { expect } from 'vitest'
 
@@ -30,19 +29,6 @@ describe('index', () => {
   })
 
   describe('actions', () => {
-    describe('addVuexMessage', () => {
-      it('adds a message to the vuex root store', () => {
-        const store = useRootStore()
-        store.addVuexMessage({
-          type: 'warning',
-          message: 'foo',
-        })
-        expect(Object.values(rootVuexStore.state.traction.messages)).toEqual([
-          { type: 'warning', message: 'foo' },
-        ])
-      })
-    })
-
     describe('clearMessages', () => {
       it('clears all messages', () => {
         const store = useRootStore()

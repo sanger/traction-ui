@@ -183,7 +183,6 @@ async function printLabels(printerName) {
     showAlert(message, success ? 'success' : 'danger')
   } else {
     // fallback: log to console
-    // eslint-disable-next-line no-console
     console.log('Print job result:', message, success)
   }
 }

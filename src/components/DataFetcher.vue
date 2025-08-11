@@ -10,7 +10,8 @@
     <slot v-else />
   </div>
 </template>
-<script>
+
+<script setup>
 /**
  * # DataFetcher
  *
@@ -24,36 +25,35 @@
  *     </DataFetcher>
  * </template>
  */
-export default {
-  name: 'DataFetcher',
-  props: {
-    // A method that performs the required data fetch
-    fetcher: {
-      type: Function,
-      required: true,
-    },
+
+import { ref, onMounted } from 'vue'
+import useAlert from '@/composables/useAlert.js'
+
+// Props
+const props = defineProps({
+  // A method that performs the required data fetch
+  fetcher: {
+    type: Function,
+    required: true,
   },
-  data() {
-    return {
-      isLoading: true,
-      isError: false,
-    }
-  },
-  created() {
-    this.getData()
-  },
-  methods: {
-    async getData() {
-      this.isLoading = true
-      this.isError = false
-      await this.fetcher().then((res) => {
-        if (!res.success) {
-          this.isError = true
-          this.showAlert(res.errors, 'danger')
-        }
-        this.isLoading = false
-      })
-    },
-  },
+})
+
+const isLoading = ref(true)
+const isError = ref(false)
+const { showAlert } = useAlert()
+
+async function getData() {
+  isLoading.value = true
+  isError.value = false
+  const res = await props.fetcher()
+  if (!res.success) {
+    isError.value = true
+    showAlert(res.errors, 'danger')
+  }
+  isLoading.value = false
 }
+
+onMounted(() => {
+  getData()
+})
 </script>
