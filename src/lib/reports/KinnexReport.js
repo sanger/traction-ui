@@ -180,19 +180,15 @@ const fetchFunction = async (sample_input, samples) => {
   const { data: tractionSamples, errors } = await fetchTractionSamples(sample_input, samples)
 
   if (!tractionSamples.length) {
-    if (errors && errors.message) {
-      return { data: [], errors: errors }
-    }
-    return
+    const err = errors && errors.message ? errors : {}
+    return { data: [], errors: err }
   }
 
   const { data: sequencescapeStudies, errors: ssError } =
     await fetchSequencescapeStudies(tractionSamples)
   if (!sequencescapeStudies.length) {
-    if (ssError && ssError.message) {
-      return { data: [], errors: ssError }
-    }
-    return
+    const err = ssError && ssError.message ? ssError : {}
+    return { data: [], errors: err }
   }
 
   // Combine the traction samples and sequencescape studies
