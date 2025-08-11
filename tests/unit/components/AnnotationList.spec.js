@@ -1,4 +1,4 @@
-import { mount, createPinia, setActivePinia } from '@support/testHelper.js'
+import { mount } from '@support/testHelper.js'
 import AnnotationList from '@/components/AnnotationList.vue'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
@@ -30,8 +30,6 @@ describe('AnnotationList.vue', () => {
   let store
 
   beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
     store = usePacbioRunCreateStore()
     store.$state = {
       run: { ...pacbioRunFactory.storeData.run, annotationList: [...annotationsByRun] },

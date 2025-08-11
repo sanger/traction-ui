@@ -1,4 +1,4 @@
-import { mount, createPinia, setActivePinia } from '@support/testHelper.js'
+import { mount } from '@support/testHelper.js'
 import AnnotationItem from '@/components/AnnotationItem.vue'
 import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import { AnnotationItemType, annotationTypeSelectOptions } from '@/stores/utilities/annotation.js'
@@ -30,10 +30,6 @@ describe('AnnotationItem.vue', () => {
   let store
 
   beforeEach(() => {
-    // Creates a fresh pinia instance and make it active so it's automatically picked
-    // up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`
-    const pinia = createPinia()
-    setActivePinia(pinia)
     store = usePacbioRunCreateStore()
     store.$state = { run }
   })
