@@ -5,12 +5,7 @@ import {
   formatTractionSample,
 } from '@/lib/reports/KinnexReport.js'
 import useRootStore from '@/stores'
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import SequencescapeStudyFactory from '@tests/factories/SequencescapeStudyFactory.js'
 const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: true })
@@ -50,8 +45,6 @@ describe('KinnexReport', () => {
   let rootStore, tractionRequestGet, sequencescapeStudyGet
 
   beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
     // Mock the root store and its API
     rootStore = useRootStore()
     tractionRequestGet = vi.fn()

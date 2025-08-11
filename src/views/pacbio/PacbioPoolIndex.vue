@@ -205,7 +205,7 @@ const createLabels = () => {
 }
 
 /**
- * This asynchronous function dispatches a Vuex action to create a print job and shows an alert based on the result.
+ * This asynchronous function dispatches an action to create a print job and shows an alert based on the result.
  * It takes a `printerName` as a parameter, dispatches the 'printMyBarcode/createPrintJob' action with the `printerName`, labels created by the `createLabels` function, and 1 copy, and waits for the result.
  * The result is expected to be an object with a `success` property and a `message` property.
  * If the `message` property doesn't exist, it defaults to an empty object.

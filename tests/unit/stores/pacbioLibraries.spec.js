@@ -1,10 +1,5 @@
 import useRootStore from '@/stores'
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { beforeEach, describe, expect } from 'vitest'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
@@ -28,13 +23,6 @@ const formLibrary = {
 }
 
 describe('usePacbioLibrariesStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('#libraryPayload', () => {
     it('for a create action', () => {
       const payload = buildLibraryResourcePayload({ ...requiredAttributes, pacbio_request_id: 1 })

@@ -9,12 +9,6 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
   }),
   getters: {
     runsArray: (state) => Object.values(state.runs),
-    /*Pinia_migration_todo: This is migrated from the VueX store now, but it can be changed to a Pinia store, 
-     once the VueX root store is converted to Pinia*/
-    runRequest: () => {
-      const rootStore = useRootStore()
-      return rootStore.state.api.traction.pacbio.runs
-    },
   },
 
   actions: {

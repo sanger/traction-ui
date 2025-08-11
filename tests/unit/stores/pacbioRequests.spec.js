@@ -1,9 +1,4 @@
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import usePacbioRequestsStore from '@/stores/pacbioRequests.js'
 import { describe, expect } from 'vitest'
@@ -12,13 +7,6 @@ import useRootStore from '@/stores'
 const pacbioRequestFactory = PacbioRequestFactory({ includeRelationships: false })
 
 describe('pacbioRequests', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-        up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('getters', () => {
     it('"requests" returns "state.requests"', () => {
       const pacbioRequestsStore = usePacbioRequestsStore()

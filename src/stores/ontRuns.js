@@ -5,7 +5,7 @@ import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 
 /**
- * Generates an object describing the shared ONT resources for use in the vuex
+ * Generates an object describing the shared ONT resources for use in the
  * store
  */
 
@@ -64,8 +64,8 @@ export const useOntRunsStore = defineStore('ontRuns', {
     /**
      * Retrieves a list of ont runs from traction-service and populates the source
      * with associated instrument data
-     * @param rootState the vuex rootState object. Provides access to the current state
-     * @param commit the vuex commit object. Provides access to mutations
+     * @param rootState the root state object. Provides access to the current state
+     * @param commit the commit object. Provides access to mutations
      */
     async fetchOntRuns(filter, page) {
       const rootStore = useRootStore()

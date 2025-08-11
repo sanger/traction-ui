@@ -32,7 +32,7 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
 
 /**
  * Orders the well resources by column/row index
- * @param resources The Vuex state resources object
+ * @param resources The state resources object
  */
 const sortRequestByWellColumnIndex = (resources) => (a, b) =>
   wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
@@ -148,7 +148,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
     },
     /**
      * Returns a list of all fetched requests
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     requestList: (state) => (ids) => {
       const requests = state.resources.requests
@@ -166,7 +166,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
     /**
      * Returns a list of all fetched tagSet
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     tagSetList: (state) => {
       return Object.values(state.resources.tagSets)
@@ -174,7 +174,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
     /**
      * Returns a list of all fetched tagSet
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     tagList: (state) => (ids) => {
       const tags = state.resources.tags
@@ -187,7 +187,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
     /**
      * Returns the selected tag set
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      */
     selectedTagSet: ({ resources, selected }) => {
       if (selected.tagSet.id) {
@@ -203,7 +203,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * Returns a list of selected requests
      *
      * Note: Ordering is grouped by plate (in id order) and sorted in column order
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      * @return {Array} An array of selected requests in the order in which they were selected
      */
     selectedRequests: ({ pooling, resources }) => {
@@ -218,7 +218,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
     /**
      * Returns a list of pools
      *
-     * @param {Object} state The Vuex state object
+     * @param {Object} state The state object
      * @return {Array} An array of selected requests in the order in which they were selected
      */
     pools: (state) => {
@@ -820,7 +820,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
 
     /**
      * Updates the library with the corresponding data
-     * @param {Object} state The VueXState object
+     * @param {Object} state The state object
      * @param {Object} library The library data to update
      */
     updatePoolingLibrary(library) {

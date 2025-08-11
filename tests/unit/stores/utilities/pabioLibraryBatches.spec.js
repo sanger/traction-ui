@@ -5,7 +5,6 @@ import {
 } from '@/stores/utilities/pacbioLibraryBatches'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
-import { createPinia, setActivePinia } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 
 const pacbioRequestFactory = PacbioRequestFactory()
@@ -106,8 +105,6 @@ describe('pacbioLibraryBatches', () => {
   describe('fetchTagsAndRequests', () => {
     let tagSet, rootStore, requestsData, sources
     beforeEach(() => {
-      const pinia = createPinia()
-      setActivePinia(pinia)
       rootStore = useRootStore()
       rootStore.api = {
         traction: {
