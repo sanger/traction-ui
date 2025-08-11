@@ -76,8 +76,6 @@ const qcResultsUploadFile = ref(null)
 
 // Store and API
 const rootStore = useRootStore()
-const api = computed(() => rootStore.api)
-const qcResultUploadsRequest = computed(() => api.value.traction.qc_results_uploads.create)
 
 // Alert composable
 const { showAlert } = useAlert()
@@ -122,7 +120,7 @@ const postCSV = async () => {
   const csv = await file.value?.text()
   const data = { csv, usedBySelected: usedBySelected.value }
   const { success, errors } = await createQcResultsUploadResource(
-    qcResultUploadsRequest.value,
+    rootStore.api.traction.qc_results_uploads.create,
     data,
   )
   uploadSuccessful.value = success

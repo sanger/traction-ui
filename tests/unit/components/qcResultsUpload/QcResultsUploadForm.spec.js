@@ -36,10 +36,6 @@ describe('QcResultsUploadForm.vue', () => {
   })
 
   describe('#computed', () => {
-    it('gets the api request', () => {
-      expect(form.qcResultUploadsRequest).toEqual(store.api.traction.qc_results_uploads.create)
-    })
-
     it('returns the correct border colour', () => {
       expect(form.border).toEqual('border-0')
       form.uploadSuccessful = true

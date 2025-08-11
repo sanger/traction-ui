@@ -27,48 +27,23 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import InfoFooter from '@/components/InfoFooter.vue'
 import TractionMessage from '@/components/TractionMessage.vue'
 import TractionHeader from '@/components/TractionHeader.vue'
 import useRootStore from '@/stores'
+import { computed } from 'vue'
 
-export default {
-  components: {
-    InfoFooter,
-    TractionMessage,
-    TractionHeader,
-  },
-  computed: {
-    mergedRoute() {
-      return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
-    },
-    pipeline() {
-      // Merge the route meta attributes and pull out the pipeline
-      return this.mergedRoute.pipeline
-    },
-    page() {
-      return this.mergedRoute.page
-    },
-    messages() {
-      // Access the messages from the root store
-      const rootStore = useRootStore()
-      // Return the messages from the traction module
-      return rootStore.messages || {}
-    },
-    hasMessages() {
-      return !!Object.keys(this.messages).length
-    },
-  },
-  methods: {
-    dismiss(messageIndex) {
-      const rootStore = useRootStore()
-      rootStore.removeMessage(messageIndex)
-    },
-    clearAlerts() {
-      const rootStore = useRootStore()
-      rootStore.clearMessages()
-    },
-  },
+const rootStore = useRootStore()
+
+// Access the messages from the root store
+const messages = computed(() => rootStore.messages)
+const hasMessages = computed(() => !!Object.keys(messages.value).length)
+
+function dismiss(messageIndex) {
+  rootStore.removeMessage(messageIndex)
+}
+function clearAlerts() {
+  rootStore.clearMessages()
 }
 </script>
