@@ -43,6 +43,7 @@
             </div>
             <div class="flex flex-row justify-end items-center p-2 gap-2 w-1/6">
               <traction-button
+                v-if="annotation.newRecord"
                 :data-action="`remove-annotation-${annotation.id}`"
                 theme="delete"
                 @click="removeAnnotation(annotation.id)"

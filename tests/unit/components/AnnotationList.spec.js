@@ -92,20 +92,30 @@ describe('AnnotationList.vue', () => {
     expect(addButton.exists()).toBeTruthy()
   })
 
+  it('displays the remove button only for new annotations', () => {
+    const wrapper = mount(AnnotationList, {
+      props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
+    })
+    const annotations = wrapper.findAll('[data-type="annotation"]')
+    expect(annotations.length).toEqual(2) // 2 existing annotations
+    expect(wrapper.find('[data-action="remove-annotation"]').exists()).toBeFalsy()
+  })
+
   it('removes an annotation when the remove button is clicked', async () => {
-    let annotations
+    let annotations, annotationId
     const wrapper = mount(AnnotationList, {
       props: { parent: store.run, annotationTypes: Object.values(annotationTypeFactory.storeData) },
     })
 
     // Get the annotation id for the newly added annotation
-    const annotationId = wrapper.vm.parent.annotationList[1].id
+    annotationId = wrapper.vm.parent.annotationList[1].id
     const addButton = wrapper.find(`[data-action="add-annotation-${annotationId}"]`)
     await addButton.trigger('click')
 
     annotations = wrapper.findAll('[data-type="annotation"]')
     expect(annotations.length).toEqual(3)
 
+    annotationId = wrapper.vm.parent.annotationList[2].id
     const removeButton = wrapper.find(`[data-action="remove-annotation-${annotationId}"]`)
     expect(removeButton.exists()).toBeTruthy()
     await removeButton.trigger('click')
