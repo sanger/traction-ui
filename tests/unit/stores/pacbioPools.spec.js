@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useRootStore from '@/stores'
 import { expect } from 'vitest'
@@ -9,13 +8,6 @@ import { failedResponse } from '@support/testHelper.js'
 const pacbioPoolFactory = PacbioPoolFactory()
 
 describe('usePacbioPools', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('getters', () => {
     let store
     beforeEach(() => {

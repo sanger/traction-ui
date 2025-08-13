@@ -1,7 +1,7 @@
 import { mount } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 import SampleReport from '@/views/SampleReport.vue'
-import { createPinia, setActivePinia, flushPromises } from '@support/testHelper.js'
+import { flushPromises } from '@support/testHelper.js'
 import { fetchFunction } from '@/lib/reports/KinnexReport.js'
 import Reports from '@/lib/reports'
 
@@ -43,11 +43,6 @@ describe('SampleReport', () => {
   }
 
   beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-        up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-
     // Mock the root store and its API
     rootStore = useRootStore()
     get = vi.fn()

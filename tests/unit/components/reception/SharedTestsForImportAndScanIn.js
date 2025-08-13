@@ -3,7 +3,6 @@
 //
 import * as Reception from '@/services/traction/Reception.js'
 import { expect, it } from 'vitest'
-import { store } from '@support/testHelper.js'
 
 export const sharedTestsForImportAndScanIn = (
   wrapper,
@@ -28,8 +27,6 @@ export const sharedTestsForImportAndScanIn = (
     })
 
     describe('Fails to import labware', () => {
-      store.state.traction.messages = []
-
       it('calls create resource functionality', async () => {
         await wrapper.vm.importLabware()
         expect(Reception.createReceptionResource).toHaveBeenCalled()

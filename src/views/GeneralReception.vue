@@ -203,7 +203,6 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
-import { checkFeatureFlag } from '@/api/FeatureFlag.js'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
@@ -243,11 +242,6 @@ const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
 
 const receptionOptions = async () => {
   let receptionTypes = Object.values(ReceptionTypes)
-  const isKinnexEnabled = await checkFeatureFlag('kinnex_sample_reception')
-  // Filter out SequencescapeKinnexTubes if the feature flag is not enabled
-  if (!isKinnexEnabled) {
-    receptionTypes = receptionTypes.filter((type) => type.value !== 'SequencescapeKinnexTubes')
-  }
   if (environment.value == 'uat' || environment.value == 'development') {
     return [
       ...receptionTypes,

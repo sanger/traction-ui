@@ -5,24 +5,12 @@ import {
   updatePacbioLibraryResource,
   buildLibraryResourcePayload,
 } from '@/services/traction/PacbioLibrary.js'
-import {
-  createPinia,
-  setActivePinia,
-  failedResponse,
-  successfulResponse,
-} from '@support/testHelper.js'
+import { failedResponse, successfulResponse } from '@support/testHelper.js'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
 
 describe('PacbioLibrary', () => {
   let rootStore
-
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-        up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
 
   describe('getPacbioLibraryResources', () => {
     let get

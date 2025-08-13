@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
-import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
-import store from '@/store'
 import useRootStore from '@/stores'
+import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 
 export const usePacbioRunsStore = defineStore('pacbioRuns', {
   state: () => ({
@@ -10,9 +9,6 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
   }),
   getters: {
     runsArray: (state) => Object.values(state.runs),
-    /*Pinia_migration_todo: This is migrated from the VueX store now, but it can be changed to a Pinia store, 
-     once the VueX root store is converted to Pinia*/
-    runRequest: () => store.state.api.traction.pacbio.runs,
   },
 
   actions: {

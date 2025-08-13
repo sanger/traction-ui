@@ -1,14 +1,16 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeMultiplexedLibraries'
-import { store } from '@support/testHelper'
+import useRootStore from '@/stores'
 import SequencescapeMultiplexedLibraryFactory from '@tests/factories/SequencescapeMultiplexedLibraryFactory.js'
 
 describe('SequencescapeMultiplexedLibraries', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['3980000042705']
-    const requests = store.getters.api
-    let request
+
+    let request, requests
 
     beforeEach(() => {
+      const rootStore = useRootStore()
+      requests = rootStore.api
       request = vi.spyOn(requests.sequencescape.labware, 'get')
     })
 

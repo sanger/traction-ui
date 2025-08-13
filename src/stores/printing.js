@@ -40,7 +40,7 @@ export const usePrintingStore = defineStore('printing', {
   actions: {
     /**
      * Creates a print job in PrintMyBarcode
-     * @param rootState the vuex rootState object. Provides access to current state
+     * @param rootState the rootState object. Provides access to current state
      * @param {String} printerName The name of the printer to send the print job to
      * @param {Array} labels Should be of a standard structure. See relevant components.
      * @param {Integer} copies Number of copies of labels
