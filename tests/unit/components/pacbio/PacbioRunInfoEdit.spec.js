@@ -3,6 +3,7 @@ import { mountWithStore } from '@support/testHelper.js'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -49,6 +50,8 @@ const smrtLinkVersions = {
     active: true,
   },
 }
+
+const annotationTypes = AnnotationTypeFactory()
 
 let runInfo, wrapper, store
 
@@ -186,5 +189,36 @@ describe('PacbioRunInfoEdit old run', () => {
         expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(6)
       })
     })
+  })
+})
+
+describe('annotations', () => {
+  beforeEach(() => {
+    ;({ wrapper, store } = mountWithStore(PacbioRunInfoEdit, {
+      initialState: {
+        pacbioRunCreate: {
+          run: {
+            id: 'new',
+            name: 'TRACTION-RUN-5',
+            system_name: 'Revio',
+            dna_control_complex_box_barcode: null,
+          },
+          smrtLinkVersion: smrtLinkVersions[5],
+          resources: { smrtLinkVersions, annotationTypes },
+          instrumentTypeList: PacbioInstrumentTypes,
+          instrumentType: PacbioInstrumentTypes.Revio,
+        },
+      },
+    }))
+    runInfo = wrapper.vm
+  })
+
+  it('should show the annotations when the button is clicked', async () => {
+    const button = wrapper.find('[data-action="show-annotations"]')
+    await button.trigger('click')
+    const annotationList = wrapper.find('[data-type="annotation-list"]')
+    expect(annotationList.exists()).toBeTruthy()
+    const annotations = annotationList.findAll('[data-type="annotation-item"]')
+    expect(annotations.length).toEqual(0)
   })
 })

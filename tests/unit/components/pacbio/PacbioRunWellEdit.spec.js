@@ -1,9 +1,10 @@
-import { mountWithStore, nextTick } from '@support/testHelper.js'
+import { mountWithStore, nextTick, flushPromises } from '@support/testHelper.js'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit.vue'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newWell } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
-import { createUsedAliquot } from '@/stores/utilities/usedAliquot'
+import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -34,6 +35,8 @@ const props = {
 const position = 'A1'
 const plateNumber = 1
 
+const annotationTypeFactory = AnnotationTypeFactory()
+
 describe('PacbioRunWellEdit', () => {
   let wrapper
 
@@ -53,6 +56,9 @@ describe('PacbioRunWellEdit', () => {
         ;({ wrapper } = mountWithStore(PacbioRunWellEdit, {
           initialState: {
             pacbioRunCreate: {
+              resources: {
+                annotationTypes: Object.values(annotationTypeFactory.storeData),
+              },
               smrtLinkVersion: smrtLinkVersions['1'],
               wells: {
                 1: {
@@ -797,6 +803,56 @@ describe('PacbioRunWellEdit', () => {
       expect(mockShowAlert).toBeCalledWith('Insufficient volume available', 'danger')
       expect(store.updateWell).not.toBeCalled()
       expect(wrapper.vm.isShow).toBeTruthy()
+    })
+  })
+
+  describe('annotations', () => {
+    it('should show the annotations when the button is clicked', async () => {
+      const { wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ position }),
+              },
+            },
+          },
+        },
+        createStore: () => usePacbioRunCreateStore(),
+      })
+
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+      await flushPromises()
+      const button = wrapper.find('[data-action="show-annotations"]')
+      await button.trigger('click')
+      const annotationList = wrapper.find('[data-type="annotation-list"]')
+      expect(annotationList.exists()).toBeTruthy()
+      const annotations = annotationList.findAll('[data-type="annotation-item"]')
+      expect(annotations.length).toEqual(0)
+    })
+
+    it("won't show the annotations if the well is not present", async () => {
+      const { wrapper } = mountWithStore(PacbioRunWellEdit, {
+        initialState: {
+          pacbioRunCreate: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {},
+          },
+        },
+        createStore: () => usePacbioRunCreateStore(),
+      })
+
+      wrapper.vm.isShow = true
+      wrapper.vm.position = position
+      wrapper.vm.plateNumber = plateNumber
+      await flushPromises()
+      const button = wrapper.find('[data-action="show-annotations"]')
+      await button.trigger('click')
+      const annotationList = wrapper.find('[data-type="annotation-list"]')
+      expect(annotationList.exists()).toBeFalsy()
     })
   })
 })

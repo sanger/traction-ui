@@ -106,7 +106,7 @@ describe('useOntRunCreateStore', () => {
         ontRunsStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
       })
 
-      // TODO: tidy this up so we are pulling the data from the factory
+      // tidy this up so we are pulling the data from the factory
       it('runs successfully', async () => {
         create.mockResolvedValue(successfulResponse())
         rootStore.api.traction.ont.runs.create = create
@@ -213,8 +213,6 @@ describe('useOntRunCreateStore', () => {
         const response = await store.fetchRun(ontSingleRunFactory.content.data.id)
         expect(store.currentRun).toEqual({
           ...formattedRun,
-          // TODO: Replace with standard Equals matcher
-          // Hard code flowcell attributes as flowCell object mismatches cause equality to fail even though they are the same
           flowcell_attributes: [
             {
               errors: {},
