@@ -21,12 +21,6 @@ describe('Import samples from Sequencescape', () => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
     })
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        kinnex_sample_reception: { enabled: true },
-      },
-    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Sequencescape Plates')
   })
