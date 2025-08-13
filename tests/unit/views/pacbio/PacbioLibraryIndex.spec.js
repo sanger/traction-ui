@@ -14,6 +14,13 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+const mockFetchLocations = vi.fn(() => [])
+vi.mock('@/composables/useLocationFetcher.js', () => ({
+  default: () => ({
+    fetchLocations: mockFetchLocations,
+  }),
+}))
+
 describe('Libraries.vue', () => {
   let wrapper, libraries, libraryStore
   beforeEach(async () => {
