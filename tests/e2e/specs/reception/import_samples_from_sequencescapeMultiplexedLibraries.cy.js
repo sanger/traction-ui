@@ -28,12 +28,6 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
       fixture: 'tractionDataTypes.json',
     })
 
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        kinnex_sample_reception: { enabled: true },
-      },
-    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
   })
