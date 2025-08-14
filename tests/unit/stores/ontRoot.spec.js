@@ -81,7 +81,6 @@ describe('useOntRunsStore', () => {
       })
 
       it('handles failure', async () => {
-        //Mock useroot store
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
@@ -89,14 +88,13 @@ describe('useOntRunsStore', () => {
 
         const store = useOntRunsStore()
 
-        // apply action
         const { success } = await store.fetchOntRuns()
         expect(store.resources.instruments).toEqual({})
         expect(store.resources.runs).toEqual({})
         expect(success).toBeFalsy()
       })
     })
-    describe('setInstruments', () => {
+    describe('fetchInstruments', () => {
       it('runs successfully', async () => {
         const rootStore = useRootStore()
         const get = vi.fn()
@@ -104,13 +102,12 @@ describe('useOntRunsStore', () => {
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
         const store = useOntRunsStore()
-        const { success } = await store.setInstruments()
+        const { success } = await store.fetchInstruments()
         expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
       it('handles failure', async () => {
-        //Mock useroot store
         const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
@@ -118,8 +115,7 @@ describe('useOntRunsStore', () => {
 
         const store = useOntRunsStore()
 
-        // apply action
-        const { success } = await store.setInstruments()
+        const { success } = await store.fetchInstruments()
         expect(store.resources.instruments).toEqual({})
         expect(success).toBeFalsy()
       })
