@@ -40,7 +40,7 @@ import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { formatRequests } from '@/lib/requestHelpers.js'
-import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import { useOntRequestsStore } from '@/stores/ontRequests.js'
 
 // --- Reactive State ---
 const fields = [
@@ -69,12 +69,12 @@ const sortBy = ref('created_at')
 const labwareLocations = ref([])
 
 // --- Store and composables ---
-const ontPoolCreateStore = useOntPoolCreateStore()
+const ontRequestsStore = useOntRequestsStore()
 const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
 
 // --- Getters ---
-const requests = computed(() => ontPoolCreateStore.requests)
+const requests = computed(() => ontRequestsStore.requests)
 const barcodes = computed(() => requests.value.map(({ source_identifier }) => source_identifier))
 const displayedRequests = computed(() => formatRequests(requests.value, labwareLocations.value))
 
@@ -88,9 +88,12 @@ watch(
 )
 
 // --- Methods ---
-const fetchOntRequests = (...args) => ontPoolCreateStore.fetchOntRequests(...args)
+// this needs a bit of a think. We should not need to rewrite this method
+// there will be a JavaScript way of doing this e.g. using bind
+// probably using a higher-order function. Worth a tech debt story to dig into DataFetcher
+const fetchHandler = (...args) => ontRequestsStore.fetchRequests(...args)
 
 async function fetchRequests() {
-  return await fetchWithQueryParams(fetchOntRequests, filterOptions)
+  return await fetchWithQueryParams(fetchHandler, filterOptions)
 }
 </script>

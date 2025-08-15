@@ -4,7 +4,7 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { beforeEach, describe } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
-import { successfulResponse, failedResponse } from '@tests/support/testHelper.js'
+import { failedResponse } from '@tests/support/testHelper.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
@@ -92,42 +92,6 @@ describe('useOntRunsStore', () => {
         const { success } = await store.fetchInstruments()
         expect(success).toBeFalsy()
         expect(store.resources.instruments).toEqual({})
-      })
-    })
-    describe.skip('updateOntRequest', () => {
-      it('updates an ONT request successfully', async () => {
-        const update = vi.fn()
-        update.mockResolvedValue(successfulResponse())
-        const rootStore = useRootStore()
-        rootStore.api.traction.pacbio.runs.update = update
-        const updatedRequest = { id: 1, name: 'Updated Request' }
-
-        rootStore.api = { traction: { ont: { requests: { update } } } }
-
-        const store = useOntRunsStore()
-        // You may need to implement updateOntRequest in your store
-        const { success } = await store.updateOntRequest(updatedRequest)
-
-        expect(success).toBeTruthy()
-      })
-
-      it('handles failure when updating an ONT request', async () => {
-        const update = vi.fn()
-        const failureResponse = failedResponse()
-        update.mockResolvedValue(failureResponse)
-        const rootStore = useRootStore()
-        const put = vi.fn()
-        const failedResponse = { status: 500, statusText: 'Internal Server Error' }
-        put.mockRejectedValue(failedResponse)
-
-        rootStore.api = { traction: { ont: { requests: { put } } } }
-
-        const store = useOntRunsStore()
-        const { success, errors } = await store.updateOntRequest({ id: 1, name: 'Fail Request' })
-
-        expect(success).toBeFalsy()
-        expect(errors).toBeDefined()
-        expect(put).toHaveBeenCalled()
       })
     })
   })

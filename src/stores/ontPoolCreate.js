@@ -97,12 +97,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
   }),
   getters: {
     /**
-     * Returns the requests
-     * @param {Object} state The state object
-     */
-    requests: (state) => Object.values(state.resources.requests),
-
-    /**
      * Returns the pool
      * @param {Object} state The state object
      */
@@ -245,29 +239,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
     },
   },
   actions: {
-    /**
-     * Fetches ONT requests from the API with optional filters and pagination.
-     *
-     * @param {Object} filter - Optional filters to apply to the request.
-     * @param {Object} page - Optional pagination parameters.
-     * @returns {Object} - An object containing the success status, errors, and meta information.
-     */
-    async fetchOntRequests(filter = {}, page = {}) {
-      const rootStore = useRootStore()
-
-      const request = rootStore.api.traction.ont.requests
-      const promise = request.get({ page, filter })
-      const response = await handleResponse(promise)
-
-      const { success, body: { data, meta = {} } = {}, errors = [] } = response
-
-      if (success) {
-        this.resources.requests = dataToObjectById({ data, includeRelationships: true })
-      }
-
-      return { success, errors, meta }
-    },
-
     /**
      * Fetches ONT pools from the API with optional filters and pagination.
      *
