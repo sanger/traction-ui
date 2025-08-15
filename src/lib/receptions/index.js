@@ -1,6 +1,6 @@
 import * as SequencescapePlates from './SequencescapePlates.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
-import * as SequencescapeKinnexTubes from './SequencescapeKinnexTubes.js'
+import * as SRJaguarKinnex from './SRJaguarKinnex.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
 import * as MockReception from './MockReception.js'
 
@@ -68,10 +68,10 @@ const ReceptionTypes = {
     value: 'SequencescapeMultiplexedLibraries',
     pipelines: ['ONT'],
   },
-  SequencescapeKinnexTubes: {
-    name: 'sequencescape-kinnex-tubes',
-    text: 'Sequencescape Kinnex Tubes',
-    value: 'SequencescapeKinnexTubes',
+  SRJaguarKinnex: {
+    name: 'sr-jaguar-kinnex',
+    text: 'SR Jaguar Kinnex',
+    value: 'SRJaguarKinnex',
     pipelines: ['PacBio'],
   },
 }
@@ -113,9 +113,9 @@ const Receptions = {
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
     barcodeComponent: MultiplexedLibraryBarcode,
   },
-  SequencescapeKinnexTubes: {
-    ...ReceptionTypes.SequencescapeKinnexTubes,
-    fetchFunction: SequencescapeKinnexTubes.fetchLabwareForReception,
+  SRJaguarKinnex: {
+    ...ReceptionTypes.SRJaguarKinnex,
+    fetchFunction: SRJaguarKinnex.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
   },
   MockedPlates: {

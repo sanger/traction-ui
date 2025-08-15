@@ -1,8 +1,8 @@
-import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeKinnexTubes.js'
-import SequencescapeKinnexTubeFactory from '@tests/factories/SequencescapeKinnexTubeFactory.js'
+import { fetchLabwareForReception } from '@/lib/receptions/SRJaguarKinnex.js'
+import SRJaguarKinnex from '@tests/factories/SRJaguarKinnexFactory.js'
 import useRootStore from '@/stores'
 
-describe('SequencescapeKinnexTubes', () => {
+describe('SRJaguarKinnex', () => {
   describe('#fetchLabwareForReception', () => {
     const barcodes = ['3980000001795']
 
@@ -15,7 +15,7 @@ describe('SequencescapeKinnexTubes', () => {
     })
 
     it('successfully', async () => {
-      request.mockResolvedValue(SequencescapeKinnexTubeFactory().responses.fetch)
+      request.mockResolvedValue(SRJaguarKinnex().responses.fetch)
 
       const { attributes, foundBarcodes } = await fetchLabwareForReception({
         requests,

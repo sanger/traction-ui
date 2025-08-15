@@ -126,11 +126,8 @@ describe('GeneralReception', () => {
         expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
         expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('ONT')
       })
-      it('only shows Pacbio for Sequencescape Kinnex Tubes', async () => {
-        await selectOptionByText(
-          wrapper.find('[data-type=source-list]'),
-          'Sequencescape Kinnex Tubes',
-        )
+      it('only shows Pacbio for SR Jaguar Kinnex', async () => {
+        await selectOptionByText(wrapper.find('[data-type=source-list]'), 'SR Jaguar Kinnex')
         expect(wrapper.find('[data-type=pipeline-list]').findAll('option').length).toBe(1)
         expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
       })
