@@ -170,7 +170,7 @@ const presentRequestOptions = computed(() =>
   Object.fromEntries(Object.entries(props.requestOptions).filter(([, v]) => v)),
 )
 //displayPrintOptions is used to decide whether print options should be displayed or not
-const enablePrinting = computed(() => ['SequencescapeTubes'].includes(props.reception.value))
+const enablePrinting = computed(() => ['SequencescapeTubes', 'SequencescapeKinnexTubes'].includes(props.reception.value))
 
 watch(barcodes, debounceBarcodeFetch, { immediate: true })
 watch(() => props.requestOptions, debounceBarcodeFetch, { deep: true, immediate: true })
