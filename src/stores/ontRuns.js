@@ -67,6 +67,29 @@ export const useOntRunsStore = defineStore('ontRuns', {
      * @param rootState the root state object. Provides access to the current state
      * @param commit the commit object. Provides access to mutations
      */
+    /**
+     * Fetches a list of ONT runs from the API and updates the store state with runs and associated instruments.
+     *
+     * @async
+     * @param {Object} filter - Filter parameters to apply to the runs query (e.g., { state: 'complete' }).
+     * @param {number} [page] - The page number for paginated results.
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Object}: Any errors returned from the API.
+     *   - meta {Object}: Metadata from the API response (e.g., pagination info).
+     *
+     * @description
+     * This action sends a GET request to the ONT runs API endpoint, including associated instrument data.
+     * If the request is successful, it updates the store's `resources.runs` and `resources.instruments` state
+     * with the returned run and instrument data, formatted by ID.
+     * The function returns an object with the success status, any errors, and response metadata.
+     *
+     * @example
+     * const { success, errors, meta } = await fetchOntRuns({ state: 'complete' }, 1)
+     * if (success) {
+     *   // Access runs via store.resources.runs and instruments via store.resources.instruments
+     * }
+     */
     async fetchOntRuns(filter, page) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.ont.runs
@@ -84,7 +107,28 @@ export const useOntRunsStore = defineStore('ontRuns', {
 
       return { success, errors, meta }
     },
-    async setInstruments() {
+    /**
+     * Fetches the list of ONT instruments from the API and updates the store state.
+     *
+     * @async
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Object}: Any errors returned from the API.
+     *   - response {Object}: The full API response object.
+     *
+     * @description
+     * This action sends a GET request to the ONT instruments API endpoint.
+     * If the request is successful, it updates the store's `resources.instruments` state
+     * with the returned instrument data, formatted by ID.
+     * The function returns an object with the success status, any errors, and the full response.
+     *
+     * @example
+     * const { success, errors } = await fetchInstruments()
+     * if (success) {
+     *   // Access instruments via store.resources.instruments
+     * }
+     */
+    async fetchInstruments() {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.ont.instruments
       const promise = request.get()

@@ -2,7 +2,7 @@ import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
 import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
-import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import { useOntRequestsStore } from '@/stores/ontRequests.js'
 
 const ontRequestFactory = OntRequestFactory()
 
@@ -24,7 +24,7 @@ const mountComponent = () => {
   ]
   const { wrapper } = mountWithStore(ONTSampleIndex, {
     plugins,
-    createStore: () => useOntPoolCreateStore(),
+    createStore: () => useOntRequestsStore(),
   })
 
   return wrapper

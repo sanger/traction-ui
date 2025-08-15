@@ -2,7 +2,6 @@ import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import OntPlateFactory from '@tests/factories/OntPlateFactory.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
@@ -10,7 +9,6 @@ import OntAutoTagFactory from '@tests/factories/OntAutoTagFactory.js'
 import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 import { payload } from '@/stores/utilities/ontPool.js'
 
-const ontRequestFactory = OntRequestFactory()
 const ontPlateFactory = OntPlateFactory()
 const ontPoolFactory = OntPoolFactory()
 const ontTagSetFactory = OntTagSetFactory()
@@ -42,13 +40,6 @@ describe('useOntPoolCreateStore', () => {
   })
 
   describe('getters', () => {
-    describe('requests', () => {
-      it('return the requests', () => {
-        store.resources.requests = ontRequestFactory.storeData
-        expect(store.requests).toEqual(Object.values(ontRequestFactory.storeData))
-      })
-    })
-
     describe('poolItem', () => {
       const pool = {
         id: 1,
@@ -313,29 +304,6 @@ describe('useOntPoolCreateStore', () => {
 
     beforeEach(() => {
       rootStore = useRootStore()
-    })
-
-    describe('fetchOntRequests', () => {
-      let get
-
-      beforeEach(() => {
-        get = vi.fn()
-        rootStore.api = { traction: { ont: { requests: { get } } } }
-      })
-
-      it('handles success', async () => {
-        get.mockResolvedValue(ontRequestFactory.responses.fetch)
-        const { success } = await store.fetchOntRequests()
-        expect(store.resources.requests).toEqual(ontRequestFactory.storeData)
-        expect(success).toEqual(true)
-      })
-
-      it('handles failure', async () => {
-        get.mockResolvedValue(failedResponse)
-        const { success } = await store.fetchOntRequests()
-        expect(store.resources.requests).toEqual({})
-        expect(success).toEqual(false)
-      })
     })
 
     describe('fetchOntPools', () => {
