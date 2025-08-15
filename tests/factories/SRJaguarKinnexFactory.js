@@ -4,7 +4,7 @@ import BaseFactory from './BaseFactory.js'
  * Factory for creating a list of sequencescape labware
  * @returns a base factory object with the labware data
  */
-const SequencescapeKinnexTubeFactory = () => {
+const SRJaguarKinnexFactory = () => {
   const data = {
     data: [
       {
@@ -222,4 +222,4 @@ const SequencescapeKinnexTubeFactory = () => {
   return BaseFactory(data)
 }
 
-export default SequencescapeKinnexTubeFactory
+export default SRJaguarKinnexFactory

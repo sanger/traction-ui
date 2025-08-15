@@ -37,10 +37,10 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
   })
 }
 
-const SequencescapeKinnexTubes = {
+const SRJaguarKinnex = {
   fetchLabwareForReception,
 }
 
 export { fetchLabwareForReception }
 
-export default SequencescapeKinnexTubes
+export default SRJaguarKinnex
