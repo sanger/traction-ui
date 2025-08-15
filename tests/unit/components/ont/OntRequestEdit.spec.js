@@ -28,3 +28,17 @@ describe('OntRequestEdit', () => {
     expect(wrapper.exists()).toBe(true)
   })
 })
+
+// test to show source
+// test to show sample name
+// test to show and edit library type
+// test to show and edit data type
+// test to show and edit number of flowcells
+// test to show and edit cost code
+// test to show external study id
+// test to show location
+// test to show and edit retention instructions
+// test to show created at
+// test for local validation
+// test for form submission
+// test for form submission failure.
