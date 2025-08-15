@@ -43,31 +43,38 @@ describe('useOntRequestsStore', () => {
       })
     })
 
-    describe.skip('updateRequest', () => {
-      it('updates an ONT request successfully', async () => {
-        const update = vi.fn()
-        const existingRequest = Object.values(ontRequestFactory.storeData)[0]
-        const updatedRequest = { ...existingRequest, cost_code: 'new_cost_code' }
+    describe('updateRequest', () => {
+      let update, existingRequest, updatedRequest
 
-        update.mockResolvedValue(successfulResponse({ data: updatedRequest }))
-        rootStore.api.traction.pacbio.runs.update = update
+      beforeEach(() => {
+        store.resources.requests = ontRequestFactory.storeData
+        update = vi.fn()
+        existingRequest = Object.values(ontRequestFactory.storeData)[0]
+        updatedRequest = { ...existingRequest, cost_code: 'new_cost_code' }
+      })
+
+      it('updates an ONT request successfully', async () => {
+        console.log(updatedRequest)
+        update.mockResolvedValue(
+          successfulResponse({ data: { attributes: { ...updatedRequest } } }),
+        )
         rootStore.api = { traction: { ont: { requests: { update } } } }
 
-        const { success } = await store.updateRequest({ data: updatedRequest })
+        const { success } = await store.updateRequest(updatedRequest)
         expect(success).toBeTruthy()
         expect(store.resources.requests[existingRequest.id]).toEqual(updatedRequest)
       })
 
       it('handles failure when updating an ONT request', async () => {
-        const update = vi.fn()
         update.mockResolvedValue(failedResponse())
 
         rootStore.api = { traction: { ont: { requests: { update } } } }
 
-        const { success, errors } = await store.updateRequest({ id: 1, name: 'Fail Request' })
+        const { success, errors } = await store.updateRequest(updatedRequest)
 
         expect(success).toBeFalsy()
         expect(errors).toBeDefined()
+        expect(store.resources.requests[existingRequest.id]).toEqual(existingRequest)
       })
     })
   })

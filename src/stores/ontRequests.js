@@ -49,15 +49,18 @@ export const useOntRequestsStore = defineStore('ontRequests', {
      *   - success {boolean}: Whether the API request was successful.
      *   - errors {Object}: Any errors returned from the API.
      */
-    async updateRequest(payload) {
+    async updateRequest(data) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.ont.requests
+      const { id, ...attributes } = data
+      // is this the correct structure for the payload?
+      const payload = { data: { type: 'ont_requests', id, attributes } }
       const promise = request.update(payload)
       const response = await handleResponse(promise)
       const { success, errors = {} } = response
 
       if (success) {
-        this.resources.requests[payload.id] = { ...this.resources.requests[payload.id], ...payload }
+        this.resources.requests[data.id] = { ...this.resources.requests[data.id], ...data }
       }
       return { success, errors }
     },
