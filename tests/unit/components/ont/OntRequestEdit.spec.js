@@ -5,6 +5,13 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
 
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
 const mountComponent = (props = {}) => {
   const { wrapper, store } = mountWithStore(OntRequestEdit, {
     initialState: {
@@ -21,7 +28,7 @@ const mountComponent = (props = {}) => {
 }
 
 describe('OntRequestEdit', () => {
-  describe.skip('with a valid existing request', () => {
+  describe('with a valid existing request', () => {
     let wrapper, store, request
 
     beforeEach(() => {
@@ -35,6 +42,10 @@ describe('OntRequestEdit', () => {
       )
     })
 
+    it('shows the sample name', () => {
+      expect(wrapper.find('[data-attribute="sample-name"]').text()).toEqual(request.sample_name)
+    })
+
     it('shows the library type', () => {
       expect(wrapper.find('[data-attribute="library-type"]').text()).toEqual(request.library_type)
     })
@@ -45,61 +56,42 @@ describe('OntRequestEdit', () => {
 
     it('shows the number of flowcells', () => {
       expect(wrapper.find('[data-attribute="number-of-flowcells"]').text()).toEqual(
-        request.number_of_flowcells,
+        request.number_of_flowcells.toString(),
       )
     })
 
-    it('shows the cost code', () => {
-      expect(wrapper.find('[data-attribute="cost-code"]').text()).toEqual(request.cost_code)
+    it('allows the cost code to be edited', () => {
+      const input = wrapper.find('[data-attribute="cost-code"]')
+      input.setValue('new-cost-code')
+      expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
     })
 
-    it('shows the external study id', () => {
-      expect(wrapper.find('[data-attribute="external-study-id"]').text()).toEqual(
-        request.external_study_id,
+    it('updates the request successfully', async () => {
+      store.updateRequest = vi.fn(() => Promise.resolve({ success: true }))
+      const input = wrapper.find('[data-attribute="cost-code"]')
+      input.setValue('new-cost-code')
+      expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
+      const button = wrapper.find('[data-action="update-request"]')
+      await button.trigger('click')
+      expect(mockShowAlert).toBeCalledWith(
+        `Sample ${request.sample_name} updated successfully`,
+        'success',
       )
     })
 
-    it('shows the location', () => {
-      expect(wrapper.find('[data-attribute="location"]').text()).toEqual(request.location)
-    })
-
-    it('shows the retention instructions', () => {
-      expect(wrapper.find('[data-attribute="retention-instructions"]').text()).toEqual(
-        request.retention_instructions,
+    it('does not update the request if there is an error', async () => {
+      store.updateRequest = vi
+        .fn()
+        .mockResolvedValue({ success: false, errors: 'Invalid cost code' })
+      const input = wrapper.find('[data-attribute="cost-code"]')
+      input.setValue('invalid-cost-code')
+      expect(wrapper.vm.request.cost_code).toEqual('invalid-cost-code')
+      const button = wrapper.find('[data-action="update-request"]')
+      await button.trigger('click')
+      expect(mockShowAlert).toBeCalledWith(
+        `Error updating sample ${request.sample_name}: ${'Invalid cost code'}`,
+        'error',
       )
-    })
-
-    it('shows the created at date', () => {
-      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual(request.created_at)
-    })
-
-    it('validates the form locally', async () => {
-      await wrapper.vm.$nextTick()
-      expect(wrapper.vm.formIsValid).toBe(true)
-    })
-
-    it('submits the form', async () => {
-      await wrapper.vm.$nextTick()
-      wrapper.vm.submitForm()
-      expect(store.actions['ontRequests/updateRequest']).toHaveBeenCalled()
-    })
-
-    it('handles form submission failure', async () => {
-      store.actions['ontRequests/updateRequest'].mockRejectedValueOnce(
-        new Error('Submission failed'),
-      )
-      await wrapper.vm.$nextTick()
-      wrapper.vm.submitForm()
-      expect(wrapper.vm.formError).toBe('Submission failed')
     })
   })
 })
-// test to show and edit number of flowcells
-// test to show and edit cost code
-// test to show external study id
-// test to show location
-// test to show and edit retention instructions
-// test to show created at
-// test for local validation
-// test for form submission
-// test for form submission failure.

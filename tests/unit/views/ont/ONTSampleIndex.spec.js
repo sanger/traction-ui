@@ -51,4 +51,13 @@ describe('OntSampleIndex', () => {
       expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
     })
   })
+
+  describe('editing a request', () => {
+    it('should show the request in the edit form', async () => {
+      const id = Object.keys(ontRequestFactory.storeData)[0]
+      const button = wrapper.find(`[data-action="edit-request-${id}"]`)
+      await button.trigger('click')
+      expect(wrapper.find('[data-type="ont-request-edit"]').exists()).toBe(true)
+    })
+  })
 })

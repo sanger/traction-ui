@@ -28,6 +28,21 @@
             <span class="sr-only">Not selected</span>
           </template>
         </template>
+
+        <template #cell(edit)="row">
+          <traction-button
+            :data-action="'edit-request-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="row.toggleDetails"
+          >
+            Edit
+          </traction-button>
+        </template>
+        <template #row-details="row">
+          <OntRequestEdit :id="row.item.id" />
+        </template>
       </traction-table>
     </div>
   </DataFetcher>
@@ -41,6 +56,7 @@ import useQueryParams from '@/composables/useQueryParams.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { formatRequests } from '@/lib/requestHelpers.js'
 import { useOntRequestsStore } from '@/stores/ontRequests.js'
+import OntRequestEdit from '@/components/ont/OntRequestEdit.vue'
 
 // --- Reactive State ---
 const fields = [
@@ -56,6 +72,7 @@ const fields = [
   { key: 'location', label: 'Location', sortable: true },
   { key: 'sample_retention_instruction', label: 'Retention Instruction', sortable: true },
   { key: 'created_at', label: 'Created at (UTC)', sortable: true },
+  { key: 'edit', label: '' },
 ]
 const filterOptions = [
   { value: '', text: '' },
