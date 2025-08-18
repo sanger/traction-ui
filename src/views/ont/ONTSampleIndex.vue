@@ -33,85 +33,64 @@
   </DataFetcher>
 </template>
 
-<script>
-import { createNamespacedHelpers } from 'vuex'
-import { ref } from 'vue'
+<script setup>
+import { ref, computed, watch } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
-import { formatRequests } from '@/lib/requestHelpers'
+import { formatRequests } from '@/lib/requestHelpers.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
+// --- Reactive State ---
+const fields = [
+  { key: 'selected', label: '\u2713' },
+  { key: 'id', label: 'Sample ID (Request)', sortable: true },
+  { key: 'source_identifier', label: 'Source', sortable: true },
+  { key: 'sample_name', label: 'Sample Name', sortable: true },
+  { key: 'library_type', label: 'Library type' },
+  { key: 'data_type', label: 'Data type' },
+  { key: 'number_of_flowcells', label: 'Number of flowcells' },
+  { key: 'cost_code', label: 'Cost code' },
+  { key: 'external_study_id', label: 'External study ID' },
+  { key: 'location', label: 'Location', sortable: true },
+  { key: 'sample_retention_instruction', label: 'Retention Instruction', sortable: true },
+  { key: 'created_at', label: 'Created at (UTC)', sortable: true },
+]
+const filterOptions = [
+  { value: '', text: '' },
+  { value: 'id', text: 'Sample ID (Request)' },
+  { value: 'source_identifier', text: 'Source barcode' },
+  { value: 'sample_name', text: 'Sample name' },
+  // Need to specify filters in json api resources if we want more filters
+]
+const selected = ref([])
+const sortBy = ref('created_at')
+const labwareLocations = ref([])
 
-export default {
-  name: 'OntSampleIndex',
-  components: {
-    DataFetcher,
-    FilterCard,
-  },
-  setup() {
-    const { fetchWithQueryParams } = useQueryParams()
-    const { fetchLocations } = useLocationFetcher()
-    const labwareLocations = ref([])
+// --- Store and composables ---
+const ontPoolCreateStore = useOntPoolCreateStore()
+const { fetchWithQueryParams } = useQueryParams()
+const { fetchLocations } = useLocationFetcher()
 
-    return { fetchWithQueryParams, fetchLocations, labwareLocations }
+// --- Getters ---
+const requests = computed(() => ontPoolCreateStore.requests)
+const barcodes = computed(() => requests.value.map(({ source_identifier }) => source_identifier))
+const displayedRequests = computed(() => formatRequests(requests.value, labwareLocations.value))
+
+// --- Watchers ---
+watch(
+  barcodes,
+  async (newBarcodes) => {
+    labwareLocations.value = await fetchLocations(newBarcodes)
   },
-  data() {
-    return {
-      fields: [
-        { key: 'selected', label: '\u2713' },
-        { key: 'id', label: 'Sample ID (Request)', sortable: true },
-        { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'sample_name', label: 'Sample Name', sortable: true },
-        { key: 'library_type', label: 'Library type' },
-        { key: 'data_type', label: 'Data type' },
-        {
-          key: 'number_of_flowcells',
-          label: 'Number of flowcells',
-        },
-        { key: 'cost_code', label: 'Cost code' },
-        { key: 'external_study_id', label: 'External study ID' },
-        { key: 'location', label: 'Location', sortable: true },
-        { key: 'sample_retention_instruction', label: 'Retention Instruction', sortable: true },
-        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
-      ],
-      filterOptions: [
-        { value: '', text: '' },
-        { value: 'id', text: 'Sample ID (Request)' },
-        { value: 'source_identifier', text: 'Source barcode' },
-        { value: 'sample_name', text: 'Sample name' },
-        // Need to specify filters in json api resources if we want more filters
-      ],
-      selected: [],
-      sortBy: 'created_at',
-      sortDesc: true,
-    }
-  },
-  computed: {
-    ...mapGetters(['requests']),
-    barcodes() {
-      return this.requests.map(({ source_identifier }) => source_identifier)
-    },
-    // Computed property to return updated displayed requests
-    displayedRequests() {
-      return formatRequests(this.requests, this.labwareLocations.value)
-    },
-  },
-  watch: {
-    // Watch for changes to the barcodes and fetch locations accordingly
-    barcodes: {
-      handler: async function (newBarcodes) {
-        this.labwareLocations.value = await this.fetchLocations(newBarcodes)
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(['fetchOntRequests']),
-    async fetchRequests() {
-      return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
-    },
-  },
+  { immediate: true },
+)
+
+// --- Methods ---
+const fetchOntRequests = (...args) => ontPoolCreateStore.fetchOntRequests(...args)
+
+async function fetchRequests() {
+  return await fetchWithQueryParams(fetchOntRequests, filterOptions)
 }
 </script>

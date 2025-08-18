@@ -1,23 +1,29 @@
-import { mount, store, nextTick } from '@support/testHelper'
-import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
+import { nextTick, mountWithStore } from '@support/testHelper.js'
+import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList.vue'
 import { expect } from 'vitest'
-import OntTubeFactory from '@tests/factories/OntTubeFactory'
+import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
+import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const ontTubeFactory = OntTubeFactory()
 
 describe('OntTubeSelectedList', () => {
-  let wrapper
+  let wrapper, store
+
+  beforeEach(() => {
+    ;({ wrapper, store } = mountWithStore(OntTubeSelectedList, {
+      initialState: {
+        ontPoolCreate: {
+          resources: {
+            tubes: ontTubeFactory.storeData.tubes,
+            requests: ontTubeFactory.storeData.resources.requests,
+          },
+        },
+      },
+      createStore: () => useOntPoolCreateStore(),
+    }))
+  })
 
   describe('building the table', () => {
-    beforeEach(() => {
-      store.state.traction.ont.pools.resources.tubes = ontTubeFactory.storeData.tubes
-      store.state.traction.ont.pools.resources.requests = ontTubeFactory.storeData.requests
-
-      wrapper = mount(OntTubeSelectedList, {
-        store,
-      })
-    })
-
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
       for (const field of wrapper.vm.requestFields) {
@@ -33,18 +39,8 @@ describe('OntTubeSelectedList', () => {
 
   describe('with a selected tube', () => {
     beforeEach(() => {
-      store.state.traction.ont.pools.resources.tubes = ontTubeFactory.storeData.tubes
-      store.state.traction.ont.pools.resources.requests =
-        ontTubeFactory.storeData.resources.requests
-
-      const selectTube = { id: '1', selected: true }
-      const selectRequest = { id: '191', selected: true }
-      store.commit('traction/ont/pools/selectTube', selectTube)
-      store.commit('traction/ont/pools/selectRequest', selectRequest)
-
-      wrapper = mount(OntTubeSelectedList, {
-        store,
-      })
+      store.selectTube('1')
+      store.selectRequest('191')
     })
 
     it('contains the selected tube requests', async () => {
@@ -84,25 +80,16 @@ describe('OntTubeSelectedList', () => {
       expect(add_button.element.disabled).toBe(true)
       expect(del_button.element.disabled).toBe(false)
     })
-
     it('call removeTubeFromPool when the - button is clicked', async () => {
-      const removeTubeFromPoolSpy = vi.spyOn(wrapper.vm, 'removeTubeFromPool')
       const button = wrapper.find('#del-btn-191')
       await button.trigger('click')
-
-      expect(removeTubeFromPoolSpy).toHaveBeenCalledWith('191')
-      removeTubeFromPoolSpy.mockRestore()
-    }),
-      it('deselects the tube and request when the remove button is clicked', async () => {
-        const dispatch = vi.fn()
-        store.dispatch = dispatch
-        await nextTick()
-        const button = wrapper.find('#remove-btn-191')
-        button.trigger('click')
-        expect(dispatch).toHaveBeenCalledWith(
-          'traction/ont/pools/deselectTubeAndContents',
-          'GEN-1668092750-3',
-        )
-      })
+      expect(store.pooling.libraries).toEqual({})
+    })
+    it('deselects the tube and request when the remove button is clicked', async () => {
+      const button = wrapper.find('#remove-btn-191')
+      button.trigger('click')
+      await nextTick()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(0)
+    })
   })
 })

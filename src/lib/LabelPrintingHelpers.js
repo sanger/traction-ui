@@ -157,13 +157,38 @@ const WorkflowListType = (attributes = {}) => {
 }
 
 /**
+ *
+ * @param {*} barcode - a barcode string
+ * @returns {Object} - { prefix, id } where prefix is the start of a barcode, otherwise an empty string, and id is the rest of the barcode
+ * This takes a barcode and splits it if it contains a certain prefix (NT) otherwise returns the barcode as the id
+ */
+const splitBarcodeByPrefix = (barcode) => {
+  if (barcode.startsWith('NT')) {
+    const prefix = 'NT'
+    const id = barcode.slice(2)
+    return { prefix, id }
+  }
+  return { prefix: '', id: barcode }
+}
+
+/**
  * @param {Object} barcodeItem - an object which contains the barcode and other information
  * @returns {Object} - { barcode, first_line, second_line, label_name } label suitable for printing to a tube printer
  * This is a basic label with just the barcode and date
  */
 const createBasicTubeBarcodeLabel = (barcodeItem) => {
+  const { prefix: round_label_lower_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
+    barcodeItem.barcode,
+  )
   const { barcode, date: first_line, barcode: second_line } = barcodeItem
-  return { barcode, first_line, second_line, label_name: 'main_label' }
+  return {
+    barcode,
+    first_line,
+    second_line,
+    round_label_bottom_line,
+    round_label_lower_line,
+    label_name: 'main_label',
+  }
 }
 
 /**
@@ -171,6 +196,9 @@ const createBasicTubeBarcodeLabel = (barcodeItem) => {
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, label_name } label suitable for printing to a tube printer
  */
 const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
+  const { prefix: round_label_lower_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
+    barcodeItem.sourceBarcode,
+  )
   const {
     barcode,
     date: first_line,
@@ -186,6 +214,8 @@ const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
     third_line,
     fourth_line,
     round_label_top_line,
+    round_label_bottom_line,
+    round_label_lower_line,
     label_name: 'main_label',
   }
 }

@@ -48,30 +48,27 @@ describe('ONT Pool Edit', () => {
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()
     })
+
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('#Requests').click()
-    //Select row in requests
-    let selectedListLength = 0
-    cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]')
-        .its('length')
-        .then((length) => {
-          selectedListLength = length
-        })
-    })
-    cy.get('#selectedList').within(() => {
-      cy.get('#source_identifier').first().click()
-    })
-    cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]').should('have.length', selectedListLength + 1)
-    })
-    //Deselect row requests
-    cy.get('#selectedList').within(() => {
-      cy.get('#source_identifier').first().click()
-    })
-    cy.get('[data-type=pool-library-list]').within(() => {
-      cy.get('[data-testid=row]').should('have.length', selectedListLength)
-    })
+
+    cy.get('[data-type=pool-library-list]')
+      .find('[data-testid=row]')
+      .its('length')
+      .then((selectedListLength) => {
+        // Deselect row globally
+        cy.get('#selectedList').should('be.visible').find('#source_identifier').first().click()
+        // Assert new length
+        cy.get('[data-type=pool-library-list]')
+          .find('[data-testid=row]')
+          .should('have.length', selectedListLength - 1)
+
+        // Select row globally
+        cy.get('#selectedList').find('#source_identifier').first().click()
+        cy.get('[data-type=pool-library-list]')
+          .find('[data-testid=row]')
+          .should('have.length', selectedListLength)
+      })
   })
 
   it('Updates a pool successfully', () => {

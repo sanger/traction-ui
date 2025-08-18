@@ -1,178 +1,100 @@
 import { defineStore } from 'pinia'
-import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
+import { handleResponse } from '@/api/ResponseHelper.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
-import useOntRootStore from '@/stores/ontRoot'
-import { flowCellType } from '@/stores/utilities/flowCell'
-import { buildFormatedOntRun } from '@/stores/utilities/ontRuns'
 
-// Helper function for setting pool and library data
+/**
+ * Generates an object describing the shared ONT resources for use in the
+ * store
+ */
+
+// Helper function for reformatting data
 const formatById = (obj, data, includeRelationships = false) => {
   return {
     ...obj,
     ...dataToObjectById({ data, includeRelationships }),
   }
 }
-
-/**
- *
- * @param {*} run  the run object
- * @returns {Object} payload for the create/update run request
- * @field {Object} data - the payload for the request
- * Note:-
- * The payload returned doesn't have the id field as it is not required for create request
- * and for update request the id field is added in the updateRun action
- */
-function createPayload(run, pools) {
-  const ontRootStore = useOntRootStore()
-  const existingInstruments = ontRootStore.instruments
-  const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
-
-  const flowcell_attributes = run.flowcell_attributes
-    .filter((fc) => fc.flowcell_id && fc.tube_barcode)
-    .map((fc) => {
-      const pool = Object.values(pools).find((p) => p.tube_barcode == fc.tube_barcode)
-      const pool_id = pool ? pool.id : ''
-
-      return { ...fc, ...{ ont_pool_id: pool_id } }
-    })
-
-  const runPayload = {
-    data: {
-      type: 'runs',
-      attributes: {
-        ont_instrument_id: instrument_id,
-        state: run.state,
-        rebasecalling_process: run.rebasecalling_process,
-        flowcell_attributes: flowcell_attributes,
-      },
-    },
-  }
-  return runPayload
-}
 export const useOntRunsStore = defineStore('ontRuns', {
   state: () => ({
-    currentRun: {
-      flowcell_attributes: [],
-      id: 'new',
-      state: null,
-      rebasecalling_process: null,
-      instrument_name: null,
+    // Resources returned by the server, each key represents a resource type.
+    // resource types are indexed by their id.
+    resources: {
+      // The main source of run information. runs are indexed by id.
+      runs: {},
+      // The main source of instrument information. instrument are indexed by id.
+      instruments: {},
     },
-    pools: {},
-    tubes: {},
   }),
   getters: {
-    runRequest: () => {
-      const rootStore = useRootStore()
-      return rootStore.api.traction.ont.runs
-    },
-    getOrCreateFlowCell: (state) => (position) => {
-      // Find the flowcell with the given position
-      let flowcell = state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
-      // If the flowcell doesn't exist, create a new one
-      if (!flowcell) {
-        flowcell = { ...flowCellType(), position }
-        state.currentRun.flowcell_attributes.push(flowcell)
+    runs: (state) => {
+      try {
+        return Object.values(state.resources.runs).map((r) => {
+          const instrument = Object.values(state.resources.instruments).find(
+            (i) => i.id == r.ont_instrument_id,
+          )
+          return {
+            ...r,
+            instrument_name: `${instrument.name} (${instrument.instrument_type})`,
+          }
+        })
+      } catch {
+        return []
       }
-      return flowcell
+    },
+    instruments: (state) => {
+      try {
+        return Object.values(state.resources.instruments).map((i) => {
+          const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+          return {
+            ...i,
+            ...instrumentConfig,
+          }
+        })
+      } catch {
+        return []
+      }
+    },
+    instrumentByName: (state) => (name) => {
+      return state.instruments.find((i) => i.name == name)
     },
   },
   actions: {
-    newRun() {
-      this.currentRun = {
-        id: 'new',
-        instrument_name: null,
-        state: null,
-        rebasecalling_process: null,
-        flowcell_attributes: [],
-      }
-    },
-    async createRun() {
-      const promise = this.runRequest.create({
-        data: createPayload(this.currentRun, this.pools),
-      })
-      return await handleResponse(promise)
-    },
-    async updateRun() {
-      //Add id field to the payload for update
-      const payload = {
-        data: {
-          id: this.currentRun.id,
-          ...createPayload(this.currentRun, this.pools).data,
-        },
-      }
-      const promise = this.runRequest.update(payload)
-      return await handleResponse(promise)
-    },
-    async fetchRun(runId) {
-      const request = this.runRequest
-      const promise = request.find({ id: runId, include: 'flowcells.pool' })
-      const response = await handleResponse(promise)
-
-      const { success, body: { data, included = [] } = {}, errors = {} } = response
-
-      if (success && !data.empty) {
-        const ontRootStore = useOntRootStore()
-        const existingInstruments = ontRootStore.instruments
-
-        const { pools } = groupIncludedByResource(included)
-        this.pools = formatById(this.pools, pools, true)
-
-        this.currentRun = buildFormatedOntRun(existingInstruments, this.pools, data, included)
-        return { success, errors }
-      }
-    },
-
     /**
-     * Fetches a pool by its barcode and adds the pool to the store if it exists.
-     *
-     * @param {string} barcode - The barcode of the pool to fetch.
-     * @returns {Promise<{success: boolean}>} - An object indicating the success of the operation.
+     * Retrieves a list of ont runs from traction-service and populates the source
+     * with associated instrument data
+     * @param rootState the root state object. Provides access to the current state
+     * @param commit the commit object. Provides access to mutations
      */
-    async fetchPool(barcode) {
-      // Here we want to make sure the barcode exists
-      // If it doesn't, set success to null for component validation
-      if (!barcode || barcode.trim() === '') {
-        return {
-          success: true,
-        }
-      }
+    async fetchOntRuns(filter, page) {
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.ont.pools
-      const promise = request.get({ filter: { barcode } })
-      const response = await handleResponse(promise)
-      let { success, body: { data } = {} } = response
+      const request = rootStore.api.traction.ont.runs
+      const promise = request.get({ page, ...filter, include: 'instrument' })
 
-      // TODO: data.length check could be refactored into handleResponse to avoid repetition
-      // If response is successful and the data is not empty, add the pool to the store
-      if (success && data.length > 0) {
-        this.pools = {
-          ...this.pools,
-          ...formatById(this.pools, data),
-        }
-        return { success }
+      const response = await handleResponse(promise)
+
+      const { success, body: { data, included = [], meta = {} } = {}, errors = {} } = response
+      const { instruments } = groupIncludedByResource(included)
+
+      if (success) {
+        this.resources.runs = formatById(this.resources.runs, data, true)
+        this.resources.instruments = formatById(this.resources.instruments, instruments, true)
       }
 
-      return { success: false }
+      return { success, errors, meta }
     },
-    setInstrumentName(name) {
-      this.currentRun.instrument_name = name
-    },
-    setState(state) {
-      this.currentRun.state = state
-    },
-    setRebasecallingProcess(process) {
-      this.currentRun.rebasecalling_process = process
-    },
-    setNewFlowCell(position) {
-      this.currentRun.flowcell_attributes.push({
-        ...flowCellType(),
-        position,
-      })
-    },
-    setCurrentRun(run) {
-      this.currentRun = run
+    async setInstruments() {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.instruments
+      const promise = request.get()
+      const response = await handleResponse(promise)
+      const { success, body: { data } = {}, errors = {} } = response
+
+      if (success) {
+        this.resources.instruments = formatById(this.resources.instruments, data)
+      }
+      return { success, errors, response }
     },
   },
 })

@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="Receptions.options"
+            :options="receptionOptionsList"
             data-type="source-list"
             @update:model-value="updatePipeline()"
           />
@@ -37,6 +37,7 @@
             :options="pipelineOptions"
             class="inline-block w-full"
             data-type="pipeline-list"
+            :disabled="!source"
             @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
@@ -54,6 +55,7 @@
               class="mt-1 mr-2"
               :options="workflowOptions"
               data-type="workflow-list"
+              :disabled="!source"
             />
           </div>
           <!-- Only displaying the swipecard field when the user selects a workflow -->
@@ -164,33 +166,44 @@
       </div>
     </div>
     <div class="w-1/2 space-y-4">
-      <component
-        :is="reception.barcodeComponent"
-        :pipeline="pipeline"
-        :reception="reception"
-        :request-options="requestOptions"
-        :workflow-location-text="
-          workflowLocation
-            ? `The imported labware will be scanned into ${workflowLocation}`
-            : 'No location selected to scan into'
-        "
-        :user-code="user_code"
-        :location-barcode="location_barcode"
-        @import-started="importStarted"
-        @import-finished="clearModal"
-        @reset="reset"
-      />
+      <template v-if="!source">
+        <div class="flex flex-row items-center justify-center h-full rounded p-8 bg-white">
+          <TractionInfoIcon class="text-gray-500" :size="32" />
+          <span class="px-2 text-xl text-gray-500 font-bold"
+            >Please select a source to continue.</span
+          >
+        </div>
+      </template>
+      <template v-else>
+        <component
+          :is="reception.barcodeComponent"
+          :pipeline="pipeline"
+          :reception="reception"
+          :request-options="requestOptions"
+          :workflow-location-text="
+            workflowLocation
+              ? `The imported labware will be scanned into ${workflowLocation}`
+              : 'No location selected to scan into'
+          "
+          :user-code="user_code"
+          :location-barcode="location_barcode"
+          @import-started="importStarted"
+          @import-finished="clearModal"
+          @reset="reset"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
-import { defaultRequestOptions } from '@/lib/receptions'
+import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
+import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -199,19 +212,21 @@ const stuckModal =
 const defaultModal = () => ({ visible: false, message: stuckModal })
 
 // Default source to sequencescape
-const source = ref('Sequencescape')
+const source = ref('')
 const requestOptions = ref(defaultRequestOptions())
 const modalState = ref(defaultModal())
 
-const reception = computed(() => Receptions[source.value])
+const reception = computed(() => Receptions[source.value] || { pipelines: [] })
 // Default pipeline to PacBio
-const pipeline = ref(reception.value.pipelines[0])
+const pipeline = ref('')
 const pipelineOptions = computed(() =>
   reception.value.pipelines.map((pipeline) => ({ value: pipeline, text: pipeline })),
 )
 const user_code = ref('')
 
 const workflow = ref('')
+
+const receptionOptionsList = ref([])
 
 const workflowOptions = computed(() => [
   { value: '', text: '' }, // Empty option
@@ -222,6 +237,27 @@ const workflowOptions = computed(() => [
       text: workflow.name,
     })),
 ])
+
+const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
+
+const receptionOptions = async () => {
+  let receptionTypes = Object.values(ReceptionTypes)
+  if (environment.value == 'uat' || environment.value == 'development') {
+    return [
+      ...receptionTypes,
+      { label: 'Mock receptions (UAT only)', options: [...Object.values(MockReceptionTypes)] },
+    ]
+  }
+
+  return [...receptionTypes]
+}
+onMounted(async () => {
+  const options = await receptionOptions()
+  receptionOptionsList.value = [
+    { value: '', text: '' }, // Add this empty option at the top
+    ...options,
+  ]
+})
 
 const workflowLocation = computed(() => {
   const workflowsMap = new Map(
@@ -238,6 +274,11 @@ const location_barcode = computed(() => {
 })
 
 function updatePipeline() {
+  // If no source is selected, reset pipeline to blank
+  if (!source.value) {
+    pipeline.value = ''
+    return
+  }
   // If the current reception doesn't include the current pipeline then update the pipeline to a valid one
   if (!reception.value.pipelines.includes(pipeline.value)) {
     pipeline.value = reception.value.pipelines[0]

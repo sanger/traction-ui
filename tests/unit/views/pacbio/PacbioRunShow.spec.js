@@ -4,9 +4,11 @@ import { describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/stores/utilities/run.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
+const annotationTypeFactory = AnnotationTypeFactory()
 
 const smrtLinkVersions = {
   1: {
@@ -26,9 +28,12 @@ function mountPacbioRunShow(props) {
   const plugins = [
     ({ store }) => {
       if (store.$id === 'root') {
-        ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
+        ;((store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
           (store.api.traction.pacbio.runs.find = vi.fn(() => pacbioRunFactory.responses.fetch)),
-          (store.api.traction.pacbio.tubes.get = vi.fn(() => pacbioTubeFactory.responses.fetch))
+          (store.api.traction.pacbio.tubes.get = vi.fn(() => pacbioTubeFactory.responses.fetch)),
+          (store.api.traction.annotation_types.get = vi.fn(
+            () => annotationTypeFactory.responses.fetch,
+          )))
       }
     },
   ]

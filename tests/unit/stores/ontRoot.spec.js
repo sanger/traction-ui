@@ -1,7 +1,6 @@
-import useOntRootStore from '@/stores/ontRoot'
+import { useOntRunsStore } from '@/stores/ontRuns.js'
 import useRootStore from '@/stores'
-import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
-import { createPinia, setActivePinia } from '@support/testHelper'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { beforeEach, describe } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
@@ -9,17 +8,10 @@ import OntRunFactory from '@tests/factories/OntRunFactory.js'
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
 
-describe('useOntRootStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
+describe('useOntRunsStore', () => {
   describe('state', () => {
     it('should have an empty resources on initial load', () => {
-      const store = useOntRootStore()
+      const store = useOntRunsStore()
       expect(store.resources.runs).toEqual({})
       expect(store.resources.instruments).toEqual({})
     })
@@ -35,7 +27,7 @@ describe('useOntRootStore', () => {
       }
     })
     it('"instruments" returns "state.resources.instruments"', () => {
-      const store = useOntRootStore()
+      const store = useOntRunsStore()
       store.resources = resources
       const actual = store.instruments
 
@@ -50,7 +42,7 @@ describe('useOntRootStore', () => {
       expect(actual).toEqual(expected)
     })
     it('"runs" returns "state.resources.runs"', () => {
-      const store = useOntRootStore()
+      const store = useOntRunsStore()
       store.resources = resources
       const actual = store.runs
       const expected = Object.values(store.resources.runs).map((r) => {
@@ -79,7 +71,7 @@ describe('useOntRootStore', () => {
         get.mockResolvedValue(ontRunFactory.responses.fetch)
         rootStore.api = { traction: { ont: { runs: { get } } } }
 
-        const store = useOntRootStore()
+        const store = useOntRunsStore()
         const { success } = await store.fetchOntRuns()
 
         expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
@@ -95,7 +87,7 @@ describe('useOntRootStore', () => {
         get.mockRejectedValue(failedResponse)
         rootStore.api = { traction: { ont: { runs: { get } } } }
 
-        const store = useOntRootStore()
+        const store = useOntRunsStore()
 
         // apply action
         const { success } = await store.fetchOntRuns()
@@ -111,7 +103,7 @@ describe('useOntRootStore', () => {
         get.mockResolvedValue(ontInstrumentFactory.responses.fetch)
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
-        const store = useOntRootStore()
+        const store = useOntRunsStore()
         const { success } = await store.setInstruments()
         expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
         expect(success).toBeTruthy()
@@ -124,7 +116,7 @@ describe('useOntRootStore', () => {
         get.mockRejectedValue(failedResponse)
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
-        const store = useOntRootStore()
+        const store = useOntRunsStore()
 
         // apply action
         const { success } = await store.setInstruments()

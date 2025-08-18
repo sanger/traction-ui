@@ -1,7 +1,6 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useRootStore from '@/stores'
-import * as jsonapi from '@/api/JsonApi'
+import * as jsonapi from '@/api/JsonApi.js'
 import {
   newRun,
   newPlate,
@@ -10,25 +9,22 @@ import {
   newRunType,
   existingRunType,
 } from '@/stores/utilities/run'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
-import PacbioRunFactory from '@tests/factories/PacbioRunFactory'
-import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import AnnotationTypeFactory from '@tests/factories/AnnotationTypeFactory.js'
 import { successfulResponse, failedResponse } from '@support/testHelper'
+import { annotationsByAnnotatable } from '@/stores/utilities/annotation.js'
 
 const pacbioSmrtLinkVersionFactory = PacbioSmrtLinkVersionFactory()
 const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory()
+const annotationTypeFactory = AnnotationTypeFactory()
 
 describe('usePacbioRunCreateStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   describe('getters', () => {
     describe('smrtLinkVersionList', () => {
       it('returns a list of smrt link version resources', () => {
@@ -61,7 +57,7 @@ describe('usePacbioRunCreateStore', () => {
         )
       })
 
-      it('"sourceItems" only returns scanned in pools and libraries"', () => {
+      it('"sourceItems" only returns scanned in pools and libraries', () => {
         const store = usePacbioRunCreateStore()
         const libraryBarcode = Object.values(pacbioRunFactory.storeData.libraries)[0].barcode
         store.$state = {
@@ -247,6 +243,36 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
 
+    describe('AnnotationType Store', () => {
+      it('fetches annotation types successfully', async () => {
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockResolvedValue(annotationTypeFactory.responses.fetch)
+        rootStore.api = { traction: { annotation_types: { get } } }
+
+        const store = usePacbioRunCreateStore()
+
+        const { success } = await store.fetchAnnotationTypes()
+
+        expect(store.resources.annotationTypes).toEqual(annotationTypeFactory.storeData)
+        expect(success).toBeTruthy()
+        expect(get).toHaveBeenCalled()
+      })
+
+      it('handles fetch annotation types failure', async () => {
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockRejectedValue(failedResponse())
+        rootStore.api = { traction: { annotation_types: { get } } }
+
+        const store = usePacbioRunCreateStore()
+
+        const { success } = await store.fetchAnnotationTypes()
+        expect(store.resources.annotationTypes).toEqual({})
+        expect(success).toBeFalsy()
+      })
+    })
+
     describe('fetchRun', () => {
       it('handles success', async () => {
         //Mock useRootStore
@@ -282,6 +308,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.pools).toEqual(pacbioRunFactory.storeData.pools)
         expect(store.smrtLinkVersion).toEqual(pacbioRunFactory.storeData.smrtLinkVersion)
         expect(store.tags).toEqual(pacbioRunFactory.storeData.tags)
+        expect(store.annotations).toEqual(pacbioRunFactory.storeData.annotations)
         expect(success).toBeTruthy()
       })
 
@@ -308,6 +335,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.run).toEqual({})
         expect(store.plates).toEqual({})
         expect(store.wells).toEqual({})
+        expect(store.annotations).toEqual({})
       })
     })
 
@@ -620,6 +648,7 @@ describe('usePacbioRunCreateStore', () => {
           plates: {},
           wells: {},
           aliquots: {},
+          annotations: {},
           scannedBarcodes: [],
         })
       })
@@ -962,6 +991,104 @@ describe('usePacbioRunCreateStore', () => {
             expect(well.use_adaptive_loading).toEqual('True')
           })
         })
+      })
+    })
+
+    describe('setAnnotations', () => {
+      const annotations = {
+        1: {
+          id: '1',
+          type: 'annotations',
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: '1',
+          comment: 'annotation 1',
+          user: 'si5',
+          created_at: '2025/06/17 15:54',
+        },
+        2: {
+          id: '2',
+          type: 'annotations',
+          annotatable_type: 'Pacbio::Well',
+          annotatable_id: '1',
+          comment: 'annotation 2',
+          user: 'si5',
+          created_at: '2025/06/17 15:55',
+        },
+      }
+
+      it('returns the annotations for a given well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+
+        const expectedAnnotations = annotationsByAnnotatable({
+          annotations: Object.values(store.annotations),
+          annotatableType: 'Pacbio::Well',
+          annotatableId: store.wells['1']['A1'].id,
+        })
+
+        // we can't use equality as the object has methods
+        expect(store.wells['1']['A1'].annotationList.length).toEqual(expectedAnnotations.length)
+        expect(JSON.stringify(store.wells['1']['A1'].annotationList[0])).toEqual(
+          JSON.stringify(expectedAnnotations[0]),
+        )
+      })
+
+      it('returns an empty array if no annotations are found for the well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '999',
+                type: 'wells',
+                position: 'A1',
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+        expect(store.wells['1']['A1'].annotationList).toEqual([])
+      })
+
+      it("doesn't change the annotations if they are already set", () => {
+        const store = usePacbioRunCreateStore()
+        const wellAnnotations = [
+          ...Object.values(annotations),
+          {
+            id: '999',
+            type: 'annotations',
+            comment: 'annotation 1',
+            user: 'si5',
+          },
+        ]
+        store.$state = {
+          annotations,
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                annotationList: wellAnnotations,
+              },
+            },
+          },
+        }
+        store.setAnnotations({ parent: store.wells['1']['A1'], annotatableType: 'Pacbio::Well' })
+        expect(store.wells['1']['A1'].annotationList).toEqual(wellAnnotations)
       })
     })
   })

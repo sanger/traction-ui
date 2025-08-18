@@ -22,6 +22,9 @@ const config = [
       {
         name: 'workflows',
       },
+      {
+        name: 'annotation_types',
+      },
     ],
     pipelines: [
       {
@@ -132,6 +135,9 @@ const config = [
       },
       {
         name: 'labware',
+      },
+      {
+        name: 'studies',
       },
     ],
   },

@@ -27,11 +27,12 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
     cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
       fixture: 'tractionDataTypes.json',
     })
+
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
   })
   describe('Successfully - V2', () => {
     beforeEach(() => {
-      cy.visit('#/reception')
-      cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
       cy.get('#workflowSelect').select('ONT -20 samples')
       cy.get('#userCode').type('usercodeX')
       cy.contains('Scan barcodes')
@@ -106,9 +107,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   })
 
   it('Unsuccessfully - when the libraries do not exist', () => {
-    cy.visit('#/reception')
     cy.contains('Scan barcodes')
-    cy.get('[data-type="source-list"]').select('Sequencescape Multiplexed Libraries')
     cy.intercept(
       {
         url: '/api/v2/labware*',

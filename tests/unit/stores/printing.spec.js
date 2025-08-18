@@ -1,8 +1,7 @@
-import { createPinia, setActivePinia } from '@support/testHelper.js'
 import { usePrintingStore } from '@/stores/printing.js'
-import { beforeEach, describe, it } from 'vitest'
+import { describe, it } from 'vitest'
 import useRootStore from '@/stores'
-import * as jsonapi from '@/api/JsonApi'
+import * as jsonapi from '@/api/JsonApi.js'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
 
@@ -10,11 +9,6 @@ const printerFactory = PrinterFactory()
 const workflowFactory = WorkflowFactory()
 
 describe('usePrintingStore', () => {
-  beforeEach(() => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   it('should create the store', () => {
     const store = usePrintingStore()
     expect(store.resources.printers).toEqual({})

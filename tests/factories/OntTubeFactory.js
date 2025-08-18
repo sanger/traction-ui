@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi'
+import { groupIncludedByResource, find, dataToObjectById } from './../../src/api/JsonApi.js'
 
 const createStoreData = (data) => {
   const tubes = dataToObjectById({ data: data.data, includeRelationships: true })

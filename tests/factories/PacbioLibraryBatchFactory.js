@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory'
-import { dataToObjectById, groupIncludedByResource } from './../../src/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource } from './../../src/api/JsonApi.js'
 
 const PacbioLibraryBatchFactory = (tags = []) => {
   const data = {

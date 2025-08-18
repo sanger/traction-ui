@@ -8,11 +8,8 @@ import { useRoute, useRouter } from 'vue-router'
   It is used to control the router query params in one place and to aid
   the use of query params in paginated, filterable, data fetching functions.
 
-  TODO:
   Currently this function is used in 'setup' functions in components.
-  Setup functions do not have access to 'this' so whilst we are using vuex we cannot pass in
-  the fetch functions to this helper.
-  When we move to pinia it would be good to pass in the fetch function into this helper
+  Now we have moved to pinia it would be good to pass in the fetch function into this helper
   and move the page_size and page_number watchers (from FilterCard) into here so we have a central place
   for fetching data.
 */

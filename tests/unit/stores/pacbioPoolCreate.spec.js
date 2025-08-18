@@ -1,14 +1,9 @@
-import {
-  createPinia,
-  setActivePinia,
-  successfulResponse,
-  failedResponse,
-} from '@support/testHelper.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { payload } from '@/stores/utilities/pool.js'
+import { payload } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
@@ -22,18 +17,7 @@ const pacbioAutoTagFactory = PacbioAutoTagFactory()
 const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory({ findBy: 'libraries', transformTubes: true })
 
-vi.mock('@/api/FeatureFlag', () => ({
-  checkFeatureFlag: vi.fn().mockReturnValue(true),
-}))
-
 describe('usePacbioPoolCreateStore', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
-
   describe('getters', () => {
     let store
 
@@ -1440,7 +1424,7 @@ describe('usePacbioPoolCreateStore', () => {
             131: { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
           }
 
-          rootStore.addVuexMessage = vi.fn()
+          rootStore.addMessage = vi.fn()
           store.selectTagSet('3')
           store.selectRequestInSource({ request: '1', source_id: '1' })
 
@@ -1465,7 +1449,7 @@ describe('usePacbioPoolCreateStore', () => {
             insert_size: null,
           })
           // Adds a warning message to root store
-          expect(rootStore.addVuexMessage).toHaveBeenCalledWith({
+          expect(rootStore.addMessage).toHaveBeenCalledWith({
             message: 'Library tag not populated as bc1023T is not in the selected tag group',
             type: 'warning',
           })

@@ -1,16 +1,8 @@
-import { createPinia, setActivePinia } from 'pinia'
 import useRootStore from '@/stores'
-import rootVuexStore from '@/store/index.js'
 import PlateMap from '@/config/PlateMap.json'
 import { expect } from 'vitest'
 
 describe('index', () => {
-  beforeEach(() => {
-    /*Creates a fresh pinia instance and make it active so it's automatically picked
-    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
-    const pinia = createPinia()
-    setActivePinia(pinia)
-  })
   describe('state', () => {
     it('has api state', () => {
       const store = useRootStore()
@@ -30,19 +22,6 @@ describe('index', () => {
   })
 
   describe('actions', () => {
-    describe('addVuexMessage', () => {
-      it('adds a message to the vuex root store', () => {
-        const store = useRootStore()
-        store.addVuexMessage({
-          type: 'warning',
-          message: 'foo',
-        })
-        expect(Object.values(rootVuexStore.state.traction.messages)).toEqual([
-          { type: 'warning', message: 'foo' },
-        ])
-      })
-    })
-
     describe('clearMessages', () => {
       it('clears all messages', () => {
         const store = useRootStore()

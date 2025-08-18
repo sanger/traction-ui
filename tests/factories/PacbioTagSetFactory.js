@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from './../../src/api/JsonApi'
+import { dataToObjectById } from './../../src/api/JsonApi.js'
 
 /**
  * @param {Object} data

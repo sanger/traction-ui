@@ -1,6 +1,8 @@
-import * as Sequencescape from './Sequencescape.js'
+import * as SequencescapePlates from './SequencescapePlates.js'
 import * as SequencescapeTubes from './SequencescapeTubes.js'
+import * as SRJaguarKinnex from './SRJaguarKinnex.js'
 import * as SequencescapeMultiplexedLibraries from './SequencescapeMultiplexedLibraries.js'
+import * as MockReception from './MockReception.js'
 
 import MultiBarcode from '@/components/reception/MultiBarcode.vue'
 import MultiplexedLibraryBarcode from '@/components/reception/MultiplexedLibraryBarcode.vue'
@@ -48,10 +50,10 @@ const WorkflowsLocations = {
 }
 
 const ReceptionTypes = {
-  Sequencescape: {
-    name: 'sequencescape',
-    text: 'Sequencescape',
-    value: 'Sequencescape',
+  SequencescapePlates: {
+    name: 'sequencescape-plates',
+    text: 'Sequencescape Plates',
+    value: 'SequencescapePlates',
     pipelines: ['PacBio', 'ONT'],
   },
   SequencescapeTubes: {
@@ -66,29 +68,72 @@ const ReceptionTypes = {
     value: 'SequencescapeMultiplexedLibraries',
     pipelines: ['ONT'],
   },
+  SRJaguarKinnex: {
+    name: 'sr-jaguar-kinnex',
+    text: 'SR Jaguar Kinnex',
+    value: 'SRJaguarKinnex',
+    pipelines: ['PacBio'],
+  },
+}
+
+const MockReceptionTypes = {
+  MockedPlates: {
+    name: 'mocked-plates',
+    text: 'Mocked plates',
+    value: 'MockedPlates',
+    pipelines: ['PacBio', 'ONT'],
+  },
+  MockedTubes: {
+    name: 'mocked-tubes',
+    text: 'Mocked tubes',
+    value: 'MockedTubes',
+    pipelines: ['PacBio', 'ONT'],
+  },
+  MockedKinnexTubes: {
+    name: 'mocked-kinnex-tubes',
+    text: 'Mocked Kinnex tubes',
+    value: 'MockedKinnexTubes',
+    pipelines: ['PacBio'],
+  },
 }
 
 const Receptions = {
-  options: Object.values(ReceptionTypes),
-  Sequencescape: {
-    ...ReceptionTypes.Sequencescape,
-    fetchFunction: Sequencescape.fetchLabwareForReception,
+  SequencescapePlates: {
+    ...ReceptionTypes.SequencescapePlates,
+    fetchFunction: SequencescapePlates.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: Sequencescape.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
     barcodeComponent: MultiBarcode,
-    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
   SequencescapeMultiplexedLibraries: {
     ...ReceptionTypes.SequencescapeMultiplexedLibraries,
     fetchFunction: SequencescapeMultiplexedLibraries.fetchLabwareForReception,
     barcodeComponent: MultiplexedLibraryBarcode,
-    getAttributeKeysFunction: SequencescapeMultiplexedLibraries.getAttributeKeys,
+  },
+  SRJaguarKinnex: {
+    ...ReceptionTypes.SRJaguarKinnex,
+    fetchFunction: SRJaguarKinnex.fetchLabwareForReception,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedPlates: {
+    ...MockReceptionTypes.MockedPlates,
+    fetchFunction: MockReception.fetchPlatesFunction,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedTubes: {
+    ...MockReceptionTypes.MockedTubes,
+    fetchFunction: MockReception.fetchTubesFunction,
+    barcodeComponent: MultiBarcode,
+  },
+  MockedKinnexTubes: {
+    ...MockReceptionTypes.MockedKinnexTubes,
+    fetchFunction: MockReception.fetchCompoundSampleTubesFunction,
+    barcodeComponent: MultiBarcode,
   },
 }
 
 export default Receptions
-export { defaultRequestOptions, WorkflowsLocations }
+export { defaultRequestOptions, WorkflowsLocations, ReceptionTypes, MockReceptionTypes }
