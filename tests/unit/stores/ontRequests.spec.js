@@ -3,6 +3,7 @@ import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import { failedResponse, successfulResponse } from '@tests/support/testHelper.js'
+import { createRequestPayload } from '@/stores/utilities/ontRequests.js'
 
 const ontRequestFactory = OntRequestFactory()
 
@@ -54,7 +55,7 @@ describe('useOntRequestsStore', () => {
       })
 
       it('updates an ONT request successfully', async () => {
-        console.log(updatedRequest)
+        const payload = createRequestPayload(updatedRequest)
         update.mockResolvedValue(
           successfulResponse({ data: { attributes: { ...updatedRequest } } }),
         )
@@ -62,6 +63,7 @@ describe('useOntRequestsStore', () => {
 
         const { success } = await store.updateRequest(updatedRequest)
         expect(success).toBeTruthy()
+        expect(update).toHaveBeenCalledWith(payload)
         expect(store.resources.requests[existingRequest.id]).toEqual(updatedRequest)
       })
 

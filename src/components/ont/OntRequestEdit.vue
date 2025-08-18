@@ -1,7 +1,13 @@
 <template>
-  <div data-type="ont-request-edit">
-    <h1>Edit ONT Request</h1>
-    <traction-form @keydown.enter.prevent>
+  <div
+    data-type="ont-request-edit"
+    class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+  >
+    <traction-heading level="3" class="mb-2"> Edit Library </traction-heading>
+    <traction-form
+      class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
+      @keydown.enter.prevent
+    >
       <fieldset>
         <traction-label class="ml-1">Source Identifier</traction-label>
         <div data-attribute="source-identifier">
@@ -36,11 +42,12 @@
         <traction-label class="ml-1">Cost Code</traction-label>
         <traction-input v-model="request.cost_code" data-attribute="cost-code" />
       </fieldset>
-
+    </traction-form>
+    <div class="flex flex-row items-center justify-end space-x-2 mt-3">
       <traction-button data-action="update-request" theme="edit" @click="updateRequest">
         Update
       </traction-button>
-    </traction-form>
+    </div>
   </div>
 </template>
 

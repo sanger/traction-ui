@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
+import { createRequestPayload } from '@/stores/utilities/ontRequests.js'
 
 export const useOntRequestsStore = defineStore('ontRequests', {
   state: () => ({
@@ -52,10 +53,7 @@ export const useOntRequestsStore = defineStore('ontRequests', {
     async updateRequest(data) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.ont.requests
-      const { id, ...attributes } = data
-      // is this the correct structure for the payload?
-      const payload = { data: { type: 'ont_requests', id, attributes } }
-      const promise = request.update(payload)
+      const promise = request.update(createRequestPayload(data))
       const response = await handleResponse(promise)
       const { success, errors = {} } = response
 
