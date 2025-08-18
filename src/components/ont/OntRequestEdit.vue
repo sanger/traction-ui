@@ -2,6 +2,12 @@
   <div>
     <h1>Edit ONT Request</h1>
     <traction-form @keydown.enter.prevent>
+      <fieldset>
+        <traction-label class="ml-1">Source Identifier</traction-label>
+        <div data-attribute="source-identifier">
+          {{ request.source_identifier }}
+        </div>
+      </fieldset>
       <fieldset data-type="cost-code-input">
         <traction-label class="ml-1">Cost code</traction-label>
         <traction-input v-model="request.cost_code" data-attribute="cost-code" />
