@@ -1,6 +1,6 @@
 <template>
   <div
-    data-type="ont-request-edit"
+    :data-type="'ont-request-edit-' + props.id"
     class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
   >
     <traction-heading level="3" class="mb-2"> Edit Library </traction-heading>

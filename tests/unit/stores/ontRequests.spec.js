@@ -32,7 +32,7 @@ describe('useOntRequestsStore', () => {
       it('handles success', async () => {
         get.mockResolvedValue(ontRequestFactory.responses.fetch)
         const { success } = await store.fetchRequests()
-        expect(store.resources.requests).toEqual(ontRequestFactory.storeData)
+        expect(store.resources.requests).toEqual(ontRequestFactory.storeData.resources)
         expect(success).toEqual(true)
       })
 
@@ -48,9 +48,9 @@ describe('useOntRequestsStore', () => {
       let update, existingRequest, updatedRequest
 
       beforeEach(() => {
-        store.resources.requests = ontRequestFactory.storeData
+        store.resources.requests = ontRequestFactory.storeData.resources
         update = vi.fn()
-        existingRequest = Object.values(ontRequestFactory.storeData)[0]
+        existingRequest = Object.values(ontRequestFactory.storeData.resources)[0]
         updatedRequest = { ...existingRequest, cost_code: 'new_cost_code' }
       })
 

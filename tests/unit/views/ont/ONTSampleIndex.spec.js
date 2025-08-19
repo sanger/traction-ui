@@ -54,10 +54,10 @@ describe('OntSampleIndex', () => {
 
   describe('editing a request', () => {
     it('should show the request in the edit form', async () => {
-      const id = Object.keys(ontRequestFactory.storeData)[0]
+      const id = ontRequestFactory.storeData.ids[0]
       const button = wrapper.find(`[data-action="edit-request-${id}"]`)
       await button.trigger('click')
-      expect(wrapper.find('[data-type="ont-request-edit"]').exists()).toBe(true)
+      expect(wrapper.find(`[data-type="ont-request-edit-${id}"]`).exists()).toBe(true)
     })
   })
 })

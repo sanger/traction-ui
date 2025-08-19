@@ -1,7 +1,6 @@
 import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
 import OntPlateFactory from '../../../factories/OntPlateFactory.js'
 
-// TODO: A lot of this is still brittle
 // The tags and tags in plates need to be the same
 // The tags in the csv need to be the same
 describe('Ont Pool Create', () => {

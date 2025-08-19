@@ -1,4 +1,3 @@
-import { beforeEach } from 'vitest'
 import OntRequestFactory from '../../../factories/OntRequestFactory.js'
 
 describe('Ont samples view', () => {
@@ -47,8 +46,36 @@ describe('Ont samples view', () => {
       cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
     })
   })
-})
 
-// test to successfully update existing request
+  it('successfully edits a request', () => {
+    const id = OntRequestFactory().storeData.ids[0]
+    const costCode = 'NEW_COST_CODE'
+
+    cy.intercept('PATCH', `/v1/ont/requests/${id}`, {
+      statusCode: 200,
+      body: {
+        data: {
+          id,
+          attributes: {
+            cost_code: costCode,
+          },
+        },
+      },
+    })
+
+    cy.visit('#/ont/samples')
+
+    cy.get(`[data-action=edit-request-${id}]`).click()
+    cy.get(`[data-type="ont-request-edit-${id}"]`).within(() => {
+      cy.get('[data-attribute=cost-code]').clear().type(costCode)
+      cy.get('[data-action=update-request]').click()
+    })
+    // get sample name from store data
+    cy.get('@ontRequestFactory').then((ontRequestFactory) => {
+      const sampleName = ontRequestFactory.storeData.resources[id].sample_name
+      cy.contains(`Sample ${sampleName} updated successfully`)
+    })
+  })
+})
 
 // test for failure to update existing request

@@ -1,6 +1,14 @@
 import BaseFactory from './BaseFactory.js'
 import { dataToObjectById } from './../../src/api/JsonApi.js'
 
+const storeData = (data) => {
+  const requests = dataToObjectById(data)
+  return {
+    resources: requests,
+    ids: Object.keys(requests),
+  }
+}
+
 const OntRequestFactory = () => {
   const data = {
     data: [
@@ -96,7 +104,7 @@ const OntRequestFactory = () => {
     ],
   }
 
-  return { ...BaseFactory(data), storeData: dataToObjectById(data) }
+  return { ...BaseFactory(data), storeData: storeData(data) }
 }
 
 export default OntRequestFactory

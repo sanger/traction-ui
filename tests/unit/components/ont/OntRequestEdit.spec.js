@@ -17,7 +17,7 @@ const mountComponent = (props = {}) => {
     initialState: {
       ontRequests: {
         resources: {
-          requests: ontRequestFactory.storeData,
+          requests: ontRequestFactory.storeData.resources,
         },
       },
     },
@@ -32,7 +32,7 @@ describe('OntRequestEdit', () => {
     let wrapper, store, request
 
     beforeEach(() => {
-      request = Object.values(ontRequestFactory.storeData)[0]
+      request = Object.values(ontRequestFactory.storeData.resources)[0]
       ;({ wrapper, store } = mountComponent({ id: request.id }))
     })
 
