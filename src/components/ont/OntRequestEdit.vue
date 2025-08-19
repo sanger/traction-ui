@@ -44,6 +44,9 @@
       </fieldset>
     </traction-form>
     <div class="flex flex-row items-center justify-end space-x-2 mt-3">
+      <traction-button data-action="cancel-edit" theme="edit" @click="emit('editCompleted')">
+        Cancel
+      </traction-button>
       <traction-button data-action="update-request" theme="edit" @click="updateRequest">
         Update
       </traction-button>
@@ -66,11 +69,13 @@ const props = defineProps({
 const store = useOntRequestsStore()
 const request = reactive({ ...store.resources.requests[props.id] })
 const { showAlert } = useAlert()
+const emit = defineEmits(['editCompleted'])
 
 const updateRequest = async () => {
   const { success, errors } = await store.updateRequest(request)
   console.log(errors)
   if (success) {
+    emit('editCompleted')
     showAlert(`Sample ${request.sample_name} updated successfully`, 'success')
   } else {
     showAlert(`Error updating sample ${request.sample_name}: ${errors}`, 'error')

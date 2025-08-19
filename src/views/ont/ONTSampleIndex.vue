@@ -34,14 +34,14 @@
             :data-action="'edit-request-' + row.item.id"
             size="sm"
             class="mr-2"
-            theme="default"
+            :theme="row.detailsShowing ? 'paginationDefault' : 'default'"
             @click="row.toggleDetails"
           >
-            Edit
+            {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
           </traction-button>
         </template>
         <template #row-details="row">
-          <OntRequestEdit :id="row.item.id" />
+          <OntRequestEdit :id="row.item.id" @edit-completed="row.toggleDetails()" />
         </template>
       </traction-table>
     </div>

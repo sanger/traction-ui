@@ -66,6 +66,12 @@ describe('OntRequestEdit', () => {
       expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
     })
 
+    it('cancel button emits "editCancelled"', async () => {
+      const button = wrapper.find('[data-action="cancel-edit"]')
+      await button.trigger('click')
+      expect(wrapper.emitted().editCompleted).toBeTruthy()
+    })
+
     it('updates the request successfully', async () => {
       store.updateRequest = vi.fn(() => Promise.resolve({ success: true }))
       const input = wrapper.find('[data-attribute="cost-code"]')
@@ -73,6 +79,7 @@ describe('OntRequestEdit', () => {
       expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
       const button = wrapper.find('[data-action="update-request"]')
       await button.trigger('click')
+      expect(wrapper.emitted().editCompleted).toBeTruthy()
       expect(mockShowAlert).toBeCalledWith(
         `Sample ${request.sample_name} updated successfully`,
         'success',
