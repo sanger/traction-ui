@@ -1,7 +1,8 @@
+import { beforeEach } from 'vitest'
 import OntRequestFactory from '../../../factories/OntRequestFactory.js'
 
 describe('Ont samples view', () => {
-  it('Visits the ont samples url', () => {
+  beforeEach(() => {
     cy.wrap(OntRequestFactory()).as('ontRequestFactory')
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {
       cy.intercept('/v1/ont/requests?page[size]=25&page[number]=1', {
@@ -9,6 +10,9 @@ describe('Ont samples view', () => {
         body: ontRequestFactory.content,
       })
     })
+  })
+
+  it('Visits the ont samples url', () => {
     cy.visit('#/ont/samples')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -44,3 +48,7 @@ describe('Ont samples view', () => {
     })
   })
 })
+
+// test to successfully update existing request
+
+// test for failure to update existing request
