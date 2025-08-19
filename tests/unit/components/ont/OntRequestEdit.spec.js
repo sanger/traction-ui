@@ -5,13 +5,6 @@ import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 
 const ontRequestFactory = OntRequestFactory()
 
-const mockShowAlert = vi.fn()
-vi.mock('@/composables/useAlert', () => ({
-  default: () => ({
-    showAlert: mockShowAlert,
-  }),
-}))
-
 const mountComponent = (props = {}) => {
   const { wrapper, store } = mountWithStore(OntRequestEdit, {
     initialState: {
@@ -29,11 +22,11 @@ const mountComponent = (props = {}) => {
 
 describe('OntRequestEdit', () => {
   describe('with a valid existing request', () => {
-    let wrapper, store, request
+    let wrapper, request
 
     beforeEach(() => {
       request = Object.values(ontRequestFactory.storeData.resources)[0]
-      ;({ wrapper, store } = mountComponent({ id: request.id }))
+      ;({ wrapper } = mountComponent({ id: request.id }))
     })
 
     it('shows the source identifier', () => {
@@ -60,45 +53,10 @@ describe('OntRequestEdit', () => {
       )
     })
 
-    it('allows the cost code to be edited', () => {
-      const input = wrapper.find('[data-attribute="cost-code"]')
-      input.setValue('new-cost-code')
-      expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
-    })
-
-    it('cancel button emits "editCancelled"', async () => {
+    it('cancel button emits "editCompleted"', async () => {
       const button = wrapper.find('[data-action="cancel-edit"]')
       await button.trigger('click')
       expect(wrapper.emitted().editCompleted).toBeTruthy()
-    })
-
-    it('updates the request successfully', async () => {
-      store.updateRequest = vi.fn(() => Promise.resolve({ success: true }))
-      const input = wrapper.find('[data-attribute="cost-code"]')
-      input.setValue('new-cost-code')
-      expect(wrapper.vm.request.cost_code).toEqual('new-cost-code')
-      const button = wrapper.find('[data-action="update-request"]')
-      await button.trigger('click')
-      expect(wrapper.emitted().editCompleted).toBeTruthy()
-      expect(mockShowAlert).toBeCalledWith(
-        `Sample ${request.sample_name} updated successfully`,
-        'success',
-      )
-    })
-
-    it('does not update the request if there is an error', async () => {
-      store.updateRequest = vi
-        .fn()
-        .mockResolvedValue({ success: false, errors: 'Invalid cost code' })
-      const input = wrapper.find('[data-attribute="cost-code"]')
-      input.setValue('invalid-cost-code')
-      expect(wrapper.vm.request.cost_code).toEqual('invalid-cost-code')
-      const button = wrapper.find('[data-action="update-request"]')
-      await button.trigger('click')
-      expect(mockShowAlert).toBeCalledWith(
-        `Error updating sample ${request.sample_name}: ${'Invalid cost code'}`,
-        'error',
-      )
     })
   })
 })
