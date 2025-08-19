@@ -74,6 +74,7 @@ describe('Ont samples view', () => {
       const sampleName = ontRequestFactory.storeData.resources[id].sample_name
       cy.contains(`Sample ${sampleName} updated successfully`)
     })
+    cy.get(`[data-type="ont-request-edit-${id}"]`).should('not.exist')
   })
 
   it('fails if request is not updated successfully', () => {
