@@ -3,7 +3,7 @@
     :data-type="'ont-request-edit-' + props.id"
     class="p-2 mb-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
   >
-    <traction-heading level="3" class="mb-2"> Edit Library </traction-heading>
+    <traction-heading level="3" class="mb-2"> Edit Sample </traction-heading>
     <traction-form
       class="flex flex-row rounded-md justify-between space-x-2 p-2 bg-gray-200"
       @keydown.enter.prevent
@@ -73,7 +73,6 @@ const emit = defineEmits(['editCompleted'])
 
 const updateRequest = async () => {
   const { success, errors } = await store.updateRequest(request)
-  console.log(errors)
   if (success) {
     emit('editCompleted')
     showAlert(`Sample ${request.sample_name} updated successfully`, 'success')
