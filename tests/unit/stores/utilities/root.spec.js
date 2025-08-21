@@ -11,10 +11,10 @@ describe('groupByAttribute', () => {
     const grouped = groupByAttribute({ data: dataTypes, key: 'pipeline', fn: extractAttributes })
     expect(grouped).toEqual({
       ont: [
-        { id: 1, type: 'data_type', attributes: { name: 'foo', pipeline: 'ont' } },
-        { id: 2, type: 'data_type', attributes: { name: 'bar', pipeline: 'ont' } },
+        { id: 1, type: 'data_type', name: 'foo', pipeline: 'ont' },
+        { id: 2, type: 'data_type', name: 'bar', pipeline: 'ont' },
       ],
-      pacbio: [{ id: 3, type: 'data_type', attributes: { name: 'baz', pipeline: 'pacbio' } }],
+      pacbio: [{ id: 3, type: 'data_type', name: 'baz', pipeline: 'pacbio' }],
     })
   })
 })
