@@ -1,6 +1,6 @@
 import { wellToIndex, wellFor } from './wellHelpers.js'
 import { barcodeNotFound } from '../utilities/helpers.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById } from './../../api/JsonApi.js'
 
 const libraryAttributes = {
   ont_request_id: null,
