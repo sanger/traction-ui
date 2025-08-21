@@ -25,6 +25,9 @@ const config = [
       {
         name: 'annotation_types',
       },
+      {
+        name: 'data_types',
+      },
     ],
     pipelines: [
       {

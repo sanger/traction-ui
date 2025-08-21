@@ -1,5 +1,6 @@
 import { wellToIndex, wellFor } from './wellHelpers.js'
 import { barcodeNotFound } from '../utilities/helpers.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
 const libraryAttributes = {
   ont_request_id: null,
@@ -342,6 +343,31 @@ const populatePoolingLibraries = (libraries) => {
   }, {})
 }
 
+/**
+ * Helper function to store json api resource objects in the store.
+ * @param {string} resource name of the resource to populate in the store
+ * @param {bool} includeRelationships indicates if related resource ids should
+ * be extracted and included in the resulting object.
+ * @return {Function} A mutation function for populating the resource
+ */
+const populateById =
+  (
+    resource,
+    { includeRelationships = false, populateResources = true } = {},
+    replaceData = false,
+  ) =>
+  (state, data) => {
+    // if resources then add to state.resources
+    const result = populateResources ? state.resources : state
+
+    // Store the current data so we dont overwrite it unless specifed to do so
+    const before = replaceData ? {} : result[resource]
+    result[resource] = {
+      ...before,
+      ...dataToObjectById({ data, includeRelationships }),
+    }
+  }
+
 export {
   libraryAttributes,
   newLibrary,
@@ -354,4 +380,5 @@ export {
   buildTagAttributes,
   findRequestsForSource,
   populatePoolingLibraries,
+  populateById,
 }

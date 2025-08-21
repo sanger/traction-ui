@@ -1,4 +1,5 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
 
 const DataTypeFactory = () => {
   const data = {
@@ -29,7 +30,7 @@ const DataTypeFactory = () => {
     meta: { page_count: null },
   }
 
-  return { ...BaseFactory(data) }
+  return { ...BaseFactory(data), storeData: dataToObjectById(data) }
 }
 
 export default DataTypeFactory
