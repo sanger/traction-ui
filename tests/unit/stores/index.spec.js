@@ -90,13 +90,13 @@ describe('index', () => {
       })
     })
 
-    describe.skip('Data Types', () => {
+    describe('Data Types', () => {
       describe('fetchDataTypes', () => {
         it('fetches data types successfully', async () => {
           const store = useRootStore()
           store.api.traction.data_types.get = vi
             .fn()
-            .mockResolvedValue(successfulResponse(dataTypeFactory.responses.fetch))
+            .mockResolvedValue(dataTypeFactory.responses.fetch)
           const { success } = await store.fetchDataTypes()
           expect(success).toBe(true)
           expect(store.dataTypes).toEqual(dataTypeFactory.storeData)

@@ -3,7 +3,8 @@ import build from '@/api/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
+import { groupByAttribute } from '@/stores/utilities/root.js'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
@@ -92,6 +93,41 @@ const useRootStore = defineStore('root', {
      */
     addCSVLogMessage(info, error, type = 'danger') {
       this.addMessage({ type, message: errorFor(info, error) }, { root: true })
+    },
+
+    /**
+     * Fetches data types from the API and groups them by pipeline.
+     *
+     * @async
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action sends a GET request to the data types API endpoint.
+     * If the request is successful, it groups the returned data types by their pipeline
+     * using the `groupByAttribute` utility and stores the result in `this.dataTypes`.
+     * The function returns an object with the success status and any errors.
+     *
+     * @example
+     * const { success, errors } = await fetchDataTypes()
+     * if (success) {
+     *   // Access grouped data types via store.dataTypes
+     * }
+     */
+    async fetchDataTypes() {
+      const request = this.api.traction.data_types
+      const promise = request.get()
+      const {
+        success,
+        body: { data },
+        errors = [],
+      } = await handleResponse(promise)
+
+      if (success && data) {
+        this.dataTypes = groupByAttribute({ data, key: 'pipeline', fn: extractAttributes })
+      }
+      return { success, errors }
     },
   },
 })

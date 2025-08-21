@@ -1,5 +1,6 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { extractAttributes } from './../../src/api/JsonApi.js'
+import { groupByAttribute } from './../../src/stores/utilities/root.js'
 
 const DataTypeFactory = () => {
   const data = {
@@ -30,7 +31,10 @@ const DataTypeFactory = () => {
     meta: { page_count: null },
   }
 
-  return { ...BaseFactory(data), storeData: dataToObjectById(data) }
+  return {
+    ...BaseFactory(data),
+    storeData: groupByAttribute({ data: data.data, key: 'pipeline', fn: extractAttributes }),
+  }
 }
 
 export default DataTypeFactory
