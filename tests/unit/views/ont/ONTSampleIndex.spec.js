@@ -2,7 +2,7 @@ import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
 import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
-import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
+import { useOntRequestsStore } from '@/stores/ontRequests.js'
 
 const ontRequestFactory = OntRequestFactory()
 
@@ -24,7 +24,7 @@ const mountComponent = () => {
   ]
   const { wrapper } = mountWithStore(ONTSampleIndex, {
     plugins,
-    createStore: () => useOntPoolCreateStore(),
+    createStore: () => useOntRequestsStore(),
   })
 
   return wrapper
@@ -49,6 +49,15 @@ describe('OntSampleIndex', () => {
     it('displays each of the requests', async () => {
       const expectedRequests = ontRequestFactory.content.data.length
       expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
+    })
+  })
+
+  describe('editing a request', () => {
+    it('should show the request in the edit form', async () => {
+      const id = ontRequestFactory.storeData.ids[0]
+      const button = wrapper.find(`[data-action="edit-request-${id}"]`)
+      await button.trigger('click')
+      expect(wrapper.find(`[data-type="ont-request-edit-${id}"]`).exists()).toBe(true)
     })
   })
 })
