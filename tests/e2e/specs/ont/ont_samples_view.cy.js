@@ -9,6 +9,9 @@ describe('Ont samples view', () => {
         body: ontRequestFactory.content,
       })
     })
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
   })
 
   it('Visits the ont samples url', () => {
