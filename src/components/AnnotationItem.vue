@@ -1,58 +1,57 @@
 <template>
-  <div data-type="annotation" class="flex flex-row w-full">
-    <div
-      :class="`grid ${annotation.created_at ? 'grid-cols-4' : 'grid-cols-3'} gap-2 p-2 items-center  mt-1 bg-gray-200 rounded-md`"
-    >
-      <traction-field-error
-        data-attribute="comment-error"
-        :error="errorsFor('comment')"
-        :with-icon="!!errorsFor('comment')"
-      >
-        <div class="flex flex-col py-2">
-          <textarea
-            v-model="annotation.comment"
-            placeholder="Example: Annotation 1"
-            class="w-full h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
-            :disabled="!annotation.newRecord"
-            maxlength="500"
-            data-attribute="comment"
-          ></textarea>
-          <div class="text-xs text-gray-500 mt-1" data-attribute="comment-char-count">
-            {{ (annotation.comment || '').length }} / 500 characters
+  <div class="flex flex-col w-full">
+    <div data-type="annotation" class="flex flex-row w-full">
+      <div :class="`grid grid-cols-3 gap-x-2 items-center rounded-md`">
+        <traction-field-error
+          data-attribute="comment-error"
+          :error="errorsFor('comment')"
+          :with-icon="!!errorsFor('comment')"
+        >
+          <div class="flex flex-col py-2">
+            <textarea
+              v-model="annotation.comment"
+              placeholder="Example: Annotation 1"
+              class="w-full h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
+              :disabled="!annotation.newRecord"
+              maxlength="500"
+              data-attribute="comment"
+            ></textarea>
+            <div class="text-xs text-gray-500 mt-1" data-attribute="comment-char-count">
+              {{ (annotation.comment || '').length }} / 500 characters
+            </div>
           </div>
-        </div>
-      </traction-field-error>
-      <traction-field-error
-        data-attribute="user-error"
-        :error="errorsFor('user')"
-        :with-icon="!!errorsFor('user')"
-      >
-        <traction-input
-          v-model="annotation.user"
-          type="text"
-          placeholder="Example: si5"
-          class="w-full"
-          :disabled="!annotation.newRecord"
-          data-attribute="user"
-        ></traction-input>
-      </traction-field-error>
-      <traction-field-error
-        data-attribute="annotation-type-error"
-        :error="errorsFor('annotation_type_id')"
-        :with-icon="!!errorsFor('annotation_type_id')"
-      >
-        <traction-select
-          v-model="annotation.annotation_type_id"
-          :options="annotationTypeSelectOptions"
-          class="w-full"
-          :disabled="!annotation.newRecord"
-          data-attribute="annotation-type"
-        ></traction-select>
-      </traction-field-error>
-      <div v-if="annotation.created_at" class="ml-1" data-attribute="created-at">
-        {{ annotation.created_at }}
+        </traction-field-error>
+        <traction-field-error
+          data-attribute="user-error"
+          :error="errorsFor('user')"
+          :with-icon="!!errorsFor('user')"
+        >
+          <traction-input
+            v-model="annotation.user"
+            type="text"
+            placeholder="Example: si5"
+            class="w-full"
+            :disabled="!annotation.newRecord"
+            data-attribute="user"
+          ></traction-input>
+        </traction-field-error>
+        <traction-field-error
+          data-attribute="annotation-type-error"
+          :error="errorsFor('annotation_type_id')"
+          :with-icon="!!errorsFor('annotation_type_id')"
+        >
+          <traction-select
+            v-model="annotation.annotation_type_id"
+            :options="annotationTypeSelectOptions"
+            class="w-full"
+            :disabled="!annotation.newRecord"
+            data-attribute="annotation-type"
+          ></traction-select>
+        </traction-field-error>
       </div>
-      <div></div>
+    </div>
+    <div v-if="annotation.created_at" class="text-sm text-gray-500 py-2" data-attribute="created-at">
+      Created At: {{ annotation.created_at }}
     </div>
   </div>
 </template>

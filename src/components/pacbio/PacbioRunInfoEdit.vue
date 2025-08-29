@@ -78,7 +78,7 @@
       </div>
       <div
         v-if="annotationsVisible"
-        class="p-4 ml-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
+        class="p-4 mb-4 mt-4 rounded-md text-left items-center border-2 border-gray-200 shadow-sm"
       >
         <annotation-list :parent="store.run" :annotation-types="annotationTypes" />
       </div>

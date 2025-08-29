@@ -121,7 +121,7 @@ describe('AnnotationItem.vue', () => {
       })
       expect(wrapper.find('[data-attribute="comment"]').element.value).toEqual(annotation.comment)
       expect(wrapper.find('[data-attribute="user"]').element.value).toEqual(annotation.user)
-      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual(annotation.created_at)
+      expect(wrapper.find('[data-attribute="created-at"]').text()).toEqual(`Created At: ${annotation.created_at}`)
       expect(wrapper.find('[data-attribute="annotation-type"]').element.value).toEqual(
         annotation.annotation_type_id.toString(),
       )
