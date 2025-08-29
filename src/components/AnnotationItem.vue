@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-full">
     <div data-type="annotation" class="flex flex-row w-full">
-      <div :class="`grid grid-cols-3 gap-x-2 items-center rounded-md`">
+      <div :class="`grid grid-cols-3 gap-x-2 w-full items-center rounded-md`">
         <traction-field-error
           data-attribute="comment-error"
           :error="errorsFor('comment')"
@@ -50,7 +50,11 @@
         </traction-field-error>
       </div>
     </div>
-    <div v-if="annotation.created_at" class="text-sm text-gray-500 py-2" data-attribute="created-at">
+    <div
+      v-if="annotation.created_at"
+      class="text-sm text-gray-500 py-2"
+      data-attribute="created-at"
+    >
       Created At: {{ annotation.created_at }}
     </div>
   </div>

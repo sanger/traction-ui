@@ -29,8 +29,8 @@
       <!-- Annotation items -->
       <div class="flex flex-col w-full bg-gray-100 rounded-md">
         <div v-for="(annotation, idx) in annotations" :key="annotation.id">
-          <div class="flex flex-row items-center border-y">
-            <div class="flex w-5/6 bg-gray-100">
+          <div class="flex flex-row border-y">
+            <div class="flex w-5/6">
               <AnnotationItem
                 :id="annotation.id"
                 :parent="props.parent"
