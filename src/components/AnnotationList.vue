@@ -4,12 +4,12 @@
     <div
       :data-list="dataList"
       data-type="annotation-list"
-      class="w-full rounded-md p-2 bg-gray-100"
+      class="w-full rounded-md p-4 bg-gray-100"
     >
       <!-- Header row -->
       <div class="flex w-full">
         <div class="w-5/6">
-          <div :class="`grid w-full items-start text-left py-2 grid-cols-3 font-bold`">
+          <div :class="`grid w-full items-start text-left pb-2 grid-cols-3 font-bold`">
             <traction-label>Comment</traction-label>
             <traction-label>User</traction-label>
             <traction-label>Type</traction-label>
