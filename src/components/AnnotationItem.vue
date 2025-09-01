@@ -55,7 +55,7 @@
       class="text-sm text-gray-500 py-2"
       data-attribute="created-at"
     >
-      Created At: {{ annotation.created_at }}
+      Created at: {{ annotation.created_at }}
     </div>
   </div>
 </template>
