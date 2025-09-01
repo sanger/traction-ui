@@ -7,11 +7,11 @@
           :error="errorsFor('comment')"
           :with-icon="!!errorsFor('comment')"
         >
-          <div class="flex flex-col py-2">
+          <div class="flex flex-col py-2 w-full">
             <textarea
               v-model="annotation.comment"
               placeholder="Example: Annotation 1"
-              class="w-full h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
+              class="flex h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
               :disabled="!annotation.newRecord"
               maxlength="500"
               data-attribute="comment"
