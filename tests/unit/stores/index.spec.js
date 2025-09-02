@@ -1,10 +1,7 @@
 import useRootStore from '@/stores'
 import PlateMap from '@/config/PlateMap.json'
 import { expect } from 'vitest'
-import { successfulResponse, failedResponse } from '@tests/support/testHelper.js'
-import DataTypeFactory from '@tests/factories/DataTypeFactory.js'
-
-const dataTypeFactory = DataTypeFactory()
+import { successfulResponse } from '@tests/support/testHelper.js'
 
 describe('index', () => {
   describe('state', () => {
@@ -86,27 +83,6 @@ describe('index', () => {
         expect(result).toEqual({
           success: false,
           errors: ['Tag sets cannot be retrieved for pipeline foo'],
-        })
-      })
-    })
-
-    describe('Data Types', () => {
-      describe('fetchDataTypes', () => {
-        it('fetches data types successfully', async () => {
-          const store = useRootStore()
-          store.api.traction.data_types.get = vi
-            .fn()
-            .mockResolvedValue(dataTypeFactory.responses.fetch)
-          const { success } = await store.fetchDataTypes()
-          expect(success).toBe(true)
-          expect(store.dataTypes).toEqual(dataTypeFactory.storeData)
-        })
-
-        it('returns an error if the fetch is unsuccessful', async () => {
-          const store = useRootStore()
-          store.api.traction.data_types.get = vi.fn().mockResolvedValue(failedResponse())
-          const { success } = await store.fetchDataTypes()
-          expect(success).toBe(false)
         })
       })
     })

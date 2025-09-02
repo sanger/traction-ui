@@ -145,7 +145,11 @@
             </traction-field-group>
           </div>
           <div v-if="pipeline == 'ONT'">
-            <DataTypeSelect v-model="requestOptions.data_type" pipeline="ont" />
+            <traction-input
+              v-model="requestOptions.data_type"
+              data-attribute="data-type"
+              type="string"
+            ></traction-input>
             <traction-field-group
               label="Number of Flowcells"
               attribute="number_of_flowcells"
@@ -201,7 +205,6 @@ import { ref, computed, onMounted } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
-import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 
@@ -282,6 +285,11 @@ function updatePipeline() {
   // If the current reception doesn't include the current pipeline then update the pipeline to a valid one
   if (!reception.value.pipelines.includes(pipeline.value)) {
     pipeline.value = reception.value.pipelines[0]
+  }
+
+  // there is only one data type for ONT
+  if (pipeline.value === 'ONT') {
+    requestOptions.value.data_type = 'basecalls and raw data'
   }
 }
 

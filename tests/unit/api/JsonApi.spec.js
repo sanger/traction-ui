@@ -241,31 +241,6 @@ describe('JsonApi', () => {
     })
   })
 
-  // describe('populateBy', () => {
-  //   it('with resources', () => {
-  //     const state = { resources: {} }
-  //     const wells = pacbioRunFactory.storeData.resources.wells
-  //     populateBy('wells', dataToObjectByPosition)(state, wells)
-  //     expect(state.resources.wells).toEqual(dataToObjectByPosition({ data: wells }))
-  //   })
-
-  //   it('without resources', () => {
-  //     const state = {}
-  //     const wells = pacbioRunFactory.storeData.resources.wells
-  //     populateBy('wells', dataToObjectByPosition, { populateResources: false })(state, wells)
-  //     expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
-  //   })
-
-  //   it('with relationships', () => {
-  //     const state = { resources: {} }
-  //     const wells = pacbioRunFactory.storeData.resources.wells
-  //     populateBy('wells', dataToObjectByPosition, { includeRelationships: true })(state, wells)
-  //     expect(state.resources.wells).toEqual(
-  //       dataToObjectByPosition({ data: wells, includeRelationships: true }),
-  //     )
-  //   })
-  // })
-
   // this needs refactoring. Clearly a lot of complexity that needs to be simplified.
   describe('splitDataByParent', () => {
     it('splits the data by parent', () => {
