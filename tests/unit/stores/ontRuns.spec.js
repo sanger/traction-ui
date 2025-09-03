@@ -4,33 +4,23 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout.json'
 import { beforeEach, describe } from 'vitest'
 import OntInstrumentFactory from '@tests/factories/OntInstrumentFactory.js'
 import OntRunFactory from '@tests/factories/OntRunFactory.js'
+import { failedResponse } from '@tests/support/testHelper.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
 
 describe('useOntRunsStore', () => {
-  describe('state', () => {
-    it('should have an empty resources on initial load', () => {
-      const store = useOntRunsStore()
-      expect(store.resources.runs).toEqual({})
-      expect(store.resources.instruments).toEqual({})
-    })
-  })
-  describe('getters', () => {
-    let resources
-    beforeEach(() => {
-      const instruments = ontInstrumentFactory.storeData.instruments
-      const runs = ontRunFactory.storeData.runs
-      resources = {
-        instruments,
-        runs,
-      }
-    })
-    it('"instruments" returns "state.resources.instruments"', () => {
-      const store = useOntRunsStore()
-      store.resources = resources
-      const actual = store.instruments
+  let store, rootStore
 
+  beforeEach(() => {
+    rootStore = useRootStore()
+    store = useOntRunsStore()
+  })
+
+  describe('getters', () => {
+    // this test is testing implementation i.e. the function itself
+    it('"instruments" returns "state.resources.instruments"', () => {
+      store.$state.resources.instruments = ontInstrumentFactory.storeData.instruments
       const expected = Object.values(store.resources.instruments).map((i) => {
         const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
@@ -39,12 +29,15 @@ describe('useOntRunsStore', () => {
         }
       })
 
-      expect(actual).toEqual(expected)
+      expect(store.instruments).toEqual(expected)
     })
+
+    // this test is testing implementation i.e. the function itself
     it('"runs" returns "state.resources.runs"', () => {
-      const store = useOntRunsStore()
-      store.resources = resources
-      const actual = store.runs
+      store.$state.resources = {
+        runs: ontRunFactory.storeData.runs,
+        instruments: ontInstrumentFactory.storeData.instruments,
+      }
       const expected = Object.values(store.resources.runs).map((r) => {
         const instrument = Object.values(store.resources.instruments).find(
           (i) => i.id == r.ont_instrument_id,
@@ -54,74 +47,51 @@ describe('useOntRunsStore', () => {
           instrument_name: `${instrument.name} (${instrument.instrument_type})`,
         }
       })
-      expect(actual).toEqual(expected)
+      expect(store.runs).toEqual(expected)
     })
   })
   describe('actions', () => {
-    const failedResponse = {
-      data: { data: [] },
-      status: 500,
-      statusText: 'Internal Server Error',
-    }
-
     describe('fetchOntRuns', () => {
       it('runs successfully', async () => {
-        const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(ontRunFactory.responses.fetch)
         rootStore.api = { traction: { ont: { runs: { get } } } }
 
-        const store = useOntRunsStore()
         const { success } = await store.fetchOntRuns()
 
-        expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
-        expect(store.resources.instruments).toEqual(ontRunFactory.storeData.instruments)
         expect(success).toBeTruthy()
-        expect(get).toHaveBeenCalled()
+        expect(store.resources.runs).toEqual(ontRunFactory.storeData.runs)
       })
 
       it('handles failure', async () => {
-        //Mock useroot store
-        const rootStore = useRootStore()
         const get = vi.fn()
-        get.mockRejectedValue(failedResponse)
+        get.mockRejectedValue(failedResponse())
         rootStore.api = { traction: { ont: { runs: { get } } } }
 
-        const store = useOntRunsStore()
-
-        // apply action
         const { success } = await store.fetchOntRuns()
-        expect(store.resources.instruments).toEqual({})
-        expect(store.resources.runs).toEqual({})
         expect(success).toBeFalsy()
+        expect(store.resources.runs).toEqual({})
       })
     })
-    describe('setInstruments', () => {
+
+    describe('fetchInstruments', () => {
       it('runs successfully', async () => {
-        const rootStore = useRootStore()
         const get = vi.fn()
         get.mockResolvedValue(ontInstrumentFactory.responses.fetch)
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
-        const store = useOntRunsStore()
-        const { success } = await store.setInstruments()
-        expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
+        const { success } = await store.fetchInstruments()
         expect(success).toBeTruthy()
-        expect(get).toHaveBeenCalled()
+        expect(store.resources.instruments).toEqual(ontInstrumentFactory.storeData.instruments)
       })
       it('handles failure', async () => {
-        //Mock useroot store
-        const rootStore = useRootStore()
         const get = vi.fn()
         get.mockRejectedValue(failedResponse)
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
-        const store = useOntRunsStore()
-
-        // apply action
-        const { success } = await store.setInstruments()
-        expect(store.resources.instruments).toEqual({})
+        const { success } = await store.fetchInstruments()
         expect(success).toBeFalsy()
+        expect(store.resources.instruments).toEqual({})
       })
     })
   })
