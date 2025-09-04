@@ -17,11 +17,10 @@
             class="inline-block w-full"
             :options="receptionOptionsList"
             data-type="source-list"
-            @update:model-value="updatePipeline()"
+            @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
       </div>
-
       <div>
         <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
         <traction-field-group
@@ -38,54 +37,48 @@
             class="inline-block w-full"
             data-type="pipeline-list"
             :disabled="!source"
-            @update:model-value="resetRequestOptions()"
+            @update:model-value="updatePipeline()"
           />
         </traction-field-group>
-
-        <div class="grid grid-cols-2 gab-4 mt-4 mb-4">
-          <div>
-            <traction-label class="inline-block w-full text-left">Workflow</traction-label>
-            <traction-muted-text class=""
-              >Select a workflow if you would like to scan in the imported
-              labware</traction-muted-text
-            >
-            <traction-select
-              id="workflowSelect"
-              v-model="workflow"
-              class="mt-1 mr-2"
-              :options="workflowOptions"
-              data-type="workflow-list"
-              :disabled="!source"
+        <traction-field-group
+          label="Workflow"
+          attribute="workflowSelect"
+          for="workflowSelect"
+          description="Select a workflow if you would like to scan in the imported labware"
+          layout="spacious"
+        >
+          <traction-select
+            id="workflowSelect"
+            v-model="workflow"
+            class="inline-block w-full"
+            :options="workflowOptions"
+            data-type="workflow-list"
+            :disabled="!source"
+          />
+        </traction-field-group>
+        <div v-if="workflow">
+          <traction-label class="inline-block w-full text-left"
+            >User barcode or swipecard</traction-label
+          >
+          <traction-muted-text class="ml-1 text-left"
+            >Only required when a workflow is selected</traction-muted-text
+          >
+          <traction-field-error
+            data-attribute="user-code-error"
+            :error="
+              !user_code && workflow ? 'User code is required to scan in the imported labware' : ''
+            "
+          >
+            <traction-input
+              id="userCode"
+              v-model="user_code"
+              data-attribute="user-code-input"
+              class="mt-1"
+              type="password"
             />
-          </div>
-          <!-- Only displaying the swipecard field when the user selects a workflow -->
-          <div v-show="workflow">
-            <traction-label class="inline-block w-full text-left"
-              >User barcode or swipecard</traction-label
-            >
-            <traction-muted-text class="ml-1 text-left"
-              >Only required when a workflow is selected</traction-muted-text
-            >
-            <traction-field-error
-              data-attribute="user-code-error"
-              :error="
-                !user_code && workflow
-                  ? 'User code is required to scan in the imported labware'
-                  : ''
-              "
-            >
-              <traction-input
-                id="userCode"
-                v-model="user_code"
-                data-attribute="user-code-input"
-                class="mt-1"
-                type="password"
-              />
-            </traction-field-error>
-          </div>
+          </traction-field-error>
         </div>
       </div>
-
       <div>
         <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
         <traction-muted-text class="text-left"
@@ -112,7 +105,7 @@
               data-attribute="cost-code-input"
             ></traction-input>
           </traction-field-group>
-          <div v-if="pipeline == 'PacBio'">
+          <div v-if="pipeline === 'PacBio'">
             <traction-field-group
               label="Number of SMRT cells"
               attribute="number_of_smrt_cells"
@@ -144,12 +137,19 @@
               ></traction-input>
             </traction-field-group>
           </div>
-          <div v-if="pipeline == 'ONT'">
-            <traction-input
-              v-model="requestOptions.data_type"
-              data-attribute="data-type"
-              type="string"
-            ></traction-input>
+          <div v-if="pipeline === 'ONT'">
+            <traction-field-group
+              label="Data Type"
+              attribute="data_type"
+              for="data_type"
+              layout="spacious"
+            >
+              <traction-input
+                v-model="requestOptions.data_type"
+                data-attribute="data-type-input"
+                type="string"
+              ></traction-input>
+            </traction-field-group>
             <traction-field-group
               label="Number of Flowcells"
               attribute="number_of_flowcells"
