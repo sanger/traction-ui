@@ -1,6 +1,5 @@
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import { mount, store } from '@support/testHelper'
-import { vi } from 'vitest'
 
 describe('LibraryTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'pacbio' }) => {
@@ -9,8 +8,6 @@ describe('LibraryTypeSelect.vue', () => {
       props,
     })
   }
-
-  vi.mock('swrv')
 
   const findOption = (optionText, { from }) =>
     from.findAll('option').find((option) => option.text() == optionText)
