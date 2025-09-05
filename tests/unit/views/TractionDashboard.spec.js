@@ -1,27 +1,7 @@
-import TractionDashboard from '@/views/TractionDashboard'
-import PipelinesConfig from '@/config/PipelinesConfig'
-import { mount, flushPromises, findByText } from '@support/testHelper'
-
-vi.mock('@/config/PipelinesConfig', () => {
-  return {
-    default: [
-      {
-        name: 'pacbio',
-        title: 'PacBio',
-        description: 'A LIMS pipeline to support tracking for PacBio Long-Read Sequencing',
-        routes: ['plates', 'samples', 'libraries', 'pools', 'runs', 'pool/new'],
-        active: true,
-      },
-      {
-        name: 'ont',
-        title: 'ONT',
-        description: 'A LIMS pipeline to support tracking for ONT Long-Read Sequencing',
-        routes: ['samples', 'pools', 'pool/new', 'runs'],
-        active: true,
-      },
-    ],
-  }
-})
+import TractionDashboard from '@/views/TractionDashboard.vue'
+import PipelinesConfig from '@/config/PipelinesConfig.json'
+import { mount, flushPromises, findByText } from '@support/testHelper.js'
+import { humanise } from '@/lib/stringHumanisation.js'
 
 describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
@@ -75,7 +55,9 @@ describe('TractionDashboard.vue', () => {
       it('will have buttons sorted by workflow', () => {
         const buttons = box.findAll('a')
         const buttonNames = buttons.map((button) => button.text())
-        expect(buttonNames).toEqual(['Plates', 'Samples', 'Libraries', 'Pools', 'Runs', 'Pool/new'])
+        expect(buttonNames).toEqual(
+          PipelinesConfig.find((pipeline) => pipeline.name === 'pacbio').routes.map(humanise),
+        )
       })
 
       it('will have a plates button', async () => {

@@ -10,7 +10,12 @@ import {
   findRequestsForSource,
   populatePoolingLibraries,
   newLibrary,
+  populateById,
 } from '@/stores/utilities/ontPool.js'
+import { dataToObjectById } from '@/api/JsonApi.js'
+import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
+
+const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 
 describe('ontPool.js', () => {
   describe('validate', () => {
@@ -451,5 +456,30 @@ describe('populatePoolingLibraries', () => {
     expect(result).toEqual({
       req1: { ...newLibrary(), ont_request_id: 'req1', tag_id: 'tag1', ...libraries[1] },
     })
+  })
+})
+
+describe('populateById', () => {
+  it('with resources', () => {
+    const state = { resources: {} }
+    const wells = pacbioRunFactory.storeData.resources.wells
+    populateById('wells')(state, wells)
+    expect(state.resources.wells).toEqual(dataToObjectById({ data: wells }))
+  })
+
+  it('without resources', () => {
+    const state = {}
+    const wells = pacbioRunFactory.storeData.resources.wells
+    populateById('wells', { populateResources: false })(state, wells)
+    expect(state.wells).toEqual(dataToObjectById({ data: wells }))
+  })
+
+  it('with relationships', () => {
+    const state = { resources: {} }
+    const wells = pacbioRunFactory.storeData.resources.wells
+    populateById('wells', { includeRelationships: true })(state, wells)
+    expect(state.resources.wells).toEqual(
+      dataToObjectById({ data: wells, includeRelationships: true }),
+    )
   })
 })

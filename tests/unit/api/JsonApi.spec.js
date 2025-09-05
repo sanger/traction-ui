@@ -8,7 +8,6 @@ const pacbioRunFactory = PacbioRunFactory({ count: 1 })
 const pacbioWellFactory = PacbioWellFactory()
 const dummyDataFactory = DummyDataFactory()
 
-// TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
   const {
     extractAttributes,
@@ -21,10 +20,8 @@ describe('JsonApi', () => {
     extractRelationshipsAndGroupById,
     dataToObjectById,
     filterByAttribute,
-    populateById,
     mapAttribute,
     dataToObjectByPosition,
-    populateBy,
     splitDataByParent,
     dataToObjectByPlateNumber,
     find,
@@ -195,31 +192,6 @@ describe('JsonApi', () => {
     })
   })
 
-  describe('populateById', () => {
-    it('with resources', () => {
-      const state = { resources: {} }
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateById('wells')(state, wells)
-      expect(state.resources.wells).toEqual(dataToObjectById({ data: wells }))
-    })
-
-    it('without resources', () => {
-      const state = {}
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateById('wells', { populateResources: false })(state, wells)
-      expect(state.wells).toEqual(dataToObjectById({ data: wells }))
-    })
-
-    it('with relationships', () => {
-      const state = { resources: {} }
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateById('wells', { includeRelationships: true })(state, wells)
-      expect(state.resources.wells).toEqual(
-        dataToObjectById({ data: wells, includeRelationships: true }),
-      )
-    })
-  })
-
   describe('dataToObjectByPosition', () => {
     it('creates an object with the position as key', () => {
       const data = pacbioWellFactory.content.data
@@ -266,31 +238,6 @@ describe('JsonApi', () => {
       const item = plates[Object.keys(plates)[0]]
       const keys = Object.keys(item)
       expect(keys.includes('wells')).toBeTruthy()
-    })
-  })
-
-  describe('populateBy', () => {
-    it('with resources', () => {
-      const state = { resources: {} }
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateBy('wells', dataToObjectByPosition)(state, wells)
-      expect(state.resources.wells).toEqual(dataToObjectByPosition({ data: wells }))
-    })
-
-    it('without resources', () => {
-      const state = {}
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateBy('wells', dataToObjectByPosition, { populateResources: false })(state, wells)
-      expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
-    })
-
-    it('with relationships', () => {
-      const state = { resources: {} }
-      const wells = pacbioRunFactory.storeData.resources.wells
-      populateBy('wells', dataToObjectByPosition, { includeRelationships: true })(state, wells)
-      expect(state.resources.wells).toEqual(
-        dataToObjectByPosition({ data: wells, includeRelationships: true }),
-      )
     })
   })
 

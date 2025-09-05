@@ -2,12 +2,7 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import {
-  dataToObjectById,
-  extractAttributes,
-  groupIncludedByResource,
-  populateById,
-} from '@/api/JsonApi.js'
+import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
 import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
@@ -19,6 +14,7 @@ import {
   buildTagAttributes,
   findRequestsForSource,
   populatePoolingLibraries,
+  populateById,
 } from './utilities/ontPool.js'
 /**
  * Used for combining objects based on id

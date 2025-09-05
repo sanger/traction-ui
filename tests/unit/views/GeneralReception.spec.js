@@ -84,7 +84,7 @@ describe('GeneralReception', () => {
     it('hides user swipecard when a workflow is not selected', async () => {
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('')
-      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(false)
+      expect(wrapper.find('[data-attribute=user-code-input]').exists()).toBe(false)
     })
 
     it('errors user code fields if not set', async () => {

@@ -102,10 +102,10 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import PipelinesConfig from '@/config/PipelinesConfig'
-import { humanise } from '@/lib/stringHumanisation'
-import LabelledCard from '@/components/LabelledCard'
-import TractionLink from '@/components/TractionLink'
+import PipelinesConfig from '@/config/PipelinesConfig.json'
+import { humanise } from '@/lib/stringHumanisation.js'
+import LabelledCard from '@/components/LabelledCard.vue'
+import TractionLink from '@/components/TractionLink.vue'
 import TractionDocsIcon from '@/icons/DocsIcon.vue'
 import TractionToolsIcon from '@/icons/ToolsIcon.vue'
 import TractionGeneticsIcon from '@/icons/GeneticsIcon.vue'
