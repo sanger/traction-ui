@@ -272,6 +272,8 @@ const location_barcode = computed(() => {
   return workflow.value
 })
 
+// this is temporary. But the cascading actions were hard to follow and
+// led to some edge cases where the pipeline was not updated correctly.
 watch(source, () => {
   resetRequestOptions()
   updatePipeline()

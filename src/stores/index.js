@@ -26,6 +26,9 @@ const useRootStore = defineStore('root', {
      * tagSets: A dictionary of tagSets fetched from the service
      */
     tagSets: {},
+    resources: {
+      libraryTypes: {},
+    },
   }),
   getters: {
     tagSetsArray: (state) => Object.values(state.tagSets),
@@ -92,6 +95,42 @@ const useRootStore = defineStore('root', {
      */
     addCSVLogMessage(info, error, type = 'danger') {
       this.addMessage({ type, message: errorFor(info, error) }, { root: true })
+    },
+
+    /**
+     * Fetches library types from the API and updates the store state.
+     *
+     * @async
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action sends a GET request to the library types API endpoint.
+     * If the request is successful, it transforms the returned library type data into an object keyed by ID
+     * using `dataToObjectById` and updates the store's `resources.libraryTypes` state.
+     * This allows efficient lookup and management of library types within the application.
+     * The function returns an object with the success status and any errors encountered during the request.
+     *
+     * @example
+     * const { success, errors } = await fetchLibraryTypes()
+     * if (success) {
+     *   // Access library types via store.resources.libraryTypes
+     * }
+     */
+    async fetchLibraryTypes() {
+      const request = this.api.traction.library_types
+      const promise = request.get()
+      const {
+        success,
+        body: { data },
+        errors = [],
+      } = await handleResponse(promise)
+
+      if (success && data) {
+        this.resources.libraryTypes = dataToObjectById({ data })
+      }
+      return { success, errors }
     },
   },
 })

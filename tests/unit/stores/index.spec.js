@@ -1,7 +1,10 @@
 import useRootStore from '@/stores'
 import PlateMap from '@/config/PlateMap.json'
-import { expect } from 'vitest'
-import { successfulResponse } from '@tests/support/testHelper.js'
+import { describe, expect, it } from 'vitest'
+import { successfulResponse, failedResponse } from '@tests/support/testHelper.js'
+import LibraryTypeFactory from '@tests/factories/LibraryTypeFactory.js'
+
+const libraryTypeFactory = LibraryTypeFactory()
 
 describe('index', () => {
   describe('state', () => {
@@ -84,6 +87,26 @@ describe('index', () => {
           success: false,
           errors: ['Tag sets cannot be retrieved for pipeline foo'],
         })
+      })
+    })
+
+    describe('fetchLibraryTypes', () => {
+      it('successfully', async () => {
+        const store = useRootStore()
+        store.api.traction.library_types.get = vi
+          .fn()
+          .mockResolvedValue(libraryTypeFactory.responses.fetch)
+        const { success } = await store.fetchLibraryTypes()
+        expect(success).toBeTruthy()
+        expect(store.resources.libraryTypes).toEqual(libraryTypeFactory.storeData)
+      })
+
+      it('unsuccessfully', async () => {
+        const store = useRootStore()
+        store.api.traction.library_types.get = vi.fn().mockResolvedValue(failedResponse())
+        const { success } = await store.fetchLibraryTypes()
+        expect(success).toBeFalsy()
+        expect(store.resources.libraryTypes).toEqual({})
       })
     })
   })
