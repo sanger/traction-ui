@@ -17,7 +17,6 @@
             class="inline-block w-full"
             :options="receptionOptionsList"
             data-type="source-list"
-            @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
       </div>
@@ -37,7 +36,6 @@
             class="inline-block w-full"
             data-type="pipeline-list"
             :disabled="!source"
-            @update:model-value="updatePipeline()"
           />
         </traction-field-group>
         <traction-field-group
@@ -201,7 +199,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
@@ -243,7 +241,7 @@ const workflowOptions = computed(() => [
 
 const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
 
-const receptionOptions = async () => {
+const receptionOptions = () => {
   let receptionTypes = Object.values(ReceptionTypes)
   if (environment.value == 'uat' || environment.value == 'development') {
     return [
@@ -255,25 +253,33 @@ const receptionOptions = async () => {
   return [...receptionTypes]
 }
 onMounted(async () => {
-  const options = await receptionOptions()
+  const options = receptionOptions()
   receptionOptionsList.value = [
     { value: '', text: '' }, // Add this empty option at the top
     ...options,
   ]
 })
 
+const workflowMap = new Map(
+  Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
+)
+
 const workflowLocation = computed(() => {
-  const workflowsMap = new Map(
-    Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
-  )
-  if (workflow.value !== '') {
-    return workflowsMap.get(workflow.value).location
-  }
-  return undefined
+  return workflow.value !== '' ? workflowMap.get(workflow.value).location : undefined
 })
 
 const location_barcode = computed(() => {
   return workflow.value
+})
+
+watch(source, () => {
+  resetRequestOptions()
+  updatePipeline()
+})
+
+watch(pipeline, () => {
+  resetRequestOptions()
+  updatePipeline()
 })
 
 function updatePipeline() {
