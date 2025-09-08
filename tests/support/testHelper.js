@@ -36,6 +36,10 @@ const findByText = (wrapper, text) => {
   return results.at(0)
 }
 
+// Helper to find an option element by its visible text
+const findOption = (optionText, { from }) =>
+  from.findAll('option').find((option) => option.text() == optionText)
+
 /**
  *
  * @param {String} statusCode - status code of the response. Should be in the 200 range.
@@ -147,6 +151,7 @@ export {
   selectOptionByText,
   findAllByText,
   findByText,
+  findOption,
   successfulResponse,
   failedResponse,
   mountWithStore,

@@ -3,7 +3,7 @@ import build from '@/api/ApiBuilder.js'
 import PlateMap from '@/config/PlateMap.json'
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
-import { dataToObjectById } from '@/api/JsonApi.js'
+import { dataToObjectById, extractAttributes } from '@/api/JsonApi.js'
 
 export const errorFor = ({ lines, records }, message) =>
   `Library ${records} on line ${lines}: ${message}`
@@ -26,9 +26,11 @@ const useRootStore = defineStore('root', {
      * tagSets: A dictionary of tagSets fetched from the service
      */
     tagSets: {},
-    resources: {
-      libraryTypes: {},
-    },
+
+    /*
+     * libraryTypes: An array of library types fetched from the service
+     */
+    libraryTypes: [],
   }),
   getters: {
     tagSetsArray: (state) => Object.values(state.tagSets),
@@ -128,8 +130,9 @@ const useRootStore = defineStore('root', {
       } = await handleResponse(promise)
 
       if (success && data) {
-        this.resources.libraryTypes = dataToObjectById({ data })
+        this.libraryTypes = data.map(extractAttributes)
       }
+
       return { success, errors }
     },
   },

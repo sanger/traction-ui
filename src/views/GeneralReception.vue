@@ -83,13 +83,16 @@
           >Default values to apply to the imported requests</traction-muted-text
         >
         <div>
-          <LibraryTypeSelect
-            v-model="requestOptions.library_type"
-            :label-cols="0"
-            :allow-none="false"
-            :import-text="`Import from ${source} (where available)`"
-            :pipeline="pipeline.toLowerCase()"
-          />
+          <DataFetcher :fetcher="fetchLibraryTypes">
+            <LibraryTypeSelect
+              v-model="requestOptions.library_type"
+              :label-cols="0"
+              :allow-none="false"
+              :import-text="`Import from ${source} (where available)`"
+              :pipeline="pipeline.toLowerCase()"
+            />
+          </DataFetcher>
+
           <traction-field-group
             label="Cost Code"
             attribute="cost_code"
@@ -205,6 +208,10 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import useRootStore from '@/stores/index.js'
+
+const rootStore = useRootStore()
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -252,7 +259,7 @@ const receptionOptions = () => {
 
   return [...receptionTypes]
 }
-onMounted(async () => {
+onMounted(() => {
   const options = receptionOptions()
   receptionOptionsList.value = [
     { value: '', text: '' }, // Add this empty option at the top
@@ -299,6 +306,12 @@ function updatePipeline() {
   if (pipeline.value === 'ONT') {
     requestOptions.value.data_type = 'basecalls and raw data'
   }
+}
+
+const fetchLibraryTypes = async () => {
+  // We don't need to do anything here as the LibraryTypeSelect component
+  // fetches the library types itself
+  return await rootStore.fetchLibraryTypes()
 }
 
 function clearModal() {

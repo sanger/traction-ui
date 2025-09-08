@@ -1,5 +1,5 @@
 import BaseFactory from './BaseFactory.js'
-import { dataToObjectById } from './../../src/api/JsonApi.js'
+import { extractAttributes } from './../../src/api/JsonApi.js'
 
 const LibraryTypeFactory = () => {
   const data = {
@@ -268,7 +268,7 @@ const LibraryTypeFactory = () => {
     meta: { page_count: null },
   }
 
-  return { ...BaseFactory(data), storeData: dataToObjectById({ ...data }) }
+  return { ...BaseFactory(data), storeData: data.data.map(extractAttributes) }
 }
 
 export default LibraryTypeFactory
