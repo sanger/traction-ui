@@ -1,4 +1,4 @@
-import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory'
+import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
 
@@ -22,10 +22,6 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         statusCode: 200,
         body: ontTagSetFactory.content,
       })
-    })
-
-    cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
-      fixture: 'tractionDataTypes.json',
     })
 
     cy.visit('#/reception')
