@@ -108,16 +108,17 @@ const useRootStore = defineStore('root', {
      *   - errors {Array}: Any errors returned from the API.
      *
      * @description
-     * This action sends a GET request to the library types API endpoint.
-     * If the request is successful, it transforms the returned library type data into an object keyed by ID
-     * using `dataToObjectById` and updates the store's `resources.libraryTypes` state.
-     * This allows efficient lookup and management of library types within the application.
+     * This action sends a GET request to the library types API endpoint (`/traction/library_types`).
+     * If the request is successful, it extracts the attributes from each library type object
+     * and updates the store's `libraryTypes` array with the formatted results.
+     * This array can be used for populating select inputs, filtering by pipeline, or other UI logic.
      * The function returns an object with the success status and any errors encountered during the request.
      *
      * @example
      * const { success, errors } = await fetchLibraryTypes()
      * if (success) {
-     *   // Access library types via store.resources.libraryTypes
+     *   // Access library types via store.libraryTypes
+     *   // Example: [{ name: 'Pacbio_HiFi', pipeline: 'pacbio', ... }, ...]
      * }
      */
     async fetchLibraryTypes() {
