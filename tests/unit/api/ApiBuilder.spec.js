@@ -18,6 +18,12 @@ const config = [
         name: 'resource2',
       },
     ],
+    urls: [
+      {
+        name: 'feature_flags',
+        url: '/flipper/api/actors/User',
+      },
+    ],
   },
   {
     name: 'api2',
@@ -127,6 +133,13 @@ describe('ApiBuilder', () => {
       Accept: 'application/vnd.api+json',
       'custom-header': 'test',
     })
+  })
+
+  it('will create a list of urls for each api', () => {
+    expect(api.api1.urls.feature_flags).toBeDefined()
+    expect(api.api1.urls.feature_flags.url).toEqual(
+      `${import.meta.env.VITE_API1_BASE_URL}/flipper/api/actors/User`,
+    )
   })
 
   describe('pipelines', () => {

@@ -31,10 +31,19 @@ const build = ({ config }) => {
  * @param {String} rootURL -  the base URL of the API
  * @param [*] resources - a list of end points
  * @param [*] pipelines - each api may have a set of pipelines e.g. traction has Pacbio and ONT
+ * @param [*] urls - each api may have a set of urls e.g. feature flags
+ * @param {String} headers - headers for the request
  * @returns {*} an object which is a set of nested resources
  *
  */
-const buildApi = ({ apiNamespace, rootURL, resources, pipelines = [], headers = {} }) => {
+const buildApi = ({
+  apiNamespace,
+  rootURL,
+  resources,
+  pipelines = [],
+  headers = {},
+  urls = [],
+}) => {
   const apiResources = buildResources({ apiNamespace, rootURL, resources, headers })
 
   pipelines.forEach(({ name, resources }) => {
@@ -45,6 +54,13 @@ const buildApi = ({ apiNamespace, rootURL, resources, pipelines = [], headers = 
       pipeline: name,
       headers,
     })
+  })
+
+  urls.forEach(({ name, url }) => {
+    apiResources.urls = {}
+    apiResources.urls[name] = {
+      url: `${rootURL}${url}`,
+    }
   })
 
   return apiResources
