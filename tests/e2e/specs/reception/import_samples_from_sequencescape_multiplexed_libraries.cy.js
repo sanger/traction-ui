@@ -12,9 +12,6 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
         body: libraryTypeFactory.content,
       })
     })
-    // cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
-    //   fixture: 'tractionLibraryTypes.json',
-    // })
 
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.get('@printerFactory').then((printerFactory) => {
