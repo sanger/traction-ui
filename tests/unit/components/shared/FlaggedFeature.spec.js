@@ -1,5 +1,5 @@
-import { mount } from '@support/testHelper'
-import FlaggedFeature from '@/components/shared/FlaggedFeature'
+import { mount } from '@support/testHelper.js'
+import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 
 describe('FlaggedFeature.vue', () => {
   beforeEach(() => {

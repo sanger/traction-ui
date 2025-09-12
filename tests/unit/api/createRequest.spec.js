@@ -1,6 +1,11 @@
-import { defaultHeaders, createRequest, QueryParametersType } from '@/api/createRequest.js'
+import {
+  defaultHeaders,
+  createRequest,
+  QueryParametersType,
+  RequestType,
+} from '@/api/createRequest.js'
 
-import { expect } from 'vitest'
+import { describe, expect } from 'vitest'
 
 global.fetch = vi.fn()
 
@@ -323,6 +328,28 @@ describe('createRequest', () => {
     it('should return an empty object', () => {
       const queryParamsTypeObject = QueryParametersType()
       expect(queryParamsTypeObject).toEqual({ filter: {}, page: {}, include: '', fields: {} })
+    })
+  })
+
+  describe('RequestType', () => {
+    it('should return a valid object', () => {
+      const parameters = {
+        method: 'POST',
+        url: 'test',
+        api: { baseURL: 'test', headers: {} },
+        data: { test: 'test' },
+      }
+      const requestTypeObject = RequestType(parameters)
+      expect(requestTypeObject).toEqual({ ...parameters })
+    })
+    it('should return an object with default values', () => {
+      const requestTypeObject = RequestType()
+      expect(requestTypeObject).toEqual({
+        method: 'GET',
+        url: '',
+        api: {},
+        data: null,
+      })
     })
   })
 })

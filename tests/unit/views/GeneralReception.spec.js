@@ -5,6 +5,11 @@ import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import LibraryTypeFactory from '@tests/factories/LibraryTypeFactory.js'
 import useRootStore from '@/stores/index.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+
+const pacbioTagSetFactory = PacbioTagSetFactory()
+const ontTagSetFactory = OntTagSetFactory()
 
 const libraryTypeFactory = LibraryTypeFactory()
 
@@ -26,6 +31,12 @@ describe('GeneralReception', () => {
           store.api.traction.library_types.get = vi
             .fn()
             .mockResolvedValue(libraryTypeFactory.responses.fetch)
+          store.api.traction.pacbio.tag_sets.get = vi
+            .fn()
+            .mockResolvedValue(pacbioTagSetFactory.responses.fetch)
+          store.api.traction.ont.tag_sets.get = vi
+            .fn()
+            .mockResolvedValue(ontTagSetFactory.responses.fetch)
         }
       },
     ]
