@@ -1,12 +1,20 @@
 import SequencescapeMultiplexedLibraryFactory from '../../../factories/SequencescapeMultiplexedLibraryFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 import OntTagSetFactory from '../../../factories/OntTagSetFactory.js'
+import LibraryTypeFactory from '../../../factories/LibraryTypeFactory.js'
 
 describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   beforeEach(() => {
-    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
-      fixture: 'tractionLibraryTypes.json',
+    cy.wrap(LibraryTypeFactory()).as('libraryTypeFactory')
+    cy.get('@libraryTypeFactory').then((libraryTypeFactory) => {
+      cy.intercept('GET', 'v1/library_types?fields[library_types]=name,pipeline', {
+        statusCode: 200,
+        body: libraryTypeFactory.content,
+      })
     })
+    // cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
+    //   fixture: 'tractionLibraryTypes.json',
+    // })
 
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.get('@printerFactory').then((printerFactory) => {
