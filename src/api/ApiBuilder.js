@@ -1,4 +1,4 @@
-import createRequest from '@/api/createRequest.js'
+import { createRequest, createBasicRequest } from '@/api/createRequest.js'
 
 /*
   This will construct the api based on any config that has been passed
@@ -56,11 +56,13 @@ const buildApi = ({
     })
   })
 
-  urls.forEach(({ name, url }) => {
-    apiResources.urls = {}
-    apiResources.urls[name] = {
-      url: `${rootURL}${url}`,
-    }
+  urls.forEach(({ name, path }) => {
+    apiResources.urls ||= {}
+    apiResources.urls[name] = createBasicRequest({
+      rootURL,
+      headers,
+      path,
+    })
   })
 
   return apiResources

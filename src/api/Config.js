@@ -32,7 +32,7 @@ const config = [
     urls: [
       {
         name: 'feature_flags',
-        url: '/flipper/api/actors/User',
+        path: 'flipper/api/actors/User',
       },
     ],
     pipelines: [

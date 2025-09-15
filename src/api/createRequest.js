@@ -1,7 +1,13 @@
 // default headers are for json api
 const defaultHeaders = {
-  'Content-Type': 'application/vnd.api+json',
-  Accept: 'application/vnd.api+json',
+  jsonApi: {
+    'Content-Type': 'application/vnd.api+json',
+    Accept: 'application/vnd.api+json',
+  },
+  json: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
 }
 
 /*
@@ -75,7 +81,7 @@ const buildQuery = (queryParametersType = QueryParametersType()) => {
 }
 
 /*
- * @param String type - request type e.g. 'get', 'create'
+ * @param RequestType type
  * @return fetch
  * execute a query using fetch
  */
@@ -91,6 +97,22 @@ const execute = (requestType = RequestType()) => {
   })
 }
 
+const createBasicRequest = ({ rootURL, path, headers = {} }) => {
+  const baseURL = rootURL
+  const api = { baseURL, headers: { ...defaultHeaders.json, ...headers } }
+
+  const get = () => {
+    const requestType = RequestType({
+      method: 'GET',
+      url: path,
+      api,
+    })
+    return execute(requestType)
+  }
+
+  return { baseURL, api, path, get }
+}
+
 /*
  * @param {String} rootURL
  * @param {String} apiNamespace
@@ -100,7 +122,7 @@ const execute = (requestType = RequestType()) => {
  */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
-  const api = { baseURL, headers: { ...defaultHeaders, ...headers } }
+  const api = { baseURL, headers: { ...defaultHeaders.jsonApi, ...headers } }
 
   /*
    * @param {Object} queryParametersType - query parameters
@@ -249,6 +271,6 @@ const RequestType = ({ method = 'GET', url = '', api = {}, data = null } = {}) =
   }
 }
 
-export { defaultHeaders, createRequest, QueryParametersType, RequestType }
+export { defaultHeaders, createRequest, QueryParametersType, RequestType, createBasicRequest }
 
 export default createRequest

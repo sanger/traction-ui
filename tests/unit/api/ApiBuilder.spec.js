@@ -21,7 +21,7 @@ const config = [
     urls: [
       {
         name: 'feature_flags',
-        url: '/flipper/api/actors/User',
+        path: 'flipper/api/actors/User',
       },
     ],
   },
@@ -137,9 +137,10 @@ describe('ApiBuilder', () => {
 
   it('will create a list of urls for each api', () => {
     expect(api.api1.urls.feature_flags).toBeDefined()
-    expect(api.api1.urls.feature_flags.url).toEqual(
-      `${import.meta.env.VITE_API1_BASE_URL}/flipper/api/actors/User`,
-    )
+    const request = api.api1.urls.feature_flags
+    expect(request.baseURL).toEqual(import.meta.env.VITE_API1_BASE_URL)
+    expect(request.api).toBeDefined()
+    expect(request.path).toEqual('flipper/api/actors/User')
   })
 
   describe('pipelines', () => {
