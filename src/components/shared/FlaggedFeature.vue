@@ -6,8 +6,12 @@
 </template>
 
 <script setup>
-import useSWRV from 'swrv'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import useRootStore from '@/stores'
+import { handleResponse } from '@/api/ResponseHelper.js'
+
+const rootStore = useRootStore()
+const data = ref(null)
 
 const DEFAULT_FEATURE = { enabled: false }
 
@@ -18,9 +22,15 @@ const props = defineProps({
   },
 })
 
-const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
-const { data } = useSWRV(`${baseURL}/flipper/api/actors/User`)
+onMounted(async () => {
+  const request = rootStore.api.traction.feature_flags
+  const promise = request.get()
+  const { success, body } = await handleResponse(promise)
+  if (success) {
+    data.value = body.data
+  }
+})
 
-const feature = computed(() => data.features?.[props.name] || DEFAULT_FEATURE)
+const feature = computed(() => data.value?.features?.[props.name] || DEFAULT_FEATURE)
 const enabled = computed(() => feature.value.enabled)
 </script>

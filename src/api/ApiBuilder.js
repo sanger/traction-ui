@@ -57,8 +57,7 @@ const buildApi = ({
   })
 
   urls.forEach(({ name, path }) => {
-    apiResources.urls ||= {}
-    apiResources.urls[name] = createBasicRequest({
+    apiResources[name] = createBasicRequest({
       rootURL,
       headers,
       path,

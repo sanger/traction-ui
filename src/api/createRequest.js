@@ -1,4 +1,14 @@
-// default headers are for json api
+/**
+ * A simple library for creating requests to an API endpoint
+ * using fetch and json api headers
+ * @module createRequest
+ * There needs to be better separation of basic request and json api request
+ * e.g. createBasicRequest and createJsonApiRequest
+ * The createRequest function is for json api requests
+ * The createBasicRequest function is for basic requests
+ */
+
+// default headers for json and json api
 const defaultHeaders = {
   jsonApi: {
     'Content-Type': 'application/vnd.api+json',
@@ -97,6 +107,28 @@ const execute = (requestType = RequestType()) => {
   })
 }
 
+/**
+ * Creates a basic request object for interacting with an API endpoint using JSON headers.
+ *
+ * @param {Object} params - The parameters for the request.
+ * @param {String} params.rootURL - The base URL for the API.
+ * @param {String} params.path - The endpoint path for the resource.
+ * @param {Object} [params.headers={}] - Optional additional headers to merge with default JSON headers.
+ * @returns {Object} An object containing:
+ *   - baseURL: The base URL for the API.
+ *   - api: The API configuration object with baseURL and headers.
+ *   - path: The endpoint path.
+ *   - get: A function to perform a GET request to the specified path.
+ *
+ * @description
+ * This function sets up a basic API request configuration using JSON headers.
+ * It provides a `get` method to perform a GET request to the specified resource path.
+ * The returned object can be used to interact with simple API endpoints that do not require advanced query parameters.
+ *
+ * @example
+ * const request = createBasicRequest({ rootURL: 'http://localhost:3100/v1', path: 'samples' })
+ * const response = await request.get()
+ */
 const createBasicRequest = ({ rootURL, path, headers = {} }) => {
   const baseURL = rootURL
   const api = { baseURL, headers: { ...defaultHeaders.json, ...headers } }

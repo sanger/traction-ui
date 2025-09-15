@@ -96,6 +96,7 @@ const failedResponse = (statusCode = 500) => {
  * @param {Function} [options.createStore=() => {}] - Function to create the store instance.
  * @param {Object} [options.stubs={}] - Components to be stubbed in the component.
  * @param {Object} [options.dataProps={}] - Initial data state of the component.
+ * @param {Object} [options.slots={}] - Slots to be passed to the component.
  * @returns {Object} An object containing the mounted wrapper and the store instance.
  */
 function mountWithStore(component, options = {}) {
@@ -106,6 +107,7 @@ function mountWithStore(component, options = {}) {
     props = {},
     createStore = () => {},
     stubs = {},
+    slots = {},
   } = options
 
   const createPiniaPlugin = () =>
@@ -120,6 +122,7 @@ function mountWithStore(component, options = {}) {
       stubs,
     },
     props,
+    slots,
   })
   const store = createStore()
   return { wrapper, store }
