@@ -24,7 +24,6 @@ describe('LibraryTypeSelect.vue', () => {
       const select = wrapper.find('select')
       expect(findOption('Pacbio_HiFi', { from: select }).exists()).toBe(true)
       expect(findOption('Pacbio_IsoSeq', { from: select }).exists()).toBe(true)
-      expect(findOption('None', { from: select }).exists()).toBe(true)
       expect(
         findOption('Import from Sequencescape (where available)', { from: select }).exists(),
       ).toBe(true)
@@ -49,19 +48,6 @@ describe('LibraryTypeSelect.vue', () => {
       const select = wrapper.find('select')
       await findOption('Pacbio_HiFi', { from: select }).setSelected()
       expect(wrapper.emitted('update:modelValue')).toEqual([['Pacbio_HiFi']])
-    })
-
-    it('can emit no library type', async () => {
-      const { wrapper } = await mountComponent()
-      const select = wrapper.find('select')
-      await findOption('None', { from: select }).setSelected()
-      expect(wrapper.emitted('update:modelValue')).toEqual([[null]])
-    })
-
-    it('can have no library type disabled', () => {
-      const { wrapper } = mountComponent({ pipeline: 'pacbio', allowNone: false })
-      const select = wrapper.find('select')
-      expect(findOption('None', { from: select })).toBe(undefined)
     })
 
     it('can emit undefined library type', async () => {

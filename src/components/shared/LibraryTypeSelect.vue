@@ -43,10 +43,6 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  allowNone: {
-    type: Boolean,
-    default: true,
-  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -57,14 +53,11 @@ const importOption = computed(() =>
   props.import ? [{ value: UNDEFINED, text: props.importText }] : [],
 )
 
-const emptyOption = computed(() => (props.allowNone ? [{ value: '', text: 'None' }] : []))
-
 const libraryTypeSelectOptions = computed(() => [
   ...(props.pipeline
     ? libraryTypes.value.filter((lt) => lt.pipeline === props.pipeline)
     : libraryTypes.value),
   ...importOption.value,
-  ...emptyOption.value,
 ])
 
 function handleInput(input) {
