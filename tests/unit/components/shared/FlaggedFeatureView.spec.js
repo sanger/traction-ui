@@ -1,6 +1,9 @@
-import { mountWithStore, successfulResponse, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import FlaggedFeatureView from '@/components/shared/FlaggedFeatureView.vue'
 import { markRaw } from 'vue'
+import FlipperFactory from '@tests/factories/FlipperFactory.js'
+
+const flipperFactory = FlipperFactory()
 
 const componentEnabled = markRaw({
   template: '<div>Enabled</div>',
@@ -8,14 +11,6 @@ const componentEnabled = markRaw({
 const componentDisabled = markRaw({
   template: '<div>Disabled</div>',
 })
-
-const flipperResponse = {
-  flipper_id: 'User 1',
-  features: {
-    enable_feature: { enabled: true },
-    disabled_feature: { enabled: false },
-  },
-}
 
 const buildWrapper = (props = {}) => {
   return mountWithStore(FlaggedFeatureView, {
@@ -27,9 +22,7 @@ const buildWrapper = (props = {}) => {
     plugins: [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.feature_flags.get = vi.fn(() =>
-            successfulResponse({ statusCode: '200', data: flipperResponse }),
-          )
+          store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
         }
       },
     ],

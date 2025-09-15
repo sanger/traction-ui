@@ -1,14 +1,9 @@
-import { mountWithStore, successfulResponse, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import useRootStore from '@/stores'
+import FlipperFactory from '@tests/factories/FlipperFactory.js'
 
-const flipperResponse = {
-  flipper_id: 'User 1',
-  features: {
-    enable_feature: { enabled: true },
-    disabled_feature: { enabled: false },
-  },
-}
+const flipperFactory = FlipperFactory()
 
 const buildWrapper = (props = {}) => {
   return mountWithStore(FlaggedFeature, {
@@ -20,9 +15,7 @@ const buildWrapper = (props = {}) => {
     plugins: [
       ({ store }) => {
         if (store.$id === 'root') {
-          store.api.traction.feature_flags.get = vi.fn(() =>
-            successfulResponse({ statusCode: '200', data: flipperResponse }),
-          )
+          store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
         }
       },
     ],

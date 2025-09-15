@@ -46,7 +46,8 @@ const findOption = (optionText, { from }) =>
  * @param {Object} data - data to be returned in the response
  * @param {Array} included - included data to be returned in the response
  * @returns {Object} - a successful response object (fetch)
- * A standard response object that can be used to mock a successful fetch response.
+ * A standard response object that can be used to mock a successful Json Apifetch response.
+ * Needs to be modified if used for non-json api responses.
  */
 const successfulResponse = ({ statusCode = 201, data = {}, included = [] } = {}) => {
   return {
