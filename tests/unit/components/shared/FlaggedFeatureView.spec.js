@@ -30,10 +30,6 @@ const buildWrapper = (props = {}) => {
 }
 
 describe('FlaggedFeatureView.vue', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('displays the conponentOnFeatureEnable when the flag is true', async () => {
     const { wrapper } = buildWrapper({
       feature: 'enable_feature',

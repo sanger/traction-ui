@@ -27,10 +27,6 @@ const mockResponse = {
 }
 
 describe('createRequest', () => {
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('basic attributes', () => {
     it('will have a rootURL', () => {
       const request = createRequest({ ...attributes })

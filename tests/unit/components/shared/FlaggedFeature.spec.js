@@ -24,10 +24,6 @@ const buildWrapper = (props = {}) => {
 }
 
 describe('FlaggedFeature.vue', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('displays the slot when the flag is true', async () => {
     const { wrapper } = buildWrapper({ name: 'enable_feature' })
     await flushPromises()
