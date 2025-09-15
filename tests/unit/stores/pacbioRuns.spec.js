@@ -43,6 +43,8 @@ describe('usePacbioRunsStore', () => {
       })
     })
 
+    // these tests make no sense. The updated run is being set to the whole content of the
+    // pacbio run factory. It is not testing the action correctly.
     describe('updateRun', () => {
       let updatedRun, update
       beforeEach(() => {
