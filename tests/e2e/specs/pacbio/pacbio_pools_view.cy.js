@@ -15,12 +15,26 @@ describe('Pacbio Pools view', () => {
       )
     })
 
-    cy.intercept('POST', '/api/labwares/searches', {
-      statusCode: 200,
-      body: {
-        data: [],
-      },
-    })
+    // Stub labwhere request
+    cy.get('@pacbioPoolFactory')
+      .then((pacbioPoolFactory) => {
+        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: pacbioPoolFactory.content.data[0].attributes.barcode,
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
+            },
+          ],
+        })
+      })
+      .as('labwhereRequest')
 
     cy.wrap(PrinterFactory()).as('printerFactory')
 
@@ -50,6 +64,13 @@ describe('Pacbio Pools view', () => {
     cy.get('#concentration').invoke('text').should('match', /\d+/)
     cy.get('#template_prep_kit_box_barcode').invoke('text').should('match', /\w+/)
     cy.get('#insert_size').invoke('text').should('match', /\d+/)
+
+    // Handle location column separately due to labwhere request stub
+    cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
+    // Currently these tables have invalid HTML (multiple elements with same ID)
+    // so we have to use 'td#location' instead of '#location' to get all matching table cells
+    cy.get('td#location').should('have.length.greaterThan', 0)
+    cy.get('td#location').last().should('contain', 'box-test')
 
     //Show details
     cy.get('button[id^="details-btn-"]').first().click()

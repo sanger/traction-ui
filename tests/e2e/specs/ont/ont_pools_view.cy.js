@@ -20,6 +20,29 @@ describe('Ont pools view', () => {
         body: printerFactory.content,
       })
     })
+
+    // Stub labwhere request
+    cy.get('@ontPoolFactory')
+      .then((ontPoolFactory) => {
+        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+        console.log(ontPoolFactory.content)
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: ontPoolFactory.content.data[0].attributes.tube_barcode,
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
+            },
+          ],
+        })
+      })
+      .as('labwhereRequest')
+
     cy.visit('#/ont/pools')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -38,5 +61,12 @@ describe('Ont pools view', () => {
     cy.get('#kit_barcode').invoke('text').should('match', /\w+/)
     cy.get('#insert_size').invoke('text').should('match', /\d+/)
     cy.get('#final_library_amount').invoke('text').should('match', /\d+/)
+
+    // Handle location column separately due to labwhere request stub
+    cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
+    // Currently these tables have invalid HTML (multiple elements with same ID)
+    // so we have to use 'td#location' instead of '#location' to get all matching table cells
+    cy.get('td#location').should('have.length.greaterThan', 0)
+    cy.get('td#location').first().should('contain', 'box-test')
   })
 })

@@ -42,7 +42,7 @@ describe('Pacbio samples view', () => {
       },
     })
 
-    // Stub labware request
+    // Stub labwhere request
     cy.get('@pacbioRequestFactory')
       .then((pacbioRequestFactory) => {
         const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
@@ -62,7 +62,7 @@ describe('Pacbio samples view', () => {
           ],
         })
       })
-      .as('labwareRequest')
+      .as('labwhereRequest')
   })
 
   it('Visits the pacbio samples url and displays data', () => {
@@ -95,8 +95,8 @@ describe('Pacbio samples view', () => {
       cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
     })
 
-    // Handle location column separately due to labware request stub
-    cy.wait('@labwareRequest').its('response.statusCode').should('eq', 200)
+    // Handle location column separately due to labwhere request stub
+    cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
     // Currently these tables have invalid HTML (multiple elements with same ID)
     // so we have to use 'td#location' instead of '#location' to get all matching table cells
     cy.get('td#location').should('have.length.greaterThan', 0)
