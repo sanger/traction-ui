@@ -9,6 +9,26 @@ describe('Ont samples view', () => {
         body: ontRequestFactory.content,
       })
     })
+    // Stub labware request
+    cy.get('@ontRequestFactory')
+      .then((ontRequestFactory) => {
+        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: ontRequestFactory.content.data[0].attributes.source_identifier.split(':')[0],
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
+            },
+          ],
+        })
+      })
+      .as('labwareRequest')
   })
 
   it('Visits the ont samples url', () => {
@@ -37,7 +57,6 @@ describe('Ont samples view', () => {
       'number_of_flowcells',
       'cost_code',
       'external_study_id',
-      'location',
       'sample_retention_instruction',
       'created_at',
     ]
@@ -45,6 +64,13 @@ describe('Ont samples view', () => {
     columnKeys.forEach((columnKey) => {
       cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
     })
+
+    // Handle location column separately due to labware request stub
+    cy.wait('@labwareRequest').its('response.statusCode').should('eq', 200)
+    // Currently these tables have invalid HTML (multiple elements with same ID)
+    // so we have to use 'td#location' instead of '#location' to get all matching table cells
+    cy.get('td#location').should('have.length.greaterThan', 0)
+    cy.get('td#location').first().should('contain', 'box-test')
   })
 
   it('successfully edits a request', () => {

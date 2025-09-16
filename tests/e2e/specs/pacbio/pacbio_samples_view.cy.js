@@ -41,6 +41,28 @@ describe('Pacbio samples view', () => {
         },
       },
     })
+
+    // Stub labware request
+    cy.get('@pacbioRequestFactory')
+      .then((pacbioRequestFactory) => {
+        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode:
+                pacbioRequestFactory.content.data[0].attributes.source_identifier.split(':')[0],
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
+            },
+          ],
+        })
+      })
+      .as('labwareRequest')
   })
 
   it('Visits the pacbio samples url and displays data', () => {
@@ -65,7 +87,6 @@ describe('Pacbio samples view', () => {
       'sample_name',
       'sample_species',
       'source_identifier',
-      'location',
       'sample_retention_instruction',
       'created_at',
     ]
@@ -73,6 +94,13 @@ describe('Pacbio samples view', () => {
     columnKeys.forEach((columnKey) => {
       cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
     })
+
+    // Handle location column separately due to labware request stub
+    cy.wait('@labwareRequest').its('response.statusCode').should('eq', 200)
+    // Currently these tables have invalid HTML (multiple elements with same ID)
+    // so we have to use 'td#location' instead of '#location' to get all matching table cells
+    cy.get('td#location').should('have.length.greaterThan', 0)
+    cy.get('td#location').last().should('contain', 'box-test')
   })
 
   it('creates a library  successfully', () => {
