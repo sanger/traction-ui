@@ -21,7 +21,7 @@
         id="samples-table"
         v-model:sort-by="state.sortBy"
         primary_key="id"
-        :items="formatRequests(pacbioRequestsStore.requestsArray, labwareLocations.value)"
+        :items="displayedRequests"
         :fields="state.fields"
         selectable
         select-mode="single"
@@ -128,6 +128,10 @@ const printingStore = usePrintingStore()
 const barcodes = computed(() => {
   return pacbioRequestsStore.requestsArray.map(({ source_identifier }) => source_identifier)
 })
+
+const displayedRequests = computed(() =>
+  formatRequests(pacbioRequestsStore.requestsArray, labwareLocations.value),
+)
 
 watchEffect(async () => {
   const barcodesValue = barcodes.value
