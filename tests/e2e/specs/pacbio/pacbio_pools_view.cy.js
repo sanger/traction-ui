@@ -67,7 +67,7 @@ describe('Pacbio Pools view', () => {
       .should('match', /\w+/)
     cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
 
-    // Handle location column separately due to confirm labwhere call is working
+    // Handle location column separately to confirm labwhere call is working
     cy.get('[data-attribute=location]').last().should('contain', 'box-test')
 
     //Show details

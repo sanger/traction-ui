@@ -59,7 +59,7 @@ describe('Ont pools view', () => {
     cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
     cy.get('[data-attribute=final_library_amount]').first().invoke('text').should('match', /\d+/)
 
-    // Handle location column separately due to confirm labwhere call is working
+    // Handle location column separately to confirm labwhere call is working
     cy.get('[data-attribute=location]').first().should('contain', 'box-test')
   })
 })

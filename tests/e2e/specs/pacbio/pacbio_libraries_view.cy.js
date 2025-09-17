@@ -71,7 +71,7 @@ describe('Pacbio Libraries view', () => {
     cy.get('[data-attribute=insert_size]').first().should('have.length.greaterThan', 0)
     cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
 
-    // Handle location column separately due to confirm labwhere call is working
+    // Handle location column separately to confirm labwhere call is working
     cy.get('[data-attribute=location]').last().should('contain', 'box-test')
   })
 

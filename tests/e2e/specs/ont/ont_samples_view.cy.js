@@ -63,7 +63,7 @@ describe('Ont samples view', () => {
       cy.get(`[data-attribute=${columnKey}]`).first().should('have.length.greaterThan', 0)
     })
 
-    // Handle location column separately due to confirm labwhere call is working
+    // Handle location column separately to confirm labwhere call is working
     cy.get('[data-attribute=location]').first().should('contain', 'box-test')
   })
 
