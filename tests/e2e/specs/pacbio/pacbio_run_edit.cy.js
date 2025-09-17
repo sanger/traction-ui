@@ -43,7 +43,7 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
+    cy.get('[data-attribute=actions]').first().within(() => {
       cy.get('#editRun-1581').click()
     })
     // check the barcodes and concentration are present
@@ -138,7 +138,7 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#actions').within(() => {
+    cy.get('[data-attribute=actions]').first().within(() => {
       cy.get('#editRun-1581').click()
     })
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()

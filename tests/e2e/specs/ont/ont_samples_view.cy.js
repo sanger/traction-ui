@@ -62,15 +62,12 @@ describe('Ont samples view', () => {
     ]
     // Iterate over the column IDs and verify each has a length greater than 0
     columnKeys.forEach((columnKey) => {
-      cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
+      cy.get(`[data-attribute=${columnKey}]`).first().should('have.length.greaterThan', 0)
     })
 
     // Handle location column separately due to labwhere request stub
     cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
-    // Currently these tables have invalid HTML (multiple elements with same ID)
-    // so we have to use 'td#location' instead of '#location' to get all matching table cells
-    cy.get('td#location').should('have.length.greaterThan', 0)
-    cy.get('td#location').first().should('contain', 'box-test')
+    cy.get('[data-attribute=location]').first().should('contain', 'box-test')
   })
 
   it('successfully edits a request', () => {

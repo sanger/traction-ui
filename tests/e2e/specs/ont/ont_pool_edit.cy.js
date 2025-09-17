@@ -57,14 +57,14 @@ describe('ONT Pool Edit', () => {
       .its('length')
       .then((selectedListLength) => {
         // Deselect row globally
-        cy.get('#selectedList').should('be.visible').find('#source_identifier').first().click()
+        cy.get('#selectedList').should('be.visible').find('[data-attribute=source_identifier]').first().click()
         // Assert new length
         cy.get('[data-type=pool-library-list]')
           .find('[data-testid=row]')
           .should('have.length', selectedListLength - 1)
 
         // Select row globally
-        cy.get('#selectedList').find('#source_identifier').first().click()
+        cy.get('#selectedList').find('[data-attribute=source_identifier]').first().click()
         cy.get('[data-type=pool-library-list]')
           .find('[data-testid=row]')
           .should('have.length', selectedListLength)

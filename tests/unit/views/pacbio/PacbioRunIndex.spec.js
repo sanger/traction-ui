@@ -91,7 +91,7 @@ describe('PacbioRunIndex.vue', () => {
         .find('tbody')
         .findAll('tr')
         .forEach((row) => {
-          const run_id = row.find('#id').text()
+          const run_id = row.find('[data-attribute=id]').text()
           const badge = row.find('[data-attribute=smrt-link-version-badge]').text()
           const version_id = pacbioRunFactory.storeData.runs[run_id].pacbio_smrt_link_version_id
           const version = runCreateStore.smrtLinkVersionList[version_id]
@@ -267,7 +267,7 @@ describe('PacbioRunIndex.vue', () => {
     it('will sort the runs by created at', () => {
       const runs = Object.values(pacbioRunFactory.storeData.runs)
       const sortedRuns = runs.sort((a, b) => a.created_at.localeCompare(b.created_at)).reverse()
-      expect(wrapper.find('tbody').findAll('#id')[0].text()).toMatch(sortedRuns[0].id)
+      expect(wrapper.find('tbody').findAll('[data-attribute=id]')[0].text()).toMatch(sortedRuns[0].id)
     })
   })
 

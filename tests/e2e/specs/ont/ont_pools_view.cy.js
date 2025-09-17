@@ -25,7 +25,6 @@ describe('Ont pools view', () => {
     cy.get('@ontPoolFactory')
       .then((ontPoolFactory) => {
         const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-        console.log(ontPoolFactory.content)
         cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
           statusCode: 200,
           body: [
@@ -53,20 +52,17 @@ describe('Ont pools view', () => {
       .and('contain', 'Pool ID')
       .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '16')
-    cy.get('#id').invoke('text').should('match', /\d+/)
-    cy.get('#barcode').invoke('text').should('include', 'TRAC')
-    cy.get('#source_identifier').invoke('text').should('match', /\w+/)
-    cy.get('#volume').invoke('text').should('match', /\d+/)
-    cy.get('#concentration').invoke('text').should('match', /\d+/)
-    cy.get('#kit_barcode').invoke('text').should('match', /\w+/)
-    cy.get('#insert_size').invoke('text').should('match', /\d+/)
-    cy.get('#final_library_amount').invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=barcode]').first().invoke('text').should('include', 'TRAC')
+    cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=kit_barcode]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=final_library_amount]').first().invoke('text').should('match', /\d+/)
 
     // Handle location column separately due to labwhere request stub
     cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
-    // Currently these tables have invalid HTML (multiple elements with same ID)
-    // so we have to use 'td#location' instead of '#location' to get all matching table cells
-    cy.get('td#location').should('have.length.greaterThan', 0)
-    cy.get('td#location').first().should('contain', 'box-test')
+    cy.get('[data-attribute=location]').first().should('contain', 'box-test')
   })
 })
