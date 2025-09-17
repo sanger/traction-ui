@@ -164,7 +164,10 @@ const printLabels = async (printerName) => {
 /*Fetches the requests from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
 const provider = async () => {
-  const { success, errors } =  await fetchWithQueryParams(pacbioRequestsStore.setRequests, state.filterOptions)
+  const { success, errors } = await fetchWithQueryParams(
+    pacbioRequestsStore.setRequests,
+    state.filterOptions,
+  )
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
@@ -172,8 +175,7 @@ const provider = async () => {
     const sources = requestArray.map(({ source_identifier }) => source_identifier)
     labwareLocations.value = await fetchLocations(sources)
   }
-  
+
   return { success, errors }
 }
-
 </script>

@@ -91,12 +91,17 @@ const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
 
 // --- Getters ---
-const displayedRequests = computed(() => formatRequests(ontRequestsStore.requests, labwareLocations.value))
+const displayedRequests = computed(() =>
+  formatRequests(ontRequestsStore.requests, labwareLocations.value),
+)
 
 /*Fetches the requests from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
 const provider = async () => {
-  const { success, errors } =  await fetchWithQueryParams(ontRequestsStore.fetchRequests, filterOptions)
+  const { success, errors } = await fetchWithQueryParams(
+    ontRequestsStore.fetchRequests,
+    filterOptions,
+  )
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
@@ -104,7 +109,7 @@ const provider = async () => {
     const sources = requestArray.map(({ source_identifier }) => source_identifier)
     labwareLocations.value = await fetchLocations(sources)
   }
-  
+
   return { success, errors }
 }
 </script>

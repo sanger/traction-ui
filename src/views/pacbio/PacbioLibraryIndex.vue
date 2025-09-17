@@ -197,7 +197,6 @@ const sortBy = ref('id')
 const labwareLocations = ref([])
 const showConfirmationModal = ref(false)
 
-
 //Composables
 const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
@@ -209,7 +208,6 @@ const librariesStore = usePacbioLibrariesStore()
 
 //computed
 const libraries = computed(() => librariesStore.librariesArray)
-
 
 // Computed property for displayed libraries with updated location information
 const displayedLibraries = computed(() => {
@@ -268,7 +266,10 @@ const exhausted = (row) => {
 /*Fetches the libraries from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
 const provider = async () => {
-  const { success, errors } =  await fetchWithQueryParams(librariesStore.fetchLibraries, state.filterOptions)
+  const { success, errors } = await fetchWithQueryParams(
+    librariesStore.fetchLibraries,
+    state.filterOptions,
+  )
   // We only want to fetch labware locations if the libraries were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
@@ -276,7 +277,7 @@ const provider = async () => {
     const barcodes = librariesArray.map(({ barcode }) => barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
-  
+
   return { success, errors }
 }
 </script>

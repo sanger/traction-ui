@@ -28,25 +28,23 @@ describe('Pacbio Libraries view', () => {
     })
 
     // Stub labwhere request
-    cy.get('@pacbioLibraryFactory')
-      .then((pacbioLibraryFactory) => {
-        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
-          statusCode: 200,
-          body: [
-            {
-              barcode: pacbioLibraryFactory.content.data[0].attributes.barcode,
-              created_at: 'Tuesday September 16 2025 10:29',
-              updated_at: 'Tuesday September 16 2025 10:29',
-              location: {
-                id: 432,
-                name: 'box-test',
-              },
+    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
+      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+        statusCode: 200,
+        body: [
+          {
+            barcode: pacbioLibraryFactory.content.data[0].attributes.barcode,
+            created_at: 'Tuesday September 16 2025 10:29',
+            updated_at: 'Tuesday September 16 2025 10:29',
+            location: {
+              id: 432,
+              name: 'box-test',
             },
-          ],
-        })
+          },
+        ],
       })
-      .as('labwhereRequest')
+    })
   })
 
   it('Visits the pacbio libraries url', () => {
@@ -73,8 +71,7 @@ describe('Pacbio Libraries view', () => {
     cy.get('[data-attribute=insert_size]').first().should('have.length.greaterThan', 0)
     cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
 
-    // Handle location column separately due to labwhere request stub
-    cy.wait('@labwhereRequest').its('response.statusCode').should('eq', 200)
+    // Handle location column separately due to confirm labwhere call is working
     cy.get('[data-attribute=location]').last().should('contain', 'box-test')
   })
 

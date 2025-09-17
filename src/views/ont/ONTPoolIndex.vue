@@ -138,7 +138,9 @@ const { fetchLocations } = useLocationFetcher()
 const printingStore = usePrintingStore()
 
 // --- Getters ---
-const displayedPools = computed(() => locationBuilder(ontPoolCreateStore.pools, labwareLocations.value))
+const displayedPools = computed(() =>
+  locationBuilder(ontPoolCreateStore.pools, labwareLocations.value),
+)
 
 // --- Methods ---
 /**
@@ -191,7 +193,10 @@ function formattedSourceIdentifier(sourceIdentifier) {
 /*Fetches the pools from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
 const provider = async () => {
-  const { success, errors } =  await fetchWithQueryParams(ontPoolCreateStore.fetchOntPools, filterOptions)
+  const { success, errors } = await fetchWithQueryParams(
+    ontPoolCreateStore.fetchOntPools,
+    filterOptions,
+  )
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
@@ -199,7 +204,7 @@ const provider = async () => {
     const barcodes = poolsArray.map(({ barcode }) => barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
-  
+
   return { success, errors }
 }
 </script>
