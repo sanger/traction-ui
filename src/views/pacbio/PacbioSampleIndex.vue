@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchRequests">
-    <FilterCard :fetcher="fetchRequests" :filter-options="state.filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
     <div class="flex flex-col">
       <div>
         <PrinterModal
@@ -81,7 +81,7 @@ import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 
-import { computed, ref, watchEffect, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
 import useAlert from '@/composables/useAlert.js'
@@ -125,18 +125,9 @@ const state = reactive({
 
 const printingStore = usePrintingStore()
 
-const barcodes = computed(() => {
-  return pacbioRequestsStore.requestsArray.map(({ source_identifier }) => source_identifier)
-})
-
 const displayedRequests = computed(() =>
   formatRequests(pacbioRequestsStore.requestsArray, labwareLocations.value),
 )
-
-watchEffect(async () => {
-  const barcodesValue = barcodes.value
-  labwareLocations.value = await fetchLocations(barcodesValue)
-})
 
 /*create the labels needed for the print job
  each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
@@ -170,10 +161,19 @@ const printLabels = async (printerName) => {
   showAlert(message, success ? 'success' : 'danger')
 }
 
-/*Fetches the requests from the api
-  @param {Object} filter The filter to apply to the request
+/*Fetches the requests from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
-const fetchRequests = async () => {
-  return await fetchWithQueryParams(pacbioRequestsStore.setRequests, state.filterOptions)
+const provider = async () => {
+  const { success, errors } =  await fetchWithQueryParams(pacbioRequestsStore.setRequests, state.filterOptions)
+  // We only want to fetch labware locations if the requests were fetched successfully
+  if (success) {
+    // We don't need to fail if labware locations can't be fetched, so we don't return anything
+    const requestArray = pacbioRequestsStore.requestsArray
+    const sources = requestArray.map(({ source_identifier }) => source_identifier)
+    labwareLocations.value = await fetchLocations(sources)
+  }
+  
+  return { success, errors }
 }
+
 </script>
