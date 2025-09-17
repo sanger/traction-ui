@@ -43,9 +43,11 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('[data-attribute=actions]').first().within(() => {
-      cy.get('#editRun-1581').click()
-    })
+    cy.get('[data-attribute=actions]')
+      .first()
+      .within(() => {
+        cy.get('#editRun-1581').click()
+      })
     // check the barcodes and concentration are present
     cy.get('@revioRunFactory').then((revioRunFactory) => {
       cy.get('[data-attribute="barcodes-and-concentrations"]').should(
@@ -138,9 +140,11 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('[data-attribute=actions]').first().within(() => {
-      cy.get('#editRun-1581').click()
-    })
+    cy.get('[data-attribute=actions]')
+      .first()
+      .within(() => {
+        cy.get('#editRun-1581').click()
+      })
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(

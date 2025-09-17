@@ -267,7 +267,9 @@ describe('PacbioRunIndex.vue', () => {
     it('will sort the runs by created at', () => {
       const runs = Object.values(pacbioRunFactory.storeData.runs)
       const sortedRuns = runs.sort((a, b) => a.created_at.localeCompare(b.created_at)).reverse()
-      expect(wrapper.find('tbody').findAll('[data-attribute=id]')[0].text()).toMatch(sortedRuns[0].id)
+      expect(wrapper.find('tbody').findAll('[data-attribute=id]')[0].text()).toMatch(
+        sortedRuns[0].id,
+      )
     })
   })
 

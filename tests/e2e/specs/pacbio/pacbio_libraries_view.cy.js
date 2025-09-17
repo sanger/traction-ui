@@ -67,7 +67,9 @@ describe('Pacbio Libraries view', () => {
     cy.get('[data-attribute=volume]').first().should('have.length.greaterThan', 0)
     cy.get('[data-attribute=available_volume]').first().should('have.length.greaterThan', 0)
     cy.get('[data-attribute=concentration]').first().should('have.length.greaterThan', 0)
-    cy.get('[data-attribute=template_prep_kit_box_barcode]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=template_prep_kit_box_barcode]')
+      .first()
+      .should('have.length.greaterThan', 0)
     cy.get('[data-attribute=insert_size]').first().should('have.length.greaterThan', 0)
     cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
 

@@ -61,7 +61,10 @@ describe('Pacbio Pools view', () => {
     cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
     cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
     cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)
-    cy.get('[data-attribute=template_prep_kit_box_barcode]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=template_prep_kit_box_barcode]')
+      .first()
+      .invoke('text')
+      .should('match', /\w+/)
     cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
 
     // Handle location column separately due to labwhere request stub

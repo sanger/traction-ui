@@ -39,8 +39,13 @@ describe('Pacbio Runs view', () => {
         cy.get('[data-attribute=name]').should('have.length.greaterThan', 0)
         cy.get('[data-attribute=state]').should('have.length.greaterThan', 0)
         cy.get('[data-attribute=sequencing_kit_box_barcodes]').should('have.length.greaterThan', 0)
-        cy.get('[data-attribute=dna_control_complex_box_barcode]').should('have.length.greaterThan', 0)
-        cy.get('[data-attribute=system_name_and_version]').find('.badge').should('have.length.greaterThan', 0)
+        cy.get('[data-attribute=dna_control_complex_box_barcode]').should(
+          'have.length.greaterThan',
+          0,
+        )
+        cy.get('[data-attribute=system_name_and_version]')
+          .find('.badge')
+          .should('have.length.greaterThan', 0)
         cy.get('[data-attribute=adaptive_loading]').should('exist')
       })
   })

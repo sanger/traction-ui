@@ -21,7 +21,11 @@ describe('ONT Runs view', () => {
     cy.get('[data-attribute=state]').first().invoke('text').should('match', /\w+/)
     cy.get('[data-attribute=instrument_name]').first().invoke('text').should('match', /\w+/)
     cy.get('[data-attribute=created_at]').first().invoke('text').should('match', /\d+/)
-    cy.get('[data-attribute=actions]').first().invoke('text').should('include', 'Edit').and('include', 'Sample Sheet')
+    cy.get('[data-attribute=actions]')
+      .first()
+      .invoke('text')
+      .should('include', 'Edit')
+      .and('include', 'Sample Sheet')
   })
 
   it('displays the ONT run page with correct data when clicking on edit run', () => {
