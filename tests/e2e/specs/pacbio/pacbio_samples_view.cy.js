@@ -41,6 +41,26 @@ describe('Pacbio samples view', () => {
         },
       },
     })
+
+    // Stub labwhere request
+    cy.get('@pacbioRequestFactory').then((pacbioRequestFactory) => {
+      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+        statusCode: 200,
+        body: [
+          {
+            barcode:
+              pacbioRequestFactory.content.data[0].attributes.source_identifier.split(':')[0],
+            created_at: 'Tuesday September 16 2025 10:29',
+            updated_at: 'Tuesday September 16 2025 10:29',
+            location: {
+              id: 432,
+              name: 'box-test',
+            },
+          },
+        ],
+      })
+    })
   })
 
   it('Visits the pacbio samples url and displays data', () => {
@@ -65,14 +85,16 @@ describe('Pacbio samples view', () => {
       'sample_name',
       'sample_species',
       'source_identifier',
-      'location',
       'sample_retention_instruction',
       'created_at',
     ]
     // Iterate over the column IDs and verify each has a length greater than 0
     columnKeys.forEach((columnKey) => {
-      cy.get(`#${columnKey}`).should('have.length.greaterThan', 0)
+      cy.get(`[data-attribute=${columnKey}]`).first().should('have.length.greaterThan', 0)
     })
+
+    // Handle location column separately to confirm labwhere call is working
+    cy.get('[data-attribute=location]').last().should('contain', 'box-test')
   })
 
   it('creates a library  successfully', () => {

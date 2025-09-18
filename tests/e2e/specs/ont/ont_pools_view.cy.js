@@ -20,6 +20,26 @@ describe('Ont pools view', () => {
         body: printerFactory.content,
       })
     })
+
+    // Stub labwhere request
+    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+        statusCode: 200,
+        body: [
+          {
+            barcode: ontPoolFactory.content.data[0].attributes.tube_barcode,
+            created_at: 'Tuesday September 16 2025 10:29',
+            updated_at: 'Tuesday September 16 2025 10:29',
+            location: {
+              id: 432,
+              name: 'box-test',
+            },
+          },
+        ],
+      })
+    })
+
     cy.visit('#/ont/pools')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -30,13 +50,16 @@ describe('Ont pools view', () => {
       .and('contain', 'Pool ID')
       .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '16')
-    cy.get('#id').invoke('text').should('match', /\d+/)
-    cy.get('#barcode').invoke('text').should('include', 'TRAC')
-    cy.get('#source_identifier').invoke('text').should('match', /\w+/)
-    cy.get('#volume').invoke('text').should('match', /\d+/)
-    cy.get('#concentration').invoke('text').should('match', /\d+/)
-    cy.get('#kit_barcode').invoke('text').should('match', /\w+/)
-    cy.get('#insert_size').invoke('text').should('match', /\d+/)
-    cy.get('#final_library_amount').invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=barcode]').first().invoke('text').should('include', 'TRAC')
+    cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=kit_barcode]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=final_library_amount]').first().invoke('text').should('match', /\d+/)
+
+    // Handle location column separately to confirm labwhere call is working
+    cy.get('[data-attribute=location]').first().should('contain', 'box-test')
   })
 })

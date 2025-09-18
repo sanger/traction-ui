@@ -1124,8 +1124,6 @@ describe('useOntPoolCreateStore', () => {
           barcode: singleOntTubeFactory.content.data[0].attributes.barcode,
         })
 
-        console.log(resources.tubes)
-
         expect(store.resources.tubes).toEqual({
           ...singleOntTubeFactory.storeData.tubes,
           ...resources.tubes,

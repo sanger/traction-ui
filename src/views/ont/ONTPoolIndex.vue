@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchPools">
-    <FilterCard :fetcher="fetchPools" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
@@ -90,7 +90,7 @@
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import { usePrintingStore } from '@/stores/printing.js'
@@ -138,17 +138,8 @@ const { fetchLocations } = useLocationFetcher()
 const printingStore = usePrintingStore()
 
 // --- Getters ---
-const pools = computed(() => ontPoolCreateStore.pools)
-const barcodes = computed(() => pools.value.map((pool) => pool.barcode))
-const displayedPools = computed(() => locationBuilder(pools.value, labwareLocations.value))
-
-// --- Watchers ---
-watch(
-  barcodes,
-  async (newBarcodes) => {
-    labwareLocations.value = await fetchLocations(newBarcodes)
-  },
-  { immediate: true },
+const displayedPools = computed(() =>
+  locationBuilder(ontPoolCreateStore.pools, labwareLocations.value),
 )
 
 // --- Methods ---
@@ -188,16 +179,6 @@ async function printLabels(printerName) {
 }
 
 /**
- * Fetch pools with query params
- */
-async function fetchPools() {
-  return await fetchWithQueryParams(fetchOntPools, filterOptions)
-}
-
-// Pinia action
-const fetchOntPools = (...args) => ontPoolCreateStore.fetchOntPools(...args)
-
-/**
  * Format source identifier for display
  * @param {String} sourceIdentifier
  * @returns {String}
@@ -207,5 +188,23 @@ function formattedSourceIdentifier(sourceIdentifier) {
   const sources = sourceIdentifier.split(',')
   if (sources.length < 5) return sourceIdentifier
   return `${sources[0]}  ...   ${sources[sources.length - 1]}`
+}
+
+/*Fetches the pools from the api and adds location data
+  @returns {Object} { success: Boolean, errors: Array }*/
+const provider = async () => {
+  const { success, errors } = await fetchWithQueryParams(
+    ontPoolCreateStore.fetchOntPools,
+    filterOptions,
+  )
+  // We only want to fetch labware locations if the requests were fetched successfully
+  if (success) {
+    // We don't need to fail if labware locations can't be fetched, so we don't return anything
+    const poolsArray = ontPoolCreateStore.pools
+    const barcodes = poolsArray.map(({ barcode }) => barcode)
+    labwareLocations.value = await fetchLocations(barcodes)
+  }
+
+  return { success, errors }
 }
 </script>
