@@ -149,6 +149,7 @@
                 v-model="requestOptions.data_type"
                 data-attribute="data-type-input"
                 type="string"
+                readonly
               ></traction-input>
             </traction-field-group>
             <traction-field-group
