@@ -48,7 +48,7 @@ describe('Ont pools view', () => {
       .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '16')
     cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
-    cy.get('[data-attribute=tube_barcode]').first().invoke('text').should('include', 'TRAC')
+    cy.get('[data-attribute=barcode]').first().invoke('text').should('include', 'TRAC')
     cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
     cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
     cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)

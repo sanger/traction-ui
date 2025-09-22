@@ -212,7 +212,12 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * @return {Array} An array of selected pools
      */
     pools: (state) => {
-      return Object.values(state.resources.pools)
+      return Object.values(state.resources.pools).map((pool) => {
+        return {
+          ...pool,
+          barcode: pool.tube_barcode, // For backward compatibility
+        }
+      })
     },
   },
   actions: {
