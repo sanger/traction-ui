@@ -3,9 +3,6 @@ import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { vi } from 'vitest'
 import OntRequestFactory from '@tests/factories/OntRequestFactory.js'
 import { useOntRequestsStore } from '@/stores/ontRequests.js'
-import FlipperFactory from '@tests/factories/FlipperFactory.js'
-
-const flipperFactory = FlipperFactory()
 
 const ontRequestFactory = OntRequestFactory()
 
@@ -22,7 +19,6 @@ const mountComponent = () => {
         store.api.traction.ont.requests.get = vi
           .fn()
           .mockResolvedValue(ontRequestFactory.responses.fetch)
-        store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
       }
     },
   ]

@@ -6,7 +6,6 @@ const FlipperFactory = () => {
     features: {
       enable_feature: { enabled: true },
       disabled_feature: { enabled: false },
-      feature_flag_test: { enabled: true },
     },
   }
 

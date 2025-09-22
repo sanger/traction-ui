@@ -2,9 +2,6 @@ import OntRequestFactory from '../../../factories/OntRequestFactory.js'
 
 describe('Ont samples view', () => {
   beforeEach(() => {
-    cy.withFlags({
-      feature_flag_test: { enabled: true },
-    })
     cy.wrap(OntRequestFactory()).as('ontRequestFactory')
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {
       cy.intercept('/v1/ont/requests?page[size]=25&page[number]=1', {

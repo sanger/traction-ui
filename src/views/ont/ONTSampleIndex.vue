@@ -1,56 +1,51 @@
 <template>
-  <FlaggedFeature name="feature_flag_test">
-    <template #disabled>
-      <p class="text-center text-red-600">This feature is disabled</p>
-    </template>
-    <DataFetcher :fetcher="provider">
-      <FilterCard :fetcher="provider" :filter-options="filterOptions" />
-      <div class="flex flex-col">
-        <div class="clearfix">
-          <traction-pagination
-            class="float-right"
-            aria-controls="samples-table"
-          ></traction-pagination>
-        </div>
-
-        <traction-table
-          id="samples-table"
-          v-model:sort-by="sortBy"
-          :items="displayedRequests"
-          :fields="fields"
-          selectable
-          select-mode="single"
-          @row-selected="(items) => (selected = items)"
-        >
-          <template #cell(selected)="selectedCell">
-            <template v-if="selectedCell.selected">
-              <span>&check;</span>
-              <span class="sr-only">Selected</span>
-            </template>
-            <template v-else>
-              <span>&nbsp;</span>
-              <span class="sr-only">Not selected</span>
-            </template>
-          </template>
-
-          <template #cell(edit)="row">
-            <traction-button
-              :data-action="'edit-request-' + row.item.id"
-              size="sm"
-              class="mr-2"
-              :theme="row.detailsShowing ? 'paginationDefault' : 'default'"
-              @click="row.toggleDetails"
-            >
-              {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
-            </traction-button>
-          </template>
-          <template #row-details="row">
-            <OntRequestEdit :id="row.item.id" @edit-completed="row.toggleDetails()" />
-          </template>
-        </traction-table>
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <traction-pagination
+          class="float-right"
+          aria-controls="samples-table"
+        ></traction-pagination>
       </div>
-    </DataFetcher>
-  </FlaggedFeature>
+
+      <traction-table
+        id="samples-table"
+        v-model:sort-by="sortBy"
+        :items="displayedRequests"
+        :fields="fields"
+        selectable
+        select-mode="single"
+        @row-selected="(items) => (selected = items)"
+      >
+        <template #cell(selected)="selectedCell">
+          <template v-if="selectedCell.selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
+        <template #cell(edit)="row">
+          <traction-button
+            :data-action="'edit-request-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            :theme="row.detailsShowing ? 'paginationDefault' : 'default'"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Cancel edit' : 'Edit' }}
+          </traction-button>
+        </template>
+        <template #row-details="row">
+          <OntRequestEdit :id="row.item.id" @edit-completed="row.toggleDetails()" />
+        </template>
+      </traction-table>
+    </div>
+  </DataFetcher>
 </template>
 
 <script setup>
@@ -62,7 +57,6 @@ import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { formatRequests } from '@/lib/requestHelpers.js'
 import { useOntRequestsStore } from '@/stores/ontRequests.js'
 import OntRequestEdit from '@/components/ont/OntRequestEdit.vue'
-import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 
 // --- Reactive State ---
 const fields = [
