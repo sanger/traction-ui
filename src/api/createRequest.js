@@ -1,11 +1,11 @@
 /**
  * A simple library for creating requests to an API endpoint
  * using fetch and json api headers
- * @module createRequest
  * There needs to be better separation of basic request and json api request
  * e.g. createBasicRequest and createJsonApiRequest
  * The createRequest function is for json api requests
  * The createBasicRequest function is for basic requests
+ * @module createRequest
  */
 
 // default headers for json and json api
