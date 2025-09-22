@@ -229,18 +229,12 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const promise = request.get({
         page,
         filter,
-        // include: 'libraries.tag,libraries.request',
       })
       const response = await handleResponse(promise)
 
-      // const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
       const { success, body: { data, meta = {} } = {}, errors = [] } = response
-      // const { libraries, tags, requests } = groupIncludedByResource(included)
 
       if (success) {
-        // this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
-        // this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
-        // this.resources.tags = dataToObjectById({ data: tags, includeRelationships: true })
         this.resources.pools = dataToObjectById({ data, includeRelationships: true })
       }
 

@@ -200,8 +200,7 @@ const provider = async () => {
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
-    const poolsArray = ontPoolCreateStore.pools
-    const barcodes = poolsArray.map(({ tube_barcode }) => tube_barcode)
+    const barcodes = ontPoolCreateStore.pools.map(({ tube_barcode }) => tube_barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
 
