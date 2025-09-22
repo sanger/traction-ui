@@ -273,27 +273,8 @@ describe('useOntPoolCreateStore', () => {
     describe('pools', () => {
       it('returns an array of request resources that have been selected', () => {
         store.resources = ontPoolFactory.storeData.resources
-
-        // we need to sort it as they are in opposite order
-        const poolData = ontPoolFactory.content.data.sort((a, b) => a.id - b.id)
-
-        expect(store.pools.length).toEqual(poolData.length)
-
-        expect(store.pools[0].id).toEqual(poolData[0].id)
-        expect(store.pools[1].id).toEqual(poolData[1].id)
-        expect(store.pools[2].id).toEqual(poolData[2].id)
-
-        // this is ugly. Still not worth tacking until we refactor
-        expect(store.pools[0].barcode).toEqual(
-          ontPoolFactory.storeData.tubes.find(
-            (tube) => tube.id === poolData[0].relationships.tube.data.id,
-          ).attributes.barcode,
-        )
-
-        // I degraded this test as to not have to deal with the nested data
-        // this is a good candidate for a refactor
-        expect(store.pools[0].libraries[0].id).toEqual(
-          poolData[0].relationships.libraries.data[0].id,
+        expect(store.pools.length).toEqual(
+          Object.values(ontPoolFactory.storeData.resources.pools).length,
         )
       })
     })
@@ -312,10 +293,7 @@ describe('useOntPoolCreateStore', () => {
         rootStore.api = { traction: { ont: { pools: { get } } } }
         get.mockResolvedValue(ontPoolFactory.responses.fetch)
         const { success } = await store.fetchOntPools()
-        expect(store.resources.libraries).toEqual(ontPoolFactory.storeData.resources.libraries)
-        expect(store.resources.tags).toEqual(ontPoolFactory.storeData.resources.tags)
-        expect(store.resources.requests).toEqual(ontPoolFactory.storeData.resources.requests)
-        expect(store.resources.tubes).toEqual(ontPoolFactory.storeData.resources.tubes)
+        expect(store.resources.pools).toEqual(ontPoolFactory.storeData.resources.pools)
         expect(success).toEqual(true)
       })
 

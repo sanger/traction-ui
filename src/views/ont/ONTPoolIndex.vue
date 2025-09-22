@@ -103,7 +103,7 @@ import useAlert from '@/composables/useAlert.js'
 const fields = [
   { key: 'selected', label: '\u2713' },
   { key: 'id', label: 'Pool ID', sortable: true },
-  { key: 'barcode', label: 'Barcode', sortable: true },
+  { key: 'tube_barcode', label: 'Barcode', sortable: true },
   { key: 'source_identifier', label: 'Source', sortable: true },
   { key: 'volume', label: 'Volume', sortable: true },
   { key: 'concentration', label: 'Concentration', sortable: true },
@@ -201,7 +201,7 @@ const provider = async () => {
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
     const poolsArray = ontPoolCreateStore.pools
-    const barcodes = poolsArray.map(({ barcode }) => barcode)
+    const barcodes = poolsArray.map(({ tube_barcode }) => tube_barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
 

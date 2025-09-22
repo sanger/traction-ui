@@ -53,19 +53,9 @@ const createStoreDataForSinglePool = (data) => {
  * @returns {Object} - { tubes, libraries, tags, requests } the included data for multiple pools
  */
 const createStoreDataForMultiplePools = (data) => {
-  const pools = dataToObjectById({ data: data.data, includeRelationships: true })
-  const { tubes, libraries, tags, requests } = groupIncludedByResource(data.included)
   return {
-    tubes,
-    libraries,
-    tags,
-    requests,
     resources: {
-      tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
-      libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
-      tags: dataToObjectById({ data: tags, includeRelationships: true }),
-      requests: dataToObjectById({ data: requests, includeRelationships: true }),
-      pools,
+      pools: dataToObjectById({ data: data.data, includeRelationships: true }),
     },
   }
 }

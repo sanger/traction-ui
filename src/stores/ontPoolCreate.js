@@ -209,29 +209,10 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * Returns a list of pools
      *
      * @param {Object} state The state object
-     * @return {Array} An array of selected requests in the order in which they were selected
+     * @return {Array} An array of selected pools
      */
     pools: (state) => {
-      // We catch here in case this getter is called when the resources aren't pulled
-      try {
-        return Object.values(state.resources.pools).map((pool) => {
-          const libraries = pool.libraries.map((libraryId) => {
-            const { id, type, request, tag } = state.resources.libraries[libraryId]
-            const { sample_name } = state.resources.requests[request]
-            const { group_id } = state.resources.tags[tag] || {}
-            return { id, type, sample_name, group_id }
-          })
-
-          const { barcode } = state.resources.tubes[pool.tube]
-          return {
-            ...pool,
-            libraries,
-            barcode,
-          }
-        })
-      } catch {
-        return []
-      }
+      return Object.values(state.resources.pools)
     },
   },
   actions: {
@@ -248,18 +229,18 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const promise = request.get({
         page,
         filter,
-        include: 'tube,libraries.tag,libraries.request',
+        // include: 'libraries.tag,libraries.request',
       })
       const response = await handleResponse(promise)
 
-      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
-      const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+      // const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
+      const { success, body: { data, meta = {} } = {}, errors = [] } = response
+      // const { libraries, tags, requests } = groupIncludedByResource(included)
 
       if (success) {
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
-        this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
-        this.resources.tags = dataToObjectById({ data: tags, includeRelationships: true })
+        // this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
+        // this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
+        // this.resources.tags = dataToObjectById({ data: tags, includeRelationships: true })
         this.resources.pools = dataToObjectById({ data, includeRelationships: true })
       }
 
