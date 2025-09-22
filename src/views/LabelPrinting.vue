@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
+import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm.vue'
 
 export default {
   name: 'LabelPrinting',

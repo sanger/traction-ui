@@ -17,11 +17,9 @@
             class="inline-block w-full"
             :options="receptionOptionsList"
             data-type="source-list"
-            @update:model-value="updatePipeline()"
           />
         </traction-field-group>
       </div>
-
       <div>
         <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
         <traction-field-group
@@ -38,67 +36,63 @@
             class="inline-block w-full"
             data-type="pipeline-list"
             :disabled="!source"
-            @update:model-value="resetRequestOptions()"
           />
         </traction-field-group>
-
-        <div class="grid grid-cols-2 gab-4 mt-4 mb-4">
-          <div>
-            <traction-label class="inline-block w-full text-left">Workflow</traction-label>
-            <traction-muted-text class=""
-              >Select a workflow if you would like to scan in the imported
-              labware</traction-muted-text
-            >
-            <traction-select
-              id="workflowSelect"
-              v-model="workflow"
-              class="mt-1 mr-2"
-              :options="workflowOptions"
-              data-type="workflow-list"
-              :disabled="!source"
+        <traction-field-group
+          label="Workflow"
+          attribute="workflowSelect"
+          for="workflowSelect"
+          description="Select a workflow if you would like to scan in the imported labware"
+          layout="spacious"
+        >
+          <traction-select
+            id="workflowSelect"
+            v-model="workflow"
+            class="inline-block w-full"
+            :options="workflowOptions"
+            data-type="workflow-list"
+            :disabled="!source"
+          />
+        </traction-field-group>
+        <div v-if="workflow">
+          <traction-label class="inline-block w-full text-left"
+            >User barcode or swipecard</traction-label
+          >
+          <traction-muted-text class="ml-1 text-left"
+            >Only required when a workflow is selected</traction-muted-text
+          >
+          <traction-field-error
+            data-attribute="user-code-error"
+            :error="
+              !user_code && workflow ? 'User code is required to scan in the imported labware' : ''
+            "
+          >
+            <traction-input
+              id="userCode"
+              v-model="user_code"
+              data-attribute="user-code-input"
+              class="mt-1"
+              type="password"
             />
-          </div>
-          <!-- Only displaying the swipecard field when the user selects a workflow -->
-          <div v-show="workflow">
-            <traction-label class="inline-block w-full text-left"
-              >User barcode or swipecard</traction-label
-            >
-            <traction-muted-text class="ml-1 text-left"
-              >Only required when a workflow is selected</traction-muted-text
-            >
-            <traction-field-error
-              data-attribute="user-code-error"
-              :error="
-                !user_code && workflow
-                  ? 'User code is required to scan in the imported labware'
-                  : ''
-              "
-            >
-              <traction-input
-                id="userCode"
-                v-model="user_code"
-                data-attribute="user-code-input"
-                class="mt-1"
-                type="password"
-              />
-            </traction-field-error>
-          </div>
+          </traction-field-error>
         </div>
       </div>
-
       <div>
         <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
         <traction-muted-text class="text-left"
           >Default values to apply to the imported requests</traction-muted-text
         >
         <div>
-          <LibraryTypeSelect
-            v-model="requestOptions.library_type"
-            :label-cols="0"
-            :allow-none="false"
-            :import-text="`Import from ${source} (where available)`"
-            :pipeline="pipeline.toLowerCase()"
-          />
+          <DataFetcher :fetcher="fetchLibraryTypes">
+            <LibraryTypeSelect
+              v-model="requestOptions.library_type"
+              :label-cols="0"
+              :allow-none="false"
+              :import-text="`Import from ${source} (where available)`"
+              :pipeline="pipeline.toLowerCase()"
+            />
+          </DataFetcher>
+
           <traction-field-group
             label="Cost Code"
             attribute="cost_code"
@@ -112,7 +106,7 @@
               data-attribute="cost-code-input"
             ></traction-input>
           </traction-field-group>
-          <div v-if="pipeline == 'PacBio'">
+          <div v-if="pipeline === 'PacBio'">
             <traction-field-group
               label="Number of SMRT cells"
               attribute="number_of_smrt_cells"
@@ -144,8 +138,20 @@
               ></traction-input>
             </traction-field-group>
           </div>
-          <div v-if="pipeline == 'ONT'">
-            <DataTypeSelect v-model="requestOptions.data_type" pipeline="ont" />
+          <div v-if="pipeline === 'ONT'">
+            <traction-field-group
+              label="Data Type"
+              attribute="data_type"
+              for="data_type"
+              layout="spacious"
+            >
+              <traction-input
+                v-model="requestOptions.data_type"
+                data-attribute="data-type-input"
+                type="string"
+                readonly
+              ></traction-input>
+            </traction-field-group>
             <traction-field-group
               label="Number of Flowcells"
               attribute="number_of_flowcells"
@@ -197,13 +203,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
-import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import useRootStore from '@/stores/index.js'
+
+const rootStore = useRootStore()
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -240,7 +249,7 @@ const workflowOptions = computed(() => [
 
 const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
 
-const receptionOptions = async () => {
+const receptionOptions = () => {
   let receptionTypes = Object.values(ReceptionTypes)
   if (environment.value == 'uat' || environment.value == 'development') {
     return [
@@ -251,26 +260,36 @@ const receptionOptions = async () => {
 
   return [...receptionTypes]
 }
-onMounted(async () => {
-  const options = await receptionOptions()
+onMounted(() => {
+  const options = receptionOptions()
   receptionOptionsList.value = [
     { value: '', text: '' }, // Add this empty option at the top
     ...options,
   ]
 })
 
+const workflowMap = new Map(
+  Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
+)
+
 const workflowLocation = computed(() => {
-  const workflowsMap = new Map(
-    Object.values(WorkflowsLocations).map((workflow) => [workflow.barcode, workflow]),
-  )
-  if (workflow.value !== '') {
-    return workflowsMap.get(workflow.value).location
-  }
-  return undefined
+  return workflow.value !== '' ? workflowMap.get(workflow.value).location : undefined
 })
 
 const location_barcode = computed(() => {
   return workflow.value
+})
+
+// this is temporary. But the cascading actions were hard to follow and
+// led to some edge cases where the pipeline was not updated correctly.
+watch(source, () => {
+  resetRequestOptions()
+  updatePipeline()
+})
+
+watch(pipeline, () => {
+  resetRequestOptions()
+  updatePipeline()
 })
 
 function updatePipeline() {
@@ -283,6 +302,17 @@ function updatePipeline() {
   if (!reception.value.pipelines.includes(pipeline.value)) {
     pipeline.value = reception.value.pipelines[0]
   }
+
+  // there is only one data type for ONT
+  if (pipeline.value === 'ONT') {
+    requestOptions.value.data_type = 'basecalls and raw data'
+  }
+}
+
+const fetchLibraryTypes = async () => {
+  // We don't need to do anything here as the LibraryTypeSelect component
+  // fetches the library types itself
+  return await rootStore.fetchLibraryTypes()
 }
 
 function clearModal() {

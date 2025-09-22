@@ -25,6 +25,15 @@ const config = [
       {
         name: 'annotation_types',
       },
+      {
+        name: 'library_types',
+      },
+    ],
+    urls: [
+      {
+        name: 'feature_flags',
+        path: 'flipper/api/actors/User',
+      },
     ],
     pipelines: [
       {
@@ -108,17 +117,6 @@ const config = [
     resources: [
       {
         name: 'print_jobs',
-      },
-    ],
-  },
-  {
-    name: 'sampleExtraction',
-    apiNamespace: 'api/v1',
-    rootURL: import.meta.env['VITE_SAMPLEEXTRACTION_BASE_URL'],
-    resources: [
-      {
-        name: 'assets',
-        include: '',
       },
     ],
   },

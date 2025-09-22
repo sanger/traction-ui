@@ -1,4 +1,5 @@
 import SequencescapeLabwareFactory from '../../../factories/SequencescapeLabwareFactory.js'
+import LibraryTypeFactory from '../../../factories/LibraryTypeFactory.js'
 
 const sequencescapeRequest = {
   url: '/api/v2/labware*',
@@ -18,8 +19,12 @@ const sequencescapeRequest = {
 
 describe('Import samples from Sequencescape', () => {
   beforeEach(() => {
-    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
-      fixture: 'tractionLibraryTypes.json',
+    cy.wrap(LibraryTypeFactory()).as('libraryTypeFactory')
+    cy.get('@libraryTypeFactory').then((libraryTypeFactory) => {
+      cy.intercept('GET', 'v1/library_types?fields[library_types]=name,pipeline', {
+        statusCode: 200,
+        body: libraryTypeFactory.content,
+      })
     })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Sequencescape Plates')

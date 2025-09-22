@@ -1,22 +1,20 @@
 import useRootStore from '@/stores'
 import PlateMap from '@/config/PlateMap.json'
-import { expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import { successfulResponse, failedResponse } from '@tests/support/testHelper.js'
+import LibraryTypeFactory from '@tests/factories/LibraryTypeFactory.js'
+
+const libraryTypeFactory = LibraryTypeFactory()
 
 describe('index', () => {
   describe('state', () => {
     it('has api state', () => {
       const store = useRootStore()
       expect(store.api).toBeDefined()
-      expect(store.api).toBeDefined()
     })
 
     it('has a plate map', () => {
       const store = useRootStore()
-      const plateMap = store.plateMap
-      expect(plateMap).toBeDefined()
-      expect(plateMap.rows).toBeDefined()
-      expect(plateMap.columns).toBeDefined()
-      expect(plateMap.wells).toBeDefined()
       expect(store.plateMap).toEqual(PlateMap)
     })
   })
@@ -62,26 +60,22 @@ describe('index', () => {
     describe('fetchTagSets', () => {
       it('fetches pacbio tag sets by default', async () => {
         const store = useRootStore()
-        store.api.traction.pacbio.tag_sets.get = vi.fn().mockResolvedValue({
-          status: '200',
-          statusText: 'OK',
-          json: () =>
-            Promise.resolve({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
-          ok: true,
-        })
+        store.api.traction.pacbio.tag_sets.get = vi
+          .fn()
+          .mockResolvedValue(
+            successfulResponse({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
+          )
         await store.fetchTagSets()
         expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
       })
 
       it('fetches ont tag sets when called with ont', async () => {
         const store = useRootStore()
-        store.api.traction.ont.tag_sets.get = vi.fn().mockResolvedValue({
-          status: '200',
-          statusText: 'OK',
-          json: () =>
-            Promise.resolve({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
-          ok: true,
-        })
+        store.api.traction.ont.tag_sets.get = vi
+          .fn()
+          .mockResolvedValue(
+            successfulResponse({ data: [{ id: 1, attributes: { name: 'foo' }, type: 'tag_set' }] }),
+          )
         await store.fetchTagSets('ont')
         expect(store.tagSets).toEqual({ 1: { id: 1, name: 'foo', type: 'tag_set' } })
       })
@@ -93,6 +87,27 @@ describe('index', () => {
           success: false,
           errors: ['Tag sets cannot be retrieved for pipeline foo'],
         })
+      })
+    })
+
+    describe('fetchLibraryTypes', () => {
+      it('successfully', async () => {
+        const store = useRootStore()
+        store.api.traction.library_types.get = vi
+          .fn()
+          .mockResolvedValue(libraryTypeFactory.responses.fetch)
+        const { success } = await store.fetchLibraryTypes()
+        expect(success).toBeTruthy()
+        expect(store.libraryTypes).toEqual(libraryTypeFactory.storeData)
+      })
+
+      it('unsuccessfully', async () => {
+        const store = useRootStore()
+        const failureResponse = failedResponse()
+        store.api.traction.library_types.get = vi.fn().mockResolvedValue(failureResponse)
+        const { success } = await store.fetchLibraryTypes()
+        expect(success).toBeFalsy()
+        expect(store.libraryTypes).toEqual([])
       })
     })
   })

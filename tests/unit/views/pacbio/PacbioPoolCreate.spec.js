@@ -1,10 +1,13 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
-import { mountWithStore, router, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { expect } from 'vitest'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 
+// there is a lot of mocking going on here.
+// I suspect most of this should be in e2e tests
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -35,47 +38,24 @@ const mountPacbioPoolCreate = (params) =>
 
 const pacbioPlateFactory = PacbioPlateFactory()
 const pacbioTubeFactory = PacbioTubeFactory()
+const pacbioTagSetFactory = PacbioTagSetFactory()
 
 describe('PacbioPoolCreate', () => {
-  const mockFetchPacbioTagSets = vi.fn()
   const mockPopulateUsedAliquotsFromPool = vi.fn()
   const plugins = [
     ({ store }) => {
-      if (store.$id === 'pacbioRoot') {
-        store.fetchPacbioTagSets = mockFetchPacbioTagSets
-      }
       if (store.$id === 'pacbioPoolCreate') {
         store.populateUsedAliquotsFromPool = mockPopulateUsedAliquotsFromPool
+      }
+      if (store.$id === 'root') {
+        store.api.traction.pacbio.tag_sets.get = vi
+          .fn()
+          .mockResolvedValue(pacbioTagSetFactory.responses.fetch)
       }
     },
   ]
   const { plates, wells } = pacbioPlateFactory.storeData.resources
   const tubes = pacbioTubeFactory.storeData.tubes
-
-  describe('On Pool/New', () => {
-    afterEach(async () => {
-      // Clear the router so it doesn't affect other tests as router is shared between tests
-      await router.push('/')
-    })
-    it('will only call mockFetchPacbioTagSets', async () => {
-      mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
-      mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      await router.push('/pacbio/pool/new')
-      mountPacbioPoolCreate({ plugins })
-      await flushPromises()
-      expect(mockFetchPacbioTagSets).toBeCalled()
-      expect(mockPopulateUsedAliquotsFromPool).not.toBeCalled()
-    })
-    it('will showAlert if mockFetchPacbioTagsets returns error', async () => {
-      const errors = ['Invalid data']
-      mockFetchPacbioTagSets.mockReturnValue({ success: false, errors })
-      mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
-      await router.push('/pacbio/pool/new')
-      mountPacbioPoolCreate({ plugins })
-      await flushPromises()
-      expect(mockShowAlert).toBeCalledWith(errors, 'danger')
-    })
-  })
 
   describe('On Pool/Edit', () => {
     let wrapper, store
@@ -87,7 +67,6 @@ describe('PacbioPoolCreate', () => {
           wells,
         },
       }
-      mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
       ;({ wrapper, store } = mountPacbioPoolCreate({
         plugins,
@@ -103,12 +82,10 @@ describe('PacbioPoolCreate', () => {
     })
 
     describe('when a plate or tube is selected', () => {
-      it('calls both mockFetchPacbioTagSets and mockPopulateUsedAliquotsFromPool', async () => {
-        expect(mockFetchPacbioTagSets).toBeCalled()
+      it('calls mockPopulateUsedAliquotsFromPool', async () => {
         expect(mockPopulateUsedAliquotsFromPool).toBeCalled()
       })
       it('sets scanned labware with selected plates and tubes', async () => {
-        mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
         mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
         expect(wrapper.vm.scannedLabware).toEqual([
           { barcode: 'DN814327C', type: 'plates' },
@@ -130,7 +107,6 @@ describe('PacbioPoolCreate', () => {
           wells,
         },
       }
-      mockFetchPacbioTagSets.mockReturnValue({ success: true, errors: [] })
       mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
       ;({ wrapper, store } = mountPacbioPoolCreate({ plugins, state }))
       store.findPacbioPlate = mockFindPacbioPlateFn
@@ -248,7 +224,8 @@ describe('PacbioPoolCreate', () => {
 
   describe('resetData', () => {
     it('resets the data when called', async () => {
-      let { wrapper, store } = mountPacbioPoolCreate()
+      mockPopulateUsedAliquotsFromPool.mockReturnValue({ success: true, errors: [] })
+      let { wrapper, store } = mountPacbioPoolCreate({ plugins })
       wrapper.vm.scannedLabware = [
         { barcode: 'DN814327C', type: 'plates' },
         { barcode: 'TRAC-2-20', type: 'tubes' },

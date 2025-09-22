@@ -1,8 +1,17 @@
-import { mountWithStore, selectOptionByText } from '@support/testHelper.js'
+import { mountWithStore, selectOptionByText, flushPromises } from '@support/testHelper.js'
 import GeneralReception from '@/views/GeneralReception.vue'
 import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 import PrinterFactory from '@tests/factories/PrinterFactory.js'
+import LibraryTypeFactory from '@tests/factories/LibraryTypeFactory.js'
+import useRootStore from '@/stores/index.js'
+import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
+import OntTagSetFactory from '@tests/factories/OntTagSetFactory.js'
+
+const pacbioTagSetFactory = PacbioTagSetFactory()
+const ontTagSetFactory = OntTagSetFactory()
+
+const libraryTypeFactory = LibraryTypeFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -15,11 +24,29 @@ const printerFactory = PrinterFactory()
 
 describe('GeneralReception', () => {
   let wrapper
-  beforeEach(() => {
+  beforeEach(async () => {
+    const plugins = [
+      ({ store }) => {
+        if (store.$id === 'root') {
+          store.api.traction.library_types.get = vi
+            .fn()
+            .mockResolvedValue(libraryTypeFactory.responses.fetch)
+          store.api.traction.pacbio.tag_sets.get = vi
+            .fn()
+            .mockResolvedValue(pacbioTagSetFactory.responses.fetch)
+          store.api.traction.ont.tag_sets.get = vi
+            .fn()
+            .mockResolvedValue(ontTagSetFactory.responses.fetch)
+        }
+      },
+    ]
     ;({ wrapper } = mountWithStore(GeneralReception, {
+      plugins,
       props: { receptions: Receptions },
       initialState: { printing: { resources: { printers: printerFactory.storeData } } },
+      createStore: () => useRootStore(),
     }))
+    await flushPromises()
   })
 
   describe('Source Selector', () => {
@@ -84,7 +111,7 @@ describe('GeneralReception', () => {
     it('hides user swipecard when a workflow is not selected', async () => {
       const workflowSelect = wrapper.find('#workflowSelect')
       await workflowSelect.setValue('')
-      expect(wrapper.find('[data-attribute=user-code-input]').isVisible()).toBe(false)
+      expect(wrapper.find('[data-attribute=user-code-input]').exists()).toBe(false)
     })
 
     it('errors user code fields if not set', async () => {
@@ -151,7 +178,7 @@ describe('GeneralReception', () => {
       it('shows ONT options when ONT is selected', async () => {
         // Select ONT pipeline
         await selectOptionByText(wrapper.find('[data-type=pipeline-list]'), 'ONT')
-        // Library type
+        // // Library type
         const libraryType = wrapper.find('[data-attribute=library-type-list]')
         expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
         expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)

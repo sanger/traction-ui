@@ -193,59 +193,6 @@ const filterByAttribute = (data, filters) => data.filter(matchesAllAttributes(fi
 const mapAttribute = (data, attribute) => data.map(({ attributes }) => attributes[attribute])
 
 /**
- * Helper function to store json api resource objects in the store.
- * TODO: Move this to populateBy to prevent duplication
- * @param {string} resource name of the resource to populate in the store
- * @param {bool} includeRelationships indicates if related resource ids should
- * be extracted and included in the resulting object.
- * @return {Function} A mutation function for populating the resource
- */
-const populateById =
-  (
-    resource,
-    { includeRelationships = false, populateResources = true } = {},
-    replaceData = false,
-  ) =>
-  (state, data) => {
-    // if resources then add to state.resources
-    const result = populateResources ? state.resources : state
-
-    // Store the current data so we dont overwrite it unless specifed to do so
-    const before = replaceData ? {} : result[resource]
-    result[resource] = {
-      ...before,
-      ...dataToObjectById({ data, includeRelationships }),
-    }
-  }
-
-/**
- * Helper function to store json api resource objects in the store.
- *
- * @param {string} resource name of the resource to populate in the store
- * @param {bool} includeRelationships indicates if related resource ids should
- * be extracted and included in the resulting object.
- * @returns {Function} A mutation function for populating the resource
- */
-const populateBy =
-  (
-    resource,
-    fn,
-    { includeRelationships = false, populateResources = true } = {},
-    replaceData = false,
-  ) =>
-  (state, data) => {
-    // if resources then add to state.resources
-    const result = populateResources ? state.resources : state
-
-    // Store the current data so we dont overwrite it unless specifed to do so
-    const before = replaceData ? {} : result[resource]
-    result[resource] = {
-      ...before,
-      ...fn({ data, includeRelationships }),
-    }
-  }
-
-/**
  * Splits the given data into an object keyed by the key of the parent
  * @param {Array} data The data to split
  * @param {Function} fn The function to populate the child data
@@ -373,11 +320,10 @@ export {
   extractRelationships,
   dataToObjectById,
   extractRelationshipsAndGroupById,
+  // following 2 methods for data type select and library type select?
   mapAttribute,
   filterByAttribute,
-  populateById,
   dataToObjectByPosition,
-  populateBy,
   splitDataByParent,
   dataToObjectByPlateNumber,
   extractIncludes,

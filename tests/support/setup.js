@@ -8,9 +8,6 @@ This is necessary to allow useStore to pick up the any other pinia instance othe
 More documentation available on https://pinia.vuejs.org/cookbook/testing.html*/
 import { setActivePinia, createPinia } from 'pinia'
 
-// https://vitest.dev/api/vi.html#vi-mock
-vi.mock('swrv')
-
 beforeEach(() => {
   setActivePinia(createPinia())
 })

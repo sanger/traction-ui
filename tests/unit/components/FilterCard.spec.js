@@ -1,5 +1,5 @@
-import { mount, flushPromises, router } from '@support/testHelper'
-import FilterCard from '@/components/FilterCard'
+import { mount, flushPromises, router } from '@support/testHelper.js'
+import FilterCard from '@/components/FilterCard.vue'
 import { expect } from 'vitest'
 
 describe('FilterCard.vue', () => {
