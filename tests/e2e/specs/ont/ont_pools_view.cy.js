@@ -5,13 +5,10 @@ describe('Ont pools view', () => {
   it('Visits the ont pools url', () => {
     cy.wrap(OntPoolFactory()).as('ontPoolFactory')
     cy.get('@ontPoolFactory').then((ontPoolFactory) => {
-      cy.intercept(
-        'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
-        {
-          statusCode: 200,
-          body: ontPoolFactory.content,
-        },
-      )
+      cy.intercept('v1/ont/pools?page[size]=25&page[number]=1', {
+        statusCode: 200,
+        body: ontPoolFactory.content,
+      })
     })
     cy.wrap(PrinterFactory()).as('printerFactory')
     cy.get('@printerFactory').then((printerFactory) => {
@@ -51,7 +48,7 @@ describe('Ont pools view', () => {
       .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '16')
     cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
-    cy.get('[data-attribute=barcode]').first().invoke('text').should('include', 'TRAC')
+    cy.get('[data-attribute=tube_barcode]').first().invoke('text').should('include', 'TRAC')
     cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
     cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
     cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)

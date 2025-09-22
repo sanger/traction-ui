@@ -21,13 +21,10 @@ describe('ONT Pool Edit', () => {
     })
     cy.wrap(OntPoolFactory()).as('ontPoolFactory')
     cy.get('@ontPoolFactory').then((ontPoolFactory) => {
-      cy.intercept(
-        'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
-        {
-          statusCode: 200,
-          body: ontPoolFactory.content,
-        },
-      )
+      cy.intercept('v1/ont/pools?page[size]=25&page[number]=1', {
+        statusCode: 200,
+        body: ontPoolFactory.content,
+      })
     })
     cy.wrap(OntPoolFactory({ count: 1 })).as('singleOntPoolFactory')
     cy.get('@singleOntPoolFactory').then((singleOntPoolFactory) => {
