@@ -222,6 +222,39 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
   },
   actions: {
     /**
+     * Fetches a single ONT pool by ID from the API.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to fetch.
+     * @param {string} [include=''] - Optional comma-separated relationships to include in the response (e.g., 'libraries,requests').
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - data {Object}: The pool data returned from the API.
+     *   - included {Array}: Any included related resources.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action sends a GET request to the ONT pools API endpoint for a specific pool ID.
+     * You can optionally specify relationships to include in the response.
+     * The function returns an object with the success status, the pool data, any included resources, and any errors.
+     *
+     * @example
+     * const { success, data, included, errors } = await fetchPool(123, 'libraries,requests')
+     * if (success) {
+     *   // Use pool data and included resources
+     * }
+     */
+    async fetchPool(id, include = '') {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.find({ id, include })
+      const response = await handleResponse(promise)
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
+
+      return { success, data, included, errors }
+    },
+
+    /**
      * Fetches ONT pools from the API with optional filters and pagination.
      *
      * @param {Object} filter - Optional filters to apply to the request.
@@ -599,7 +632,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       // Send a request to the API to fetch the pool data
       const request = rootStore.api.traction.ont.pools
       const promise = request.find({
-        id: id,
+        id,
         include:
           'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
       })

@@ -306,6 +306,32 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
+    describe('fetchPool', () => {
+      it('handles success', async () => {
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+        const { success, data, included, errors } = await store.fetchPool('1', 'tube')
+        expect(success).toEqual(true)
+        expect(data).toEqual(singleOntPoolFactory.content.data)
+        expect(included).toEqual(singleOntPoolFactory.content.included)
+        expect(errors).toEqual([])
+        expect(find).toHaveBeenCalledWith({ id: '1', include: 'tube' })
+      })
+
+      it('handles failure', async () => {
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(failureResponse)
+        const { success, data, included, errors } = await store.fetchPool('1')
+        expect(success).toEqual(false)
+        expect(data).toBeUndefined()
+        expect(included).toEqual([])
+        expect(errors).toEqual(failureResponse.errorSummary)
+      })
+    })
+
     describe('fetchOntTagSets', () => {
       it('handles success', async () => {
         const get = vi.fn()
