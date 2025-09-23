@@ -244,7 +244,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      *   // Use pool data and included resources
      * }
      */
-    async fetchPool(id, include = '') {
+    async findPool(id, include = '') {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.ont.pools
       const promise = request.find({ id, include })
@@ -252,6 +252,21 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const { success, body: { data, included = [] } = {}, errors = [] } = response
 
       return { success, data, included, errors }
+    },
+
+    async fetchPoolDetails(id) {
+      const { success, included, errors } = await this.findPool(
+        id,
+        'tube,libraries.tag,libraries.request',
+      )
+      if (success) {
+        const { libraries, tags, requests } = groupIncludedByResource(included)
+        this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
+        this.resources.tags = dataToObjectById({ data: tags })
+        this.resources.requests = dataToObjectById({ data: requests })
+      }
+
+      return { success, errors }
     },
 
     /**
@@ -621,7 +636,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * }
      */
     async setPoolData(id) {
-      const rootStore = useRootStore()
       this.clearPoolData()
 
       // Guard clause to not run the rest if the id is not a number (e.g., 'new')
@@ -629,15 +643,10 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         return { success: true, errors: [] }
       }
 
-      // Send a request to the API to fetch the pool data
-      const request = rootStore.api.traction.ont.pools
-      const promise = request.find({
+      const { success, data, included, errors } = await this.findPool(
         id,
-        include:
-          'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
-      })
-      const response = await handleResponse(promise)
-      const { success, body: { data, included = [] } = {}, errors = [] } = response
+        'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
+      )
 
       if (success) {
         const {

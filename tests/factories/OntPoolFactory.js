@@ -21,6 +21,7 @@ const createStoreDataForSinglePool = (data) => {
     plates = [],
     tag_sets: [tag_set] = [{}],
     tubes,
+    tags,
   } = groupIncludedByResource(data.included)
 
   // We need to find the pool tube in the list of returned tubes
@@ -28,12 +29,13 @@ const createStoreDataForSinglePool = (data) => {
   const pool = extractAttributes(data.data)
   return {
     resources: {
-      libraries,
+      libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
       requests: dataToObjectById({ data: requests, includeRelationships: true }),
       wells: dataToObjectById({ data: wells, includeRelationships: true }),
       plates: dataToObjectById({ data: plates, includeRelationships: true }),
       tag_set,
       tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
+      tags: dataToObjectById({ data: tags }),
     },
     selected: { tagSet: { id: tag_set.id } },
     wells,

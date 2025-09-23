@@ -306,12 +306,12 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
-    describe('fetchPool', () => {
+    describe('findPool', () => {
       it('handles success', async () => {
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
-        const { success, data, included, errors } = await store.fetchPool('1', 'tube')
+        const { success, data, included, errors } = await store.findPool('1', 'tube')
         expect(success).toEqual(true)
         expect(data).toEqual(singleOntPoolFactory.content.data)
         expect(included).toEqual(singleOntPoolFactory.content.included)
@@ -324,11 +324,38 @@ describe('useOntPoolCreateStore', () => {
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(failureResponse)
-        const { success, data, included, errors } = await store.fetchPool('1')
+        const { success, data, included, errors } = await store.findPool('1')
         expect(success).toEqual(false)
         expect(data).toBeUndefined()
         expect(included).toEqual([])
         expect(errors).toEqual(failureResponse.errorSummary)
+      })
+    })
+
+    describe('fetchPoolDetails', () => {
+      it('handles success', async () => {
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+        const { success } = await store.fetchPoolDetails('1')
+        expect(success).toEqual(true)
+        expect(store.resources.requests).toEqual(singleOntPoolFactory.storeData.resources.requests)
+        expect(store.resources.libraries).toEqual(
+          singleOntPoolFactory.storeData.resources.libraries,
+        )
+        expect(store.resources.tags).toEqual(singleOntPoolFactory.storeData.resources.tags)
+      })
+
+      it('handles failure', async () => {
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(failureResponse)
+        const { success } = await store.fetchPoolDetails('1')
+        expect(success).toEqual(false)
+        expect(store.resources.requests).toEqual({})
+        expect(store.resources.libraries).toEqual({})
+        expect(store.resources.tags).toEqual({})
       })
     })
 
