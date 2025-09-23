@@ -36,6 +36,7 @@ const createStoreDataForSinglePool = (data) => {
       tubes: dataToObjectById({ data: tubes, includeRelationships: true }),
     },
     selected: { tagSet: { id: tag_set.id } },
+    wells,
     pooling: {
       pool,
       libraries: populatePoolingLibraries(

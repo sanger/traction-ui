@@ -26,7 +26,27 @@ describe('Pacbio Libraries view', () => {
         body: pacbioTagSetFactory.content,
       })
     })
+
+    // Stub labwhere request
+    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
+      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+        statusCode: 200,
+        body: [
+          {
+            barcode: pacbioLibraryFactory.content.data[0].attributes.barcode,
+            created_at: 'Tuesday September 16 2025 10:29',
+            updated_at: 'Tuesday September 16 2025 10:29',
+            location: {
+              id: 432,
+              name: 'box-test',
+            },
+          },
+        ],
+      })
+    })
   })
+
   it('Visits the pacbio libraries url', () => {
     cy.visit('#/pacbio/libraries')
     // Check filters are visible
@@ -38,16 +58,21 @@ describe('Pacbio Libraries view', () => {
       .and('contain', 'Sample Name')
       .and('contain', 'Source')
     cy.get('#library-index').contains('tr', '5')
-    cy.get('#id').should('have.length.above', 0)
-    cy.get('#sample_name').should('have.length.greaterThan', 0)
-    cy.get('#barcode').should('have.length.greaterThan', 0)
-    cy.get('#source_identifier').should('have.length.greaterThan', 0)
-    cy.get('#volume').should('have.length.greaterThan', 0)
-    cy.get('#available_volume').should('have.length.greaterThan', 0)
-    cy.get('#concentration').should('have.length.greaterThan', 0)
-    cy.get('#template_prep_kit_box_barcode').should('have.length.greaterThan', 0)
-    cy.get('#insert_size').should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=id]').first().should('have.length.above', 0)
+    cy.get('[data-attribute=sample_name]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=barcode]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=source_identifier]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=volume]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=available_volume]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=concentration]').first().should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=template_prep_kit_box_barcode]')
+      .first()
+      .should('have.length.greaterThan', 0)
+    cy.get('[data-attribute=insert_size]').first().should('have.length.greaterThan', 0)
     cy.get('button').filter(':contains("Edit")').should('have.length.greaterThan', 0)
+
+    // Handle location column separately to confirm labwhere call is working
+    cy.get('[data-attribute=location]').last().should('contain', 'box-test')
   })
 
   // it would be better to use the factory to get the values.
@@ -99,13 +124,13 @@ describe('Pacbio Libraries view', () => {
     cy.get('#libraryForm').should('not.exist')
 
     //It should display updated values in table
-    cy.get('#volume').first().should('have.text', '3')
-    cy.get('#available_volume').first().should('have.text', '3')
-    cy.get('#concentration').first().should('have.text', '2')
-    cy.get('#template_prep_kit_box_barcode').first().should('have.text', 'LK54321')
-    cy.get('#insert_size').first().should('have.text', '200')
+    cy.get('[data-attribute=volume]').first().should('have.text', '3')
+    cy.get('[data-attribute=available_volume]').first().should('have.text', '3')
+    cy.get('[data-attribute=concentration]').first().should('have.text', '2')
+    cy.get('[data-attribute=template_prep_kit_box_barcode]').first().should('have.text', 'LK54321')
+    cy.get('[data-attribute=insert_size]').first().should('have.text', '200')
     cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
-      cy.get('#tag_group_id')
+      cy.get('[data-attribute=tag_group_id]')
         .first()
         .should('have.text', pacbioTagSetFactory.storeData.selected.tag.group_id)
     })

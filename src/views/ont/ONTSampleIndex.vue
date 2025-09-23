@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchRequests">
-    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination
@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import useQueryParams from '@/composables/useQueryParams.js'
@@ -91,26 +91,25 @@ const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
 
 // --- Getters ---
-const requests = computed(() => ontRequestsStore.requests)
-const barcodes = computed(() => requests.value.map(({ source_identifier }) => source_identifier))
-const displayedRequests = computed(() => formatRequests(requests.value, labwareLocations.value))
-
-// --- Watchers ---
-watch(
-  barcodes,
-  async (newBarcodes) => {
-    labwareLocations.value = await fetchLocations(newBarcodes)
-  },
-  { immediate: true },
+const displayedRequests = computed(() =>
+  formatRequests(ontRequestsStore.requests, labwareLocations.value),
 )
 
-// --- Methods ---
-// this needs a bit of a think. We should not need to rewrite this method
-// there will be a JavaScript way of doing this e.g. using bind
-// probably using a higher-order function. Worth a tech debt story to dig into DataFetcher
-const fetchHandler = (...args) => ontRequestsStore.fetchRequests(...args)
+/*Fetches the requests from the api and adds location data
+  @returns {Object} { success: Boolean, errors: Array }*/
+const provider = async () => {
+  const { success, errors } = await fetchWithQueryParams(
+    ontRequestsStore.fetchRequests,
+    filterOptions,
+  )
+  // We only want to fetch labware locations if the requests were fetched successfully
+  if (success) {
+    // We don't need to fail if labware locations can't be fetched, so we don't return anything
+    const requestArray = ontRequestsStore.requests
+    const sources = requestArray.map(({ source_identifier }) => source_identifier)
+    labwareLocations.value = await fetchLocations(sources)
+  }
 
-async function fetchRequests() {
-  return await fetchWithQueryParams(fetchHandler, filterOptions)
+  return { success, errors }
 }
 </script>

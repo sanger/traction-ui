@@ -7,10 +7,6 @@ import {
 } from '@/services/labwhere/helpers.js'
 import LabwhereLocationsFactory from '@tests/factories/LabwhereLocationsFactory.js'
 
-beforeEach(() => {
-  vi.clearAllMocks()
-})
-
 vi.mock('@/services/labwhere/client.js', () => ({
   getCoordinateForLabware: vi.fn(),
 }))

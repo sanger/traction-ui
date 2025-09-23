@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchPools">
-    <FilterCard :fetcher="fetchPools" :filter-options="state.filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <printerModal
@@ -87,7 +87,7 @@ import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import useQueryParams from '@/composables/useQueryParams.js'
 import useAlert from '@/composables/useAlert.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import { ref, reactive, computed, watchEffect } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 /**
@@ -164,6 +164,7 @@ const state = reactive({
 })
 //Define refs
 const sortBy = ref('created_at')
+const labwareLocations = ref([])
 
 //Composables
 const { showAlert } = useAlert()
@@ -172,22 +173,14 @@ const { fetchLocations } = useLocationFetcher()
 
 //Create Pinia store
 const poolsStore = usePacbioPoolsStore()
-const pools = computed(() => poolsStore.poolsArray)
 
 //create printing store
 const printingStore = usePrintingStore()
 
 // Location fetching
-const displayedPools = computed(() => locationBuilder(pools.value, labwareLocations.value))
-
-const barcodes = computed(() => pools.value.map(({ barcode }) => barcode))
-
-const labwareLocations = ref([])
-
-watchEffect(async () => {
-  const barcodesValue = barcodes.value
-  labwareLocations.value = await fetchLocations(barcodesValue)
-})
+const displayedPools = computed(() =>
+  locationBuilder(poolsStore.poolsArray, labwareLocations.value),
+)
 
 //methods
 const createLabels = () => {
@@ -224,14 +217,18 @@ const printLabels = async (printerName) => {
   showAlert(message, success ? 'success' : 'danger')
 }
 
-/**
- * This asynchronous function fetches pools using the `fetchPools` method from `poolsStore`.
- * It passes `state.filterOptions` as query parameters to the `fetchPools` method.
- *
- * @async
- * @returns {Promise<any>} A promise that resolves to the result of the `fetchPools` method.
- */
-const fetchPools = async () => {
-  return await fetchWithQueryParams(poolsStore.fetchPools, state.filterOptions)
+/*Fetches the pools from the api and adds location data
+  @returns {Object} { success: Boolean, errors: Array }*/
+const provider = async () => {
+  const { success, errors } = await fetchWithQueryParams(poolsStore.fetchPools, state.filterOptions)
+  // We only want to fetch labware locations if the pools were fetched successfully
+  if (success) {
+    // We don't need to fail if labware locations can't be fetched, so we don't return anything
+    const poolsArray = poolsStore.poolsArray
+    const barcodes = poolsArray.map(({ barcode }) => barcode)
+    labwareLocations.value = await fetchLocations(barcodes)
+  }
+
+  return { success, errors }
 }
 </script>

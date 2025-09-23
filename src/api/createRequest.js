@@ -1,7 +1,23 @@
-// default headers are for json api
+/**
+ * A simple library for creating requests to an API endpoint
+ * using fetch and json api headers
+ * There needs to be better separation of basic request and json api request
+ * e.g. createBasicRequest and createJsonApiRequest
+ * The createRequest function is for json api requests
+ * The createBasicRequest function is for basic requests
+ * @module createRequest
+ */
+
+// default headers for json and json api
 const defaultHeaders = {
-  'Content-Type': 'application/vnd.api+json',
-  Accept: 'application/vnd.api+json',
+  jsonApi: {
+    'Content-Type': 'application/vnd.api+json',
+    Accept: 'application/vnd.api+json',
+  },
+  json: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
 }
 
 /*
@@ -75,6 +91,61 @@ const buildQuery = (queryParametersType = QueryParametersType()) => {
 }
 
 /*
+ * @param RequestType type
+ * @return fetch
+ * execute a query using fetch
+ */
+const execute = (requestType = RequestType()) => {
+  const { method, url, api, data } = requestType
+  // full url is base url + url
+  // e.g. http://localhost:3100/v1/samples
+  const fullURL = `${api.baseURL}/${url}`
+  return fetch(fullURL, {
+    method,
+    headers: api.headers,
+    ...(data && { body: JSON.stringify(data) }),
+  })
+}
+
+/**
+ * Creates a basic request object for interacting with an API endpoint using JSON headers.
+ *
+ * @param {Object} params - The parameters for the request.
+ * @param {String} params.rootURL - The base URL for the API.
+ * @param {String} params.path - The endpoint path for the resource.
+ * @param {Object} [params.headers={}] - Optional additional headers to merge with default JSON headers.
+ * @returns {Object} An object containing:
+ *   - baseURL: The base URL for the API.
+ *   - api: The API configuration object with baseURL and headers.
+ *   - path: The endpoint path.
+ *   - get: A function to perform a GET request to the specified path.
+ *
+ * @description
+ * This function sets up a basic API request configuration using JSON headers.
+ * It provides a `get` method to perform a GET request to the specified resource path.
+ * The returned object can be used to interact with simple API endpoints that do not require advanced query parameters.
+ *
+ * @example
+ * const request = createBasicRequest({ rootURL: 'http://localhost:3100/v1', path: 'samples' })
+ * const response = await request.get()
+ */
+const createBasicRequest = ({ rootURL, path, headers = {} }) => {
+  const baseURL = rootURL
+  const api = { baseURL, headers: { ...defaultHeaders.json, ...headers } }
+
+  const get = () => {
+    const requestType = RequestType({
+      method: 'GET',
+      url: path,
+      api,
+    })
+    return execute(requestType)
+  }
+
+  return { baseURL, api, path, get }
+}
+
+/*
  * @param {String} rootURL
  * @param {String} apiNamespace
  * @param {String} resource
@@ -83,22 +154,7 @@ const buildQuery = (queryParametersType = QueryParametersType()) => {
  */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
-  const api = { baseURL, headers: { ...defaultHeaders, ...headers } }
-
-  /*
-   * @param String type - request type e.g. 'get', 'create'
-   * @param String include - query include
-   * @return fetch
-   * execute a query using fetch
-   */
-  const execute = (type, url, data) => {
-    const fullURL = `${baseURL}/${url}`
-    return fetch(fullURL, {
-      method: type,
-      headers: api.headers,
-      ...(data && { body: JSON.stringify(data) }),
-    })
-  }
+  const api = { baseURL, headers: { ...defaultHeaders.jsonApi, ...headers } }
 
   /*
    * @param {Object} queryParametersType - query parameters
@@ -106,7 +162,12 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * Execute a get query
    */
   const get = (queryParametersType = QueryParametersType()) => {
-    return execute('GET', `${resource}${buildQuery(queryParametersType)}`)
+    const requestType = RequestType({
+      method: 'GET',
+      url: `${resource}${buildQuery(queryParametersType)}`,
+      api,
+    })
+    return execute(requestType)
   }
 
   /*
@@ -120,7 +181,12 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
     include = '',
     queryParametersType = QueryParametersType({ include }),
   } = {}) => {
-    return execute('GET', `${resource}/${id}${buildQuery(queryParametersType)}`)
+    const requestType = RequestType({
+      method: 'GET',
+      url: `${resource}/${id}${buildQuery(queryParametersType)}`,
+      api,
+    })
+    return execute(requestType)
   }
 
   /*
@@ -134,7 +200,13 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
     include = '',
     queryParametersType = QueryParametersType({ include }),
   }) => {
-    return execute('POST', `${resource}${buildQuery(queryParametersType)}`, data)
+    const requestType = RequestType({
+      method: 'POST',
+      url: `${resource}${buildQuery(queryParametersType)}`,
+      api,
+      data,
+    })
+    return execute(requestType)
   }
 
   /*
@@ -142,17 +214,31 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @return [Promise] - array of promises
    */
   const destroy = (...ids) => {
-    return ids.map((id) => execute('DELETE', `${resource}/${id}`))
+    return ids.map((id) =>
+      execute(
+        RequestType({
+          method: 'DELETE',
+          url: `${resource}/${id}`,
+          api,
+        }),
+      ),
+    )
   }
 
   /*
    * @param {Object} data - data to send for update
    * @return Promise
    * Execute a patch
-   * TODO: Update should have same signature as create
+   * Update should have same signature as create
    */
   const update = (payload) => {
-    return execute('PATCH', `${resource}/${payload.data.id}`, payload)
+    const requestType = RequestType({
+      method: 'PATCH',
+      url: `${resource}/${payload.data.id}`,
+      api,
+      data: payload,
+    })
+    return execute(requestType)
   }
 
   return {
@@ -189,6 +275,34 @@ const QueryParametersType = ({ page = {}, filter = {}, include = '', fields = {}
   }
 }
 
-export { defaultHeaders, createRequest, QueryParametersType }
+/**
+ * Defines the structure for a request object used in API calls.
+ *
+ * @param {Object} params - The parameters for the request.
+ * @param {string} [params.method='GET'] - The HTTP method for the request (e.g., 'GET', 'POST', 'PATCH', 'DELETE').
+ * @param {string} [params.url=''] - The endpoint URL for the request.
+ * @param {Object} [params.api={}] - The API configuration object, typically containing baseURL and headers.
+ * @param {Object|null} [params.data=null] - The data payload to send with the request (for POST/PATCH).
+ * @returns {Object} The request object containing method, url, api, and data.
+ *
+ * @example
+ * const req = RequestType({
+ *   method: 'POST',
+ *   url: 'samples',
+ *   api: { baseURL: 'http://localhost:3100/v1', headers: { 'Content-Type': 'application/json' } },
+ *   data: { name: 'Sample 1' }
+ * })
+ * // req = { method: 'POST', url: 'samples', api: {...}, data: {...} }
+ */
+const RequestType = ({ method = 'GET', url = '', api = {}, data = null } = {}) => {
+  return {
+    method,
+    url,
+    api,
+    data,
+  }
+}
+
+export { defaultHeaders, createRequest, QueryParametersType, RequestType, createBasicRequest }
 
 export default createRequest

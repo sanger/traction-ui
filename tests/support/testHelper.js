@@ -36,13 +36,18 @@ const findByText = (wrapper, text) => {
   return results.at(0)
 }
 
+// Helper to find an option element by its visible text
+const findOption = (optionText, { from }) =>
+  from.findAll('option').find((option) => option.text() == optionText)
+
 /**
  *
  * @param {String} statusCode - status code of the response. Should be in the 200 range.
  * @param {Object} data - data to be returned in the response
  * @param {Array} included - included data to be returned in the response
  * @returns {Object} - a successful response object (fetch)
- * A standard response object that can be used to mock a successful fetch response.
+ * A standard response object that can be used to mock a successful Json Apifetch response.
+ * Needs to be modified if used for non-json api responses.
  */
 const successfulResponse = ({ statusCode = 201, data = {}, included = [] } = {}) => {
   return {
@@ -92,6 +97,7 @@ const failedResponse = (statusCode = 500) => {
  * @param {Function} [options.createStore=() => {}] - Function to create the store instance.
  * @param {Object} [options.stubs={}] - Components to be stubbed in the component.
  * @param {Object} [options.dataProps={}] - Initial data state of the component.
+ * @param {Object} [options.slots={}] - Slots to be passed to the component.
  * @returns {Object} An object containing the mounted wrapper and the store instance.
  */
 function mountWithStore(component, options = {}) {
@@ -102,6 +108,7 @@ function mountWithStore(component, options = {}) {
     props = {},
     createStore = () => {},
     stubs = {},
+    slots = {},
   } = options
 
   const createPiniaPlugin = () =>
@@ -116,6 +123,7 @@ function mountWithStore(component, options = {}) {
       stubs,
     },
     props,
+    slots,
   })
   const store = createStore()
   return { wrapper, store }
@@ -147,6 +155,7 @@ export {
   selectOptionByText,
   findAllByText,
   findByText,
+  findOption,
   successfulResponse,
   failedResponse,
   mountWithStore,
