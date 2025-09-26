@@ -77,12 +77,47 @@ const createStoreData = (data, count) => {
 }
 
 /**
+ * Finds pool data from the provided dataset by count or id.
+ *
+ * @param {Object} params - The parameters object.
+ * @param {Object} params.data - The dataset containing pool data.
+ * @param {number} [params.count] - The number of records to find. If provided, returns that many records from the start.
+ * @param {string|number} [params.id] - The ID of the pool to find. If provided, returns the record with the matching ID.
+ * @returns {Object} An object containing:
+ *   - foundData {Object}: The found pool data (single or multiple records).
+ *   - adjustedCount {number}: The count of records found.
+ *
+ * @description
+ * This utility function searches the pool data for either a specific count of records or a specific pool ID.
+ * If `count` is provided, it returns the first `count` records. If `id` is provided, it finds the record with the matching ID.
+ * If neither is provided, it returns all records.
+ *
+ * @example
+ * // Find 2 records
+ * const { foundData, adjustedCount } = findData({ data, count: 2 })
+ *
+ * // Find by ID
+ * const { foundData, adjustedCount } = findData({ data, id: '3' })
+ */
+const findData = ({ data, count, id }) => {
+  if (count) {
+    return { foundData: find({ data, count }), adjustedCount: count }
+  }
+  if (id) {
+    const index = data.data.findIndex((item) => item.id === String(id))
+    const foundData = find({ data, start: index, count: 1 })
+    return { foundData, count }
+  }
+  return { foundData: find({ data, count }), adjustedCount: count }
+}
+
+/**
  *
  * @param {null | integer} first if first is null, it will return all the records otherwise it will return the number of records specified
  * @returns { BaseFactory }
  * pull out the attributes and relationships from the data and create a factory
  */
-const OntPoolFactory = ({ count = undefined } = {}) => {
+const OntPoolFactory = ({ count = undefined, id = undefined } = {}) => {
   const data = {
     data: [
       {
@@ -10549,9 +10584,11 @@ const OntPoolFactory = ({ count = undefined } = {}) => {
   }
 
   // if first is completed find the data otherwise return all data
-  const foundData = find({ data, count })
+  const { foundData, adjustedCount } = findData({ data, count, id })
 
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, count) }
+  // const foundData = find({ data, count })
+
+  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, adjustedCount) }
 }
 
 export default OntPoolFactory

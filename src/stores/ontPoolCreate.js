@@ -254,6 +254,27 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       return { success, data, included, errors }
     },
 
+    /**
+     * Fetches detailed information for a specific ONT pool and updates the store's resources.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to fetch details for.
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action fetches a single ONT pool by ID, including related tube, libraries, tags, and requests.
+     * If the request is successful, it extracts the included libraries, tags, and requests from the response,
+     * and updates the store's `resources.libraries`, `resources.tags`, and `resources.requests` accordingly.
+     * The function returns an object with the success status and any errors encountered during the request.
+     *
+     * @example
+     * const { success, errors } = await fetchPoolDetails(123)
+     * if (success) {
+     *   // The store's resources.libraries, resources.tags, and resources.requests are now updated
+     * }
+     */
     async fetchPoolDetails(id) {
       const { success, included, errors } = await this.findPool(
         id,
