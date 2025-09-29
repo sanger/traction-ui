@@ -219,6 +219,52 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         }
       })
     },
+    /**
+     * Returns detailed information for a specific ONT pool.
+     *
+     * @param {Object} resources - The store's resources object containing pools, libraries, requests, and tags.
+     * @returns {Function} A function that takes a pool ID and returns an object with pool details:
+     *   - id: The pool ID.
+     *   - barcode: The tube barcode associated with the pool.
+     *   - libraries: An array of library objects for the pool, each containing:
+     *       - id: The library ID.
+     *       - sample_name: The sample name from the associated request.
+     *       - group_id: The group ID from the associated tag (if available).
+     *
+     * @description
+     * This getter retrieves a pool by its ID and returns a summary object containing the pool's barcode and
+     * an array of its libraries. Each library includes its ID, the sample name from its associated request,
+     * and the group ID from its associated tag. If the pool does not exist, an empty object is returned.
+     *
+     * @example
+     * const details = store.poolDetails('123')
+     * // details = {
+     * //   id: '123',
+     * //   barcode: 'ABC123',
+     * //   libraries: [
+     * //     { id: '1', sample_name: 'Sample A', group_id: 'G1' },
+     * //     { id: '2', sample_name: 'Sample B', group_id: 'G2' }
+     * //   ]
+     * // }
+     */
+    poolDetails:
+      ({ resources }) =>
+      (id) => {
+        const pool = resources.pools[id]
+        if (!pool) {
+          return {}
+        }
+        return {
+          id,
+          barcode: pool.tube_barcode,
+          libraries: pool.libraries.map((libraryId) => {
+            const { id, request, tag } = resources.libraries[libraryId]
+            const { sample_name } = resources.requests[request]
+            const { group_id } = resources.tags[tag] || {}
+            return { id, sample_name, group_id }
+          }),
+        }
+      },
   },
   actions: {
     /**
