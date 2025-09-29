@@ -106,7 +106,7 @@ const findData = ({ data, count, id }) => {
   if (id) {
     const index = data.data.findIndex((item) => item.id === String(id))
     const foundData = find({ data, start: index, count: 1 })
-    return { foundData, count }
+    return { foundData, adjustedCount: 1 }
   }
   return { foundData: find({ data, count }), adjustedCount: count }
 }

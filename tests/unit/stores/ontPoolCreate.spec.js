@@ -357,6 +357,28 @@ describe('useOntPoolCreateStore', () => {
         expect(store.resources.libraries).toEqual({})
         expect(store.resources.tags).toEqual({})
       })
+
+      it('when another pool is fetched, it does not clear existing pool data', async () => {
+        const ontPoolFactoryId1 = OntPoolFactory({ id: 1 })
+        const ontPoolFactoryId2 = OntPoolFactory({ id: 2 })
+        store.$state = { ...ontPoolFactoryId1.storeData }
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(ontPoolFactoryId2.responses.fetch)
+        await store.fetchPoolDetails('2')
+        expect(store.resources.requests).toEqual({
+          ...ontPoolFactoryId1.storeData.resources.requests,
+          ...ontPoolFactoryId2.storeData.resources.requests,
+        })
+        expect(store.resources.libraries).toEqual({
+          ...ontPoolFactoryId1.storeData.resources.libraries,
+          ...ontPoolFactoryId2.storeData.resources.libraries,
+        })
+        expect(store.resources.tags).toEqual({
+          ...ontPoolFactoryId1.storeData.resources.tags,
+          ...ontPoolFactoryId2.storeData.resources.tags,
+        })
+      })
     })
 
     describe('fetchOntTagSets', () => {

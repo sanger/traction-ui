@@ -282,9 +282,15 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       )
       if (success) {
         const { libraries, tags, requests } = groupIncludedByResource(included)
-        this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
-        this.resources.tags = dataToObjectById({ data: tags })
-        this.resources.requests = dataToObjectById({ data: requests })
+        this.resources.libraries = {
+          ...this.resources.libraries,
+          ...dataToObjectById({ data: libraries, includeRelationships: true }),
+        }
+        this.resources.tags = { ...this.resources.tags, ...dataToObjectById({ data: tags }) }
+        this.resources.requests = {
+          ...this.resources.requests,
+          ...dataToObjectById({ data: requests }),
+        }
       }
 
       return { success, errors }
