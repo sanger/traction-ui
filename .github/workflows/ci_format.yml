@@ -10,6 +10,23 @@ on:
       - develop
       - master
 jobs:
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+     
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Install npm dependencies
+        uses: sanger/.github/.github/actions/install/npm@master
+
+      - name: Type check
+        run: >-
+          npm run type-check
+
   prettier:
     name: Check format with prettier
     runs-on: ubuntu-latest
