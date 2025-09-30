@@ -382,6 +382,9 @@ describe('useOntPoolCreateStore', () => {
         find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
         const { success } = await store.fetchPoolDetails('1')
         expect(success).toEqual(true)
+        expect(
+          store.resources.pools[singleOntPoolFactory.storeData.pooling.pool.id].libraries.length,
+        ).toEqual(Object.keys(singleOntPoolFactory.storeData.resources.libraries).length)
         expect(store.resources.requests).toEqual(singleOntPoolFactory.storeData.resources.requests)
         expect(store.resources.libraries).toEqual(
           singleOntPoolFactory.storeData.resources.libraries,
@@ -396,6 +399,8 @@ describe('useOntPoolCreateStore', () => {
         find.mockResolvedValue(failureResponse)
         const { success } = await store.fetchPoolDetails('1')
         expect(success).toEqual(false)
+
+        expect(store.resources.pools).toEqual({})
         expect(store.resources.requests).toEqual({})
         expect(store.resources.libraries).toEqual({})
         expect(store.resources.tags).toEqual({})
@@ -404,7 +409,13 @@ describe('useOntPoolCreateStore', () => {
       it('when another pool is fetched, it does not clear existing pool data', async () => {
         const ontPoolFactoryId1 = OntPoolFactory({ id: 1 })
         const ontPoolFactoryId2 = OntPoolFactory({ id: 2 })
-        store.$state = { ...ontPoolFactoryId1.storeData }
+
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+          requests: ontPoolFactoryId1.storeData.resources.requests,
+          libraries: ontPoolFactoryId1.storeData.resources.libraries,
+          tags: ontPoolFactoryId1.storeData.resources.tags,
+        }
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
         find.mockResolvedValue(ontPoolFactoryId2.responses.fetch)

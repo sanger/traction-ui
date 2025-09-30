@@ -43,15 +43,15 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="row.toggleDetails"
+            @click="handleToggleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
           </traction-button>
         </template>
 
         <template #row-details="row">
-          <div>
-            <traction-table :items="row.item.libraries" :fields="field_in_details">
+          <div v-if="currentPool.id === row.item.id">
+            <traction-table :items="currentPool.libraries" :fields="field_in_details">
             </traction-table>
           </div>
         </template>
@@ -130,6 +130,7 @@ const selected = ref([])
 const sortBy = ref('created_at')
 const labwareLocations = ref([])
 const { showAlert } = useAlert()
+const currentPool = ref({})
 
 // --- Store and composables ---
 const ontPoolCreateStore = useOntPoolCreateStore()
@@ -176,6 +177,14 @@ async function printLabels(printerName) {
     // fallback: log to console
     console.log('Print job result:', message, success)
   }
+}
+
+const handleToggleDetails = async (row) => {
+  if (!row.detailsShowing) {
+    await ontPoolCreateStore.fetchPoolDetails(row.item.id)
+    currentPool.value = ontPoolCreateStore.poolDetails(row.item.id)
+  }
+  row.toggleDetails()
 }
 
 /**

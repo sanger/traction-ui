@@ -322,12 +322,15 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * }
      */
     async fetchPoolDetails(id) {
-      const { success, included, errors } = await this.findPool(
+      const { success, data, included, errors } = await this.findPool(
         id,
-        'tube,libraries.tag,libraries.request',
+        'libraries.tag,libraries.request',
       )
       if (success) {
+        const pool = extractAttributes(data)
+        const libraryIds = data.relationships.libraries.data.map((library) => library.id)
         const { libraries, tags, requests } = groupIncludedByResource(included)
+        this.resources.pools[pool.id] = { ...pool, libraries: libraryIds }
         this.resources.libraries = {
           ...this.resources.libraries,
           ...dataToObjectById({ data: libraries, includeRelationships: true }),
