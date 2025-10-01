@@ -25,6 +25,7 @@ const formatTractionSample = ({ sample, request }) => {
     donor_id: sample.attributes.donor_id || '',
     species: sample.attributes.species || '',
     sanger_sample_id: sample.attributes.sanger_sample_id || '',
+    number_of_donors: sample.attributes.number_of_donors || '',
   }
 }
 
@@ -226,6 +227,7 @@ const csvStructure = [
   { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
   { key: 'donor_id', label: 'Sample Type' },
+  { key: 'number_of_donors', label: 'Number of Donors' },
 ]
 
 export {
