@@ -18,13 +18,10 @@ const formatTractionSample = ({ sample, request }) => {
     cost_code: request.attributes.cost_code || '',
     library_type: request.attributes.library_type || '',
     external_study_id: request.attributes.external_study_id || '',
-    date_of_sample_collection: sample.attributes.date_of_sample_collection || '',
     // Kinnex samples use the sample name as the supplier name
     // This is because the supplier name is the same for all samples in a Kinnex Compound Sample
     supplier_name: sample.attributes.name || '',
-    donor_id: sample.attributes.donor_id || '',
     species: sample.attributes.species || '',
-    sanger_sample_id: sample.attributes.sanger_sample_id || '',
     number_of_donors: sample.attributes.number_of_donors || '',
   }
 }
@@ -213,9 +210,7 @@ const fetchFunction = async (sample_input, samples) => {
 // This is because these fields require knowledge about the individual samples
 // that make up the Kinnex Compound Samples which we don't have access to
 const csvStructure = [
-  { key: 'date_of_sample_collection', label: 'Date of Sample Collection' },
   { key: 'barcode', label: 'Sample ID' },
-  { key: 'sanger_sample_id', label: 'Sanger Sample ID' },
   { key: 'supplier_name', label: 'Supplier Sample Name' },
   // { key: 'cohort', label: 'Cohort' },
   { key: 'study_number', label: 'Study Number' },
@@ -226,7 +221,6 @@ const csvStructure = [
   // { key: 'volume', label: 'Supplied Volume (uL)' },
   { key: 'submitting_faculty', label: 'Submitting Faculty' },
   { key: 'library_type', label: 'Library Type' },
-  { key: 'donor_id', label: 'Sample Type' },
   { key: 'number_of_donors', label: 'Number of Donors' },
 ]
 
