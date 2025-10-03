@@ -5,7 +5,7 @@ import {
   dataToObjectById,
   extractAttributes,
 } from './../../src/api/JsonApi.js'
-import { populatePoolingLibraries } from './../../src/stores/utilities/ontPool.js'
+import { populatePoolingLibraries, setPoolDetails } from './../../src/stores/utilities/ontPool.js'
 
 /**
  *
@@ -55,9 +55,24 @@ const createStoreDataForSinglePool = (data) => {
  * @returns {Object} - { tubes, libraries, tags, requests } the included data for multiple pools
  */
 const createStoreDataForMultiplePools = (data) => {
+  const pools = dataToObjectById({ data: data.data, includeRelationships: true })
+  const { libraries, tags, requests } = groupIncludedByResource(data.included)
+
+  Object.values(pools).map((pool) => {
+    return {
+      ...pool,
+      details: setPoolDetails({
+        pool,
+        libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+        requests: dataToObjectById({ data: requests }),
+        tags: dataToObjectById({ data: tags }),
+      }),
+    }
+  })
+
   return {
     resources: {
-      pools: dataToObjectById({ data: data.data, includeRelationships: true }),
+      pools,
     },
   }
 }
