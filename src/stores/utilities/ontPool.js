@@ -368,6 +368,40 @@ const populateById =
     }
   }
 
+/**
+ * Returns an array of library details for a given pool.
+ *
+ * @param {Object} params - The parameters object.
+ * @param {Object} params.pool - The pool object, which should contain a `libraries` array of library IDs.
+ * @param {Object} params.libraries - An object mapping library IDs to library objects.
+ * @param {Object} params.requests - An object mapping request IDs to request objects.
+ * @param {Object} params.tags - An object mapping tag IDs to tag objects.
+ * @returns {Array} An array of objects, each containing:
+ *   - sample_name: The sample name from the associated request.
+ *   - group_id: The group ID from the associated tag (if available).
+ *
+ * @description
+ * This function takes a pool and related resources, and returns an array of details for each library in the pool.
+ * For each library, it extracts the sample name from the associated request and the group ID from the associated tag.
+ * If the pool or its libraries are missing, it returns an empty array.
+ *
+ * @example
+ * const details = setPoolDetails({ pool, libraries, requests, tags })
+ * // details = [
+ * //   { sample_name: 'Sample A', group_id: 'G1' },
+ * //   { sample_name: 'Sample B', group_id: 'G2' }
+ * // ]
+ */
+const setPoolDetails = ({ pool, libraries, requests, tags }) => {
+  if (!pool || !pool.libraries) return []
+  return pool.libraries.map((libraryId) => {
+    const { request, tag } = libraries[libraryId]
+    const { sample_name } = requests[request]
+    const { group_id } = tags[tag] || {}
+    return { sample_name, group_id }
+  })
+}
+
 export {
   libraryAttributes,
   newLibrary,
@@ -381,4 +415,5 @@ export {
   findRequestsForSource,
   populatePoolingLibraries,
   populateById,
+  setPoolDetails,
 }

@@ -11,6 +11,7 @@ import {
   populatePoolingLibraries,
   newLibrary,
   populateById,
+  setPoolDetails,
 } from '@/stores/utilities/ontPool.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
@@ -481,5 +482,39 @@ describe('populateById', () => {
     expect(state.resources.wells).toEqual(
       dataToObjectById({ data: wells, includeRelationships: true }),
     )
+  })
+
+  describe('setPoolDetails', () => {
+    const pool = { id: 1, tube_barcode: 'TRAC-1', libraries: ['10', '20'] }
+    const resources = {
+      requests: {
+        1: { id: 1, type: 'requests', sample_name: 'Sample 1' },
+        2: { id: 2, type: 'requests', sample_name: 'Sample 2' },
+        3: { id: 3, type: 'requests', sample_name: 'Sample 3' },
+      },
+      libraries: {
+        10: { id: 10, type: 'libraries', request: '1', tag: '100' },
+        20: { id: 20, type: 'libraries', request: '2', tag: '200' },
+        30: { id: 30, type: 'libraries', request: '3', tag: '300' },
+      },
+      tags: {
+        100: { id: 100, type: 'tags', group_id: 'NB01' },
+        200: { id: 200, type: 'tags', group_id: 'NB02' },
+        300: { id: 300, type: 'tags', group_id: 'NB03' },
+      },
+    }
+
+    it('populates pool details with libraries, requests, and tags', () => {
+      const details = setPoolDetails({ pool, ...resources })
+      expect(details).toEqual([
+        { sample_name: 'Sample 1', group_id: 'NB01' },
+        { sample_name: 'Sample 2', group_id: 'NB02' },
+      ])
+    })
+
+    it('if the pool is empty', () => {
+      const details = setPoolDetails({ pool: {}, ...resources })
+      expect(details).toEqual([])
+    })
   })
 })
