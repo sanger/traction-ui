@@ -46,7 +46,7 @@
     "clean-jsdoc-theme": "^4.3.0",
     "cypress": "^15.3.0",
     "cypress-file-upload": "^5.0.8",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.1.1",
