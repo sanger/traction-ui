@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 // Help us keep track of what we import, and the size effect it has on the bundle
 import { visualizer } from 'rollup-plugin-visualizer'
