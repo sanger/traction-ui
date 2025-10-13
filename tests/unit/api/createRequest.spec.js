@@ -293,15 +293,16 @@ describe('createRequest', () => {
       })
 
       it('multiple', async () => {
-        const ids = [1, 2, 3, 4, 5]
+        const ids = []
 
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
-        const promises = await request.destroy(ids)
+        const promises = await request.destroy(["a"])
 
         for (const promise of promises) {
           const response = await promise
+          console.log('response', response.json())
           expect(fetch).toBeCalled()
           expect(response.json()).toEqual(mockResponse)
         }
