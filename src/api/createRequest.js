@@ -213,7 +213,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
    * @param Array or String or Integer ids - ids of records to destroy
    * @return [Promise] - array of promises
    */
-  const destroy = (...ids) => {
+  const destroy = (ids) => {
     return ids.map((id) =>
       execute(
         RequestType({
