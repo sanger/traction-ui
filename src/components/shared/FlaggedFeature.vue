@@ -5,11 +5,7 @@
   </div>
 </template>
 
-<script>
-import useSWRV from 'swrv'
-import { ref } from 'vue'
-const DEFAULT_FEATURE = { enabled: false }
-
+<script setup>
 /**
  * # Flagged Feature
  *
@@ -36,30 +32,32 @@ const DEFAULT_FEATURE = { enabled: false }
  *   </div>
  * </template>
  */
-export default {
-  name: 'FlaggedFeature',
-  props: {
-    name: {
-      // The name of the feature flag on which to flip this
-      type: String,
-      required: true,
-    },
+
+import { computed, ref, onMounted } from 'vue'
+import useRootStore from '@/stores'
+import { handleResponse } from '@/api/ResponseHelper.js'
+
+const rootStore = useRootStore()
+const data = ref(null)
+
+const DEFAULT_FEATURE = { enabled: false }
+
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
   },
-  setup() {
-    const baseURL = ref(import.meta.env.VITE_TRACTION_BASE_URL)
-    const { data, error } = useSWRV(`${baseURL.value}/flipper/api/actors/User`)
-    return {
-      data,
-      error,
-    }
-  },
-  computed: {
-    feature() {
-      return this.data?.features[this.name] || DEFAULT_FEATURE
-    },
-    enabled() {
-      return this.feature.enabled
-    },
-  },
-}
+})
+
+onMounted(async () => {
+  const request = rootStore.api.traction.feature_flags
+  const promise = request.get()
+  const { success, body } = await handleResponse(promise)
+  if (success) {
+    data.value = body
+  }
+})
+
+const feature = computed(() => data.value?.features?.[props.name] || DEFAULT_FEATURE)
+const enabled = computed(() => feature.value.enabled)
 </script>

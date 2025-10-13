@@ -31,14 +31,6 @@ const mountPacbioPoolEdit = ({ state = {}, props } = {}) =>
     createStore: () => usePacbioPoolCreateStore(),
   })
 
-vi.mock('swrv', () => ({
-  default: vi.fn(() => ({
-    data: {
-      features: {},
-    },
-  })),
-}))
-
 describe('pacbioPoolEdit#new', () => {
   const pool = {
     id: null,

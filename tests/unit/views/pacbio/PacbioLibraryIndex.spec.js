@@ -3,9 +3,11 @@ import { flushPromises, successfulResponse, mountWithStore } from '@support/test
 import { beforeEach, expect, it, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 import useRootStore from '@/stores'
 
 const pacbioLibraryFactory = PacbioLibraryFactory()
+const printerFactory = PrinterFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -30,6 +32,10 @@ describe('Libraries.vue', () => {
           store.api.traction.pacbio.libraries.get = vi
             .fn()
             .mockResolvedValue(pacbioLibraryFactory.responses.fetch)
+          // a bit of a smell. Printing is hidden
+          store.api.traction.printers.get = vi
+            .fn()
+            .mockResolvedValue(printerFactory.responses.fetch)
         }
       },
     ]
@@ -62,6 +68,9 @@ describe('Libraries.vue', () => {
             store.api.traction.pacbio.libraries.get = vi
               .fn()
               .mockResolvedValue(pacbioLibraryFactoryWithExhausted.responses.fetch)
+            store.api.traction.printers.get = vi
+              .fn()
+              .mockResolvedValue(printerFactory.responses.fetch)
           }
         },
       ]

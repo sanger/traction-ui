@@ -2,8 +2,10 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
 import { mountWithStore, router, flushPromises } from '@support/testHelper'
 import { usePacbioPoolsStore } from '@/stores/pacbioPools.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
+import PrinterFactory from '@tests/factories/PrinterFactory.js'
 
 const pacbioPoolFactory = PacbioPoolFactory()
+const printerFactory = PrinterFactory()
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -29,6 +31,10 @@ describe('PacbioPoolIndex.vue', () => {
           store.api.traction.pacbio.pools.get = vi
             .fn()
             .mockResolvedValue(pacbioPoolFactory.responses.fetch)
+          // a bit of a smell. Printing is hidden
+          store.api.traction.printers.get = vi
+            .fn()
+            .mockResolvedValue(printerFactory.responses.fetch)
         }
       },
     ]

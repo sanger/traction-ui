@@ -20,12 +20,26 @@ describe('Pacbio Pools view', () => {
       )
     })
 
-    cy.intercept('POST', '/api/labwares/searches', {
-      statusCode: 200,
-      body: {
-        data: [],
-      },
-    })
+    // Stub labwhere request
+    cy.get('@pacbioPoolFactory')
+      .then((pacbioPoolFactory) => {
+        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: pacbioPoolFactory.content.data[0].attributes.barcode,
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
+            },
+          ],
+        })
+      })
+      .as('labwhereRequest')
 
     cy.wrap(PrinterFactory()).as('printerFactory')
 
@@ -47,14 +61,19 @@ describe('Pacbio Pools view', () => {
       .and('contain', 'Sample Name')
     cy.get('#pool-index>tbody').contains('tr', '2')
 
-    // is there a better way? don't want to tie values to fixtures
-    cy.get('#id').invoke('text').should('match', /\d+/)
-    cy.get('#barcode').invoke('text').should('include', 'TRAC')
-    cy.get('#source_identifier').invoke('text').should('match', /\w+/)
-    cy.get('#volume').invoke('text').should('match', /\d+/)
-    cy.get('#concentration').invoke('text').should('match', /\d+/)
-    cy.get('#template_prep_kit_box_barcode').invoke('text').should('match', /\w+/)
-    cy.get('#insert_size').invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=barcode]').first().invoke('text').should('include', 'TRAC')
+    cy.get('[data-attribute=source_identifier]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=volume]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=concentration]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=template_prep_kit_box_barcode]')
+      .first()
+      .invoke('text')
+      .should('match', /\w+/)
+    cy.get('[data-attribute=insert_size]').first().invoke('text').should('match', /\d+/)
+
+    // Handle location column separately to confirm labwhere call is working
+    cy.get('[data-attribute=location]').last().should('contain', 'box-test')
 
     //Show details
     cy.get('button[id^="details-btn-"]').first().click()

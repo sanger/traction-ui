@@ -206,7 +206,6 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
   ]
 
   beforeEach(() => {
-    vi.clearAllMocks()
     mockFetchLibraries = vi.fn()
     mockFormatAndTransformLibraries = vi.fn()
     mockExhaustLibrayVolume = vi.fn()

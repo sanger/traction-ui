@@ -1,23 +1,21 @@
 <template>
-  <traction-section :title="title">
+  <div>
+    <traction-heading level="4" show-border>{{ title }}</traction-heading>
     <div
       :data-list="dataList"
       data-type="annotation-list"
-      class="w-full p-2 bg-gray-200 rounded-md"
+      class="w-full rounded-md p-4 bg-gray-100"
     >
       <!-- Header row -->
       <div class="flex w-full">
         <div class="w-5/6">
-          <div
-            :class="`grid gap-2 mb-2 w-full items-start p-2 rounded-t-md font-bold text-base ${isDisplayCreatedAt ? 'grid-cols-4' : 'grid-cols-3'}`"
-          >
-            <traction-label class="px-1 text-left">Comment</traction-label>
-            <traction-label class="px-1 text-left">User</traction-label>
-            <traction-label class="px-1 text-left">Annotation Type</traction-label>
-            <traction-label v-if="isDisplayCreatedAt" class="ml-1">Created At</traction-label>
+          <div :class="`grid w-full items-start text-left pb-2 grid-cols-3 font-bold gap-x-2`">
+            <traction-label>Comment</traction-label>
+            <traction-label>User</traction-label>
+            <traction-label>Type</traction-label>
           </div>
         </div>
-        <div class="w-1/6 flex justify-end gap-2">
+        <div class="w-1/6 flex justify-end">
           <traction-button
             v-if="!annotations?.length"
             data-action="add-annotation"
@@ -29,11 +27,10 @@
         </div>
       </div>
       <!-- Annotation items -->
-
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full bg-gray-100 rounded-md">
         <div v-for="(annotation, idx) in annotations" :key="annotation.id">
-          <div class="flex flex-row items-center">
-            <div class="flex w-5/6 border border-gray-200 shadow-sm bg-white rounded-md p-2">
+          <div class="flex flex-row border-y">
+            <div class="flex w-5/6">
               <AnnotationItem
                 :id="annotation.id"
                 :parent="props.parent"
@@ -62,7 +59,7 @@
         </div>
       </div>
     </div>
-  </traction-section>
+  </div>
 </template>
 <script setup>
 /**
@@ -159,13 +156,4 @@ const removeAnnotation = (id) => {
     annotations.value.splice(index, 1)
   }
 }
-
-/**
- * Computed property to determine if the 'Created At' column should be displayed.
- * Returns true if any annotation has a created_at field, else false.
- * @type {import('vue').ComputedRef<boolean>}
- */
-const isDisplayCreatedAt = computed(() => {
-  return !!annotations.value?.some?.((annotation) => annotation.created_at)
-})
 </script>

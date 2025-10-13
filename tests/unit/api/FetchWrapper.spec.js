@@ -9,10 +9,6 @@ describe('FetchWrapper', () => {
     global.fetch = vi.fn()
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('baseUrl', () => {
     it('should return the base URL', () => {
       expect(fetchWrapper.baseUrl).toEqual(baseUrl)

@@ -16,12 +16,16 @@ describe('ONT Runs view', () => {
     cy.get('#filterValue').children().should('contain', 'State').and('contain', 'Experiment ID')
 
     cy.get('#run-index').contains('tr', '5')
-    cy.get('#id').invoke('text').should('match', /\d+/)
-    cy.get('#experiment_name').invoke('text').should('include', 'ONTRUN-')
-    cy.get('#state').invoke('text').should('match', /\w+/)
-    cy.get('#instrument_name').invoke('text').should('match', /\w+/)
-    cy.get('#created_at').invoke('text').should('match', /\d+/)
-    cy.get('#actions').invoke('text').should('include', 'Edit').and('include', 'Sample Sheet')
+    cy.get('[data-attribute=id]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=experiment_name]').first().invoke('text').should('include', 'ONTRUN-')
+    cy.get('[data-attribute=state]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=instrument_name]').first().invoke('text').should('match', /\w+/)
+    cy.get('[data-attribute=created_at]').first().invoke('text').should('match', /\d+/)
+    cy.get('[data-attribute=actions]')
+      .first()
+      .invoke('text')
+      .should('include', 'Edit')
+      .and('include', 'Sample Sheet')
   })
 
   it('displays the ONT run page with correct data when clicking on edit run', () => {

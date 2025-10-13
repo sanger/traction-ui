@@ -1,6 +1,8 @@
 import PacbioLibraryFactory from '../../factories/PacbioLibraryFactory.js'
 
 describe('Labware Reception page', () => {
+  const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+
   beforeEach(() => {
     cy.withFlags({
       rust_labwhere_service: { enabled: false },
@@ -26,7 +28,7 @@ describe('Labware Reception page', () => {
     cy.get('#locationBarcode').type('location123')
     cy.get('#labware_barcodes').type('barcode1\nbarcode2')
 
-    cy.intercept('POST', '/api/scans', {
+    cy.intercept('POST', `${labwhereUrl}/api/scans`, {
       statusCode: 201,
       body: {
         message: 'barcode1, barcode2 successfully stored in location123',
@@ -58,7 +60,7 @@ describe('Labware Reception page', () => {
         },
       })
     })
-    cy.intercept('POST', '/api/scans', {
+    cy.intercept('POST', `${labwhereUrl}/api/scans`, {
       statusCode: 201,
       body: {
         message: 'barcode1, barcode2 successfully stored in location123',
@@ -78,7 +80,7 @@ describe('Labware Reception page', () => {
     cy.get('#locationBarcode').type('location123')
     cy.get('#labware_barcodes').type('barcode1\nbarcode2')
 
-    cy.intercept('POST', '/api/scans', {
+    cy.intercept('POST', `${labwhereUrl}/api/scans`, {
       statusCode: 422,
       body: {
         success: false,

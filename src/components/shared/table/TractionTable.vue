@@ -85,10 +85,10 @@
                   <template v-for="(field, fieldIndex) in fields">
                     <traction-table-column
                       v-if="field"
-                      :id="field.key"
                       :key="`custom-${rowIndex}-${fieldIndex}`"
+                      :data-attribute="field.key"
                       :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
-                      @click="onRowClick($event, row)"
+                      @click="onRowClick(row)"
                     >
                       <slot :name="`cell(${field.key})`" v-bind="row">
                         {{ text(row.item, field) }}</slot
@@ -316,7 +316,7 @@ export default {
     },
 
     /**Callback when a row is clicked */
-    onRowClick(id, row) {
+    onRowClick(row) {
       /**Only listen to column clicks. This is to avoid clicks from any any embedded controls like buttons displayed within columns  */
       const srcElement = window.event.srcElement
       if (!(srcElement instanceof HTMLTableCellElement)) return

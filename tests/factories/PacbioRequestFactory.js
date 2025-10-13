@@ -442,6 +442,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           supplier_name: 'Supplier Name',
           donor_id: 'donor-id-123',
           retention_instruction: null,
+          number_of_donors: 2,
         },
       },
       {
@@ -459,6 +460,7 @@ const PacbioRequestFactory = ({ includeRelationships = true } = {}) => {
           supplier_name: 'Supplier Name 2',
           donor_id: 'donor-id-123',
           retention_instruction: null,
+          number_of_donors: 3,
         },
       },
       {

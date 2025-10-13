@@ -1,11 +1,18 @@
 import { defineConfig } from 'cypress'
 import { rmdir } from 'fs'
+import dotenv from 'dotenv'
+// Load environment variables from .env.testing file
+// So we can access them in cypress tests
+const envVars = dotenv.config({ path: '.env.testing', quiet: true }).parsed
 
 export default defineConfig({
   fixturesFolder: 'tests/e2e/fixtures',
   screenshotsFolder: 'tests/e2e/screenshots',
   videosFolder: 'tests/e2e/videos',
   downloadsFolder: 'tests/e2e/downloads',
+  env: {
+    ...envVars,
+  },
   e2e: {
     // Enables us to add custom plugins to use in the tests
     // See https://docs.cypress.io/api/node-events/overview for more information

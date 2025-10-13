@@ -1,10 +1,15 @@
 import SRJaguarKinnexFactory from '../../../factories/SRJaguarKinnexFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
+import LibraryTypeFactory from '../../../factories/LibraryTypeFactory.js'
 
 describe('Import samples from SR Jaguar Kinnex', () => {
   beforeEach(() => {
-    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
-      fixture: 'tractionLibraryTypes.json',
+    cy.wrap(LibraryTypeFactory()).as('libraryTypeFactory')
+    cy.get('@libraryTypeFactory').then((libraryTypeFactory) => {
+      cy.intercept('GET', 'v1/library_types?fields[library_types]=name,pipeline', {
+        statusCode: 200,
+        body: libraryTypeFactory.content,
+      })
     })
 
     cy.wrap(PrinterFactory()).as('printerFactory')

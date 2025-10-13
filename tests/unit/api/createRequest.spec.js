@@ -1,29 +1,32 @@
-import { defaultHeaders, createRequest, QueryParametersType } from '@/api/createRequest.js'
+import {
+  defaultHeaders,
+  createRequest,
+  createBasicRequest,
+  QueryParametersType,
+  RequestType,
+} from '@/api/createRequest.js'
 
-import { expect } from 'vitest'
+import { describe, expect } from 'vitest'
 
 global.fetch = vi.fn()
 
+const attributes = {
+  rootURL: 'http://traction',
+  apiNamespace: 'v1',
+  resource: 'requests',
+  path: 'my/url',
+  headers: {
+    header1: 'header1',
+    header2: 'header2',
+  },
+}
+
+const mockResponse = {
+  status: 200,
+  data: [{ id: 1 }],
+}
+
 describe('createRequest', () => {
-  const attributes = {
-    rootURL: 'http://traction',
-    apiNamespace: 'v1',
-    resource: 'requests',
-    headers: {
-      header1: 'header1',
-      header2: 'header2',
-    },
-  }
-
-  const mockResponse = {
-    status: 200,
-    data: [{ id: 1 }],
-  }
-
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('basic attributes', () => {
     it('will have a rootURL', () => {
       const request = createRequest({ ...attributes })
@@ -42,14 +45,14 @@ describe('createRequest', () => {
 
     it('will have some headers', () => {
       const request = createRequest({ ...attributes })
-      expect(request.api.headers).toEqual({ ...defaultHeaders, ...attributes.headers })
+      expect(request.api.headers).toEqual({ ...defaultHeaders.jsonApi, ...attributes.headers })
     })
 
     it('will have some default headers if none were passed', () => {
       // eslint-disable-next-line no-unused-vars
       const { headers, ...rest } = attributes
       const request = createRequest({ ...rest })
-      expect(request.api.headers).toEqual(defaultHeaders)
+      expect(request.api.headers).toEqual(defaultHeaders.jsonApi)
     })
 
     it('will have a base url', () => {
@@ -148,7 +151,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests', {
           method: 'GET',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
         })
 
         const jsonData = await response.json()
@@ -171,7 +174,7 @@ describe('createRequest', () => {
           'http://traction/v1/requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
           {
             method: 'GET',
-            headers: { ...attributes.headers, ...defaultHeaders },
+            headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
           },
         )
 
@@ -192,7 +195,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests', {
           method: 'POST',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
           body: JSON.stringify(data),
         })
 
@@ -208,7 +211,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests?include=tube', {
           method: 'POST',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
           body: JSON.stringify(data),
         })
 
@@ -228,7 +231,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'GET',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
         })
 
         const jsonData = await response.json()
@@ -243,7 +246,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1?include=sample', {
           method: 'GET',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
         })
 
         const jsonData = await response.json()
@@ -262,7 +265,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'PATCH',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
           body: JSON.stringify(payload),
         })
 
@@ -282,7 +285,7 @@ describe('createRequest', () => {
 
         expect(fetch).toBeCalledWith('http://traction/v1/requests/1', {
           method: 'DELETE',
-          headers: { ...attributes.headers, ...defaultHeaders },
+          headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
         })
 
         const jsonData = await responses[0].json()
@@ -323,6 +326,81 @@ describe('createRequest', () => {
     it('should return an empty object', () => {
       const queryParamsTypeObject = QueryParametersType()
       expect(queryParamsTypeObject).toEqual({ filter: {}, page: {}, include: '', fields: {} })
+    })
+  })
+
+  describe('RequestType', () => {
+    it('should return a valid object', () => {
+      const parameters = {
+        method: 'POST',
+        url: 'test',
+        api: { baseURL: 'test', headers: {} },
+        data: { test: 'test' },
+      }
+      const requestTypeObject = RequestType(parameters)
+      expect(requestTypeObject).toEqual({ ...parameters })
+    })
+    it('should return an object with default values', () => {
+      const requestTypeObject = RequestType()
+      expect(requestTypeObject).toEqual({
+        method: 'GET',
+        url: '',
+        api: {},
+        data: null,
+      })
+    })
+  })
+})
+
+describe('createBasicRequest', () => {
+  describe('basic attributes', () => {
+    it('will have some headers', () => {
+      const request = createBasicRequest({ ...attributes })
+      expect(request.api.headers).toEqual({ ...defaultHeaders.json, ...attributes.headers })
+    })
+
+    it('will have some default headers if none were passed', () => {
+      // eslint-disable-next-line no-unused-vars
+      const { headers, ...rest } = attributes
+      const request = createBasicRequest({ ...rest })
+      expect(request.api.headers).toEqual(defaultHeaders.json)
+    })
+
+    it('will have a base url', () => {
+      const request = createBasicRequest({ ...attributes })
+      expect(request.baseURL).toEqual('http://traction')
+    })
+
+    it('will have an api', () => {
+      const request = createBasicRequest({ ...attributes })
+      expect(request.api).toBeDefined()
+      const api = request.api
+      expect(api.baseURL).toEqual(request.baseURL)
+      const headerKeys = Object.keys(api.headers)
+      expect(headerKeys.includes('header1')).toBeTruthy()
+      expect(headerKeys.includes('header2')).toBeTruthy()
+    })
+
+    it('will have a path', () => {
+      const request = createBasicRequest({ ...attributes })
+      expect(request.path).toEqual(attributes.path)
+    })
+  })
+
+  describe('get', () => {
+    it('basic', async () => {
+      fetch.mockReturnValue({ json: () => mockResponse })
+
+      const createRequestFn = createBasicRequest({ ...attributes })
+      const response = await createRequestFn.get()
+
+      expect(fetch).toBeCalledWith('http://traction/my/url', {
+        method: 'GET',
+        headers: { ...attributes.headers, ...defaultHeaders.json },
+      })
+
+      const jsonData = await response.json()
+      expect(jsonData).toEqual(mockResponse)
     })
   })
 })
