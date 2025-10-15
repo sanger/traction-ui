@@ -167,6 +167,11 @@ const splitBarcodeByPrefix = (barcode) => {
     const prefix = 'NT'
     const id = barcode.slice(2)
     return { prefix, id }
+  } else if (barcode.startsWith('TRAC-2')) {
+    const prefix = 'TRAC-2'
+    // 7 and not 6 because of the dash after the TRAC-2 e.g. TRAC-2-123
+    const id = barcode.slice(7)
+    return { prefix, id }
   }
   return { prefix: '', id: barcode }
 }
@@ -330,4 +335,5 @@ export {
   PrintJobType,
   createPayload,
   NullWorkflowItem,
+  splitBarcodeByPrefix,
 }
