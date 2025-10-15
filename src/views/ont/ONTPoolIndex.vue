@@ -98,6 +98,7 @@ import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
+import { splitBarcodeByPrefix } from '@/lib/LabelPrintingHelpers.js'
 
 // --- Reactive State ---
 const fields = [
@@ -149,14 +150,20 @@ const displayedPools = computed(() =>
  */
 function createLabels() {
   const date = getCurrentDate()
-  return selected.value.map(({ barcode, source_identifier }) => ({
-    barcode,
-    first_line: 'Ont - Pool',
-    second_line: date,
-    third_line: barcode,
-    fourth_line: source_identifier,
-    label_name: 'main_label',
-  }))
+  return selected.value.map(({ barcode, source_identifier }) => {
+    const { prefix: round_label_lower_line, id: round_label_bottom_line } =
+      splitBarcodeByPrefix(barcode)
+    return {
+      barcode,
+      first_line: 'Ont - Pool',
+      second_line: date,
+      third_line: barcode,
+      fourth_line: source_identifier,
+      round_label_bottom_line,
+      round_label_lower_line,
+      label_name: 'main_label',
+    }
+  })
 }
 
 /**
