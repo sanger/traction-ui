@@ -214,9 +214,9 @@ describe('SampleReport', () => {
         const time = new Date().toLocaleDateString()
 
         expect(downloadBlob).toHaveBeenCalledWith(
-          // Just check headers as this is testing elswhere
+          // Just check headers as this is testing elsewhere
           expect.stringContaining(
-            '"Date of Sample Collection","Sample ID","Sanger Sample ID","Supplier Sample Name","Study Number","Study Name","Cost Code","Species","Submitting Faculty","Library Type","Sample Type"',
+            '"Sample ID","Supplier Sample Name","Study Number","Study Name","Cost Code","Species","Submitting Faculty","Library Type","Number of Donors"',
           ),
           `traction_sample_report_${time}.csv`,
           'text/csv',
