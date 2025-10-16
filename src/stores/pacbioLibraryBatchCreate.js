@@ -9,7 +9,7 @@ import {
 } from '@/stores/utilities/pacbioLibraryBatches.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
-import { getColumnValues } from '@/lib/csv/pacbio.js'
+import { getColumnValues, removeEmptyLines } from '@/lib/csv/pacbio.js'
 import { findDuplicates } from '@/lib/DataHelpers.js'
 
 /**
@@ -82,7 +82,15 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         return { success: false, errors: 'csvFile is required' }
       }
       try {
-        const csv = await csvFile.text()
+        let csv = await csvFile.text()
+
+        // Remove empty lines from the CSV content
+        csv = removeEmptyLines(csv)
+        // Check if the CSV content is empty or has only headers
+        if (csv.length === 0 || csv.split('\n').length <= 1) {
+          return { success: false, errors: 'The provided csv file is empty' }
+        }
+
         const sources = getColumnValues(csv, 0)
         const tagNames = getColumnValues(csv, 1)
 
