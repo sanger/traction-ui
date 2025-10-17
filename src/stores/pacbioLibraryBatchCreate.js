@@ -95,7 +95,7 @@ export const usePacbioLibraryBatchCreateStore = defineStore('pacbioLibraryBatchC
         const tagNames = getColumnValues(csv, 1)
 
         // Check for duplicate sources
-        let duplicates = findDuplicates(sources)
+        let duplicates = findDuplicates(sources).filter((d) => d !== '')
         if (duplicates.length) {
           return {
             success: false,
