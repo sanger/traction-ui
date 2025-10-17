@@ -136,6 +136,24 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         )
       })
 
+      it('returns the correct error when csv file contains multiple missing sources', async () => {
+        csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
+          pacbioTagSetFactory.storeData.tags,
+        )
+        // Add mulitple missing sources
+        csvFileTextContent +=
+          '\n,bc3001,039943102141700113025,9,2.6,12470\n' +
+          ',bc3002,039943102141700113025,9,3.3,11769\n'
+
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(create).not.toBeCalled()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('Invalid record at line 4: sample_name is required')
+      })
+
       it('returns error if there are duplicate tags', async () => {
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,
