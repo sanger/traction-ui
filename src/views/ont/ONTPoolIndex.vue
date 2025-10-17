@@ -3,6 +3,13 @@
     <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @select-printer="printLabels($event)"
+        >
+        </printerModal>
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
@@ -67,16 +74,6 @@
           </traction-tooltip>
         </template>
       </traction-table>
-
-      <div class="clearfix">
-        <printerModal
-          ref="printerModal"
-          class="float-left"
-          :disabled="selected.length === 0"
-          @select-printer="printLabels($event)"
-        >
-        </printerModal>
-      </div>
     </div>
   </DataFetcher>
 </template>
