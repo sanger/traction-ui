@@ -2,7 +2,7 @@
   <DataFetcher :fetcher="provider">
     <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix">
+      <div>
         <printerModal
           ref="printerModal"
           class="float-left"
