@@ -85,6 +85,27 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         expect(result.errors).toEqual('tagSet is required')
       })
 
+      it('returns error if csv file is empty', async () => {
+        csvFileTextContent = '\n\n\n,,,,\n'
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The provided csv file is empty')
+      })
+
+      it('returns error if csv file contains only headers', async () => {
+        csvFileTextContent =
+          'Sample Name,Tag,Template prep kit box barcode,Volume,Concentration,Insert Size\n\n\n,,,,\n'
+        const { success, errors } = await pacbioLibraryBatchCreateStore.createLibraryBatch(
+          csvFile,
+          tagSet,
+        )
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The provided csv file is empty')
+      })
+
       it('returns error if no requests are found', async () => {
         rootStore.api.traction.pacbio.requests.get.mockResolvedValue({ data: [] })
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
@@ -98,7 +119,7 @@ describe('usePacbioLibraryBatchCreateStore', () => {
         expect(errors).toEqual('None of the given sources (/samples) were found')
       })
 
-      it('returns error if there are dupliacte sources', async () => {
+      it('returns error if there are duplicate sources', async () => {
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,
         )
