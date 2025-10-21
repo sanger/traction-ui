@@ -5,7 +5,7 @@ import {
   dataToObjectById,
   extractAttributes,
 } from './../../src/api/JsonApi.js'
-import { populatePoolingLibraries, setPoolDetails } from './../../src/stores/utilities/ontPool.js'
+import { populatePoolingLibraries } from './../../src/stores/utilities/ontPool.js'
 
 /**
  *
@@ -56,25 +56,7 @@ const createStoreDataForSinglePool = (data) => {
  */
 const createStoreDataForMultiplePools = (data) => {
   const pools = dataToObjectById({ data: data.data, includeRelationships: true })
-  const { libraries, tags, requests } = groupIncludedByResource(data.included)
-
-  Object.values(pools).map((pool) => {
-    return {
-      ...pool,
-      details: setPoolDetails({
-        pool,
-        libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
-        requests: dataToObjectById({ data: requests }),
-        tags: dataToObjectById({ data: tags }),
-      }),
-    }
-  })
-
-  return {
-    resources: {
-      pools,
-    },
-  }
+  return { resources: { pools, ids: Object.keys(pools) } }
 }
 
 /**
@@ -10601,9 +10583,13 @@ const OntPoolFactory = ({ count = undefined, id = undefined } = {}) => {
   // if first is completed find the data otherwise return all data
   const { foundData, adjustedCount } = findData({ data, count, id })
 
-  // const foundData = find({ data, count })
-
-  return { ...BaseFactory(foundData), storeData: createStoreData(foundData, adjustedCount) }
+  return {
+    ...BaseFactory(foundData),
+    storeData: createStoreData(foundData, adjustedCount),
+    all: () => {
+      return { ...BaseFactory(foundData) }
+    },
+  }
 }
 
 export default OntPoolFactory
