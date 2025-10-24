@@ -58,7 +58,7 @@
     "postcss-cli": "^11.0.1",
     "prettier": "3.6.2",
     "rollup-plugin-visualizer": "^6.0.4",
-    "vite-plugin-vue-devtools": "^8.0.2",
+    "vite-plugin-vue-devtools": "^8.0.3",
     "vitest": "^3.2.4"
   }
 }
