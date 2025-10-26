@@ -7,7 +7,7 @@ describe('ONT Run create View', () => {
     cy.wrap(OntInstrumentFactory()).as('ontInstrumentFactory')
     cy.wrap(OntRunFactory()).as('ontRunFactory')
     cy.wrap(OntPoolFactory.all()).as('ontPoolFactory')
-    cy.wrap(OntPoolFactory().single()).as('singleOntPoolFactory')
+    cy.wrap(OntPoolFactory.single()).as('singleOntPoolFactory')
     cy.wrap(OntRunFactory({ count: 1 })).as('singleOntRunFactory')
 
     cy.get('@ontInstrumentFactory').then((ontInstrumentFactory) => {
