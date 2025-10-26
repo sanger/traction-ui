@@ -10,10 +10,10 @@ import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontPlateFactory = OntPlateFactory()
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
-const singleOntPoolFactory = OntPoolFactory({ count: 1 })
+const singleOntPoolFactory = OntPoolFactory.single()
 const singleOntPlateFactory = OntPlateFactory({ count: 1 })
 const singleOntTubeFactory = OntTubeFactory({ count: 1 })
 
@@ -407,8 +407,8 @@ describe('useOntPoolCreateStore', () => {
       })
 
       it('when another pool is fetched, it does not clear existing pool data', async () => {
-        const ontPoolFactoryId1 = OntPoolFactory({ id: 1 })
-        const ontPoolFactoryId2 = OntPoolFactory({ id: 2 })
+        const ontPoolFactoryId1 = OntPoolFactory.id(1)
+        const ontPoolFactoryId2 = OntPoolFactory.id(2)
 
         store.resources = {
           pools: ontPoolFactory.storeData.resources.pools,

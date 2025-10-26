@@ -16,7 +16,7 @@ import {
 import { dataToObjectById } from '@/api/JsonApi.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 
-const ontPoolFactory = OntPoolFactory({ count: 1 })
+const ontPoolFactory = OntPoolFactory.all()
 
 describe('ontPool.js', () => {
   describe('validate', () => {

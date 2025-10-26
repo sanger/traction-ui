@@ -11,7 +11,7 @@ import * as ontRuns from '@/stores/utilities/ontRuns.js'
 
 const ontInstrumentFactory = OntInstrumentFactory()
 const ontRunFactory = OntRunFactory()
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 
 describe('useOntRunCreateStore', () => {
   describe('state', () => {

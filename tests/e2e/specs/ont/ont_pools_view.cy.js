@@ -3,7 +3,7 @@ import PrinterFactory from '../../../factories/PrinterFactory.js'
 
 describe('Ont pools view', () => {
   it('Visits the ont pools url', () => {
-    cy.wrap(OntPoolFactory()).as('ontPoolFactory')
+    cy.wrap(OntPoolFactory.all()).as('ontPoolFactory')
     cy.get('@ontPoolFactory').then((ontPoolFactory) => {
       cy.intercept('v1/ont/pools?page[size]=25&page[number]=1', {
         statusCode: 200,
