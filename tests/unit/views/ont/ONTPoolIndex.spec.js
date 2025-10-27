@@ -4,7 +4,7 @@ import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 
 const mountComponent = () => {
   const plugins = [
