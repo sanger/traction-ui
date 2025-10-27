@@ -13,6 +13,12 @@ vi.mock('@/composables/useAlert', () => ({
     showAlert: mockShowAlert,
   }),
 }))
+const mockFetchLocations = vi.fn().mockResolvedValue([])
+vi.mock('@/composables/useLocationFetcher.js', () => ({
+  default: () => ({
+    fetchLocations: mockFetchLocations,
+  }),
+}))
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
