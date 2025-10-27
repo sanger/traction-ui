@@ -6,7 +6,10 @@ import {
   extractAttributes,
   extractRelationshipsAndGroupById,
 } from './../../src/api/JsonApi.js'
-import { populatePoolingLibraries, setPoolDetails } from './../../src/stores/utilities/ontPool.js'
+import {
+  populatePoolingLibraries,
+  createPoolDetails,
+} from './../../src/stores/utilities/ontPool.js'
 
 /**
  *
@@ -65,6 +68,7 @@ const findById = (data, id) => {
   return find({ data, start: index, count: 1 })
 }
 
+// can we reduce the number of pools?
 const data = {
   data: [
     {
@@ -10610,7 +10614,7 @@ const OntPoolFactory = {
         pool: {
           ...pool,
           ...relationships,
-          details: setPoolDetails({
+          details: createPoolDetails({
             pool: { ...pool, ...relationships },
             libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
             requests: dataToObjectById({ data: requests, includeRelationships: true }),

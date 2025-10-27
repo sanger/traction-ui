@@ -11,7 +11,7 @@ import {
   populatePoolingLibraries,
   newLibrary,
   populateById,
-  setPoolDetails,
+  createPoolDetails,
 } from '@/stores/utilities/ontPool.js'
 import { dataToObjectById } from '@/api/JsonApi.js'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
@@ -484,7 +484,7 @@ describe('populateById', () => {
     )
   })
 
-  describe('setPoolDetails', () => {
+  describe('createPoolDetails', () => {
     const pool = { id: 1, tube_barcode: 'TRAC-1', libraries: ['10', '20'] }
     const resources = {
       requests: {
@@ -505,7 +505,7 @@ describe('populateById', () => {
     }
 
     it('populates pool details with libraries, requests, and tags', () => {
-      const details = setPoolDetails({ pool, ...resources })
+      const details = createPoolDetails({ pool, ...resources })
       expect(details).toEqual([
         { sample_name: 'Sample 1', group_id: 'NB01' },
         { sample_name: 'Sample 2', group_id: 'NB02' },
@@ -513,7 +513,7 @@ describe('populateById', () => {
     })
 
     it('if the pool is empty', () => {
-      const details = setPoolDetails({ pool: {}, ...resources })
+      const details = createPoolDetails({ pool: {}, ...resources })
       expect(details).toEqual([])
     })
   })

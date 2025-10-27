@@ -392,7 +392,7 @@ const populateById =
  * //   { sample_name: 'Sample B', group_id: 'G2' }
  * // ]
  */
-const setPoolDetails = ({ pool, libraries, requests, tags }) => {
+const createPoolDetails = ({ pool, libraries, requests, tags }) => {
   if (!pool || !pool.libraries) return []
   return pool.libraries.map((libraryId) => {
     const { request, tag } = libraries[libraryId]
@@ -415,5 +415,5 @@ export {
   findRequestsForSource,
   populatePoolingLibraries,
   populateById,
-  setPoolDetails,
+  createPoolDetails,
 }

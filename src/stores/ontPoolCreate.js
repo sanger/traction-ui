@@ -20,7 +20,7 @@ import {
   findRequestsForSource,
   populatePoolingLibraries,
   populateById,
-  setPoolDetails,
+  createPoolDetails,
 } from './utilities/ontPool.js'
 /**
  * Used for combining objects based on id
@@ -334,7 +334,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         const pool = extractAttributes(data)
         const relationships = extractRelationshipsAndGroupById(data.relationships)
         const { libraries, requests, tags } = groupIncludedByResource(included)
-        const details = setPoolDetails({
+        const details = createPoolDetails({
           pool: { ...pool, ...relationships },
           libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
           requests: dataToObjectById({ data: requests, includeRelationships: true }),

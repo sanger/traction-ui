@@ -190,7 +190,7 @@ async function printLabels(printerName) {
 
 const handleToggleDetails = async (row) => {
   if (!row.detailsShowing) {
-    await ontPoolCreateStore.fetchPoolDetails(row.item.id)
+    await ontPoolCreateStore.setPoolDetails(row.item.id)
     currentPool.value = ontPoolCreateStore.poolDetails(row.item.id)
   }
   row.toggleDetails()
