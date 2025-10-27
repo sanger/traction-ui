@@ -341,8 +341,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           tags: dataToObjectById({ data: tags }),
         })
 
-        console.log(details)
-
         this.resources.pools[id] = {
           ...pool,
           ...relationships,
