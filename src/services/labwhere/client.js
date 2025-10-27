@@ -7,6 +7,7 @@ import {
 import { getPacbioLibraryResources } from '@/services/traction/PacbioLibrary.js'
 
 const labwhereFetch = FetchWrapper(import.meta.env['VITE_LABWHERE_BASE_URL'], 'LabWhere')
+const labwhereFetchV2 = FetchWrapper(import.meta.env['VITE_LABWHERE_V2_BASE_URL'], 'LabWhere')
 const destroyLocation = import.meta.env['VITE_DESTROYED_LOCATION_BARCODE']
 /**
  * Fetches the locations of labwares from LabWhere based on provided barcodes.
@@ -146,4 +147,98 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   )
   return { success: exhaustedLibraries.length > 0, exhaustedLibraries }
 }
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed }
+
+/**
+ * Scans labware barcodes into a specified location in LabWhere (V2 API with Rust).
+ *
+ * @param {string} locationBarcode - The barcode of the location where labware will be stored.
+ * @param {string} labwareBarcodes - The barcodes of the labware to be stored, separated by newlines.
+ * @param {Object} [fetchWrapper=labwhereFetchV2] - The fetch wrapper to use for the request (optional).
+ * @returns {Promise<{success: boolean, errors: string[], message: string}>} - A promise that resolves to an object containing:
+ * - `success` (boolean): Whether the operation was successful.
+ * - `errors` (string[]): An array of error messages, if any.
+ * - `message` (string): A message describing the result of the operation.
+ *
+ * @example
+ * const locationBarcode = 'location123';
+ * const labwareBarcodes = 'barcode1\nbarcode2';
+ * scanBarcodesInLabwhereLocationV2(locationBarcode, labwareBarcodes).then(response => {
+ *   if (response.success) {
+ *     console.log('Barcodes scanned successfully:', response.message);
+ *   } else {
+ *     console.error('Errors:', response.errors);
+ *   }
+ * });
+ */
+const scanBarcodesInLabwhereLocationV2 = async (
+  userCode,
+  locationBarcode,
+  labwareBarcodes,
+  startPosition,
+  fetchWrapper = labwhereFetchV2,
+) => {
+  if (!labwareBarcodes) {
+    return { success: false, errors: ['Required parameters are missing for the Scan In operation'] }
+  }
+  const response = await fetchWrapper.post(
+    '/scan',
+    JSON.stringify({
+      labware_barcodes: labwareBarcodes,
+      location_barcode: locationBarcode,
+    }),
+  )
+
+  return { success: response.success, errors: response.errors, message: response.data.message }
+}
+
+/**
+ * Fetches labware locations from Labwhere using the provided barcodes.
+ *
+ * @async
+ * @function getLabwhereLocationsV2
+ * @param {string[]} labwhereBarcodes - An array of labware barcodes to search for.
+ * @param {Object} [fetchWrapper=labwhereFetchv2] - An optional fetch wrapper for making HTTP requests.
+ * @param {Function} fetchWrapper.post - A function to perform POST requests.
+ * @returns {Promise<Object>} A promise that resolves to an object containing:
+ *   - `success` {boolean}: Indicates whether the request was successful.
+ *   - `errors` {string[]}: An array of error messages, if any.
+ *   - `data` {Object}: The response data, including extracted locations for the provided barcodes.
+ *
+ * @throws {Error} Throws an error if the fetch request fails.
+ *
+ * @example
+ * const barcodes = ['ABC123', 'DEF456'];
+ * const result = await getLabwhereLocationsV2(barcodes);
+ * if (result.success) {
+ *   console.log('Locations:', result.data);
+ * } else {
+ *   console.error('Errors:', result.errors);
+ * }
+ */
+const getLabwhereLocationsV2 = async (labwhereBarcodes, fetchWrapper = labwhereFetchV2) => {
+  // If no barcodes are provided, return a failed response.
+  if (!labwhereBarcodes || labwhereBarcodes.length === 0) {
+    return { success: false, errors: ['No barcodes provided'], data: {} }
+  }
+
+  const response = await fetchWrapper.post(
+    '/searches',
+    JSON.stringify({
+      labware_barcodes: labwhereBarcodes.join('\n'),
+    }),
+    'application/json',
+  )
+
+  if (response.success) {
+    response.data = extractLocationsForLabwares(response.data, labwhereBarcodes)
+  }
+  return response
+}
+
+export {
+  getLabwhereLocations,
+  getLabwhereLocationsV2,
+  scanBarcodesInLabwhereLocation,
+  exhaustLibraryVolumeIfDestroyed,
+  scanBarcodesInLabwhereLocationV2,
+}

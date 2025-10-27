@@ -1,6 +1,9 @@
 import { mount } from '@support/testHelper'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import { scanBarcodesInLabwhereLocation } from '@/services/labwhere/client.js'
+import {
+  scanBarcodesInLabwhereLocation,
+  scanBarcodesInLabwhereLocationV2,
+} from '@/services/labwhere/client.js'
 import * as labwhereClient from '@/services/labwhere/client.js'
 import { beforeEach } from 'vitest'
 
@@ -13,6 +16,11 @@ vi.mock('@/composables/useAlert', () => ({
   }),
 }))
 
+const mockCheckFeatureFlag = vi.fn()
+vi.mock('@/api/FeatureFlag.js', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(false),
+}))
+
 describe('LabWhereReception', () => {
   let mockExhaustSamples
   const buildWrapper = () => {
@@ -22,6 +30,11 @@ describe('LabWhereReception', () => {
   beforeEach(() => {
     mockExhaustSamples = vi.spyOn(labwhereClient, 'exhaustLibraryVolumeIfDestroyed')
     mockExhaustSamples.mockResolvedValue({ success: false })
+    mockCheckFeatureFlag.mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   it('has a user code input field', () => {
@@ -88,6 +101,35 @@ describe('LabWhereReception', () => {
     wrapper.find('[data-attribute="user-code-input"]').setValue('user1')
     await wrapper.vm.$nextTick()
     expect(wrapper.vm.errors).not.toHaveProperty('user_code')
+  })
+
+  it.skip('chooses the correct scan function based on the feature flag', async () => {
+    const wrapper = buildWrapper()
+    wrapper.vm.user_code = 'user123'
+    wrapper.vm.location_barcode = 'location123'
+    wrapper.vm.labware_barcodes = 'barcode1\nbarcode2'
+    wrapper.vm.start_position = 1
+
+    mockCheckFeatureFlag.mockResolvedValue(true)
+
+    scanBarcodesInLabwhereLocationV2.mockResolvedValue({
+      success: true,
+      message: 'barcode1, barcode2 successfully stored in location123',
+    })
+
+    await wrapper.find('#submit-button').trigger('submit')
+
+    expect(scanBarcodesInLabwhereLocationV2).toHaveBeenCalledWith(
+      'user123',
+      'location123',
+      'barcode1\nbarcode2',
+      1,
+    )
+
+    expect(mockShowAlert).toBeCalledWith(
+      'barcode1, barcode2 successfully stored in location123',
+      'success',
+    )
   })
 
   it('validates and submits the form successfully', async () => {

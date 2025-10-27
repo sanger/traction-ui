@@ -2,6 +2,11 @@ import PrinterFactory from '../../../factories/PrinterFactory.js'
 import PacbioPoolFactory from '../../../factories/PacbioPoolFactory.js'
 
 describe('Pacbio Pools view', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
+  })
   it('Visits the pacbio pools url', () => {
     cy.wrap(PacbioPoolFactory()).as('pacbioPoolFactory')
     cy.get('@pacbioPoolFactory').then((pacbioPoolFactory) => {
