@@ -12,6 +12,7 @@ import {
   createBarcodeLabels,
   PrintJobType,
   createPayload,
+  splitBarcodeByPrefix,
 } from '@/lib/LabelPrintingHelpers'
 import { describe, expect, it } from 'vitest'
 import WorkflowFactory from '@tests/factories/WorkflowFactory.js'
@@ -539,6 +540,26 @@ describe('LabelPrintingHelpers.js', () => {
         copies: printJob.copies,
         labelTemplateName: labelType.labelTemplateName,
       })
+    })
+  })
+
+  describe('#splitBarcodeByPrefix', () => {
+    it('splits a TRAC-2 barcode correctly', () => {
+      const { prefix, id } = splitBarcodeByPrefix('TRAC-2-1234')
+      expect(prefix).toEqual('TRAC-2')
+      expect(id).toEqual('1234')
+    })
+
+    it('splits a NT barcode correctly', () => {
+      const { prefix, id } = splitBarcodeByPrefix('NT1234')
+      expect(prefix).toEqual('NT')
+      expect(id).toEqual('1234')
+    })
+
+    it('returns empty prefix and full id for other barcodes', () => {
+      const { prefix, id } = splitBarcodeByPrefix('SQPD-1234')
+      expect(prefix).toEqual('')
+      expect(id).toEqual('SQPD-1234')
     })
   })
 })
