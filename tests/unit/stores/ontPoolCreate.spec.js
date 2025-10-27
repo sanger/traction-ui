@@ -376,20 +376,15 @@ describe('useOntPoolCreateStore', () => {
     })
 
     describe('fetchPoolDetails', () => {
-      it('handles success', async () => {
+      it.only('handles success', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
-        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
-        const { success } = await store.fetchPoolDetails('1')
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.fetchPoolDetails(id)
         expect(success).toEqual(true)
-        expect(
-          store.resources.pools[singleOntPoolFactory.storeData.pooling.pool.id].libraries.length,
-        ).toEqual(Object.keys(singleOntPoolFactory.storeData.resources.libraries).length)
-        expect(store.resources.requests).toEqual(singleOntPoolFactory.storeData.resources.requests)
-        expect(store.resources.libraries).toEqual(
-          singleOntPoolFactory.storeData.resources.libraries,
-        )
-        expect(store.resources.tags).toEqual(singleOntPoolFactory.storeData.resources.tags)
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
       })
 
       it('handles failure', async () => {

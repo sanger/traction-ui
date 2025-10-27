@@ -2,7 +2,12 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
+import {
+  dataToObjectById,
+  extractAttributes,
+  groupIncludedByResource,
+  extractRelationshipsAndGroupById,
+} from '@/api/JsonApi.js'
 import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
@@ -15,6 +20,7 @@ import {
   findRequestsForSource,
   populatePoolingLibraries,
   populateById,
+  setPoolDetails,
 } from './utilities/ontPool.js'
 /**
  * Used for combining objects based on id
@@ -328,17 +334,19 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       )
       if (success) {
         const pool = extractAttributes(data)
-        const libraryIds = data.relationships.libraries.data.map((library) => library.id)
-        const { libraries, tags, requests } = groupIncludedByResource(included)
-        this.resources.pools[pool.id] = { ...pool, libraries: libraryIds }
-        this.resources.libraries = {
-          ...this.resources.libraries,
-          ...dataToObjectById({ data: libraries, includeRelationships: true }),
-        }
-        this.resources.tags = { ...this.resources.tags, ...dataToObjectById({ data: tags }) }
-        this.resources.requests = {
-          ...this.resources.requests,
-          ...dataToObjectById({ data: requests }),
+        const relationships = extractRelationshipsAndGroupById(data.relationships)
+        const { libraries, requests, tags } = groupIncludedByResource(included)
+        const details = setPoolDetails({
+          pool: { ...pool, ...relationships },
+          libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+          requests: dataToObjectById({ data: requests, includeRelationships: true }),
+          tags: dataToObjectById({ data: tags }),
+        })
+
+        this.resources.pools[id] = {
+          ...pool,
+          ...relationships,
+          details,
         }
       }
 

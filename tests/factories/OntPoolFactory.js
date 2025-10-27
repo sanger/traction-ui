@@ -10601,19 +10601,20 @@ const OntPoolFactory = {
   // still to be tested
   withDetails: (id) => {
     const foundData = findById(data, id)
-    const pool = extractAttributes(foundData)
-    const relationships = extractRelationshipsAndGroupById(foundData.relationships)
+    const pool = extractAttributes(foundData.data)
+    const relationships = extractRelationshipsAndGroupById(foundData.data.relationships)
     const { libraries, requests, tags } = groupIncludedByResource(foundData.included)
     return {
       ...BaseFactory(foundData),
       storeData: {
         pool: {
           ...pool,
+          ...relationships,
           details: setPoolDetails({
             pool: { ...pool, ...relationships },
-            libraries: dataToObjectById(libraries),
-            requests: dataToObjectById(requests),
-            tags: dataToObjectById(tags),
+            libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+            requests: dataToObjectById({ data: requests, includeRelationships: true }),
+            tags: dataToObjectById({ data: tags, includeRelationships: true }),
           }),
         },
       },
