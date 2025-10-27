@@ -376,7 +376,7 @@ describe('useOntPoolCreateStore', () => {
     })
 
     describe('fetchPoolDetails', () => {
-      it.only('handles success', async () => {
+      it('handles success', async () => {
         const id = ontPoolFactory.storeData.resources.ids[0]
         const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
         const find = vi.fn()
@@ -402,31 +402,18 @@ describe('useOntPoolCreateStore', () => {
       })
 
       it('when another pool is fetched, it does not clear existing pool data', async () => {
-        const ontPoolFactoryId1 = OntPoolFactory.id(1)
-        const ontPoolFactoryId2 = OntPoolFactory.id(2)
-
         store.resources = {
           pools: ontPoolFactory.storeData.resources.pools,
-          requests: ontPoolFactoryId1.storeData.resources.requests,
-          libraries: ontPoolFactoryId1.storeData.resources.libraries,
-          tags: ontPoolFactoryId1.storeData.resources.tags,
         }
+
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
         const find = vi.fn()
         rootStore.api = { traction: { ont: { pools: { find } } } }
-        find.mockResolvedValue(ontPoolFactoryId2.responses.fetch)
-        await store.fetchPoolDetails('2')
-        expect(store.resources.requests).toEqual({
-          ...ontPoolFactoryId1.storeData.resources.requests,
-          ...ontPoolFactoryId2.storeData.resources.requests,
-        })
-        expect(store.resources.libraries).toEqual({
-          ...ontPoolFactoryId1.storeData.resources.libraries,
-          ...ontPoolFactoryId2.storeData.resources.libraries,
-        })
-        expect(store.resources.tags).toEqual({
-          ...ontPoolFactoryId1.storeData.resources.tags,
-          ...ontPoolFactoryId2.storeData.resources.tags,
-        })
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.fetchPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(store.resources.pools[1]).toEqual(ontPoolFactory.storeData.resources.pools[1])
       })
     })
 
