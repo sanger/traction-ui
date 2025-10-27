@@ -37,6 +37,15 @@ describe('Ont pools view', () => {
       })
     })
 
+    cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+      const id = ontPoolFactory.storeData.resources.ids[0]
+      const singlePoolFactory = OntPoolFactory.withDetails(id)
+      cy.intercept(`v1/ont/pools/${id}?include=libraries.tag,libraries.request`, {
+        statusCode: 200,
+        body: singlePoolFactory.content,
+      })
+    })
+
     cy.visit('#/ont/pools')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -58,5 +67,14 @@ describe('Ont pools view', () => {
 
     // Handle location column separately to confirm labwhere call is working
     cy.get('[data-attribute=location]').first().should('contain', 'box-test')
+
+    //show details of first pool
+    cy.get('#pool-index').within(() => {
+      cy.get('@ontPoolFactory').then((ontPoolFactory) => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        cy.get('#details-btn-' + id).click()
+        cy.get(`[data-list='pool-details-${id}']`).find('tr').should('have.length.greaterThan', 0)
+      })
+    })
   })
 })

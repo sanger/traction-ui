@@ -50,6 +50,7 @@
             size="sm"
             class="mr-2"
             theme="default"
+            data-action="show-pool-details"
             @click="handleToggleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
@@ -58,7 +59,11 @@
 
         <template #row-details="row">
           <div v-if="currentPool.id === row.item.id">
-            <traction-table :items="currentPool.details" :fields="field_in_details">
+            <traction-table
+              :items="currentPool.details"
+              :fields="field_in_details"
+              :data-list="'pool-details-' + row.item.id"
+            >
             </traction-table>
           </div>
         </template>
