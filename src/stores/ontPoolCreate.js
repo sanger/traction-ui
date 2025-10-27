@@ -232,8 +232,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * @returns {Function} A function that takes a pool ID and returns an object with pool details:
      *   - id: The pool ID.
      *   - barcode: The tube barcode associated with the pool.
-     *   - libraries: An array of library objects for the pool, each containing:
-     *       - id: The library ID.
+     *   - details: An array of detail objects for the pool, each containing:
      *       - sample_name: The sample name from the associated request.
      *       - group_id: The group ID from the associated tag (if available).
      *
@@ -247,9 +246,9 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * // details = {
      * //   id: '123',
      * //   barcode: 'ABC123',
-     * //   libraries: [
-     * //     { id: '1', sample_name: 'Sample A', group_id: 'G1' },
-     * //     { id: '2', sample_name: 'Sample B', group_id: 'G2' }
+     * //   details: [
+     * //     { sample_name: 'Sample A', group_id: 'G1' },
+     * //     { sample_name: 'Sample B', group_id: 'G2' }
      * //   ]
      * // }
      */
@@ -263,12 +262,7 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         return {
           id,
           barcode: pool.tube_barcode,
-          libraries: pool.libraries.map((libraryId) => {
-            const { id, request, tag } = resources.libraries[libraryId]
-            const { sample_name } = resources.requests[request]
-            const { group_id } = resources.tags[tag] || {}
-            return { id, sample_name, group_id }
-          }),
+          details: pool.details || [],
         }
       },
   },
@@ -346,6 +340,8 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           requests: dataToObjectById({ data: requests, includeRelationships: true }),
           tags: dataToObjectById({ data: tags }),
         })
+
+        console.log(details)
 
         this.resources.pools[id] = {
           ...pool,

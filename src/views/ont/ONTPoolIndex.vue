@@ -58,7 +58,7 @@
 
         <template #row-details="row">
           <div v-if="currentPool.id === row.item.id">
-            <traction-table :items="currentPool.libraries" :fields="field_in_details">
+            <traction-table :items="currentPool.details" :fields="field_in_details">
             </traction-table>
           </div>
         </template>

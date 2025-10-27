@@ -280,43 +280,24 @@ describe('useOntPoolCreateStore', () => {
     })
 
     describe('poolDetails', () => {
-      const resources = {
-        pools: {
-          1: { id: 1, tube_barcode: 'TRAC-1', libraries: ['10', '20'] },
-          2: { id: 2, tube_barcode: 'TRAC-2', libraries: ['30'] },
-        },
-        requests: {
-          1: { id: 1, sample_name: 'Sample 1' },
-          2: { id: 2, sample_name: 'Sample 2' },
-          3: { id: 3, sample_name: 'Sample 3' },
-        },
-        libraries: {
-          10: { id: 10, request: '1', tag: '100' },
-          20: { id: 20, request: '2', tag: '200' },
-          30: { id: 30, request: '3', tag: '300' },
-        },
-        tags: {
-          100: { id: 100, group_id: 'NB01' },
-          200: { id: 200, group_id: 'NB02' },
-          300: { id: 300, group_id: 'NB03' },
-        },
-      }
-
       it('returns the details for a specific pool', () => {
-        store.resources = resources
-        const details = store.poolDetails(1)
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const factory = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: { ...ontPoolFactory.storeData.resources.pools, [id]: factory.storeData.pool },
+        }
+        const details = store.poolDetails(id)
         expect(details).toEqual({
-          id: 1,
-          barcode: 'TRAC-1',
-          libraries: [
-            { id: 10, sample_name: 'Sample 1', group_id: 'NB01' },
-            { id: 20, sample_name: 'Sample 2', group_id: 'NB02' },
-          ],
+          id,
+          barcode: factory.storeData.pool.tube_barcode,
+          details: factory.storeData.pool.details,
         })
       })
 
       it('when the pool does not exist', () => {
-        store.resources = resources
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+        }
         const details = store.poolDetails(999)
         expect(details).toEqual({})
       })
