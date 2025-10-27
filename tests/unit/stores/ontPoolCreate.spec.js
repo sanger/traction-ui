@@ -417,6 +417,49 @@ describe('useOntPoolCreateStore', () => {
       })
     })
 
+    describe('setPoolDetails', () => {
+      it('adds the pool details if they are not already set', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.setPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
+      })
+
+      it('returns an error if the pool does not exist', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        store.resources = {
+          pools: {},
+        }
+        const { success, errors } = await store.setPoolDetails(id)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([`Pool with id ${id} not found`])
+      })
+
+      it('does not fetch the pool details if they are already set', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: {
+            ...ontPoolFactory.storeData.resources.pools,
+            [id]: ontPoolFactoryWithDetails.storeData.pool,
+          },
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        const { success } = await store.setPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(find).not.toHaveBeenCalled()
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
+      })
+    })
+
     describe('fetchOntTagSets', () => {
       it('handles success', async () => {
         const get = vi.fn()

@@ -316,15 +316,19 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      *   - errors {Array}: Any errors returned from the API.
      *
      * @description
-     * This action fetches a single ONT pool by ID, including related tube, libraries, tags, and requests.
-     * If the request is successful, it extracts the included libraries, tags, and requests from the response,
-     * and updates the store's `resources.libraries`, `resources.tags`, and `resources.requests` accordingly.
-     * The function returns an object with the success status and any errors encountered during the request.
+     * This action fetches a single ONT pool by ID, including related libraries, tags, and requests.
+     * If the request is successful, it:
+     *   - Extracts the pool's attributes and relationships.
+     *   - Extracts and groups the included libraries, requests, and tags.
+     *   - Uses `setPoolDetails` to generate a `details` array for the pool, where each entry contains
+     *     the sample name and group ID for each library in the pool.
+     *   - Updates the store's `resources.pools` with the pool's attributes, relationships, and details.
+     * Returns an object with the success status and any errors encountered during the request.
      *
      * @example
      * const { success, errors } = await fetchPoolDetails(123)
      * if (success) {
-     *   // The store's resources.libraries, resources.tags, and resources.requests are now updated
+     *   // The store's resources.pools[123] now includes a `details` array for the pool
      * }
      */
     async fetchPoolDetails(id) {
@@ -349,6 +353,43 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
           details,
         }
       }
+
+      return { success, errors }
+    },
+
+    /**
+     * Ensures that detailed information for a specific ONT pool is available in the store.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to set details for.
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the operation was successful.
+     *   - errors {Array}: Any errors encountered during the operation.
+     *
+     * @description
+     * This action checks if the pool with the given ID exists in the store's resources.
+     * - If the pool does not exist, it returns an error.
+     * - If the pool already has a `details` property, it returns success immediately.
+     * - Otherwise, it fetches the pool's details from the API (including libraries, tags, and requests)
+     *   and updates the store's resources with the detailed information.
+     *
+     * @example
+     * const { success, errors } = await setPoolDetails(123)
+     * if (success) {
+     *   // The store's resources.pools[123] now includes a `details` array
+     * }
+     */
+    async setPoolDetails(id) {
+      const pool = this.resources.pools[id]
+      if (!pool) {
+        return { success: false, errors: [`Pool with id ${id} not found`] }
+      }
+
+      if (pool.details) {
+        return { success: true, errors: [] }
+      }
+
+      const { success, errors } = await this.fetchPoolDetails(id)
 
       return { success, errors }
     },
