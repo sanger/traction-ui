@@ -6,7 +6,7 @@ import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
 const ontTagSetFactory = OntTagSetFactory()
-const singleOntPoolFactory = OntPoolFactory({ count: 1 })
+const singleOntPoolFactory = OntPoolFactory.single()
 
 const tagSetGetMock = vi.fn(() => ontTagSetFactory.responses.fetch)
 const poolFindMock = vi.fn(() => singleOntPoolFactory.responses.fetch)

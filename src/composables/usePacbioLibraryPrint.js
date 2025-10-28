@@ -1,5 +1,6 @@
 import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { usePrintingStore } from '@/stores/printing.js'
+import { splitBarcodeByPrefix } from '@/lib/LabelPrintingHelpers.js'
 
 /**
  * Composable function for handling Pacbio library printing.
@@ -10,12 +11,16 @@ export default function usePacbioLibraryPrint() {
   const createLabels = (printBarcodes) => {
     const date = getCurrentDate()
     return printBarcodes.map(({ barcode, source_identifier }) => {
+      const { prefix: round_label_lower_line, id: round_label_bottom_line } =
+        splitBarcodeByPrefix(barcode)
       return {
         barcode,
         first_line: 'Pacbio - Library',
         second_line: date,
         third_line: barcode,
         fourth_line: source_identifier,
+        round_label_bottom_line,
+        round_label_lower_line,
         label_name: 'main_label',
       }
     })

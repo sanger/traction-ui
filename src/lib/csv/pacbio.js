@@ -115,4 +115,24 @@ const getColumnValues = (csv, column, hasHeader = true) => {
     return column >= columns.length ? '' : columns[column]
   })
 }
-export { eachRecord, getColumnValues }
+
+/*
+ * Removes empty lines from a CSV string.
+ * @param {string} csv - The CSV data as a string.
+ * @returns {string} The CSV string with empty lines removed.
+ *
+ * @example
+ * const csv = 'header1,header2,header3\n\nvalue1,value2,value3\n\nvalue4,value5,value6\n,,,,\n';
+ * const cleanedCsv = removeEmptyLines(csv);
+ * console.log(cleanedCsv);
+ * // Output:
+ * // 'header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6'
+ */
+const removeEmptyLines = (csv) => {
+  return csv
+    .split('\n')
+    .filter((row) => row.replace(/,/g, '').trim() !== '')
+    .join('\n')
+}
+
+export { eachRecord, getColumnValues, removeEmptyLines }

@@ -4,7 +4,7 @@ import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 
 const mountComponent = () => {
   const plugins = [
@@ -52,9 +52,9 @@ describe('OntPoolIndex', () => {
     beforeEach(() => {
       pools = wrapper.vm
       pools.selected = [
-        { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
-        { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
-        { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+        { id: 1, barcode: 'TRAC-2-1', source_identifier: 'SQSC-1' },
+        { id: 2, barcode: 'TRAC-2-2', source_identifier: 'SQSC-2' },
+        { id: 3, barcode: 'TRAC-2-3', source_identifier: 'SQSC-2' },
       ]
     })
 
@@ -65,11 +65,13 @@ describe('OntPoolIndex', () => {
 
       it('will have the correct text for each label', () => {
         const label = pools.createLabels()[0]
-        expect(label.barcode).toEqual('TRAC-1')
+        expect(label.barcode).toEqual('TRAC-2-1')
         expect(label.first_line).toEqual('Ont - Pool')
         expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
-        expect(label.third_line).toEqual('TRAC-1')
+        expect(label.third_line).toEqual('TRAC-2-1')
         expect(label.fourth_line).toEqual('SQSC-1')
+        expect(label.round_label_bottom_line).toEqual('1')
+        expect(label.round_label_lower_line).toEqual('TRAC-2')
         expect(label.label_name).toEqual('main_label')
       })
     })

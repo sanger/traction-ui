@@ -55,7 +55,6 @@ const extractRelationshipsAndGroupById = (relationships = {}) => {
 }
 
 /**
- * TODO: This will need to be extended to extract relationships?
  * Groups resources by their resource type
  * @param {Array} data Array of JSON API data
  * @returns {Object} keys will be the id of the data
