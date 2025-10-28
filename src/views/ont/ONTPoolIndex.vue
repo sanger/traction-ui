@@ -50,15 +50,20 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="row.toggleDetails"
+            data-action="show-pool-details"
+            @click="handleToggleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
           </traction-button>
         </template>
 
         <template #row-details="row">
-          <div>
-            <traction-table :items="row.item.libraries" :fields="field_in_details">
+          <div v-if="currentPool.id === row.item.id">
+            <traction-table
+              :items="currentPool.details"
+              :fields="field_in_details"
+              :data-list="'pool-details-' + row.item.id"
+            >
             </traction-table>
           </div>
         </template>
@@ -128,6 +133,7 @@ const selected = ref([])
 const sortBy = ref('created_at')
 const labwareLocations = ref([])
 const { showAlert } = useAlert()
+const currentPool = ref({})
 
 // --- Store and composables ---
 const ontPoolCreateStore = useOntPoolCreateStore()
@@ -182,6 +188,14 @@ async function printLabels(printerName) {
   }
 }
 
+const handleToggleDetails = async (row) => {
+  if (!row.detailsShowing) {
+    await ontPoolCreateStore.setPoolDetails(row.item.id)
+    currentPool.value = ontPoolCreateStore.poolDetails(row.item.id)
+  }
+  row.toggleDetails()
+}
+
 /**
  * Format source identifier for display
  * @param {String} sourceIdentifier
@@ -204,8 +218,7 @@ const provider = async () => {
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
-    const poolsArray = ontPoolCreateStore.pools
-    const barcodes = poolsArray.map(({ barcode }) => barcode)
+    const barcodes = ontPoolCreateStore.pools.map(({ barcode }) => barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
 

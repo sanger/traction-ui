@@ -46,7 +46,7 @@
         <table
           v-bind="$attrs"
           class="w-full divide-y divide-gray-100 table-auto text-sm"
-          data-attribute="dataAttribute"
+          :data-attribute="dataAttribute"
         >
           <thead>
             <traction-table-row>

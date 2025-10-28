@@ -10,7 +10,7 @@ vi.mock('@/composables/useLocationFetcher.js', () => ({
     fetchLocations: mockFetchLocations,
   }),
 }))
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 
 const mountComponent = () => {
   const plugins = [
