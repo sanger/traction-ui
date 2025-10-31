@@ -4,6 +4,12 @@ import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
+const mockFetchLocations = vi.fn().mockResolvedValue([])
+vi.mock('@/composables/useLocationFetcher.js', () => ({
+  default: () => ({
+    fetchLocations: mockFetchLocations,
+  }),
+}))
 const ontPoolFactory = OntPoolFactory.all()
 
 const mountComponent = () => {
