@@ -18,6 +18,7 @@
     "test:cypress:all": "cypress run",
     "test:cypress:one": "cypress open",
     "lint": "eslint .",
+    "format": "prettier --write --list-different '**/*' --ignore-path .prettierignore",
     "pretty": "prettier --check '**/*' --ignore-path .prettierignore",
     "test": "npm-run-all test:unit test:e2e:all",
     "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css",
