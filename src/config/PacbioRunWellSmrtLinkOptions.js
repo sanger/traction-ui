@@ -980,8 +980,8 @@ const defaultSmrtLinkAttributes = (run = {}) => {
     library_concentration: null,
     polymerase_kit: null,
     library_type: 'Standard',
-    // Compute adaptive loading default based on run setting, default to enabled
-    use_adaptive_loading: run?.adaptive_loading == false ? 'False' : 'True',
+    // Compute adaptive loading default based on run setting
+    use_adaptive_loading: run.adaptive_loading == true ? 'True' : 'False',
     full_resolution_base_qual: 'False',
   }
 }
