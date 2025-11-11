@@ -25,7 +25,7 @@ const runAttributes = () => {
     system_name: 'Revio',
     dna_control_complex_box_barcode: null,
     // Default adaptive loading to true
-    // This is used by smrtLinkWellDefaults to set the use_adaptive_loading option
+    // This is used by defaultSmrtLinkAttributes to set the use_adaptive_loading option
     adaptive_loading: true,
   }
 }
