@@ -16,7 +16,6 @@ vi.mock('@/composables/useAlert', () => ({
 //     fetchLocations: mockFetchLocations,
 //   }),
 // }))
-
 const mockFetchLocations = vi.fn().mockResolvedValue([])
 vi.mock('@/composables/useLocationFetcher.js', () => ({
   default: () => ({
