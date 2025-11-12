@@ -14,24 +14,28 @@ vi.mock('@/lib/DateHelpers.js', () => ({
 
 describe('#usePacbioLibraryPrint', () => {
   const printBarcodes = [
-    { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
-    { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+    { id: 1, barcode: 'TRAC-2-1', source_identifier: 'SQSC-1' },
+    { id: 2, barcode: 'TRAC-2-2', source_identifier: 'SQSC-2' },
   ]
   const expectedCreatedLabels = [
     {
-      barcode: 'TRAC-1',
+      barcode: 'TRAC-2-1',
       first_line: 'Pacbio - Library',
       second_line: '01-Jan-2023',
-      third_line: 'TRAC-1',
+      third_line: 'TRAC-2-1',
       fourth_line: 'SQSC-1',
+      round_label_bottom_line: '1',
+      round_label_lower_line: 'TRAC-2',
       label_name: 'main_label',
     },
     {
-      barcode: 'TRAC-2',
+      barcode: 'TRAC-2-2',
       first_line: 'Pacbio - Library',
       second_line: '01-Jan-2023',
-      third_line: 'TRAC-2',
+      third_line: 'TRAC-2-2',
       fourth_line: 'SQSC-2',
+      round_label_bottom_line: '2',
+      round_label_lower_line: 'TRAC-2',
       label_name: 'main_label',
     },
   ]

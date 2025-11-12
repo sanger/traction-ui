@@ -10,10 +10,10 @@ import OntTubeFactory from '@tests/factories/OntTubeFactory.js'
 import { payload } from '@/stores/utilities/ontPool.js'
 
 const ontPlateFactory = OntPlateFactory()
-const ontPoolFactory = OntPoolFactory()
+const ontPoolFactory = OntPoolFactory.all()
 const ontTagSetFactory = OntTagSetFactory()
 const ontAutoTagFactory = OntAutoTagFactory()
-const singleOntPoolFactory = OntPoolFactory({ count: 1 })
+const singleOntPoolFactory = OntPoolFactory.single()
 const singleOntPlateFactory = OntPlateFactory({ count: 1 })
 const singleOntTubeFactory = OntTubeFactory({ count: 1 })
 
@@ -273,28 +273,33 @@ describe('useOntPoolCreateStore', () => {
     describe('pools', () => {
       it('returns an array of request resources that have been selected', () => {
         store.resources = ontPoolFactory.storeData.resources
-
-        // we need to sort it as they are in opposite order
-        const poolData = ontPoolFactory.content.data.sort((a, b) => a.id - b.id)
-
-        expect(store.pools.length).toEqual(poolData.length)
-
-        expect(store.pools[0].id).toEqual(poolData[0].id)
-        expect(store.pools[1].id).toEqual(poolData[1].id)
-        expect(store.pools[2].id).toEqual(poolData[2].id)
-
-        // this is ugly. Still not worth tacking until we refactor
-        expect(store.pools[0].barcode).toEqual(
-          ontPoolFactory.storeData.tubes.find(
-            (tube) => tube.id === poolData[0].relationships.tube.data.id,
-          ).attributes.barcode,
+        expect(store.pools.length).toEqual(
+          Object.values(ontPoolFactory.storeData.resources.pools).length,
         )
+      })
+    })
 
-        // I degraded this test as to not have to deal with the nested data
-        // this is a good candidate for a refactor
-        expect(store.pools[0].libraries[0].id).toEqual(
-          poolData[0].relationships.libraries.data[0].id,
-        )
+    describe('poolDetails', () => {
+      it('returns the details for a specific pool', () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const factory = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: { ...ontPoolFactory.storeData.resources.pools, [id]: factory.storeData.pool },
+        }
+        const details = store.poolDetails(id)
+        expect(details).toEqual({
+          id,
+          barcode: factory.storeData.pool.tube_barcode,
+          details: factory.storeData.pool.details,
+        })
+      })
+
+      it('when the pool does not exist', () => {
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+        }
+        const details = store.poolDetails(999)
+        expect(details).toEqual({})
       })
     })
   })
@@ -312,10 +317,7 @@ describe('useOntPoolCreateStore', () => {
         rootStore.api = { traction: { ont: { pools: { get } } } }
         get.mockResolvedValue(ontPoolFactory.responses.fetch)
         const { success } = await store.fetchOntPools()
-        expect(store.resources.libraries).toEqual(ontPoolFactory.storeData.resources.libraries)
-        expect(store.resources.tags).toEqual(ontPoolFactory.storeData.resources.tags)
-        expect(store.resources.requests).toEqual(ontPoolFactory.storeData.resources.requests)
-        expect(store.resources.tubes).toEqual(ontPoolFactory.storeData.resources.tubes)
+        expect(store.resources.pools).toEqual(ontPoolFactory.storeData.resources.pools)
         expect(success).toEqual(true)
       })
 
@@ -325,6 +327,117 @@ describe('useOntPoolCreateStore', () => {
         get.mockResolvedValue(failedResponse)
         const { success } = await store.fetchOntPools()
         expect(success).toEqual(false)
+      })
+    })
+
+    describe('findPool', () => {
+      it('handles success', async () => {
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(singleOntPoolFactory.responses.fetch)
+        const { success, data, included, errors } = await store.findPool('1', 'tube')
+        expect(success).toEqual(true)
+        expect(data).toEqual(singleOntPoolFactory.content.data)
+        expect(included).toEqual(singleOntPoolFactory.content.included)
+        expect(errors).toEqual([])
+        expect(find).toHaveBeenCalledWith({ id: '1', include: 'tube' })
+      })
+
+      it('handles failure', async () => {
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(failureResponse)
+        const { success, data, included, errors } = await store.findPool('1')
+        expect(success).toEqual(false)
+        expect(data).toBeUndefined()
+        expect(included).toEqual([])
+        expect(errors).toEqual(failureResponse.errorSummary)
+      })
+    })
+
+    describe('fetchPoolDetails', () => {
+      it('handles success', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.fetchPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
+      })
+
+      it('handles failure', async () => {
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(failureResponse)
+        const { success } = await store.fetchPoolDetails('1')
+        expect(success).toEqual(false)
+
+        expect(store.resources.pools).toEqual({})
+        expect(store.resources.requests).toEqual({})
+        expect(store.resources.libraries).toEqual({})
+        expect(store.resources.tags).toEqual({})
+      })
+
+      it('when another pool is fetched, it does not clear existing pool data', async () => {
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+        }
+
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.fetchPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(store.resources.pools[1]).toEqual(ontPoolFactory.storeData.resources.pools[1])
+      })
+    })
+
+    describe('setPoolDetails', () => {
+      it('adds the pool details if they are not already set', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: ontPoolFactory.storeData.resources.pools,
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        find.mockResolvedValue(ontPoolFactoryWithDetails.responses.fetch)
+        const { success } = await store.setPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
+      })
+
+      it('returns an error if the pool does not exist', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        store.resources = {
+          pools: {},
+        }
+        const { success, errors } = await store.setPoolDetails(id)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([`Pool with id ${id} not found`])
+      })
+
+      it('does not fetch the pool details if they are already set', async () => {
+        const id = ontPoolFactory.storeData.resources.ids[0]
+        const ontPoolFactoryWithDetails = OntPoolFactory.withDetails(id)
+        store.resources = {
+          pools: {
+            ...ontPoolFactory.storeData.resources.pools,
+            [id]: ontPoolFactoryWithDetails.storeData.pool,
+          },
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { ont: { pools: { find } } } }
+        const { success } = await store.setPoolDetails(id)
+        expect(success).toEqual(true)
+        expect(find).not.toHaveBeenCalled()
+        expect(store.resources.pools[id]).toEqual(ontPoolFactoryWithDetails.storeData.pool)
       })
     })
 

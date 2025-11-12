@@ -91,6 +91,7 @@ describe('GeneralReception', () => {
         'Extractions -80 samples',
         'Pacbio -20 samples',
         'Pacbio Fridge samples',
+        'Benchling',
       ])
     })
 
