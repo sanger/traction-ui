@@ -2,6 +2,11 @@ import OntPoolFactory from '../../../factories/OntPoolFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 
 describe('Ont pools view', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
+  })
   it('Visits the ont pools url', () => {
     cy.wrap(OntPoolFactory.all()).as('ontPoolFactory')
     cy.get('@ontPoolFactory').then((ontPoolFactory) => {
