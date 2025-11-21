@@ -3,7 +3,7 @@
 // We need to do this because node-based csv-parse library used in 'eachRecord' doesn't work with jsdom
 
 import fs from 'fs'
-import { eachRecord, getColumnValues } from '@/lib/csv/pacbio'
+import { eachRecord, getColumnValues, removeEmptyLines } from '@/lib/csv/pacbio'
 
 describe('eachRecord', () => {
   it('handles empty CSV data', () => {
@@ -145,5 +145,24 @@ describe('getColumnValues', () => {
     const csv = 'header1,header2,header3\nvalue1,,value3\nvalue4,value5,'
     const result = getColumnValues(csv, 1)
     expect(result).toEqual(['', 'value5'])
+  })
+})
+describe('removeEmptyLines', () => {
+  it('removes empty lines from CSV data', () => {
+    const csv = 'header1,header2,header3\n\nvalue1,value2,value3\n\nvalue4,value5,value6\n,,,,\n'
+    const result = removeEmptyLines(csv)
+    expect(result).toEqual('header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6')
+  })
+
+  it('returns an empty string when CSV data is empty', () => {
+    const csv = ''
+    const result1 = removeEmptyLines(csv)
+    expect(result1).toEqual('')
+  })
+
+  it('returns the same CSV data when there are no empty lines', () => {
+    const csv = 'header1,header2,header3\nvalue1,value2,value3\nvalue4,value5,value6'
+    const result = removeEmptyLines(csv)
+    expect(result).toEqual(csv)
   })
 })

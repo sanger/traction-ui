@@ -2,7 +2,12 @@ import { defineStore } from 'pinia'
 import { wellToIndex } from './utilities/wellHelpers.js'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores/index.js'
-import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
+import {
+  dataToObjectById,
+  extractAttributes,
+  groupIncludedByResource,
+  extractRelationshipsAndGroupById,
+} from '@/api/JsonApi.js'
 import { sourceRegex } from './utilities/helpers.js'
 import {
   newLibrary,
@@ -15,6 +20,7 @@ import {
   findRequestsForSource,
   populatePoolingLibraries,
   populateById,
+  createPoolDetails,
 } from './utilities/ontPool.js'
 /**
  * Used for combining objects based on id
@@ -209,32 +215,179 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * Returns a list of pools
      *
      * @param {Object} state The state object
-     * @return {Array} An array of selected requests in the order in which they were selected
+     * @return {Array} An array of selected pools
      */
     pools: (state) => {
-      // We catch here in case this getter is called when the resources aren't pulled
-      try {
-        return Object.values(state.resources.pools).map((pool) => {
-          const libraries = pool.libraries.map((libraryId) => {
-            const { id, type, request, tag } = state.resources.libraries[libraryId]
-            const { sample_name } = state.resources.requests[request]
-            const { group_id } = state.resources.tags[tag] || {}
-            return { id, type, sample_name, group_id }
-          })
-
-          const { barcode } = state.resources.tubes[pool.tube]
-          return {
-            ...pool,
-            libraries,
-            barcode,
-          }
-        })
-      } catch {
-        return []
-      }
+      return Object.values(state.resources.pools).map((pool) => {
+        return {
+          ...pool,
+          barcode: pool.tube_barcode, // For backward compatibility
+        }
+      })
     },
+    /**
+     * Returns detailed information for a specific ONT pool.
+     *
+     * @param {Object} resources - The store's resources object containing pools, libraries, requests, and tags.
+     * @returns {Function} A function that takes a pool ID and returns an object with pool details:
+     *   - id: The pool ID.
+     *   - barcode: The tube barcode associated with the pool.
+     *   - details: An array of detail objects for the pool, each containing:
+     *       - sample_name: The sample name from the associated request.
+     *       - group_id: The group ID from the associated tag (if available).
+     *
+     * @description
+     * This getter retrieves a pool by its ID and returns a summary object containing the pool's barcode and
+     * an array of its libraries. Each library includes its ID, the sample name from its associated request,
+     * and the group ID from its associated tag. If the pool does not exist, an empty object is returned.
+     *
+     * @example
+     * const details = store.poolDetails('123')
+     * // details = {
+     * //   id: '123',
+     * //   barcode: 'ABC123',
+     * //   details: [
+     * //     { sample_name: 'Sample A', group_id: 'G1' },
+     * //     { sample_name: 'Sample B', group_id: 'G2' }
+     * //   ]
+     * // }
+     */
+    poolDetails:
+      ({ resources }) =>
+      (id) => {
+        const pool = resources.pools[id]
+        if (!pool) {
+          return {}
+        }
+        return {
+          id,
+          barcode: pool.tube_barcode,
+          details: pool.details || [],
+        }
+      },
   },
   actions: {
+    /**
+     * Fetches a single ONT pool by ID from the API.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to fetch.
+     * @param {string} [include=''] - Optional comma-separated relationships to include in the response (e.g., 'libraries,requests').
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - data {Object}: The pool data returned from the API.
+     *   - included {Array}: Any included related resources.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action sends a GET request to the ONT pools API endpoint for a specific pool ID.
+     * You can optionally specify relationships to include in the response.
+     * The function returns an object with the success status, the pool data, any included resources, and any errors.
+     *
+     * @example
+     * const { success, data, included, errors } = await fetchPool(123, 'libraries,requests')
+     * if (success) {
+     *   // Use pool data and included resources
+     * }
+     */
+    async findPool(id, include = '') {
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.ont.pools
+      const promise = request.find({ id, include })
+      const response = await handleResponse(promise)
+      const { success, body: { data, included = [] } = {}, errors = [] } = response
+
+      return { success, data, included, errors }
+    },
+
+    /**
+     * Fetches detailed information for a specific ONT pool and updates the store's resources.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to fetch details for.
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the API request was successful.
+     *   - errors {Array}: Any errors returned from the API.
+     *
+     * @description
+     * This action fetches a single ONT pool by ID, including related libraries, tags, and requests.
+     * If the request is successful, it:
+     *   - Extracts the pool's attributes and relationships.
+     *   - Extracts and groups the included libraries, requests, and tags.
+     *   - Uses `setPoolDetails` to generate a `details` array for the pool, where each entry contains
+     *     the sample name and group ID for each library in the pool.
+     *   - Updates the store's `resources.pools` with the pool's attributes, relationships, and details.
+     * Returns an object with the success status and any errors encountered during the request.
+     *
+     * @example
+     * const { success, errors } = await fetchPoolDetails(123)
+     * if (success) {
+     *   // The store's resources.pools[123] now includes a `details` array for the pool
+     * }
+     */
+    async fetchPoolDetails(id) {
+      const { success, data, included, errors } = await this.findPool(
+        id,
+        'libraries.tag,libraries.request',
+      )
+      if (success) {
+        const pool = extractAttributes(data)
+        const relationships = extractRelationshipsAndGroupById(data.relationships)
+        const { libraries, requests, tags } = groupIncludedByResource(included)
+        const details = createPoolDetails({
+          pool: { ...pool, ...relationships },
+          libraries: dataToObjectById({ data: libraries, includeRelationships: true }),
+          requests: dataToObjectById({ data: requests, includeRelationships: true }),
+          tags: dataToObjectById({ data: tags }),
+        })
+
+        this.resources.pools[id] = {
+          ...pool,
+          ...relationships,
+          details,
+        }
+      }
+
+      return { success, errors }
+    },
+
+    /**
+     * Ensures that detailed information for a specific ONT pool is available in the store.
+     *
+     * @async
+     * @param {string|number} id - The ID of the pool to set details for.
+     * @returns {Object} An object containing:
+     *   - success {boolean}: Whether the operation was successful.
+     *   - errors {Array}: Any errors encountered during the operation.
+     *
+     * @description
+     * This action checks if the pool with the given ID exists in the store's resources.
+     * - If the pool does not exist, it returns an error.
+     * - If the pool already has a `details` property, it returns success immediately.
+     * - Otherwise, it fetches the pool's details from the API (including libraries, tags, and requests)
+     *   and updates the store's resources with the detailed information.
+     *
+     * @example
+     * const { success, errors } = await setPoolDetails(123)
+     * if (success) {
+     *   // The store's resources.pools[123] now includes a `details` array
+     * }
+     */
+    async setPoolDetails(id) {
+      const pool = this.resources.pools[id]
+      if (!pool) {
+        return { success: false, errors: [`Pool with id ${id} not found`] }
+      }
+
+      if (pool.details) {
+        return { success: true, errors: [] }
+      }
+
+      const { success, errors } = await this.fetchPoolDetails(id)
+
+      return { success, errors }
+    },
+
     /**
      * Fetches ONT pools from the API with optional filters and pagination.
      *
@@ -248,18 +401,12 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
       const promise = request.get({
         page,
         filter,
-        include: 'tube,libraries.tag,libraries.request',
       })
       const response = await handleResponse(promise)
 
-      const { success, body: { data, included = [], meta = {} } = {}, errors = [] } = response
-      const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+      const { success, body: { data, meta = {} } = {}, errors = [] } = response
 
       if (success) {
-        this.resources.requests = dataToObjectById({ data: requests, includeRelationships: true })
-        this.resources.tubes = dataToObjectById({ data: tubes, includeRelationships: true })
-        this.resources.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
-        this.resources.tags = dataToObjectById({ data: tags, includeRelationships: true })
         this.resources.pools = dataToObjectById({ data, includeRelationships: true })
       }
 
@@ -608,7 +755,6 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
      * }
      */
     async setPoolData(id) {
-      const rootStore = useRootStore()
       this.clearPoolData()
 
       // Guard clause to not run the rest if the id is not a number (e.g., 'new')
@@ -616,15 +762,10 @@ export const useOntPoolCreateStore = defineStore('ontPoolCreate', {
         return { success: true, errors: [] }
       }
 
-      // Send a request to the API to fetch the pool data
-      const request = rootStore.api.traction.ont.pools
-      const promise = request.find({
-        id: id,
-        include:
-          'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
-      })
-      const response = await handleResponse(promise)
-      const { success, body: { data, included = [] } = {}, errors = [] } = response
+      const { success, data, included, errors } = await this.findPool(
+        id,
+        'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
+      )
 
       if (success) {
         const {

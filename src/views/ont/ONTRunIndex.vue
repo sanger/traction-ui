@@ -2,7 +2,7 @@
   <DataFetcher :fetcher="fetchRuns">
     <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix">
+      <div>
         <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
           New Run
         </traction-button>

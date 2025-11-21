@@ -2,7 +2,7 @@
   <DataFetcher :fetcher="provider">
     <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix">
+      <div>
         <printerModal
           ref="printerModal"
           class="float-left"
@@ -90,6 +90,7 @@ import { getCurrentDate } from '@/lib/DateHelpers.js'
 import { ref, reactive, computed } from 'vue'
 import { usePrintingStore } from '@/stores/printing.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
+import { splitBarcodeByPrefix } from '@/lib/LabelPrintingHelpers.js'
 /**
  * Following are new Vue 3 features used in this component:
  * 
@@ -186,12 +187,16 @@ const displayedPools = computed(() =>
 const createLabels = () => {
   const date = getCurrentDate()
   return state.selected.map(({ barcode, source_identifier }) => {
+    const { prefix: round_label_lower_line, id: round_label_bottom_line } =
+      splitBarcodeByPrefix(barcode)
     return {
       barcode,
       first_line: 'Pacbio - Pool',
       second_line: date,
       third_line: barcode,
       fourth_line: source_identifier,
+      round_label_bottom_line,
+      round_label_lower_line,
       label_name: 'main_label',
     }
   })

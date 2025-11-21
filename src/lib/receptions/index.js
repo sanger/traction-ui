@@ -47,6 +47,12 @@ const WorkflowsLocations = {
     location: 'LRT007 – Shelf 1',
     barcode: 'lw-shelf-1-30451',
   },
+  Benchling: {
+    pipelines: ['PacBio'],
+    name: 'Benchling',
+    location: 'Benchling',
+    barcode: 'lw-benchling-40874',
+  },
 }
 
 const ReceptionTypes = {

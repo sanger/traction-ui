@@ -176,7 +176,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     // Adaptive loading is disabled on a per-well basis and controlled by the well defaults value
     cy.get('[data-attribute="use-adaptive-loading"]')
-      .should('have.value', 'False')
+      .should('have.value', 'True')
       .and('be.disabled')
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
     // this is related to the available volume of the library so better to use the data
@@ -208,7 +208,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     // Adaptive loading is disabled on a per-well basis and controlled by the well defaults value
     cy.get('[data-attribute="use-adaptive-loading"]')
-      .should('have.value', 'False')
+      .should('have.value', 'True')
       .and('be.disabled')
 
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')

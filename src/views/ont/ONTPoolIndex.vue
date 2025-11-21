@@ -2,7 +2,14 @@
   <DataFetcher :fetcher="provider">
     <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix">
+      <div>
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @select-printer="printLabels($event)"
+        >
+        </printerModal>
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
@@ -43,15 +50,20 @@
             size="sm"
             class="mr-2"
             theme="default"
-            @click="row.toggleDetails"
+            data-action="show-pool-details"
+            @click="handleToggleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
           </traction-button>
         </template>
 
         <template #row-details="row">
-          <div>
-            <traction-table :items="row.item.libraries" :fields="field_in_details">
+          <div v-if="currentPool.id === row.item.id">
+            <traction-table
+              :items="currentPool.details"
+              :fields="field_in_details"
+              :data-list="'pool-details-' + row.item.id"
+            >
             </traction-table>
           </div>
         </template>
@@ -67,16 +79,6 @@
           </traction-tooltip>
         </template>
       </traction-table>
-
-      <div class="clearfix">
-        <printerModal
-          ref="printerModal"
-          class="float-left"
-          :disabled="selected.length === 0"
-          @select-printer="printLabels($event)"
-        >
-        </printerModal>
-      </div>
     </div>
   </DataFetcher>
 </template>
@@ -98,6 +100,7 @@ import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
+import { splitBarcodeByPrefix } from '@/lib/LabelPrintingHelpers.js'
 
 // --- Reactive State ---
 const fields = [
@@ -130,6 +133,7 @@ const selected = ref([])
 const sortBy = ref('created_at')
 const labwareLocations = ref([])
 const { showAlert } = useAlert()
+const currentPool = ref({})
 
 // --- Store and composables ---
 const ontPoolCreateStore = useOntPoolCreateStore()
@@ -149,14 +153,20 @@ const displayedPools = computed(() =>
  */
 function createLabels() {
   const date = getCurrentDate()
-  return selected.value.map(({ barcode, source_identifier }) => ({
-    barcode,
-    first_line: 'Ont - Pool',
-    second_line: date,
-    third_line: barcode,
-    fourth_line: source_identifier,
-    label_name: 'main_label',
-  }))
+  return selected.value.map(({ barcode, source_identifier }) => {
+    const { prefix: round_label_lower_line, id: round_label_bottom_line } =
+      splitBarcodeByPrefix(barcode)
+    return {
+      barcode,
+      first_line: 'Ont - Pool',
+      second_line: date,
+      third_line: barcode,
+      fourth_line: source_identifier,
+      round_label_bottom_line,
+      round_label_lower_line,
+      label_name: 'main_label',
+    }
+  })
 }
 
 /**
@@ -176,6 +186,14 @@ async function printLabels(printerName) {
     // fallback: log to console
     console.log('Print job result:', message, success)
   }
+}
+
+const handleToggleDetails = async (row) => {
+  if (!row.detailsShowing) {
+    await ontPoolCreateStore.setPoolDetails(row.item.id)
+    currentPool.value = ontPoolCreateStore.poolDetails(row.item.id)
+  }
+  row.toggleDetails()
 }
 
 /**
@@ -200,8 +218,7 @@ const provider = async () => {
   // We only want to fetch labware locations if the requests were fetched successfully
   if (success) {
     // We don't need to fail if labware locations can't be fetched, so we don't return anything
-    const poolsArray = ontPoolCreateStore.pools
-    const barcodes = poolsArray.map(({ barcode }) => barcode)
+    const barcodes = ontPoolCreateStore.pools.map(({ barcode }) => barcode)
     labwareLocations.value = await fetchLocations(barcodes)
   }
 
