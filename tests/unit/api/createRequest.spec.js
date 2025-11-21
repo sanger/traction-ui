@@ -293,8 +293,6 @@ describe('createRequest', () => {
       })
 
       it('multiple', async () => {
-        const ids = []
-
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
