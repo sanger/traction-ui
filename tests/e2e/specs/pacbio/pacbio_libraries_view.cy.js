@@ -138,11 +138,11 @@ describe('Pacbio Libraries view', () => {
 
   it('Allows multiple library deletion', () => {
     cy.intercept('DELETE', '/v1/pacbio/libraries/724', {
-      statusCode: 204
+      statusCode: 204,
     })
 
     cy.intercept('DELETE', '/v1/pacbio/libraries/725', {
-      statusCode: 204
+      statusCode: 204,
     })
 
     cy.visit('#/pacbio/libraries')

@@ -296,7 +296,7 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
-        const promises = await request.destroy(["a"])
+        const promises = await request.destroy(['a'])
 
         for (const promise of promises) {
           const response = await promise
