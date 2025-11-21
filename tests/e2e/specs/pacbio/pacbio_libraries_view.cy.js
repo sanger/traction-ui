@@ -135,4 +135,25 @@ describe('Pacbio Libraries view', () => {
         .should('have.text', pacbioTagSetFactory.storeData.selected.tag.group_id)
     })
   })
+
+  it('Allows multiple library deletion', () => {
+    cy.intercept('DELETE', '/v1/pacbio/libraries/724', {
+      statusCode: 204
+    })
+
+    cy.intercept('DELETE', '/v1/pacbio/libraries/725', {
+      statusCode: 204
+    })
+
+    cy.visit('#/pacbio/libraries')
+    cy.get('#library-index').contains('tr', '5')
+
+    // Click the first two table rows
+    cy.get('#library-index').find('tbody tr').first().click()
+    cy.get('#library-index').find('tbody tr').eq(1).click()
+
+    cy.get('#deleteLibraries').click()
+    cy.get('[data-attribute=confirm-delete-libraries-button]').first().contains('Yes').click()
+    cy.get('[data-attribute=message]').first().contains('Libraries 725, 724 successfully deleted ')
+  })
 })
