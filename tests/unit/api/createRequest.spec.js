@@ -298,7 +298,7 @@ describe('createRequest', () => {
         fetch.mockReturnValue({ json: () => mockResponse })
 
         const request = createRequest({ ...attributes })
-        const promises = request.destroy(ids).map(id => {
+        const promises = request.destroy(ids).map((id) => {
           return fetch(`/requests/${id}`, { method: 'DELETE' })
         })
 
