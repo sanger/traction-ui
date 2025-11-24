@@ -300,7 +300,6 @@ describe('createRequest', () => {
 
         for (const promise of promises) {
           const response = await promise
-          console.log('response', response.json())
           expect(fetch).toBeCalled()
           expect(response.json()).toEqual(mockResponse)
         }
