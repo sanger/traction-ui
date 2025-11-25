@@ -2,8 +2,11 @@ import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
 import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
+import LibraryTypeFactory from '@tests/factories/LibraryTypeFactory.js'
 import { usePacbioRequestsStore } from '@/stores/pacbioRequests.js'
+import useRootStore from '@/stores/index.js'
 
+const libraryTypeFactory = LibraryTypeFactory()
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
   default: () => ({
@@ -29,6 +32,9 @@ describe('PacbioSamples.vue', () => {
           store.api.traction.pacbio.requests.get = vi
             .fn()
             .mockResolvedValue(pacbioRequestFactory.responses.fetch)
+          store.api.traction.library_types.get = vi
+            .fn()
+            .mockResolvedValue(libraryTypeFactory.responses.fetch)
         }
       },
     ]
@@ -39,7 +45,10 @@ describe('PacbioSamples.vue', () => {
           template: '<div ref="printerModal"></div>',
         },
       },
-      createStore: () => usePacbioRequestsStore(),
+      createStore: () => {
+        usePacbioRequestsStore()
+        useRootStore()
+      },
     }))
     await flushPromises()
   })

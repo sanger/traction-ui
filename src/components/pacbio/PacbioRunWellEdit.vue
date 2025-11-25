@@ -125,7 +125,7 @@ defineProps({
 
 // Define refs for the component
 // well object
-const well = reactive({ used_aliquots: [] })
+let well = reactive({ used_aliquots: [] })
 // local pools and libraries which are added to the well
 const localUsedAliquots = reactive([])
 // fields for the well pools and libraries table
@@ -305,6 +305,8 @@ const updateUsedAliquotSource = async (row, barcode) => {
  * This function is called when the modal is shown for a specific position and plate number.
  */
 const setupWell = async () => {
+  // Reset well to prevent leakage between wells
+  well = reactive({ used_aliquots: [] })
   // We clone the well as it gets binded to the form and we don't want to change the original object
   // without a confirmation action like the 'update' button
   Object.assign(well, await store.getOrCreateWell(position.value, plateNumber.value))

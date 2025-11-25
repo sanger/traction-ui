@@ -1,6 +1,11 @@
 <template>
   <div>
-    <traction-button :id="generateId('editSample', req.id)" size="sm" theme="edit" @click="show"
+    <traction-button
+      :id="generateId('editSample', req.id)"
+      data-attribute="sample-edit"
+      size="sm"
+      theme="edit"
+      @click="show"
       >Edit</traction-button
     >
 
@@ -49,7 +54,9 @@
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <traction-button theme="update" @click="update()"> Update Sample </traction-button>
+        <traction-button theme="update" data-attribute="update-sample-btn" @click="update()">
+          Update Sample
+        </traction-button>
       </template>
     </traction-modal>
   </div>

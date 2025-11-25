@@ -77,6 +77,7 @@ import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
+import useRootStore from '@/stores/index.js'
 
 import useQueryParams from '@/composables/useQueryParams.js'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
@@ -90,6 +91,7 @@ import { formatRequests } from '@/lib/requestHelpers.js'
 const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
 const pacbioRequestsStore = usePacbioRequestsStore()
+const rootStore = useRootStore()
 const labwareLocations = ref([])
 const { showAlert } = useAlert()
 
@@ -164,6 +166,11 @@ const printLabels = async (printerName) => {
 /*Fetches the requests from the api and adds location data
   @returns {Object} { success: Boolean, errors: Array }*/
 const provider = async () => {
+  // Ensure library types are fetched for the Library Type select
+  const { success: libTypeSuccess, errors: libTypeErrors } = await rootStore.fetchLibraryTypes()
+  if (!libTypeSuccess) {
+    showAlert('Failed to fetch library types: ' + libTypeErrors, 'danger')
+  }
   const { success, errors } = await fetchWithQueryParams(
     pacbioRequestsStore.setRequests,
     state.filterOptions,
