@@ -286,7 +286,7 @@ describe('LabelPrintingHelpers.js', () => {
 
   describe('barcode labels', () => {
     const workflowItemType = {
-      sourceBarcode: 'SQSC-1234',
+      sourceBarcode: 'SQSC-123',
       date: getCurrentDate(),
       stage: 'ST1 - Stage 1',
       suffixes: ['ST1'],
@@ -556,10 +556,16 @@ describe('LabelPrintingHelpers.js', () => {
       expect(id).toEqual('1234')
     })
 
+    it('splits a long barcode correctly', () => {
+      const { prefix, id } = splitBarcodeByPrefix('TRAC-2-1234567890')
+      expect(prefix).toEqual('TRAC-2')
+      expect(id).toEqual('~4567890')
+    })
+
     it('returns empty prefix and full id for other barcodes', () => {
-      const { prefix, id } = splitBarcodeByPrefix('SQPD-1234')
+      const { prefix, id } = splitBarcodeByPrefix('SQPD-123')
       expect(prefix).toEqual('')
-      expect(id).toEqual('SQPD-1234')
+      expect(id).toEqual('SQPD-123')
     })
   })
 })

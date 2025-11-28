@@ -159,21 +159,29 @@ const WorkflowListType = (attributes = {}) => {
 /**
  *
  * @param {*} barcode - a barcode string
- * @returns {Object} - { prefix, id } where prefix is the start of a barcode, otherwise an empty string, and id is the rest of the barcode
- * This takes a barcode and splits it if it contains a certain prefix (NT) otherwise returns the barcode as the id
+ * @returns {Object} - { prefix, id } where prefix is the start of a barcode, otherwise an empty string, and id is the rest of the barcode (or last 8 characters)
+ * This takes a barcode and splits it if it contains a certain prefix (NT, TRAC-2) otherwise returns a (sliced) barcode as the id
  */
 const splitBarcodeByPrefix = (barcode) => {
+  let prefix = ''
+  let id = ''
   if (barcode.startsWith('NT')) {
-    const prefix = 'NT'
-    const id = barcode.slice(2)
-    return { prefix, id }
+    prefix = 'NT'
+    id = barcode.slice(2)
   } else if (barcode.startsWith('TRAC-2')) {
-    const prefix = 'TRAC-2'
+    prefix = 'TRAC-2'
     // 7 and not 6 because of the dash after the TRAC-2 e.g. TRAC-2-123
-    const id = barcode.slice(7)
-    return { prefix, id }
+    id = barcode.slice(7)
+  } else {
+    id = barcode
   }
-  return { prefix: '', id: barcode }
+
+  // If the id is longer than 8 characters, slice it to the last 8 characters and prepend with ~ to indicate truncation
+  // This is to ensure it fits on the tube label lid as the last characters are the most important for the labe
+  if (id.length > 8) {
+    id = '~' + id.slice(-7)
+  }
+  return { prefix, id }
 }
 
 /**
