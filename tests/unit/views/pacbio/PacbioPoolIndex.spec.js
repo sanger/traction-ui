@@ -20,6 +20,13 @@ vi.mock('@/composables/useLocationFetcher.js', () => ({
   }),
 }))
 
+// const mockFetchLocations = vi.fn(() => [])
+// vi.mock('@/composables/useLocationFetcher.js', () => ({
+//   default: () => ({
+//     fetchLocations: mockFetchLocations,
+//   }),
+// }))
+
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
 
