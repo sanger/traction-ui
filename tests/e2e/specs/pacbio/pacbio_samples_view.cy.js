@@ -2,6 +2,7 @@ import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 import PrinterFactory from '../../../factories/PrinterFactory.js'
 import PacbioRequestFactory from '../../../factories/PacbioRequestFactory.js'
 import PacbioLibraryFactory from '../../../factories/PacbioLibraryFactory.js'
+import LibraryTypeFactory from '../../../factories/LibraryTypeFactory.js'
 
 describe('Pacbio samples view', () => {
   beforeEach(() => {
@@ -10,6 +11,7 @@ describe('Pacbio samples view', () => {
     })
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
     cy.wrap(PrinterFactory()).as('printerFactory')
+    cy.wrap(LibraryTypeFactory()).as('libraryTypeFactory')
     cy.wrap(PacbioRequestFactory({ includeRelationships: false })).as('pacbioRequestFactory')
     cy.wrap(PacbioLibraryFactory({ count: 1 })).as('pacbioLibraryFactory')
 
@@ -31,6 +33,13 @@ describe('Pacbio samples view', () => {
       cy.intercept('GET', '/v1/printers', {
         statusCode: 200,
         body: printerFactory.content,
+      })
+    })
+
+    cy.get('@libraryTypeFactory').then((libraryTypeFactory) => {
+      cy.intercept('/v1/library_types', {
+        statusCode: 200,
+        body: libraryTypeFactory.content,
       })
     })
 
@@ -119,5 +128,27 @@ describe('Pacbio samples view', () => {
     cy.get('#create-btn').click()
     cy.get('#libraryForm').should('not.exist')
     cy.contains('Created library with barcode TRAC-2-721')
+  })
+
+  it('edits a sample successfully', () => {
+    // Stub the PATCH request for updating a sample
+    // N.B. Use a wildcard for the sample ID so we don't tie the test to a specific fixture
+    cy.intercept('PATCH', '/v1/pacbio/requests/*', {
+      statusCode: 200,
+      body: {
+        data: {},
+      },
+    })
+    cy.visit('#/pacbio/samples')
+    cy.get('#samples-table').contains('td', '5')
+    cy.get('[data-attribute="sample-edit"]').first().click()
+    cy.get('[data-attribute="modal"]').should('be.visible')
+    cy.get('[data-attribute="library-type-list"]').select('Pacbio_HiFi_mplx')
+    cy.get('#estimateOfGBRequired').type(1)
+    cy.get('#numberOfSMRTCells').type('2')
+    cy.get('#costCode').type(123)
+    cy.get('[data-attribute="update-sample-btn"]').click()
+    cy.get('[data-attribute="modal"]').should('not.exist')
+    cy.contains('Sample updated')
   })
 })
