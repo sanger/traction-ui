@@ -176,7 +176,7 @@ const splitBarcodeByPrefix = (barcode) => {
     id = barcode
   }
 
-  // If the id is longer than 8 characters, slice it to the last 8 characters and prepend with ~ to indicate truncation
+  // If the id is longer than 8 characters, slice it to the last 7 characters and prepend with ~ to indicate truncation
   // This is to ensure it fits on the tube label lid as the last characters are the most important for the labe
   if (id.length > 8) {
     id = '~' + id.slice(-7)
