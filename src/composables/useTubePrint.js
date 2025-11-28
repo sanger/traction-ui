@@ -11,7 +11,7 @@ export default function useTubePrint() {
   const createLabels = (printBarcodes, labelDescription) => {
     const date = getCurrentDate()
     return printBarcodes.map(({ barcode, source_identifier }) => {
-      const { prefix: round_label_lower_line, id: round_label_bottom_line } =
+      const { prefix: round_label_top_line, id: round_label_bottom_line } =
         splitBarcodeByPrefix(barcode)
       return {
         barcode,
@@ -19,8 +19,8 @@ export default function useTubePrint() {
         second_line: date,
         third_line: barcode,
         fourth_line: source_identifier,
+        round_label_top_line,
         round_label_bottom_line,
-        round_label_lower_line,
         label_name: 'main_label',
       }
     })

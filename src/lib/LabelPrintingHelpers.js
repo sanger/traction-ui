@@ -177,7 +177,7 @@ const splitBarcodeByPrefix = (barcode) => {
   }
 
   // If the id is longer than 8 characters, slice it to the last 7 characters and prepend with ~ to indicate truncation
-  // This is to ensure it fits on the tube label lid as the last characters are the most important for the labe
+  // This is to ensure it fits on the tube label lid as the last characters are the most important for the lab
   if (id.length > 8) {
     id = '~' + id.slice(-7)
   }
@@ -190,7 +190,7 @@ const splitBarcodeByPrefix = (barcode) => {
  * This is a basic label with just the barcode and date
  */
 const createBasicTubeBarcodeLabel = (barcodeItem) => {
-  const { prefix: round_label_lower_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
+  const { prefix: round_label_top_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
     barcodeItem.barcode,
   )
   const { barcode, date: first_line, barcode: second_line } = barcodeItem
@@ -198,8 +198,8 @@ const createBasicTubeBarcodeLabel = (barcodeItem) => {
     barcode,
     first_line,
     second_line,
+    round_label_top_line,
     round_label_bottom_line,
-    round_label_lower_line,
     label_name: 'main_label',
   }
 }
@@ -209,7 +209,7 @@ const createBasicTubeBarcodeLabel = (barcodeItem) => {
  * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, label_name } label suitable for printing to a tube printer
  */
 const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
-  const { prefix: round_label_lower_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
+  const { prefix: round_label_top_line, id: round_label_bottom_line } = splitBarcodeByPrefix(
     barcodeItem.sourceBarcode,
   )
   const {
@@ -218,7 +218,7 @@ const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
     stage: second_line,
     sourceBarcode: third_line,
     parsedSuffixes: fourth_line,
-    number: round_label_top_line,
+    number: round_label_lower_line,
   } = barcodeItem
   return {
     barcode,

@@ -26,7 +26,7 @@ describe('#useTubePrint', () => {
       third_line: 'TRAC-2-1',
       fourth_line: 'SQSC-1',
       round_label_bottom_line: '1',
-      round_label_lower_line: 'TRAC-2',
+      round_label_top_line: 'TRAC-2',
       label_name: 'main_label',
     },
     {
@@ -36,7 +36,7 @@ describe('#useTubePrint', () => {
       third_line: 'TRAC-2-2',
       fourth_line: 'SQSC-2',
       round_label_bottom_line: '2',
-      round_label_lower_line: 'TRAC-2',
+      round_label_top_line: 'TRAC-2',
       label_name: 'main_label',
     },
   ]
