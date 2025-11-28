@@ -19,6 +19,12 @@ vi.mock('@/composables/useLocationFetcher.js', () => ({
     fetchLocations: mockFetchLocations,
   }),
 }))
+const mockPrintLabels = vi.fn()
+vi.mock('@/composables/useTubePrint.js', () => ({
+  default: () => ({
+    printLabels: mockPrintLabels,
+  }),
+}))
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
@@ -83,47 +89,36 @@ describe('PacbioPoolIndex.vue', () => {
   })
 
   describe('Printing labels', () => {
-    beforeEach(() => {
-      pools.state.selected = [
-        { id: 1, barcode: 'TRAC-2-1', source_identifier: 'SQSC-1' },
-        { id: 2, barcode: 'TRAC-2-2', source_identifier: 'SQSC-2' },
-        { id: 3, barcode: 'TRAC-2-3', source_identifier: 'SQSC-2' },
-      ]
-    })
-
-    describe('#createLabels', () => {
-      it('will have the correct number of labels', () => {
-        expect(pools.createLabels().length).toEqual(3)
-      })
-
-      it('will have the correct text for each label', () => {
-        const label = pools.createLabels()[0]
-        expect(label.barcode).toEqual('TRAC-2-1')
-        expect(label.first_line).toEqual('Pacbio - Pool')
-        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
-        expect(label.third_line).toEqual('TRAC-2-1')
-        expect(label.fourth_line).toEqual('SQSC-1')
-        expect(label.round_label_bottom_line).toEqual('1')
-        expect(label.round_label_lower_line).toEqual('TRAC-2')
-        expect(label.label_name).toEqual('main_label')
-      })
-    })
-
-    describe('#printLabels', () => {
+    describe('#onPrintAction', () => {
       beforeEach(() => {
-        const mockPrintJob = vi.fn().mockResolvedValue({ success: true, message: 'success' })
-        wrapper.vm.printingStore.createPrintJob = mockPrintJob
-        const modal = wrapper.findComponent({ ref: 'printerModal' })
-        modal.vm.$emit('selectPrinter', 'printer1')
+        pools = wrapper.vm
+        pools.state.selected = [
+          { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
+          { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+          { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+        ]
       })
 
-      it('should create a print job', () => {
-        expect(wrapper.vm.printingStore.createPrintJob).toBeCalledWith({
-          printerName: 'printer1',
-          labels: pools.createLabels(),
-          copies: 1,
+      it('creates a print job and shows a success alert', async () => {
+        mockPrintLabels.mockResolvedValue({
+          success: true,
+          message: 'Barcode(s) successfully printed',
         })
-        expect(mockShowAlert).toBeCalledWith('success', 'success')
+        const modal = wrapper.findComponent({ ref: 'printerModal' })
+        // Modal emit triggers onPrintAction
+        modal.vm.$emit('selectPrinter', 'printer1')
+        await flushPromises()
+
+        expect(mockPrintLabels).toBeCalledWith(
+          'printer1',
+          [
+            { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
+            { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+            { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+          ],
+          'Pacbio - Pool',
+        )
+        expect(mockShowAlert).toBeCalledWith('Barcode(s) successfully printed', 'success')
       })
     })
   })

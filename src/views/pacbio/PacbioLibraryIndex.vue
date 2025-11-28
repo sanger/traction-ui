@@ -114,7 +114,7 @@ import { ref, reactive, computed } from 'vue'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit.vue'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
-import usePacbioLibraryPrint from '@/composables/usePacbioLibraryPrint.js'
+import useTubePrint from '@/composables/useTubePrint.js'
 import { isLibraryExhausted } from '@/stores/utilities/pacbioLibraries.js'
 
 /**
@@ -200,7 +200,7 @@ const showConfirmationModal = ref(false)
 //Composables
 const { showAlert } = useAlert()
 const { fetchWithQueryParams } = useQueryParams()
-const { printLabels } = usePacbioLibraryPrint()
+const { printLabels } = useTubePrint()
 const { fetchLocations } = useLocationFetcher()
 
 //Create Pinia store
@@ -237,7 +237,11 @@ const handleLibraryDelete = async () => {
 }
 
 const onPrintAction = async (printerName) => {
-  const { success, message = {} } = await printLabels(printerName, state.selected)
+  const { success, message = {} } = await printLabels(
+    printerName,
+    state.selected,
+    'Pacbio - Library',
+  )
   showAlert(message, success ? 'success' : 'danger')
 }
 

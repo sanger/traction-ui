@@ -4,10 +4,22 @@ import { vi } from 'vitest'
 import OntPoolFactory from '@tests/factories/OntPoolFactory.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
 const mockFetchLocations = vi.fn().mockResolvedValue([])
 vi.mock('@/composables/useLocationFetcher.js', () => ({
   default: () => ({
     fetchLocations: mockFetchLocations,
+  }),
+}))
+const mockPrintLabels = vi.fn()
+vi.mock('@/composables/useTubePrint.js', () => ({
+  default: () => ({
+    printLabels: mockPrintLabels,
   }),
 }))
 const ontPoolFactory = OntPoolFactory.all()
@@ -55,49 +67,36 @@ describe('OntPoolIndex', () => {
   })
 
   describe('Printing labels', () => {
-    beforeEach(() => {
-      pools = wrapper.vm
-      pools.selected = [
-        { id: 1, barcode: 'TRAC-2-1', source_identifier: 'SQSC-1' },
-        { id: 2, barcode: 'TRAC-2-2', source_identifier: 'SQSC-2' },
-        { id: 3, barcode: 'TRAC-2-3', source_identifier: 'SQSC-2' },
-      ]
-    })
-
-    describe('#createLabels', () => {
-      it('will have the correct number of labels', () => {
-        expect(pools.createLabels().length).toEqual(3)
-      })
-
-      it('will have the correct text for each label', () => {
-        const label = pools.createLabels()[0]
-        expect(label.barcode).toEqual('TRAC-2-1')
-        expect(label.first_line).toEqual('Ont - Pool')
-        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
-        expect(label.third_line).toEqual('TRAC-2-1')
-        expect(label.fourth_line).toEqual('SQSC-1')
-        expect(label.round_label_bottom_line).toEqual('1')
-        expect(label.round_label_lower_line).toEqual('TRAC-2')
-        expect(label.label_name).toEqual('main_label')
-      })
-    })
-
-    describe('#printLabels', () => {
+    describe('#onPrintAction', () => {
       beforeEach(() => {
-        pools.printingStore.createPrintJob = vi.fn().mockImplementation(() => {
-          return { success: true, message: 'success' }
-        })
-
-        const modal = wrapper.findComponent({ ref: 'printerModal' })
-        modal.vm.$emit('selectPrinter', 'printer1')
+        pools = wrapper.vm
+        pools.selected = [
+          { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
+          { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+          { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+        ]
       })
 
-      it('should create a print job', () => {
-        expect(pools.printingStore.createPrintJob).toBeCalledWith({
-          printerName: 'printer1',
-          labels: pools.createLabels(),
-          copies: 1,
+      it('creates a print job and shows a success alert', async () => {
+        mockPrintLabels.mockResolvedValue({
+          success: true,
+          message: 'Barcode(s) successfully printed',
         })
+        const modal = wrapper.findComponent({ ref: 'printerModal' })
+        // Modal emit triggers onPrintAction
+        modal.vm.$emit('selectPrinter', 'printer1')
+        await flushPromises()
+
+        expect(mockPrintLabels).toBeCalledWith(
+          'printer1',
+          [
+            { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
+            { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+            { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+          ],
+          'Ont - Pool',
+        )
+        expect(mockShowAlert).toBeCalledWith('Barcode(s) successfully printed', 'success')
       })
     })
   })
