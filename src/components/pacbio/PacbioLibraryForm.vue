@@ -50,8 +50,7 @@
             :min="formLibrary.used_volume"
             step="any"
             placeholder="Example: 1.0"
-            :class="formLibrary.volume < formLibrary.used_volume"
-            class="w-full"
+            :class="inputBorderClass('volume')"
             @update:model-value="errorForVolume"
           >
           </traction-input>
