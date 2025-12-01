@@ -562,10 +562,21 @@ describe('LabelPrintingHelpers.js', () => {
       expect(id).toEqual('~4567890')
     })
 
+    describe('SQP barcodes', () => {
+      ;['SQPD', 'SQPU', 'SQPT', 'SQPP'].forEach((prefix) => {
+        it(`splits a ${prefix} barcode correctly`, () => {
+          const barcode = `${prefix}-1234`
+          const { prefix: returnedPrefix, id } = splitBarcodeByPrefix(barcode)
+          expect(returnedPrefix).toEqual(prefix)
+          expect(id).toEqual('1234')
+        })
+      })
+    })
+
     it('returns empty prefix and full id for other barcodes', () => {
-      const { prefix, id } = splitBarcodeByPrefix('SQPD-123')
+      const { prefix, id } = splitBarcodeByPrefix('TEST1234')
       expect(prefix).toEqual('')
-      expect(id).toEqual('SQPD-123')
+      expect(id).toEqual('TEST1234')
     })
   })
 })

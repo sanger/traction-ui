@@ -172,6 +172,13 @@ const splitBarcodeByPrefix = (barcode) => {
     prefix = 'TRAC-2'
     // 7 and not 6 because of the dash after the TRAC-2 e.g. TRAC-2-123
     id = barcode.slice(7)
+  } else if (barcode.startsWith('SQP')) {
+    // If the barcode starts with SQP we assume its a sequencescape barcode
+    // Which follows the format SQP(D|U|T|P)-<id>
+    prefix = barcode.slice(0, 4)
+    // 5 because of the dash after SQPD e.g. SQPD-123
+    id = barcode.slice(5)
+    return { prefix, id }
   } else {
     id = barcode
   }
