@@ -532,6 +532,19 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       }
     },
     removePool(id) {
+      // Check the pool is not in use
+      const poolInUse = Object.values(this.wells).some((plate) =>
+        Object.values(plate).some((well) =>
+          well.used_aliquots?.some(
+            (aliquot) => aliquot.source_type === 'Pacbio::Pool' && aliquot.source_id == id,
+          ),
+        ),
+      )
+
+      if (poolInUse) {
+        return { success: false, errors: ['Cannot remove pool that is in use in a well'] }
+      }
+
       // Remove the pool barcode from the scanned barcodes
       const pool = this.pools[id]
       this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
@@ -540,8 +553,23 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       // Remove the pool from the store
       delete this.pools[id]
+
+      return { success: true, errors: [] }
     },
     removeLibrary(id) {
+      // Check the library is not in use
+      const libraryInUse = Object.values(this.wells).some((plate) =>
+        Object.values(plate).some((well) =>
+          well.used_aliquots?.some(
+            (aliquot) => aliquot.source_type === 'Pacbio::Library' && aliquot.source_id == id,
+          ),
+        ),
+      )
+
+      if (libraryInUse) {
+        return { success: false, errors: ['Cannot remove library that is in use in a well'] }
+      }
+
       // Remove the library barcode from the scanned barcodes
       const library = this.libraries[id]
       this.scannedBarcodes = this.scannedBarcodes.filter((barcode) => {
@@ -549,6 +577,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       })
 
       delete this.libraries[id]
+
+      return { success: true, errors: [] }
     },
     clearRunData() {
       const resources = this.resources
