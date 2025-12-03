@@ -225,13 +225,13 @@ import { computed, ref, reactive } from 'vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
 import useAlert from '@/composables/useAlert.js'
-import usePacbioLibraryPrint from '@/composables/usePacbioLibraryPrint.js'
+import useTubePrint from '@/composables/useTubePrint.js'
 
 const pacbioRootStore = usePacbioRootStore()
 const pacbioLibraryBatchCreateStore = usePacbioLibraryBatchCreateStore()
 const { printers, fetchPrinters } = usePrintingStore()
 const { showAlert } = useAlert()
-const { printLabels } = usePacbioLibraryPrint()
+const { printLabels } = useTubePrint()
 
 const defaultTagSetName = 'Pacbio_96_barcode_plate_v3'
 
@@ -377,6 +377,7 @@ const onPrintAction = async () => {
   const { success, message = {} } = await printLabels(
     selectedPrinterName.value,
     pacbioLibraryBatchCreateStore.librariesInfoInPrintFormat,
+    'Pacbio - Library',
   )
   showAlert(message, success ? 'success' : 'danger')
 }

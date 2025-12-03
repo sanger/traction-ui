@@ -286,7 +286,7 @@ describe('LabelPrintingHelpers.js', () => {
 
   describe('barcode labels', () => {
     const workflowItemType = {
-      sourceBarcode: 'SQSC-1234',
+      sourceBarcode: 'SQSC-123',
       date: getCurrentDate(),
       stage: 'ST1 - Stage 1',
       suffixes: ['ST1'],
@@ -311,9 +311,9 @@ describe('LabelPrintingHelpers.js', () => {
       expect(second_line).toEqual(workflowItemType.stage)
       expect(third_line).toEqual(workflowItemType.sourceBarcode)
       expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
-      expect(round_label_top_line).toEqual(workflowItemType.number)
+      expect(round_label_top_line).toEqual('')
+      expect(round_label_lower_line).toEqual(workflowItemType.number)
       expect(round_label_bottom_line).toEqual(workflowItemType.sourceBarcode)
-      expect(round_label_lower_line).toEqual('')
       expect(label_name).toEqual('main_label')
     })
 
@@ -342,9 +342,9 @@ describe('LabelPrintingHelpers.js', () => {
       expect(second_line).toEqual(workflowItemType.stage)
       expect(third_line).toEqual(workflowItemType.sourceBarcode)
       expect(fourth_line).toEqual(workflowItemType.parsedSuffixes)
-      expect(round_label_top_line).toEqual(workflowItemType.number)
+      expect(round_label_top_line).toEqual('NT')
       expect(round_label_bottom_line).toEqual('1234')
-      expect(round_label_lower_line).toEqual('NT')
+      expect(round_label_lower_line).toEqual(workflowItemType.number)
       expect(label_name).toEqual('main_label')
     })
 
@@ -362,13 +362,13 @@ describe('LabelPrintingHelpers.js', () => {
 
     it('#createBasicTubeBarcodeLabel', () => {
       const barcodeItem = { barcode: workflowItemType.sourceBarcode, date: workflowItemType.date }
-      const { barcode, first_line, second_line, round_label_bottom_line, round_label_lower_line } =
+      const { barcode, first_line, second_line, round_label_bottom_line, round_label_top_line } =
         createBasicTubeBarcodeLabel(barcodeItem)
       expect(barcode).toEqual(workflowItemType.sourceBarcode)
       expect(first_line).toEqual(workflowItemType.date)
       expect(second_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_top_line).toEqual('')
       expect(round_label_bottom_line).toEqual(workflowItemType.sourceBarcode)
-      expect(round_label_lower_line).toEqual('')
     })
 
     it('#createBasicTubeBarcodeLabel (NT barcode)', () => {
@@ -380,13 +380,13 @@ describe('LabelPrintingHelpers.js', () => {
         number: 1,
       }
       const barcodeItem = { barcode: workflowItemType.sourceBarcode, date: workflowItemType.date }
-      const { barcode, first_line, second_line, round_label_bottom_line, round_label_lower_line } =
+      const { barcode, first_line, second_line, round_label_bottom_line, round_label_top_line } =
         createBasicTubeBarcodeLabel(barcodeItem)
       expect(barcode).toEqual(workflowItemType.sourceBarcode)
       expect(first_line).toEqual(workflowItemType.date)
       expect(second_line).toEqual(workflowItemType.sourceBarcode)
+      expect(round_label_top_line).toEqual('NT')
       expect(round_label_bottom_line).toEqual('1234')
-      expect(round_label_lower_line).toEqual('NT')
     })
 
     it('#createTubeBloodVacBarcodeLabel', () => {
@@ -556,10 +556,27 @@ describe('LabelPrintingHelpers.js', () => {
       expect(id).toEqual('1234')
     })
 
+    it('splits a long barcode correctly', () => {
+      const { prefix, id } = splitBarcodeByPrefix('TRAC-2-1234567890')
+      expect(prefix).toEqual('TRAC-2')
+      expect(id).toEqual('~4567890')
+    })
+
+    describe('SQP barcodes', () => {
+      ;['SQPD', 'SQPU', 'SQPT', 'SQPP'].forEach((prefix) => {
+        it(`splits a ${prefix} barcode correctly`, () => {
+          const barcode = `${prefix}-1234`
+          const { prefix: returnedPrefix, id } = splitBarcodeByPrefix(barcode)
+          expect(returnedPrefix).toEqual(prefix)
+          expect(id).toEqual('1234')
+        })
+      })
+    })
+
     it('returns empty prefix and full id for other barcodes', () => {
-      const { prefix, id } = splitBarcodeByPrefix('SQPD-1234')
+      const { prefix, id } = splitBarcodeByPrefix('TEST1234')
       expect(prefix).toEqual('')
-      expect(id).toEqual('SQPD-1234')
+      expect(id).toEqual('TEST1234')
     })
   })
 })
