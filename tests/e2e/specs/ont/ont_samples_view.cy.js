@@ -9,6 +9,9 @@ describe('Ont samples view', () => {
         body: ontRequestFactory.content,
       })
     })
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
     // Stub labwhere request
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {
       const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')

@@ -4,6 +4,9 @@ describe('Labware Reception page', () => {
   const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
 
   beforeEach(() => {
+    cy.withFlags({
+      rust_labwhere_service: { enabled: false },
+    })
     cy.visit('#/labwhere-reception')
   })
 

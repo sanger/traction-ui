@@ -11,6 +11,10 @@ vi.mock('@/services/labwhere/helpers.js', () => ({
   formatLocations: vi.fn(),
 }))
 
+vi.mock('@/api/FeatureFlag.js', () => ({
+  checkFeatureFlag: vi.fn().mockReturnValue(false),
+}))
+
 describe('useLocationFetcher', () => {
   const { fetchLocations } = useLocationFetcher()
 
