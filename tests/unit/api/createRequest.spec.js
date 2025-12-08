@@ -300,9 +300,15 @@ describe('createRequest', () => {
         const request = createRequest({ ...attributes })
         const promises = await request.destroy(ids)
 
+        for (const id of ids) {
+          expect(fetch).toBeCalledWith(`http://traction/v1/requests/${id}`, {
+            method: 'DELETE',
+            headers: { ...attributes.headers, ...defaultHeaders.jsonApi },
+          })
+        }
+
         for (const promise of promises) {
           const response = await promise
-          expect(fetch).toBeCalled()
           expect(response.json()).toEqual(mockResponse)
         }
       })
