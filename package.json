@@ -60,6 +60,6 @@
     "prettier": "3.7.4",
     "rollup-plugin-visualizer": "^6.0.5",
     "vite-plugin-vue-devtools": "^8.0.5",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.15"
   }
 }
