@@ -193,7 +193,7 @@ const splitBarcodeByPrefix = (barcode) => {
 
 /**
  * @param {Object} barcodeItem - an object which contains the barcode and other information
- * @returns {Object} - { barcode, first_line, second_line, label_name } label suitable for printing to a tube printer
+ * @returns {Object} - { barcode, first_line, second_line, round_label_top_line, round_label_bottom_line, label_name } label suitable for printing to a tube printer
  * This is a basic label with just the barcode and date
  */
 const createBasicTubeBarcodeLabel = (barcodeItem) => {
@@ -213,7 +213,7 @@ const createBasicTubeBarcodeLabel = (barcodeItem) => {
 
 /**
  * @param {Object} barcodeItem - an object which contains the barcode and other information
- * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, label_name } label suitable for printing to a tube printer
+ * @returns {Object} - { barcode, first_line, second_line, third_line, fourth_line, round_label_top_line, round_label_bottom_line, round_label_lower_line, label_name } label suitable for printing to a tube printer
  */
 const createWorkflowTubeBarcodeLabel = (barcodeItem) => {
   const { prefix: round_label_top_line, id: round_label_bottom_line } = splitBarcodeByPrefix(

@@ -73,7 +73,7 @@ describe('OntPoolIndex', () => {
         pools.selected = [
           { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
           { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
-          { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+          { id: 3, barcode: 'TRAC-3', source_identifier: 'SQSC-3' },
         ]
       })
 
@@ -92,7 +92,7 @@ describe('OntPoolIndex', () => {
           [
             { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
             { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
-            { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+            { id: 3, barcode: 'TRAC-3', source_identifier: 'SQSC-3' },
           ],
           'Ont - Pool',
         )
