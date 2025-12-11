@@ -601,9 +601,46 @@ describe('usePacbioRunCreateStore', () => {
         }
         expect(store.pools[1]).toEqual({ id: '1', type: 'pools', barcode: 'TRAC-2-123' })
         expect(store.scannedBarcodes).toEqual(['TRAC-2-123', 'TRAC-2-124'])
-        store.removePool(1)
+        const { success, errors } = store.removePool(1)
         expect(store.pools[1]).toBeUndefined()
         expect(store.scannedBarcodes).toEqual(['TRAC-2-124'])
+        expect(success).toBeTruthy()
+        expect(errors).toEqual([])
+      })
+
+      it('does not remove the given pool and returns an error message if the pool is in use in a well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          pools: {
+            1: { id: '1', type: 'pools', barcode: 'TRAC-2-123' },
+            2: { id: '2', type: 'pools', barcode: 'TRAC-2-124' },
+          },
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                used_aliquots: [
+                  {
+                    id: '1',
+                    type: 'aliquots',
+                    source_type: 'Pacbio::Pool',
+                    source_id: '1',
+                  },
+                ],
+              },
+            },
+          },
+          scannedBarcodes: ['TRAC-2-123', 'TRAC-2-124'],
+        }
+        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', barcode: 'TRAC-2-123' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-123', 'TRAC-2-124'])
+        const { success, errors } = store.removePool(1)
+        expect(store.pools[1]).toEqual({ id: '1', type: 'pools', barcode: 'TRAC-2-123' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-123', 'TRAC-2-124'])
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(['Cannot remove pool that is in use in a well'])
       })
     })
     describe('removeLibrary', () => {
@@ -621,6 +658,41 @@ describe('usePacbioRunCreateStore', () => {
         store.removeLibrary(1)
         expect(store.libraries[1]).toBeUndefined()
         expect(store.scannedBarcodes).toEqual(['TRAC-2-2'])
+      })
+
+      it('does not remove the given library and returns an error message if the library is in use in a well', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          libraries: {
+            1: { id: '1', type: 'libraries', barcode: 'TRAC-2-1' },
+            2: { id: '2', type: 'libraries', barcode: 'TRAC-2-2' },
+          },
+          wells: {
+            1: {
+              A1: {
+                id: '1',
+                type: 'wells',
+                position: 'A1',
+                used_aliquots: [
+                  {
+                    id: '1',
+                    type: 'aliquots',
+                    source_type: 'Pacbio::Library',
+                    source_id: '1',
+                  },
+                ],
+              },
+            },
+          },
+          scannedBarcodes: ['TRAC-2-1', 'TRAC-2-2'],
+        }
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', barcode: 'TRAC-2-1' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-1', 'TRAC-2-2'])
+        const { success, errors } = store.removeLibrary(1)
+        expect(store.libraries[1]).toEqual({ id: '1', type: 'libraries', barcode: 'TRAC-2-1' })
+        expect(store.scannedBarcodes).toEqual(['TRAC-2-1', 'TRAC-2-2'])
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(['Cannot remove library that is in use in a well'])
       })
     })
     describe('clearRunData', () => {

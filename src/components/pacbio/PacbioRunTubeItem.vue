@@ -106,6 +106,7 @@ import { ref, computed } from 'vue'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import TractionDangerIcon from '@/components/shared/icons/TractionDangerIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
+import useAlert from '@/composables/useAlert'
 const props = defineProps({
   id: {
     type: String,
@@ -155,6 +156,7 @@ const props = defineProps({
   },
 })
 
+const { showAlert } = useAlert()
 const store = usePacbioRunCreateStore()
 const img = new Image()
 img.src = '/tube.png'
@@ -177,9 +179,15 @@ const drag = (barcode, event) => {
 }
 const removeTube = () => {
   if (props.type == 'pools') {
-    store.removePool(props.id)
+    const { success, errors } = store.removePool(props.id)
+    if (!success) {
+      showAlert(errors.join(', '), 'warning')
+    }
   } else {
-    store.removeLibrary(props.id)
+    const { success, errors } = store.removeLibrary(props.id)
+    if (!success) {
+      showAlert(errors.join(', '), 'warning')
+    }
   }
 }
 const typeColour = (type) => {
