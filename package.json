@@ -31,7 +31,7 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "csv-parse": "^6.1.0",
     "global": "^4.4.0",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.22",
     "pinia": "^3.0.3",
     "postcss": "^8.5.4",
     "tailwindcss": "4.1.17",
