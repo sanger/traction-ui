@@ -562,6 +562,12 @@ describe('LabelPrintingHelpers.js', () => {
       expect(id).toEqual('~4567890')
     })
 
+    it('splits plate barcodes with well positions correctly', () => {
+      const { prefix, id } = splitBarcodeByPrefix('SQPP-123456-A:A1')
+      expect(prefix).toEqual('SQPP')
+      expect(id).toEqual('~56-A:A1')
+    })
+
     describe('SQP barcodes', () => {
       ;['SQPD', 'SQPU', 'SQPT', 'SQPP'].forEach((prefix) => {
         it(`splits a ${prefix} barcode correctly`, () => {

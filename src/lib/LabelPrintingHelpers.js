@@ -178,7 +178,6 @@ const splitBarcodeByPrefix = (barcode) => {
     prefix = barcode.slice(0, 4)
     // 5 because of the dash after SQPD e.g. SQPD-123
     id = barcode.slice(5)
-    return { prefix, id }
   } else {
     id = barcode
   }
