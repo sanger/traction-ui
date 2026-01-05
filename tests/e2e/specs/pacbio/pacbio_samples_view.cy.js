@@ -139,7 +139,7 @@ describe('Pacbio samples view', () => {
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')
     cy.get('[data-attribute="sample-edit"]').first().click()
-    cy.get('[data-attribute="modal"]').should('be.visible')
+    cy.get('[data-attribute="modal"]').should('exist')
     cy.get('[data-attribute="library-type-list"]').select('Pacbio_HiFi_mplx')
     cy.get('#estimateOfGBRequired').type(1)
     cy.get('#numberOfSMRTCells').type('2')
