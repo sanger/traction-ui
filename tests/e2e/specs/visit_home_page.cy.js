@@ -9,7 +9,7 @@ describe('Visit Home Page', () => {
     cy.contains('Reception')
     cy.contains('LabWhere Reception')
     cy.contains('Sample Report')
-    cy.contains('Flexible Pooling')
+    cy.contains('Batch Pooling')
 
     // Home page contents
     cy.contains('Traction')
