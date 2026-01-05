@@ -544,16 +544,21 @@ describe('LabelPrintingHelpers.js', () => {
   })
 
   describe('#splitBarcodeByPrefix', () => {
-    it('splits a TRAC-2 barcode correctly', () => {
-      const { prefix, id } = splitBarcodeByPrefix('TRAC-2-1234')
-      expect(prefix).toEqual('TRAC-2')
-      expect(id).toEqual('1234')
-    })
+    describe('Splittable prefix barcodes', () => {
+      ;['TRAC-2', 'SQPD', 'SQPU', 'SQPT', 'SQPP'].forEach((prefix) => {
+        it(`splits a ${prefix} barcode correctly`, () => {
+          const barcode = `${prefix}-1234`
+          const { prefix: returnedPrefix, id } = splitBarcodeByPrefix(barcode)
+          expect(returnedPrefix).toEqual(prefix)
+          expect(id).toEqual('1234')
+        })
+      })
 
-    it('splits a NT barcode correctly', () => {
-      const { prefix, id } = splitBarcodeByPrefix('NT1234')
-      expect(prefix).toEqual('NT')
-      expect(id).toEqual('1234')
+      it('splits a NT barcode correctly', () => {
+        const { prefix, id } = splitBarcodeByPrefix('NT123456')
+        expect(prefix).toEqual('NT')
+        expect(id).toEqual('123456')
+      })
     })
 
     it('splits a long barcode correctly', () => {
@@ -566,17 +571,6 @@ describe('LabelPrintingHelpers.js', () => {
       const { prefix, id } = splitBarcodeByPrefix('SQPP-123456-A:A1')
       expect(prefix).toEqual('SQPP')
       expect(id).toEqual('~56-A:A1')
-    })
-
-    describe('SQP barcodes', () => {
-      ;['SQPD', 'SQPU', 'SQPT', 'SQPP'].forEach((prefix) => {
-        it(`splits a ${prefix} barcode correctly`, () => {
-          const barcode = `${prefix}-1234`
-          const { prefix: returnedPrefix, id } = splitBarcodeByPrefix(barcode)
-          expect(returnedPrefix).toEqual(prefix)
-          expect(id).toEqual('1234')
-        })
-      })
     })
 
     it('returns empty prefix and full id for other barcodes', () => {
