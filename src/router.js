@@ -6,6 +6,7 @@ import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import SampleReport from '@/views/SampleReport.vue'
+import FlexiblePooling from '@/views/FlexiblePooling.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
@@ -74,6 +75,12 @@ const router = createRouter({
       name: 'SampleReport',
       meta: { page: 'Sample Report' },
       component: SampleReport,
+    },
+    {
+      path: '/flexible-pooling',
+      name: 'FlexiblePooling',
+      meta: { page: 'Flexible Pooling' },
+      component: FlexiblePooling,
     },
     {
       path: '/pacbio',
