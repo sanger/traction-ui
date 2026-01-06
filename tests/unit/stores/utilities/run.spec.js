@@ -11,10 +11,7 @@ import {
 } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import {
-  defaultSmrtLinkAttributes,
-  PacbioRunWellSmrtLinkOptions,
-} from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { AnnotationItemType, payloadForAnnotations } from '@/stores/utilities/annotation.js'
 
 const smrtLinkVersions = {
