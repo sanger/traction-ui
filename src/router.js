@@ -77,9 +77,9 @@ const router = createRouter({
       component: SampleReport,
     },
     {
-      path: '/batch-pooling',
+      path: '/flexible-pooling',
       name: 'BatchPooling',
-      meta: { page: 'Batch Pooling' },
+      meta: { page: 'Flexible Pooling' },
       component: BatchPooling,
     },
     {

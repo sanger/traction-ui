@@ -3,7 +3,7 @@
 describe('Visit Home Page', () => {
   beforeEach(() => {
     cy.withFlags({
-      batch_pooling: { enabled: true },
+      flexible_pooling: { enabled: true },
     })
   })
 
@@ -15,7 +15,7 @@ describe('Visit Home Page', () => {
     cy.contains('Reception')
     cy.contains('LabWhere Reception')
     cy.contains('Sample Report')
-    cy.contains('Batch Pooling')
+    cy.contains('Flexible Pooling')
 
     // Home page contents
     cy.contains('Traction')

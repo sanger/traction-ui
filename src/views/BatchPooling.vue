@@ -1,7 +1,7 @@
 <template>
-  <flagged-feature name="batch_pooling">
+  <flagged-feature name="flexible_pooling">
     <template #default>
-      <traction-heading level="4" :show-border="true"> Batch Pooling </traction-heading>
+      <traction-heading level="4" :show-border="true"> Flexible Pooling </traction-heading>
     </template>
     <template #disabled>
       <div>This content is not available.</div>
@@ -11,5 +11,5 @@
 
 <script setup>
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
-// Batch Pooling page
+// Flexible Pooling page
 </script>
