@@ -7,10 +7,14 @@ import {
   createPayload,
   createWellsPayload,
   hasPlateAttributes,
+  filterWellAttributesBySmrtLinkVersion,
 } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import {
+  defaultSmrtLinkAttributes,
+  PacbioRunWellSmrtLinkOptions,
+} from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { AnnotationItemType, payloadForAnnotations } from '@/stores/utilities/annotation.js'
 
 const smrtLinkVersions = {
@@ -312,11 +316,11 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.new[1],
-                wells_attributes: createWellsPayload(wells.new[1]),
+                wells_attributes: createWellsPayload(wells.new[1], smrtLinkVersions['1']),
               },
               {
                 ...plates.new[2],
-                wells_attributes: createWellsPayload(wells.new[2]),
+                wells_attributes: createWellsPayload(wells.new[2], smrtLinkVersions['1']),
               },
             ],
           },
@@ -358,11 +362,11 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.new[1],
-                wells_attributes: createWellsPayload(wells.new[1]),
+                wells_attributes: createWellsPayload(wells.new[1], smrtLinkVersions['1']),
               },
               {
                 ...plates.new[2],
-                wells_attributes: createWellsPayload(wells.new[2]),
+                wells_attributes: createWellsPayload(wells.new[2], smrtLinkVersions['1']),
               },
             ],
           },
@@ -402,11 +406,11 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.existing[1],
-                wells_attributes: createWellsPayload(wells.existing[1]),
+                wells_attributes: createWellsPayload(wells.existing[1], smrtLinkVersions['1']),
               },
               {
                 ...plates.existing[2],
-                wells_attributes: createWellsPayload(wells.existing[2]),
+                wells_attributes: createWellsPayload(wells.existing[2], smrtLinkVersions['1']),
               },
             ],
           },
@@ -440,7 +444,7 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.single[1],
-                wells_attributes: createWellsPayload(wells.single[1]),
+                wells_attributes: createWellsPayload(wells.single[1], smrtLinkVersions['1']),
               },
             ],
           },
@@ -531,11 +535,11 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.new[1],
-                wells_attributes: createWellsPayload(wells.new[1]),
+                wells_attributes: createWellsPayload(wells.new[1], smrtLinkVersions['3']),
               },
               {
                 ...plates.new[2],
-                wells_attributes: createWellsPayload(wells.new[2]),
+                wells_attributes: createWellsPayload(wells.new[2], smrtLinkVersions['3']),
               },
             ],
           },
@@ -567,15 +571,60 @@ describe('run.js', () => {
             plates_attributes: [
               {
                 ...plates.new[1],
-                wells_attributes: createWellsPayload(wells.new[1]),
+                wells_attributes: createWellsPayload(wells.new[1], smrtLinkVersions['2']),
               },
               {
                 ...plates.new[2],
-                wells_attributes: createWellsPayload(wells.new[2]),
+                wells_attributes: createWellsPayload(wells.new[2], smrtLinkVersions['2']),
               },
             ],
           },
         },
+      })
+    })
+  })
+
+  describe('filterWellAttributesBySmrtLinkVersion', () => {
+    it('will return all attributes if no smrt link version is provided', () => {
+      const wellAttributes = {
+        position: 'A1',
+        movie_time: 15.0,
+        binding_kit_box_barcode: 'boxboxbox',
+        on_plate_loading_concentration: 3.5,
+        extra_attribute: 'should stay',
+      }
+
+      const filteredAttributes = filterWellAttributesBySmrtLinkVersion(wellAttributes, null)
+
+      expect(filteredAttributes).toEqual(wellAttributes)
+    })
+
+    it('will filter out attributes not relevant to the given smrt link version', () => {
+      const wellAttributes = {
+        id: 1,
+        type: 'wells',
+        column: 1,
+        row: 'A',
+        movie_time: 15.0,
+        binding_kit_box_barcode: 'boxboxbox',
+        on_plate_loading_concentration: 3.5,
+        extra_attribute: 'should be removed',
+      }
+      const smrtLinkVersion = smrtLinkVersions['1'] // v11
+
+      const filteredAttributes = filterWellAttributesBySmrtLinkVersion(
+        wellAttributes,
+        smrtLinkVersion,
+      )
+      // Note id, type, column, and row are always kept
+      expect(filteredAttributes).toEqual({
+        id: 1,
+        type: 'wells',
+        column: 1,
+        row: 'A',
+        movie_time: 15.0,
+        binding_kit_box_barcode: 'boxboxbox',
+        on_plate_loading_concentration: 3.5,
       })
     })
   })
