@@ -11,7 +11,9 @@
           <TractionLink name="Reception" link="/reception" view-type="2" />
           <TractionLink name="LabWhere Reception" link="/labwhere-reception" view-type="2" />
           <TractionLink name="Sample Report" link="/sample-report" view-type="2" />
-          <TractionLink name="Batch Pooling" link="/batch-pooling" view-type="2" />
+          <FlaggedFeature name="batch_pooling">
+            <TractionLink name="Batch Pooling" link="/batch-pooling" view-type="2" />
+          </FlaggedFeature>
         </div>
       </div>
     </div>
@@ -21,6 +23,7 @@
 <script setup>
 import TractionLink from '@/components/TractionLink'
 import { bgColorClass } from '@/lib/BgColorClass'
+import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 
 const environment = import.meta.env['VITE_ENVIRONMENT']
 const headerClasses = ['relative', bgColorClass[environment]]
