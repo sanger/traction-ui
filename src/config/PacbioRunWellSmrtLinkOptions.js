@@ -476,6 +476,34 @@ const PacbioRunWellSmrtLinkOptions = {
         dataAttribute: 'library-type',
       },
     },
+    {
+      name: 'use_adaptive_loading',
+      component: 'traction-select',
+      value: 'use_adaptive_loading',
+      description: 'Global setting (overrides individual well settings)',
+      label: 'Use Adaptive Loading',
+      required: true,
+      default: true,
+      props: {
+        options: ['True', 'False'],
+        dataAttribute: 'use-adaptive-loading',
+      },
+      wellProps: {
+        disabled: true,
+      },
+    },
+    {
+      name: 'full_resolution_base_qual',
+      component: 'traction-select',
+      value: 'full_resolution_base_qual',
+      label: 'Full Resolution Base Qual',
+      required: true,
+      default: true,
+      props: {
+        options: ['True', 'False'],
+        dataAttribute: 'full_resolution_base_qual',
+      },
+    },
   ],
   v13_sequel_iie: [
     {
