@@ -7,7 +7,7 @@
           ref="printerModal"
           class="float-left"
           :disabled="selected.length === 0"
-          @select-printer="printLabels($event)"
+          @select-printer="onPrintAction($event)"
         >
         </printerModal>
         <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
@@ -93,14 +93,12 @@ import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/labelPrinting/PrinterModal.vue'
 import { ref, computed } from 'vue'
-import { getCurrentDate } from '@/lib/DateHelpers.js'
 import useQueryParams from '@/composables/useQueryParams.js'
-import { usePrintingStore } from '@/stores/printing.js'
 import useLocationFetcher from '@/composables/useLocationFetcher.js'
 import { locationBuilder } from '@/services/labwhere/helpers.js'
 import { useOntPoolCreateStore } from '@/stores/ontPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
-import { splitBarcodeByPrefix } from '@/lib/LabelPrintingHelpers.js'
+import useTubePrint from '@/composables/useTubePrint.js'
 
 // --- Reactive State ---
 const fields = [
@@ -139,7 +137,7 @@ const currentPool = ref({})
 const ontPoolCreateStore = useOntPoolCreateStore()
 const { fetchWithQueryParams } = useQueryParams()
 const { fetchLocations } = useLocationFetcher()
-const printingStore = usePrintingStore()
+const { printLabels } = useTubePrint()
 
 // --- Getters ---
 const displayedPools = computed(() =>
@@ -148,44 +146,12 @@ const displayedPools = computed(() =>
 
 // --- Methods ---
 /**
- * Create the labels needed for the print job
- * @returns {Array<Object>} Array of label objects
- */
-function createLabels() {
-  const date = getCurrentDate()
-  return selected.value.map(({ barcode, source_identifier }) => {
-    const { prefix: round_label_lower_line, id: round_label_bottom_line } =
-      splitBarcodeByPrefix(barcode)
-    return {
-      barcode,
-      first_line: 'Ont - Pool',
-      second_line: date,
-      third_line: barcode,
-      fourth_line: source_identifier,
-      round_label_bottom_line,
-      round_label_lower_line,
-      label_name: 'main_label',
-    }
-  })
-}
-
-/**
  * Creates the print job and shows a success or failure alert
  * @param {String} printerName The name of the printer to send the print job to
  */
-async function printLabels(printerName) {
-  const { success, message = {} } = await printingStore.createPrintJob({
-    printerName,
-    labels: createLabels(),
-    copies: 1,
-  })
-  // showAlert should be defined/injected in the parent or globally
-  if (typeof showAlert === 'function') {
-    showAlert(message, success ? 'success' : 'danger')
-  } else {
-    // fallback: log to console
-    console.log('Print job result:', message, success)
-  }
+async function onPrintAction(printerName) {
+  const { success, message = {} } = await printLabels(printerName, selected.value, 'Ont - Pool')
+  showAlert(message, success ? 'success' : 'danger')
 }
 
 const handleToggleDetails = async (row) => {
