@@ -53,6 +53,13 @@ const WorkflowsLocations = {
     location: 'Benchling',
     barcode: 'lw-benchling-40874',
   },
+  CustomLocation: {
+    pipelines: ['PacBio', 'ONT'],
+    name: 'Custom Location',
+    location: null,
+    // Not a real barcode, just a placeholder to identify this workflow
+    barcode: 'custom-location',
+  },
 }
 
 const ReceptionTypes = {

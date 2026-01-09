@@ -92,6 +92,7 @@ describe('GeneralReception', () => {
         'Pacbio -20 samples',
         'Pacbio Fridge samples',
         'Benchling',
+        'Custom Location',
       ])
     })
 
