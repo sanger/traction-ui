@@ -271,6 +271,7 @@ const customWorkflowLocation = reactive({
 const setCustomWorkflowLocation = async (value) => {
   if (!value) {
     customWorkflowLocation.value = ''
+    customWorkflowLocation.name = ''
     customWorkflowLocation.error = 'Location barcode is required to scan in the imported labware'
     return
   }
