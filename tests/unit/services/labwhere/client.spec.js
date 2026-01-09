@@ -2,32 +2,32 @@ import {
   getLabwhereLocations,
   scanBarcodesInLabwhereLocation,
   exhaustLibraryVolumeIfDestroyed,
+  findLabwhereLocation,
 } from '@/services/labwhere/client.js'
 import * as pacbioLibraryUtilities from '@/stores/utilities/pacbioLibraries.js'
 import * as pacbioLibraryService from '@/services/traction/PacbioLibrary.js'
 import { beforeEach, describe, it } from 'vitest'
 
-const mockFetchWrapper = {
-  fetch: vi.fn(),
-  baseUrl: 'http://test',
-  serviceName: 'test',
-}
+const BASE_URL = import.meta.env['VITE_LABWHERE_BASE_URL']
+beforeEach(() => {
+  global.fetch = vi.fn()
+})
 
 describe('getLabwhereLocations', () => {
   it('should return an error if no barcodes are provided', async () => {
-    const result = await getLabwhereLocations([], mockFetchWrapper)
+    const result = await getLabwhereLocations([])
     expect(result).toEqual({ success: false, errors: ['No barcodes provided'], data: {} })
   })
 
   it('should not call extractLocationsForLabwares if post fails', async () => {
-    const response = {
+    const mockError = new Error('Network error')
+    global.fetch.mockRejectedValue(mockError)
+    const result = await getLabwhereLocations(['barcode1'])
+    expect(result).toEqual({
       success: false,
-      errors: ['Failed to access LabWhere: Network error'],
+      errors: [`Failed to access LabWhere: ${mockError.message}`],
       data: {},
-    }
-    mockFetchWrapper.fetch.mockResolvedValue(response)
-    const result = await getLabwhereLocations(['barcode1'], mockFetchWrapper)
-    expect(result).toEqual(response)
+    })
   })
 
   it('should call extractLocationsForLabwares if post succeeds', async () => {
@@ -41,11 +41,14 @@ describe('getLabwhereLocations', () => {
         location: 'location2',
       },
     ]
-    const mockResponse = { success: true, errors: [], data }
-    mockFetchWrapper.fetch.mockResolvedValue(mockResponse)
-    const result = await getLabwhereLocations(['barcode1', 'barcode2'], mockFetchWrapper)
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => data,
+    })
+    const result = await getLabwhereLocations(['barcode1', 'barcode2'])
     expect(result).toEqual({
-      ...mockResponse,
+      success: true,
+      errors: [],
       data: { barcode1: 'location1', barcode2: 'location2' },
     })
   })
@@ -53,7 +56,7 @@ describe('getLabwhereLocations', () => {
 
 describe('scanBarcodesInLabwhereLocation', () => {
   it('should return an error if required parameters are missing', async () => {
-    const result = await scanBarcodesInLabwhereLocation('', '', '', null, mockFetchWrapper)
+    const result = await scanBarcodesInLabwhereLocation('', '', '', null)
     expect(result).toEqual({
       success: false,
       errors: ['Required parameters are missing for the Scan In operation'],
@@ -61,26 +64,20 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 
   it('should return formatted result for post response', async () => {
-    mockFetchWrapper.fetch.mockResolvedValue({
-      success: true,
-      errors: [],
-      data: { message: 'Labware stored to location 1' },
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Labware stored to location 1' }),
     })
-    const result = await scanBarcodesInLabwhereLocation(
-      'user123',
-      'location123',
-      'barcode1',
-      null,
-      mockFetchWrapper,
-    )
-    expect(mockFetchWrapper.fetch).toHaveBeenCalledWith(
-      '/api/scans',
-      expect.any(String),
-      'application/x-www-form-urlencoded',
-      'POST',
-    )
-    const callArgs = mockFetchWrapper.fetch.mock.calls[0]
-    const params = new URLSearchParams(callArgs[1])
+    const result = await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', null)
+    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/api/scans`, {
+      method: 'POST',
+      body: expect.any(String),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    const callArgs = global.fetch.mock.calls[0]
+    const params = new URLSearchParams(callArgs[1].body)
     expect(params.get('scan[start_position]')).toBe(null)
     expect(params.get('scan[user_code]')).toBe('user123')
     expect(params.get('scan[labware_barcodes]')).toBe('barcode1')
@@ -93,10 +90,13 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 
   it('should include start position if provided', async () => {
-    mockFetchWrapper.fetch.mockResolvedValue({ success: true, errors: [], data: { message: '' } })
-    await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1, mockFetchWrapper)
-    const callArgs = mockFetchWrapper.fetch.mock.calls[0]
-    const params = new URLSearchParams(callArgs[1])
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: '' }),
+    })
+    await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1)
+    const callArgs = global.fetch.mock.calls[0]
+    const params = new URLSearchParams(callArgs[1].body)
     expect(params.get('scan[start_position]')).toBe('1')
   })
 })
@@ -156,6 +156,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       mockFormatAndTransformLibraries.mockReturnValueOnce([formattedLibraries[1]])
       mockExhaustLibrayVolume.mockResolvedValue({ success: true })
     })
+
     it('should fetch libraries by source_identifier and barcode', async () => {
       await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(mockFetchLibraries).toHaveBeenCalledTimes(2)
@@ -164,6 +165,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       })
       expect(mockFetchLibraries).toHaveBeenCalledWith({ filter: { barcode: 'barcode2,barcode3' } })
     })
+
     it('should return exhaused libraries', async () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: true, exhaustedLibraries: formattedLibraries })
@@ -176,26 +178,31 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       expect(mockExhaustLibrayVolume).toHaveBeenCalledWith(formattedLibraries[1])
     })
   })
+
   describe('when fetching libraries fails', () => {
     beforeEach(() => {
       mockFetchLibraries.mockResolvedValueOnce({ success: false })
     })
+
     it('should return an empty array', async () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: false })
       expect(mockExhaustLibrayVolume).not.toHaveBeenCalled()
     })
   })
+
   describe('when formatAndTransformLibraries returns an empty array', () => {
     beforeEach(() => {
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[0])
       mockFormatAndTransformLibraries.mockReturnValueOnce([])
     })
+
     it('should return an empty array', async () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: false })
     })
   })
+
   describe('when exhaustLibrayVolume fails', () => {
     it('should return an empty array', async () => {
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[0])
@@ -204,6 +211,7 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: false, exhaustedLibraries: [] })
     })
+
     it('should not return libraries for which the exhaustLibrayVolume fails ', async () => {
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[0])
       mockFetchLibraries.mockResolvedValueOnce(fetchLibraryResponses[1])
@@ -214,5 +222,50 @@ describe('exhaustLibraryVolumeIfDestroyed', () => {
       const result = await exhaustLibraryVolumeIfDestroyed(destroyLocation, labwareBarcodes)
       expect(result).toEqual({ success: true, exhaustedLibraries: [formattedLibraries[0]] })
     })
+  })
+})
+
+describe('findLabwhereLocation', () => {
+  it('should call fetch with correct parameters', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: {} }),
+    })
+
+    const barcode = 'location-barcode-123'
+    await findLabwhereLocation(barcode)
+
+    expect(global.fetch).toHaveBeenCalledWith(`${BASE_URL}/api/locations/${barcode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: null,
+    })
+  })
+
+  it('should handle case when no location is found', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => null,
+    })
+
+    const barcode = 'non-existent-barcode'
+    const result = await findLabwhereLocation(barcode)
+
+    expect(result.success).toBe(false)
+    expect(result.errors).toContain(`No location found for barcode: ${barcode}`)
+  })
+
+  it('should return the response from labwhereFetch.fetch', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 1, name: 'Test Location' }),
+    })
+
+    const barcode = 'valid-barcode-456'
+    const result = await findLabwhereLocation(barcode)
+
+    expect(result).toEqual({ success: true, data: { id: 1, name: 'Test Location' }, errors: [] })
   })
 })

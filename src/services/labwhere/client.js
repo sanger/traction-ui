@@ -35,7 +35,12 @@ const getLabwhereLocations = async (labwhereBarcodes, fetchWrapper = labwhereFet
     params.append('barcodes[]', barcode)
   })
 
-  const response = await fetchWrapper.fetch('/api/labwares/searches', params, 'multipart/form-data', 'POST')
+  const response = await fetchWrapper.fetch(
+    '/api/labwares/searches',
+    params,
+    'multipart/form-data',
+    'POST',
+  )
 
   return response.success
     ? { ...response, data: extractLocationsForLabwares(response.data, labwhereBarcodes) }
@@ -94,8 +99,9 @@ const scanBarcodesInLabwhereLocation = async (
     '/api/scans',
     new URLSearchParams(params).toString(),
     'application/x-www-form-urlencoded',
-    'POST'
+    'POST',
   )
+
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
 /**
@@ -149,9 +155,26 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
 }
 
 const findLabwhereLocation = async (barcode) => {
-  const response = await labwhereFetch.fetch(`/api/locations/${barcode}`, null, 'application/json', 'GET')
-  
-  console.log(response)
+  const response = await labwhereFetch.fetch(
+    `/api/locations/${barcode}`,
+    null,
+    'application/json',
+    'GET',
+  )
+
+  // If it is successful but no data found, set success to false and add an error message
+  // Note labwhere returns 200 with null data if no location found
+  if (response.success && response.data == null) {
+    response.success = false
+    response.errors = [`No location found for barcode: ${barcode}`]
+  }
+
+  return response
 }
 
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed, findLabwhereLocation }
+export {
+  getLabwhereLocations,
+  scanBarcodesInLabwhereLocation,
+  exhaustLibraryVolumeIfDestroyed,
+  findLabwhereLocation,
+}
