@@ -35,7 +35,7 @@ const getLabwhereLocations = async (labwhereBarcodes, fetchWrapper = labwhereFet
     params.append('barcodes[]', barcode)
   })
 
-  const response = await fetchWrapper.post('/api/labwares/searches', params, 'multipart/form-data')
+  const response = await fetchWrapper.fetch('/api/labwares/searches', params, 'multipart/form-data', 'POST')
 
   return response.success
     ? { ...response, data: extractLocationsForLabwares(response.data, labwhereBarcodes) }
@@ -90,10 +90,11 @@ const scanBarcodesInLabwhereLocation = async (
   if (startPosition) {
     params['scan[start_position]'] = startPosition
   }
-  const response = await fetchWrapper.post(
+  const response = await fetchWrapper.fetch(
     '/api/scans',
     new URLSearchParams(params).toString(),
     'application/x-www-form-urlencoded',
+    'POST'
   )
   return { success: response.success, errors: response.errors, message: response.data.message }
 }
@@ -146,4 +147,11 @@ const exhaustLibraryVolumeIfDestroyed = async (locationBarcode, labwareBarcodes)
   )
   return { success: exhaustedLibraries.length > 0, exhaustedLibraries }
 }
-export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed }
+
+const findLabwhereLocation = async (barcode) => {
+  const response = await labwhereFetch.fetch(`/api/locations/${barcode}`, null, 'application/json', 'GET')
+  
+  console.log(response)
+}
+
+export { getLabwhereLocations, scanBarcodesInLabwhereLocation, exhaustLibraryVolumeIfDestroyed, findLabwhereLocation }

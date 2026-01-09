@@ -8,7 +8,7 @@ import * as pacbioLibraryService from '@/services/traction/PacbioLibrary.js'
 import { beforeEach, describe, it } from 'vitest'
 
 const mockFetchWrapper = {
-  post: vi.fn(),
+  fetch: vi.fn(),
   baseUrl: 'http://test',
   serviceName: 'test',
 }
@@ -25,7 +25,7 @@ describe('getLabwhereLocations', () => {
       errors: ['Failed to access LabWhere: Network error'],
       data: {},
     }
-    mockFetchWrapper.post.mockResolvedValue(response)
+    mockFetchWrapper.fetch.mockResolvedValue(response)
     const result = await getLabwhereLocations(['barcode1'], mockFetchWrapper)
     expect(result).toEqual(response)
   })
@@ -42,7 +42,7 @@ describe('getLabwhereLocations', () => {
       },
     ]
     const mockResponse = { success: true, errors: [], data }
-    mockFetchWrapper.post.mockResolvedValue(mockResponse)
+    mockFetchWrapper.fetch.mockResolvedValue(mockResponse)
     const result = await getLabwhereLocations(['barcode1', 'barcode2'], mockFetchWrapper)
     expect(result).toEqual({
       ...mockResponse,
@@ -61,7 +61,7 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 
   it('should return formatted result for post response', async () => {
-    mockFetchWrapper.post.mockResolvedValue({
+    mockFetchWrapper.fetch.mockResolvedValue({
       success: true,
       errors: [],
       data: { message: 'Labware stored to location 1' },
@@ -73,12 +73,13 @@ describe('scanBarcodesInLabwhereLocation', () => {
       null,
       mockFetchWrapper,
     )
-    expect(mockFetchWrapper.post).toHaveBeenCalledWith(
+    expect(mockFetchWrapper.fetch).toHaveBeenCalledWith(
       '/api/scans',
       expect.any(String),
       'application/x-www-form-urlencoded',
+      'POST',
     )
-    const callArgs = mockFetchWrapper.post.mock.calls[0]
+    const callArgs = mockFetchWrapper.fetch.mock.calls[0]
     const params = new URLSearchParams(callArgs[1])
     expect(params.get('scan[start_position]')).toBe(null)
     expect(params.get('scan[user_code]')).toBe('user123')
@@ -92,9 +93,9 @@ describe('scanBarcodesInLabwhereLocation', () => {
   })
 
   it('should include start position if provided', async () => {
-    mockFetchWrapper.post.mockResolvedValue({ success: true, errors: [], data: { message: '' } })
+    mockFetchWrapper.fetch.mockResolvedValue({ success: true, errors: [], data: { message: '' } })
     await scanBarcodesInLabwhereLocation('user123', 'location123', 'barcode1', 1, mockFetchWrapper)
-    const callArgs = mockFetchWrapper.post.mock.calls[0]
+    const callArgs = mockFetchWrapper.fetch.mock.calls[0]
     const params = new URLSearchParams(callArgs[1])
     expect(params.get('scan[start_position]')).toBe('1')
   })
