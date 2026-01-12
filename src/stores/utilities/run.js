@@ -1,4 +1,7 @@
-import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import {
+  defaultSmrtLinkAttributes,
+  PacbioRunWellSmrtLinkOptions,
+} from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { payloadForAnnotations } from '@/stores/utilities/annotation.js'
 
 /**
@@ -161,7 +164,7 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType
             return {
               plate_number,
               ...plate,
-              wells_attributes: createWellsPayload(wells[plate_number]),
+              wells_attributes: createWellsPayload(wells[plate_number], smrtLinkVersion),
             }
           })
           .filter((plate) => hasPlateAttributes(plate)),
@@ -183,7 +186,7 @@ const hasPlateAttributes = ({ sequencing_kit_box_barcode, wells_attributes }) =>
  * @param {wells} - An object of wells
  * @returns {Object} - A payload for the wells
  */
-const createWellsPayload = (wells) => {
+const createWellsPayload = (wells, smrtLinkVersion) => {
   // isolate the _destroy attribute from the rest of the wells
   // sorting the wells, so if the wells are added to a plate in the order e.g. B1, C1, A1,
   // they are sorted to be A1, B1, C1, to avoid the validation error - "wells must be in a valid order"
@@ -195,6 +198,9 @@ const createWellsPayload = (wells) => {
   return (
     Object.values(rest)
       .map(({ used_aliquots: used_aliquots_attributes, annotationList, ...attributes }) => {
+        // If there are smrt link attributes for the given version, filter the attributes
+        attributes = filterWellAttributesBySmrtLinkVersion(attributes, smrtLinkVersion)
+
         return {
           ...attributes,
           used_aliquots_attributes,
@@ -228,6 +234,34 @@ const removeReadOnlyAttributes = (run) => {
   return filteredRun
 }
 
+/**
+ * @param {attributes} - A well attributes object
+ * @param {smrtLinkVersion} - The SMRT Link Version of the run
+ *
+ * This method is required because the defaultSmrtLinkAttributes includes all possible attributes,
+ * some of which will not be relevant to the given smrt link version.
+ * @returns {Object} - A well attributes object containing only relevant attributes for the given smrt link version
+ */
+const filterWellAttributesBySmrtLinkVersion = (attributes, smrtLinkVersion) => {
+  if (!smrtLinkVersion || !smrtLinkVersion.name) {
+    return { ...attributes }
+  }
+
+  const smrtLinkVersionAttributes = PacbioRunWellSmrtLinkOptions[smrtLinkVersion.name]
+  const smrtLinkAttributes = smrtLinkVersionAttributes.map((attr) => attr['value'])
+
+  // Always keep row, column, type, id
+  const requiredKeys = ['row', 'column', 'type', 'id']
+
+  // Build a new object with only relevant attributes
+  return Object.keys(attributes).reduce((filtered, key) => {
+    if (smrtLinkAttributes.includes(key) || requiredKeys.includes(key)) {
+      filtered[key] = attributes[key]
+    }
+    return filtered
+  }, {})
+}
+
 export {
   newRun,
   newWell,
@@ -239,4 +273,5 @@ export {
   createPayload,
   hasPlateAttributes,
   createWellsPayload,
+  filterWellAttributesBySmrtLinkVersion,
 }
