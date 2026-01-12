@@ -238,29 +238,28 @@ const removeReadOnlyAttributes = (run) => {
  * @param {attributes} - A well attributes object
  * @param {smrtLinkVersion} - The SMRT Link Version of the run
  *
- * Note: This function mutates the attributes object passed to it.
  * This method is required because the defaultSmrtLinkAttributes includes all possible attributes,
  * some of which will not be relevant to the given smrt link version.
  * @returns {Object} - A well attributes object containing only relevant attributes for the given smrt link version
  */
 const filterWellAttributesBySmrtLinkVersion = (attributes, smrtLinkVersion) => {
   if (!smrtLinkVersion || !smrtLinkVersion.name) {
-    return attributes
+    return { ...attributes }
   }
 
   const smrtLinkVersionAttributes = PacbioRunWellSmrtLinkOptions[smrtLinkVersion.name]
   const smrtLinkAttributes = smrtLinkVersionAttributes.map((attr) => attr['value'])
 
-  if (smrtLinkAttributes.length > 0) {
-    // Filter out any attributes that are not relevant for the given smrt link version
-    Object.keys(attributes).forEach((key) => {
-      // Keep the row, column, type and id attributes
-      if (!smrtLinkAttributes.includes(key) && !['row', 'column', 'type', 'id'].includes(key)) {
-        delete attributes[key]
-      }
-    })
-  }
-  return attributes
+  // Always keep row, column, type, id
+  const requiredKeys = ['row', 'column', 'type', 'id']
+
+  // Build a new object with only relevant attributes
+  return Object.keys(attributes).reduce((filtered, key) => {
+    if (smrtLinkAttributes.includes(key) || requiredKeys.includes(key)) {
+      filtered[key] = attributes[key]
+    }
+    return filtered
+  }, {})
 }
 
 export {
