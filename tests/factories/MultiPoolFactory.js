@@ -1,4 +1,14 @@
 import BaseFactory from './BaseFactory.js'
+import { dataToObjectById } from './../../src/api/JsonApi.js'
+
+const createStoreData = (data) => {
+  const multiPools = dataToObjectById({ data: data.data })
+  return {
+    resources: {
+      multiPools,
+    },
+  }
+}
 
 const MultiPoolFactory = () => {
   const data = {
@@ -69,7 +79,7 @@ const MultiPoolFactory = () => {
       last: 'http://localhost:3100/v1/multi_pools?page%5Bnumber%5D=1&page%5Bsize%5D=1000',
     },
   }
-  return { ...BaseFactory(data) }
+  return { ...BaseFactory(data), storeData: createStoreData(data) }
 }
 
 export default MultiPoolFactory

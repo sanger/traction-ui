@@ -28,6 +28,9 @@ const config = [
       {
         name: 'library_types',
       },
+      {
+        name: 'multi_pools',
+      },
     ],
     urls: [
       {

@@ -1,26 +1,43 @@
 import { useMultiPoolStore } from '@/stores/multiPools.js'
 import { beforeEach, describe, expect } from 'vitest'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
+import useRootStore from '@/stores'
+import { failedResponse } from '@tests/support/testHelper.js'
 
 const multiPoolFactory = MultiPoolFactory()
 
-describe('useOntRunsStore', () => {
+describe('useMultiPoolStore', () => {
   let store
 
   beforeEach(() => {
     store = useMultiPoolStore()
   })
 
-  describe.skip('actions', () => {
+  describe('actions', () => {
+    let rootStore
+
+    beforeEach(() => {
+      rootStore = useRootStore()
+    })
     describe('fetchMultiPools', () => {
+      let get
+
+      beforeEach(() => {
+        get = vi.fn()
+        rootStore.api = { traction: { multi_pools: { get } } }
+      })
+
       it('runs successfully', async () => {
-        const response = multiPoolFactory.responses.fetch
-        expect(response).toBeDefined()
-        expect(store).toBeDefined()
-        expect(true).toBe(true)
+        get.mockResolvedValue(multiPoolFactory.responses.fetch)
+        const { success } = await store.fetchMultiPools()
+        expect(store.resources.multiPools).toEqual(multiPoolFactory.storeData.resources.multiPools)
+        expect(success).toBe(true)
       })
       it('handles failure', async () => {
-        expect(false).toBe(false)
+        get.mockResolvedValue(failedResponse())
+        const { success } = await store.fetchMultiPools()
+        expect(store.resources.multiPools).toEqual({})
+        expect(success).toBe(false)
       })
     })
   })

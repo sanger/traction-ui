@@ -6,7 +6,6 @@ import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import SampleReport from '@/views/SampleReport.vue'
-import BatchPooling from '@/views/BatchPooling.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
@@ -23,6 +22,7 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRunShow from '@/views/ont/ONTRunShow.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
+import FlexiblePooling from '@/views/FlexiblePooling.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -78,9 +78,9 @@ const router = createRouter({
     },
     {
       path: '/flexible-pooling',
-      name: 'BatchPooling',
+      name: 'FlexiblePooling',
       meta: { page: 'Flexible Pooling' },
-      component: BatchPooling,
+      component: FlexiblePooling,
     },
     {
       path: '/pacbio',
