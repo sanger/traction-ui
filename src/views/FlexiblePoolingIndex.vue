@@ -3,7 +3,6 @@
     <template #default>
       <DataFetcher :fetcher="provider">
         <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
-        <traction-heading level="4" :show-border="true"> Flexible Pooling </traction-heading>
         <div>
           <traction-pagination class="float-right" aria-controls="samples-table" />
         </div>
@@ -47,7 +46,7 @@ const state = reactive({
   filterOptions: [
     { value: '', text: '' },
     { value: 'pipeline', text: 'Pipeline' },
-    { value: 'pool_method', text: 'Pool Method' },
+    { value: 'pool_method', text: 'Pool method' },
   ],
 })
 
