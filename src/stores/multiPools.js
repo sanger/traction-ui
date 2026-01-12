@@ -37,7 +37,7 @@ export const useMultiPoolStore = defineStore('multiPools', {
       const { success, body: { data, meta = {} } = {}, errors = [] } = response
 
       if (success) {
-        this.resources.multiPools = dataToObjectById({ data, includeRelationships: true })
+        this.resources.multiPools = dataToObjectById({ data, includeRelationships: false })
       }
 
       return { success, errors, meta }
