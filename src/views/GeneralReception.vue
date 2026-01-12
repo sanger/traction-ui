@@ -59,7 +59,7 @@
             <traction-label class="inline-block w-full text-left">Location barcode</traction-label>
             <traction-muted-text class="text-left"
               >Scan the location barcode where the imported labware will be scanned
-              into</traction-muted-text
+              into (e.g. lw-test-123)</traction-muted-text
             >
             <traction-field-error
               data-attribute="custom-location-barcode-error"
