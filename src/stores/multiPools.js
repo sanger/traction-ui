@@ -9,7 +9,16 @@ export const useMultiPoolStore = defineStore('multiPools', {
       multiPools: {},
     },
   }),
-  getters: {},
+  getters: {
+    /**
+     * Returns the multi pool items as an array
+     * @param {Object} state The state object
+     * @return {Array} The array of multi pool items
+     */
+    multiPoolItems(state) {
+      return Object.values(state.resources.multiPools)
+    },
+  },
   actions: {
     /**
      * Fetches multiple pools from the API with optional filtering and pagination.

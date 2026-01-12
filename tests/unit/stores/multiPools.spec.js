@@ -13,6 +13,14 @@ describe('useMultiPoolStore', () => {
     store = useMultiPoolStore()
   })
 
+  describe('getters', () => {
+    it('multiPoolItems', () => {
+      store.$state.resources.multiPools = multiPoolFactory.storeData.resources.multiPools
+      const expected = Object.values(store.resources.multiPools)
+      expect(store.multiPoolItems).toEqual(expected)
+    })
+  })
+
   describe('actions', () => {
     let rootStore
 
