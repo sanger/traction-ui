@@ -22,7 +22,7 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRunShow from '@/views/ont/ONTRunShow.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import FlexiblePooling from '@/views/FlexiblePooling.vue'
+import FlexiblePoolingIndex from '@/views/FlexiblePoolingIndex.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -78,9 +78,9 @@ const router = createRouter({
     },
     {
       path: '/flexible-pooling',
-      name: 'FlexiblePooling',
+      name: 'FlexiblePoolingIndex',
       meta: { page: 'Flexible Pooling' },
-      component: FlexiblePooling,
+      component: FlexiblePoolingIndex,
     },
     {
       path: '/pacbio',
