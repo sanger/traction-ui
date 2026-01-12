@@ -22,5 +22,17 @@ describe('Visit Flexible Pooling Page', () => {
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
     cy.get('#filterValue').children().should('contain', 'Pipeline').and('contain', 'Pool method')
+
+    cy.get('@multiPoolFactory').then((multiPoolFactory) => {
+      cy.get('#multipools-table')
+        .find('tr')
+        .should('have.length', multiPoolFactory.content.data.length + 1)
+    })
+    // Define an array of all column keys
+    const columnKeys = ['id', 'pipeline', 'pool_method', 'number_of_pools', 'created_at']
+    // Iterate over the column IDs and verify each has a length greater than 0
+    columnKeys.forEach((columnKey) => {
+      cy.get(`[data-attribute=${columnKey}]`).first().should('have.length.greaterThan', 0)
+    })
   })
 })
