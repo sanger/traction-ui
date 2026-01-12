@@ -3,18 +3,30 @@
     <template #default>
       <DataFetcher :fetcher="provider">
         <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
-        <div>
-          <traction-pagination class="float-right" aria-controls="samples-table" />
+        <div class="flex flex-col">
+          <div>
+            <traction-button class="float-left" theme="create" href="#/flexible-pooling/new">
+              Create New Multi-Pool
+            </traction-button>
+            <traction-pagination class="float-right" aria-controls="multipools-table" />
+          </div>
+          <traction-table
+            id="multipools-table"
+            v-model:sort-by="state.sortBy"
+            primary_key="id"
+            :items="multiPoolsStore.multiPoolItems"
+            :fields="state.fields"
+            selectable
+            select-mode="single"
+          >
+            <template #cell(actions)>
+              <div>
+                <!-- Placeholder for future actions, e.g., Edit, Delete -->
+                <span class="text-muted">No actions available</span>
+              </div>
+            </template>
+          </traction-table>
         </div>
-        <traction-table
-          id="multipools-table"
-          v-model:sort-by="state.sortBy"
-          primary_key="id"
-          :items="multiPoolsStore.multiPoolItems"
-          :fields="state.fields"
-          selectable
-          select-mode="single"
-        />
       </DataFetcher>
     </template>
     <template #disabled>
