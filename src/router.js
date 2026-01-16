@@ -7,6 +7,7 @@ import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
+import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
 import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
@@ -74,6 +75,12 @@ const router = createRouter({
       name: 'SampleReport',
       meta: { page: 'Sample Report' },
       component: SampleReport,
+    },
+    {
+      path: '/flexible-pool/:id',
+      name: 'FlexiblePool',
+      component: FlexiblePoolCreate,
+      meta: { page: 'FlexiblePool' },
     },
     {
       path: '/pacbio',
