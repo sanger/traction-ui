@@ -4,7 +4,7 @@ import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 import { failedResponse } from '@tests/support/testHelper.js'
 
-const multiPoolFactory = MultiPoolFactory()
+const multiPoolFactory = MultiPoolFactory.all()
 
 describe('useMultiPoolStore', () => {
   let store
@@ -46,6 +46,29 @@ describe('useMultiPoolStore', () => {
         const { success } = await store.fetchMultiPools()
         expect(store.resources.multiPools).toEqual({})
         expect(success).toBe(false)
+      })
+    })
+
+    describe('fetchSubPools', () => {
+      it('runs successfully', async () => {
+        const id = multiPoolFactory.storeData.resources.ids[0]
+        const multPoolWithSubPools = MultiPoolFactory.withSubPools(id)
+        const find = vi.fn()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        find.mockResolvedValue(multPoolWithSubPools.responses.fetch)
+        const { success } = await store.fetchSubPools(id)
+        expect(success).toBe(true)
+        expect(store.resources.multiPools[id].subPools).toEqual(
+          multPoolWithSubPools.storeData.multiPools[id].subPools,
+        )
+      })
+      it('handles failure', async () => {
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        find.mockResolvedValue(failureResponse)
+        const { success } = await store.fetchSubPools('1')
+        expect(success).toEqual(false)
       })
     })
   })

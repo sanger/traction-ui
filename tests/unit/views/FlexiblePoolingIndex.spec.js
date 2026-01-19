@@ -6,7 +6,7 @@ import { useMultiPoolStore } from '@/stores/multiPools.js'
 import useRootStore from '@/stores'
 import FlipperFactory from '@tests/factories/FlipperFactory.js'
 
-const multiPoolFactory = MultiPoolFactory()
+const multiPoolFactory = MultiPoolFactory.all()
 const flipperFactory = FlipperFactory()
 
 describe('FlexiblePoolingIndex', () => {
