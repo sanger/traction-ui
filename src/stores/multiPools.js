@@ -64,7 +64,7 @@ export const useMultiPoolStore = defineStore('multiPools', {
       const rootStore = useRootStore()
 
       const request = rootStore.api.traction.multi_pools
-      const promise = request.find(id, { include: 'multi_pool_positions.pool' })
+      const promise = request.find(id, { include: 'multi_pool_positions.pacbio_pool' })
       const response = await handleResponse(promise)
 
       const { success, body: { data, included } = {}, errors = [] } = response

@@ -15,6 +15,15 @@ describe('Visit Flexible Pooling Page', () => {
         body: multiPoolFactory.content,
       })
     })
+
+    cy.get('@multiPoolFactory').then((multiPoolFactory) => {
+      const id = multiPoolFactory.storeData.resources.ids[0]
+      const singlePoolFactory = MultiPoolFactory.withSubPools(id)
+      cy.intercept(`v1/multi_pools/${id}?include=multi_pool_positions.pacbio_pool`, {
+        statusCode: 200,
+        body: singlePoolFactory.content,
+      })
+    })
   })
 
   it('Visits the Flexible Pooling page', () => {
@@ -33,6 +42,15 @@ describe('Visit Flexible Pooling Page', () => {
     // Iterate over the column IDs and verify each has a length greater than 0
     columnKeys.forEach((columnKey) => {
       cy.get(`[data-attribute=${columnKey}]`).first().should('have.length.greaterThan', 0)
+    })
+
+    //show details of first miltipool
+    cy.get('#multipools-table').within(() => {
+      cy.get('@multiPoolFactory').then((multiPoolFactory) => {
+        const id = multiPoolFactory.storeData.resources.ids[0]
+        cy.get('#details-btn-' + id).click()
+        cy.get(`[data-list='subpools-${id}']`).find('tr').should('have.length.greaterThan', 0)
+      })
     })
   })
 })
