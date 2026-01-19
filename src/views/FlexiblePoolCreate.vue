@@ -10,20 +10,20 @@
             <div class="text-left w-full">
               <span>Pipeline</span>
               <traction-select
-                id="pipeline-select"
                 v-model="pipeline"
+                data-testid="pipeline-select"
                 class="w-full py-1"
                 :options="pipelineOptions"
               >
               </traction-select>
             </div>
             <div class="text-left w-full">
-              <span>Pooling strategy</span>
+              <span>Pooling layout</span>
               <traction-select
-                id="pooling-strategy-select"
-                v-model="poolingStrategy"
+                v-model="poolingLayout"
+                data-testid="pooling-layout-select"
                 class="w-full py-1"
-                :options="poolStrategyOptions"
+                :options="poolingLayoutOptions"
               >
               </traction-select>
             </div>
@@ -45,6 +45,7 @@
                   </traction-tooltip>
                   <div class="whitespace-nowrap">
                     <a
+                      data-testid="flexible-pooling-template"
                       href="/flexible-pooling-template.csv"
                       download="FlexiblePoolingTemplate.csv"
                       class="text-sp-600 hover:underline text-sm"
@@ -56,12 +57,10 @@
               </div>
               <div id="borderDiv" class="w-full">
                 <input
-                  id="csvFileInput"
-                  ref="csvFileInput"
+                  data-testid="csv-file-input"
                   class="block rounded border file:border-0 w-full my-2"
                   type="file"
                   accept="text/csv, .csv"
-                  @change="onSelectFile"
                 />
               </div>
             </div>
@@ -75,8 +74,10 @@
         </traction-section>
         <traction-section title="Actions" number="3">
           <div class="w-full flex justify-between">
-            <traction-button theme="delete">Reset</traction-button>
-            <traction-button theme="create">Create Flexible Pool</traction-button>
+            <traction-button data-testid="reset-btn" theme="delete">Reset</traction-button>
+            <traction-button data-testid="create-btn" theme="create"
+              >Create Flexible Pool</traction-button
+            >
           </div>
         </traction-section>
       </div>
@@ -98,8 +99,8 @@ import LabwareMap from '@/components/labware/LabwareMap.vue'
 import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 
-const poolingStrategy = ref('Plate')
-const poolStrategyOptions = [{ text: 'Plate', value: 'Plate' }]
+const poolingLayout = ref('Plate')
+const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
 const pipeline = ref('Pacbio')
 const pipelineOptions = [{ text: 'Pacbio', value: 'Pacbio' }]
 </script>
