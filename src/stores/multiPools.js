@@ -91,5 +91,9 @@ export const useMultiPoolStore = defineStore('multiPools', {
 
       return { success, errors }
     },
+
+    async setSubPools(id) {
+      return id
+    },
   },
 })

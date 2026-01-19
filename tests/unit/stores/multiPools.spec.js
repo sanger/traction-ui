@@ -71,5 +71,52 @@ describe('useMultiPoolStore', () => {
         expect(success).toEqual(false)
       })
     })
+
+    describe.skip('setSubPools', () => {
+      it('adds the subPools to the multiPool if they are not already set', async () => {
+        const id = multiPoolFactory.storeData.resources.ids[0]
+        const multPoolWithSubPools = MultiPoolFactory.withSubPools(id)
+        store.resources = {
+          multiPools: multiPoolFactory.storeData.resources.multiPools,
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        find.mockResolvedValue(multPoolWithSubPools.responses.fetch)
+        const { success } = await store.setSubPools(id)
+        expect(success).toEqual(true)
+        expect(store.resources.multiPools[id].subPools).toEqual(
+          multPoolWithSubPools.storeData.multiPools[id].subPools,
+        )
+      })
+
+      it('returns an error if the multiPool does not exist', async () => {
+        const id = multiPoolFactory.storeData.resources.ids[0]
+        store.resources = {
+          multiPools: {},
+        }
+        const { success, errors } = await store.setSubPools(id)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([`MultiPool with id ${id} not found`])
+      })
+
+      it('does not fetch the subPools if they are already set', async () => {
+        const id = multiPoolFactory.storeData.resources.ids[0]
+        const multPoolWithSubPools = MultiPoolFactory.withSubPools(id)
+        store.resources = {
+          multiPools: {
+            ...multiPoolFactory.storeData.resources.multiPools,
+            [id]: multPoolWithSubPools.storeData.multiPools[id],
+          },
+        }
+        const find = vi.fn()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        const { success } = await store.setSubPools(id)
+        expect(success).toEqual(true)
+        expect(find).not.toHaveBeenCalled()
+        expect(store.resources.multiPools[id].subPools).toEqual(
+          multPoolWithSubPools.storeData.multiPools[id].subPools,
+        )
+      })
+    })
   })
 })
