@@ -39,5 +39,35 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
 
       return { success, errors }
     },
+
+    /**
+     * Sets the current multi pool. If it is a new multi pool it will be created.
+     * If it is an existing multi pool it will be updated.
+     * @param id The id of the multi pool. It will be new or existing
+     * @returns { Object } { success, errors }.
+     */
+    async setMultiPool({ id }) {
+      // Initialize multiPool state defaults
+      this.multiPool = {
+        pipeline: 'Pacbio',
+        pooling_layout: 'Plate',
+      }
+
+      // If the id is not a number, it is a new multi pool
+      if (isNaN(id)) {
+        // if it is a new multi pool, return success
+        return { success: true }
+      }
+
+      // if it is an existing multi pool, call the fetch multi pool action
+      let { success, errors = [] } = await this.fetchMultiPool(id)
+      // return the result from the fetchMultiPool
+      return { success, errors }
+    },
+
+    // Reset the store data
+    clearData() {
+      this.$reset()
+    },
   },
 })

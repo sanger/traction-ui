@@ -81,6 +81,7 @@ const router = createRouter({
       name: 'FlexiblePool',
       component: FlexiblePoolCreate,
       meta: { page: 'FlexiblePool' },
+      props: true,
     },
     {
       path: '/pacbio',

@@ -39,5 +39,55 @@ describe('useMultiPoolCreateStore', () => {
         expect(success).toEqual(false)
       })
     })
+
+    describe('setMultiPool', () => {
+      it('for a new multi pool', async () => {
+        const id = 'new'
+        const { success } = await store.setMultiPool({ id })
+        expect(success).toBeTruthy()
+        expect(store.$state.multiPool).toEqual({
+          pipeline: 'Pacbio',
+          pooling_layout: 'Plate',
+        })
+      })
+
+      it('for an existing multi pool', async () => {
+        const id = 1
+        store.fetchMultiPool = vi.fn().mockResolvedValue({ success: true })
+
+        const { success } = await store.setMultiPool({ id })
+        expect(store.fetchMultiPool).toHaveBeenCalledWith(id)
+        expect(success).toBeTruthy()
+      })
+
+      it('for an existing multi pool when fetchMultiPool fails', async () => {
+        const id = 1
+        store.fetchMultiPool = vi.fn().mockResolvedValue({ success: false })
+
+        const { success } = await store.setMultiPool({ id })
+        expect(store.fetchMultiPool).toHaveBeenCalledWith(id)
+        expect(success).toBeFalsy()
+      })
+    })
+
+    describe('clearData', () => {
+      it('clears existing multi pool data', () => {
+        const store = useMultiPoolCreateStore()
+        store.$state = {
+          multiPool: { id: 1, pooling_layout: 'Plate', pipeline: 'Pacbio' },
+          multiPoolPositions: {
+            1: { id: 1, position: 'A1' },
+            2: { id: 2, position: 'A2' },
+          },
+        }
+
+        store.clearData()
+
+        expect(store.$state).toEqual({
+          multiPool: {},
+          multiPoolPositions: {},
+        })
+      })
+    })
   })
 })
