@@ -7,7 +7,7 @@ describe('Visit Flexible Pooling Page', () => {
       flexible_pooling: { enabled: true },
     })
 
-    cy.wrap(MultiPoolFactory()).as('multiPoolFactory')
+    cy.wrap(MultiPoolFactory.all()).as('multiPoolFactory')
 
     cy.get('@multiPoolFactory').then((multiPoolFactory) => {
       cy.intercept('/v1/multi_pools?page[size]=25&page[number]=1', {
