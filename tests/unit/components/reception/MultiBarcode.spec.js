@@ -37,7 +37,7 @@ describe('MultiBarcode', () => {
 
   it('shows print options for only for Sequencescape Tubes', async () => {
     const { wrapper } = buildWrapper()
-    // It should show print options only when Sequencescape Tubes or Sequencescape Mutliplexed Libraries are the selected source
+    // It should show print options only when Sequencescape Tubes or Sequencescape Multiplexed Libraries are the selected source
     await wrapper.setProps({ reception: Receptions['SequencescapeTubes'] })
     expect(wrapper.find('[id=print]').exists()).toBe(true)
 
