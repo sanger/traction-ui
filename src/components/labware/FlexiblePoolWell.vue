@@ -1,0 +1,78 @@
+<template>
+  <div>
+    <div
+      :class="wellClassNames"
+      data-attribute="flexible-pool-well"
+      @mouseover.prevent="hover = true"
+      @mouseleave.prevent="hover = false"
+      @click="onClick"
+    >
+      <p class="font-light wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
+    </div>
+    <p class="truncate font-light">{{ position }}</p>
+  </div>
+</template>
+<script setup>
+/**
+ * @name FlexiblePoolWell
+ * @description A single well/pool in the flexible pooling page
+ */
+import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { ref, computed } from 'vue'
+
+/**
+ * Props for the component.
+ * @type {Object}
+ * @property {string} position - The position of the well. This prop is required.
+ */
+const props = defineProps({
+  position: {
+    type: String,
+    required: true,
+  },
+})
+
+/*
+ * Define the emits for the component.
+ * The component emits a 'click' event when the well is clicked.
+ */
+const emit = defineEmits(['click'])
+
+/*
+ * Create a store instance of the multiPoolCreateStore.
+ */
+const multiPoolCreateStore = useMultiPoolCreateStore()
+
+/*
+ * Define refs for the component.
+ * The `hover` ref is used to determine if the well is being hovered over.
+ */
+const hover = ref(false)
+
+/*
+ * Computed property that returns the class names for the well.
+ * @returns {Array} - An array of class names for the well.
+ */
+const wellClassNames = computed(() => {
+  return [
+    hover.value ? 'ring ring-pink-600 ring-offset-1' : 'border border-gray-800',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer bg-white',
+  ]
+})
+
+/*
+ * Computed property that returns the pool from the store.
+ * @returns {Object} - The pool from the store.
+ */
+const pool = computed(() => {
+  return multiPoolCreateStore.getPool(props.position)
+})
+
+/*
+ * Method that is called when the well is clicked.
+ * Emits a 'click' event with the position of the well.
+ */
+const onClick = () => {
+  emit('click', props.position)
+}
+</script>

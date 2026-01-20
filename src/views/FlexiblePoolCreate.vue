@@ -68,9 +68,8 @@
             </div>
           </traction-section>
           <traction-section title="Pooling" number="2">
-            <!-- Temporary - We will need a custom well component and may need a custom labware-type and -->
             <LabwareMap v-slot="{ position }" :labware-type="LabwareTypes.Plate96">
-              <PacbioRunWell :position="position" :plate-number="1" />
+              <FlexiblePoolWell :position="position" />
             </LabwareMap>
           </traction-section>
           <traction-section title="Actions" number="3">
@@ -101,7 +100,7 @@ import { ref } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import PacbioRunWell from '@/components/labware/PacbioRunWell.vue'
+import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 

@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import useRootStore from '@/stores'
-import { dataToObjectById, extractAttributes, groupIncludedByResource } from '@/api/JsonApi.js'
+import {
+  dataToObjectByPosition,
+  extractAttributes,
+  groupIncludedByResource,
+} from '@/api/JsonApi.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
@@ -31,7 +35,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         this.multiPool = extractAttributes(data)
 
         //Populate multi pool positions
-        this.multiPoolPositions = dataToObjectById({
+        this.multiPoolPositions = dataToObjectByPosition({
           data: multi_pool_positions,
           includeRelationships: true,
         })
@@ -63,6 +67,15 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       let { success, errors = [] } = await this.fetchMultiPool(id)
       // return the result from the fetchMultiPool
       return { success, errors }
+    },
+
+    /**
+     * Get a pool by its position.
+     * @param {String} position - The position of the pool.
+     * @returns {Object} - The pool at the given position.
+     */
+    getPool(position) {
+      return this.multiPoolPositions[position] || {}
     },
 
     // Reset the store data

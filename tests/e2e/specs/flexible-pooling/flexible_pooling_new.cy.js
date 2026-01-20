@@ -19,8 +19,7 @@ describe('Flexible pooling new', () => {
     cy.get('[data-testid="flexible-pooling-template"]').contains('Download CSV template')
 
     cy.contains('Pooling')
-    // Temporary check for 96 run wells until we have a custom well
-    cy.get('[data-attribute="pacbio-run-well"]').should('have.length', 96)
+    cy.get('[data-attribute="flexible-pool-well"]').should('have.length', 96)
 
     cy.contains('Actions')
     cy.get('[data-testid="reset-btn"]').contains('Reset')
