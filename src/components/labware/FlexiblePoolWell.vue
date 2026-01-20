@@ -7,9 +7,9 @@
       @mouseleave.prevent="hover = false"
       @click="onClick"
     >
-      <p class="font-light wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
+      <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
     </div>
-    <p class="truncate font-light">{{ position }}</p>
+    <p class="truncate font-light text-xs">{{ position }}</p>
   </div>
 </template>
 <script setup>
