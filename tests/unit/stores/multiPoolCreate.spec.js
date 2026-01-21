@@ -2,6 +2,7 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
 import { payload } from '@/stores/utilities/multiPool.js'
+import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
 describe('useMultiPoolCreateStore', () => {
@@ -9,10 +10,6 @@ describe('useMultiPoolCreateStore', () => {
 
   beforeEach(() => {
     store = useMultiPoolCreateStore()
-  })
-
-  describe.skip('getters', () => {
-    it('multiPoolPositionItems', () => {})
   })
 
   describe('actions', () => {
@@ -30,14 +27,33 @@ describe('useMultiPoolCreateStore', () => {
         rootStore.api = { traction: { multi_pools: { find } } }
       })
 
-      it.skip('handles success', async () => {})
-
-      it.skip('adds the multi_pool and multi_pool_positions data to the store', async () => {})
+      it('handles success', async () => {
+        const find = vi.fn()
+        const singleMultiPoolFactory = MultiPoolFactory.single()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        find.mockResolvedValue(singleMultiPoolFactory.responses.fetch)
+        const { success, errors } = await store.fetchMultiPool('1')
+        expect(success).toEqual(true)
+        expect(store.multiPool).toEqual(singleMultiPoolFactory.storeData.multiPool)
+        expect(store.multiPoolPositions).toEqual(
+          singleMultiPoolFactory.storeData.multi_pool_positions,
+        )
+        expect(errors).toEqual([])
+        expect(find).toHaveBeenCalledWith({ id: '1', include: 'multi_pool_positions' })
+      })
 
       it('handles failure', async () => {
-        find.mockResolvedValue(failedResponse(500))
-        const { success } = await store.fetchMultiPool()
+        const failureResponse = failedResponse()
+        const find = vi.fn()
+        rootStore.api = { traction: { multi_pools: { find } } }
+        find.mockResolvedValue(failureResponse)
+        const { success, errors } = await store.fetchMultiPool('1')
         expect(success).toEqual(false)
+        // Default values if fetch fails
+        expect(store.multiPool).toEqual({ pipeline: 'pacbio', pool_method: 'Plate' })
+        expect(store.multiPoolPositions).toEqual({})
+        expect(errors).toEqual(failureResponse.errorSummary)
+        expect(find).toHaveBeenCalledWith({ id: '1', include: 'multi_pool_positions' })
       })
     })
 
