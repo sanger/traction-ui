@@ -2,8 +2,8 @@ import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
 import { mountWithStore, flushPromises } from '@support/testHelper.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
-import MultiPoolFactory from '@tests/factories/multiPoolFactory.js'
-import FlipperFactory from '@tests/factories/flipperFactory.js'
+import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
+import FlipperFactory from '@tests/factories/FlipperFactory.js'
 
 const singleMultiPoolFactory = MultiPoolFactory.single()
 const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
