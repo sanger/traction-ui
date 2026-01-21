@@ -1,7 +1,8 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
+import { payload } from '@/stores/utilities/multiPool.js'
 import useRootStore from '@/stores'
-import { failedResponse } from '@tests/support/testHelper.js'
 
 describe('useMultiPoolCreateStore', () => {
   let store
@@ -37,6 +38,43 @@ describe('useMultiPoolCreateStore', () => {
         find.mockResolvedValue(failedResponse(500))
         const { success } = await store.fetchMultiPool()
         expect(success).toEqual(false)
+      })
+    })
+
+    describe('createMultiPool', () => {
+      let create
+
+      beforeEach(() => {
+        create = vi.fn()
+        rootStore.api = { traction: { multi_pools: { create } } }
+      })
+
+      it('handles success', async () => {
+        const mockResponse = successfulResponse({
+          data: { attributes: { barcode: 'TRAC-2-1' } },
+        })
+        store.multiPool = { pooling_method: 'Plate', pipeline: 'pacbio' }
+        create.mockResolvedValue(mockResponse)
+
+        const { success, barcode, errors } = await store.createMultiPool()
+
+        expect(success).toBeTruthy()
+        expect(create).toHaveBeenCalledWith({
+          data: payload({ multiPool: store.multiPool }),
+        })
+        expect(barcode).toEqual('TRAC-2-1')
+        expect(errors).toEqual(undefined)
+      })
+
+      it('handles failure', async () => {
+        const mockResponse = failedResponse(422)
+        create.mockResolvedValue(mockResponse)
+
+        const { success, barcode, errors } = await store.createMultiPool()
+
+        expect(success).toBeFalsy()
+        expect(barcode).toEqual('')
+        expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
 
@@ -108,7 +146,10 @@ describe('useMultiPoolCreateStore', () => {
         store.clearData()
 
         expect(store.$state).toEqual({
-          multiPool: {},
+          multiPool: {
+            pipeline: 'pacbio',
+            pool_method: 'Plate',
+          },
           multiPoolPositions: {},
         })
       })

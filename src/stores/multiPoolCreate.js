@@ -6,11 +6,12 @@ import {
   extractAttributes,
   groupIncludedByResource,
 } from '@/api/JsonApi.js'
+import { payload } from '@/stores/utilities/multiPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
     multiPool: {
-      pipeline: 'Pacbio',
+      pipeline: 'pacbio',
       pool_method: 'Plate',
     },
     multiPoolPositions: {},
@@ -21,6 +22,12 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
     },
   },
   actions: {
+    /**
+     * Fetches a multi pool by its id and populates the store state with the retrieved data.
+     *
+     * @param {*} multiPoolId the id of the multi pool to fetch
+     * @returns
+     */
     async fetchMultiPool(multiPoolId) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.multi_pools
@@ -45,6 +52,29 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       }
 
       return { success, errors }
+    },
+
+    /**
+     * Asynchronously creates a multi pool with the given pool positions and pools.
+     *
+     * @async
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status, barcode, and any errors.
+     *
+     * @example
+     * // Create a multi pool
+     * const result = await createMultiPool();
+     * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
+     */
+    async createMultiPool() {
+      const { multiPool } = this
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.multi_pools
+      const promise = request.create({
+        data: payload({ multiPool }),
+      })
+      const { success, body: { data = {} } = {}, errors } = await handleResponse(promise)
+      const { attributes: { barcode = '' } = {} } = data
+      return { success, barcode, errors }
     },
 
     /**

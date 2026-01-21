@@ -9,13 +9,13 @@
           <div class="flex flex-col text-left gap-y-2">
             <span
               >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
-              in the below <b>pooling</b> section.</span
+              in the below <b>Pooling</b> section.</span
             >
             <div class="flex flex-row gap-x-2 items-center text-sp-600">
               <TractionInfoIcon :size="20" />
               <span
-                >This page is persisted on refresh, please use the <b>reset</b> button in actions if
-                you wish to reset the page.</span
+                >This page is persisted on refresh, please use the <b>Reset</b> button in the
+                <b>Actions</b> section if you wish to reset the page.</span
               >
             </div>
           </div>
@@ -90,9 +90,15 @@
               <traction-button data-testid="reset-btn" theme="delete" @click="reset"
                 >Reset</traction-button
               >
-              <traction-button data-testid="create-btn" theme="create"
-                >Create Flexible Pool</traction-button
+              <traction-button
+                data-testid="create-btn"
+                theme="create"
+                :disabled="busy"
+                @click="create"
               >
+                <span class="button-text">Create Flexible Pool</span>
+                <traction-spinner v-show="busy"></traction-spinner>
+              </traction-button>
             </div>
           </traction-section>
         </div>
@@ -109,15 +115,18 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
+import { ref } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import useAlert from '@/composables/useAlert.js'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
+const { showAlert } = useAlert()
 
 // Props
 const props = defineProps({
@@ -130,9 +139,24 @@ const props = defineProps({
 
 // State
 const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
-const pipelineOptions = [{ text: 'Pacbio', value: 'Pacbio' }]
+const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
+// Flag to indicate if the form is busy processing a request
+const busy = ref(false)
 
 // Actions
+
+/**
+ * Creates the multi pool using the multi pool create store
+ */
+const create = () => {
+  busy.value = true
+  multiPoolCreateStore.createMultiPool().then(({ success, barcode, errors }) => {
+    success
+      ? showAlert(`Flexible pool successfully created with barcode ${barcode}`, 'success')
+      : showAlert(errors, 'danger')
+    busy.value = false
+  })
+}
 
 /**
  * Resets the multi pool create store data and sets default values
