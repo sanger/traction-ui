@@ -9,7 +9,10 @@ import {
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
-    multiPool: {},
+    multiPool: {
+      pipeline: 'Pacbio',
+      pool_method: 'Plate',
+    },
     multiPoolPositions: {},
   }),
   getters: {
@@ -51,6 +54,11 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * @returns { Object } { success, errors }.
      */
     async setMultiPool({ id }) {
+      // If the multi pool data is already loaded, return success
+      if (this.isValidPersisted()) {
+        return { success: true }
+      }
+
       // Initialize multiPool state defaults
       this.multiPool = {
         pipeline: 'Pacbio',
@@ -82,5 +90,17 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
     clearData() {
       this.$reset()
     },
+
+    // Check if multi pool data is already loaded
+    isValidPersisted() {
+      // Check the store exists in storage
+      const persisted = localStorage.getItem('multiPoolCreate') !== null
+
+      if (persisted) return true
+
+      // For existing multi pools we will need some logic to check the ids match
+      // And the reset logic should restore the pool to its initial state, not clear all data
+    },
   },
+  persist: true,
 })

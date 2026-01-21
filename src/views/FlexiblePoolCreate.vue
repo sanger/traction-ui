@@ -6,12 +6,25 @@
           class="w-full max-w-6xl mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4 space-y-4"
         >
           <traction-heading level="2" show-border>Flexible pooling</traction-heading>
+          <div class="flex flex-col text-left gap-y-2">
+            <span
+              >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
+              in the below <b>pooling</b> section.</span
+            >
+            <div class="flex flex-row gap-x-2 items-center text-sp-600">
+              <TractionInfoIcon :size="20" />
+              <span
+                >This page is persisted on refresh, please use the <b>reset</b> button in actions if
+                you wish to reset the page.</span
+              >
+            </div>
+          </div>
           <traction-section title="Setup" number="1">
             <div class="flex flex-row gap-x-8 w-full">
               <div class="text-left w-full">
                 <span>Pipeline</span>
                 <traction-select
-                  v-model="pipeline"
+                  v-model="multiPoolCreateStore.multiPool.pipeline"
                   data-testid="pipeline-select"
                   class="w-full py-1"
                   :options="pipelineOptions"
@@ -21,7 +34,7 @@
               <div class="text-left w-full">
                 <span>Pooling layout</span>
                 <traction-select
-                  v-model="poolingLayout"
+                  v-model="multiPoolCreateStore.multiPool.pool_method"
                   data-testid="pooling-layout-select"
                   class="w-full py-1"
                   :options="poolingLayoutOptions"
@@ -96,7 +109,6 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -117,9 +129,7 @@ const props = defineProps({
 })
 
 // State
-const poolingLayout = ref('Plate')
 const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
-const pipeline = ref('Pacbio')
 const pipelineOptions = [{ text: 'Pacbio', value: 'Pacbio' }]
 
 // Actions
@@ -129,8 +139,6 @@ const pipelineOptions = [{ text: 'Pacbio', value: 'Pacbio' }]
  */
 const reset = () => {
   multiPoolCreateStore.clearData()
-  poolingLayout.value = 'Plate'
-  pipeline.value = 'Pacbio'
 }
 
 /**
@@ -138,7 +146,6 @@ const reset = () => {
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  reset()
   await multiPoolCreateStore.setMultiPool({ id: props.id })
   return { success: true }
 }

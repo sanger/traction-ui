@@ -7,9 +7,13 @@ setActivePinia sets the newly created Pinia instance as the active Pinia instanc
 This is necessary to allow useStore to pick up the any other pinia instance other than default global instance
 More documentation available on https://pinia.vuejs.org/cookbook/testing.html*/
 import { setActivePinia, createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+const pinia = createPinia()
+
+pinia.use(piniaPluginPersistedstate)
 
 beforeEach(() => {
-  setActivePinia(createPinia())
+  setActivePinia(pinia)
 })
 
 afterEach(() => {

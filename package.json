@@ -33,6 +33,7 @@
     "global": "^4.4.0",
     "lodash-es": "^4.17.22",
     "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "postcss": "^8.5.4",
     "tailwindcss": "4.1.18",
     "vite": "^7.3.1",
