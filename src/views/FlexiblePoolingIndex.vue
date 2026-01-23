@@ -20,10 +20,7 @@
             select-mode="single"
           >
             <template #cell(actions)="row">
-              <router-link
-                data-action="edit-multipool"
-                :to="{ name: 'ONTPoolCreate', params: { id: row.item.id } }"
-              >
+              <router-link data-action="edit-multipool">
                 <traction-button :id="'editMultipool-' + row.item.id" size="sm" theme="edit"
                   >Edit</traction-button
                 >
@@ -48,7 +45,7 @@
                 <traction-table
                   :items="row.item.subPools"
                   :fields="field_in_details"
-                  :data-list="'pool-subpools-' + row.item.id"
+                  :data-list="'subpools-' + row.item.id"
                 >
                 </traction-table>
               </div>
