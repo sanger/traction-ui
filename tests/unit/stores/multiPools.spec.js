@@ -72,7 +72,7 @@ describe('useMultiPoolStore', () => {
       })
     })
 
-    describe.skip('setSubPools', () => {
+    describe('setSubPools', () => {
       it('adds the subPools to the multiPool if they are not already set', async () => {
         const id = multiPoolFactory.storeData.resources.ids[0]
         const multPoolWithSubPools = MultiPoolFactory.withSubPools(id)

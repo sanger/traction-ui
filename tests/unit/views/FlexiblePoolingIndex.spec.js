@@ -37,7 +37,7 @@ describe('FlexiblePoolingIndex', () => {
   describe('building the table', () => {
     it('contains the correct fields', () => {
       const headers = wrapper.findAll('th')
-      for (const field of wrapper.vm.state.fields) {
+      for (const field of wrapper.vm.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
