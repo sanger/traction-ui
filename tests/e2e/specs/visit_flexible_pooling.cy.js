@@ -30,7 +30,11 @@ describe('Visit Flexible Pooling Page', () => {
     cy.visit('#/flexible-pooling')
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
-    cy.get('#filterValue').children().should('contain', 'Pipeline').and('contain', 'Pool method')
+    cy.get('#filterValue')
+      .children()
+      .should('contain', 'Pipeline')
+      .and('contain', 'Pool method')
+      .and('contain', 'Pool barcode')
 
     cy.get('@multiPoolFactory').then((multiPoolFactory) => {
       cy.get('#multipools-table')

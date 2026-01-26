@@ -86,6 +86,7 @@ const filterOptions = [
   { value: '', text: '' },
   { value: 'pipeline', text: 'Pipeline' },
   { value: 'pool_method', text: 'Pool method' },
+  { value: 'pool_barcode', text: 'Pool barcode' },
 ]
 
 const poolsWithDetails = reactive([])
