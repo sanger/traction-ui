@@ -92,6 +92,7 @@ describe('GeneralReception', () => {
         'Pacbio -20 samples',
         'Pacbio Fridge samples',
         'Benchling',
+        'Custom Location',
       ])
     })
 
@@ -102,7 +103,7 @@ describe('GeneralReception', () => {
 
     it('displays user swipecard when a workflow is selected', async () => {
       const workflowSelect = wrapper.find('#workflowSelect')
-      await workflowSelect.setValue('lw-shelf-1-30451')
+      await workflowSelect.setValue('lw-shelf-7-30457')
       const userCodeInput = wrapper.find('[data-attribute=user-code-input]')
       expect(userCodeInput.exists()).toBe(true)
       expect(userCodeInput.isVisible()).toBe(true)
@@ -117,7 +118,7 @@ describe('GeneralReception', () => {
 
     it('errors user code fields if not set', async () => {
       const workflowSelect = wrapper.find('#workflowSelect')
-      await workflowSelect.setValue('lw-shelf-1-30451')
+      await workflowSelect.setValue('lw-shelf-7-30457')
       expect(wrapper.find('[data-attribute=user-code-error]').text()).toContain(
         'User code is required to scan in the imported labware',
       )
@@ -125,9 +126,9 @@ describe('GeneralReception', () => {
 
     it('updates the summary section accordingly on user select', async () => {
       const workflowSelect = wrapper.find('#workflowSelect')
-      await workflowSelect.setValue('lw-shelf-1-30451')
+      await workflowSelect.setValue('lw-shelf-7-30457')
       expect(wrapper.find('[data-testid=workflow-location-text]').text()).toContain(
-        'The imported labware will be scanned into LRT007 – Shelf 1',
+        'The imported labware will be scanned into LRT007 Shelf 7',
       )
     })
   })

@@ -44,14 +44,21 @@ const WorkflowsLocations = {
   PacbioFridgeSamples: {
     pipelines: ['PacBio'],
     name: 'Pacbio Fridge samples',
-    location: 'LRT007 – Shelf 1',
-    barcode: 'lw-shelf-1-30451',
+    location: 'LRT007 Shelf 7',
+    barcode: 'lw-shelf-7-30457',
   },
   Benchling: {
     pipelines: ['PacBio'],
     name: 'Benchling',
     location: 'Benchling',
     barcode: 'lw-benchling-40874',
+  },
+  CustomLocation: {
+    pipelines: ['PacBio', 'ONT'],
+    name: 'Custom Location',
+    location: null,
+    // Not a real barcode, just a placeholder to identify this workflow
+    barcode: 'custom-location',
   },
 }
 
