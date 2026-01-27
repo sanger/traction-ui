@@ -73,6 +73,17 @@
             </div>
           </div>
         </template>
+
+        <template #cell(source_identifier)="row">
+          <traction-tooltip
+            v-if="row.item.source_identifier.split(',').length > 4"
+            :tooltip-text="row.item.source_identifier"
+            :tooltip-direction="'top-[25px] left-0'"
+            :tooltip-wrap="'text-wrap whitespace-normal'"
+          >
+            <p>{{ formattedSourceIdentifier(row.item.source_identifier) }}</p>
+          </traction-tooltip>
+        </template>
       </traction-table>
     </div>
   </DataFetcher>
@@ -187,6 +198,18 @@ const displayedPools = computed(() =>
 async function onPrintAction(printerName) {
   const { success, message = {} } = await printLabels(printerName, state.selected, 'Pacbio - Pool')
   showAlert(message, success ? 'success' : 'danger')
+}
+
+/**
+ * Format source identifier for display
+ * @param {String} sourceIdentifier
+ * @returns {String}
+ */
+function formattedSourceIdentifier(sourceIdentifier) {
+  if (!sourceIdentifier) return ''
+  const sources = sourceIdentifier.split(',')
+  if (sources.length < 5) return sourceIdentifier
+  return `${sources[0]}  ...   ${sources[sources.length - 1]}`
 }
 
 /*Fetches the pools from the api and adds location data
