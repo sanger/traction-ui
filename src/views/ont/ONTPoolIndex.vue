@@ -73,7 +73,7 @@
             v-if="row.item.source_identifier.split(',').length > 4"
             :tooltip-text="row.item.source_identifier"
             :tooltip-direction="'top-[25px] left-0'"
-            :tooltip-wrap="'text-wrap'"
+            :tooltip-wrap="'text-wrap whitespace-normal'"
           >
             <p>{{ formattedSourceIdentifier(row.item.source_identifier) }}</p>
           </traction-tooltip>
