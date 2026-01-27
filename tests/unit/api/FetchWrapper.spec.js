@@ -21,7 +21,7 @@ describe('FetchWrapper', () => {
     })
   })
 
-  describe('post', () => {
+  describe('fetch', () => {
     it('should send a POST request and return success response', async () => {
       const endpoint = '/test-endpoint'
       const body = JSON.stringify({ key: 'value' })
@@ -32,7 +32,7 @@ describe('FetchWrapper', () => {
         json: async () => mockResponse,
       })
 
-      const result = await fetchWrapper.post(endpoint, body)
+      const result = await fetchWrapper.fetch(endpoint, body)
 
       expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
         method: 'POST',
@@ -51,7 +51,7 @@ describe('FetchWrapper', () => {
 
       global.fetch.mockRejectedValue(mockError)
 
-      const result = await fetchWrapper.post(endpoint, body)
+      const result = await fetchWrapper.fetch(endpoint, body)
 
       expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
         method: 'POST',
@@ -77,7 +77,7 @@ describe('FetchWrapper', () => {
         json: async () => mockResponse,
       })
 
-      const result = await fetchWrapper.post(endpoint, body)
+      const result = await fetchWrapper.fetch(endpoint, body)
 
       expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
         method: 'POST',
@@ -103,7 +103,7 @@ describe('FetchWrapper', () => {
         json: async () => mockResponse,
       })
 
-      const result = await fetchWrapper.post(endpoint, body)
+      const result = await fetchWrapper.fetch(endpoint, body)
 
       expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
         method: 'POST',
@@ -117,6 +117,30 @@ describe('FetchWrapper', () => {
         errors: ['An error occurred'],
         data: {},
       })
+    })
+
+    it('should allow custom content type and method', async () => {
+      const endpoint = '/test-endpoint'
+      const body = 'key=value'
+      const contentType = 'application/x-www-form-urlencoded'
+      const method = 'GET'
+      const mockResponse = { data: 'test data' }
+
+      global.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => mockResponse,
+      })
+
+      const result = await fetchWrapper.fetch(endpoint, body, contentType, method)
+
+      expect(global.fetch).toHaveBeenCalledWith(`${baseUrl}${endpoint}`, {
+        method,
+        headers: {
+          'Content-Type': contentType,
+        },
+        body,
+      })
+      expect(result).toEqual({ success: true, errors: [], data: mockResponse })
     })
   })
 })
