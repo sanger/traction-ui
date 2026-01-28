@@ -102,7 +102,6 @@ const handleToggleDetails = async (row) => {
   } else {
     poolsWithDetails.splice(poolsWithDetails.indexOf(row.item.id), 1)
   }
-  console.log(row.item)
   row.toggleDetails()
 }
 

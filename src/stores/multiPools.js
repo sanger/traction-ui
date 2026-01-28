@@ -93,6 +93,17 @@ export const useMultiPoolStore = defineStore('multiPools', {
     },
 
     async setSubPools(id) {
+      /**
+       * Ensures sub-pools are loaded for a given multi-pool.
+       *
+       * If the multi-pool with the specified ID exists and already has subPools loaded,
+       * returns success immediately. Otherwise, fetches sub-pools from the API and updates the store.
+       *
+       * @param {String} id - The ID of the multi-pool to set sub-pools for.
+       * @returns {Object} An object containing:
+       *   - success {Boolean}: Whether the sub-pools are set or fetched successfully.
+       *   - errors {Array}: Any errors encountered during the process.
+       */
       const multiPool = this.resources.multiPools[id]
       if (!multiPool) {
         return { success: false, errors: [`MultiPool with id ${id} not found`] }

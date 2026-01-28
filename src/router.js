@@ -79,7 +79,10 @@ const router = createRouter({
     {
       path: '/flexible-pooling',
       name: 'FlexiblePoolingIndex',
-      meta: { page: 'Flexible Pooling' },
+      meta: { page: 'Flexible Pooling', paginated: true },
+      beforeEnter(to) {
+        checkPaginationParams(to)
+      },
       component: FlexiblePoolingIndex,
     },
     {

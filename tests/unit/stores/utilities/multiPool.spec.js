@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { createSubPools } from '@/stores/utilities/multiPool.js'
-// import { dataToObjectById } from '@/api/JsonApi.js'
 
 describe('multiPool utilities', () => {
   describe('createSubPools', () => {
