@@ -55,26 +55,49 @@
           />
         </traction-field-group>
         <div v-if="workflow">
-          <traction-label class="inline-block w-full text-left"
-            >User barcode or swipecard</traction-label
-          >
-          <traction-muted-text class="ml-1 text-left"
-            >Only required when a workflow is selected</traction-muted-text
-          >
-          <traction-field-error
-            data-attribute="user-code-error"
-            :error="
-              !user_code && workflow ? 'User code is required to scan in the imported labware' : ''
-            "
-          >
-            <traction-input
-              id="userCode"
-              v-model="user_code"
-              data-attribute="user-code-input"
-              class="mt-1"
-              type="password"
-            />
-          </traction-field-error>
+          <div v-if="isCustomLocationWorkflow" class="mb-3">
+            <traction-label class="inline-block w-full text-left">Location barcode</traction-label>
+            <traction-muted-text class="text-left"
+              >Scan the location barcode where the imported labware will be scanned into (e.g.
+              lw-test-123)</traction-muted-text
+            >
+            <traction-field-error
+              data-attribute="custom-location-barcode-error"
+              :error="customWorkflowLocation.error"
+            >
+              <traction-input
+                data-attribute="custom-location-barcode-input"
+                class="mt-1"
+                :debounce="500"
+                :model-value="customWorkflowLocation.value"
+                @update:model-value="setCustomWorkflowLocation($event)"
+              />
+            </traction-field-error>
+          </div>
+          <div>
+            <traction-label class="inline-block w-full text-left"
+              >User barcode or swipecard</traction-label
+            >
+            <traction-muted-text class="text-left"
+              >Only required when a workflow is selected</traction-muted-text
+            >
+            <traction-field-error
+              data-attribute="user-code-error"
+              :error="
+                !user_code && workflow
+                  ? 'User code is required to scan in the imported labware'
+                  : ''
+              "
+            >
+              <traction-input
+                id="userCode"
+                v-model="user_code"
+                data-attribute="user-code-input"
+                class="mt-1"
+                type="password"
+              />
+            </traction-field-error>
+          </div>
         </div>
       </div>
       <div>
@@ -203,11 +226,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, reactive } from 'vue'
 import Receptions, { WorkflowsLocations } from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import { defaultRequestOptions, ReceptionTypes, MockReceptionTypes } from '@/lib/receptions'
+import { findLabwhereLocation } from '@/services/labwhere/client.js'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import useRootStore from '@/stores/index.js'
@@ -237,6 +261,32 @@ const workflow = ref('')
 
 const receptionOptionsList = ref([])
 
+const customWorkflowLocation = reactive({
+  value: '',
+  name: '',
+  error: 'Location barcode is required to scan in the imported labware',
+})
+
+// For custom location workflow we need to capture the location barcode
+const setCustomWorkflowLocation = async (value) => {
+  if (!value) {
+    customWorkflowLocation.value = ''
+    customWorkflowLocation.name = ''
+    customWorkflowLocation.error = 'Location barcode is required to scan in the imported labware'
+    return
+  }
+
+  customWorkflowLocation.value = value
+  const { success, data, errors } = await findLabwhereLocation(value)
+  if (success) {
+    customWorkflowLocation.name = data.name
+    customWorkflowLocation.error = ''
+  } else {
+    customWorkflowLocation.name = ''
+    customWorkflowLocation.error = errors[0]
+  }
+}
+
 const workflowOptions = computed(() => [
   { value: '', text: '' }, // Empty option
   ...Object.values(WorkflowsLocations)
@@ -246,6 +296,11 @@ const workflowOptions = computed(() => [
       text: workflow.name,
     })),
 ])
+
+// Computed property to check if the selected workflow is 'custom-location'
+const isCustomLocationWorkflow = computed(() => {
+  return workflow.value === 'custom-location'
+})
 
 const environment = ref(import.meta.env['VITE_ENVIRONMENT'])
 
@@ -273,10 +328,19 @@ const workflowMap = new Map(
 )
 
 const workflowLocation = computed(() => {
+  // If custom location workflow is selected, use the custom location name if available
+  if (isCustomLocationWorkflow.value && customWorkflowLocation.name) {
+    return customWorkflowLocation.name
+  }
   return workflow.value !== '' ? workflowMap.get(workflow.value).location : undefined
 })
 
 const location_barcode = computed(() => {
+  // If custom location workflow is selected, use the custom location barcode
+  if (isCustomLocationWorkflow.value) {
+    return customWorkflowLocation.value
+  }
+
   return workflow.value
 })
 

@@ -7,7 +7,7 @@ describe('Import samples from Sequencescape Multiplexed Libraries', () => {
   beforeEach(() => {
     cy.wrap(LibraryTypeFactory()).as('libraryTypeFactory')
     cy.get('@libraryTypeFactory').then((libraryTypeFactory) => {
-      cy.intercept('GET', 'v1/library_types?fields[library_types]=name,pipeline', {
+      cy.intercept('GET', 'v1/library_types', {
         statusCode: 200,
         body: libraryTypeFactory.content,
       })
