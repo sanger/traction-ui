@@ -9,8 +9,9 @@
       <!-- Header row -->
       <div class="flex w-full">
         <div class="w-5/6">
-          <div :class="`grid w-full items-start text-left pb-2 grid-cols-3 font-bold gap-x-2`">
+          <div :class="`grid w-full items-start text-left pb-2 grid-cols-4 font-bold gap-x-2`">
             <traction-label>Comment</traction-label>
+            <traction-label>Description</traction-label>
             <traction-label>User</traction-label>
             <traction-label>Type</traction-label>
           </div>

@@ -75,6 +75,7 @@ const payloadForAnnotations = (annotations = []) => {
 const AnnotationItemType = ({ attributes = {}, id, newRecord } = {}) => {
   const defaultAttributes = {
     comment: '',
+    description: '',
     annotation_type_id: null,
     created_at: '',
     user: '',
@@ -90,9 +91,10 @@ const AnnotationItemType = ({ attributes = {}, id, newRecord } = {}) => {
 
   // Ensure the instance has a payload method for API requests
   instance.payload = () => {
-    const { comment, annotation_type_id, user } = instance
+    const { comment, description, annotation_type_id, user } = instance
     return {
       comment,
+      description,
       annotation_type_id,
       user,
     }

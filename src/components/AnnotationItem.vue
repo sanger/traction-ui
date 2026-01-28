@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-full">
     <div data-type="annotation" class="flex flex-row w-full">
-      <div :class="`grid grid-cols-3 gap-x-2 w-full items-center rounded-md`">
+      <div :class="`grid grid-cols-4 gap-x-2 w-full items-center rounded-md`">
         <traction-field-error
           data-attribute="comment-error"
           :error="errorsFor('comment')"
@@ -18,6 +18,25 @@
             ></textarea>
             <div class="text-xs text-gray-500 mt-1" data-attribute="comment-char-count">
               {{ (annotation.comment || '').length }} / 500 characters
+            </div>
+          </div>
+        </traction-field-error>
+        <traction-field-error
+          data-attribute="description-error"
+          :error="errorsFor('description')"
+          :with-icon="!!errorsFor('description')"
+        >
+          <div class="flex flex-col py-2 w-full">
+            <textarea
+              v-model="annotation.description"
+              placeholder="Optional description"
+              class="flex h-32 p-1 bg-white rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed"
+              :disabled="!annotation.newRecord"
+              maxlength="500"
+              data-attribute="description"
+            ></textarea>
+            <div class="text-xs text-gray-500 mt-1" data-attribute="description-char-count">
+              {{ (annotation.description || '').length }} / 500 characters
             </div>
           </div>
         </traction-field-error>
@@ -114,6 +133,8 @@ const props = defineProps({
  * @returns {string} Error message if value is missing, otherwise empty string.
  */
 const errorsFor = (attribute) => {
+  // Description is optional
+  if (attribute === 'description') return ''
   if (!annotation[attribute]) return 'No value provided'
   else return ''
 }

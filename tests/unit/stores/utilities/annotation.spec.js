@@ -57,6 +57,7 @@ describe('annotation.js', () => {
     it('produces a payload that can be used in API requests', () => {
       const attributes = {
         comment: 'Test comment',
+        description: 'Test description',
         annotation_type_id: 2,
         user: 'lulu',
       }
