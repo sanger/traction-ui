@@ -1061,7 +1061,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('returns an error and an empty list when plate barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: [] })
+        get.mockResolvedValue(successfulResponse({ data: [] }))
 
         const { success, errors } = await store.findPacbioPlate({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
@@ -1101,7 +1101,7 @@ describe('usePacbioPoolCreateStore', () => {
       })
 
       it('returns an error and an empty list when tube barcode cannot be found', async () => {
-        get.mockResolvedValue({ data: [] })
+        get.mockResolvedValue(successfulResponse({ data: [] }))
 
         const { success, errors } = await store.findPacbioTube({ barcode: 'fake-barcode' })
         expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])

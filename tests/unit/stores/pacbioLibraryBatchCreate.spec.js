@@ -107,7 +107,9 @@ describe('usePacbioLibraryBatchCreateStore', () => {
       })
 
       it('returns error if no requests are found', async () => {
-        rootStore.api.traction.pacbio.requests.get.mockResolvedValue({ data: [] })
+        rootStore.api.traction.pacbio.requests.get.mockResolvedValue(
+          successfulResponse({ data: [] }),
+        )
         csvFileTextContent = pacbioLibraryBatchFactory.createCsvFromLibraryBatchData(
           pacbioTagSetFactory.storeData.tags,
         )
