@@ -381,6 +381,12 @@ npm run test:cypress:all -- --spec **/mySpec.cy.js
 </template>
 ```
 
+## Test Data Factories
+
+Use factories for generating test data in unit and end-to-end tests.
+Factories provide reusable, configurable test objects which improve flexibility, reduce
+duplication, and make tests easier to maintain.
+
 ## Git Workflow
 
 ### Branch Naming Conventions
