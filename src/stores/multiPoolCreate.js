@@ -85,15 +85,12 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      */
     async setMultiPool({ id }) {
       // If the multi pool data is already loaded, return success
-      if (this.isValidPersisted()) {
+      if (this.isValidPersisted(id)) {
         return { success: true }
       }
 
       // Initialize multiPool state defaults
-      this.multiPool = {
-        pipeline: 'Pacbio',
-        pooling_layout: 'Plate',
-      }
+      this.clearData()
 
       // If the id is not a number, it is a new multi pool
       if (isNaN(id)) {
@@ -122,14 +119,17 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
     },
 
     // Check if multi pool data is already loaded
-    isValidPersisted() {
+    isValidPersisted(id) {
       // Check the store exists in storage
-      const persisted = localStorage.getItem('multiPoolCreate') !== null
+      const persisted = localStorage.getItem('multiPoolCreate')
 
-      if (persisted) return true
+      // Crude logic to check if the persisted store matches the requested id
+      if (persisted) {
+        const parsed = JSON.parse(persisted)
+        return parsed.multiPool && parsed.multiPool.id == id
+      }
 
-      // For existing multi pools we will need some logic to check the ids match
-      // And the reset logic should restore the pool to its initial state, not clear all data
+      return false
     },
   },
   persist: true,

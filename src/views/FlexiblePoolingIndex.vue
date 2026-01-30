@@ -5,9 +5,15 @@
         <FilterCard :fetcher="provider" :filter-options="filterOptions" />
         <div class="flex flex-col">
           <div>
-            <traction-button class="float-left" theme="create" href="#/flexible-pooling/new">
-              Create New Multi-Pool
-            </traction-button>
+            <router-link
+              data-action="new-flexiblepool"
+              class="float-left"
+              :to="{ name: 'FlexiblePool', params: { id: 'new' } }"
+            >
+              <traction-button id="newFlexiblePool" size="sm" theme="create"
+                >Create new Flexible Pool</traction-button
+              >
+            </router-link>
             <traction-pagination class="float-right" aria-controls="multipools-table" />
           </div>
           <traction-table
@@ -20,8 +26,11 @@
             select-mode="single"
           >
             <template #cell(actions)="row">
-              <router-link data-action="edit-multipool">
-                <traction-button :id="'editMultipool-' + row.item.id" size="sm" theme="edit"
+              <router-link
+                data-action="edit-flexiblepool"
+                :to="{ name: 'FlexiblePool', params: { id: row.item.id } }"
+              >
+                <traction-button :id="'editFlexiblePool-' + row.item.id" size="sm" theme="edit"
                   >Edit</traction-button
                 >
               </router-link>
