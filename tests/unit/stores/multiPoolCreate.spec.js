@@ -100,8 +100,8 @@ describe('useMultiPoolCreateStore', () => {
         const { success } = await store.setMultiPool({ id })
         expect(success).toBeTruthy()
         expect(store.$state.multiPool).toEqual({
-          pipeline: 'Pacbio',
-          pooling_layout: 'Plate',
+          pipeline: 'pacbio',
+          pool_method: 'Plate',
         })
       })
 
