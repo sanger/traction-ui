@@ -10602,7 +10602,6 @@ const OntPoolFactory = {
       storeData: createStoreDataForSinglePool(foundData),
     }
   },
-  // still to be tested
   withDetails: (id) => {
     const foundData = findById(data, id)
     const pool = extractAttributes(foundData.data)

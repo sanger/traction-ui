@@ -23,6 +23,7 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
 import ONTRunShow from '@/views/ont/ONTRunShow.vue'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
+import FlexiblePoolingIndex from '@/views/FlexiblePoolingIndex.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -75,6 +76,15 @@ const router = createRouter({
       name: 'SampleReport',
       meta: { page: 'Sample Report' },
       component: SampleReport,
+    },
+    {
+      path: '/flexible-pooling',
+      name: 'FlexiblePoolingIndex',
+      meta: { page: 'Flexible Pooling', paginated: true },
+      beforeEnter(to) {
+        checkPaginationParams(to)
+      },
+      component: FlexiblePoolingIndex,
     },
     {
       path: '/flexible-pool/:id',
