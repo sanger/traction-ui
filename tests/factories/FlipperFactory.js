@@ -6,6 +6,8 @@ const FlipperFactory = () => {
     features: {
       enable_feature: { enabled: true },
       disabled_feature: { enabled: false },
+      // specific to flexible_pooling work
+      flexible_pooling: { enabled: true },
     },
   }
 
