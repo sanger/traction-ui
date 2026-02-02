@@ -122,6 +122,7 @@
     </div>
     <div v-else class="text-right py-8">
       <traction-button theme="create">
+        <!-- TODO: Add a handler to update PacbioPoolCreateStore -->
         <span class="button-text">Update information</span>
       </traction-button>
     </div>
