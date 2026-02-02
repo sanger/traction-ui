@@ -94,7 +94,7 @@ const router = createRouter({
       meta: { page: 'FlexiblePool' },
       props: true,
     },
-        {
+    {
       path: '/flexible-pool/sub-pool/:coordinate',
       name: 'FlexibleIndividualPoolCreate',
       component: FlexibleIndividualPoolCreate,
