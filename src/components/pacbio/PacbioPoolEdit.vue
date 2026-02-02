@@ -98,7 +98,7 @@
       :notify="onFieldUpdate"
       @aliquot-selected="notifyAliquotSelection"
     />
-    <div class="text-right py-8">
+    <div v-if="!props.flexiblePool" class="text-right py-8">
       <traction-button
         v-if="!persisted"
         data-action="create-pool"
@@ -120,6 +120,11 @@
         <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
     </div>
+    <div v-else class="text-right py-8">
+      <traction-button theme="create">
+        <span class="button-text">Update information</span>
+      </traction-button>
+    </div>
   </div>
 </template>
 
@@ -133,6 +138,14 @@ import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
+
+const props = defineProps({
+  flexiblePool: {
+    type: [Boolean],
+    required: false,
+    default: false,
+  },
+})
 
 //refs
 const busy = ref(false) // Flag to indicate if the form is busy processing a request

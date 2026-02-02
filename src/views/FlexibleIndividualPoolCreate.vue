@@ -45,7 +45,8 @@
           />
         </div>
         <div>
-          <PacbioPoolEdit @aliquot-selected="handleAliquotSelection" />
+          <!-- The "Create Pool" button is part of this component! -->
+          <PacbioPoolEdit :flexible-pool="true" @aliquot-selected="handleAliquotSelection" />
         </div>
       </div>
     </div>
@@ -58,6 +59,7 @@ import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelected
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem.vue'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit.vue'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import TractionButton from '@/components/shared/TractionButton.vue'
 import useAlert from '@/composables/useAlert.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { ref } from 'vue'
