@@ -1,15 +1,21 @@
 <template>
   <div>
-    <div
-      :class="wellClassNames"
-      data-attribute="flexible-pool-well"
-      @mouseover.prevent="hover = true"
-      @mouseleave.prevent="hover = false"
-      @click="onClick"
+    <router-link
+      :to="`/flexible-pool/sub-pool/${position}`"
+      data-attribute="flexible-pool-well-link"
+      class="block"
     >
-      <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
-    </div>
-    <p class="truncate font-light text-xs">{{ position }}</p>
+      <div
+        :class="wellClassNames"
+        data-attribute="flexible-pool-well"
+        @mouseover.prevent="hover = true"
+        @mouseleave.prevent="hover = false"
+        @click="onClick"
+      >
+        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
+      </div>
+      <p class="truncate font-light text-xs">{{ position }}</p>
+    </router-link>
   </div>
 </template>
 <script setup>
