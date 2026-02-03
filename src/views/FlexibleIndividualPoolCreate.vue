@@ -1,52 +1,68 @@
 <template>
   <flagged-feature name="flexible_pooling">
-    <div class="flex flex-col pt-4">
-      <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
-        <div class="flex flex-col">
-          <traction-section
-            title="Scan labware"
-            number="1a"
-            description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
-          >
-            <div class="flex flex-row items-center">
-              <BarcodeIcon class="w-8 h-8" />
-              <div class="flex flex-row w-full space-x-2">
-                <traction-input
-                  id="labware-finder-input"
-                  ref="searchRef"
-                  v-model="searchText"
-                  type="search"
-                  placeholder="Type to search"
-                  label="Search value"
-                  class="w-full"
-                  @enter-key-press="search"
-                />
-                <traction-button
-                  id="labware-finder-button"
-                  :disabled="searchText == ''"
-                  @click="search(searchText)"
-                >
-                  Search
-                </traction-button>
+    <div
+      class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
+    >
+      <router-link
+        data-testid="backToMultiPool"
+        :to="{ name: 'FlexiblePool', params: { id: getRouteId() } }"
+        class="text-gray-700"
+      >
+        <TractionArrowIcon class="inline-block h-4 w-4" />
+        <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
+          >Back to multi pool</span
+        >
+      </router-link>
+    </div>
+    <div class="border border-gray-200 p-4 shadow-md">
+      <div class="flex flex-col">
+        <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
+          <div class="flex flex-col">
+            <traction-section
+              title="Scan labware"
+              number="1a"
+              description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
+            >
+              <div class="flex flex-row items-center">
+                <BarcodeIcon class="w-8 h-8" />
+                <div class="flex flex-row w-full space-x-2">
+                  <traction-input
+                    id="labware-finder-input"
+                    ref="searchRef"
+                    v-model="searchText"
+                    type="search"
+                    placeholder="Type to search"
+                    label="Search value"
+                    class="w-full"
+                    @enter-key-press="search"
+                  />
+                  <traction-button
+                    id="labware-finder-button"
+                    :disabled="searchText == ''"
+                    @click="search(searchText)"
+                  >
+                    Search
+                  </traction-button>
+                </div>
               </div>
-            </div>
-          </traction-section>
-        </div>
+            </traction-section>
+          </div>
 
-        <div>
-          <PacbioTagSetList ref="tagSetList" />
-          <PacbioTagSetItem />
-        </div>
-        <div>
-          <PacbioLabwareSelectedList
-            :labware="scannedLabware"
-            :highlight="aliquotSelectionHighlightLabware"
-            @closed="onClosed"
-          />
-        </div>
-        <div>
-          <!-- The "Create Pool" button is part of this component! -->
-          <PacbioPoolEdit :flexible-pool="true" @aliquot-selected="handleAliquotSelection" />
+          <div>
+            <PacbioTagSetList ref="tagSetList" />
+            <PacbioTagSetItem />
+          </div>
+          <div>
+            <PacbioLabwareSelectedList
+              :labware="scannedLabware"
+              :highlight="aliquotSelectionHighlightLabware"
+              @closed="onClosed"
+            />
+          </div>
+          <div>
+            <!-- The "Create Pool" button is part of this component! -->
+            <PacbioPoolEdit :flexible-pool="true" @aliquot-selected="handleAliquotSelection" />
+          </div>
         </div>
       </div>
     </div>
@@ -63,8 +79,10 @@ import TractionButton from '@/components/shared/TractionButton.vue'
 import useAlert from '@/composables/useAlert.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 const { showAlert } = useAlert()
+const route = useRoute()
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 
 /**
@@ -85,6 +103,10 @@ const searchText = ref('')
 const searchRef = ref(null)
 
 const aliquotSelectionHighlightLabware = ref(null)
+
+const getRouteId = () => {
+  return route.params.id
+}
 
 /**
  * Called when the labware is closed

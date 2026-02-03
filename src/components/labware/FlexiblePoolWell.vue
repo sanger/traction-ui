@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-link
-      :to="`/flexible-pool/sub-pool/${position}`"
+      :to="{ name: 'FlexibleIndividualPoolCreate', params: { id, position } }"
       data-attribute="flexible-pool-well-link"
       class="block"
     >
@@ -32,6 +32,10 @@ import { ref, computed } from 'vue'
  * @property {string} position - The position of the well. This prop is required.
  */
 const props = defineProps({
+  id: {
+    type: [String, Number],
+    required: true,
+  },
   position: {
     type: String,
     required: true,

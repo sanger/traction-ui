@@ -1,5 +1,5 @@
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
-import { mountWithStore, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, router } from '@support/testHelper.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
@@ -19,6 +19,7 @@ describe('FlexiblePoolCreate', () => {
   let wrapper, store
 
   beforeEach(async () => {
+    await router.push({ name: 'FlexiblePool', params: { id: 'new' } })
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {

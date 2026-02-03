@@ -9,6 +9,7 @@ const storePool = {
 }
 const props = {
   position: 'A1',
+  id: 'new'
 }
 
 describe('FlexiblePoolWell.vue', () => {
@@ -32,5 +33,9 @@ describe('FlexiblePoolWell.vue', () => {
 
   it('must have a position', () => {
     expect(well.position).toEqual(props.position)
+  })
+
+  it('must have an id', () => {
+    expect(well.id).toEqual(props.id)
   })
 })

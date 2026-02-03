@@ -11,6 +11,10 @@
               >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
               in the below <b>Pooling</b> section.</span
             >
+            <span>
+              Pools will not be saved until you click the <b>Create Flexible Pool</b> button in the
+              <b>Actions</b> section.
+            </span>
             <div class="flex flex-row gap-x-2 items-center text-sp-600">
               <TractionInfoIcon :size="20" />
               <span
@@ -82,7 +86,7 @@
           </traction-section>
           <traction-section title="Pooling" number="2">
             <LabwareMap v-slot="{ position }" :labware-type="LabwareTypes.Plate96">
-              <FlexiblePoolWell :position="position" />
+              <FlexiblePoolWell :id="route.params.id" :position="position" />
             </LabwareMap>
           </traction-section>
           <traction-section title="Actions" number="3">
@@ -123,10 +127,12 @@ import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useAlert from '@/composables/useAlert.js'
+import { useRoute } from 'vue-router'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
 const { showAlert } = useAlert()
+const route = useRoute()
 
 // Props
 const props = defineProps({
