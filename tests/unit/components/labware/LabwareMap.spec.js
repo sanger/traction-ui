@@ -32,13 +32,18 @@ describe('LabwareMap.vue', () => {
   })
 
   describe('createPosition', () => {
+    it('returns null if no labwareType is provided', () => {
+      const position = labware.createPosition(1, 1, null)
+      expect(position).toBeNull()
+    })
+
     it('returns the correct position', () => {
-      const position = labware.createPosition(1, 1)
+      const position = labware.createPosition(1, 1, labware.labwareType)
       expect(position).toEqual('A1')
     })
 
     it('returns the postion as a coordinate if the row count is greater than 26', () => {
-      const position = labware.createPosition(27, 5)
+      const position = labware.createPosition(27, 5, labware.labwareType)
       expect(position).toEqual('27,5')
     })
   })
