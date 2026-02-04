@@ -53,7 +53,34 @@
                       tooltip-bg-colour="bg-sp-200"
                     >
                       <template #tooltip>
-                        <!-- Tool tip content > -->
+                        <div class="w-full">
+                          <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
+                          <ul class="w-full list-disc list-inside p-2 space-y-2">
+                            <li>
+                              All columns must contain values: <br />
+                              <div class="px-4 font-bold">
+                                Pool Number, Sample Name, Tag, Template Prep Kit Box Barcode,
+                                Volume, Concentration, Insert Size
+                              </div>
+                            </li>
+                            <li>
+                              <strong>Pool Number:</strong> Samples with the same pool number will
+                              be grouped into the same pool.
+                            </li>
+                            <li><strong>Sample Name:</strong></li>
+                            <ul class="list-disc list-inside pl-2">
+                              <li>
+                                The 'Sample Name' field must correspond to a sample name in
+                                Traction.
+                              </li>
+                            </ul>
+                            <li><strong>Tag:</strong> The tag to apply to the sample.</li>
+                            <li>
+                              <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
+                              template prep kit.
+                            </li>
+                          </ul>
+                        </div>
                       </template>
                       <TractionInfoIcon :size="20" />
                     </traction-tooltip>
