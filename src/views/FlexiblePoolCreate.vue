@@ -108,7 +108,7 @@
             </div>
           </traction-section>
           <traction-section title="Pooling" number="2">
-            <LabwareMap v-slot="{ position }" :labware-type="LabwareTypes.Plate96">
+            <LabwareMap v-slot="{ position }" :labware-type="LabwareTypes.MultiPool96">
               <FlexiblePoolWell :position="position" />
             </LabwareMap>
           </traction-section>
