@@ -1,31 +1,42 @@
 /**
- *
- * @param {*} primaryIndex - row or column number and used as walking direction
- * @param {*} secondaryIndex - row or column number
- * @param {*} walkingDistance - highest value of primaryIndex
+ * Formats position in numeric format
+ * @param {*} row - row number
+ * @param {*} column - column number
+ * @param {*} numRows - total number of rows in the labware
+ * @param {*} numColumns - total number of columns in the labware
+ * @param {*} walkingDirection - the direction in which the positions are walked (byRow or byColumn)
  * @returns numeric format like 1,2,3...
  */
-const numericFormat = ({ primaryIndex, secondaryIndex, walkingDistance }) => {
-  return (
-    parseInt(primaryIndex) +
-    parseInt(walkingDistance) * (parseInt(secondaryIndex) - 1)
-  ).toString()
+const numericFormat = ({ row, column, numRows, numColumns, walkingDirection }) => {
+  row = parseInt(row)
+  column = parseInt(column)
+
+  if (walkingDirection === 'byColumn') {
+    return ((column - 1) * numRows + row).toString()
+  } else {
+    // byRow fallback
+    return ((row - 1) * numColumns + column).toString()
+  }
 }
 
 /**
- *
- * @param {*} primaryIndex - row or column number
- * @param {*} secondaryIndex - row or column number
- * @returns Alphanumeric format like A1, B2 etc. If row number is greater than 26, returns in "primaryIndex,secondaryIndex" format
+ * Formats position in alphanumeric format
+ * @param {*} row - row number
+ * @param {*} column - column number
+ * @param {*} walkingDirection - the direction in which the positions are walked (byRow or byColumn)
+ * @returns Alphanumeric format like A1, B2 etc. If row number is greater than 26, number format is returned in the format of row,column (e.g 27,5)
  */
-const alphanumericFormat = ({ primaryIndex, secondaryIndex }) => {
-  if (primaryIndex > 26) {
-    return `${primaryIndex},${secondaryIndex}`
+const alphanumericFormat = ({ row, column, walkingDirection }) => {
+  // byRow fallback
+  const [primary, secondary] = walkingDirection === 'byColumn' ? [row, column] : [column, row]
+
+  if (primary > 26) {
+    return `${primary},${secondary}`
   }
 
   const aCharCode = 'A'.charCodeAt(0)
-  const primaryIndexLetter = String.fromCharCode(aCharCode - 1 + primaryIndex)
-  return `${primaryIndexLetter}${secondaryIndex}`
+  const primaryLetter = String.fromCharCode(aCharCode - 1 + primary)
+  return `${primaryLetter}${secondary}`
 }
 
 const LabwareTypes = {

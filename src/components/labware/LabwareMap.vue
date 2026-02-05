@@ -43,24 +43,18 @@ export default {
     },
   },
   methods: {
-    createPosition(rowNumber, columnNumber, labwareType) {
-      if (!rowNumber || !columnNumber || !labwareType) {
+    createPosition(row, column, labwareType) {
+      if (!row || !column || !labwareType) {
         return null
       }
 
-      if (labwareType.walkingDirection === 'byColumn') {
-        return labwareType.positionFormat({
-          primaryIndex: rowNumber,
-          secondaryIndex: columnNumber,
-          walkingDistance: labwareType.numRows,
-        })
-      } else if (labwareType.walkingDirection === 'byRow') {
-        return labwareType.positionFormat({
-          primaryIndex: columnNumber,
-          secondaryIndex: rowNumber,
-          walkingDistance: labwareType.numColumns,
-        })
-      }
+      return labwareType.positionFormat({
+        row,
+        column,
+        numRows: labwareType.numRows,
+        numColumns: labwareType.numColumns,
+        walkingDirection: labwareType.walkingDirection,
+      })
     },
   },
 }
