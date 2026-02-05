@@ -1,5 +1,5 @@
-Pool Number,Sample Name,Tag,Template Prep Kit Box Barcode,Volume,Concentration,Insert Size
-1,SampleA,Tag1,TPK123,50,20,500
-1,SampleB,Tag2,TPK123,50,20,500
-2,SampleC,Tag3,TPK456,60,25,600
-2,SampleD,Tag4,TPK456,60,25,600
+Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box Barcode,Volume (uL),Concentration (ng/uL),Insert Size
+1,GEN-1234567890-1:A1,Pacbio_96_barcode_plate_v3,bc2001,123456789012345678901,10,1,100
+1,GEN-2345678901-2:B2,Pacbio_96_barcode_plate_v3,bc2002,234567890123456789012,20,2,200
+2,GEN-3456789012-3,Pacbio_96_barcode_plate_v3,bc2003,345678901234567890123,30,3,300
+2,GEN-4567890123-4,Pacbio_96_barcode_plate_v3,bc2004,456789012345678901234,40,4,400
