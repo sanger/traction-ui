@@ -48,10 +48,18 @@ export default {
         return null
       }
 
-      if (labwareType.layoutType === 'byCol') {
-        return labwareType.positionFormat(rowNumber, columnNumber, labwareType.numRows)
-      } else if (labwareType.layoutType === 'byRow') {
-        return labwareType.positionFormat(columnNumber, rowNumber, labwareType.numColumns)
+      if (labwareType.walkingDirection === 'byColumn') {
+        return labwareType.positionFormat({
+          primaryIndex: rowNumber,
+          secondaryIndex: columnNumber,
+          walkingDistance: labwareType.numRows,
+        })
+      } else if (labwareType.walkingDirection === 'byRow') {
+        return labwareType.positionFormat({
+          primaryIndex: columnNumber,
+          secondaryIndex: rowNumber,
+          walkingDistance: labwareType.numColumns,
+        })
       }
     },
   },
