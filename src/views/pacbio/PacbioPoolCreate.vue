@@ -72,7 +72,6 @@
         </div>
       </div>
     </div>
-
   </data-fetcher>
 </template>
 
@@ -101,7 +100,7 @@ const pacbioRootStore = usePacbioRootStore()
 const route = useRoute()
 
 const getRouteId = () => {
-  return route.id;
+  return route.id
 }
 
 /**
