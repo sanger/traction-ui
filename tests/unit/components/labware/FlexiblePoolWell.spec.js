@@ -4,11 +4,11 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { beforeEach } from 'vitest'
 
 const storePool = {
-  position: 1,
+  position: '1',
   type: 'MultiPoolPosition',
 }
 const props = {
-  position: 1,
+  position: '1',
 }
 
 describe('FlexiblePoolWell.vue', () => {
