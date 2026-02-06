@@ -1,58 +1,78 @@
 <template>
   <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
   <data-fetcher :key="route.fullPath" :fetcher="fetchPoolsData">
-    <div class="flex flex-col pt-4">
-      <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
-        <div class="flex flex-col">
-          <traction-section
-            title="Scan labware"
-            number="1a"
-            description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
+    <flagged-feature name="flexible_pooling">
+      <div
+        v-if="Boolean(route.query.flexible)"
+        class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
+      >
+        <router-link
+          data-testid="backToMultiPool"
+          :to="{ name: 'FlexiblePool', params: { id: getRouteId() } }"
+          class="text-gray-700"
+        >
+          <TractionArrowIcon class="inline-block h-4 w-4" />
+          <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
+            >Back to multi pool</span
           >
-            <div class="flex flex-row items-center">
-              <BarcodeIcon class="w-8 h-8" />
-              <div class="flex flex-row w-full space-x-2">
-                <traction-input
-                  id="labware-finder-input"
-                  ref="searchRef"
-                  v-model="searchText"
-                  type="search"
-                  placeholder="Type to search"
-                  label="Search value"
-                  class="w-full"
-                  @enter-key-press="search"
-                />
-                <traction-button
-                  id="labware-finder-button"
-                  :disabled="searchText == ''"
-                  @click="search(searchText)"
-                >
-                  Search
-                </traction-button>
+        </router-link>
+      </div>
+    </flagged-feature>
+    <div class="border border-gray-200 p-4 shadow-md">
+      <div class="flex flex-col pt-4">
+        <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
+          <div class="flex flex-col">
+            <traction-section
+              title="Scan labware"
+              number="1a"
+              description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
+            >
+              <div class="flex flex-row items-center">
+                <BarcodeIcon class="w-8 h-8" />
+                <div class="flex flex-row w-full space-x-2">
+                  <traction-input
+                    id="labware-finder-input"
+                    ref="searchRef"
+                    v-model="searchText"
+                    type="search"
+                    placeholder="Type to search"
+                    label="Search value"
+                    class="w-full"
+                    @enter-key-press="search"
+                  />
+                  <traction-button
+                    id="labware-finder-button"
+                    :disabled="searchText == ''"
+                    @click="search(searchText)"
+                  >
+                    Search
+                  </traction-button>
+                </div>
               </div>
-            </div>
-          </traction-section>
-        </div>
+            </traction-section>
+          </div>
 
-        <div>
-          <PacbioTagSetList ref="tagSetList" />
-          <PacbioTagSetItem />
-        </div>
-        <div>
-          <PacbioLabwareSelectedList
-            :labware="scannedLabware"
-            :highlight="aliquotSelectionHighlightLabware"
-            @closed="onClosed"
-          />
-        </div>
-        <div>
-          <PacbioPoolEdit
-            :flexible-pool="Boolean(route.query.flexible)"
-            @aliquot-selected="handleAliquotSelection"
-          />
+          <div>
+            <PacbioTagSetList ref="tagSetList" />
+            <PacbioTagSetItem />
+          </div>
+          <div>
+            <PacbioLabwareSelectedList
+              :labware="scannedLabware"
+              :highlight="aliquotSelectionHighlightLabware"
+              @closed="onClosed"
+            />
+          </div>
+          <div>
+            <PacbioPoolEdit
+              :flexible-pool="Boolean(route.query.flexible)"
+              @aliquot-selected="handleAliquotSelection"
+            />
+          </div>
         </div>
       </div>
     </div>
+
   </data-fetcher>
 </template>
 
@@ -79,6 +99,10 @@ const { showAlert } = useAlert()
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const pacbioRootStore = usePacbioRootStore()
 const route = useRoute()
+
+const getRouteId = () => {
+  return route.id;
+}
 
 /**
  * Array of objects with barcode and type
