@@ -120,7 +120,7 @@ const data = {
       id: '1',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'D10',
+        position: 50,
         pool_id: 11,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -134,7 +134,7 @@ const data = {
       id: '2',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'A1',
+        position: 1,
         pool_id: 12,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -148,7 +148,7 @@ const data = {
       id: '3',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'E6',
+        position: 10,
         pool_id: 13,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -162,7 +162,7 @@ const data = {
       id: '4',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'B9',
+        position: 31,
         pool_id: 14,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -176,7 +176,7 @@ const data = {
       id: '5',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'H9',
+        position: 15,
         pool_id: 15,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -190,7 +190,7 @@ const data = {
       id: '6',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'E3',
+        position: 46,
         pool_id: 16,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
