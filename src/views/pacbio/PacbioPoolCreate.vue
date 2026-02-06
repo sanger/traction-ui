@@ -79,7 +79,7 @@
 /**
  * @name PacbioPoolCreate
  * @description The Pacbio pool create view
- * This view is used to create the page to createa a new pool or edit an existing pool
+ * This view is used to create the page to create a new pool or edit an existing pool
  */
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList.vue'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList.vue'
