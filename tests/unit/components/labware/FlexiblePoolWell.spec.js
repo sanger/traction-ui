@@ -9,7 +9,7 @@ const storePool = {
 }
 const props = {
   position: 'A1',
-  id: 'new'
+  id: 'new',
 }
 
 describe('FlexiblePoolWell.vue', () => {

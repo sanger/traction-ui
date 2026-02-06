@@ -46,7 +46,10 @@
           />
         </div>
         <div>
-          <PacbioPoolEdit @aliquot-selected="handleAliquotSelection" />
+          <PacbioPoolEdit
+            :flexible-pool="Boolean(route.query.flexible)"
+            @aliquot-selected="handleAliquotSelection"
+          />
         </div>
       </div>
     </div>

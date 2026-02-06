@@ -1,7 +1,11 @@
 <template>
   <div>
     <router-link
-      :to="{ name: 'FlexibleIndividualPoolCreate', params: { id, position } }"
+      :to="{
+        name: 'PacbioFlexiblePoolCreate',
+        params: { id, position },
+        query: { flexible: true },
+      }"
       data-attribute="flexible-pool-well-link"
       class="block"
     >
