@@ -1,4 +1,24 @@
 /**
+ * Produce a json api compliant payload
+ *
+ * @param {Object}
+ *
+ */
+const payload = ({ multiPool }) => {
+  const { pipeline, pool_method } = multiPool
+  return {
+    data: {
+      type: 'multi_pools',
+      id: multiPool.id,
+      attributes: {
+        pipeline,
+        pool_method,
+      },
+    },
+  }
+}
+
+/**
  * Creates an array of sub-pool objects from a multi-pool structure.
  *
  * @param {Object} params - The parameters object.
@@ -22,4 +42,4 @@ const createSubPools = ({ multiPool, multiPoolPositions, pools }) => {
   })
 }
 
-export { createSubPools }
+export { payload, createSubPools }

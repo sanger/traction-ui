@@ -7,7 +7,7 @@ import useRootStore from '@/stores'
 import FlipperFactory from '@tests/factories/FlipperFactory.js'
 
 const multiPoolFactory = MultiPoolFactory.all()
-const flipperFactory = FlipperFactory()
+const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
 
 describe('FlexiblePoolingIndex', () => {
   let wrapper

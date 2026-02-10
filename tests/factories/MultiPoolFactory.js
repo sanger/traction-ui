@@ -1,6 +1,7 @@
 import BaseFactory from './BaseFactory.js'
 import {
   dataToObjectById,
+  dataToObjectByPosition,
   find,
   extractAttributes,
   extractRelationshipsAndGroupById,
@@ -8,13 +9,32 @@ import {
 } from './../../src/api/JsonApi.js'
 import { createSubPools } from './../../src/stores/utilities/multiPool.js'
 
-const createStoreData = (data) => {
+const createStoreDataForMultipleMultiPools = (data) => {
   const multiPools = dataToObjectById({ data: data.data, includeRelationships: false })
   return {
     resources: {
       multiPools,
       ids: Object.keys(multiPools),
     },
+  }
+}
+
+/**
+ *
+ * @param {Array} included - the included data from the json api response
+ * @returns {Object} - { tubes, libraries, tags, requests, plates, tag_set } the included data for a single pools
+ * I had to change the tag_set id to pass view tests. This is brittle.
+ */
+const createStoreDataForSingleMultiPool = (data) => {
+  const { multi_pool_positions } = groupIncludedByResource(data.included)
+
+  const multiPool = extractAttributes(data.data)
+  return {
+    multiPool: { ...multiPool },
+    multi_pool_positions: dataToObjectByPosition({
+      data: multi_pool_positions,
+      includeRelationships: true,
+    }),
   }
 }
 
@@ -100,7 +120,7 @@ const data = {
       id: '1',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'D10',
+        position: '50',
         pool_id: 11,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -114,7 +134,7 @@ const data = {
       id: '2',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'A1',
+        position: '1',
         pool_id: 12,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -128,7 +148,7 @@ const data = {
       id: '3',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'E6',
+        position: '10',
         pool_id: 13,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -142,7 +162,7 @@ const data = {
       id: '4',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'B9',
+        position: '31',
         pool_id: 14,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -156,7 +176,7 @@ const data = {
       id: '5',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'H9',
+        position: '15',
         pool_id: 15,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -170,7 +190,7 @@ const data = {
       id: '6',
       type: 'multi_pool_positions',
       attributes: {
-        position: 'E3',
+        position: '46',
         pool_id: 16,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
@@ -491,7 +511,32 @@ const data = {
 
 const MultiPoolFactory = {
   all: () => {
-    return { ...BaseFactory(data), storeData: createStoreData(data) }
+    return { ...BaseFactory(data), storeData: createStoreDataForMultipleMultiPools(data) }
+  },
+  single: () => {
+    const foundData = find({ data, count: 1 })
+    return {
+      ...BaseFactory(foundData),
+      storeData: createStoreDataForSingleMultiPool(foundData),
+    }
+  },
+  count: (n) => {
+    if (n == 1) {
+      throw new Error('Please use the single() method for a single record request')
+    }
+    const { foundData } = find({ data, count: n })
+    const storeData = createStoreDataForMultipleMultiPools(foundData)
+    return {
+      ...BaseFactory(foundData),
+      storeData,
+    }
+  },
+  id: (poolId) => {
+    const foundData = findById(data, poolId)
+    return {
+      ...BaseFactory(foundData),
+      storeData: createStoreDataForSingleMultiPool(foundData),
+    }
   },
   withSubPools: (id) => {
     const foundData = findById(data, id)
