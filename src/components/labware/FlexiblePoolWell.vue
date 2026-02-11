@@ -2,9 +2,8 @@
   <div>
     <router-link
       :to="{
-        name: 'PacbioFlexiblePoolCreate',
+        name: 'FlexibleIndividualPoolCreate',
         params: { id, position },
-        query: { flexible: true },
       }"
       data-attribute="flexible-pool-well-link"
       class="block"

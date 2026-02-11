@@ -1,75 +1,55 @@
 <template>
   <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
   <data-fetcher :key="route.fullPath" :fetcher="fetchPoolsData">
-    <flagged-feature name="flexible_pooling">
-      <div
-        v-if="Boolean(route.query.flexible)"
-        class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
-      >
-        <router-link
-          data-testid="backToMultiPool"
-          :to="{ name: 'FlexiblePool', params: { id: getRouteId() } }"
-          class="text-gray-700"
-        >
-          <TractionArrowIcon class="inline-block h-4 w-4" />
-          <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
-            >Back to multi pool</span
+    <div class="flex flex-col pt-4">
+      <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
+        <div class="flex flex-col">
+          <traction-section
+            title="Scan labware"
+            number="1a"
+            description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
           >
-        </router-link>
-      </div>
-    </flagged-feature>
-    <div class="border border-gray-200 p-4 shadow-md">
-      <div class="flex flex-col pt-4">
-        <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
-          <div class="flex flex-col">
-            <traction-section
-              title="Scan labware"
-              number="1a"
-              description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
-            >
-              <div class="flex flex-row items-center">
-                <BarcodeIcon class="w-8 h-8" />
-                <div class="flex flex-row w-full space-x-2">
-                  <traction-input
-                    id="labware-finder-input"
-                    ref="searchRef"
-                    v-model="searchText"
-                    type="search"
-                    placeholder="Type to search"
-                    label="Search value"
-                    class="w-full"
-                    @enter-key-press="search"
-                  />
-                  <traction-button
-                    id="labware-finder-button"
-                    :disabled="searchText == ''"
-                    @click="search(searchText)"
-                  >
-                    Search
-                  </traction-button>
-                </div>
+            <div class="flex flex-row items-center">
+              <BarcodeIcon class="w-8 h-8" />
+              <div class="flex flex-row w-full space-x-2">
+                <traction-input
+                  id="labware-finder-input"
+                  ref="searchRef"
+                  v-model="searchText"
+                  type="search"
+                  placeholder="Type to search"
+                  label="Search value"
+                  class="w-full"
+                  @enter-key-press="search"
+                />
+                <traction-button
+                  id="labware-finder-button"
+                  :disabled="searchText == ''"
+                  @click="search(searchText)"
+                >
+                  Search
+                </traction-button>
               </div>
-            </traction-section>
-          </div>
+            </div>
+          </traction-section>
+        </div>
 
-          <div>
-            <PacbioTagSetList ref="tagSetList" />
-            <PacbioTagSetItem />
-          </div>
-          <div>
-            <PacbioLabwareSelectedList
-              :labware="scannedLabware"
-              :highlight="aliquotSelectionHighlightLabware"
-              @closed="onClosed"
-            />
-          </div>
-          <div>
-            <PacbioPoolEdit
-              :flexible-pool="Boolean(route.query.flexible)"
-              :flexible-pool-position="route.params.position"
-              @aliquot-selected="handleAliquotSelection"
-            />
-          </div>
+        <div>
+          <PacbioTagSetList ref="tagSetList" />
+          <PacbioTagSetItem />
+        </div>
+        <div>
+          <PacbioLabwareSelectedList
+            :labware="scannedLabware"
+            :highlight="aliquotSelectionHighlightLabware"
+            @closed="onClosed"
+          />
+        </div>
+        <div>
+          <PacbioPoolEdit
+            :flexible-pool-position="props.flexiblePoolPosition"
+            @aliquot-selected="handleAliquotSelection"
+          />
         </div>
       </div>
     </div>
@@ -95,16 +75,21 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 
+// props
+const props = defineProps({
+  flexiblePoolPosition: {
+    type: [String, Number],
+    required: false,
+    default: null,
+  },
+})
+
 //composables
 const { showAlert } = useAlert()
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const multiPoolCreateStore = useMultiPoolCreateStore()
 const pacbioRootStore = usePacbioRootStore()
 const route = useRoute()
-
-const getRouteId = () => {
-  return route.id
-}
 
 /**
  * Array of objects with barcode and type
@@ -136,9 +121,9 @@ const fetchPoolsData = async () => {
   if (!success) {
     showAlert(errors, 'danger')
   }
-  // Fetch the pool data if it is for editing an existing pool
-  if (route.query.flexible) {
-    const pool = await multiPoolCreateStore.getPool(route.params.position)
+  // If it is a flexible pool, fetch the pool data from the store based on the position in the flexible pool
+  if (props.flexiblePoolPosition) {
+    const pool = await multiPoolCreateStore.getPool(props.flexiblePoolPosition)
     if (pool) {
       pacbioPoolCreateStore.$state = pool
       pacbioPoolCreateStore.selectedPlates.map((plate) => {
@@ -149,6 +134,7 @@ const fetchPoolsData = async () => {
       })
     }
     return { success: true, errors: [] }
+    // If it is an existing pool, fetch the pool data based on the id in the route params
   } else if (route.params.id !== 'new') {
     //Populate the used aliquots from the pool
     const { success, errors } = await pacbioPoolCreateStore.populateUsedAliquotsFromPool(

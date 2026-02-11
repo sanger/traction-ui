@@ -98,7 +98,7 @@
       :notify="onFieldUpdate"
       @aliquot-selected="notifyAliquotSelection"
     />
-    <div v-if="!props.flexiblePool" class="text-right py-8">
+    <div v-if="!props.flexiblePoolPosition" class="text-right py-8">
       <traction-button
         v-if="!persisted"
         data-action="create-pool"
@@ -142,11 +142,6 @@ import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
 
 const props = defineProps({
-  flexiblePool: {
-    type: [Boolean],
-    required: false,
-    default: false,
-  },
   flexiblePoolPosition: {
     type: String,
     required: false,
@@ -231,6 +226,7 @@ const updateMultiPoolSubPool = () => {
   showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
   busy.value = false
 }
+
 // Allows users to upload a file to autopopulate the pool's selected libraries
 const uploadFile = async (evt) => {
   if (evt?.target?.files?.length) {
