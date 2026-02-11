@@ -43,6 +43,21 @@ describe('FlexiblePoolCreate', () => {
     await flushPromises()
   })
 
+  describe('tooltip and download link', () => {
+    it('displays tooltip text when hovered over', async () => {
+      const tooltip = wrapper.find('#csv-tooltip')
+      await tooltip.trigger('mouseover')
+      expect(tooltip.find('#tooltip').isVisible()).toBe(true)
+      expect(tooltip.find('#tooltip').text()).toContain('All columns must contain values:')
+    })
+
+    it('has a working download link', () => {
+      const downloadLink = wrapper.find('a[href="/flexible-pooling-template.csv"]')
+      expect(downloadLink.exists()).toBe(true)
+      expect(downloadLink.attributes('download')).toBe('FlexiblePoolingTemplate.csv')
+    })
+  })
+
   describe('Setup section', () => {
     it('updates the store when pipeline is selected', async () => {
       const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')

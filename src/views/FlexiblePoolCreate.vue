@@ -57,7 +57,40 @@
                       tooltip-bg-colour="bg-sp-200"
                     >
                       <template #tooltip>
-                        <!-- Tool tip content > -->
+                        <div class="w-full">
+                          <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
+                          <ul class="w-full list-disc list-inside p-2 space-y-2">
+                            <li>
+                              All columns must contain values: <br />
+                              <div class="px-4 font-bold">
+                                Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box
+                                Barcode,Volume (uL),Concentration (ng/uL),Insert Size
+                              </div>
+                            </li>
+                            <li>
+                              <strong>Pool Number:</strong> Samples with the same pool number will
+                              be grouped into the same pool.
+                            </li>
+                            <li>
+                              <strong>Source Identifier:</strong> Library source, Tube barcode, or
+                              combination of Plate barcode and Well position.
+                            </li>
+                            <li><strong>Tag Set:</strong> The tag set name of tags to be used.</li>
+                            <li><strong>Tag:</strong> The tag to apply to the sample.</li>
+                            <li>
+                              <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
+                              template prep kit.
+                            </li>
+                            <li>
+                              <strong>Volume (uL):</strong> The volume of the sample in microliters.
+                            </li>
+                            <li>
+                              <strong>Concentration (ng/uL):</strong> The concentration of the
+                              sample in nanograms per microliter.
+                            </li>
+                            <li><strong>Insert Size:</strong> The insert size for the sample.</li>
+                          </ul>
+                        </div>
                       </template>
                       <TractionInfoIcon :size="20" />
                     </traction-tooltip>

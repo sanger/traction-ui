@@ -127,20 +127,20 @@ describe('useMultiPoolCreateStore', () => {
     describe('getPool', () => {
       it('returns the pool at the given position', () => {
         store.$state.multiPoolPositions = {
-          A1: { id: 1, position: 'A1', type: 'MultiPoolPosition' },
-          B2: { id: 2, position: 'B2', type: 'MultiPoolPosition' },
+          1: { id: 1, position: '1', type: 'MultiPoolPosition' },
+          2: { id: 2, position: '2', type: 'MultiPoolPosition' },
         }
 
-        const poolA1 = store.getPool('A1')
-        expect(poolA1).toEqual({ id: 1, position: 'A1', type: 'MultiPoolPosition' })
+        const poolA1 = store.getPool(1)
+        expect(poolA1).toEqual({ id: 1, position: '1', type: 'MultiPoolPosition' })
 
-        const poolB2 = store.getPool('B2')
-        expect(poolB2).toEqual({ id: 2, position: 'B2', type: 'MultiPoolPosition' })
+        const poolB2 = store.getPool(2)
+        expect(poolB2).toEqual({ id: 2, position: '2', type: 'MultiPoolPosition' })
       })
 
       it('returns an empty object if no pool exists at the given position', () => {
         store.$state.multiPoolPositions = {
-          A1: { id: 1, position: 'A1', type: 'MultiPoolPosition' },
+          1: { id: 1, position: '1', type: 'MultiPoolPosition' },
         }
 
         const pool = store.getPool('C3')
@@ -154,8 +154,8 @@ describe('useMultiPoolCreateStore', () => {
         store.$state = {
           multiPool: { id: 1, pooling_layout: 'Plate', pipeline: 'Pacbio' },
           multiPoolPositions: {
-            1: { id: 1, position: 'A1' },
-            2: { id: 2, position: 'A2' },
+            1: { id: 1, position: '1' },
+            2: { id: 2, position: '2' },
           },
         }
 
