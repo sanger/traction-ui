@@ -170,5 +170,51 @@ describe('useMultiPoolCreateStore', () => {
         })
       })
     })
+
+    describe('isValidPersisted', () => {
+      it('returns false if there is no persisted store', () => {
+        localStorage.removeItem('multiPoolCreate')
+        expect(store.isValidPersisted('1')).toBeFalsy()
+      })
+
+      it('returns true if the persisted store has no id', () => {
+        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('1')).toBeTruthy()
+      })
+
+      it('returns true if the persisted store id matches the requested id', () => {
+        const persistedData = {
+          multiPool: { id: '1', pooling_method: 'Plate', pipeline: 'pacbio' },
+        }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('1')).toBeTruthy()
+      })
+
+      it('returns false if the persisted store id does not match the requested id', () => {
+        const persistedData = {
+          multiPool: { id: '2', pooling_method: 'Plate', pipeline: 'pacbio' },
+        }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('1')).toBeFalsy()
+      })
+
+      it('returns true if the persisted store has no id and there is no requested id', () => {
+        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted(null)).toBeTruthy()
+      })
+    })
+
+    describe('updateMultiPoolPosition', () => {
+      it('updates the multiPoolPositions with the given position and subPool', () => {
+        const position = ''
+        // Sub pool is really the state data for pacbioPoolCreateStore
+        const subPool = { tubes: {}, plates: {}, resources: {}, selected: {} }
+
+        store.updateMultiPoolPosition({ position, subPool })
+        expect(store.multiPoolPositions[position]).toEqual(subPool)
+      })
+    })
   })
 })

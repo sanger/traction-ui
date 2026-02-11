@@ -121,7 +121,7 @@
       </traction-button>
     </div>
     <div v-else class="text-right py-8">
-      <traction-button theme="create">
+      <traction-button theme="create" @click="updateMultiPoolSubPool()">
         <!-- TODO: Add a handler to update PacbioPoolCreateStore -->
         <span class="button-text">Update information</span>
       </traction-button>
@@ -136,6 +136,7 @@
  */
 import PacbioPoolAliquotList from '@/components/pacbio/PacbioPoolAliquotList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate'
 import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
@@ -146,6 +147,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  flexiblePoolPosition: {
+    type: String,
+    required: false,
+    default: '',
+  },
 })
 
 //refs
@@ -155,6 +161,7 @@ const parsedFile = ref(null) // Holds the data of the parsed file
 const validated = ref(true) // Flag to indicate if the form data is valid
 
 const {
+  $state: pacbioPoolCreateState,
   pool,
   selectedUsedAliquots,
   createPool,
@@ -162,6 +169,9 @@ const {
   validatePoolAttribute,
   updateUsedAliquotFromCsvRecord,
 } = usePacbioPoolCreateStore()
+
+const { updateMultiPoolPosition } = useMultiPoolCreateStore()
+
 const { showAlert } = useAlert()
 const persisted = computed(() => !!pool.id)
 const poolType = computed(() => {
@@ -209,6 +219,17 @@ const update = () => {
       : showAlert(errors, 'danger', 'pool-create-message')
     busy.value = false
   })
+}
+
+const updateMultiPoolSubPool = () => {
+  busy.value = true
+  validated.value = true
+  updateMultiPoolPosition({
+    position: props.flexiblePoolPosition,
+    subPool: { ...pacbioPoolCreateState },
+  })
+  showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
+  busy.value = false
 }
 // Allows users to upload a file to autopopulate the pool's selected libraries
 const uploadFile = async (evt) => {

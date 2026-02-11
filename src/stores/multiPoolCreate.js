@@ -123,13 +123,27 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       // Check the store exists in storage
       const persisted = localStorage.getItem('multiPoolCreate')
 
-      // Crude logic to check if the persisted store matches the requested id
+      // Logic to check if the persisted store should be used
       if (persisted) {
         const parsed = JSON.parse(persisted)
-        return parsed.multiPool && parsed.multiPool.id == id
+        const parsedId = parsed.multiPool?.id
+
+        // If it doesn't have an id it must be a new multi pool, so we can consider it valid
+        if (!parsedId) {
+          return true
+        }
+
+        // If the id matches the requested id, we can consider it valid
+        if (id === parsedId) {
+          return true
+        }
       }
 
       return false
+    },
+
+    async updateMultiPoolPosition({ position, subPool }) {
+      this.multiPoolPositions[position] = subPool
     },
   },
   persist: true,

@@ -66,6 +66,7 @@
           <div>
             <PacbioPoolEdit
               :flexible-pool="Boolean(route.query.flexible)"
+              :flexible-pool-position="route.params.position"
               @aliquot-selected="handleAliquotSelection"
             />
           </div>
@@ -90,12 +91,14 @@ import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import useAlert from '@/composables/useAlert.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 
 //composables
 const { showAlert } = useAlert()
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
+const multiPoolCreateStore = useMultiPoolCreateStore()
 const pacbioRootStore = usePacbioRootStore()
 const route = useRoute()
 
@@ -134,7 +137,19 @@ const fetchPoolsData = async () => {
     showAlert(errors, 'danger')
   }
   // Fetch the pool data if it is for editing an existing pool
-  if (route.params.id !== 'new') {
+  if (route.query.flexible) {
+    const pool = await multiPoolCreateStore.getPool(route.params.position)
+    if (pool) {
+      pacbioPoolCreateStore.$state = pool
+      pacbioPoolCreateStore.selectedPlates.map((plate) => {
+        scannedLabware.value.push({ barcode: plate.barcode, type: 'plates' })
+      })
+      pacbioPoolCreateStore.selectedTubes.map((tube) => {
+        scannedLabware.value.push({ barcode: tube.barcode, type: 'tubes' })
+      })
+    }
+    return { success: true, errors: [] }
+  } else if (route.params.id !== 'new') {
     //Populate the used aliquots from the pool
     const { success, errors } = await pacbioPoolCreateStore.populateUsedAliquotsFromPool(
       route.params.id,
