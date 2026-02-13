@@ -201,7 +201,7 @@ const reset = () => {
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  await multiPoolCreateStore.setMultiPool({ id })
+  await multiPoolCreateStore.setMultiPool({ id: id.value })
   return { success: true }
 }
 </script>

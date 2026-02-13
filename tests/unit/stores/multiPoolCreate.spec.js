@@ -177,10 +177,10 @@ describe('useMultiPoolCreateStore', () => {
         expect(store.isValidPersisted('1')).toBeFalsy()
       })
 
-      it('returns true if the persisted store has no id', () => {
+      it('returns true if the persisted store has no id and the requests id is new', () => {
         const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
         localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
-        expect(store.isValidPersisted('1')).toBeTruthy()
+        expect(store.isValidPersisted('new')).toBeTruthy()
       })
 
       it('returns true if the persisted store id matches the requested id', () => {
@@ -197,12 +197,6 @@ describe('useMultiPoolCreateStore', () => {
         }
         localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
         expect(store.isValidPersisted('1')).toBeFalsy()
-      })
-
-      it('returns true if the persisted store has no id and there is no requested id', () => {
-        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
-        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
-        expect(store.isValidPersisted(null)).toBeTruthy()
       })
     })
 

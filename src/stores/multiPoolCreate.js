@@ -133,7 +133,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         const parsedId = parsed.multiPool?.id
 
         // If it doesn't have an id it must be a new multi pool, so we can consider it valid
-        if (!parsedId) {
+        if (!parsedId && isNaN(id)) {
           return true
         }
 
