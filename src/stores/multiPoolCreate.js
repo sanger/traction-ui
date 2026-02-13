@@ -7,6 +7,7 @@ import {
   groupIncludedByResource,
 } from '@/api/JsonApi.js'
 import { payload } from '@/stores/utilities/multiPool.js'
+import { hasErrors } from '@/stores/utilities/pacbioPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
@@ -110,7 +111,10 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * @returns {Object} - The pool at the given position.
      */
     getPool(position) {
-      return this.multiPoolPositions[position] || {}
+      const pool = this.multiPoolPositions[position]
+      // Return a deep copy of the pool to prevent direct mutations to the store state
+      // We use the JSON parse/stringify trick for deep copying as the pool has nested objects
+      return pool ? JSON.parse(JSON.stringify(pool)) : null
     },
 
     // Reset the store data
@@ -144,6 +148,26 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
 
     async updateMultiPoolPosition({ position, subPool }) {
       this.multiPoolPositions[position] = subPool
+    },
+
+    /**
+     *
+     * @param {*} position of the pool to be validated
+     * @returns {Boolean} true if the pool is valid, false otherwise
+     */
+    isValidPool(position) {
+      const poolPosition = this.getPool(position)
+      // If there is no pool at the position, we consider it valid as there is no data to invalidate it
+      if (!poolPosition) {
+        return false
+      }
+
+      // We currently only support PacBio
+      // But due to different architectures, ONT and PacBio pool validation is different
+      if (this.multiPool.pipeline === 'pacbio') {
+        const { used_aliquots, pool } = poolPosition
+        return !hasErrors({ used_aliquots, pool })
+      }
     },
   },
   persist: true,

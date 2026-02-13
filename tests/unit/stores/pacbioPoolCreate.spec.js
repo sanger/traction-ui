@@ -1,6 +1,7 @@
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pacbioPool.js'
@@ -1751,6 +1752,58 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.pool.errors).toEqual({
           volume: 'must be greater than used volume',
         })
+      })
+    })
+
+    describe('updateMultiPoolPosition', () => {
+      let multiPoolCreateStore
+
+      const used_aliquot = createUsedAliquot({
+        id: '1',
+        source_id: '2',
+        source_type: 'Pacbio::Request',
+        tag_id: '2',
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: 1,
+        concentration: 1,
+        insert_size: 100,
+      })
+
+      const pool = {
+        id: '1',
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: 1,
+        concentration: 1,
+        insert_size: 100,
+      }
+
+      beforeEach(() => {
+        multiPoolCreateStore = useMultiPoolCreateStore()
+        multiPoolCreateStore.updateMultiPoolPosition = vi.fn()
+        store.used_aliquots = { _1: used_aliquot }
+        store.pool = pool
+      })
+
+      it('sets the state of the store to the position of the pool in the multi pool store when the pool is valid', () => {
+        const position = 2
+
+        const { success, errors } = store.updateMultiPoolPosition(position)
+        expect(multiPoolCreateStore.updateMultiPoolPosition).toHaveBeenCalledWith({
+          position: position,
+          subPool: store.$state,
+        })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('sets an error when the pool is invalid', () => {
+        store.pool.volume = null
+
+        const position = 2
+        const { success, errors } = store.updateMultiPoolPosition(position)
+        expect(multiPoolCreateStore.updateMultiPoolPosition).not.toHaveBeenCalled()
+        expect(success).toEqual(false)
+        expect(errors).toEqual('The pool is invalid')
       })
     })
   })

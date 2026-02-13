@@ -136,7 +136,6 @@
  */
 import PacbioPoolAliquotList from '@/components/pacbio/PacbioPoolAliquotList.vue'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate'
 import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
@@ -156,16 +155,14 @@ const parsedFile = ref(null) // Holds the data of the parsed file
 const validated = ref(true) // Flag to indicate if the form data is valid
 
 const {
-  $state: pacbioPoolCreateState,
   pool,
   selectedUsedAliquots,
   createPool,
   updatePool,
+  updateMultiPoolPosition,
   validatePoolAttribute,
   updateUsedAliquotFromCsvRecord,
 } = usePacbioPoolCreateStore()
-
-const { updateMultiPoolPosition } = useMultiPoolCreateStore()
 
 const { showAlert } = useAlert()
 const persisted = computed(() => !!pool.id)
@@ -219,10 +216,12 @@ const update = () => {
 const updateMultiPoolSubPool = () => {
   busy.value = true
   validated.value = true
-  updateMultiPoolPosition({
-    position: props.flexiblePoolPosition,
-    subPool: { ...pacbioPoolCreateState },
-  })
+  const { success, errors } = updateMultiPoolPosition(props.flexiblePoolPosition)
+  if (!success) {
+    showAlert(errors, 'danger', 'pool-create-message')
+    busy.value = false
+    return
+  }
   showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
   busy.value = false
 }

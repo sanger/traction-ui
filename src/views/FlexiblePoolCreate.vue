@@ -152,7 +152,7 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -167,16 +167,8 @@ const multiPoolCreateStore = useMultiPoolCreateStore()
 const { showAlert } = useAlert()
 const route = useRoute()
 
-// Props
-const props = defineProps({
-  // Router param for the multi pool ID
-  id: {
-    type: [String, Number],
-    default: 0,
-  },
-})
-
 // State
+const id = computed(() => route.params.id)
 const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
 const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 // Flag to indicate if the form is busy processing a request
@@ -209,7 +201,7 @@ const reset = () => {
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  await multiPoolCreateStore.setMultiPool({ id: props.id })
+  await multiPoolCreateStore.setMultiPool({ id })
   return { success: true }
 }
 </script>

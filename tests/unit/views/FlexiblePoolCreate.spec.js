@@ -106,4 +106,12 @@ describe('FlexiblePoolCreate', () => {
       expect(mockShowAlert).toHaveBeenCalledWith(['Error creating pool'], 'danger')
     })
   })
+
+  describe('id', () => {
+    it('sets the id from the route params', async () => {
+      expect(wrapper.vm.id).toBe('new')
+      await router.push({ name: 'FlexiblePool', params: { id: 1 } })
+      expect(wrapper.vm.id).toBe('1')
+    })
+  })
 })

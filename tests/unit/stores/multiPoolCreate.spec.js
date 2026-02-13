@@ -138,13 +138,13 @@ describe('useMultiPoolCreateStore', () => {
         expect(poolB2).toEqual({ id: 2, position: '2', type: 'MultiPoolPosition' })
       })
 
-      it('returns an empty object if no pool exists at the given position', () => {
+      it('returns null if no pool exists at the given position', () => {
         store.$state.multiPoolPositions = {
           1: { id: 1, position: '1', type: 'MultiPoolPosition' },
         }
 
         const pool = store.getPool('C3')
-        expect(pool).toEqual({})
+        expect(pool).toEqual(null)
       })
     })
 
@@ -214,6 +214,26 @@ describe('useMultiPoolCreateStore', () => {
 
         store.updateMultiPoolPosition({ position, subPool })
         expect(store.multiPoolPositions[position]).toEqual(subPool)
+      })
+    })
+
+    describe('isValidPool', () => {
+      it('returns false if there is no pool at the given position', () => {
+        expect(store.isValidPool('1')).toBeFalsy()
+      })
+
+      it('returns false if the pool at the given position is invalid', () => {
+        const position = '1'
+        store.multiPoolPositions[position] = {
+          pool: { id: 1, errors: { volume: 'must be present' } },
+        }
+        expect(store.isValidPool(position)).toBeFalsy()
+      })
+
+      it('returns true if the pool at the given position is valid', () => {
+        const position = '1'
+        store.multiPoolPositions[position] = { pool: { id: 1, errors: {} } }
+        expect(store.isValidPool(position)).toBeTruthy()
       })
     })
   })

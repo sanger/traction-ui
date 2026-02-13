@@ -30,7 +30,7 @@ const validate = ({ used_aliquots, pool }) => {
 
   const aliquotEntries = Object.entries(used_aliquots)
   aliquotEntries.forEach(([key, used_aliquot]) => {
-    const usedAliquotValid = used_aliquot.validate(pooled)
+    const usedAliquotValid = createUsedAliquot(used_aliquot).validate(pooled)
     isValid = isValid && usedAliquotValid
     if (aliquotEntries.some(([k, obj]) => obj.tag_id === used_aliquot.tag_id && k !== key)) {
       used_aliquot.errors['tag_id'] = 'duplicated'
@@ -219,6 +219,21 @@ const addUsedAliquotsBarcodeAndErrorsToPools = (state) => {
   })
 }
 
+/**
+ *
+ * @param {Object} Pool object containing pool attributes, used_aliquots object containing used aliquot objects
+ * @returns {Boolean} Returns true if there are errors in the pool or any of the used aliquots, false otherwise
+ */
+const hasErrors = ({ pool, used_aliquots }) => {
+  const poolErrors = pool?.errors ? Object.keys(pool.errors).length > 0 : false
+  const usedAliquotsErrors = used_aliquots
+    ? Object.values(used_aliquots).some(
+        (used_aliquot) => used_aliquot.errors && Object.keys(used_aliquot.errors).length > 0,
+      )
+    : false
+  return poolErrors || usedAliquotsErrors
+}
+
 export {
   validate,
   payload,
@@ -228,4 +243,5 @@ export {
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
   addUsedAliquotsBarcodeAndErrorsToPools,
+  hasErrors,
 }
