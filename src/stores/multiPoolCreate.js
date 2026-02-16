@@ -26,7 +26,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * Fetches a multi pool by its id and populates the store state with the retrieved data.
      *
      * @param {*} multiPoolId the id of the multi pool to fetch
-     * @returns
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status and any errors.
      */
     async fetchMultiPool(multiPoolId) {
       const rootStore = useRootStore()
