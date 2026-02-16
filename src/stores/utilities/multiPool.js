@@ -1,10 +1,40 @@
+import { createUsedAliquot } from "./usedAliquot"
+
+// Converts a pool and its used_aliquots to pacbio_pool_attributes
+const buildPacbioPoolAttributes = ({ used_aliquots, pool }) => {
+  const { template_prep_kit_box_barcode, volume, concentration, insert_size } = pool
+  return {
+    used_aliquots_attributes: Object.values(used_aliquots).map((ua) => createUsedAliquot(ua)).map((ua) => ua.payloadAttributes()),
+
+    primary_aliquot_attributes: {
+      template_prep_kit_box_barcode,
+      volume,
+      concentration,
+      insert_size,
+    },
+    template_prep_kit_box_barcode,
+    volume,
+    concentration,
+    insert_size,
+  }
+}
+
+// Converts the multiPoolPositions object to the required array format
+const multiPoolPositionsToAttributes = (multiPoolPositions) =>
+  Object.entries(multiPoolPositions).map(([position, value]) => ({
+    position,
+    pacbio_pool_attributes: buildPacbioPoolAttributes({
+      used_aliquots: value.used_aliquots,
+      pool: value.pool,
+    }),
+  }))
+
 /**
  * Produce a json api compliant payload
  *
  * @param {Object}
- *
  */
-const payload = ({ multiPool }) => {
+const multiPoolPayload = ({ multiPool, multiPoolPositions }) => {
   const { pipeline, pool_method } = multiPool
   return {
     data: {
@@ -13,6 +43,7 @@ const payload = ({ multiPool }) => {
       attributes: {
         pipeline,
         pool_method,
+        multi_pool_positions_attributes: multiPoolPositionsToAttributes(multiPoolPositions),
       },
     },
   }
@@ -42,4 +73,4 @@ const createSubPools = ({ multiPool, multiPoolPositions, pools }) => {
   })
 }
 
-export { payload, createSubPools }
+export { multiPoolPayload, createSubPools }

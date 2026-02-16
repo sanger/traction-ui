@@ -6,7 +6,7 @@ import {
   extractAttributes,
   groupIncludedByResource,
 } from '@/api/JsonApi.js'
-import { payload } from '@/stores/utilities/multiPool.js'
+import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
 import { hasErrors } from '@/stores/utilities/pacbioPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
@@ -67,11 +67,11 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
      */
     async createMultiPool() {
-      const { multiPool } = this
+      const { multiPool, multiPoolPositions } = this
       const rootStore = useRootStore()
       const request = rootStore.api.traction.multi_pools
       const promise = request.create({
-        data: payload({ multiPool }),
+        data: multiPoolPayload({ multiPool, multiPoolPositions }),
       })
       const { success, body: { data = {} } = {}, errors } = await handleResponse(promise)
       const { attributes: { barcode = '' } = {} } = data
