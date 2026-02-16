@@ -1,5 +1,5 @@
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
-import { mountWithStore, flushPromises } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, nextTick } from '@support/testHelper.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
@@ -103,6 +103,25 @@ describe('FlexiblePoolCreate', () => {
       await wrapper.vm.create()
       expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
       expect(mockShowAlert).toHaveBeenCalledWith(['Error creating pool'], 'danger')
+    })
+  })
+
+  describe('loading modal', () => {
+    it('shows the modal when showLoadingModal is called', async () => {
+      const message = 'show modal message'
+      wrapper.vm.showLoadingModal(message)
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').text()).toBe(message)
+    })
+
+    it('hides the modal when clearLoadingModal is called', async () => {
+      wrapper.vm.showLoadingModal('show modal message')
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      wrapper.vm.clearLoadingModal()
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(false)
     })
   })
 })

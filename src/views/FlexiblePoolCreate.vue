@@ -1,6 +1,7 @@
 <template>
   <flagged-feature name="flexible_pooling">
     <template #default>
+      <loading-full-screen-modal v-bind="loadingModalState"></loading-full-screen-modal>
       <DataFetcher :fetcher="provider">
         <div
           class="w-full max-w-6xl mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4 space-y-4"
@@ -108,6 +109,7 @@
                     class="block rounded border file:border-0 w-full my-2"
                     type="file"
                     accept="text/csv, .csv"
+                    @change="uploadFile"
                   />
                 </div>
               </div>
@@ -175,6 +177,7 @@ const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
 const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 // Flag to indicate if the form is busy processing a request
 const busy = ref(false)
+const loadingModalState = ref({ visible: false, message: '' })
 
 // Actions
 
@@ -191,6 +194,33 @@ const create = () => {
   })
 }
 
+/**
+ * Handles the csv file upload
+ * @param evt - Event object
+ */
+const uploadFile = async (evt) => {
+  showLoadingModal('Processing CSV file...')
+  if (evt?.target?.files?.length) {
+    await multiPoolCreateStore.parsePoolingCsvFile(evt.target.files[0])
+  } else {
+    showAlert('No file selected. Please select a CSV file to upload.', 'warning')
+  }
+  clearLoadingModal()
+}
+
+/**
+ * Hides the loading modal and resets the loading modal state to default values
+ */
+function clearLoadingModal() {
+  loadingModalState.value = { visible: false, message: '' }
+}
+
+/**
+ * Shows the loading modal with the provided message
+ */
+function showLoadingModal(message) {
+  loadingModalState.value = { visible: true, message }
+}
 /**
  * Resets the multi pool create store data and sets default values
  */

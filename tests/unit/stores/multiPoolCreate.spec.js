@@ -170,5 +170,28 @@ describe('useMultiPoolCreateStore', () => {
         })
       })
     })
+
+    describe('parsePoolingCsvFile', () => {
+      let file, fileContent
+
+      beforeEach(() => {
+        file = {
+          text: () => Promise.resolve(fileContent),
+        }
+      })
+
+      it('returns an error if no file is provided', async () => {
+        const { success, errors } = await store.parsePoolingCsvFile()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('file is required')
+      })
+
+      it('returns an error if the CSV file is empty', async () => {
+        fileContent = '\n\n\n,,,,\n'
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('The provided csv file is empty')
+      })
+    })
   })
 })
