@@ -3,7 +3,7 @@
     <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-2 w-full">
       <div v-for="(row, i) in labwareType.numRows" :key="i" class="flex flex-row">
         <div v-for="(column, j) in labwareType.numColumns" :key="j" class="px-1 py-1 w-full h-full">
-          <slot :position="createPosition(row, column)" />
+          <slot :position="createPosition(row, column, labwareType)" />
         </div>
       </div>
       <span data-attribute="labware-name" class="flex py-1 px-2 font-medium text-gray-500"
@@ -19,12 +19,12 @@
   A component to build labware maps.
   To add a new labwareType, add the config to src/lib/LabwareTypes'
   Usage:
-  <LabwareMap 
+  <LabwareMap
     v-slot="{ position }"
     :labware-type="LabwareTypes.Plate96"
   >
     <PacbioRunWell :position="position"/>
-  </LabwareMap>  
+  </LabwareMap>
 */
 }
 import { LabwareTypes } from '../../lib/LabwareTypes'
@@ -43,13 +43,18 @@ export default {
     },
   },
   methods: {
-    createPosition(rowNumber, columnNumber) {
-      if (rowNumber > 26) {
-        return `${rowNumber},${columnNumber}`
+    createPosition(row, column, labwareType) {
+      if (!row || !column || !labwareType) {
+        return null
       }
-      const aCharCode = 'A'.charCodeAt(0)
-      const row = String.fromCharCode(rowNumber + aCharCode - 1)
-      return `${row}${columnNumber}`
+
+      return labwareType.positionFormat({
+        row,
+        column,
+        numRows: labwareType.numRows,
+        numColumns: labwareType.numColumns,
+        walkingDirection: labwareType.walkingDirection,
+      })
     },
   },
 }

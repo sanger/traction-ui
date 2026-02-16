@@ -3,7 +3,7 @@
 describe('Visit Home Page', () => {
   beforeEach(() => {
     cy.withFlags({
-      dpl_478_enable_qc_results_upload: { enabled: true },
+      flexible_pooling: { enabled: true },
     })
   })
 
@@ -14,6 +14,8 @@ describe('Visit Home Page', () => {
     cy.contains('QC Results Upload')
     cy.contains('Reception')
     cy.contains('LabWhere Reception')
+    cy.contains('Sample Report')
+    cy.contains('Flexible Pooling')
 
     // Home page contents
     cy.contains('Traction')
