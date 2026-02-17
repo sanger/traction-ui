@@ -92,6 +92,13 @@ describe('multiPool', () => {
   })
 
   describe('parseMultiPoolFile', () => {
+    it('returns an error if the CSV file is empty', async () => {
+      const csv = '\n\n\n,,,,\n'
+      const { success, errors } = await parseMultiPoolFile(csv)
+      expect(success).toBeFalsy()
+      expect(errors).toEqual(['The provided csv file is empty'])
+    })
+
     it('returns errors for invalid pool numbers and source identifiers', () => {
       const csv = 'Pool Number,Source Identifier\n,Sample1\nabc,\n0,Sample3\n97,Sample4'
       const { success, errors } = parseMultiPoolFile(csv)

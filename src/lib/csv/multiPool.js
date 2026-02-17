@@ -1,4 +1,4 @@
-import { getColumnValues } from './pacbio.js'
+import { getColumnValues, removeEmptyLines } from './pacbio.js'
 
 const getColumnIndexOfHeader = (csv, header) => {
   const lines = csv.split('\n').filter((line) => line.trim() !== '')
@@ -53,7 +53,14 @@ const validateSourceIdentifierColumn = (csv) =>
   })
 
 const parseMultiPoolFile = (csv) => {
-  // First we validate the pool number and source identifier columns to ensure we have the necessary information to properly parse the file.
+  // Remove empty lines from the CSV content
+  csv = removeEmptyLines(csv)
+  // Check if the CSV content is empty or has only headers
+  if (csv.length === 0 || csv.split('\n').length <= 1) {
+    return { success: false, errors: ['The provided csv file is empty'] }
+  }
+
+  // We validate the pool number and source identifier columns to ensure we have the necessary information to properly parse the file.
   // We do this before parsing the file to avoid unnecessary processing if the file is not valid.
 
   // Ensure the pool number column is valid before proceeding with parsing the file

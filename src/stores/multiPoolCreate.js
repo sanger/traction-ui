@@ -7,7 +7,6 @@ import {
   groupIncludedByResource,
 } from '@/api/JsonApi.js'
 import { payload } from '@/stores/utilities/multiPool.js'
-import { removeEmptyLines } from '@/lib/csv/pacbio.js'
 import { parseMultiPoolFile } from '@/lib/csv/multiPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
@@ -116,13 +115,6 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       }
       try {
         let csv = await file.text()
-
-        // Remove empty lines from the CSV content
-        csv = removeEmptyLines(csv)
-        // Check if the CSV content is empty or has only headers
-        if (csv.length === 0 || csv.split('\n').length <= 1) {
-          return { success: false, errors: 'The provided csv file is empty' }
-        }
 
         const { success, errors } = parseMultiPoolFile(csv)
 
