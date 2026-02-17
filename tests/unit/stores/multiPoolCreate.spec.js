@@ -1,7 +1,7 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
-import { payload } from '@/stores/utilities/multiPool.js'
+import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
@@ -67,18 +67,21 @@ describe('useMultiPoolCreateStore', () => {
 
       it('handles success', async () => {
         const mockResponse = successfulResponse({
-          data: { attributes: { barcode: 'TRAC-2-1' } },
+          data: { id: '1' },
         })
         store.multiPool = { pooling_method: 'Plate', pipeline: 'pacbio' }
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeTruthy()
         expect(create).toHaveBeenCalledWith({
-          data: payload({ multiPool: store.multiPool }),
+          data: multiPoolPayload({
+            multiPool: store.multiPool,
+            multiPoolPositions: store.multiPoolPositions,
+          }),
         })
-        expect(barcode).toEqual('TRAC-2-1')
+        expect(id).toEqual('1')
         expect(errors).toEqual(undefined)
       })
 
@@ -86,10 +89,10 @@ describe('useMultiPoolCreateStore', () => {
         const mockResponse = failedResponse(422)
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeFalsy()
-        expect(barcode).toEqual('')
+        expect(id).toEqual('')
         expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
