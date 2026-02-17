@@ -1,7 +1,7 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe } from 'vitest'
-import { payload } from '@/stores/utilities/multiPool.js'
+import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
@@ -76,7 +76,7 @@ describe('useMultiPoolCreateStore', () => {
 
         expect(success).toBeTruthy()
         expect(create).toHaveBeenCalledWith({
-          data: payload({ multiPool: store.multiPool }),
+          data: multiPoolPayload({ multiPool: store.multiPool, multiPoolPositions: store.multiPoolPositions }),
         })
         expect(barcode).toEqual('TRAC-2-1')
         expect(errors).toEqual(undefined)

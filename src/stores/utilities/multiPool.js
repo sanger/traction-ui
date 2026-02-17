@@ -1,36 +1,29 @@
-import { createUsedAliquot } from "./usedAliquot"
-
-// Converts a pool and its used_aliquots to pacbio_pool_attributes
-const buildPacbioPoolAttributes = ({ used_aliquots, pool }) => {
-  const { template_prep_kit_box_barcode, volume, concentration, insert_size } = pool
-  return {
-    used_aliquots_attributes: Object.values(used_aliquots).map((ua) => createUsedAliquot(ua)).map((ua) => ua.payloadAttributes()),
-
-    primary_aliquot_attributes: {
-      template_prep_kit_box_barcode,
-      volume,
-      concentration,
-      insert_size,
-    },
-    template_prep_kit_box_barcode,
-    volume,
-    concentration,
-    insert_size,
-  }
-}
-
-// Converts the multiPoolPositions object to the required array format
-const multiPoolPositionsToAttributes = (multiPoolPositions) =>
-  Object.entries(multiPoolPositions).map(([position, value]) => ({
-    position,
-    pacbio_pool_attributes: buildPacbioPoolAttributes({
-      used_aliquots: value.used_aliquots,
-      pool: value.pool,
-    }),
-  }))
+import { createUsedAliquot } from './usedAliquot.js'
+import { payload as PacbioPoolPayload } from './pacbioPool.js'
 
 /**
- * Produce a json api compliant payload
+ * Converts multi pool positions from the store into the attributes format required for the multi pool payload.
+ * @param {*} multiPoolPositions - Object containing store entries for multi pool positions
+ * @returns {Array} - Array of multi pool position attributes formatted for the multi pool payload
+ */
+const multiPoolPositionsToAttributes = (multiPoolPositions) =>
+  Object.entries(multiPoolPositions).map(([position, value]) => {
+    // Convert used_aliquots to the required usedAliquot instance for PacbioPoolPayload function
+    const used_aliquots = Object.fromEntries(
+      Object.entries(value.used_aliquots).map(([key, ua]) => [key, createUsedAliquot(ua)]),
+    )
+    return {
+      position,
+      // Get the data attributes from the PacbioPoolPayload function
+      pacbio_pool_attributes: PacbioPoolPayload({
+        used_aliquots: used_aliquots,
+        pool: value.pool,
+      }).data.attributes,
+    }
+  })
+
+/**
+ * Produce a json api compliant payload for creating/updating a multi pool
  *
  * @param {Object}
  */
@@ -73,4 +66,4 @@ const createSubPools = ({ multiPool, multiPoolPositions, pools }) => {
   })
 }
 
-export { multiPoolPayload, createSubPools }
+export { multiPoolPayload, multiPoolPositionsToAttributes, createSubPools }
