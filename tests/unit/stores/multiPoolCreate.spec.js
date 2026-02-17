@@ -67,18 +67,21 @@ describe('useMultiPoolCreateStore', () => {
 
       it('handles success', async () => {
         const mockResponse = successfulResponse({
-          data: { attributes: { barcode: 'TRAC-2-1' } },
+          data: { id: '1' },
         })
         store.multiPool = { pooling_method: 'Plate', pipeline: 'pacbio' }
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeTruthy()
         expect(create).toHaveBeenCalledWith({
-          data: multiPoolPayload({ multiPool: store.multiPool, multiPoolPositions: store.multiPoolPositions }),
+          data: multiPoolPayload({
+            multiPool: store.multiPool,
+            multiPoolPositions: store.multiPoolPositions,
+          }),
         })
-        expect(barcode).toEqual('TRAC-2-1')
+        expect(id).toEqual('1')
         expect(errors).toEqual(undefined)
       })
 
@@ -86,10 +89,10 @@ describe('useMultiPoolCreateStore', () => {
         const mockResponse = failedResponse(422)
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeFalsy()
-        expect(barcode).toEqual('')
+        expect(id).toEqual('')
         expect(errors).toEqual(mockResponse.errorSummary)
       })
     })

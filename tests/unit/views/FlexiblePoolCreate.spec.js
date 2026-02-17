@@ -84,13 +84,13 @@ describe('FlexiblePoolCreate', () => {
     it('shows the correct alert when creation is successful', async () => {
       store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
         success: true,
-        barcode: 'TRAC-2-123',
+        id: '1',
         errors: [],
       })
       await wrapper.vm.create()
       expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
       expect(mockShowAlert).toHaveBeenCalledWith(
-        'Flexible pool successfully created with barcode TRAC-2-123',
+        'Flexible pool successfully created with id 1',
         'success',
       )
     })
@@ -98,7 +98,7 @@ describe('FlexiblePoolCreate', () => {
     it('shows the correct alert when creation fails', async () => {
       store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
         success: false,
-        barcode: '',
+        id: '',
         errors: ['Error creating pool'],
       })
       await wrapper.vm.create()

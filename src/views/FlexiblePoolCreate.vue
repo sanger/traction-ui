@@ -181,9 +181,9 @@ const busy = ref(false)
  */
 const create = () => {
   busy.value = true
-  multiPoolCreateStore.createMultiPool().then(({ success, barcode, errors }) => {
+  multiPoolCreateStore.createMultiPool().then(({ success, id, errors }) => {
     success
-      ? showAlert(`Flexible pool successfully created with barcode ${barcode}`, 'success')
+      ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
     busy.value = false
   })
