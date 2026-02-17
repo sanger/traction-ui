@@ -8,6 +8,7 @@ import {
 } from '@/api/JsonApi.js'
 import { payload } from '@/stores/utilities/multiPool.js'
 import { removeEmptyLines } from '@/lib/csv/pacbio.js'
+import { parseMultiPoolFile } from '@/lib/csv/multiPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
@@ -123,7 +124,9 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
           return { success: false, errors: 'The provided csv file is empty' }
         }
 
-        return { success: true, errors: '' }
+        const { success, errors } = parseMultiPoolFile(csv)
+
+        return { success, errors }
       } catch (error) {
         return { success: false, errors: error.message }
       }
