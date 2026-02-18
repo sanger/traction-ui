@@ -1,6 +1,20 @@
 import { getColumnValues, removeEmptyLines, eachRecord } from './pacbio.js'
 
 /**
+ * Required headers for the multi pool csv file. We will validate that these headers are present in the file before parsing.
+ */
+const requiredHeaders = [
+  'Pool Number',
+  'Source Identifier',
+  'Tag Set',
+  'Tag',
+  'Template Prep Kit Box Barcode',
+  'Volume (uL)',
+  'Concentration (ng/uL)',
+  'Insert Size',
+]
+
+/**
  *
  * @param {*} csv - csv file content
  * @param {*} header - name of the header to get the column index for
@@ -19,6 +33,24 @@ const getColumnIndexOfHeader = (csv, header) => {
   }
 
   return columnIndex
+}
+
+/**
+ * Validates that the required headers are present in the csv file.
+ * @param {*} csv - csv file content
+ * @param {*} headers - list of headers to check exist
+ * @returns {Array} array of error messages for missing headers, empty if all headers are present
+ */
+const validateHeaders = (csv, headers) => {
+  const errors = []
+  headers.forEach((header) => {
+    try {
+      getColumnIndexOfHeader(csv, header)
+    } catch (error) {
+      errors.push(error.message)
+    }
+  })
+  return errors
 }
 
 /**
@@ -96,6 +128,12 @@ const formatRecord = (record) => {
   return record
 }
 
+/**
+ * Parses the multi pool csv file, validates the required columns, and returns the parsed records or errors.
+ * 
+ * @param {*} csv - csv file content
+ * @returns { Object } { success, records, errors }. success is a boolean indicating if the file was successfully parsed, records is an array of parsed records if successful, and errors is an array of error messages if there were any errors during parsing or validation.
+ */
 const parseMultiPoolFile = (csv) => {
   // Remove empty lines from the CSV content
   csv = removeEmptyLines(csv)
@@ -104,11 +142,14 @@ const parseMultiPoolFile = (csv) => {
     return { success: false, errors: ['The provided csv file is empty'] }
   }
 
-  // We validate the pool number and source identifier columns to ensure we have the necessary information to properly parse the file.
-  // We do this before parsing the file to avoid unnecessary processing if the file is not valid.
+  // Validate that the required headers are present in the file. If not, return the errors.
+  const errors = validateHeaders(csv, requiredHeaders)
+  if (errors.length) {
+    return { success: false, errors: errors }
+  }
 
   // Ensure the pool number column is valid before proceeding with parsing the file
-  const errors = validatePoolNumberColumn(csv)
+  errors.push(...validatePoolNumberColumn(csv))
   // Ensure the source_identifier column is valid before proceeding with parsing the file
   errors.push(...validateSourceIdentifierColumn(csv))
 
@@ -126,7 +167,9 @@ export {
   parseMultiPoolFile,
   getColumnIndexOfHeader,
   formatRecord,
+  requiredHeaders,
   validateColumn,
+  validateHeaders,
   validatePoolNumberColumn,
   validateSourceIdentifierColumn,
 }

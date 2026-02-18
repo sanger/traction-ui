@@ -186,11 +186,11 @@ describe('useMultiPoolCreateStore', () => {
         expect(errors).toEqual('file is required')
       })
 
-      it('returns an error if the file is not a valid multi pool csv', async () => {
+      it('returns an error if the file is not a valid multi pool csv (missing header)', async () => {
         fileTextContent = 'Pool Number,Source Identifier\n1,\n2,Sample2'
         const { success, errors } = await store.parsePoolingCsvFile(file)
         expect(success).toBeFalsy()
-        expect(errors).toContain('Missing source identifier on line 2')
+        expect(errors).toContain('Header "Tag Set" not found in CSV')
       })
     })
   })

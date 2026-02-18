@@ -2,9 +2,11 @@ import {
   parseMultiPoolFile,
   getColumnIndexOfHeader,
   validateColumn,
+  validateHeaders,
   validatePoolNumberColumn,
   validateSourceIdentifierColumn,
   formatRecord,
+  requiredHeaders
 } from '@/lib/csv/multiPool.js'
 
 describe('multiPool', () => {
@@ -20,6 +22,20 @@ describe('multiPool', () => {
       expect(() => getColumnIndexOfHeader(csv, 'Invalid Header')).toThrow(
         'Header "Invalid Header" not found in CSV',
       )
+    })
+  })
+
+  describe('validateHeaders', () => {
+    it('returns an error for missing headers', () => {
+      const csv = 'Pool Number,Source Identifier\n1,Sample1\n2,Sample2'
+      const errors = validateHeaders(csv, ['Pool Number', 'Missing Header'])
+      expect(errors).toContain('Header "Missing Header" not found in CSV')
+    })
+
+    it('returns no errors if all headers are present', () => {
+      const csv = 'Pool Number,Source Identifier\n1,Sample1\n2,Sample2'
+      const errors = validateHeaders(csv, ['Pool Number', 'Source Identifier'])
+      expect(errors.length).toBe(0)
     })
   })
 
@@ -99,15 +115,41 @@ describe('multiPool', () => {
   })
 
   describe('parseMultiPoolFile', () => {
+    let csv
+    beforeEach(() => {
+      csv = requiredHeaders.join(',') + '\n'
+    })
+
     it('returns an error if the CSV file is empty', async () => {
-      const csv = '\n\n\n,,,,\n'
+      csv = '\n\n\n,,,,\n'
       const { success, errors } = await parseMultiPoolFile(csv)
       expect(success).toBeFalsy()
       expect(errors).toEqual(['The provided csv file is empty'])
     })
 
+    it('returns an error if required headers are missing', async () => {
+      csv = 'Pool Number,Source Identifier\n1,Sample1\n2,Sample2'
+      const { success, errors } = await parseMultiPoolFile(csv)
+      expect(success).toBeFalsy()
+      expect(errors).toStrictEqual([
+        'Header "Tag Set" not found in CSV',
+        'Header "Tag" not found in CSV',
+        'Header "Template Prep Kit Box Barcode" not found in CSV',
+        'Header "Volume (uL)" not found in CSV',
+        'Header "Concentration (ng/uL)" not found in CSV',
+        'Header "Insert Size" not found in CSV',
+      ])
+    })
+
     it('returns errors for invalid pool numbers and source identifiers', () => {
-      const csv = 'Pool Number,Source Identifier\n,Sample1\nabc,\n0,Sample3\n97,Sample4'
+      // Line 2 missing pool number
+      csv += ',Sample1,,,,,,\n'
+      // Line 3 non-numeric pool number and missing source identifier
+      csv += 'abc,,,,,,\n'
+      // Line 4 pool number less than 1
+      csv += '0,Sample3,,,,,,\n'
+      // Line 5 pool number greater than 96
+      csv += '97,Sample4,,,,,,\n'
       const { success, errors } = parseMultiPoolFile(csv)
       expect(success).toBe(false)
       expect(errors).toContain('Missing pool number on line 2')
@@ -120,7 +162,9 @@ describe('multiPool', () => {
     })
 
     it('returns success for valid CSV', () => {
-      const csv = 'Pool Number,Source Identifier\n1,Sample1\n2,Sample2'
+      // Ensure the pool number and source identifier (first 2) columns are valid to confirm that the file is parsed successfully
+      csv += '1,Sample1,,,,,,\n'
+      csv += '2,Sample2,,,,,,\n'
       const { success, errors } = parseMultiPoolFile(csv)
       expect(success).toBe(true)
       expect(errors.length).toBe(0)
