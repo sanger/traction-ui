@@ -1,5 +1,12 @@
-import { getColumnValues, removeEmptyLines } from './pacbio.js'
+import { getColumnValues, removeEmptyLines, eachRecord } from './pacbio.js'
 
+/**
+ *
+ * @param {*} csv - csv file content
+ * @param {*} header - name of the header to get the column index for
+ * @returns {Integer} column index of the given header in the csv file
+ * @throws {Error} if the header is not found in the csv file
+ */
 const getColumnIndexOfHeader = (csv, header) => {
   const lines = csv.split('\n').filter((line) => line.trim() !== '')
   if (lines.length === 0) return []
@@ -14,17 +21,34 @@ const getColumnIndexOfHeader = (csv, header) => {
   return columnIndex
 }
 
+/**
+ * Validates a csv column given the header name based on the provided validation function.
+ * @param {*} csv - csv file content
+ * @param {*} header - Name of the header to validate
+ * @param {*} validateFn - Function that takes the column value and index and returns an error message if the value is invalid, otherwise returns null
+ * @returns {Array} Array of error messages for the column, empty if there are no errors
+ */
 const validateColumn = (csv, header, validateFn) => {
   const errors = []
-  const columnIndex = getColumnIndexOfHeader(csv, header)
-  const columnValues = getColumnValues(csv, columnIndex, true)
-  columnValues.forEach((value, index) => {
-    const error = validateFn(value, index)
-    if (error) errors.push(error)
-  })
+  // We wrap this in a try catch because getColumnIndexOfHeader will throw an error if the header is not found
+  try {
+    const columnIndex = getColumnIndexOfHeader(csv, header)
+    const columnValues = getColumnValues(csv, columnIndex, true)
+    columnValues.forEach((value, index) => {
+      const error = validateFn(value, index)
+      if (error) errors.push(error)
+    })
+  } catch (error) {
+    errors.push(error.message)
+  }
   return errors
 }
 
+/**
+ * Validates the pool number column in the multi pool csv file.
+ * @param {*} csv file content
+ * @returns {String | null} error message if the pool number column is invalid, otherwise null
+ */
 const validatePoolNumberColumn = (csv) =>
   validateColumn(csv, 'Pool Number', (poolNumber, index) => {
     if (!poolNumber) {
@@ -44,6 +68,11 @@ const validatePoolNumberColumn = (csv) =>
     return null
   })
 
+/**
+ * Validates the source identifier column in the multi pool csv file.
+ * @param {*} csv file content
+ * @returns {String | null} error message if the source identifier column is invalid, otherwise null
+ */
 const validateSourceIdentifierColumn = (csv) =>
   validateColumn(csv, 'Source Identifier', (sourceIdentifier, index) => {
     if (!sourceIdentifier) {
@@ -51,6 +80,21 @@ const validateSourceIdentifierColumn = (csv) =>
     }
     return null
   })
+
+/**
+ * Renames volume and concentration headers to match the expected headers in the store.
+ * @param {*} record - Parsed record from eachRecord function
+ * @returns record - with renamed headers
+ */
+const formatRecord = (record) => {
+  record.record['volume'] = record.record['volume_(ul)']
+  delete record.record['volume_(ul)']
+
+  record.record['concentration'] = record.record['concentration_(ng/ul)']
+  delete record.record['concentration_(ng/ul)']
+
+  return record
+}
 
 const parseMultiPoolFile = (csv) => {
   // Remove empty lines from the CSV content
@@ -72,8 +116,10 @@ const parseMultiPoolFile = (csv) => {
     return { success: false, errors: errors }
   }
 
-  // const lines = eachRecord(csv, () => {}, false)
-  return { success: true, errors: [] }
+  const lines = eachRecord(csv, formatRecord, false)
+  const records = lines.map((line) => line.result)
+
+  return { success: true, records, errors: [] }
 }
 
 export {

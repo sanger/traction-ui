@@ -116,7 +116,12 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       try {
         let csv = await file.text()
 
+        // Parse the multi pool file to extract the records and validate the necessary columns. If the file is not valid, return the errors.
         const { success, errors } = parseMultiPoolFile(csv)
+
+        if (!success) {
+          return { success, errors }
+        }
 
         return { success, errors }
       } catch (error) {

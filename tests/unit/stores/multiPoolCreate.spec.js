@@ -1,6 +1,6 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
-import { beforeEach, describe } from 'vitest'
+import { beforeEach, describe, it } from 'vitest'
 import { payload } from '@/stores/utilities/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
@@ -172,10 +172,25 @@ describe('useMultiPoolCreateStore', () => {
     })
 
     describe('parsePoolingCsvFile', () => {
+      let file, fileTextContent
+    
+      beforeEach(() => {
+        file = {
+          text: () => Promise.resolve(fileTextContent)
+        }
+      })
+
       it('returns an error if no file is provided', async () => {
         const { success, errors } = await store.parsePoolingCsvFile()
         expect(success).toBeFalsy()
         expect(errors).toEqual('file is required')
+      })
+
+      it('returns an error if the file is not a valid multi pool csv', async () => {
+        fileTextContent = 'Pool Number,Source Identifier\n1,\n2,Sample2'
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeFalsy()
+        expect(errors).toContain('Missing source identifier on line 2')
       })
     })
   })

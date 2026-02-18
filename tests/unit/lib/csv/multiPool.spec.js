@@ -89,6 +89,12 @@ describe('multiPool', () => {
       const errors = validateColumn(csv, 'Pool Number', validateFn)
       expect(errors.length).toBe(0)
     })
+
+    it('returns an error if the header is not found', () => {
+      const csv = 'Pool Number,Source Identifier\n1,Sample1\n2,Sample2'
+      const errors = validateColumn(csv, 'Invalid Header', validateFn)
+      expect(errors).toContain('Header "Invalid Header" not found in CSV')
+    })
   })
 
   describe('parseMultiPoolFile', () => {
