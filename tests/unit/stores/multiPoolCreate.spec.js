@@ -1,15 +1,18 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
 import { payload } from '@/stores/utilities/multiPool.js'
+import { requiredHeaders } from '@/lib/csv/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
 describe('useMultiPoolCreateStore', () => {
-  let store
+  let store, pacbioPoolCreateStore
 
   beforeEach(() => {
     store = useMultiPoolCreateStore()
+    pacbioPoolCreateStore = usePacbioPoolCreateStore()
   })
 
   describe('actions', () => {
@@ -191,6 +194,33 @@ describe('useMultiPoolCreateStore', () => {
         const { success, errors } = await store.parsePoolingCsvFile(file)
         expect(success).toBeFalsy()
         expect(errors).toContain('Header "Tag Set" not found in CSV')
+      })
+
+      it('parses a valid multi pool csv file and builds the multi pool positions', async () => {
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords = vi
+          .fn()
+          .mockResolvedValue({ success: true, errors: [] })
+        fileTextContent = `${requiredHeaders.join(',')}\n`
+        fileTextContent += '1,Sample1,Set1,Tag1,Barcode1,10,20,500\n'
+        fileTextContent += '1,Sample2,Set1,Tag2,Barcode2,15,25,600\n'
+
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeTruthy()
+        expect(errors).toEqual([])
+      })
+
+      it('returns errors from building the pools if the csv file is valid but there is an error building the pools', async () => {
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords = vi
+          .fn()
+          .mockResolvedValue({ success: false, errors: ['Error building pool'] })
+        fileTextContent = `${requiredHeaders.join(',')}\n`
+        fileTextContent += '1,Sample1,Set1,Tag1,Barcode1,10,20,500\n'
+        fileTextContent += '1,Sample2,Set1,Tag2,Barcode2,15,25,600\n'
+
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(['Error building pool number 1: Error building pool'])
+        expect(store.multiPoolPositions).toEqual({})
       })
     })
   })

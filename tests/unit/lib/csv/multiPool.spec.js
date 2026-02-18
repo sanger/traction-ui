@@ -6,7 +6,7 @@ import {
   validatePoolNumberColumn,
   validateSourceIdentifierColumn,
   formatRecord,
-  requiredHeaders
+  requiredHeaders,
 } from '@/lib/csv/multiPool.js'
 
 describe('multiPool', () => {

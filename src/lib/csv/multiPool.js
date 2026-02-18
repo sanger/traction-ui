@@ -130,7 +130,7 @@ const formatRecord = (record) => {
 
 /**
  * Parses the multi pool csv file, validates the required columns, and returns the parsed records or errors.
- * 
+ *
  * @param {*} csv - csv file content
  * @returns { Object } { success, records, errors }. success is a boolean indicating if the file was successfully parsed, records is an array of parsed records if successful, and errors is an array of error messages if there were any errors during parsing or validation.
  */

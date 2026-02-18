@@ -1085,5 +1085,19 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       // Remove any existing errors for the field
       delete pool.errors[field]
     },
+
+    /**
+     * Takes a list of records extracted from a multi-pool CSV and builds used_aliquots based on the source identifiers and tag information in the records.
+     *
+     * @param {*} records - Object containing a used_aliquot entry and source_identifier
+     */
+    // eslint-disable-next-line no-unused-vars
+    async buildPoolFromMultiPoolCsvRecords(records) {
+      // Check the tag set is valid and tags exist
+      // Fetch the source labware based on the source identifiers
+      // Build the used aliquots based on the source labware and tag information
+      // Update the state with the new used aliquots and selected tag set
+      // Validate the used aliquots and pool
+    },
   },
 })
