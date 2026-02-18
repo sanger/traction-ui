@@ -1089,15 +1089,77 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     /**
      * Takes a list of records extracted from a multi-pool CSV and builds used_aliquots based on the source identifiers and tag information in the records.
      *
-     * @param {*} records - Object containing a used_aliquot entry and source_identifier
+     * @param {*} records - Object containing a used_aliquot entry with source_identifier, tagset, tag and metadata
      */
-    // eslint-disable-next-line no-unused-vars
     async buildPoolFromMultiPoolCsvRecords(records) {
-      // Check the tag set is valid and tags exist
+      // We first validate the tags before building the pool as we want to return any errors with the tags before we start building the pool
+      const { success, errors } = await this.validateMultiPoolCsvTags(records)
+      if (!success) {
+        return { success, errors }
+      }
+
       // Fetch the source labware based on the source identifiers
       // Build the used aliquots based on the source labware and tag information
       // Update the state with the new used aliquots and selected tag set
       // Validate the used aliquots and pool
+
+      return { success: true, errors: [] }
+    },
+
+    async validateMultiPoolCsvTags(records) {
+      // Get the tag set from the records
+      const tagSets = [...new Set(records.map((record) => record.tag_set).filter(Boolean))]
+      // We can't build the pool if there are multiple tag sets as a pool can only have one tag set
+      if (tagSets.length > 1) {
+        return {
+          success: false,
+          errors: [
+            'Multiple tag sets found in. Please ensure all records in the pool have the same tag set.',
+          ],
+        }
+        // We can't build the pool if there is no tag set and there are tags as we wouldn't know which tagset the tags belong to
+      } else if (tagSets.length == 0 && records.some((record) => record.tag)) {
+        return {
+          success: false,
+          errors: [
+            'Tags found but no tag set found. Please ensure all records in the pool have a tag set.',
+          ],
+        }
+        // If there is no tag set and no tags, we can skip the rest of the validation and return success as there are no tags to validate
+        // Users can manually sort out the tags after if they want / neeed to add a tag set
+      } else if (tagSets.length == 0) {
+        return { success: true, errors: [] }
+      }
+
+      // TODO: this fetches all tag sets for every pool. We should move this to a higher level so we only fetch the tag sets once and then pass them in as an argument
+      const pacbioRootStore = usePacbioRootStore()
+      const { success } = await pacbioRootStore.fetchPacbioTagSets()
+      if (!success) {
+        return { success, errors: ['Failed to fetch tag sets'] }
+      }
+
+      // Get the tag set
+      const tagSet = pacbioRootStore.tagSetList.find((set) => set.name === tagSets[0])
+      if (!tagSet) {
+        return { success: false, errors: [`Tag set ${tagSets[0]} not found`] }
+      }
+
+      // Get the tags for the tag set
+      const tags = tagSet.tags.map((tag) => pacbioRootStore.tags[tag.id ?? tag])
+      // Check the records have valid tags
+      const invalidTags = records
+        .filter((record) => !tags.find((tag) => tag.group_id === record.tag))
+        .map((record) => record.tag)
+      if (invalidTags.length) {
+        return {
+          success: false,
+          errors: [
+            `The following tags were not found in tag set ${tagSet.name}: ${invalidTags.join(', ')}`,
+          ],
+        }
+      }
+
+      return { success: true, errors: [] }
     },
   },
 })

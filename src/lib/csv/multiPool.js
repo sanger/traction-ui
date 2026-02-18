@@ -26,8 +26,9 @@ const getColumnIndexOfHeader = (csv, header) => {
   if (lines.length === 0) return []
 
   const headerLine = lines[0]
-  const headers = headerLine.split(',')
+  const headers = headerLine.split(',').map((h) => h.trim())
   const columnIndex = headers.indexOf(header)
+
   if (columnIndex === -1) {
     throw new Error(`Header "${header}" not found in CSV`)
   }

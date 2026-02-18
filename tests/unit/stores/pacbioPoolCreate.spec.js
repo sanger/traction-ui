@@ -1753,5 +1753,163 @@ describe('usePacbioPoolCreateStore', () => {
         })
       })
     })
+
+    describe('buildPoolFromMultiPoolCsvRecords', () => {
+      it('returns success if it builds successfully', async () => {
+        store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
+
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('returns errors if the tags are invalid', async () => {
+        store.validateMultiPoolCsvTags = vi
+          .fn()
+          .mockReturnValue({ success: false, errors: ['error'] })
+
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['error'])
+      })
+    })
+
+    describe('validateMultiPoolCsvTags', () => {
+      beforeEach(() => {
+        pacbioRootStore.fetchPacbioTagSets = vi
+          .fn()
+          .mockResolvedValue({ success: true, errors: [] })
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+      })
+
+      it('returns success if all tags are valid', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[130].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        console.log(errors)
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      // This may seem counterintuitive but we want to allow this to succeed as users can manually fix this after upload.
+      it('returns success if no tags or tag sets are provided', async () => {
+        const records = [
+          {
+            tag_set: undefined,
+            tag: undefined,
+          },
+          {
+            tag_set: undefined,
+            tag: undefined,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('returns errors if there are multiple tag sets', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+          {
+            tag_set: 'Another_tag_set',
+            tag: pacbioRootStore.tags[130].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `Multiple tag sets found in. Please ensure all records in the pool have the same tag set.`,
+        ])
+      })
+
+      it('returns errors if tags exist but a tag_set does not', async () => {
+        const records = [
+          {
+            tag_set: undefined,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `Tags found but no tag set found. Please ensure all records in the pool have a tag set.`,
+        ])
+      })
+
+      it('returns errors if some tags are invalid', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: 'invalid_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `The following tags were not found in tag set ${pacbioRootStore.tagSets[3].name}: invalid_tag`,
+        ])
+      })
+
+      it('returns an error if the tag set fetch fails', async () => {
+        pacbioRootStore.fetchPacbioTagSets = vi.fn().mockResolvedValue({
+          success: false,
+          errors: ['Some error'],
+        })
+
+        const records = [
+          {
+            tag_set: 'any_tag_set',
+            tag: 'any_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['Failed to fetch tag sets'])
+      })
+
+      it('returns errors if tag set is invalid', async () => {
+        const records = [
+          {
+            tag_set: 'invalid_tag_set',
+            tag: 'invalid_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([`Tag set invalid_tag_set not found`])
+      })
+    })
   })
 })
