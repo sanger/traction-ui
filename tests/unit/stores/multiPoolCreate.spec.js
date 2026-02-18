@@ -173,10 +173,10 @@ describe('useMultiPoolCreateStore', () => {
 
     describe('parsePoolingCsvFile', () => {
       let file, fileTextContent
-    
+
       beforeEach(() => {
         file = {
-          text: () => Promise.resolve(fileTextContent)
+          text: () => Promise.resolve(fileTextContent),
         }
       })
 

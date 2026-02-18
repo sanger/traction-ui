@@ -125,6 +125,7 @@ const parseMultiPoolFile = (csv) => {
 export {
   parseMultiPoolFile,
   getColumnIndexOfHeader,
+  formatRecord,
   validateColumn,
   validatePoolNumberColumn,
   validateSourceIdentifierColumn,

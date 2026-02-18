@@ -4,6 +4,7 @@ import {
   validateColumn,
   validatePoolNumberColumn,
   validateSourceIdentifierColumn,
+  formatRecord,
 } from '@/lib/csv/multiPool.js'
 
 describe('multiPool', () => {
@@ -123,6 +124,22 @@ describe('multiPool', () => {
       const { success, errors } = parseMultiPoolFile(csv)
       expect(success).toBe(true)
       expect(errors.length).toBe(0)
+    })
+  })
+
+  describe('formatRecord', () => {
+    it('formats a record correctly', () => {
+      const record = {
+        record: {
+          'volume_(ul)': 10,
+          'concentration_(ng/ul)': 5,
+        },
+      }
+      const formattedRecord = formatRecord(record)
+      expect(formattedRecord.record.volume).toBe(10)
+      expect(formattedRecord.record.concentration).toBe(5)
+      expect(formattedRecord.record['volume_(ul)']).toBeUndefined()
+      expect(formattedRecord.record['concentration_(ng/ul)']).toBeUndefined()
     })
   })
 })
