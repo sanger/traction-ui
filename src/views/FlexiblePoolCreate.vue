@@ -159,13 +159,16 @@ import LabwareMap from '@/components/labware/LabwareMap.vue'
 import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import useAlert from '@/composables/useAlert.js'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
+const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const route = useRoute()
+const router = useRouter()
 
 // State
 const id = computed(() => route.params.id)
@@ -186,6 +189,9 @@ const create = () => {
       ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
     busy.value = false
+    reset()
+    resetPacbio()
+    router.push({ name: 'Dashboard' })
   })
 }
 
@@ -194,6 +200,13 @@ const create = () => {
  */
 const reset = () => {
   multiPoolCreateStore.clearData()
+}
+
+/**
+ * Resets the pool create store data and sets default values
+ */
+const resetPacbio = () => {
+  pacbioPoolCreateStore.clearPoolData()
 }
 
 /**
