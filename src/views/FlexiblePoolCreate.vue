@@ -191,7 +191,6 @@ const create = () => {
     busy.value = false
     reset()
     resetPacbio()
-    router.push({ name: 'Dashboard' })
   })
 }
 
