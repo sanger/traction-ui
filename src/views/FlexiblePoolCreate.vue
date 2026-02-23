@@ -130,7 +130,7 @@
               <traction-button
                 data-testid="create-btn"
                 theme="create"
-                :disabled="busy"
+                :disabled="busy || !multiPoolCreateStore.isValidMultiPool()"
                 @click="create"
               >
                 <span class="button-text">Create Flexible Pool</span>

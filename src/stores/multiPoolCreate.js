@@ -169,6 +169,26 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         return !hasErrors({ used_aliquots, pool })
       }
     },
+    
+    /**
+     * Validates the entire multi pool by checking each pool position.
+     *
+     * Uses isValidPool on every position in multiPoolPositions.
+     * Returns true only if all positions are valid and there is at least one position.
+     * Returns false if there are no positions or any position is invalid.
+     *
+     * @returns {Boolean} true if all pool positions are valid, false otherwise
+     */
+    isValidMultiPool() {
+      // Check if every pool position is valid using isValidPool
+      const positions = Object.keys(this.multiPoolPositions)
+      console.log(`Positions: ${positions}`)
+      if (positions.length === 0) {
+        // No positions to validate, consider as invalid
+        return false
+      }
+      return positions.every((position) => this.isValidPool(position))
+    }
   },
   persist: true,
 })
