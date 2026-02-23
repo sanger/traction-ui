@@ -187,9 +187,9 @@ const create = () => {
     success
       ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
-    busy.value = false
     reset()
     resetPacbio()
+    busy.value = false
   })
 }
 
