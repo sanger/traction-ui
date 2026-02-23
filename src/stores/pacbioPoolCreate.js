@@ -1099,6 +1099,14 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       }
 
       // Fetch the source labware based on the source identifiers
+      const sourceIdentifiers = records.map((record) => record.source_identifier)
+      const { success: fetchSuccess, errors: fetchErrors } =
+        await this.findLabwareForSourceIdentifiers(sourceIdentifiers)
+
+      if (!fetchSuccess) {
+        return { success: false, errors: fetchErrors }
+      }
+
       // Build the used aliquots based on the source labware and tag information
       // Update the state with the new used aliquots and selected tag set
       // Validate the used aliquots and pool
@@ -1158,6 +1166,93 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
           ],
         }
       }
+
+      return { success: true, errors: [] }
+    },
+
+    async findLabwareForSourceIdentifiers(source_identifiers) {
+      // We want to fetch the labware for the source identifiers to ensure they are valid and to get the relationships for building the pool
+      // We need to fetch both plates and tubes as we don't know if the source identifiers belong to plates or tubes
+      const rootStore = useRootStore()
+      const request = rootStore.api.traction.pacbio.requests
+      const promise = request.get({
+        filter: { source_identifier: source_identifiers.join(',') },
+        include: 'plate.wells,tube',
+      })
+      // We need to fetch libraries as well as library barcodes are valid sources for pooling but are not request 'sources'
+      const libraryRequest = rootStore.api.traction.pacbio.libraries
+      const libraryPromise = libraryRequest.get({
+        filter: { barcode: source_identifiers.join(',') },
+        include: 'request,tube',
+      })
+
+      const [response, libraryResponse] = await Promise.all([
+        handleResponse(promise),
+        handleResponse(libraryPromise),
+      ])
+
+      // Both responses should be successful to proceed or we might have partial data which could cause issues when building the pool
+      const success = response.success && libraryResponse.success
+
+      if (!success) {
+        return { success, errors: ['Failed to fetch labware for source identifiers'] }
+      }
+
+      const included = [
+        ...(response.body?.included || []),
+        ...(libraryResponse.body?.included || []),
+      ]
+      const { data = [] } = response.body
+      const { data: libraryData = [] } = libraryResponse.body
+      const {
+        tubes = [],
+        plates = [],
+        wells,
+        requests: includedRequests = [],
+      } = groupIncludedByResource(included)
+
+      // We don't need to check the plates and tubes exist as if they don't exist, we will just end up with an empty list and won't be able to build any used aliquots for those records which is the expected behaviour.
+      // We will end up with errors for those records when we try to build the used aliquots.
+
+      //Populate plates
+      this.resources.plates = {
+        ...this.resources.plates,
+        ...dataToObjectById({ data: plates, includeRelationships: true }),
+      }
+      //Populate wells
+      this.resources.wells = {
+        ...this.resources.wells,
+        ...dataToObjectById({ data: wells, includeRelationships: true }),
+      }
+      //Populate requests
+      this.resources.requests = {
+        ...this.resources.requests,
+        ...dataToObjectById({ data, includeRelationships: true }),
+        // Requests may come from libraries via includes so we need to make sure we include those as well
+        ...dataToObjectById({ data: includedRequests, includeRelationships: true }),
+      }
+      //Populate tubes
+      this.resources.tubes = {
+        ...this.resources.tubes,
+        ...dataToObjectById({ data: tubes, includeRelationships: true }),
+      }
+      // Populate libraries
+      this.resources.libraries = {
+        ...this.resources.libraries,
+        ...dataToObjectById({
+          data: libraryData,
+          includeRelationships: true,
+        }),
+      }
+
+      // We want to select all plates
+      plates.forEach((plate) => {
+        this.selectPlate({ id: plate.id, selected: true })
+      })
+      // We want to select all tubes
+      tubes.forEach((tube) => {
+        this.selectTube({ id: tube.id, selected: true })
+      })
 
       return { success: true, errors: [] }
     },

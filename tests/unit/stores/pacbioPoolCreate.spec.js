@@ -1,6 +1,7 @@
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { payload } from '@/stores/utilities/pacbioPool.js'
@@ -10,12 +11,14 @@ import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory.js'
 import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 
 const pacbioTagSetFactory = PacbioTagSetFactory()
 const pacbioPoolFactory = PacbioPoolFactory({ count: 1 })
 const pacbioAutoTagFactory = PacbioAutoTagFactory()
 const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory({ findBy: 'libraries', transformTubes: true })
+const pacbioRequestFactory = PacbioRequestFactory()
 
 describe('usePacbioPoolCreateStore', () => {
   describe('getters', () => {
@@ -1757,6 +1760,9 @@ describe('usePacbioPoolCreateStore', () => {
     describe('buildPoolFromMultiPoolCsvRecords', () => {
       it('returns success if it builds successfully', async () => {
         store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
+        store.findLabwareForSourceIdentifiers = vi
+          .fn()
+          .mockReturnValue({ success: true, errors: [] })
 
         const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
         expect(success).toEqual(true)
@@ -1765,6 +1771,17 @@ describe('usePacbioPoolCreateStore', () => {
 
       it('returns errors if the tags are invalid', async () => {
         store.validateMultiPoolCsvTags = vi
+          .fn()
+          .mockReturnValue({ success: false, errors: ['error'] })
+
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['error'])
+      })
+
+      it('returns errors if the labware fetch fails', async () => {
+        store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
+        store.findLabwareForSourceIdentifiers = vi
           .fn()
           .mockReturnValue({ success: false, errors: ['error'] })
 
@@ -1808,7 +1825,6 @@ describe('usePacbioPoolCreateStore', () => {
         ]
 
         const { success, errors } = await store.validateMultiPoolCsvTags(records)
-        console.log(errors)
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -1909,6 +1925,167 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, errors } = await store.validateMultiPoolCsvTags(records)
         expect(success).toEqual(false)
         expect(errors).toEqual([`Tag set invalid_tag_set not found`])
+      })
+    })
+
+    describe('findLabwareForSourceIdentifiers', () => {
+      const requestGet = vi.fn()
+      const libraryGet = vi.fn()
+
+      beforeEach(() => {
+        rootStore.api = {
+          traction: { pacbio: { requests: { get: requestGet }, libraries: { get: libraryGet } } },
+        }
+        store.selectPlate = vi.fn()
+        store.selectTube = vi.fn()
+      })
+
+      it('populates the correct store data when sources are plates', async () => {
+        requestGet.mockResolvedValue(pacbioRequestFactory.responses.fetch)
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers([
+          'DN814327C:A1',
+          'DN814327C:A2',
+          'DN814567Q:A1',
+          'DN814567Q:B1',
+          'GEN-1725896371-4:B3',
+        ])
+
+        const { plates, wells } = groupIncludedByResource(pacbioRequestFactory.content.included)
+        expect(store.resources.plates).toEqual(
+          dataToObjectById({ data: plates, includeRelationships: true }),
+        )
+        expect(store.resources.wells).toEqual(
+          dataToObjectById({ data: wells, includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(pacbioRequestFactory.storeData.requests)
+        expect(store.selectPlate).toHaveBeenCalledWith({ id: '61', selected: true })
+        expect(store.selectPlate).toHaveBeenCalledWith({ id: '62', selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('populates the correct store data when sources are tubes', async () => {
+        // Request from factory
+        const request = pacbioRequestFactory.content.data[0]
+        const tube = pacbioRequestFactory.content.included[6]
+        // Set the request includes to the desired tube
+        request.relationships = { tube: { data: [{ type: 'tubes', id: tube.id }] } }
+
+        requestGet.mockResolvedValue(
+          successfulResponse({
+            data: [request],
+            included: [tube],
+          }),
+        )
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['NT12345'])
+
+        expect(store.resources.tubes).toEqual(
+          dataToObjectById({ data: [tube], includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(
+          dataToObjectById({ data: [request], includeRelationships: true }),
+        )
+        expect(store.selectTube).toHaveBeenCalledWith({ id: tube.id, selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('populates the correct store data when sources are libraries', async () => {
+        // Request from factory
+        const request = pacbioRequestFactory.content.data[0]
+        const tube = pacbioRequestFactory.content.included[6]
+        // Set the request includes to the desired tube
+        request.relationships = { tube: { data: [{ type: 'tubes', id: tube.id }] } }
+        const library = {
+          id: '723',
+          type: 'libraries',
+          links: {
+            self: 'http://localhost:3100/v1/pacbio/libraries/723',
+          },
+          attributes: {
+            state: 'pending',
+            volume: 1,
+            concentration: 1,
+            template_prep_kit_box_barcode: 'LK12345',
+            insert_size: 100,
+            created_at: '2021/06/15 10:25',
+            deactivated_at: null,
+            source_identifier: 'DN1:A3',
+            run_suitability: {
+              ready_for_run: true,
+              errors: [],
+            },
+            barcode: '3980000001795',
+          },
+          relationships: {
+            tube: {
+              data: {
+                type: 'tubes',
+                id: tube.id,
+              },
+            },
+            request: {
+              data: {
+                type: 'requests',
+                id: request.id,
+              },
+            },
+          },
+        }
+
+        requestGet.mockResolvedValue(
+          successfulResponse({
+            data: [],
+          }),
+        )
+        libraryGet.mockResolvedValue(
+          successfulResponse({ data: [library], included: [request, tube] }),
+        )
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['3980000001795'])
+
+        expect(store.resources.libraries).toEqual(
+          dataToObjectById({ data: [library], includeRelationships: true }),
+        )
+        expect(store.resources.tubes).toEqual(
+          dataToObjectById({ data: [tube], includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(
+          dataToObjectById({ data: [request], includeRelationships: true }),
+        )
+        expect(store.selectTube).toHaveBeenCalledWith({ id: tube.id, selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('returns an empty list when no labware is found for the provided source identifiers', async () => {
+        requestGet.mockResolvedValue(successfulResponse({ data: [] }))
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['unknown-sources'])
+        expect(errors).toEqual([])
+        expect(success).toEqual(true)
+      })
+
+      it('returns an error and an empty list when the service responds with an error to the requests get', async () => {
+        requestGet.mockResolvedValue(failedResponse())
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['DN814327C:A1'])
+        expect(errors).toEqual(['Failed to fetch labware for source identifiers'])
+        expect(success).toEqual(false)
+      })
+
+      it('returns an error and an empty list when the service responds with an error to the libraries get', async () => {
+        requestGet.mockResolvedValue(pacbioRequestFactory.responses.fetch)
+        libraryGet.mockResolvedValue(failedResponse())
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['DN814327C:A1'])
+        expect(errors).toEqual(['Failed to fetch labware for source identifiers'])
+        expect(success).toEqual(false)
       })
     })
   })

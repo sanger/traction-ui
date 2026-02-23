@@ -154,8 +154,6 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
           pacbioPoolCreateStore.$reset()
         }
 
-        console.log(success, errors)
-
         return { success, errors }
       } catch (error) {
         return { success: false, errors: error.message }
