@@ -169,7 +169,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         return !hasErrors({ used_aliquots, pool })
       }
     },
-    
+
     /**
      * Validates the entire multi pool by checking each pool position.
      *
@@ -188,7 +188,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         return false
       }
       return positions.every((position) => this.isValidPool(position))
-    }
+    },
   },
   persist: true,
 })
