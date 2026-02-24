@@ -20,9 +20,7 @@ export default defineConfig([
   },
   {
     files: ['tests/e2e/**/*.js'],
-    extends: [
-      pluginCypress.configs.globals,
-    ],
+    extends: [pluginCypress.configs.globals],
   },
   {
     ignores: ['dist/**/*.js', 'docs/**/*.js', 'documentation/**/*.js'],
