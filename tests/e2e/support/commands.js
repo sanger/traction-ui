@@ -30,8 +30,12 @@ Cypress.Commands.add('clickMenuItem', (text) => {
 })
 
 Cypress.Commands.add('getFieldLabeled', (text) => {
-  const field = cy.get('label').contains(text).its('for')
-  cy.get(`#${field}`)
+  cy.get('label')
+    .contains(text)
+    .its('for')
+    .then((field) => {
+      cy.get(`#${field}`)
+    })
 })
 
 Cypress.Commands.add('fillIn', ({ field, with: content }) => {

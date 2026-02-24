@@ -126,17 +126,15 @@ describe('Ont Pool Create', () => {
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
-      cy.get('[data-type=plate-item]')
-        .first()
-        .trigger('mousedown', {
-          position: 'topLeft',
-        })
-        .trigger('mousemove', {
-          position: 'bottomRight',
-        })
-        .trigger('mouseup', {
-          position: 'bottomRight',
-        })
+      cy.get('[data-type=plate-item]').first().trigger('mousedown', {
+        position: 'topLeft',
+      })
+      cy.get('[data-type=plate-item]').first().trigger('mousemove', {
+        position: 'bottomRight',
+      })
+      cy.get('[data-type=plate-item]').first().trigger('mouseup', {
+        position: 'bottomRight',
+      })
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 8)
 
@@ -206,17 +204,15 @@ describe('Ont Pool Create', () => {
 
     // Bulk sample addition
     cy.get('[data-type=selected-plate-list]').within(() => {
-      cy.get('[data-type=plate-item]')
-        .first()
-        .trigger('mousedown', {
-          position: 'topLeft',
-        })
-        .trigger('mousemove', {
-          position: 'bottomRight',
-        })
-        .trigger('mouseup', {
-          position: 'bottomRight',
-        })
+      cy.get('[data-type=plate-item]').first().trigger('mousedown', {
+        position: 'topLeft',
+      })
+      cy.get('[data-type=plate-item]').first().trigger('mousemove', {
+        position: 'bottomRight',
+      })
+      cy.get('[data-type=plate-item]').first().trigger('mouseup', {
+        position: 'bottomRight',
+      })
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 8)
 
