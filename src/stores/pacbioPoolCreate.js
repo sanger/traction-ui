@@ -1098,6 +1098,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         return { success, errors }
       }
 
+      // We can select the tag set based on the first record with a tag set as we have already validated that there is only one tag set in the records
+      const pacbioRootStore = usePacbioRootStore()
+      this.selected.tagSet = pacbioRootStore.tagSetList.find(
+        (set) => set.name === records.find((record) => record.tag_set)?.tag_set,
+      )
+
       // Fetch the source labware based on the source identifiers
       const sourceIdentifiers = records.map((record) => record.source_identifier)
       const { success: fetchSuccess, errors: fetchErrors } =
@@ -1107,13 +1113,35 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         return { success: false, errors: fetchErrors }
       }
 
+      const aliquotErrors = []
       // Build the used aliquots based on the source labware and tag information
-      // Update the state with the new used aliquots and selected tag set
+      records.forEach((record) => {
+        const aliquot = this.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+        // If there were any errors creating the used aliquot from the record, we skip adding it to the pool as we want to return all errors at the end instead of partially building the pool with some records
+        // that have errors and some that don't
+        if (!aliquot) {
+          return
+        }
+        this.used_aliquots[aliquot.request] = aliquot
+      })
+
+      if (aliquotErrors.length) {
+        return { success: false, errors: aliquotErrors }
+      }
+
       // Validate the used aliquots and pool
+      // At this point all the data should be usable but may have some missing attributes that are required for creating a pool.
+      // So we want to validate the pool and used aliquots before we create the pool to add the errors to the UI and prevent creating a pool with invalid data
+      validate({ used_aliquots: this.used_aliquots, pool: this.pool })
 
       return { success: true, errors: [] }
     },
 
+    /**
+     * Validates the tags in the records extracted from a multi-pool CSV.
+     * @param {*} records - csv records for the given MultiPool
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     */
     async validateMultiPoolCsvTags(records) {
       // Get the tag set from the records
       const tagSets = [...new Set(records.map((record) => record.tag_set).filter(Boolean))]
@@ -1170,6 +1198,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       return { success: true, errors: [] }
     },
 
+    /**
+     * Finds labware for the given source identifiers and populates the resources with the fetched labware.
+     *
+     * @param {*} source_identifiers
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     */
     async findLabwareForSourceIdentifiers(source_identifiers) {
       // We want to fetch the labware for the source identifiers to ensure they are valid and to get the relationships for building the pool
       // We need to fetch both plates and tubes as we don't know if the source identifiers belong to plates or tubes
@@ -1177,7 +1211,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const request = rootStore.api.traction.pacbio.requests
       const promise = request.get({
         filter: { source_identifier: source_identifiers.join(',') },
-        include: 'plate.wells,tube',
+        include: 'plate.wells,well,tube',
       })
       // We need to fetch libraries as well as library barcodes are valid sources for pooling but are not request 'sources'
       const libraryRequest = rootStore.api.traction.pacbio.libraries
@@ -1255,6 +1289,40 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       })
 
       return { success: true, errors: [] }
+    },
+
+    /**
+     * Creates a used aliquot object from a record extracted from a multi-pool CSV.
+     * @param {*} record - Object containing a used_aliquot entry with source_identifier, tag and metadata
+     * @param {*} aliquotErrors - an array to push any errors to if the used aliquot cannot be created from the record
+     * @returns {Object|null} - A used aliquot object if it was successfully created, or null if there was an error creating the used aliquot. If there was an error, a message will be pushed to the aliquotErrors array with details about the error.
+     */
+    createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors) {
+      const { source_identifier, tag, ...attributes } = record
+      const aliquotSource = [
+        ...Object.values(this.resources.requests),
+        ...Object.values(this.resources.libraries),
+      ].find(
+        (source) =>
+          source?.barcode === source_identifier || source?.source_identifier === source_identifier,
+      )
+
+      if (!aliquotSource) {
+        aliquotErrors.push(
+          `Unable to find labware with source identifier ${record.source_identifier}`,
+        )
+        return null
+      }
+
+      const request_id = aliquotSource.type == 'requests' ? aliquotSource.id : aliquotSource.request
+
+      return createUsedAliquot({
+        ...attributes,
+        request: request_id,
+        source_id: aliquotSource.id,
+        source_type: this.sourceTypeForRequest(this.resources.requests[request_id]),
+        tag_id: tag ? this.selectedTagSet.tags.find((tag) => tag.group_id === tag)?.id : null,
+      })
     },
   },
 })
