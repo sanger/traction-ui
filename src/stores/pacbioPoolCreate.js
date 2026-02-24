@@ -1321,7 +1321,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         request: request_id,
         source_id: aliquotSource.id,
         source_type: this.sourceTypeForRequest(this.resources.requests[request_id]),
-        tag_id: tag ? this.selectedTagSet.tags.find((tag) => tag.group_id === tag)?.id : null,
+        tag_id: tag ? this.selectedTagSet.tags.find((t) => t.group_id === tag)?.id : null,
       })
     },
   },

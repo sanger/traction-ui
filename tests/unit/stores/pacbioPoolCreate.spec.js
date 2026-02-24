@@ -1764,7 +1764,7 @@ describe('usePacbioPoolCreateStore', () => {
           .fn()
           .mockReturnValue({ success: true, errors: [] })
 
-        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
         expect(success).toEqual(true)
         expect(errors).toEqual([])
       })
@@ -1774,7 +1774,7 @@ describe('usePacbioPoolCreateStore', () => {
           .fn()
           .mockReturnValue({ success: false, errors: ['error'] })
 
-        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
         expect(success).toEqual(false)
         expect(errors).toEqual(['error'])
       })
@@ -1785,7 +1785,7 @@ describe('usePacbioPoolCreateStore', () => {
           .fn()
           .mockReturnValue({ success: false, errors: ['error'] })
 
-        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([{}])
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
         expect(success).toEqual(false)
         expect(errors).toEqual(['error'])
       })
@@ -2086,6 +2086,125 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, errors } = await store.findLabwareForSourceIdentifiers(['DN814327C:A1'])
         expect(errors).toEqual(['Failed to fetch labware for source identifiers'])
         expect(success).toEqual(false)
+      })
+    })
+
+    describe('createUsedAliquotFromMultiPoolCsvRecord', () => {
+      beforeEach(() => {
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+        store.selected.tagSet = { id: '3' }
+      })
+
+      it('creates a used aliquot with the correct attributes when the aliquot comes from a request', () => {
+        store.resources.requests = {
+          1: {
+            id: '1',
+            type: 'requests',
+            source_identifier: 'DN1:A1',
+            well: 5,
+          },
+        }
+        const record = {
+          source_identifier: 'DN1:A1',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(
+          expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Request',
+            request: '1',
+            tag_id: '129',
+            template_prep_kit_box_barcode: record.template_prep_kit_box_barcode,
+            volume: record.volume,
+            concentration: record.concentration,
+            insert_size: record.insert_size,
+          }),
+        )
+        expect(aliquotErrors).toEqual([])
+      })
+
+      it('creates a used aliquot with the correct attributes when the aliquot comes from a library', () => {
+        store.resources.libraries = {
+          1: {
+            id: '1',
+            type: 'libraries',
+            barcode: 'TRAC-2-123',
+            request: '2',
+          },
+        }
+        store.resources.requests = {
+          2: {
+            id: '2',
+            type: 'requests',
+          },
+        }
+
+        const record = {
+          source_identifier: 'TRAC-2-123',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(
+          expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Library',
+            request: '2',
+            tag_id: '129',
+            template_prep_kit_box_barcode: record.template_prep_kit_box_barcode,
+            volume: record.volume,
+            concentration: record.concentration,
+            insert_size: record.insert_size,
+          }),
+        )
+        expect(aliquotErrors).toEqual([])
+      })
+
+      it('adds an error when the source identifier is not found in either requests or libraries', () => {
+        const record = {
+          source_identifier: 'UNKNOWN',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(null)
+        expect(aliquotErrors).toEqual(['Unable to find labware with source identifier UNKNOWN'])
       })
     })
   })
