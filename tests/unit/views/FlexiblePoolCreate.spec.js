@@ -1,5 +1,5 @@
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
-import { mountWithStore, flushPromises, router } from '@support/testHelper.js'
+import { mountWithStore, flushPromises, router, nextTick } from '@support/testHelper.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
@@ -72,7 +72,49 @@ describe('FlexiblePoolCreate', () => {
     })
   })
 
-  describe('reset', () => {
+  describe('Actions section', () => {
+    it('resets the form when reset button is clicked', async () => {
+      const resetButton = wrapper.find('[data-testid="reset-btn"]')
+      await resetButton.trigger('click')
+      expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
+    })
+
+    it('creates a multi pool when create button is clicked', async () => {
+      store.multiPoolCreateStore.isValidMultiPool = vi.fn().mockReturnValue(true)
+      store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
+        success: true,
+        id: '1',
+        errors: [],
+      })
+      // Next tick to ensure isValidMultiPool is run, enabling the create button
+      await nextTick()
+
+      const createButton = wrapper.find('[data-testid="create-btn"]')
+      await createButton.trigger('click')
+
+      expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
+    })
+
+    it('create is disabled when multi pool is invalid', async () => {
+      store.multiPoolCreateStore.isValidMultiPool = vi.fn(() => false)
+      const createButton = wrapper.find('[data-testid="create-btn"]')
+      // Next tick to ensure isValidMultiPool is run
+      await nextTick()
+
+      expect(createButton.element.disabled).toBe(true)
+    })
+
+    it('create is enabled when multi pool is valid', async () => {
+      store.multiPoolCreateStore.isValidMultiPool = vi.fn(() => true)
+      const createButton = wrapper.find('[data-testid="create-btn"]')
+      // Next tick to ensure isValidMultiPool is run
+      await nextTick()
+
+      expect(createButton.element.disabled).toBe(false)
+    })
+  })
+
+  describe('#reset', () => {
     it('resets the store data when called', async () => {
       store.multiPoolCreateStore.clearData = vi.fn()
       await wrapper.vm.reset()
@@ -80,7 +122,7 @@ describe('FlexiblePoolCreate', () => {
     })
   })
 
-  describe('create', () => {
+  describe('#create', () => {
     it('shows the correct alert when creation is successful', async () => {
       store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
         success: true,

@@ -233,5 +233,28 @@ describe('useMultiPoolCreateStore', () => {
         expect(store.isValidPool(position)).toBeTruthy()
       })
     })
+
+    describe('isValidMultiPool', () => {
+      it('returns false if there are no pool positions', () => {
+        store.multiPoolPositions = {}
+        expect(store.isValidMultiPool()).toBeFalsy()
+      })
+
+      it('returns false if any pool position is invalid', () => {
+        store.multiPoolPositions = {
+          1: { pool: { id: 1, errors: {} } },
+          2: { pool: { id: 2, errors: { volume: 'must be present' } } },
+        }
+        expect(store.isValidMultiPool()).toBeFalsy()
+      })
+
+      it('returns true if all pool positions are valid', () => {
+        store.multiPoolPositions = {
+          1: { pool: { id: 1, errors: {} } },
+          2: { pool: { id: 2, errors: {} } },
+        }
+        expect(store.isValidMultiPool()).toBeTruthy()
+      })
+    })
   })
 })

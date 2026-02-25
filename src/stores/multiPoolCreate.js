@@ -182,7 +182,6 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
     isValidMultiPool() {
       // Check if every pool position is valid using isValidPool
       const positions = Object.keys(this.multiPoolPositions)
-      console.log(`Positions: ${positions}`)
       if (positions.length === 0) {
         // No positions to validate, consider as invalid
         return false

@@ -40,7 +40,7 @@ describe('FlexiblePoolWell.vue', () => {
     expect(well.id).toEqual(props.id)
   })
 
-  describe('#status', () => {
+  describe('#poolStatus', () => {
     it('returns bg-white text-black when there is no pool assigned to the position', () => {
       store.getPool = vi.fn(() => null)
       expect(well.poolStatus).toEqual('bg-white text-black')
