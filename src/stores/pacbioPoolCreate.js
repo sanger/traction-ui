@@ -1122,7 +1122,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         if (!aliquot) {
           return
         }
-        this.used_aliquots[`_${aliquot.request}`] = aliquot
+        this.used_aliquots[`_${aliquot.source_id}`] = aliquot
       })
 
       if (aliquotErrors.length) {
@@ -1265,17 +1265,21 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         // Requests may come from libraries via includes so we need to make sure we include those as well
         ...dataToObjectById({ data: includedRequests, includeRelationships: true }),
       }
-      //Populate tubes
-      this.resources.tubes = {
-        ...this.resources.tubes,
-        ...dataToObjectById({ data: tubes, includeRelationships: true }),
-      }
       // Populate libraries
       this.resources.libraries = {
         ...this.resources.libraries,
         ...dataToObjectById({
           data: libraryData,
           includeRelationships: true,
+        }),
+      }
+      //Populate tubes
+      this.resources.tubes = {
+        ...this.resources.tubes,
+        ...assignLibraryRequestsToTubes({
+          libraries: this.resources.libraries,
+          requests: this.resources.requests,
+          tubes,
         }),
       }
 

@@ -4,7 +4,7 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { payload } from '@/stores/utilities/pacbioPool.js'
+import { payload, assignLibraryRequestsToTubes } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
@@ -1794,8 +1794,8 @@ describe('usePacbioPoolCreateStore', () => {
             },
           },
           libraries: {
-            1: {
-              id: '1',
+            2: {
+              id: '2',
               type: 'libraries',
               request: '2',
               barcode: 'TRAC-2-1',
@@ -1845,7 +1845,7 @@ describe('usePacbioPoolCreateStore', () => {
             errors: {},
           }),
           _2: expect.objectContaining({
-            source_id: '1',
+            source_id: '2',
             source_type: 'Pacbio::Library',
             request: '2',
             tag_id: '130',
@@ -2141,11 +2141,15 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.resources.libraries).toEqual(
           dataToObjectById({ data: [library], includeRelationships: true }),
         )
-        expect(store.resources.tubes).toEqual(
-          dataToObjectById({ data: [tube], includeRelationships: true }),
-        )
         expect(store.resources.requests).toEqual(
           dataToObjectById({ data: [request], includeRelationships: true }),
+        )
+        expect(store.resources.tubes).toEqual(
+          assignLibraryRequestsToTubes({
+            libraries: store.resources.libraries,
+            requests: store.resources.requests,
+            tubes: [tube],
+          }),
         )
         expect(store.selectTube).toHaveBeenCalledWith({ id: tube.id, selected: true })
         expect(success).toEqual(true)
