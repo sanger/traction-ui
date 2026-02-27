@@ -157,7 +157,6 @@ describe('FlexiblePoolCreate', () => {
       rows.forEach((row, rowIndex) => {
         const columns = row.findAll('[data-attribute="labware-column"]')
         columns.forEach((column, columnIndex) => {
-          expect(column.findAll('p')[1].text()).toBe(expectedNumbers[rowIndex][columnIndex])
           expect(column.find('[data-attribute="well-position"]').text()).toBe(
             expectedNumbers[rowIndex][columnIndex],
           )
