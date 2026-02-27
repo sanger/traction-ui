@@ -201,7 +201,12 @@ const create = () => {
 const uploadFile = async (evt) => {
   showLoadingModal('Processing CSV file...')
   if (evt?.target?.files?.length) {
-    await multiPoolCreateStore.parsePoolingCsvFile(evt.target.files[0])
+    const { success, errors } = await multiPoolCreateStore.parsePoolingCsvFile(evt.target.files[0])
+    if (success) {
+      showAlert('CSV file successfully processed', 'success')
+    } else {
+      showAlert(errors.join(', '), 'danger')
+    }
   } else {
     showAlert('No file selected. Please select a CSV file to upload.', 'warning')
   }

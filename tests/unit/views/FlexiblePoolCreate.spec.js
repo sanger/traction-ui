@@ -124,4 +124,39 @@ describe('FlexiblePoolCreate', () => {
       expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(false)
     })
   })
+
+  describe('uploadFile', () => {
+    it('calls the correct store method when a file is uploaded', async () => {
+      const file = new File(['file contents'], 'test.csv', { type: 'text/csv' })
+      const event = { target: { files: [file] } }
+      store.multiPoolCreateStore.parsePoolingCsvFile = vi.fn().mockResolvedValue({
+        success: true,
+        errors: [],
+      })
+      await wrapper.vm.uploadFile(event)
+      expect(store.multiPoolCreateStore.parsePoolingCsvFile).toHaveBeenCalledWith(file)
+      expect(mockShowAlert).toHaveBeenCalledWith('CSV file successfully processed', 'success')
+    })
+
+    it('shows an alert if there is an error parsing the file', async () => {
+      const file = new File(['file contents'], 'test.csv', { type: 'text/csv' })
+      const event = { target: { files: [file] } }
+      store.multiPoolCreateStore.parsePoolingCsvFile = vi.fn().mockResolvedValue({
+        success: false,
+        errors: ['Error parsing file'],
+      })
+      await wrapper.vm.uploadFile(event)
+      expect(store.multiPoolCreateStore.parsePoolingCsvFile).toHaveBeenCalledWith(file)
+      expect(mockShowAlert).toHaveBeenCalledWith('Error parsing file', 'danger')
+    })
+
+    it('shows an alert if there is no file', async () => {
+      const event = { target: { files: [] } }
+      await wrapper.vm.uploadFile(event)
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'No file selected. Please select a CSV file to upload.',
+        'warning',
+      )
+    })
+  })
 })
