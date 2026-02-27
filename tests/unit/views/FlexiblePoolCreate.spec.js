@@ -114,8 +114,6 @@ describe('FlexiblePoolCreate', () => {
   })
 
   describe('labwareType computed property', () => {
-    console.log(LabwareTypes)
-
     it('returns Plate96 configuration when pool_method is Plate', () => {
       store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
       expect(wrapper.vm.labwareType).toEqual(LabwareTypes.Plate96)
