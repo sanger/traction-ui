@@ -1122,7 +1122,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         if (!aliquot) {
           return
         }
-        this.used_aliquots[aliquot.request] = aliquot
+        this.used_aliquots[`_${aliquot.request}`] = aliquot
       })
 
       if (aliquotErrors.length) {

@@ -1758,15 +1758,105 @@ describe('usePacbioPoolCreateStore', () => {
     })
 
     describe('buildPoolFromMultiPoolCsvRecords', () => {
-      it('returns success if it builds successfully', async () => {
+      beforeEach(() => {
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+        store.selected.tagSet = { id: '3' }
+      })
+
+      it('returns success and builds the used_aliquots if it builds successfully', async () => {
+        store.resources = {
+          requests: {
+            1: {
+              id: '1',
+              type: 'requests',
+              source_identifier: 'DN1:A1',
+              well: 5,
+            },
+            // This has a plate source but it is the library request so it should be treated as a library source
+            2: {
+              id: '2',
+              type: 'requests',
+              source_identifier: 'DN1:A3',
+              well: 3,
+            },
+          },
+          libraries: {
+            1: {
+              id: '1',
+              type: 'libraries',
+              request: '2',
+              barcode: 'TRAC-2-1',
+              available_volume: 15,
+            },
+          },
+        }
         store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
         store.findLabwareForSourceIdentifiers = vi
           .fn()
           .mockReturnValue({ success: true, errors: [] })
 
-        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
+        const records = [
+          {
+            source_identifier: 'DN1:A1',
+            tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            tag: 'bc1007T',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+          },
+          {
+            source_identifier: 'TRAC-2-1',
+            tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            tag: 'bc1008T',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+          },
+        ]
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords(records)
         expect(success).toEqual(true)
         expect(errors).toEqual([])
+        expect(store.used_aliquots).toEqual({
+          _1: expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Request',
+            request: '1',
+            tag_id: '129',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            available_volume: null,
+            errors: {},
+          }),
+          _2: expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Library',
+            request: '2',
+            tag_id: '130',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            available_volume: 15,
+            errors: {},
+          }),
+        })
       })
 
       it('returns errors if the tags are invalid', async () => {
