@@ -4,6 +4,7 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import FlipperFactory from '@tests/factories/FlipperFactory.js'
+import { LabwareTypes } from '@/lib/LabwareTypes.js'
 
 const singleMultiPoolFactory = MultiPoolFactory.single()
 const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
@@ -69,6 +70,12 @@ describe('FlexiblePoolCreate', () => {
       await poolingMethodSelect.setValue('Plate')
       expect(store.multiPoolCreateStore.multiPool.pool_method).toBe('Plate')
     })
+
+    it('updates the store when pooling method is set to Tube Rack', async () => {
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      await poolingMethodSelect.setValue('TubeRack')
+      expect(store.multiPoolCreateStore.multiPool.pool_method).toBe('TubeRack')
+    })
   })
 
   describe('reset', () => {
@@ -103,6 +110,59 @@ describe('FlexiblePoolCreate', () => {
       await wrapper.vm.create()
       expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
       expect(mockShowAlert).toHaveBeenCalledWith(['Error creating pool'], 'danger')
+    })
+  })
+
+  describe('labwareType computed property', () => {
+    console.log(LabwareTypes)
+
+    it('returns Plate96 configuration when pool_method is Plate', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.Plate96)
+    })
+
+    it('returns TubeRack24 configuration when pool_method is TubeRack', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.TubeRack24)
+    })
+  })
+
+  describe('Pooling Layout rendering', () => {
+    it('renders an 8x12 grid for Plate layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(8) // 8 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(12) // 12 columns
+    })
+
+    it('renders a 4x6 grid for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(4) // 4 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(6) // 6 columns
+    })
+
+    it('numbers pools by rows for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const expectedNumbers = [
+        ['1', '2', '3', '4', '5', '6'],
+        ['7', '8', '9', '10', '11', '12'],
+        ['13', '14', '15', '16', '17', '18'],
+        ['19', '20', '21', '22', '23', '24'],
+      ]
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      rows.forEach((row, rowIndex) => {
+        const columns = row.findAll('[data-attribute="labware-column"]')
+        columns.forEach((column, columnIndex) => {
+          expect(column.findAll('p')[1].text()).toBe(expectedNumbers[rowIndex][columnIndex])
+          expect(column.find('[data-attribute="well-position"]').text()).toBe(
+            expectedNumbers[rowIndex][columnIndex],
+          )
+        })
+      })
     })
   })
 })
