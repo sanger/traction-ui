@@ -2140,6 +2140,7 @@ describe('usePacbioPoolCreateStore', () => {
             volume: record.volume,
             concentration: record.concentration,
             insert_size: record.insert_size,
+            available_volume: null,
           }),
         )
         expect(aliquotErrors).toEqual([])
@@ -2152,6 +2153,7 @@ describe('usePacbioPoolCreateStore', () => {
             type: 'libraries',
             barcode: 'TRAC-2-123',
             request: '2',
+            available_volume: 2,
           },
         }
         store.resources.requests = {
@@ -2184,6 +2186,7 @@ describe('usePacbioPoolCreateStore', () => {
             volume: record.volume,
             concentration: record.concentration,
             insert_size: record.insert_size,
+            available_volume: 2,
           }),
         )
         expect(aliquotErrors).toEqual([])

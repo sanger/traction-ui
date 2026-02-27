@@ -1306,6 +1306,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         (source) =>
           source?.barcode === source_identifier || source?.source_identifier === source_identifier,
       )
+      const aliquotSourceType =
+        aliquotSource?.type === 'libraries' ? 'Pacbio::Library' : 'Pacbio::Request'
 
       if (!aliquotSource) {
         aliquotErrors.push(
@@ -1320,8 +1322,12 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         ...attributes,
         request: request_id,
         source_id: aliquotSource.id,
-        source_type: this.sourceTypeForRequest(this.resources.requests[request_id]),
+        source_type: aliquotSourceType,
         tag_id: tag ? this.selectedTagSet.tags.find((t) => t.group_id === tag)?.id : null,
+        available_volume:
+          aliquotSourceType == 'Pacbio::Library'
+            ? (aliquotSource.available_volume ?? aliquotSource.volume)
+            : null,
       })
     },
   },
