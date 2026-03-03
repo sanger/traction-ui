@@ -125,6 +125,60 @@ describe('FlexiblePoolCreate', () => {
     })
   })
 
+  describe('isSetupDisabled computed property', () => {
+    it('returns false when multiPoolPositions is empty', () => {
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      expect(wrapper.vm.isSetupDisabled).toBe(false)
+    })
+
+    it('returns true when multiPoolPositions has items', () => {
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      expect(wrapper.vm.isSetupDisabled).toBe(true)
+    })
+  })
+
+  describe('Setup section disabled state', () => {
+    it('disables the setup section when multiPoolPositions has items', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Enable; there are no pool positions.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.attributes('disabled')).toBeUndefined()
+      expect(poolingMethodSelect.attributes('disabled')).toBeUndefined()
+      expect(csvFileInput.attributes('disabled')).toBeUndefined()
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.attributes('disabled')).toBeDefined()
+      expect(poolingMethodSelect.attributes('disabled')).toBeDefined()
+      expect(csvFileInput.attributes('disabled')).toBeDefined()
+    })
+
+    it('enables the setup section when multiPoolPositions becomes empty', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.attributes('disabled')).toBeDefined()
+      expect(poolingMethodSelect.attributes('disabled')).toBeDefined()
+      expect(csvFileInput.attributes('disabled')).toBeDefined()
+
+      // Enable; reset the store so that there are no pool positions.
+      await wrapper.vm.reset() // store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.attributes('disabled')).toBeUndefined()
+      expect(poolingMethodSelect.attributes('disabled')).toBeUndefined()
+      expect(csvFileInput.attributes('disabled')).toBeUndefined()
+    })
+  })
+
   describe('Pooling Layout rendering', () => {
     it('renders an 8x12 grid for Plate layout', async () => {
       store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
