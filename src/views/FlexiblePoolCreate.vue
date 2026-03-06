@@ -191,9 +191,11 @@ const create = () => {
     reset()
     resetPacbio()
     busy.value = false
-    router.push({ name: 'FlexiblePool', params: { id } }).then(() => {
-      window.location.reload()
-    })
+    if (id && errors) {
+      router.push({ name: 'FlexiblePool', params: { id } }).then(() => {
+        window.location.reload()
+      })
+    }
   })
 }
 
