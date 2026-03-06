@@ -161,13 +161,14 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import useAlert from '@/composables/useAlert.js'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
 const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const route = useRoute()
+const router = useRouter()
 
 // State
 const id = computed(() => route.params.id)
@@ -190,6 +191,9 @@ const create = () => {
     reset()
     resetPacbio()
     busy.value = false
+    router.push({ name: 'FlexiblePool', params: { id } }).then(() => {
+      window.location.reload()
+    })
   })
 }
 
