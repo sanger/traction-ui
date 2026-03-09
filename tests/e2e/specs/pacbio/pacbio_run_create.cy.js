@@ -76,9 +76,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-library-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     // Plate 1
     cy.get('[data-attribute=pacbio-run-plate-1]')
@@ -86,6 +87,10 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-plate-1]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .first()
       .trigger('click')
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
@@ -93,7 +98,8 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     // this is related to the available volume of the library so better to use the data
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
 
     cy.get('#update').click()
 
@@ -105,9 +111,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-library-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     // Plate 2
     cy.get('[data-attribute=pacbio-run-plate-2]')
@@ -115,13 +122,18 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute=pacbio-run-well]')
       .last()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
       .trigger('click')
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
 
     cy.get('#update').click()
 
@@ -160,9 +172,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-library-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     // Plate 1
     cy.get('[data-attribute=pacbio-run-plate-1]')
@@ -170,6 +183,10 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-plate-1]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .first()
       .trigger('click')
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
@@ -180,7 +197,8 @@ describe('Pacbio Run Create view', () => {
       .and('be.disabled')
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
     // this is related to the available volume of the library so better to use the data
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
 
     cy.get('#update').click()
 
@@ -192,9 +210,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-library-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     // Plate 2
     cy.get('[data-attribute=pacbio-run-plate-2]')
@@ -202,6 +221,10 @@ describe('Pacbio Run Create view', () => {
       .get('[data-attribute=pacbio-run-well]')
       .last()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
       .trigger('click')
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
@@ -212,7 +235,8 @@ describe('Pacbio Run Create view', () => {
       .and('be.disabled')
 
     cy.get('[data-attribute="full-resolution-base-qual"]').select('True')
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
 
     cy.get('#update').click()
 
@@ -248,6 +272,8 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('[data-attribute=pacbio-run-well]')
       .first()
@@ -276,8 +302,10 @@ describe('Pacbio Run Create view', () => {
 
     // Set the default values
     cy.get('[data-attribute="default-movie-time"]').select('15.0')
-    cy.get('[data-attribute="default-pre-extension-time"]').clear().type(3)
-    cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').clear().type('0.75')
+    cy.get('[data-attribute="default-pre-extension-time"]').clear()
+    cy.get('[data-attribute="default-pre-extension-time"]').type(3)
+    cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').clear()
+    cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').type('0.75')
     cy.get('[data-attribute="default-binding-kit-box-barcode"]').type('12345')
     cy.get('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]').select(
       'Yes',
@@ -324,9 +352,10 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-library-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     // Plate 1
     cy.get('[data-attribute=pacbio-run-plate-1]')
@@ -360,16 +389,20 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
+    cy.get('[data-attribute=pacbio-run-well]').first().trigger('click')
     //It displays the correct volume information for the library in this context
     cy.get('[data-attribute=available-volume-badge]').contains('20')
     //Initialises the volume to available volume
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', 20)
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('5')
+
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {
@@ -380,14 +413,18 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('[data-attribute=pacbio-run-well]')
       .eq(1)
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
+    cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
     //It displays the correct volume information for the library in this context
     cy.get('[data-attribute=available-volume-badge]').contains(15)
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
+
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {
@@ -420,16 +457,20 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
+    cy.get('[data-attribute=pacbio-run-well]').first().trigger('click')
     //It displays the correct volume information for the pool in this context
     cy.get('[data-attribute=available-volume-badge]').contains('20')
     //Initialises the volume to available volume
     cy.get('[data-attribute="aliquot-volume"]').should('have.value', 20)
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('5')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('5')
+
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {
@@ -440,14 +481,18 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="selected-pool-library-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute="selected-pool-library-list"]')
+      .first()
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('[data-attribute=pacbio-run-well]')
       .eq(1)
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
+    cy.get('[data-attribute=pacbio-run-well]').eq(1).trigger('click')
     //It displays the correct volume information for the pool in this context
     cy.get('[data-attribute=available-volume-badge]').contains(15)
-    cy.get('[data-attribute="aliquot-volume"]').clear().type('10')
+    cy.get('[data-attribute="aliquot-volume"]').clear()
+    cy.get('[data-attribute="aliquot-volume"]').type('10')
+
     cy.get('#update').click()
 
     cy.get('[data-attribute="message"]').within(() => {

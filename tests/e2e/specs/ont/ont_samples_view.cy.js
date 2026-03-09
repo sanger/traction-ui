@@ -87,7 +87,8 @@ describe('Ont samples view', () => {
 
     cy.get(`[data-action=edit-request-${id}]`).click()
     cy.get(`[data-type="ont-request-edit-${id}"]`).within(() => {
-      cy.get('[data-attribute=cost-code]').clear().type(costCode)
+      cy.get('[data-attribute=cost-code]').clear()
+      cy.get('[data-attribute=cost-code]').type(costCode)
       cy.get('[data-action=update-request]').click()
     })
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {
@@ -117,7 +118,8 @@ describe('Ont samples view', () => {
 
     cy.get(`[data-action=edit-request-${id}]`).click()
     cy.get(`[data-type="ont-request-edit-${id}"]`).within(() => {
-      cy.get('[data-attribute=cost-code]').clear().type(costCode)
+      cy.get('[data-attribute=cost-code]').clear()
+      cy.get('[data-attribute=cost-code]').type(costCode)
       cy.get('[data-action=update-request]').click()
     })
     cy.get('@ontRequestFactory').then((ontRequestFactory) => {

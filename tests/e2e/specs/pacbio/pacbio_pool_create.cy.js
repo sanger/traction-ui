@@ -190,17 +190,15 @@ describe('Pacbio Pool Create', () => {
     })
 
     // Bulk sample addition
-    cy.get('[data-type=selected-labware-item]')
-      .first()
-      .trigger('mousedown', {
-        position: 'topLeft',
-      })
-      .trigger('mousemove', {
-        position: 'bottomRight',
-      })
-      .trigger('mouseup', {
-        position: 'bottomRight',
-      })
+    cy.get('[data-type=selected-labware-item]').first().trigger('mousedown', {
+      position: 'topLeft',
+    })
+    cy.get('[data-type=selected-labware-item]').first().trigger('mousemove', {
+      position: 'bottomRight',
+    })
+    cy.get('[data-type=selected-labware-item]').first().trigger('mouseup', {
+      position: 'bottomRight',
+    })
     cy.get('[data-type=pool-aliquot-edit]').should('have.length', 8)
 
     const orderedElements = [
