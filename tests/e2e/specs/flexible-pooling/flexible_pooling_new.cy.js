@@ -70,7 +70,7 @@ describe('Flexible pooling new', () => {
   describe('Successfully', () => {
     it('creates a flexible pool and navigates to its page', () => {
       cy.visit('#/flexible-pool/new')
-      cy.get('a[href*="sub-pool/1"][data-attribute="flexible-pool-well-link"]').first().click()
+      cy.get('a[href*="sub-pool/A1"][data-attribute="flexible-pool-well-link"]').first().click()
 
       cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
       // Add a library tube
