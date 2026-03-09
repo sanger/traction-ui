@@ -110,11 +110,16 @@ describe('Pacbio Libraries view', () => {
     cy.get('#tag-input').should('be.disabled')
 
     //It should update the library values
-    cy.get('#library-volume').focus().should('not.be.disabled').clear()
-    cy.get('#library-volume').clear().type('3')
-    cy.get('#library-concentration').clear().type('2')
-    cy.get('#library-insertSize').clear().type('200')
-    cy.get('#library-templatePrepKitBoxBarcode').clear().type('LK54321')
+    cy.get('#library-volume').focus()
+    cy.get('#library-volume').should('not.be.disabled')
+    cy.get('#library-volume').clear()
+    cy.get('#library-volume').type('3')
+    cy.get('#library-concentration').clear()
+    cy.get('#library-concentration').type('2')
+    cy.get('#library-insertSize').clear()
+    cy.get('#library-insertSize').type('200')
+    cy.get('#library-templatePrepKitBoxBarcode').clear()
+    cy.get('#library-templatePrepKitBoxBarcode').type('LK54321')
     cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
       cy.get('#tag-set-input').select(pacbioTagSetFactory.storeData.selected.tagSet.name)
       cy.get('#tag-input').select(pacbioTagSetFactory.storeData.selected.tag.group_id)

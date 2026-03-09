@@ -4,6 +4,7 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import FlipperFactory from '@tests/factories/FlipperFactory.js'
+import { LabwareTypes } from '@/lib/LabwareTypes.js'
 
 const singleMultiPoolFactory = MultiPoolFactory.single()
 const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
@@ -68,6 +69,12 @@ describe('FlexiblePoolCreate', () => {
       const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
       await poolingMethodSelect.setValue('Plate')
       expect(store.multiPoolCreateStore.multiPool.pool_method).toBe('Plate')
+    })
+
+    it('updates the store when pooling method is set to Tube Rack', async () => {
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      await poolingMethodSelect.setValue('TubeRack')
+      expect(store.multiPoolCreateStore.multiPool.pool_method).toBe('TubeRack')
     })
   })
 
@@ -157,6 +164,110 @@ describe('FlexiblePoolCreate', () => {
         'No file selected. Please select a CSV file to upload.',
         'warning',
       )
+    })
+  })
+
+  describe('labwareType computed property', () => {
+    it('returns Plate96 configuration when pool_method is Plate', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.Plate96)
+    })
+
+    it('returns TubeRack24 configuration when pool_method is TubeRack', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.TubeRack24)
+    })
+  })
+
+  describe('isSetupDisabled computed property', () => {
+    it('returns false when multiPoolPositions is empty', () => {
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      expect(wrapper.vm.isSetupDisabled).toBe(false)
+    })
+
+    it('returns true when multiPoolPositions has items', () => {
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      expect(wrapper.vm.isSetupDisabled).toBe(true)
+    })
+  })
+
+  describe('Setup section disabled state', () => {
+    it('disables the setup section when multiPoolPositions has items', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Enable; there are no pool positions.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
+    })
+
+    it('enables the setup section when multiPoolPositions becomes empty', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
+
+      // Enable; reset the store so that there are no pool positions.
+      await wrapper.vm.reset() // store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
+    })
+  })
+
+  describe('Pooling Layout rendering', () => {
+    it('renders an 8x12 grid for Plate layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(8) // 8 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(12) // 12 columns
+    })
+
+    it('renders a 4x6 grid for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(4) // 4 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(6) // 6 columns
+    })
+
+    it('numbers pools by rows for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const expectedNumbers = [
+        ['1', '2', '3', '4', '5', '6'],
+        ['7', '8', '9', '10', '11', '12'],
+        ['13', '14', '15', '16', '17', '18'],
+        ['19', '20', '21', '22', '23', '24'],
+      ]
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      rows.forEach((row, rowIndex) => {
+        const columns = row.findAll('[data-attribute="labware-column"]')
+        columns.forEach((column, columnIndex) => {
+          expect(column.find('[data-attribute="well-position"]').text()).toBe(
+            expectedNumbers[rowIndex][columnIndex],
+          )
+        })
+      })
     })
   })
 })

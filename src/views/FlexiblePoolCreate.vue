@@ -29,6 +29,7 @@
                   data-testid="pipeline-select"
                   class="w-full py-1"
                   :options="pipelineOptions"
+                  :disabled="isSetupDisabled"
                 >
                 </traction-select>
               </div>
@@ -39,6 +40,7 @@
                   data-testid="pooling-layout-select"
                   class="w-full py-1"
                   :options="poolingLayoutOptions"
+                  :disabled="isSetupDisabled"
                 >
                 </traction-select>
               </div>
@@ -109,6 +111,7 @@
                     class="block rounded border file:border-0 w-full my-2"
                     type="file"
                     accept="text/csv, .csv"
+                    :disabled="isSetupDisabled"
                     @change="uploadFile"
                   />
                 </div>
@@ -116,7 +119,7 @@
             </div>
           </traction-section>
           <traction-section title="Pooling" number="2">
-            <LabwareMap v-slot="{ position }" :labware-type="LabwareTypes.MultiPool96">
+            <LabwareMap v-slot="{ position }" :labware-type="labwareType">
               <FlexiblePoolWell :position="position" />
             </LabwareMap>
           </traction-section>
@@ -150,7 +153,7 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -173,7 +176,10 @@ const props = defineProps({
 })
 
 // State
-const poolingLayoutOptions = [{ text: 'Plate', value: 'Plate' }]
+const poolingLayoutOptions = [
+  { text: 'Plate', value: 'Plate' },
+  { text: 'Tube Rack', value: 'TubeRack' },
+]
 const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 // Flag to indicate if the form is busy processing a request
 const busy = ref(false)
@@ -241,4 +247,29 @@ const provider = async () => {
   await multiPoolCreateStore.setMultiPool({ id: props.id })
   return { success: true }
 }
+
+/**
+ * Dynamically determines the labware type based on the selected pooling layout.
+ * If the user selects 'Tube Rack', it returns the TubeRack24 configuration from LabwareTypes.
+ * Otherwise, it defaults to the Plate96 configuration.
+ *
+ * @returns {Object} The labware type configuration object (TubeRack24 or Plate96).
+ */
+const labwareType = computed(() => {
+  return multiPoolCreateStore.multiPool.pool_method === 'TubeRack'
+    ? LabwareTypes.TubeRack24
+    : LabwareTypes.Plate96
+})
+/**
+ * Dynamically determines if the setup section should be disabled.
+ * If the user starts creating pools (i.e. multiPoolPositions has length greater than 0),
+ * the section will be disabled to prevent changes.
+ *
+ * @returns {boolean} A boolean value indicating whether the setup section should be disabled.
+ */
+const isSetupDisabled = computed(() => {
+  const positions = multiPoolCreateStore?.multiPool?.multiPoolPositions
+  if (!positions || typeof positions !== 'object') return false
+  return Object.keys(positions).length > 0
+})
 </script>
