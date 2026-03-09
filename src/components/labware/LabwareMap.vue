@@ -1,8 +1,18 @@
 <template>
   <div class="flex w-full">
     <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-2 w-full">
-      <div v-for="(row, i) in labwareType.numRows" :key="i" class="flex flex-row">
-        <div v-for="(column, j) in labwareType.numColumns" :key="j" class="px-1 py-1 w-full h-full">
+      <div
+        v-for="(row, i) in labwareType.numRows"
+        :key="i"
+        class="flex flex-row"
+        data-attribute="labware-row"
+      >
+        <div
+          v-for="(column, j) in labwareType.numColumns"
+          :key="j"
+          class="px-1 py-1 w-full h-full"
+          data-attribute="labware-column"
+        >
           <slot :position="createPosition(row, column, labwareType)" />
         </div>
       </div>
