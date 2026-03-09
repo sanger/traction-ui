@@ -121,7 +121,7 @@
       </traction-button>
     </div>
     <div v-else class="text-right py-8">
-      <traction-button theme="create" @click="updateMultiPoolSubPool()">
+      <traction-button theme="create" data-action="create-individual-pool" @click="updateMultiPoolSubPool()">
         <!-- TODO: Add a handler to update PacbioPoolCreateStore -->
         <span class="button-text">Update information</span>
       </traction-button>
