@@ -152,7 +152,7 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -178,6 +178,15 @@ const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 const busy = ref(false)
 
 // Actions
+// Watch for changes to the route id and call provider
+watch(
+  () => route.params.id,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await provider()
+    }
+  },
+)
 
 /**
  * Creates the multi pool using the multi pool create store
