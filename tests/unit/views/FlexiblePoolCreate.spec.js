@@ -146,16 +146,16 @@ describe('FlexiblePoolCreate', () => {
       // Enable; there are no pool positions.
       store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
       await wrapper.vm.$nextTick()
-      expect(pipelineSelect.attributes('disabled')).toBeUndefined()
-      expect(poolingMethodSelect.attributes('disabled')).toBeUndefined()
-      expect(csvFileInput.attributes('disabled')).toBeUndefined()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
 
       // Disable; there is at least 1 pool position.
       store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
       await wrapper.vm.$nextTick()
-      expect(pipelineSelect.attributes('disabled')).toBeDefined()
-      expect(poolingMethodSelect.attributes('disabled')).toBeDefined()
-      expect(csvFileInput.attributes('disabled')).toBeDefined()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
     })
 
     it('enables the setup section when multiPoolPositions becomes empty', async () => {
@@ -166,16 +166,16 @@ describe('FlexiblePoolCreate', () => {
       // Disable; there is at least 1 pool position.
       store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
       await wrapper.vm.$nextTick()
-      expect(pipelineSelect.attributes('disabled')).toBeDefined()
-      expect(poolingMethodSelect.attributes('disabled')).toBeDefined()
-      expect(csvFileInput.attributes('disabled')).toBeDefined()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
 
       // Enable; reset the store so that there are no pool positions.
       await wrapper.vm.reset() // store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
       await wrapper.vm.$nextTick()
-      expect(pipelineSelect.attributes('disabled')).toBeUndefined()
-      expect(poolingMethodSelect.attributes('disabled')).toBeUndefined()
-      expect(csvFileInput.attributes('disabled')).toBeUndefined()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
     })
   })
 
