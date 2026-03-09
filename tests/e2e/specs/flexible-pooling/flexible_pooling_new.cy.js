@@ -45,7 +45,6 @@ describe('Flexible pooling new', () => {
         },
       )
     })
-    cy.visit('#/flexible-pool/new')
   })
 
   it('loads the flexible pooling create page', () => {
@@ -70,6 +69,7 @@ describe('Flexible pooling new', () => {
 
   describe('Successfully', () => {
     it('creates a flexible pool and navigates to its page', () => {
+      cy.visit('#/flexible-pool/new')
       cy.get('a[href*="sub-pool/1"][data-attribute="flexible-pool-well-link"]').first().click()
 
       cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
