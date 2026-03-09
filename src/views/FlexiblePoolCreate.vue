@@ -180,7 +180,7 @@ const busy = ref(false)
 // Actions
 // Watch for changes to the route id and call provider
 watch(
-  () => route.params.id,
+  () => id.value,
   async (newId, oldId) => {
     if (newId !== oldId) {
       await provider()
