@@ -1150,7 +1150,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         return {
           success: false,
           errors: [
-            'Multiple tag sets found in. Please ensure all records in the pool have the same tag set.',
+            'Multiple tag sets found. Please ensure all records in the pool have the same tag set.',
           ],
         }
         // We can't build the pool if there is no tag set and there are tags as we wouldn't know which tagset the tags belong to

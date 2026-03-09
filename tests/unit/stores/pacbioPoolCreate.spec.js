@@ -1952,7 +1952,7 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, errors } = await store.validateMultiPoolCsvTags(records)
         expect(success).toEqual(false)
         expect(errors).toEqual([
-          `Multiple tag sets found in. Please ensure all records in the pool have the same tag set.`,
+          `Multiple tag sets found. Please ensure all records in the pool have the same tag set.`,
         ])
       })
 
