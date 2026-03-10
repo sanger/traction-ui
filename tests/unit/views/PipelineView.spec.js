@@ -2,10 +2,10 @@ import { mount, router, flushPromises } from '@support/testHelper'
 import PipelineView from '@/views/PipelineView'
 
 describe('PipelineView', () => {
-  let wrapper, pipelineView, store
+  let wrapper, pipelineView
 
   beforeEach(async () => {
-    wrapper = mount(PipelineView, { store, router, props: { pipeline: 'pacbio' } })
+    wrapper = mount(PipelineView, { router, props: { pipeline: 'pacbio' } })
     await flushPromises()
     pipelineView = wrapper.vm
   })

@@ -1,15 +1,24 @@
 <template>
   <div>
-    <div
-      :class="wellClassNames"
-      data-attribute="flexible-pool-well"
-      @mouseover.prevent="hover = true"
-      @mouseleave.prevent="hover = false"
-      @click="onClick"
+    <router-link
+      :to="{
+        name: 'FlexibleIndividualPoolCreate',
+        params: { id, position },
+      }"
+      data-attribute="flexible-pool-well-link"
+      class="block"
     >
-      <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
-    </div>
-    <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
+      <div
+        :class="wellClassNames"
+        data-attribute="flexible-pool-well"
+        @mouseover.prevent="hover = true"
+        @mouseleave.prevent="hover = false"
+        @click="onClick"
+      >
+        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool?.pool_barcode }}</p>
+      </div>
+      <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
+    </router-link>
   </div>
 </template>
 <script setup>
@@ -26,6 +35,10 @@ import { ref, computed } from 'vue'
  * @property {string} position - The position of the well. This prop is required.
  */
 const props = defineProps({
+  id: {
+    type: [String, Number],
+    required: true,
+  },
   position: {
     type: String,
     required: true,
@@ -55,8 +68,9 @@ const hover = ref(false)
  */
 const wellClassNames = computed(() => {
   return [
+    poolStatus.value,
     hover.value ? 'ring ring-pink-600 ring-offset-1' : 'border border-gray-800',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer bg-white',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer',
   ]
 })
 
@@ -66,6 +80,21 @@ const wellClassNames = computed(() => {
  */
 const pool = computed(() => {
   return multiPoolCreateStore.getPool(props.position)
+})
+
+/*
+ * Computed property that returns whether the pool is valid
+ * @returns {boolean} - Whether the pool is valid
+ */
+const poolStatus = computed(() => {
+  // Position is empty, so we consider it valid (no pool assigned to that position)
+  if (!pool.value) {
+    return 'bg-white text-black'
+  } else if (multiPoolCreateStore.isValidPool(props.position)) {
+    return 'bg-success text-white'
+  } else {
+    return 'bg-failure text-white'
+  }
 })
 
 /*

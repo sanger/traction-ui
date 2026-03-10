@@ -2,8 +2,8 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { beforeEach, describe, it } from 'vitest'
-import { payload } from '@/stores/utilities/multiPool.js'
 import { requiredHeaders } from '@/lib/csv/multiPool.js'
+import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
@@ -70,18 +70,21 @@ describe('useMultiPoolCreateStore', () => {
 
       it('handles success', async () => {
         const mockResponse = successfulResponse({
-          data: { attributes: { barcode: 'TRAC-2-1' } },
+          data: { id: '1' },
         })
         store.multiPool = { pooling_method: 'Plate', pipeline: 'pacbio' }
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeTruthy()
         expect(create).toHaveBeenCalledWith({
-          data: payload({ multiPool: store.multiPool }),
+          data: multiPoolPayload({
+            multiPool: store.multiPool,
+            multiPoolPositions: store.multiPoolPositions,
+          }),
         })
-        expect(barcode).toEqual('TRAC-2-1')
+        expect(id).toEqual('1')
         expect(errors).toEqual(undefined)
       })
 
@@ -89,10 +92,10 @@ describe('useMultiPoolCreateStore', () => {
         const mockResponse = failedResponse(422)
         create.mockResolvedValue(mockResponse)
 
-        const { success, barcode, errors } = await store.createMultiPool()
+        const { success, id, errors } = await store.createMultiPool()
 
         expect(success).toBeFalsy()
-        expect(barcode).toEqual('')
+        expect(id).toEqual('')
         expect(errors).toEqual(mockResponse.errorSummary)
       })
     })
@@ -141,13 +144,13 @@ describe('useMultiPoolCreateStore', () => {
         expect(poolB2).toEqual({ id: 2, position: '2', type: 'MultiPoolPosition' })
       })
 
-      it('returns an empty object if no pool exists at the given position', () => {
+      it('returns null if no pool exists at the given position', () => {
         store.$state.multiPoolPositions = {
           1: { id: 1, position: '1', type: 'MultiPoolPosition' },
         }
 
         const pool = store.getPool('C3')
-        expect(pool).toEqual({})
+        expect(pool).toEqual(null)
       })
     })
 
@@ -221,6 +224,89 @@ describe('useMultiPoolCreateStore', () => {
         expect(success).toBeFalsy()
         expect(errors).toEqual(['Error building pool number 1: Error building pool'])
         expect(store.multiPoolPositions).toEqual({})
+      })
+    })
+
+    describe('isValidPersisted', () => {
+      it('returns false if there is no persisted store', () => {
+        localStorage.removeItem('multiPoolCreate')
+        expect(store.isValidPersisted('1')).toBeFalsy()
+      })
+
+      it('returns true if the persisted store has no id and the requests id is new', () => {
+        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('new')).toBeTruthy()
+      })
+
+      it('returns true if the persisted store id matches the requested id', () => {
+        const persistedData = {
+          multiPool: { id: '1', pooling_method: 'Plate', pipeline: 'pacbio' },
+        }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('1')).toBeTruthy()
+      })
+
+      it('returns false if the persisted store id does not match the requested id', () => {
+        const persistedData = {
+          multiPool: { id: '2', pooling_method: 'Plate', pipeline: 'pacbio' },
+        }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('1')).toBeFalsy()
+      })
+    })
+
+    describe('updateMultiPoolPosition', () => {
+      it('updates the multiPoolPositions with the given position and subPool', () => {
+        const position = ''
+        // Sub pool is really the state data for pacbioPoolCreateStore
+        const subPool = { tubes: {}, plates: {}, resources: {}, selected: {} }
+
+        store.updateMultiPoolPosition({ position, subPool })
+        expect(store.multiPoolPositions[position]).toEqual(subPool)
+      })
+    })
+
+    describe('isValidPool', () => {
+      it('returns false if there is no pool at the given position', () => {
+        expect(store.isValidPool('1')).toBeFalsy()
+      })
+
+      it('returns false if the pool at the given position is invalid', () => {
+        const position = '1'
+        store.multiPoolPositions[position] = {
+          pool: { id: 1, errors: { volume: 'must be present' } },
+        }
+        expect(store.isValidPool(position)).toBeFalsy()
+      })
+
+      it('returns true if the pool at the given position is valid', () => {
+        const position = '1'
+        store.multiPoolPositions[position] = { pool: { id: 1, errors: {} } }
+        expect(store.isValidPool(position)).toBeTruthy()
+      })
+    })
+
+    describe('isValidMultiPool', () => {
+      it('returns false if there are no pool positions', () => {
+        store.multiPoolPositions = {}
+        expect(store.isValidMultiPool()).toBeFalsy()
+      })
+
+      it('returns false if any pool position is invalid', () => {
+        store.multiPoolPositions = {
+          1: { pool: { id: 1, errors: {} } },
+          2: { pool: { id: 2, errors: { volume: 'must be present' } } },
+        }
+        expect(store.isValidMultiPool()).toBeFalsy()
+      })
+
+      it('returns true if all pool positions are valid', () => {
+        store.multiPoolPositions = {
+          1: { pool: { id: 1, errors: {} } },
+          2: { pool: { id: 2, errors: {} } },
+        }
+        expect(store.isValidMultiPool()).toBeTruthy()
       })
     })
   })

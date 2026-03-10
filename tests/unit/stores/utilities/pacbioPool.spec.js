@@ -7,6 +7,7 @@ import {
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
   addUsedAliquotsBarcodeAndErrorsToPools,
+  hasErrors,
 } from '@/stores/utilities/pacbioPool.js'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -846,6 +847,52 @@ describe('pool', () => {
         },
       ]
       expect(addUsedAliquotsBarcodeAndErrorsToPools(state)).toEqual(expected)
+    })
+  })
+
+  describe('#hasErrors', () => {
+    it('returns true if the pool has errors but the used_aliquots do not', () => {
+      const pool = {
+        errors: { volume: 'must be present' },
+      }
+      const used_aliquots = {}
+      expect(hasErrors({ pool, used_aliquots })).toBe(true)
+    })
+
+    it('returns true if the used_aliquots have errors but the pool does not', () => {
+      const pool = {
+        errors: {},
+      }
+      const used_aliquots = {
+        1: {
+          errors: { volume: 'must be present' },
+        },
+      }
+      expect(hasErrors({ pool, used_aliquots })).toBe(true)
+    })
+
+    it('returns true if both the pool and used_aliquots have errors', () => {
+      const pool = {
+        errors: { volume: 'must be present' },
+      }
+      const used_aliquots = {
+        1: {
+          errors: { volume: 'must be present' },
+        },
+      }
+      expect(hasErrors({ pool, used_aliquots })).toBe(true)
+    })
+
+    it('returns false if neither the pool or used_aliquots have errors', () => {
+      const pool = {
+        errors: {},
+      }
+      const used_aliquots = {
+        1: {
+          errors: {},
+        },
+      }
+      expect(hasErrors({ pool, used_aliquots })).toBe(false)
     })
   })
 })

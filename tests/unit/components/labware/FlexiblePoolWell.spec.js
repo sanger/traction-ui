@@ -1,21 +1,23 @@
 import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
-import { mountWithStore } from '@support/testHelper.js'
+import { mountWithStore, nextTick } from '@support/testHelper.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { beforeEach } from 'vitest'
 
 const storePool = {
   position: '1',
   type: 'MultiPoolPosition',
+  pool_barcode: 'TRAC-2-1213',
 }
 const props = {
   position: '1',
+  id: 'new',
 }
 
 describe('FlexiblePoolWell.vue', () => {
-  let well, wrapper
+  let well, wrapper, store
 
   beforeEach(() => {
-    ;({ wrapper } = mountWithStore(FlexiblePoolWell, {
+    ;({ wrapper, store } = mountWithStore(FlexiblePoolWell, {
       props,
       initialState: {
         multiPoolCreate: {
@@ -32,5 +34,40 @@ describe('FlexiblePoolWell.vue', () => {
 
   it('must have a position', () => {
     expect(well.position).toEqual(props.position)
+  })
+
+  it('must have an id', () => {
+    expect(well.id).toEqual(props.id)
+  })
+
+  describe('#poolStatus', () => {
+    it('returns bg-white text-black when there is no pool assigned to the position', () => {
+      store.getPool = vi.fn(() => null)
+      expect(well.poolStatus).toEqual('bg-white text-black')
+    })
+
+    it('returns bg-success text-white when the pool is valid', async () => {
+      store.isValidPool = vi.fn(() => true)
+      expect(well.poolStatus).toEqual('bg-success text-white')
+    })
+
+    it('returns bg-failure text-white when the pool is invalid', () => {
+      store.isValidPool = vi.fn(() => false)
+      expect(well.poolStatus).toEqual('bg-failure text-white')
+    })
+  })
+
+  describe('pool barcode', () => {
+    it('shows the pool barcode if it exists', () => {
+      expect(wrapper.find('[data-attribute="flexible-pool-well"]').text()).toContain(
+        storePool.pool_barcode,
+      )
+    })
+
+    it('shows nothing if there is no pool barcode', async () => {
+      wrapper.setProps({ position: '2' })
+      await nextTick()
+      expect(wrapper.find('[data-attribute="flexible-pool-well"]').text()).toBe('')
+    })
   })
 })

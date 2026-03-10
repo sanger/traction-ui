@@ -13,6 +13,7 @@ import {
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import { barcodeNotFound, sourceRegex } from '@/stores/utilities/helpers.js'
+import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 
 /**
  * Merge together two representations of the same object.
@@ -248,7 +249,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     requestList: (state) => (source_obj) => {
       const requests = state.resources.requests
       const selectedUsedAliquots = state.used_aliquots
-      let val = []
+      let val
       if (source_obj) {
         const source_type = source_obj.libraries ? 'Pacbio::Library' : 'Pacbio::Request'
         const source_obj_id = source_obj.source_id ?? source_obj.id
@@ -554,6 +555,26 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       const promise = request.update(payload({ used_aliquots, pool }))
       const { success, errors } = await handleResponse(promise)
       return { success, errors }
+    },
+
+    /**
+     * Checks the pool is valid and if so, updates the multi pool position in the multiPoolCreateStore with the current state of the pool.
+     * @returns {Object} An object containing the success status and any errors.
+     */
+    updateMultiPoolPosition(position) {
+      const { used_aliquots, pool } = this
+      if (!validate({ used_aliquots, pool }))
+        return { success: false, errors: 'The pool is invalid' }
+
+      const multiPoolCreateStore = useMultiPoolCreateStore()
+
+      multiPoolCreateStore.updateMultiPoolPosition({
+        position: position,
+        // Return a deep copy of the pool to prevent direct mutations to the store state
+        // We use the JSON parse/stringify trick for deep copying as the pool has nested objects
+        subPool: JSON.parse(JSON.stringify(this.$state)),
+      })
+      return { success: true, errors: [] }
     },
 
     /**
@@ -1059,7 +1080,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       // Get the used aliquot item based on the request id to ensure the used aliquot exists
       const used_aliquot = this.usedAliquotItem(used_aliquot_obj.source_id)
       if (!used_aliquot) return
-      used_aliquot.validateField(field, value)
+      createUsedAliquot(used_aliquot).validateField(field, value)
     },
 
     validatePoolAttribute(field) {
