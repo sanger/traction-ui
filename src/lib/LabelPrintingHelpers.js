@@ -164,7 +164,7 @@ const WorkflowListType = (attributes = {}) => {
  */
 const splitBarcodeByPrefix = (barcode) => {
   let prefix = ''
-  let id = ''
+  let id
   if (barcode.startsWith('NT')) {
     prefix = 'NT'
     id = barcode.slice(2)

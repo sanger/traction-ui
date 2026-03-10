@@ -196,7 +196,7 @@ const scanBarcodesToLabwhere = async () => {
  */
 const confirmationText = computed(() => {
   const barcodeCount = uniqueBarcodesArray.value.length
-  let text = ''
+  let text
   if (barcodeCount === 0) {
     text = `No barcodes to scan to location ${location_barcode.value}`
   } else {
