@@ -248,7 +248,7 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
     requestList: (state) => (source_obj) => {
       const requests = state.resources.requests
       const selectedUsedAliquots = state.used_aliquots
-      let val = []
+      let val
       if (source_obj) {
         const source_type = source_obj.libraries ? 'Pacbio::Library' : 'Pacbio::Request'
         const source_obj_id = source_obj.source_id ?? source_obj.id

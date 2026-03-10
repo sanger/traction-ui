@@ -346,8 +346,8 @@ export default {
     },
     /**Text to display in table */
     text(item, field) {
-      let text = ''
-      /**This is agian for bootstrap table compatibility which allows to access the nested data fields in an object
+      let text
+      /**This is again for bootstrap table compatibility which allows to access the nested data fields in an object
        */
       if (typeof item === 'object') {
         const flattenRow = flattenObject(item)
