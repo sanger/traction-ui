@@ -15,7 +15,7 @@
         @mouseleave.prevent="hover = false"
         @click="onClick"
       >
-        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool?.id }}</p>
+        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool?.pool_barcode }}</p>
       </div>
       <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
     </router-link>

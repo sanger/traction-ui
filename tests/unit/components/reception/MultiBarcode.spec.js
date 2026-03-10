@@ -130,7 +130,7 @@ describe('MultiBarcode', () => {
       //simulate fetch
       await wrapper.vm.fetchLabware()
       expect(wrapper.find('[id=print-barcodes]').element.value).toEqual(value)
-      mockedFetchFunction = wrapper.vm.reception.fetchFunction = vi.fn().mockResolvedValue({
+      wrapper.vm.reception.fetchFunction = vi.fn().mockResolvedValue({
         foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4']),
         attributes: {},
       })

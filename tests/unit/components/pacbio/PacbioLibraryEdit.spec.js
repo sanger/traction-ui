@@ -65,8 +65,6 @@ describe('PacbioLibraryEdit.vue', () => {
   })
 
   describe('#updateLibrary', () => {
-    let payload
-
     beforeEach(() => {
       store.updateLibrary = vi.fn()
     })
@@ -88,7 +86,7 @@ describe('PacbioLibraryEdit.vue', () => {
     })
 
     it('shows a error message on failure', async () => {
-      modal.library.value = payload
+      modal.library.value = undefined
       const expectedResponse = {
         success: false,
         barcode: '',
