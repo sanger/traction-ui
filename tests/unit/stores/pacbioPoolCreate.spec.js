@@ -1790,7 +1790,7 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, errors } = store.updateMultiPoolPosition(position)
         expect(multiPoolCreateStore.updateMultiPoolPosition).toHaveBeenCalledWith({
           position: position,
-          subPool: store.$state,
+          subPool: JSON.parse(JSON.stringify(store.$state)),
         })
         expect(success).toEqual(true)
         expect(errors).toEqual([])

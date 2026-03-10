@@ -570,7 +570,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       multiPoolCreateStore.updateMultiPoolPosition({
         position: position,
-        subPool: { ...this.$state },
+        // Return a deep copy of the pool to prevent direct mutations to the store state
+        // We use the JSON parse/stringify trick for deep copying as the pool has nested objects
+        subPool: JSON.parse(JSON.stringify(this.$state)),
       })
       return { success: true, errors: [] }
     },
