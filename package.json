@@ -34,10 +34,10 @@
     "lodash-es": "^4.17.23",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.8",
     "tailwindcss": "4.2.1",
     "vite": "^7.3.1",
-    "vue": "^3.5.28",
+    "vue": "^3.5.29",
     "vue-router": "^5.0.3",
     "vue3-selecto": "^1.12.3"
   },
@@ -60,7 +60,7 @@
     "postcss-cli": "^11.0.1",
     "prettier": "3.8.1",
     "rollup-plugin-visualizer": "^6.0.8",
-    "vite-plugin-vue-devtools": "^8.0.6",
+    "vite-plugin-vue-devtools": "^8.0.7",
     "vitest": "^4.0.18"
   }
 }

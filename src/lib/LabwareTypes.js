@@ -61,6 +61,14 @@ const LabwareTypes = {
     walkingDirection: 'byColumn',
     positionFormat: alphanumericFormat,
   },
+  // Tube Rack Pooling layout for flexible pooling.
+  TubeRack24: {
+    name: '24-tube tube rack',
+    numRows: 4,
+    numColumns: 6,
+    walkingDirection: 'byRows', // Pool numbering goes row first.
+    positionFormat: numericFormat,
+  },
 }
 
 export { LabwareTypes }

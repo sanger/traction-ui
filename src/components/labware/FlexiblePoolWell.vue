@@ -9,7 +9,7 @@
     >
       <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool.id }}</p>
     </div>
-    <p class="truncate font-light text-xs">{{ position }}</p>
+    <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
   </div>
 </template>
 <script setup>
