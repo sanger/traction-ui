@@ -111,6 +111,7 @@
                 </div>
                 <div id="borderDiv" class="w-full">
                   <input
+                    ref="csv-file-input"
                     data-testid="csv-file-input"
                     class="block rounded border file:border-0 w-full my-2"
                     type="file"
@@ -157,7 +158,7 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, useTemplateRef } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -174,6 +175,9 @@ const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const route = useRoute()
 const router = useRouter()
+
+// refs
+const csvInput = useTemplateRef('csv-file-input')
 
 // State
 const id = computed(() => route.params.id)
@@ -247,10 +251,16 @@ function clearLoadingModal() {
 function showLoadingModal(message) {
   loadingModalState.value = { visible: true, message }
 }
+
 /**
  * Resets the multi pool create store data and sets default values
  */
 const reset = () => {
+  // Clear the CSV file input
+  if (csvInput) {
+    csvInput.value.value = null
+  }
+
   multiPoolCreateStore.clearData()
 }
 

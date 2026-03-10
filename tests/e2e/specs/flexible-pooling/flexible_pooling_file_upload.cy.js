@@ -39,6 +39,7 @@ describe('Flexible pooling new', () => {
                 type: 'requests',
                 attributes: {
                   source_identifier: 'GEN-SOURCE:A1',
+                  sample_name: 'sample1',
                 },
                 relationships: {
                   plate: {
@@ -128,12 +129,63 @@ describe('Flexible pooling new', () => {
         mimeType: 'text/csv',
       })
 
-      // TODO: check there is one green / valid pool
-
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
+      // Check there is one red pool
+      cy.get('[data-attribute="flexible-pool-well')
+        .first()
+        .should('have.class', 'bg-failure text-white')
+
+      // Check we cant create the pool because the pool is invalid
+      cy.get('[data-testid="create-btn"]').should('be.disabled')
+
+      // Go to the first pool
+      cy.get('[data-attribute="flexible-pool-well').first().click()
+
+      // Check the pool aliquot details are correct
+      cy.get('[data-type=pool-aliquot-edit]')
+        .first()
+        .within(() => {
+          cy.get('[data-attribute=request-sample-name').contains('sample1')
+          cy.get('[data-attribute=request-source-identifier]').contains('GEN-SOURCE:A1')
+          // cy.get('[data-attribute=tag]').should('be.empty')
+          cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+            'have.value',
+            'TPK-BOX:12345',
+          )
+          cy.get('[data-attribute=volume]').should('have.value', '10')
+          cy.get('[data-attribute=concentration]').should('have.value', '20')
+          cy.get('[data-attribute=insert-size]').should('have.value', '500')
+        })
+
+      // Fill in the missing pool information
+      cy.get('[data-type=pool-edit]').within(() => {
+        cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+        cy.get('[data-attribute=volume]').type('1')
+        cy.get('[data-attribute=concentration]').type('10.0')
+        cy.get('[data-attribute=insert-size]').type('100')
+      })
+
+      // Update the pool
+      cy.get('[data-action=create-individual-pool]').click()
+
+      // Check the update was ok
+      cy.contains('[data-attribute="message"]', 'Pool successfully updated')
+
+      // Go back to the multi pool create page
+      cy.get('[data-testid=backToMultiPool]').click()
+
+      // Hide messages
+      cy.get('[data-testid="clear-alerts"]').click()
+
+      // Check we can create the multi pool now that the pool is valid
+      cy.get('[data-attribute="flexible-pool-well')
+        .first()
+        .should('have.class', 'bg-success text-white')
+      cy.get('[data-testid="create-btn"]').should('not.be.disabled')
       cy.get('[data-testid="create-btn"]').click()
-      cy.contains('[data-attribute="message"]', 'Flexible pool successfully created with barcode')
+
+      cy.contains('[data-attribute="message"]', 'Flexible pool successfully created with id 1')
     })
 
     it('successfully uploads even when some non-required data is missing', () => {
@@ -256,12 +308,15 @@ describe('Flexible pooling new', () => {
         mimeType: 'text/csv',
       })
 
-      // TODO: check there is one red / invalid pool
+      // Check there is one red pool
+      cy.get('[data-attribute="flexible-pool-well')
+        .first()
+        .should('have.class', 'bg-failure text-white')
 
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
-      // TODO: check the create button is disabled
-      //   cy.get('[data-testid="create-btn"]').isDisabled() // create button should be disabled because volume is missing for a sub pool
+      // Check we cant create the pool because the pool is invalid
+      cy.get('[data-testid="create-btn"]').should('be.disabled')
     })
   })
 

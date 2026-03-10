@@ -320,5 +320,16 @@ describe('FlexiblePoolCreate', () => {
         })
       })
     })
+
+    describe('#reset', () => {
+      beforeEach(() => {
+        store.multiPoolCreateStore.clearData = vi.fn()
+      })
+
+      it('resets the store data when called', async () => {
+        wrapper.vm.reset()
+        expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
+      })
+    })
   })
 })
