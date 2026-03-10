@@ -238,14 +238,14 @@ const provider = async () => {
 /**
  * Dynamically determines the labware type based on the selected pooling layout.
  * If the user selects 'Tube Rack', it returns the TubeRack24 configuration from LabwareTypes.
- * Otherwise, it defaults to the Plate96 configuration.
+ * Otherwise, it defaults to the MultiPool96 configuration.
  *
- * @returns {Object} The labware type configuration object (TubeRack24 or Plate96).
+ * @returns {Object} The labware type configuration object (TubeRack24 or MultiPool96).
  */
 const labwareType = computed(() => {
   return multiPoolCreateStore.multiPool.pool_method === 'TubeRack'
     ? LabwareTypes.TubeRack24
-    : LabwareTypes.Plate96
+    : LabwareTypes.MultiPool96
 })
 /**
  * Dynamically determines if the setup section should be disabled.
