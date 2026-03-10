@@ -1,6 +1,6 @@
 import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 
-describe('Flexible pooling new', () => {
+describe('Flexible pooling file upload', () => {
   beforeEach(() => {
     cy.withFlags({
       flexible_pooling: { enabled: true },
@@ -110,6 +110,43 @@ describe('Flexible pooling new', () => {
         },
       })
 
+      cy.intercept('GET', 'v1/multi_pools/1?include=multi_pool_positions', {
+        statusCode: 200,
+        body: {
+          data: {
+            id: '1',
+            type: 'multi_pools',
+            attributes: {
+              pipeline: 'Pacbio',
+              pool_method: 'plate',
+            },
+            relationships: {
+              multi_pool_positions: {
+                data: [
+                  {
+                    id: '1',
+                    type: 'multi_pool_positions',
+                  },
+                ],
+                links: {
+                  related: '/v1/multi_pools/1/multi_pool_positions',
+                },
+              },
+            },
+          },
+          included: [
+            {
+              id: '1',
+              type: 'multi_pool_positions',
+              attributes: {
+                position: '1',
+                pool_barcode: 'TRAC-2-1',
+              },
+            },
+          ],
+        },
+      })
+
       cy.visit('#/flexible-pool/new')
 
       // Upload CSV file
@@ -186,6 +223,12 @@ describe('Flexible pooling new', () => {
       cy.get('[data-testid="create-btn"]').click()
 
       cy.contains('[data-attribute="message"]', 'Flexible pool successfully created with id 1')
+
+      // Check we are redirected to the multi pool page
+      cy.url().should('include', '#/flexible-pool/1')
+
+      // Check the multi pool pool barcodes appear
+      cy.get('[data-attribute="flexible-pool-well').first().contains('TRAC-2-1')
     })
 
     it('successfully uploads even when some non-required data is missing', () => {
