@@ -10,13 +10,14 @@ const storePool = {
 }
 const props = {
   position: '1',
+  id: 'new',
 }
 
 describe('FlexiblePoolWell.vue', () => {
-  let well, wrapper
+  let well, wrapper, store
 
   beforeEach(() => {
-    ;({ wrapper } = mountWithStore(FlexiblePoolWell, {
+    ;({ wrapper, store } = mountWithStore(FlexiblePoolWell, {
       props,
       initialState: {
         multiPoolCreate: {
@@ -33,6 +34,27 @@ describe('FlexiblePoolWell.vue', () => {
 
   it('must have a position', () => {
     expect(well.position).toEqual(props.position)
+  })
+
+  it('must have an id', () => {
+    expect(well.id).toEqual(props.id)
+  })
+
+  describe('#poolStatus', () => {
+    it('returns bg-white text-black when there is no pool assigned to the position', () => {
+      store.getPool = vi.fn(() => null)
+      expect(well.poolStatus).toEqual('bg-white text-black')
+    })
+
+    it('returns bg-success text-white when the pool is valid', async () => {
+      store.isValidPool = vi.fn(() => true)
+      expect(well.poolStatus).toEqual('bg-success text-white')
+    })
+
+    it('returns bg-failure text-white when the pool is invalid', () => {
+      store.isValidPool = vi.fn(() => false)
+      expect(well.poolStatus).toEqual('bg-failure text-white')
+    })
   })
 
   describe('pool barcode', () => {

@@ -11,6 +11,10 @@
               >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
               in the below <b>Pooling</b> section.</span
             >
+            <span>
+              Pools will not be saved until you click the <b>Create Flexible Pool</b> button in the
+              <b>Actions</b> section.
+            </span>
             <div class="flex flex-row gap-x-2 items-center text-sp-600">
               <TractionInfoIcon :size="20" />
               <span
@@ -118,7 +122,7 @@
           </traction-section>
           <traction-section title="Pooling" number="2">
             <LabwareMap v-slot="{ position }" :labware-type="labwareType">
-              <FlexiblePoolWell :position="position" />
+              <FlexiblePoolWell :id="route.params.id" :position="position" />
             </LabwareMap>
           </traction-section>
           <traction-section title="Actions" number="3">
@@ -129,7 +133,7 @@
               <traction-button
                 data-testid="create-btn"
                 theme="create"
-                :disabled="busy"
+                :disabled="busy || !multiPoolCreateStore.isValidMultiPool()"
                 @click="create"
               >
                 <span class="button-text">Create Flexible Pool</span>
@@ -151,29 +155,26 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import FlexiblePoolWell from '@/components/labware/FlexiblePoolWell.vue'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import useAlert from '@/composables/useAlert.js'
+import { useRoute, useRouter } from 'vue-router'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
+const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
-
-// Props
-const props = defineProps({
-  // Router param for the multi pool ID
-  id: {
-    type: [String, Number],
-    default: 0,
-  },
-})
+const route = useRoute()
+const router = useRouter()
 
 // State
+const id = computed(() => route.params.id)
 const poolingLayoutOptions = [
   { text: 'Plate', value: 'Plate' },
   { text: 'Tube Rack', value: 'TubeRack' },
@@ -183,17 +184,31 @@ const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 const busy = ref(false)
 
 // Actions
+// Watch for changes to the route id and call provider
+watch(
+  () => id.value,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await provider()
+    }
+  },
+)
 
 /**
  * Creates the multi pool using the multi pool create store
  */
 const create = () => {
   busy.value = true
-  multiPoolCreateStore.createMultiPool().then(({ success, barcode, errors }) => {
+  multiPoolCreateStore.createMultiPool().then(({ success, id, errors }) => {
     success
-      ? showAlert(`Flexible pool successfully created with barcode ${barcode}`, 'success')
+      ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
+    reset()
+    resetPacbio()
     busy.value = false
+    if (id && success) {
+      router.push({ name: 'FlexiblePool', params: { id } })
+    }
   })
 }
 
@@ -205,25 +220,32 @@ const reset = () => {
 }
 
 /**
+ * Resets the pool create store data and sets default values
+ */
+const resetPacbio = () => {
+  pacbioPoolCreateStore.clearPoolData()
+}
+
+/**
  * Clears the multi pool data, and sets the multi pool
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  await multiPoolCreateStore.setMultiPool({ id: props.id })
+  await multiPoolCreateStore.setMultiPool({ id: id.value })
   return { success: true }
 }
 
 /**
  * Dynamically determines the labware type based on the selected pooling layout.
  * If the user selects 'Tube Rack', it returns the TubeRack24 configuration from LabwareTypes.
- * Otherwise, it defaults to the Plate96 configuration.
+ * Otherwise, it defaults to the MultiPool96 configuration.
  *
- * @returns {Object} The labware type configuration object (TubeRack24 or Plate96).
+ * @returns {Object} The labware type configuration object (TubeRack24 or MultiPool96).
  */
 const labwareType = computed(() => {
   return multiPoolCreateStore.multiPool.pool_method === 'TubeRack'
     ? LabwareTypes.TubeRack24
-    : LabwareTypes.Plate96
+    : LabwareTypes.MultiPool96
 })
 /**
  * Dynamically determines if the setup section should be disabled.

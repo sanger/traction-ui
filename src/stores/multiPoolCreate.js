@@ -6,7 +6,8 @@ import {
   extractAttributes,
   groupIncludedByResource,
 } from '@/api/JsonApi.js'
-import { payload } from '@/stores/utilities/multiPool.js'
+import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
+import { hasErrors } from '@/stores/utilities/pacbioPool.js'
 
 export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
   state: () => ({
@@ -58,23 +59,23 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * Asynchronously creates a multi pool with the given pool positions and pools.
      *
      * @async
-     * @returns {Promise<Object>} A promise that resolves to an object containing the success status, barcode, and any errors.
+     * @returns {Promise<Object>} A promise that resolves to an object containing the success status, id, and any errors.
      *
      * @example
      * // Create a multi pool
      * const result = await createMultiPool();
-     * console.log(result); // { success: true, barcode: 'barcode123', errors: [] }
+     * console.log(result); // { success: true, id: '1', errors: [] }
      */
     async createMultiPool() {
-      const { multiPool } = this
+      const { multiPool, multiPoolPositions } = this
       const rootStore = useRootStore()
       const request = rootStore.api.traction.multi_pools
       const promise = request.create({
-        data: payload({ multiPool }),
+        data: multiPoolPayload({ multiPool, multiPoolPositions }),
       })
       const { success, body: { data = {} } = {}, errors } = await handleResponse(promise)
-      const { attributes: { barcode = '' } = {} } = data
-      return { success, barcode, errors }
+      const { id = '' } = data
+      return { success, id, errors }
     },
 
     /**
@@ -110,7 +111,10 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
      * @returns {Object} - The pool at the given position.
      */
     getPool(position) {
-      return this.multiPoolPositions[position] || {}
+      const pool = this.multiPoolPositions[position]
+      // Return a deep copy of the pool to prevent direct mutations to the store state
+      // We use the JSON parse/stringify trick for deep copying as the pool has nested objects
+      return pool ? JSON.parse(JSON.stringify(pool)) : null
     },
 
     // Reset the store data
@@ -123,13 +127,66 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       // Check the store exists in storage
       const persisted = localStorage.getItem('multiPoolCreate')
 
-      // Crude logic to check if the persisted store matches the requested id
+      // Logic to check if the persisted store should be used
       if (persisted) {
         const parsed = JSON.parse(persisted)
-        return parsed.multiPool && parsed.multiPool.id == id
+        const parsedId = parsed.multiPool?.id
+
+        // If it doesn't have an id it must be a new multi pool, so we can consider it valid
+        if (!parsedId && isNaN(id)) {
+          return true
+        }
+
+        // If the id matches the requested id, we can consider it valid
+        if (id === parsedId) {
+          return true
+        }
       }
 
       return false
+    },
+
+    async updateMultiPoolPosition({ position, subPool }) {
+      this.multiPoolPositions[position] = subPool
+    },
+
+    /**
+     *
+     * @param {*} position of the pool to be validated
+     * @returns {Boolean} true if the pool is valid, false otherwise
+     */
+    isValidPool(position) {
+      const poolPosition = this.getPool(position)
+      // If there is no pool at the position, we consider it valid as there is no data to invalidate it
+      if (!poolPosition) {
+        return false
+      }
+
+      // We currently only support PacBio
+      // But due to different architectures, ONT and PacBio pool validation is different
+      if (this.multiPool.pipeline === 'pacbio') {
+        const { used_aliquots, pool } = poolPosition
+        return !hasErrors({ used_aliquots, pool })
+      }
+    },
+
+    /**
+     * Validates the entire multi pool by checking each pool position.
+     *
+     * Uses isValidPool on every position in multiPoolPositions.
+     * Returns true only if all positions are valid and there is at least one position.
+     * Returns false if there are no positions or any position is invalid.
+     *
+     * @returns {Boolean} true if all pool positions are valid, false otherwise
+     */
+    isValidMultiPool() {
+      // Check if every pool position is valid using isValidPool
+      const positions = Object.keys(this.multiPoolPositions)
+      if (positions.length === 0) {
+        // No positions to validate, consider as invalid
+        return false
+      }
+      return positions.every((position) => this.isValidPool(position))
     },
   },
   persist: true,
