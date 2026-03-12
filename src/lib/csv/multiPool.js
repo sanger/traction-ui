@@ -90,7 +90,7 @@ const validatePoolNumberColumn = (csv) =>
     if (isNaN(poolNumber)) {
       return `Invalid pool number on line ${index + 2}, pool number must be a number`
     }
-    if (Number(poolNumber) < 1) {
+    if (Number(poolNumber) <= 0) {
       return `Invalid pool number on line ${index + 2}, pool number must be greater than 0`
     }
     // This is a limit based on the max number of pools in the UI. E.g The plate pool_method can be max 96
