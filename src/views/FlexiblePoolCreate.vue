@@ -307,7 +307,7 @@ const labwareType = computed(() => {
  * @returns {boolean} A boolean value indicating whether the setup section should be disabled.
  */
 const isSetupDisabled = computed(() => {
-  const positions = multiPoolCreateStore?.multiPool?.multiPoolPositions
+  const positions = multiPoolCreateStore?.multiPoolPositions
   if (!positions || typeof positions !== 'object') return false
   return Object.keys(positions).length > 0
 })

@@ -231,12 +231,12 @@ describe('FlexiblePoolCreate', () => {
 
     describe('isSetupDisabled computed property', () => {
       it('returns false when multiPoolPositions is empty', () => {
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+        store.multiPoolCreateStore.multiPoolPositions = {}
         expect(wrapper.vm.isSetupDisabled).toBe(false)
       })
 
       it('returns true when multiPoolPositions has items', () => {
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+        store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
         expect(wrapper.vm.isSetupDisabled).toBe(true)
       })
     })
@@ -248,14 +248,14 @@ describe('FlexiblePoolCreate', () => {
         const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
 
         // Enable; there are no pool positions.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+        store.multiPoolCreateStore.multiPoolPositions = {}
         await wrapper.vm.$nextTick()
         expect(pipelineSelect.element.disabled).toBe(false)
         expect(poolingMethodSelect.element.disabled).toBe(false)
         expect(csvFileInput.element.disabled).toBe(false)
 
         // Disable; there is at least 1 pool position.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+        store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
         await wrapper.vm.$nextTick()
         expect(pipelineSelect.element.disabled).toBe(true)
         expect(poolingMethodSelect.element.disabled).toBe(true)
@@ -268,7 +268,7 @@ describe('FlexiblePoolCreate', () => {
         const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
 
         // Disable; there is at least 1 pool position.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
+        store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
         await wrapper.vm.$nextTick()
         expect(pipelineSelect.element.disabled).toBe(true)
         expect(poolingMethodSelect.element.disabled).toBe(true)
