@@ -50,63 +50,69 @@
               </div>
               <div class="flex flex-col w-full">
                 <div class="flex flex-row w-full justify-between">
-                  <label class="flex text-left whitespace-nowrap" for="csvFileInput"
-                    >Pooling CSV</label
-                  >
-                  <div class="flex flex-row items-center">
-                    <traction-tooltip
-                      id="csv-tooltip"
-                      class="text-sp-600 text-left"
-                      tooltip-bg-colour="bg-sp-200"
+                  <div class="flex flex-row">
+                    <label class="flex text-left whitespace-nowrap" for="csvFileInput"
+                      >Pooling CSV</label
                     >
-                      <template #tooltip>
-                        <div class="w-full">
-                          <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
-                          <ul class="w-full list-disc list-inside p-2 space-y-2">
-                            <li>
-                              All columns must contain values: <br />
-                              <div class="px-4 font-bold">
-                                Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box
-                                Barcode,Volume (uL),Concentration (ng/uL),Insert Size
-                              </div>
-                            </li>
-                            <li>
-                              <strong>Pool Number:</strong> Samples with the same pool number will
-                              be grouped into the same pool.
-                            </li>
-                            <li>
-                              <strong>Source Identifier:</strong> Library source, Tube barcode, or
-                              combination of Plate barcode and Well position.
-                            </li>
-                            <li><strong>Tag Set:</strong> The tag set name of tags to be used.</li>
-                            <li><strong>Tag:</strong> The tag to apply to the sample.</li>
-                            <li>
-                              <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
-                              template prep kit.
-                            </li>
-                            <li>
-                              <strong>Volume (uL):</strong> The volume of the sample in microliters.
-                            </li>
-                            <li>
-                              <strong>Concentration (ng/uL):</strong> The concentration of the
-                              sample in nanograms per microliter.
-                            </li>
-                            <li><strong>Insert Size:</strong> The insert size for the sample.</li>
-                          </ul>
-                        </div>
-                      </template>
-                      <TractionInfoIcon :size="20" />
-                    </traction-tooltip>
-                    <div class="whitespace-nowrap">
-                      <a
-                        data-testid="flexible-pooling-template"
-                        href="/flexible-pooling-template.csv"
-                        download="FlexiblePoolingTemplate.csv"
-                        class="text-sp-600 hover:underline text-sm"
+                    <div class="flex flex-row items-center">
+                      <traction-tooltip
+                        id="csv-tooltip"
+                        class="text-sp-600 text-left"
+                        tooltip-bg-colour="bg-sp-200"
+                        tooltip-direction="top-[25px] right-0"
                       >
-                        Download CSV template
-                      </a>
+                        <template #tooltip>
+                          <div class="w-full">
+                            <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
+                            <ul class="w-full list-disc list-inside p-2 space-y-2">
+                              <li>
+                                All columns must contain values: <br />
+                                <div class="px-4 font-bold">
+                                  Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box
+                                  Barcode,Volume (uL),Concentration (ng/uL),Insert Size
+                                </div>
+                              </li>
+                              <li>
+                                <strong>Pool Number:</strong> Samples with the same pool number will
+                                be grouped into the same pool.
+                              </li>
+                              <li>
+                                <strong>Source Identifier:</strong> Library source, Tube barcode, or
+                                combination of Plate barcode and Well position.
+                              </li>
+                              <li>
+                                <strong>Tag Set:</strong> The tag set name of tags to be used.
+                              </li>
+                              <li><strong>Tag:</strong> The tag to apply to the sample.</li>
+                              <li>
+                                <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
+                                template prep kit.
+                              </li>
+                              <li>
+                                <strong>Volume (uL):</strong> The volume of the sample in
+                                microliters.
+                              </li>
+                              <li>
+                                <strong>Concentration (ng/uL):</strong> The concentration of the
+                                sample in nanograms per microliter.
+                              </li>
+                              <li><strong>Insert Size:</strong> The insert size for the sample.</li>
+                            </ul>
+                          </div>
+                        </template>
+                        <TractionInfoIcon :size="20" />
+                      </traction-tooltip>
                     </div>
+                  </div>
+                  <div class="whitespace-nowrap">
+                    <a
+                      data-testid="flexible-pooling-template"
+                      href="/flexible-pooling-template.csv"
+                      download="FlexiblePoolingTemplate.csv"
+                      class="text-sp-600 hover:underline text-sm flex flex-row items-center"
+                    >
+                      CSV template <DownloadIcon color="#b95c7d" />
+                    </a>
                   </div>
                 </div>
                 <div id="borderDiv" class="w-full">
@@ -168,6 +174,7 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import useAlert from '@/composables/useAlert.js'
 import { useRoute, useRouter } from 'vue-router'
+import DownloadIcon from '@/icons/DownloadIcon.vue'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()

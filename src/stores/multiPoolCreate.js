@@ -150,7 +150,9 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
           }
 
           // If the pool was successfully built, add it to the multi pool positions
-          this.multiPoolPositions[poolNumber] = { ...pacbioPoolCreateStore.$state }
+          this.multiPoolPositions[poolNumber] = JSON.parse(
+            JSON.stringify(pacbioPoolCreateStore.$state),
+          )
           // Ensure we reset the pacbio pool create store state before building the next pool to avoid any data leakage between pools
           pacbioPoolCreateStore.$reset()
         }

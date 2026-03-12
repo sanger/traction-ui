@@ -1229,8 +1229,8 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       // We want to fetch the labware for the source identifiers to ensure they are valid and to get the relationships for building the pool
       // We need to fetch both plates and tubes as we don't know if the source identifiers belong to plates or tubes
       const rootStore = useRootStore()
-      const request = rootStore.api.traction.pacbio.requests
-      const promise = request.get({
+      const requestRequest = rootStore.api.traction.pacbio.requests
+      const requestPromise = requestRequest.get({
         filter: { source_identifier: source_identifiers.join(',') },
         include: 'plate.wells,well,tube',
       })
@@ -1241,23 +1241,23 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
         include: 'request,tube',
       })
 
-      const [response, libraryResponse] = await Promise.all([
-        handleResponse(promise),
+      const [requestResponse, libraryResponse] = await Promise.all([
+        handleResponse(requestPromise),
         handleResponse(libraryPromise),
       ])
 
       // Both responses should be successful to proceed or we might have partial data which could cause issues when building the pool
-      const success = response.success && libraryResponse.success
+      const success = requestResponse.success && libraryResponse.success
 
       if (!success) {
         return { success, errors: ['Failed to fetch labware for source identifiers'] }
       }
 
       const included = [
-        ...(response.body?.included || []),
+        ...(requestResponse.body?.included || []),
         ...(libraryResponse.body?.included || []),
       ]
-      const { data = [] } = response.body
+      const { data = [] } = requestResponse.body
       const { data: libraryData = [] } = libraryResponse.body
       const {
         tubes = [],
