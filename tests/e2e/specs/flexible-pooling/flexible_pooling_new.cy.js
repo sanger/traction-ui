@@ -58,7 +58,7 @@ describe('Flexible pooling new', () => {
     cy.get('[data-testid="pipeline-select"]').select('Pacbio')
     cy.get('[data-testid="pooling-layout-select"]').select('Plate')
     cy.get('[data-testid="csv-file-input"]').should('exist')
-    cy.get('[data-testid="flexible-pooling-template"]').contains('Download CSV template')
+    cy.get('[data-testid="flexible-pooling-template"]').contains('CSV template')
 
     cy.contains('Pooling')
     cy.get('[data-attribute="flexible-pool-well"]').should('have.length', 96)
