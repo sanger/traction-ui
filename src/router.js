@@ -1,5 +1,7 @@
 // TODO: routes are not tested so cause errors on start
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { LoginCallback } from '@okta/okta-vue'
+import { navigationGuard } from '@okta/okta-vue'
 import TractionDashboard from '@/views/TractionDashboard.vue'
 import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
@@ -37,6 +39,17 @@ function checkPaginationParams(to) {
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
+    {
+      path: '/login/callback',
+      component: LoginCallback,
+    },
+    {
+      path: '/protected',
+      component: TractionDashboard,
+      meta: {
+        requiresAuth: true,
+      },
+    },
     {
       path: '/',
       redirect: { name: 'Dashboard' },
@@ -233,5 +246,9 @@ const router = createRouter({
     },
   ],
 })
+
+// Due to navigation guards mixin issue in vue-router-next, navigation guard logic need to be added manually
+// See https://github.com/vuejs/router/issues/454
+router.beforeEach(navigationGuard)
 
 export default router
