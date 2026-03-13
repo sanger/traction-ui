@@ -12,6 +12,8 @@
       @click="onClick"
     >
       <p class="truncate font-light">{{ position }}</p>
+      <TractionTickIcon v-if="isComplete" />
+      <TractionCrossIcon v-else-if="isIncomplete" />
     </div>
     <span
       v-show="hasUsedAliquots && hover"
@@ -27,6 +29,8 @@
  * @name PacbioRunWell
  * @description A single well in a Pacbio run plate
  */
+import TractionTickIcon from '@/components/shared/icons/TractionTickIcon.vue'
+import TractionCrossIcon from '@/components/shared/icons/TractionCrossIcon.vue'
 import { PacbioRunWellSmrtLinkOptions } from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
@@ -150,14 +154,30 @@ const hasSomeMetadata = computed(() => {
 })
 
 /*
+ * Computed property that returns whether the well is complete.
+ * @returns {boolean} - Whether the well is complete.
+ */
+const isComplete = computed(() => {
+  return hasUsedAliquots.value && hasValidMetadata.value
+})
+
+/*
+ * Computed property that returns whether the well is incomplete.
+ * @returns {boolean} - Whether the well is incomplete.
+ */
+const isIncomplete = computed(() => {
+  return hasUsedAliquots.value || hasSomeMetadata.value
+})
+
+/*
  * Computed property that returns the status of the well.
  * @returns {string} - The status of the well.
  */
 const status = computed(() => {
-  if (hasUsedAliquots.value && hasValidMetadata.value) {
+  if (isComplete.value) {
     // Complete
     return 'bg-success text-white'
-  } else if (hasUsedAliquots.value || hasSomeMetadata.value) {
+  } else if (isIncomplete.value) {
     // Incomplete
     return 'bg-failure text-white'
   }
