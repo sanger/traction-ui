@@ -133,6 +133,8 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         })
 
         const pacbioPoolCreateStore = usePacbioPoolCreateStore()
+        // Ensure we reset the pacbio pool create store state before building the pools in case there is any residual data from previous builds that could interfere with the new build process
+        pacbioPoolCreateStore.$reset()
         // Transform the pool groups into the multi pool positions format
         for (const [poolNumber, records] of Object.entries(poolGroups)) {
           const { success: buildPoolSuccess, errors: buildPoolErrors } =
@@ -159,7 +161,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
 
         return { success, errors }
       } catch (error) {
-        return { success: false, errors: error.message }
+        return { success: false, errors: [error.message] }
       }
     },
 
