@@ -15,9 +15,19 @@
         @mouseleave.prevent="hover = false"
         @click="onClick"
       >
-        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool?.pool_barcode }}</p>
-        <TractionTickIcon v-if="pool && isValidPool" />
-        <TractionCrossIcon v-else-if="pool && !isValidPool" />
+        <p
+          class="wrap-anywhere whitespace-normal p-1 overflow-hidden z-10 relative pointer-events-none"
+        >
+          {{ pool?.pool_barcode }}
+        </p>
+        <TractionTickIcon
+          v-if="pool && isValidPool"
+          class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
+        />
+        <TractionCrossIcon
+          v-else-if="pool && !isValidPool"
+          class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
+        />
       </div>
       <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
     </router-link>
@@ -74,7 +84,7 @@ const wellClassNames = computed(() => {
   return [
     poolStatus.value,
     hover.value ? 'ring ring-pink-600 ring-offset-1' : 'border border-gray-800',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer relative overflow-hidden z-0',
   ]
 })
 
