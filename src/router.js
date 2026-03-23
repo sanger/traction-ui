@@ -40,7 +40,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
-      path: '/login/callback',
+      path: '/login-callback',
       component: LoginCallback,
     },
     {

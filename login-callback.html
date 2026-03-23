@@ -1,0 +1,53 @@
+<!-- Okta callback redirect script -->
+<!doctype html>
+<html>
+  <head>
+    <!-- Load OktaAuth from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@okta/okta-auth-js@7.4.2/dist/okta-auth-js.min.js"></script>
+  </head>
+  <body>
+    <p>Traction-UI signing in...</p>
+    <script>
+      // OIDC variables
+      const oktaDomain = 'sanger.okta.com'
+      const clientId = '0oaurrnc5aBDHc8AI417'
+      const redirectUri = window.location.origin + '/login-callback'
+      const redirectAfterSuccess = window.location.origin + '/' // plus actual URL?
+
+      // build an auth client
+      const client = new OktaAuth({
+        issuer: `https://${oktaDomain}`,
+        clientId: clientId,
+        redirectUri: redirectUri,
+      })
+
+      // parse tokens from the url
+      client.token
+        .parseFromUrl()
+        .then(function (tokens) {
+          // add tokens to the tokenManager
+          for (var t = 0; t < tokens.length; t++) {
+            var token = tokens[t]
+            if (token.idToken) {
+              client.tokenManager.add('idToken', token)
+            } else if (token.accessToken) {
+              client.tokenManager.add('accessToken', token)
+            }
+          }
+
+          // redirect when finished
+          window.location = redirectAfterSuccess
+        })
+        .catch(function (err) {
+          // handle the error
+          console.error(err)
+          // If OAuth error, display the error message as an appended paragraph in the page
+          if (err.errorCode) {
+            const errorMessage = document.createElement('p')
+            errorMessage.textContent = `Error: ${err.errorSummary}`
+            document.body.appendChild(errorMessage)
+          }
+        })
+    </script>
+  </body>
+</html>
