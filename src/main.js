@@ -13,9 +13,9 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
 const oktaAuth = new OktaAuth({
-  issuer: `https://${oktaDomain}/oauth2/default`,
+  issuer: `https://${oktaDomain}`,
   clientId: clientId,
-  redirectUri: window.location.origin + '/login/callback',
+  redirectUri: window.location.origin + '/#/login/callback',
   scopes: ['openid', 'profile', 'email'],
 })
 
