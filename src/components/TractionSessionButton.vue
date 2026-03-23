@@ -1,10 +1,8 @@
 <template>
-  <router-link to="/" tag="button" id="home-button"> Home </router-link>
-  <button v-if="authState && authState.isAuthenticated" v-on:click="logout" id="logout-button">
+  <button v-if="authState && authState.isAuthenticated" id="logout-button" @:click="logout">
     Logout
   </button>
-  <button v-else v-on:click="login" id="login-button">Login</button>
-  <router-view />
+  <button v-else id="login-button" @:click="login">Login</button>
 </template>
 
 <script lang="ts">
@@ -14,9 +12,11 @@ export default defineComponent({
   name: 'TractionSessionButton',
   methods: {
     async login() {
+      console.log('Logging in')
       await this.$auth.signInWithRedirect()
     },
     async logout() {
+      console.log('Logging out')
       await this.$auth.signOut()
     },
   },

@@ -14,6 +14,9 @@
           <FlaggedFeature name="flexible_pooling">
             <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
           </FlaggedFeature>
+          <div v-if="!authState?.isAuthenticated">
+            <TractionSessionButton />
+          </div>
         </div>
       </div>
     </div>
@@ -24,6 +27,7 @@
 import TractionLink from '@/components/TractionLink'
 import { bgColorClass } from '@/lib/BgColorClass'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
+import TractionSessionButton from './TractionSessionButton.vue'
 
 const environment = import.meta.env['VITE_ENVIRONMENT']
 const headerClasses = ['relative', bgColorClass[environment]]
