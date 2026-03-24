@@ -158,6 +158,8 @@ describe('PacbioRunWell.vue', () => {
       it('will be valid if it is complete', async () => {
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-success text-white')
+        expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(true)
+        expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(false)
       })
 
       it('will be invalid if there are aliquots but no metadata', () => {
@@ -169,6 +171,8 @@ describe('PacbioRunWell.vue', () => {
         }))
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
+        expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(true)
+        expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
       })
 
       it('will be invalid if there is metadata but no aliquots', () => {
@@ -180,6 +184,8 @@ describe('PacbioRunWell.vue', () => {
         }))
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
+        expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(true)
+        expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
       })
 
       it('will be empty if there is no aliquots or metadata', () => {
@@ -210,6 +216,8 @@ describe('PacbioRunWell.vue', () => {
 
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-gray-100 text-black')
+        expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
+        expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(false)
       })
     })
   })
