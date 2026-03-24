@@ -70,4 +70,27 @@ describe('FlexiblePoolWell.vue', () => {
       expect(wrapper.find('[data-attribute="flexible-pool-well"]').text()).toBe('')
     })
   })
+
+  describe('icons', () => {
+    it('shows a tick icon when the pool is valid', async () => {
+      store.isValidPool = vi.fn(() => true)
+      await nextTick()
+      expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(true)
+      expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(false)
+    })
+
+    it('shows a cross icon when the pool is invalid', async () => {
+      store.isValidPool = vi.fn(() => false)
+      await nextTick()
+      expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(true)
+      expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
+    })
+
+    it('shows no icon when the pool is empty', async () => {
+      store.getPool = vi.fn(() => null)
+      await nextTick()
+      expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
+    })
+  })
 })
