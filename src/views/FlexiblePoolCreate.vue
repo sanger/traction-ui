@@ -217,10 +217,10 @@ const create = () => {
     success
       ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
-    reset()
-    resetPacbio()
-    busy.value = false
     if (id && success) {
+      reset()
+      resetPacbio()
+      busy.value = false
       router.push({ name: 'FlexiblePool', params: { id } })
     }
   })
