@@ -15,11 +15,7 @@
         @mouseleave.prevent="hover = false"
         @click="onClick"
       >
-        <p
-          class="wrap-anywhere whitespace-normal p-1 overflow-hidden z-10 relative pointer-events-none"
-        >
-          {{ pool?.pool_barcode }}
-        </p>
+        <p class="wrap-anywhere whitespace-normal p-1 relative">{{ pool?.pool_barcode }}</p>
         <TractionTickIcon
           v-if="pool && isValidPool"
           class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
@@ -84,7 +80,7 @@ const wellClassNames = computed(() => {
   return [
     poolStatus.value,
     hover.value ? 'ring ring-pink-600 ring-offset-1' : 'border border-gray-800',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer relative overflow-hidden z-0',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer relative',
   ]
 })
 

@@ -11,7 +11,7 @@
       @dragleave.prevent="hover = false"
       @click="onClick"
     >
-      <p class="truncate font-light z-10 relative pointer-events-none">{{ position }}</p>
+      <p class="truncate font-light">{{ position }}</p>
       <TractionTickIcon
         v-if="isComplete"
         class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
@@ -92,7 +92,7 @@ const wellClassNames = computed(() => {
       ? 'ring ring-pink-600 ring-offset-1'
       : 'border border-gray-800',
     props.interactive ? 'cursor-pointer' : '',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out relative overflow-hidden z-0',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out relative',
   ]
 })
 

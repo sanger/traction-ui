@@ -1,7 +1,6 @@
 <template>
   <svg
     data-attribute="tick-icon"
-    class="w-4 h-4 mx-auto"
     fill="currentColor"
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
