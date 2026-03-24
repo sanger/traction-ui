@@ -29,7 +29,7 @@
     "@sanger/ui-styling": "^4.3.0",
     "@tailwindcss/postcss": "^4.2.1",
     "@vitejs/plugin-vue": "^6.0.5",
-    "csv-parse": "^6.1.0",
+    "csv-parse": "^6.2.1",
     "global": "^4.4.0",
     "lodash-es": "^4.17.23",
     "pinia": "^3.0.3",
