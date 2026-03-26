@@ -9,6 +9,7 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  calculatePoolMetadata,
 } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
@@ -1149,6 +1150,9 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
       if (aliquotErrors.length) {
         return { success: false, errors: aliquotErrors }
       }
+
+      // Attempt to autocalculate the pool attributes
+      calculatePoolMetadata({ pool: this.pool, used_aliquots: this.used_aliquots })
 
       // Validate the used aliquots and pool
       // At this point all the data should be usable but may have some missing attributes that are required for creating a pool.

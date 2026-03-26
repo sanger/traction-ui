@@ -1832,6 +1832,14 @@ describe('usePacbioPoolCreateStore', () => {
         const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords(records)
         expect(success).toEqual(true)
         expect(errors).toEqual([])
+        // Check the pool metadata was automatically built
+        expect(store.pool).toEqual({
+          volume: '30.00',
+          concentration: '13.00',
+          insert_size: '15230.00',
+          template_prep_kit_box_barcode: 6.3,
+          errors: {},
+        })
         expect(store.used_aliquots).toEqual({
           _1: expect.objectContaining({
             source_id: '1',
