@@ -86,6 +86,16 @@ describe('FlexiblePoolCreate', () => {
       expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
     })
 
+    it('is hidden when editing an existing multi pool', async () => {
+      // Should exist when id is new
+      expect(wrapper.find('[data-testid="reset-btn"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="create-btn"]').exists()).toBe(true)
+      await router.push({ name: 'FlexiblePool', params: { id: 1 } })
+      await flushPromises()
+      expect(wrapper.find('[data-testid="reset-btn"]').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="create-btn"]').exists()).toBe(false)
+    })
+
     it('creates a multi pool when create button is clicked', async () => {
       store.multiPoolCreateStore.isValidMultiPool = vi.fn().mockReturnValue(true)
       store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
