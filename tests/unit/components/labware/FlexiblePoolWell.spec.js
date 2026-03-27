@@ -4,9 +4,11 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { beforeEach } from 'vitest'
 
 const storePool = {
+  id: '1',
   position: '1',
   type: 'MultiPoolPosition',
   pool_barcode: 'TRAC-2-1213',
+  pool_id: '1',
 }
 const props = {
   position: '1',
@@ -91,6 +93,37 @@ describe('FlexiblePoolWell.vue', () => {
       await nextTick()
       expect(wrapper.find('[data-attribute="cross-icon"]').exists()).toBe(false)
       expect(wrapper.find('[data-attribute="tick-icon"]').exists()).toBe(false)
+    })
+  })
+
+  describe('#poolLink', () => {
+    it('returns individual pool create when it is a new pool in a new multi pool', () => {
+      store.getPool = vi.fn().mockReturnValue(null)
+      const expectedLink = {
+        name: 'FlexibleIndividualPoolCreate',
+        params: { id: props.id, position: props.position },
+      }
+      expect(well.poolLink).toEqual(expectedLink)
+    })
+
+    it('returns PacbioPoolCreate when it is an existing pool in an existing multi pool', async () => {
+      wrapper.setProps({ id: '2' })
+      await nextTick()
+
+      store.getPool = vi.fn().mockReturnValue(storePool)
+      const expectedLink = {
+        name: 'PacbioPoolCreate',
+        params: { id: storePool.pool_id },
+      }
+      expect(well.poolLink).toEqual(expectedLink)
+    })
+
+    it('returns nothing when there is no pool and it is an existing multi pool', async () => {
+      wrapper.setProps({ id: '2' })
+      await nextTick()
+
+      store.getPool = vi.fn().mockReturnValue(null)
+      expect(well.poolLink).toEqual('')
     })
   })
 })
