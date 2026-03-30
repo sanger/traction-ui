@@ -1,11 +1,19 @@
 <!-- Okta callback redirect script -->
+<!--
+On this callback page:
+
+    call token.parseFromUrl to retrieve tokens
+    Add tokens to the TokenManager: tokenManager.setTokens
+
+Read saved route and redirect to it: getOriginalUri
+ -->
 <!doctype html>
 <html>
   <head>
     <script type="module">
       import oktaAuth from './src/lib/auth.js'
 
-      const redirectAfterSuccess = window.location.origin + '/' // plus actual URL?
+      const redirectAfterSuccess = window.location.origin + '/#/'
 
       // parse tokens from the url
       oktaAuth.token
@@ -21,8 +29,9 @@
             }
           }
 
-          // redirect when finished
-          window.location = redirectAfterSuccess
+          const originalUri = oktaAuth.getOriginalUri()
+
+          window.location = redirectAfterSuccess + originalUri;
         })
         .catch(function (err) {
           // handle the error

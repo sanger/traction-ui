@@ -14,9 +14,8 @@
           <FlaggedFeature name="flexible_pooling">
             <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
           </FlaggedFeature>
-          <div v-if="!authState?.isAuthenticated">
-            <TractionSessionButton />
-          </div>
+          <TractionSessionButton v-if="!authState?.isAuthenticated" />
+          <TractionLink name="Logged In User" link="/logged-in-user" view-type="2" />
         </div>
       </div>
     </div>
