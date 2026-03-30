@@ -1,6 +1,9 @@
 <template>
   <div v-if="!authState?.isAuthenticated">
-    <button id="login-button" v-on:click="login">Login</button>
+    <button id="login-button" v-on:click="userLogin">Login</button>
+  </div>
+  <div v-else>
+    <button class="logoutBtn" v-on:click="userLogout">Logout</button>
   </div>
 
   <div v-if="authState?.isAuthenticated">
@@ -29,8 +32,6 @@
           </tr>
         </tbody>
       </table>
-      <br />
-      <button class="logoutBtn" v-on:click="userLogout">Logout</button>
     </div>
   </div>
 </template>

@@ -11,38 +11,43 @@ Read saved route and redirect to it: getOriginalUri
 <html>
   <head>
     <script type="module">
-      import oktaAuth from './src/lib/auth.js'
+      import oktaAuth from '@/lib/auth.js'
 
-      const redirectAfterSuccess = window.location.origin + '/#/'
+      // const redirectAfterSuccess = window.location.origin + '/#/'
 
-      // parse tokens from the url
-      oktaAuth.token
-        .parseFromUrl()
-        .then(function (tokens) {
-          // add tokens to the tokenManager
-          for (var t = 0; t < tokens.length; t++) {
-            var token = tokens[t]
-            if (token.idToken) {
-              oktaAuth.tokenManager.add('idToken', token)
-            } else if (token.accessToken) {
-              oktaAuth.tokenManager.add('accessToken', token)
-            }
-          }
+      // // parse tokens from the url
+      // oktaAuth.token
+      //   .parseFromUrl()
+      //   .then(function (tokens) {
+      //     // add tokens to the tokenManager
+      //     for (var t = 0; t < tokens.length; t++) {
+      //       var token = tokens[t]
+      //       if (token.idToken) {
+      //         oktaAuth.tokenManager.add('idToken', token)
+      //       } else if (token.accessToken) {
+      //         oktaAuth.tokenManager.add('accessToken', token)
+      //       }
 
-          const originalUri = oktaAuth.getOriginalUri()
+      //     }
+      //     console.log('Tokens parsed and added to tokenManager:', tokens)
 
-          window.location = redirectAfterSuccess + originalUri;
-        })
-        .catch(function (err) {
-          // handle the error
-          console.error(err)
-          // If OAuth error, display the error message as an appended paragraph in the page
-          if (err.errorCode) {
-            const errorMessage = document.createElement('p')
-            errorMessage.textContent = `Error: ${err.errorSummary}`
-            document.body.appendChild(errorMessage)
-          }
-        })
+      //     const originalUri = oktaAuth.getOriginalUri()
+
+      //     console.log('Original URI:', originalUri)
+
+      //     // redirect when finished
+      //     // window.location = redirectAfterSuccess + originalUri;
+      //   })
+      //   .catch(function (err) {
+      //     // handle the error
+      //     console.error(err)
+      //     // If OAuth error, display the error message as an appended paragraph in the page
+      //     if (err.errorCode) {
+      //       const errorMessage = document.createElement('p')
+      //       errorMessage.textContent = `Error: ${err.errorSummary}`
+      //       document.body.appendChild(errorMessage)
+      //     }
+      //   })
     </script>
   </body>
 </html>

@@ -17,16 +17,28 @@ authClient.authStateManager.subscribe(function (authState) {
   // Logic based on authState is done here.
   if (!authState.isAuthenticated) {
     // render unauthenticated view
+    console.log('User is not authenticated')
     return
   }
 
   // Render authenticated view
+  console.log('User is authenticated')
+
+  // Required view to render is saved in Session Storage for this host with the key 'referrerPath'
+  // TODO: use the OktaAuth way of redirecting to the referrer path instead of manually handling it here
+  const redirect = window.location.origin + '/#'
+  const referrerPath = sessionStorage.getItem('referrerPath') || '/'
+
+  const location = redirect + referrerPath
+  console.log('Redirecting to: ' + location)
+  window.location = location
 })
 
 // Handle callback
 if (authClient.token.isLoginRedirect()) {
   const { tokens } = await authClient.token.parseFromUrl() // remember to "await" this async call
   authClient.tokenManager.setTokens(tokens)
+  console.log('Tokens set in token manager')
 }
 
 // normal app startup
