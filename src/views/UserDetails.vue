@@ -19,36 +19,30 @@
     />
   </div>
 </template>
-<script>
-export default {
-  name: 'UserDetails',
-  data() {
-    return {
-      name: '<Unknown User>',
-      userClaims: [],
-      claimFields: [
-        { key: 'claimType', label: 'Properties' },
-        { key: 'claimValue', label: 'Value' },
-      ],
-    }
-  },
-  async created() {
-    await this.userDetails()
-  },
-  methods: {
-    async authClaims() {
-      if (!this.authState?.isAuthenticated) return {}
-      const authToken = await this.$auth.tokenManager.get('idToken')
-      return authToken?.claims || {}
-    },
-    async userDetails() {
-      const claims = await this.authClaims()
-      this.name = claims.name // TODO: move this into a store or something, so we don't have to fetch the claims multiple times across different components
-      this.userClaims = Object.entries(claims).map(([claimType, claimValue]) => ({
-        claimType,
-        claimValue,
-      }))
-    },
-  },
+<script setup>
+import { onMounted, ref } from 'vue'
+import oktaAuth from '@/lib/auth'
+
+const name = ref('<Unknown User>')
+const userClaims = ref([])
+const claimFields = [
+  { key: 'claimType', label: 'Properties' },
+  { key: 'claimValue', label: 'Value' },
+]
+
+async function authClaims() {
+  const authToken = await oktaAuth.tokenManager.get('idToken')
+  return authToken?.claims || {}
 }
+
+async function userDetails() {
+  const claims = await authClaims()
+  name.value = claims.name || '<Unknown User>' // TODO: move this into a store or something, so we don't have to fetch the claims
+  userClaims.value = Object.entries(claims).map(([claimType, claimValue]) => ({
+    claimType,
+    claimValue,
+  }))
+}
+
+onMounted(userDetails)
 </script>
