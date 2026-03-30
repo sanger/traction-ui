@@ -1,9 +1,9 @@
 <template>
   <div>
-    <router-link :to="poolLink" data-attribute="flexible-pool-well-link" class="block">
+    <router-link :to="poolLink" class="block">
       <div
         :class="wellClassNames"
-        data-attribute="flexible-pool-well"
+        :data-attribute="`flexible-pool-well-${position}`"
         @mouseover.prevent="hover = true"
         @mouseleave.prevent="hover = false"
         @click="onClick"

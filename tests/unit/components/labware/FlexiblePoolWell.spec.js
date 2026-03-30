@@ -61,7 +61,7 @@ describe('FlexiblePoolWell.vue', () => {
 
   describe('pool barcode', () => {
     it('shows the pool barcode if it exists', () => {
-      expect(wrapper.find('[data-attribute="flexible-pool-well"]').text()).toContain(
+      expect(wrapper.find('[data-attribute="flexible-pool-well-1"]').text()).toContain(
         storePool.pool_barcode,
       )
     })
@@ -69,7 +69,7 @@ describe('FlexiblePoolWell.vue', () => {
     it('shows nothing if there is no pool barcode', async () => {
       wrapper.setProps({ position: '2' })
       await nextTick()
-      expect(wrapper.find('[data-attribute="flexible-pool-well"]').text()).toBe('')
+      expect(wrapper.find('[data-attribute="flexible-pool-well-2"]').text()).toBe('')
     })
   })
 
