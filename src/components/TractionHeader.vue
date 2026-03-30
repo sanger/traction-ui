@@ -11,11 +11,11 @@
           <TractionLink name="Reception" link="/reception" view-type="2" />
           <TractionLink name="LabWhere Reception" link="/labwhere-reception" view-type="2" />
           <TractionLink name="Sample Report" link="/sample-report" view-type="2" />
+          <TractionLink name="User Details" link="/user-details" view-type="2" />
           <FlaggedFeature name="flexible_pooling">
             <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
           </FlaggedFeature>
           <TractionSessionButton v-if="!authState?.isAuthenticated" />
-          <TractionLink name="Logged In User" link="/logged-in-user" view-type="2" />
         </div>
       </div>
     </div>

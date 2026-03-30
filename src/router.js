@@ -7,7 +7,7 @@ import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import LoggedInUser from '@/views/LoggedInUser.vue'
+import UserDetails from '@/views/UserDetails.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
@@ -56,10 +56,10 @@ const router = createRouter({
       component: TractionDashboard,
     },
     {
-      path: '/logged-in-user',
-      name: 'LoggedInUser',
-      meta: { page: 'Logged In User', requiresAuth: true },
-      component: LoggedInUser,
+      path: '/user-details',
+      name: 'UserDetails',
+      meta: { page: 'User Details', requiresAuth: true },
+      component: UserDetails,
     },
     {
       path: '/reception',
