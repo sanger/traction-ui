@@ -1,5 +1,5 @@
 <template>
-  <h1>Welcome {{ userData && userData.name }}!</h1>
+  <h2 class="text-2xl">Welcome {{ name }}!</h2>
   <br />
   <p>
     🎉 Congratulations! 🎉 You're now successfully logged in to your account. We're thrilled to have
@@ -8,45 +8,46 @@
   </p>
   <br />
   <div>
-    <h1>User Information</h1>
+    <h2 class="text-2xl">User Information</h2>
     <br />
-    <table class="detail-table">
-      <thead>
-        <tr>
-          <th>Properties</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(x, index) in userClaims" :key="index">
-          <td>{{ x.claimType }}</td>
-          <td :id="'id-' + x.claimType">{{ x.claimValue }}</td>
-        </tr>
-      </tbody>
-    </table>
+
+    <traction-table
+      id="user-claims-table"
+      :items="userClaims"
+      :fields="claimFields"
+      empty-text="No user claims available"
+    />
   </div>
 </template>
 <script>
 export default {
   name: 'UserDetails',
-  data: function () {
+  data() {
     return {
+      name: '<Unknown User>',
       userClaims: [],
+      claimFields: [
+        { key: 'claimType', label: 'Properties' },
+        { key: 'claimValue', label: 'Value' },
+      ],
     }
   },
   async created() {
-    this.userDetails()
+    await this.userDetails()
   },
   methods: {
+    async authClaims() {
+      if (!this.authState?.isAuthenticated) return {}
+      const authToken = await this.$auth.tokenManager.get('idToken')
+      return authToken?.claims || {}
+    },
     async userDetails() {
-      if (this.authState?.isAuthenticated) {
-        const authToken = await this.$auth.tokenManager.get('idToken')
-        this.userArray = await this.$auth.getUser()
-        this.userClaims = Object.entries(authToken.claims).map(([claimType, claimValue]) => ({
-          claimType,
-          claimValue,
-        }))
-      }
+      const claims = await this.authClaims()
+      this.name = claims.name // TODO: move this into a store or something, so we don't have to fetch the claims multiple times across different components
+      this.userClaims = Object.entries(claims).map(([claimType, claimValue]) => ({
+        claimType,
+        claimValue,
+      }))
     },
   },
 }
