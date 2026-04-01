@@ -168,11 +168,11 @@ describe('Flexible pooling file upload', () => {
 
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
-      // Check there is one red pool
-      cy.get('[data-attribute="flexible-pool-well-1').should('have.class', 'bg-failure text-white')
+      // Check there is one valid pool
+      cy.get('[data-attribute="flexible-pool-well-1').should('have.class', 'bg-success text-white')
 
       // Check we cant create the pool because the pool is invalid
-      cy.get('[data-testid="create-btn"]').should('be.disabled')
+      cy.get('[data-testid="create-btn"]').should('not.be.disabled')
 
       // Go to the first pool
       cy.get('[data-attribute="flexible-pool-well-1').click()
@@ -183,7 +183,6 @@ describe('Flexible pooling file upload', () => {
         .within(() => {
           cy.get('[data-attribute=request-sample-name').contains('sample1')
           cy.get('[data-attribute=request-source-identifier]').contains('GEN-SOURCE:A1')
-          // cy.get('[data-attribute=tag]').should('be.empty')
           cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
             'have.value',
             'TPK-BOX:12345',
@@ -193,12 +192,15 @@ describe('Flexible pooling file upload', () => {
           cy.get('[data-attribute=insert-size]').should('have.value', '500')
         })
 
-      // Fill in the missing pool information
+      // Check the pool edit details have been automatically populated
       cy.get('[data-type=pool-edit]').within(() => {
-        cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
-        cy.get('[data-attribute=volume]').type('1')
-        cy.get('[data-attribute=concentration]').type('10.0')
-        cy.get('[data-attribute=insert-size]').type('100')
+        cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+          'have.value',
+          'TPK-BOX:12345',
+        )
+        cy.get('[data-attribute=volume]').should('have.value', '10.00')
+        cy.get('[data-attribute=concentration]').should('have.value', '20.00')
+        cy.get('[data-attribute=insert-size]').should('have.value', '500.00')
       })
 
       // Update the pool
@@ -257,6 +259,7 @@ describe('Flexible pooling file upload', () => {
                 type: 'requests',
                 attributes: {
                   source_identifier: 'GEN-SOURCE:A1',
+                  sample_name: 'sample1',
                 },
                 relationships: {
                   plate: {
@@ -352,8 +355,34 @@ describe('Flexible pooling file upload', () => {
 
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
-      // Check we cant create the pool because the pool is invalid
+      // Check we cant create the multi pool because the pool is invalid
       cy.get('[data-testid="create-btn"]').should('be.disabled')
+
+      // Go to the first pool
+      cy.get('[data-attribute="flexible-pool-well-1').first().click()
+
+      // Check the pool aliquot details are correct
+      cy.get('[data-type=pool-aliquot-edit]')
+        .first()
+        .within(() => {
+          cy.get('[data-attribute=request-sample-name').contains('sample1')
+          cy.get('[data-attribute=request-source-identifier]').contains('GEN-SOURCE:A1')
+          cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+            'have.value',
+            'TPK-BOX:12345',
+          )
+          cy.get('[data-attribute=volume]').should('have.value', '')
+          cy.get('[data-attribute=concentration]').should('have.value', '20')
+          cy.get('[data-attribute=insert-size]').should('have.value', '500')
+        })
+
+      // Check the pool edit details are blank because the pool metadata could not be calculated because of the missing volume
+      cy.get('[data-type=pool-edit]').within(() => {
+        cy.get('[data-attribute=template-prep-kit-box-barcode]').should('have.value', '')
+        cy.get('[data-attribute=volume]').should('have.value', '')
+        cy.get('[data-attribute=concentration]').should('have.value', '')
+        cy.get('[data-attribute=insert-size]').should('have.value', '')
+      })
     })
   })
 
