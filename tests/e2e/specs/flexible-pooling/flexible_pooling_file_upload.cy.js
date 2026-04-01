@@ -198,9 +198,9 @@ describe('Flexible pooling file upload', () => {
           'have.value',
           'TPK-BOX:12345',
         )
-        cy.get('[data-attribute=volume]').should('have.value', '10.00')
+        cy.get('[data-attribute=volume]').should('have.value', '10.0')
         cy.get('[data-attribute=concentration]').should('have.value', '20.00')
-        cy.get('[data-attribute=insert-size]').should('have.value', '500.00')
+        cy.get('[data-attribute=insert-size]').should('have.value', '500')
       })
 
       // Update the pool

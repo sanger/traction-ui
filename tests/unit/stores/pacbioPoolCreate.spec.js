@@ -1834,9 +1834,9 @@ describe('usePacbioPoolCreateStore', () => {
         expect(errors).toEqual([])
         // Check the pool metadata was automatically built
         expect(store.pool).toEqual({
-          volume: '30.00',
+          volume: '30.0',
           concentration: '13.00',
-          insert_size: '15230.00',
+          insert_size: '15230',
           template_prep_kit_box_barcode: 6.3,
           errors: {},
         })

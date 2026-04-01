@@ -983,9 +983,9 @@ describe('pool', () => {
         type: 'pools',
       }
       const expected = {
-        volume: '30.00',
+        volume: '30.0',
         concentration: '8.33',
-        insert_size: '1500.00',
+        insert_size: '1500',
         template_prep_kit_box_barcode: 'barcode1',
       }
 

@@ -249,18 +249,21 @@ const calculatePoolMetadata = ({ pool, used_aliquots }) => {
 
   const usedAliquotsArray = Object.values(used_aliquots)
 
+  // Round to 1 decimal place for volume as pipettes can not be any more accurate
   pool.volume = usedAliquotsArray
     .reduce((totalVolume, used_aliquot) => {
       const volume = parseFloat(used_aliquot.volume)
       return totalVolume + volume
     }, 0)
-    .toFixed(2)
+    .toFixed(1)
+  // Round to the nearest whole number as you can't have half a base pair
   pool.insert_size = (
     usedAliquotsArray.reduce((totalInsertSize, used_aliquot) => {
       const insertSize = parseFloat(used_aliquot.insert_size)
       return totalInsertSize + insertSize
     }, 0) / usedAliquotsArray.length
-  ).toFixed(2)
+  ).toFixed()
+  // Round to 2 decimal places for concentration as this is a common level of precision for concentration measurements and calculations
   pool.concentration = (
     usedAliquotsArray.reduce((totalMass, used_aliquot) => {
       const concentration = parseFloat(used_aliquot.concentration)
