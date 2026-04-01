@@ -103,12 +103,24 @@ describe('useMultiPoolCreateStore', () => {
     describe('setMultiPool', () => {
       it('for a new multi pool', async () => {
         const id = 'new'
+        store.fetchMultiPool = vi.fn()
         const { success } = await store.setMultiPool({ id })
         expect(success).toBeTruthy()
         expect(store.$state.multiPool).toEqual({
           pipeline: 'pacbio',
           pool_method: 'Plate',
         })
+        // We don't call the service if its a new multi pool because there is no id to fetch
+        expect(store.fetchMultiPool).not.toHaveBeenCalled()
+      })
+
+      it('for a multi pool with a bad id', async () => {
+        const id = 'badid'
+        store.fetchMultiPool = vi.fn().mockResolvedValue({ success: false })
+        const { success } = await store.setMultiPool({ id })
+        // We still expect it to call the service with the bad id to attempt to fetch the multi pool, even though it will fail
+        expect(store.fetchMultiPool).toHaveBeenCalledWith(id)
+        expect(success).toBeFalsy()
       })
 
       it('for an existing multi pool', async () => {
@@ -237,6 +249,12 @@ describe('useMultiPoolCreateStore', () => {
         const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
         localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
         expect(store.isValidPersisted('new')).toBeTruthy()
+      })
+
+      it('returns false if the persisted store has no id and the requested id is not new', () => {
+        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('randomstring')).toBeFalsy()
       })
 
       it('returns true if the persisted store id matches the requested id', () => {

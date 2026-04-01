@@ -1,16 +1,9 @@
 <template>
   <div>
-    <router-link
-      :to="{
-        name: 'FlexibleIndividualPoolCreate',
-        params: { id, position },
-      }"
-      data-attribute="flexible-pool-well-link"
-      class="block"
-    >
+    <router-link :to="poolLink" class="block">
       <div
         :class="wellClassNames"
-        data-attribute="flexible-pool-well"
+        :data-attribute="`flexible-pool-well-${position}`"
         @mouseover.prevent="hover = true"
         @mouseleave.prevent="hover = false"
         @click="onClick"
@@ -71,6 +64,25 @@ const multiPoolCreateStore = useMultiPoolCreateStore()
  * The `hover` ref is used to determine if the well is being hovered over.
  */
 const hover = ref(false)
+
+/*
+ * Logic to determine where to take the user
+ * 1. If there is an existing pool in the well with an id take them to the pacbio pool edit page for that pool
+ * 2. If there is no existing pool but the multi pool has an id (meaning we are editing an existing multi pool) provide no link as editing has not been implemented yet
+ * 3. If there is no existing pool and the mutli pool is a new one take them to the flexible individual pool create page
+ */
+const poolLink = computed(() => {
+  if (pool.value?.pool_id) {
+    return { name: 'PacbioPoolCreate', params: { id: pool.value.pool_id } }
+  }
+  if (!pool.value && props.id !== 'new') {
+    return ''
+  }
+  return {
+    name: 'FlexibleIndividualPoolCreate',
+    params: { id: props.id, position: props.position },
+  }
+})
 
 /*
  * Computed property that returns the class names for the well.
