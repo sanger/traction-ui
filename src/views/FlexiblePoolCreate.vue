@@ -6,7 +6,10 @@
         <div
           class="w-full max-w-6xl mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4 space-y-4"
         >
-          <traction-heading level="2" show-border>Flexible pooling</traction-heading>
+          <traction-heading level="2" show-border>
+            Flexible pooling
+            <span class="text-gray-400 px-2">{{ id }}</span>
+          </traction-heading>
           <div class="flex flex-col text-left gap-y-2">
             <span
               >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
@@ -134,7 +137,7 @@
               <FlexiblePoolWell :id="route.params.id" :position="position" />
             </LabwareMap>
           </traction-section>
-          <traction-section title="Actions" number="3">
+          <traction-section v-if="id == 'new'" title="Actions" number="3">
             <div class="w-full flex justify-between">
               <traction-button data-testid="reset-btn" theme="delete" @click="reset"
                 >Reset</traction-button
@@ -283,8 +286,7 @@ const resetPacbio = () => {
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  await multiPoolCreateStore.setMultiPool({ id: id.value })
-  return { success: true }
+  return await multiPoolCreateStore.setMultiPool({ id: id.value })
 }
 
 /**
@@ -299,6 +301,7 @@ const labwareType = computed(() => {
     ? LabwareTypes.TubeRack24
     : LabwareTypes.MultiPool96
 })
+
 /**
  * Dynamically determines if the setup section should be disabled.
  * If the user starts creating pools (i.e. multiPoolPositions has length greater than 0),

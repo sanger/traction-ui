@@ -169,15 +169,13 @@ describe('Flexible pooling file upload', () => {
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
       // Check there is one valid pool
-      cy.get('[data-attribute="flexible-pool-well')
-        .first()
-        .should('have.class', 'bg-success text-white')
+      cy.get('[data-attribute="flexible-pool-well-1').should('have.class', 'bg-success text-white')
 
       // Check we cant create the pool because the pool is invalid
       cy.get('[data-testid="create-btn"]').should('not.be.disabled')
 
       // Go to the first pool
-      cy.get('[data-attribute="flexible-pool-well').first().click()
+      cy.get('[data-attribute="flexible-pool-well-1').click()
 
       // Check the pool aliquot details are correct
       cy.get('[data-type=pool-aliquot-edit]')
@@ -218,9 +216,7 @@ describe('Flexible pooling file upload', () => {
       cy.get('[data-testid="clear-alerts"]').click()
 
       // Check we can create the multi pool now that the pool is valid
-      cy.get('[data-attribute="flexible-pool-well')
-        .first()
-        .should('have.class', 'bg-success text-white')
+      cy.get('[data-attribute="flexible-pool-well-1').should('have.class', 'bg-success text-white')
       cy.get('[data-testid="create-btn"]').should('not.be.disabled')
       cy.get('[data-testid="create-btn"]').click()
 
@@ -230,7 +226,7 @@ describe('Flexible pooling file upload', () => {
       cy.url().should('include', '#/flexible-pool/1')
 
       // Check the multi pool pool barcodes appear
-      cy.get('[data-attribute="flexible-pool-well').first().contains('TRAC-2-1')
+      cy.get('[data-attribute="flexible-pool-well-1').contains('TRAC-2-1')
     })
 
     it('successfully uploads even when some non-required data is missing', () => {
@@ -355,9 +351,7 @@ describe('Flexible pooling file upload', () => {
       })
 
       // Check there is one red pool
-      cy.get('[data-attribute="flexible-pool-well')
-        .first()
-        .should('have.class', 'bg-failure text-white')
+      cy.get('[data-attribute="flexible-pool-well-1').should('have.class', 'bg-failure text-white')
 
       cy.contains('[data-attribute="message"]', 'CSV file successfully processed')
 
@@ -365,7 +359,7 @@ describe('Flexible pooling file upload', () => {
       cy.get('[data-testid="create-btn"]').should('be.disabled')
 
       // Go to the first pool
-      cy.get('[data-attribute="flexible-pool-well').first().click()
+      cy.get('[data-attribute="flexible-pool-well-1').first().click()
 
       // Check the pool aliquot details are correct
       cy.get('[data-type=pool-aliquot-edit]')
