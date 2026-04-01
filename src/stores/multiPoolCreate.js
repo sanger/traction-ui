@@ -95,7 +95,9 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
       // Initialize multiPool state defaults
       this.clearData()
 
-      // If the id is not a number, it is a new multi pool
+      // If the id is 'new', it is a new multi pool
+      // Other non numeric ids are not expected but we don't want to consider them
+      // as 'new' so let the service return an error for invalid id instead
       if (id == 'new') {
         // if it is a new multi pool, return success
         return { success: true }
