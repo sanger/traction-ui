@@ -1,11 +1,15 @@
 <template>
   <flagged-feature name="flexible_pooling">
     <template #default>
+      <loading-full-screen-modal v-bind="loadingModalState"></loading-full-screen-modal>
       <DataFetcher :fetcher="provider">
         <div
           class="w-full max-w-6xl mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4 space-y-4"
         >
-          <traction-heading level="2" show-border>Flexible pooling</traction-heading>
+          <traction-heading level="2" show-border>
+            Flexible pooling
+            <span class="text-gray-400 px-2">{{ id }}</span>
+          </traction-heading>
           <div class="flex flex-col text-left gap-y-2">
             <span
               >Make multiple pools simultaneously by uploading a CSV file or manually creating pools
@@ -49,72 +53,80 @@
               </div>
               <div class="flex flex-col w-full">
                 <div class="flex flex-row w-full justify-between">
-                  <label class="flex text-left whitespace-nowrap" for="csvFileInput"
-                    >Pooling CSV</label
-                  >
-                  <div class="flex flex-row items-center">
-                    <traction-tooltip
-                      id="csv-tooltip"
-                      class="text-sp-600 text-left"
-                      tooltip-bg-colour="bg-sp-200"
+                  <div class="flex flex-row">
+                    <label class="flex text-left whitespace-nowrap" for="csvFileInput"
+                      >Pooling CSV</label
                     >
-                      <template #tooltip>
-                        <div class="w-full">
-                          <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
-                          <ul class="w-full list-disc list-inside p-2 space-y-2">
-                            <li>
-                              All columns must contain values: <br />
-                              <div class="px-4 font-bold">
-                                Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box
-                                Barcode,Volume (uL),Concentration (ng/uL),Insert Size
-                              </div>
-                            </li>
-                            <li>
-                              <strong>Pool Number:</strong> Samples with the same pool number will
-                              be grouped into the same pool.
-                            </li>
-                            <li>
-                              <strong>Source Identifier:</strong> Library source, Tube barcode, or
-                              combination of Plate barcode and Well position.
-                            </li>
-                            <li><strong>Tag Set:</strong> The tag set name of tags to be used.</li>
-                            <li><strong>Tag:</strong> The tag to apply to the sample.</li>
-                            <li>
-                              <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
-                              template prep kit.
-                            </li>
-                            <li>
-                              <strong>Volume (uL):</strong> The volume of the sample in microliters.
-                            </li>
-                            <li>
-                              <strong>Concentration (ng/uL):</strong> The concentration of the
-                              sample in nanograms per microliter.
-                            </li>
-                            <li><strong>Insert Size:</strong> The insert size for the sample.</li>
-                          </ul>
-                        </div>
-                      </template>
-                      <TractionInfoIcon :size="20" />
-                    </traction-tooltip>
-                    <div class="whitespace-nowrap">
-                      <a
-                        data-testid="flexible-pooling-template"
-                        href="/flexible-pooling-template.csv"
-                        download="FlexiblePoolingTemplate.csv"
-                        class="text-sp-600 hover:underline text-sm"
+                    <div class="flex flex-row items-center">
+                      <traction-tooltip
+                        id="csv-tooltip"
+                        class="text-sp-600 text-left"
+                        tooltip-bg-colour="bg-sp-200"
+                        tooltip-direction="top-[25px] right-0"
                       >
-                        Download CSV template
-                      </a>
+                        <template #tooltip>
+                          <div class="w-full">
+                            <h1 class="px-2 font-semibold text-lg text-sp-600">CSV Guidelines</h1>
+                            <ul class="w-full list-disc list-inside p-2 space-y-2">
+                              <li>
+                                All columns must contain values: <br />
+                                <div class="px-4 font-bold">
+                                  Pool Number,Source Identifier,Tag Set,Tag,Template Prep Kit Box
+                                  Barcode,Volume (uL),Concentration (ng/uL),Insert Size
+                                </div>
+                              </li>
+                              <li>
+                                <strong>Pool Number:</strong> Samples with the same pool number will
+                                be grouped into the same pool.
+                              </li>
+                              <li>
+                                <strong>Source Identifier:</strong> Library source, Tube barcode, or
+                                combination of Plate barcode and Well position.
+                              </li>
+                              <li>
+                                <strong>Tag Set:</strong> The tag set name of tags to be used.
+                              </li>
+                              <li><strong>Tag:</strong> The tag to apply to the sample.</li>
+                              <li>
+                                <strong>Template Prep Kit Box Barcode:</strong> The barcode of the
+                                template prep kit.
+                              </li>
+                              <li>
+                                <strong>Volume (uL):</strong> The volume of the sample in
+                                microliters.
+                              </li>
+                              <li>
+                                <strong>Concentration (ng/uL):</strong> The concentration of the
+                                sample in nanograms per microliter.
+                              </li>
+                              <li><strong>Insert Size:</strong> The insert size for the sample.</li>
+                            </ul>
+                          </div>
+                        </template>
+                        <TractionInfoIcon :size="20" />
+                      </traction-tooltip>
                     </div>
+                  </div>
+                  <div class="whitespace-nowrap">
+                    <a
+                      data-testid="flexible-pooling-template"
+                      href="/flexible-pooling-template.csv"
+                      download="FlexiblePoolingTemplate.csv"
+                      class="text-sp-600 hover:underline text-sm flex flex-row items-center"
+                    >
+                      CSV template <DownloadIcon color="#b95c7d" />
+                    </a>
                   </div>
                 </div>
                 <div id="borderDiv" class="w-full">
                   <input
+                    ref="csv-file-input"
                     data-testid="csv-file-input"
                     class="block rounded border file:border-0 w-full my-2"
                     type="file"
                     accept="text/csv, .csv"
                     :disabled="isSetupDisabled"
+                    @change="uploadFile"
                   />
                 </div>
               </div>
@@ -125,7 +137,7 @@
               <FlexiblePoolWell :id="route.params.id" :position="position" />
             </LabwareMap>
           </traction-section>
-          <traction-section title="Actions" number="3">
+          <traction-section v-if="id == 'new'" title="Actions" number="3">
             <div class="w-full flex justify-between">
               <traction-button data-testid="reset-btn" theme="delete" @click="reset"
                 >Reset</traction-button
@@ -155,7 +167,7 @@
   This page allows users to create or edit flexible pools.
 -->
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, useTemplateRef } from 'vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import DataFetcher from '@/components/DataFetcher.vue'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
@@ -165,6 +177,7 @@ import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate'
 import useAlert from '@/composables/useAlert.js'
 import { useRoute, useRouter } from 'vue-router'
+import DownloadIcon from '@/icons/DownloadIcon.vue'
 
 // Composables and stores
 const multiPoolCreateStore = useMultiPoolCreateStore()
@@ -172,6 +185,9 @@ const pacbioPoolCreateStore = usePacbioPoolCreateStore()
 const { showAlert } = useAlert()
 const route = useRoute()
 const router = useRouter()
+
+// refs
+const csvInput = useTemplateRef('csv-file-input')
 
 // State
 const id = computed(() => route.params.id)
@@ -182,6 +198,7 @@ const poolingLayoutOptions = [
 const pipelineOptions = [{ text: 'Pacbio', value: 'pacbio' }]
 // Flag to indicate if the form is busy processing a request
 const busy = ref(false)
+const loadingModalState = ref({ visible: false, message: '' })
 
 // Actions
 // Watch for changes to the route id and call provider
@@ -203,19 +220,57 @@ const create = () => {
     success
       ? showAlert(`Flexible pool successfully created with id ${id}`, 'success')
       : showAlert(errors, 'danger')
-    reset()
-    resetPacbio()
-    busy.value = false
     if (id && success) {
+      reset()
+      resetPacbio()
+      busy.value = false
       router.push({ name: 'FlexiblePool', params: { id } })
     }
   })
 }
 
 /**
+ * Handles the csv file upload
+ * @param evt - Event object
+ */
+const uploadFile = async (evt) => {
+  showLoadingModal('Processing CSV file...')
+  if (evt?.target?.files?.length) {
+    const { success, errors } = await multiPoolCreateStore.parsePoolingCsvFile(evt.target.files[0])
+    if (success) {
+      showAlert('CSV file successfully processed', 'success')
+    } else {
+      showAlert(errors.join(', '), 'danger')
+    }
+  } else {
+    showAlert('No file selected. Please select a CSV file to upload.', 'warning')
+  }
+  clearLoadingModal()
+}
+
+/**
+ * Hides the loading modal and resets the loading modal state to default values
+ */
+function clearLoadingModal() {
+  loadingModalState.value = { visible: false, message: '' }
+}
+
+/**
+ * Shows the loading modal with the provided message
+ */
+function showLoadingModal(message) {
+  loadingModalState.value = { visible: true, message }
+}
+
+/**
  * Resets the multi pool create store data and sets default values
  */
 const reset = () => {
+  // Clear the CSV file input
+  if (csvInput) {
+    csvInput.value.value = null
+  }
+
   multiPoolCreateStore.clearData()
 }
 
@@ -231,8 +286,7 @@ const resetPacbio = () => {
  * @returns {Promise<Object>} A promise that resolves with an object containing a success property set to true.
  */
 const provider = async () => {
-  await multiPoolCreateStore.setMultiPool({ id: id.value })
-  return { success: true }
+  return await multiPoolCreateStore.setMultiPool({ id: id.value })
 }
 
 /**
@@ -247,6 +301,7 @@ const labwareType = computed(() => {
     ? LabwareTypes.TubeRack24
     : LabwareTypes.MultiPool96
 })
+
 /**
  * Dynamically determines if the setup section should be disabled.
  * If the user starts creating pools (i.e. multiPoolPositions has length greater than 0),
@@ -255,7 +310,7 @@ const labwareType = computed(() => {
  * @returns {boolean} A boolean value indicating whether the setup section should be disabled.
  */
 const isSetupDisabled = computed(() => {
-  const positions = multiPoolCreateStore?.multiPool?.multiPoolPositions
+  const positions = multiPoolCreateStore?.multiPoolPositions
   if (!positions || typeof positions !== 'object') return false
   return Object.keys(positions).length > 0
 })

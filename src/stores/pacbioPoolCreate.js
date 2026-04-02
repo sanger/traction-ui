@@ -9,6 +9,7 @@ import {
   assignLibraryRequestsToTubes,
   createUsedAliquotsAndMapToSourceId,
   assignRequestIdsToTubes,
+  calculatePoolMetadata,
 } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot, isValidUsedAliquot } from './utilities/usedAliquot.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
@@ -1105,6 +1106,258 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
 
       // Remove any existing errors for the field
       delete pool.errors[field]
+    },
+
+    /**
+     * Takes a list of records extracted from a multi-pool CSV and builds used_aliquots based on the source identifiers and tag information in the records.
+     *
+     * @param {*} records - Object containing a used_aliquot entry with source_identifier, tagset, tag and metadata
+     */
+    async buildPoolFromMultiPoolCsvRecords(records) {
+      // We first validate the tags before building the pool as we want to return any errors with the tags before we start building the pool
+      const { success, errors } = await this.validateMultiPoolCsvTags(records)
+      if (!success) {
+        return { success, errors }
+      }
+
+      // We can select the tag set based on the first record with a tag set as we have already validated that there is only one tag set in the records
+      const pacbioRootStore = usePacbioRootStore()
+      this.selected.tagSet = pacbioRootStore.tagSetList.find(
+        (set) => set.name === records.find((record) => record.tag_set)?.tag_set,
+      )
+
+      // Fetch the source labware based on the source identifiers
+      const sourceIdentifiers = records.map((record) => record.source_identifier)
+      const { success: fetchSuccess, errors: fetchErrors } =
+        await this.findLabwareForSourceIdentifiers(sourceIdentifiers)
+
+      if (!fetchSuccess) {
+        return { success: false, errors: fetchErrors }
+      }
+
+      const aliquotErrors = []
+      // Build the used aliquots based on the source labware and tag information
+      records.forEach((record) => {
+        const aliquot = this.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+        // If there were any errors creating the used aliquot from the record, we skip adding it to the pool as we want to return all errors at the end instead of partially building the pool with some records
+        // that have errors and some that don't
+        if (!aliquot) {
+          return
+        }
+        this.used_aliquots[`_${aliquot.source_id}`] = aliquot
+      })
+
+      if (aliquotErrors.length) {
+        return { success: false, errors: aliquotErrors }
+      }
+
+      // Attempt to autocalculate the pool attributes
+      calculatePoolMetadata({ pool: this.pool, used_aliquots: this.used_aliquots })
+
+      // Validate the used aliquots and pool
+      // At this point all the data should be usable but may have some missing attributes that are required for creating a pool.
+      // So we want to validate the pool and used aliquots before we create the pool to add the errors to the UI and prevent creating a pool with invalid data
+      validate({ used_aliquots: this.used_aliquots, pool: this.pool })
+
+      return { success: true, errors: [] }
+    },
+
+    /**
+     * Validates the tags in the records extracted from a multi-pool CSV.
+     * @param {*} records - csv records for the given MultiPool
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     */
+    async validateMultiPoolCsvTags(records) {
+      // Get the tag set from the records
+      const tagSets = [...new Set(records.map((record) => record.tag_set).filter(Boolean))]
+      // We can't build the pool if there are multiple tag sets as a pool can only have one tag set
+      if (tagSets.length > 1) {
+        return {
+          success: false,
+          errors: [
+            'Multiple tag sets found. Please ensure all records in the pool have the same tag set.',
+          ],
+        }
+        // We can't build the pool if there is no tag set and there are tags as we wouldn't know which tagset the tags belong to
+      } else if (tagSets.length == 0 && records.some((record) => record.tag)) {
+        return {
+          success: false,
+          errors: [
+            'Tags found but no tag set found. Please ensure all records in the pool have a tag set.',
+          ],
+        }
+        // If there is no tag set and no tags, we can skip the rest of the validation and return success as there are no tags to validate
+        // Users can manually sort out the tags after if they want / neeed to add a tag set
+      } else if (tagSets.length == 0) {
+        return { success: true, errors: [] }
+      }
+
+      // TODO: this fetches all tag sets for every pool. We should move this to a higher level so we only fetch the tag sets once and then pass them in as an argument
+      const pacbioRootStore = usePacbioRootStore()
+      const { success } = await pacbioRootStore.fetchPacbioTagSets()
+      if (!success) {
+        return { success, errors: ['Failed to fetch tag sets'] }
+      }
+
+      // Get the tag set
+      const tagSet = pacbioRootStore.tagSetList.find((set) => set.name === tagSets[0])
+      if (!tagSet) {
+        return { success: false, errors: [`Tag set ${tagSets[0]} not found`] }
+      }
+
+      // Get the tags for the tag set
+      const tags = tagSet.tags.map((tag) => pacbioRootStore.tags[tag.id ?? tag])
+      // Check the records have valid tags
+      const invalidTags = records
+        .filter((record) => !tags.find((tag) => tag.group_id === record.tag))
+        .map((record) => record.tag)
+      if (invalidTags.length) {
+        return {
+          success: false,
+          errors: [
+            `The following tags were not found in tag set ${tagSet.name}: ${invalidTags.join(', ')}`,
+          ],
+        }
+      }
+
+      return { success: true, errors: [] }
+    },
+
+    /**
+     * Finds labware for the given source identifiers and populates the resources with the fetched labware.
+     *
+     * @param {*} source_identifiers
+     * @returns {Promise<Object>} A promise that resolves to an object with a success boolean and an array of errors.
+     */
+    async findLabwareForSourceIdentifiers(source_identifiers) {
+      // We want to fetch the labware for the source identifiers to ensure they are valid and to get the relationships for building the pool
+      // We need to fetch both plates and tubes as we don't know if the source identifiers belong to plates or tubes
+      const rootStore = useRootStore()
+      const requestRequest = rootStore.api.traction.pacbio.requests
+      const requestPromise = requestRequest.get({
+        filter: { source_identifier: source_identifiers.join(',') },
+        include: 'plate.wells,well,tube',
+      })
+      // We need to fetch libraries as well as library barcodes are valid sources for pooling but are not request 'sources'
+      const libraryRequest = rootStore.api.traction.pacbio.libraries
+      const libraryPromise = libraryRequest.get({
+        filter: { barcode: source_identifiers.join(',') },
+        include: 'request,tube',
+      })
+
+      const [requestResponse, libraryResponse] = await Promise.all([
+        handleResponse(requestPromise),
+        handleResponse(libraryPromise),
+      ])
+
+      // Both responses should be successful to proceed or we might have partial data which could cause issues when building the pool
+      const success = requestResponse.success && libraryResponse.success
+
+      if (!success) {
+        return { success, errors: ['Failed to fetch labware for source identifiers'] }
+      }
+
+      const included = [
+        ...(requestResponse.body?.included || []),
+        ...(libraryResponse.body?.included || []),
+      ]
+      const { data = [] } = requestResponse.body
+      const { data: libraryData = [] } = libraryResponse.body
+      const {
+        tubes = [],
+        plates = [],
+        wells,
+        requests: includedRequests = [],
+      } = groupIncludedByResource(included)
+
+      // We don't need to check the plates and tubes exist as if they don't exist, we will just end up with an empty list and won't be able to build any used aliquots for those records which is the expected behaviour.
+      // We will end up with errors for those records when we try to build the used aliquots.
+
+      //Populate plates
+      this.resources.plates = {
+        ...this.resources.plates,
+        ...dataToObjectById({ data: plates, includeRelationships: true }),
+      }
+      //Populate wells
+      this.resources.wells = {
+        ...this.resources.wells,
+        ...dataToObjectById({ data: wells, includeRelationships: true }),
+      }
+      //Populate requests
+      this.resources.requests = {
+        ...this.resources.requests,
+        ...dataToObjectById({ data, includeRelationships: true }),
+        // Requests may come from libraries via includes so we need to make sure we include those as well
+        ...dataToObjectById({ data: includedRequests, includeRelationships: true }),
+      }
+      // Populate libraries
+      this.resources.libraries = {
+        ...this.resources.libraries,
+        ...dataToObjectById({
+          data: libraryData,
+          includeRelationships: true,
+        }),
+      }
+      //Populate tubes
+      this.resources.tubes = {
+        ...this.resources.tubes,
+        ...assignLibraryRequestsToTubes({
+          libraries: this.resources.libraries,
+          requests: this.resources.requests,
+          tubes,
+        }),
+      }
+
+      // We want to select all plates
+      plates.forEach((plate) => {
+        this.selectPlate({ id: plate.id, selected: true })
+      })
+      // We want to select all tubes
+      tubes.forEach((tube) => {
+        this.selectTube({ id: tube.id, selected: true })
+      })
+
+      return { success: true, errors: [] }
+    },
+
+    /**
+     * Creates a used aliquot object from a record extracted from a multi-pool CSV.
+     * @param {*} record - Object containing a used_aliquot entry with source_identifier, tag and metadata
+     * @param {*} aliquotErrors - an array to push any errors to if the used aliquot cannot be created from the record
+     * @returns {Object|null} - A used aliquot object if it was successfully created, or null if there was an error creating the used aliquot. If there was an error, a message will be pushed to the aliquotErrors array with details about the error.
+     */
+    createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors) {
+      const { source_identifier, tag, ...attributes } = record
+      const aliquotSource = [
+        ...Object.values(this.resources.requests),
+        ...Object.values(this.resources.libraries),
+      ].find(
+        (source) =>
+          source?.barcode === source_identifier || source?.source_identifier === source_identifier,
+      )
+      const aliquotSourceType =
+        aliquotSource?.type === 'libraries' ? 'Pacbio::Library' : 'Pacbio::Request'
+
+      if (!aliquotSource) {
+        aliquotErrors.push(
+          `Unable to find labware with source identifier ${record.source_identifier}`,
+        )
+        return null
+      }
+
+      const request_id = aliquotSource.type == 'requests' ? aliquotSource.id : aliquotSource.request
+
+      return createUsedAliquot({
+        ...attributes,
+        request: request_id,
+        source_id: aliquotSource.id,
+        source_type: aliquotSourceType,
+        tag_id: tag ? this.selectedTagSet.tags.find((t) => t.group_id === tag)?.id : null,
+        available_volume:
+          aliquotSourceType == 'Pacbio::Library'
+            ? (aliquotSource.available_volume ?? aliquotSource.volume)
+            : null,
+      })
     },
   },
 })

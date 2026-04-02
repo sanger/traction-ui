@@ -8,6 +8,8 @@ import {
   createUsedAliquotsFromState,
   addUsedAliquotsBarcodeAndErrorsToPools,
   hasErrors,
+  calculatePoolMetadata,
+  canCalculatePoolMetadata,
 } from '@/stores/utilities/pacbioPool.js'
 import { expect, it } from 'vitest'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
@@ -893,6 +895,102 @@ describe('pool', () => {
         },
       }
       expect(hasErrors({ pool, used_aliquots })).toBe(false)
+    })
+  })
+
+  describe('#canCalculatePoolMetadata', () => {
+    describe('when used_aliquots is empty', () => {
+      it('returns false', () => {
+        const used_aliquots = {}
+        expect(canCalculatePoolMetadata(used_aliquots)).toBe(false)
+      })
+    })
+
+    describe('missing attributes', () => {
+      it.each([
+        ['tag_id', true],
+        ['volume', false],
+        ['concentration', false],
+        ['insert_size', false],
+        ['template_prep_kit_box_barcode', true],
+        ['source_id', true],
+        ['source_type', true],
+      ])('for %s', (attribute, expectedValue) => {
+        const used_aliquot = createUsedAliquot({
+          tag_id: 'tag1',
+          volume: 10,
+          concentration: 5,
+          insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
+          source_id: '1',
+          source_type: 'Pacbio:Request',
+        })
+        const used_aliquots = {
+          1: { ...used_aliquot, [attribute]: undefined },
+        }
+        expect(canCalculatePoolMetadata(used_aliquots)).toBe(expectedValue)
+      })
+    })
+
+    describe('invalid numerical attributes', () => {
+      it.each([
+        ['volume', false],
+        ['concentration', false],
+        ['insert_size', false],
+      ])('for %s', (attribute, expectedValue) => {
+        const used_aliquot = createUsedAliquot({
+          tag_id: 'tag1',
+          volume: 10,
+          concentration: 5,
+          insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
+          source_id: '1',
+          source_type: 'Pacbio:Request',
+        })
+        const used_aliquots = {
+          1: { ...used_aliquot, [attribute]: 'InvalidNumericalValue' },
+        }
+        expect(canCalculatePoolMetadata(used_aliquots)).toBe(expectedValue)
+      })
+    })
+  })
+
+  // We don't need to test the permutations of missing data as that is covered by canCalculatePoolMetadata.
+  describe('#calculatePoolMetadata', () => {
+    it('calculates the pool metadata correctly', () => {
+      const used_aliquots = {
+        1: createUsedAliquot({
+          tag_id: 'tag1',
+          volume: 10,
+          concentration: 5,
+          insert_size: 1000,
+          template_prep_kit_box_barcode: 'barcode1',
+          source_id: '1',
+          source_type: 'Pacbio:Request',
+        }),
+        2: createUsedAliquot({
+          tag_id: 'tag2',
+          volume: 20,
+          concentration: 10,
+          insert_size: 2000,
+          template_prep_kit_box_barcode: 'barcode1',
+          source_id: '2',
+          source_type: 'Pacbio:Request',
+        }),
+      }
+      const pool = {
+        id: '1',
+        type: 'pools',
+      }
+      const expected = {
+        volume: '30.0',
+        concentration: '8.33',
+        insert_size: '1500',
+        template_prep_kit_box_barcode: 'barcode1',
+      }
+
+      calculatePoolMetadata({ pool, used_aliquots })
+      expect(pool).toMatchObject(expected)
     })
   })
 })

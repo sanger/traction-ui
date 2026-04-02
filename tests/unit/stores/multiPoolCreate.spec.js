@@ -1,15 +1,18 @@
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
+import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
-import { beforeEach, describe } from 'vitest'
+import { beforeEach, describe, it } from 'vitest'
+import { requiredHeaders } from '@/lib/csv/multiPool.js'
 import { multiPoolPayload } from '@/stores/utilities/multiPool.js'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import useRootStore from '@/stores'
 
 describe('useMultiPoolCreateStore', () => {
-  let store
+  let store, pacbioPoolCreateStore
 
   beforeEach(() => {
     store = useMultiPoolCreateStore()
+    pacbioPoolCreateStore = usePacbioPoolCreateStore()
   })
 
   describe('actions', () => {
@@ -100,12 +103,24 @@ describe('useMultiPoolCreateStore', () => {
     describe('setMultiPool', () => {
       it('for a new multi pool', async () => {
         const id = 'new'
+        store.fetchMultiPool = vi.fn()
         const { success } = await store.setMultiPool({ id })
         expect(success).toBeTruthy()
         expect(store.$state.multiPool).toEqual({
           pipeline: 'pacbio',
           pool_method: 'Plate',
         })
+        // We don't call the service if its a new multi pool because there is no id to fetch
+        expect(store.fetchMultiPool).not.toHaveBeenCalled()
+      })
+
+      it('for a multi pool with a bad id', async () => {
+        const id = 'badid'
+        store.fetchMultiPool = vi.fn().mockResolvedValue({ success: false })
+        const { success } = await store.setMultiPool({ id })
+        // We still expect it to call the service with the bad id to attempt to fetch the multi pool, even though it will fail
+        expect(store.fetchMultiPool).toHaveBeenCalledWith(id)
+        expect(success).toBeFalsy()
       })
 
       it('for an existing multi pool', async () => {
@@ -174,6 +189,56 @@ describe('useMultiPoolCreateStore', () => {
       })
     })
 
+    describe('parsePoolingCsvFile', () => {
+      let file, fileTextContent
+
+      beforeEach(() => {
+        file = {
+          text: () => Promise.resolve(fileTextContent),
+        }
+      })
+
+      it('returns an error if no file is provided', async () => {
+        const { success, errors } = await store.parsePoolingCsvFile()
+        expect(success).toBeFalsy()
+        expect(errors).toEqual('file is required')
+      })
+
+      it('returns an error if the file is not a valid multi pool csv (missing header)', async () => {
+        fileTextContent = 'Pool Number,Source Identifier\n1,\n2,Sample2'
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeFalsy()
+        expect(errors).toContain('Header "Tag Set" not found in CSV')
+      })
+
+      it('parses a valid multi pool csv file and builds the multi pool positions', async () => {
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords = vi
+          .fn()
+          .mockResolvedValue({ success: true, errors: [] })
+        fileTextContent = `${requiredHeaders.join(',')}\n`
+        fileTextContent += '1,Sample1,Set1,Tag1,Barcode1,10,20,500\n'
+        fileTextContent += '1,Sample2,Set1,Tag2,Barcode2,15,25,600\n'
+
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeTruthy()
+        expect(errors).toEqual([])
+      })
+
+      it('returns errors from building the pools if the csv file is valid but there is an error building the pools', async () => {
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords = vi
+          .fn()
+          .mockResolvedValue({ success: false, errors: ['Error building pool'] })
+        fileTextContent = `${requiredHeaders.join(',')}\n`
+        fileTextContent += '1,Sample1,Set1,Tag1,Barcode1,10,20,500\n'
+        fileTextContent += '1,Sample2,Set1,Tag2,Barcode2,15,25,600\n'
+
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+        expect(success).toBeFalsy()
+        expect(errors).toEqual(['Error building pool number 1: Error building pool'])
+        expect(store.multiPoolPositions).toEqual({})
+      })
+    })
+
     describe('isValidPersisted', () => {
       it('returns false if there is no persisted store', () => {
         localStorage.removeItem('multiPoolCreate')
@@ -184,6 +249,12 @@ describe('useMultiPoolCreateStore', () => {
         const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
         localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
         expect(store.isValidPersisted('new')).toBeTruthy()
+      })
+
+      it('returns false if the persisted store has no id and the requested id is not new', () => {
+        const persistedData = { multiPool: { pooling_method: 'Plate', pipeline: 'pacbio' } }
+        localStorage.setItem('multiPoolCreate', JSON.stringify(persistedData))
+        expect(store.isValidPersisted('randomstring')).toBeFalsy()
       })
 
       it('returns true if the persisted store id matches the requested id', () => {
