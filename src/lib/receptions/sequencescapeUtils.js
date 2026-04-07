@@ -37,7 +37,7 @@ const fetchLabwareFromSequencescape = async ({
     labwareTypes,
   })
 
-  let foundBarcodes = new Set()
+  let foundBarcodes
   if (containerAttributes['pool_attributes']) {
     // If we have a pool we only want to show the pool barcode
     foundBarcodes = new Set([containerAttributes['pool_attributes']['barcode']])

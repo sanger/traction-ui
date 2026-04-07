@@ -59,8 +59,6 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     describe('#createLibrary', () => {
-      let payload
-
       beforeEach(() => {
         store.createLibrary = vi.fn()
       })
@@ -81,7 +79,7 @@ describe('PacbioLibraryCreate.vue', () => {
       })
 
       it('shows a error message on failure', async () => {
-        cmp.library.value = payload
+        cmp.library.value = undefined
         const expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
         store.createLibrary.mockReturnValue(expectedResponse)
 

@@ -98,7 +98,7 @@
       :notify="onFieldUpdate"
       @aliquot-selected="notifyAliquotSelection"
     />
-    <div class="text-right py-8">
+    <div v-if="!props.flexiblePoolPosition" class="text-right py-8">
       <traction-button
         v-if="!persisted"
         data-action="create-pool"
@@ -120,6 +120,16 @@
         <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
     </div>
+    <div v-else class="text-right py-8">
+      <traction-button
+        theme="create"
+        data-action="create-individual-pool"
+        @click="updateMultiPoolSubPool()"
+      >
+        <!-- TODO: Add a handler to update PacbioPoolCreateStore -->
+        <span class="button-text">Update information</span>
+      </traction-button>
+    </div>
   </div>
 </template>
 
@@ -134,6 +144,14 @@ import useAlert from '@/composables/useAlert.js'
 import { ref, computed } from 'vue'
 import { eachRecord } from '@/lib/csv/pacbio.js'
 
+const props = defineProps({
+  flexiblePoolPosition: {
+    type: String,
+    required: false,
+    default: '',
+  },
+})
+
 //refs
 const busy = ref(false) // Flag to indicate if the form is busy processing a request
 const autoTag = ref(false) //  Flag to indicate if auto-tagging is enabled
@@ -145,9 +163,11 @@ const {
   selectedUsedAliquots,
   createPool,
   updatePool,
+  updateMultiPoolPosition,
   validatePoolAttribute,
   updateUsedAliquotFromCsvRecord,
 } = usePacbioPoolCreateStore()
+
 const { showAlert } = useAlert()
 const persisted = computed(() => !!pool.id)
 const poolType = computed(() => {
@@ -196,6 +216,20 @@ const update = () => {
     busy.value = false
   })
 }
+
+const updateMultiPoolSubPool = () => {
+  busy.value = true
+  validated.value = true
+  const { success, errors } = updateMultiPoolPosition(props.flexiblePoolPosition)
+  if (!success) {
+    showAlert(errors, 'danger', 'pool-create-message')
+    busy.value = false
+    return
+  }
+  showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
+  busy.value = false
+}
+
 // Allows users to upload a file to autopopulate the pool's selected libraries
 const uploadFile = async (evt) => {
   if (evt?.target?.files?.length) {

@@ -30,7 +30,7 @@ const validate = ({ used_aliquots, pool }) => {
 
   const aliquotEntries = Object.entries(used_aliquots)
   aliquotEntries.forEach(([key, used_aliquot]) => {
-    const usedAliquotValid = used_aliquot.validate(pooled)
+    const usedAliquotValid = createUsedAliquot(used_aliquot).validate(pooled)
     isValid = isValid && usedAliquotValid
     if (aliquotEntries.some(([k, obj]) => obj.tag_id === used_aliquot.tag_id && k !== key)) {
       used_aliquot.errors['tag_id'] = 'duplicated'
@@ -219,6 +219,83 @@ const addUsedAliquotsBarcodeAndErrorsToPools = (state) => {
   })
 }
 
+/**
+ *
+ * @param {Object} Pool object containing pool attributes, used_aliquots object containing used aliquot objects
+ * @returns {Boolean} Returns true if there are errors in the pool or any of the used aliquots, false otherwise
+ */
+const hasErrors = ({ pool, used_aliquots }) => {
+  const poolErrors = pool?.errors ? Object.keys(pool.errors).length > 0 : false
+  const usedAliquotsErrors = used_aliquots
+    ? Object.values(used_aliquots).some(
+        (used_aliquot) => used_aliquot.errors && Object.keys(used_aliquot.errors).length > 0,
+      )
+    : false
+  return poolErrors || usedAliquotsErrors
+}
+
+/**
+ * Sets the pool metadata (volume, insert_size, concentration) based on the used aliquots in the pool if sufficient
+ * data is available.
+ * @param {Object} pool - pool object
+ * @param {Object} used_aliquots - used_aliquots object
+ */
+const calculatePoolMetadata = ({ pool, used_aliquots }) => {
+  // Check if all used aliquots have volume, insert_size, and concentration before calculating pool metadata
+  // Any missing value will result in the pool metadata being incomplete, so we only calculate if all values are present
+  if (!canCalculatePoolMetadata(used_aliquots)) {
+    return
+  }
+
+  const usedAliquotsArray = Object.values(used_aliquots)
+
+  // Round to 1 decimal place for volume as pipettes can not be any more accurate
+  pool.volume = usedAliquotsArray
+    .reduce((totalVolume, used_aliquot) => {
+      const volume = parseFloat(used_aliquot.volume)
+      return totalVolume + volume
+    }, 0)
+    .toFixed(1)
+  // Round to the nearest whole number as you can't have half a base pair
+  pool.insert_size = (
+    usedAliquotsArray.reduce((totalInsertSize, used_aliquot) => {
+      const insertSize = parseFloat(used_aliquot.insert_size)
+      return totalInsertSize + insertSize
+    }, 0) / usedAliquotsArray.length
+  ).toFixed()
+  // Round to 2 decimal places for concentration as this is a common level of precision for concentration measurements and calculations
+  pool.concentration = (
+    usedAliquotsArray.reduce((totalMass, used_aliquot) => {
+      const concentration = parseFloat(used_aliquot.concentration)
+      const volume = parseFloat(used_aliquot.volume)
+      // We calculate the total concentration by summing the concentration of each used aliquot multiplied by its volume, then dividing by the total volume of the pool
+      const mass = concentration * volume
+
+      return totalMass + mass
+    }, 0) / pool.volume
+  ).toFixed(2)
+
+  // This is incalculable but it is a safe assumption to take the first used_aliquot value
+  pool.template_prep_kit_box_barcode = usedAliquotsArray[0].template_prep_kit_box_barcode
+}
+
+/**
+ * Checks if all used aliquots in the pool have float values greater than 0 for volume, insert_size, and concentration.
+ * @param {Object} used_aliquots - used_aliquots object
+ * @returns {Boolean} - Returns true if all used aliquots have volume, insert_size, and concentration, false otherwise
+ */
+const canCalculatePoolMetadata = (used_aliquots) => {
+  if (!used_aliquots || Object.values(used_aliquots).length === 0) {
+    return false
+  }
+  return Object.values(used_aliquots).every((used_aliquot) => {
+    return ['volume', 'insert_size', 'concentration'].every((key) => {
+      const value = parseFloat(used_aliquot[key])
+      return !isNaN(value) && value > 0
+    })
+  })
+}
+
 export {
   validate,
   payload,
@@ -228,4 +305,7 @@ export {
   buildRunSuitabilityErrors,
   createUsedAliquotsFromState,
   addUsedAliquotsBarcodeAndErrorsToPools,
+  hasErrors,
+  calculatePoolMetadata,
+  canCalculatePoolMetadata,
 }

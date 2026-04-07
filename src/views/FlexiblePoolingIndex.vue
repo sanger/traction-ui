@@ -31,7 +31,7 @@
                 :to="{ name: 'FlexiblePool', params: { id: row.item.id } }"
               >
                 <traction-button :id="'editFlexiblePool-' + row.item.id" size="sm" theme="edit"
-                  >Edit</traction-button
+                  >View</traction-button
                 >
               </router-link>
             </template>

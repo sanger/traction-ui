@@ -27,3 +27,4 @@ generate-docs.sh
 *.txt
 docs/*
 tests/e2e/reports/*
+.idea
