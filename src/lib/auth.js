@@ -3,7 +3,7 @@ import { OktaAuth } from '@okta/okta-auth-js'
 const oktaDomain = 'sanger.okta.com'
 const clientId = '0oaurrnc5aBDHc8AI417'
 
-const redirectUri = window.location.origin + '/login-callback'
+const redirectUri = '/login-callback'
 
 const authClient = new OktaAuth({
   issuer: `https://${oktaDomain}`,
@@ -26,7 +26,7 @@ authClient.authStateManager.subscribe(function (authState) {
 
   // Required view to render is saved in Session Storage for this host with the key 'referrerPath'
   // TODO: use the OktaAuth way of redirecting to the referrer path instead of manually handling it here
-  const redirect = window.location.origin + '/#'
+  const redirect = '/#'
   const referrerPath = sessionStorage.getItem('referrerPath') || '/'
 
   const location = redirect + referrerPath
