@@ -1,21 +1,22 @@
 <template>
   <div>
-    <router-link
-      :to="{
-        name: 'FlexibleIndividualPoolCreate',
-        params: { id, position },
-      }"
-      data-attribute="flexible-pool-well-link"
-      class="block"
-    >
+    <router-link :to="poolLink" class="block">
       <div
         :class="wellClassNames"
-        data-attribute="flexible-pool-well"
+        :data-attribute="`flexible-pool-well-${position}`"
         @mouseover.prevent="hover = true"
         @mouseleave.prevent="hover = false"
         @click="onClick"
       >
-        <p class="wrap-anywhere whitespace-normal p-1 overflow-hidden">{{ pool?.pool_barcode }}</p>
+        <p class="wrap-anywhere whitespace-normal p-1 relative">{{ pool?.pool_barcode }}</p>
+        <TractionTickIcon
+          v-if="pool && isValidPool"
+          class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
+        />
+        <TractionCrossIcon
+          v-else-if="pool && !isValidPool"
+          class="absolute w-full h-full opacity-25 z-0 pointer-events-none"
+        />
       </div>
       <p data-attribute="well-position" class="truncate font-light text-xs">{{ position }}</p>
     </router-link>
@@ -26,6 +27,8 @@
  * @name FlexiblePoolWell
  * @description A single well/pool in the flexible pooling page
  */
+import TractionTickIcon from '@/components/shared/icons/TractionTickIcon.vue'
+import TractionCrossIcon from '@/components/shared/icons/TractionCrossIcon.vue'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import { ref, computed } from 'vue'
 
@@ -63,6 +66,25 @@ const multiPoolCreateStore = useMultiPoolCreateStore()
 const hover = ref(false)
 
 /*
+ * Logic to determine where to take the user
+ * 1. If there is an existing pool in the well with an id take them to the pacbio pool edit page for that pool
+ * 2. If there is no existing pool but the multi pool has an id (meaning we are editing an existing multi pool) provide no link as editing has not been implemented yet
+ * 3. If there is no existing pool and the mutli pool is a new one take them to the flexible individual pool create page
+ */
+const poolLink = computed(() => {
+  if (pool.value?.pool_id) {
+    return { name: 'PacbioPoolCreate', params: { id: pool.value.pool_id } }
+  }
+  if (!pool.value && props.id !== 'new') {
+    return ''
+  }
+  return {
+    name: 'FlexibleIndividualPoolCreate',
+    params: { id: props.id, position: props.position },
+  }
+})
+
+/*
  * Computed property that returns the class names for the well.
  * @returns {Array} - An array of class names for the well.
  */
@@ -70,7 +92,7 @@ const wellClassNames = computed(() => {
   return [
     poolStatus.value,
     hover.value ? 'ring ring-pink-600 ring-offset-1' : 'border border-gray-800',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer',
+    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square select-none transition duration-200 ease-out cursor-pointer relative',
   ]
 })
 
@@ -86,11 +108,19 @@ const pool = computed(() => {
  * Computed property that returns whether the pool is valid
  * @returns {boolean} - Whether the pool is valid
  */
+const isValidPool = computed(() => {
+  return multiPoolCreateStore.isValidPool(props.position)
+})
+
+/*
+ * Computed property that returns the status of the pool regarding CSS styles
+ * @returns {boolean} - Whether the pool is valid
+ */
 const poolStatus = computed(() => {
   // Position is empty, so we consider it valid (no pool assigned to that position)
   if (!pool.value) {
     return 'bg-white text-black'
-  } else if (multiPoolCreateStore.isValidPool(props.position)) {
+  } else if (isValidPool.value) {
     return 'bg-success text-white'
   } else {
     return 'bg-failure text-white'

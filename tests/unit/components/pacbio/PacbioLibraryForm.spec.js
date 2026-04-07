@@ -31,7 +31,6 @@ describe('PacbioLibraryForm.vue', () => {
     props = {
       disabled: true,
       isStatic: true,
-      library: { sample: {}, tag_id: pacbioTagSetFactory.storeData.selected.tag.id },
     }
     const plugins = [
       ({ store }) => {
@@ -53,6 +52,7 @@ describe('PacbioLibraryForm.vue', () => {
     await nextTick()
     expect(wrapper.find('#libraryForm').element).toBeTruthy()
   })
+
   it('should display a form with the correct fields', async () => {
     wrapper.vm.showModal = true
     await nextTick()
@@ -88,7 +88,8 @@ describe('PacbioLibraryForm.vue', () => {
       pacbioTagSetFactory.storeData.selected.tagSet.tags.length + 1,
     )
   })
-  it('shows an alert when fetcPaclbioTagSets fails', async () => {
+
+  it('shows an alert when fetchPacbioTagSets fails', async () => {
     const plugins = [
       ({ store }) => {
         if (store.$id === 'root') {
@@ -103,6 +104,7 @@ describe('PacbioLibraryForm.vue', () => {
     await flushPromises()
     expect(mockShowAlert).toHaveBeenCalled()
   })
+
   describe('when a library with all fields is passed as a prop', () => {
     beforeEach(() => {
       const plugins = [
@@ -133,6 +135,7 @@ describe('PacbioLibraryForm.vue', () => {
       }))
       modal = wrapper.vm
     })
+
     it('should display a form with the correct field values', async () => {
       await flushPromises()
       expect(wrapper.find('#library-volume').element.value).toBe('15')
@@ -156,6 +159,7 @@ describe('PacbioLibraryForm.vue', () => {
         'Volume cannot be less than used volume',
       )
     })
+
     it('removes error when new value when entered volume is greater than used_volume', async () => {
       const input = wrapper.find('#library-volume')
       await input.setValue(5)

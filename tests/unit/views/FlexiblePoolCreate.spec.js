@@ -86,6 +86,16 @@ describe('FlexiblePoolCreate', () => {
       expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
     })
 
+    it('is hidden when editing an existing multi pool', async () => {
+      // Should exist when id is new
+      expect(wrapper.find('[data-testid="reset-btn"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="create-btn"]').exists()).toBe(true)
+      await router.push({ name: 'FlexiblePool', params: { id: 1 } })
+      await flushPromises()
+      expect(wrapper.find('[data-testid="reset-btn"]').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="create-btn"]').exists()).toBe(false)
+    })
+
     it('creates a multi pool when create button is clicked', async () => {
       store.multiPoolCreateStore.isValidMultiPool = vi.fn().mockReturnValue(true)
       store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
@@ -130,141 +140,242 @@ describe('FlexiblePoolCreate', () => {
   })
 
   describe('#create', () => {
-    it('shows the correct alert when creation is successful', async () => {
-      store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
-        success: true,
-        id: '1',
-        errors: [],
-      })
-      await wrapper.vm.create()
-      expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        'Flexible pool successfully created with id 1',
-        'success',
-      )
-    })
-
-    it('shows the correct alert when creation fails', async () => {
-      store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
-        success: false,
-        id: '',
-        errors: ['Error creating pool'],
-      })
-      await wrapper.vm.create()
-      expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
-      expect(mockShowAlert).toHaveBeenCalledWith(['Error creating pool'], 'danger')
-    })
-
-    describe('id', () => {
-      it('sets the id from the route params', async () => {
-        expect(wrapper.vm.id).toBe('new')
-        await router.push({ name: 'FlexiblePool', params: { id: 1 } })
-        expect(wrapper.vm.id).toBe('1')
-      })
-    })
-
-    describe('labwareType computed property', () => {
-      it('returns MultiPool96 configuration when pool_method is Plate', () => {
-        store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
-        expect(wrapper.vm.labwareType).toEqual(LabwareTypes.MultiPool96)
-      })
-
-      it('returns TubeRack24 configuration when pool_method is TubeRack', () => {
-        store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
-        expect(wrapper.vm.labwareType).toEqual(LabwareTypes.TubeRack24)
-      })
-    })
-
-    describe('isSetupDisabled computed property', () => {
-      it('returns false when multiPoolPositions is empty', () => {
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
-        expect(wrapper.vm.isSetupDisabled).toBe(false)
-      })
-
-      it('returns true when multiPoolPositions has items', () => {
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
-        expect(wrapper.vm.isSetupDisabled).toBe(true)
-      })
-    })
-
-    describe('Setup section disabled state', () => {
-      it('disables the setup section when multiPoolPositions has items', async () => {
-        const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
-        const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
-        const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
-
-        // Enable; there are no pool positions.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
-        await wrapper.vm.$nextTick()
-        expect(pipelineSelect.element.disabled).toBe(false)
-        expect(poolingMethodSelect.element.disabled).toBe(false)
-        expect(csvFileInput.element.disabled).toBe(false)
-
-        // Disable; there is at least 1 pool position.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
-        await wrapper.vm.$nextTick()
-        expect(pipelineSelect.element.disabled).toBe(true)
-        expect(poolingMethodSelect.element.disabled).toBe(true)
-        expect(csvFileInput.element.disabled).toBe(true)
-      })
-
-      it('enables the setup section when multiPoolPositions becomes empty', async () => {
-        const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
-        const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
-        const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
-
-        // Disable; there is at least 1 pool position.
-        store.multiPoolCreateStore.multiPool.multiPoolPositions = { 1: {} }
-        await wrapper.vm.$nextTick()
-        expect(pipelineSelect.element.disabled).toBe(true)
-        expect(poolingMethodSelect.element.disabled).toBe(true)
-        expect(csvFileInput.element.disabled).toBe(true)
-
-        // Enable; reset the store so that there are no pool positions.
-        await wrapper.vm.reset() // store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
-        await wrapper.vm.$nextTick()
-        expect(pipelineSelect.element.disabled).toBe(false)
-        expect(poolingMethodSelect.element.disabled).toBe(false)
-        expect(csvFileInput.element.disabled).toBe(false)
-      })
-    })
-
-    describe('Pooling Layout rendering', () => {
-      it('renders an 8x12 grid for Plate layout', async () => {
-        store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
-        await wrapper.vm.$nextTick()
-        const rows = wrapper.findAll('[data-attribute="labware-row"]')
-        expect(rows.length).toBe(8) // 8 rows
-        expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(12) // 12 columns
-      })
-
-      it('renders a 4x6 grid for Tube Rack layout', async () => {
-        store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
-        await wrapper.vm.$nextTick()
-        const rows = wrapper.findAll('[data-attribute="labware-row"]')
-        expect(rows.length).toBe(4) // 4 rows
-        expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(6) // 6 columns
-      })
-
-      it('numbers pools by rows for Tube Rack layout', async () => {
-        store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
-        await wrapper.vm.$nextTick()
-        const expectedNumbers = [
-          ['1', '2', '3', '4', '5', '6'],
-          ['7', '8', '9', '10', '11', '12'],
-          ['13', '14', '15', '16', '17', '18'],
-          ['19', '20', '21', '22', '23', '24'],
-        ]
-        const rows = wrapper.findAll('[data-attribute="labware-row"]')
-        rows.forEach((row, rowIndex) => {
-          const columns = row.findAll('[data-attribute="labware-column"]')
-          columns.forEach((column, columnIndex) => {
-            expect(column.find('[data-attribute="well-position"]').text()).toBe(
-              expectedNumbers[rowIndex][columnIndex],
-            )
-          })
+    describe('success', () => {
+      beforeEach(() => {
+        store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
+          success: true,
+          id: '1',
+          errors: [],
         })
       })
+
+      it('shows the correct alert', async () => {
+        await wrapper.vm.create()
+        expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
+        expect(mockShowAlert).toHaveBeenCalledWith(
+          'Flexible pool successfully created with id 1',
+          'success',
+        )
+      })
+
+      it('resets the store', async () => {
+        store.multiPoolCreateStore.clearData = vi.fn()
+        await wrapper.vm.create()
+        expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
+      })
+
+      it('redirects users to the new multi pool view', async () => {
+        expect(router.currentRoute.value.path).toBe('/flexible-pool/new')
+        await wrapper.vm.create()
+        await flushPromises()
+        expect(router.currentRoute.value.path).toBe('/flexible-pool/1')
+      })
+    })
+
+    describe('failure', () => {
+      beforeEach(() => {
+        store.multiPoolCreateStore.createMultiPool = vi.fn().mockResolvedValue({
+          success: false,
+          id: '',
+          errors: ['Error creating pool'],
+        })
+      })
+
+      it('shows the correct alert', async () => {
+        await wrapper.vm.create()
+        expect(store.multiPoolCreateStore.createMultiPool).toHaveBeenCalled()
+        expect(mockShowAlert).toHaveBeenCalledWith(['Error creating pool'], 'danger')
+      })
+
+      it('does not reset the store', async () => {
+        store.multiPoolCreateStore.clearData = vi.fn()
+        await wrapper.vm.create()
+        expect(store.multiPoolCreateStore.clearData).not.toHaveBeenCalled()
+      })
+
+      it('does not redirect the user', async () => {
+        expect(router.currentRoute.value.path).toBe('/flexible-pool/new')
+        await wrapper.vm.create()
+        await flushPromises()
+        expect(router.currentRoute.value.path).toBe('/flexible-pool/new')
+      })
+    })
+  })
+
+  describe('loading modal', () => {
+    it('shows the modal when showLoadingModal is called', async () => {
+      const message = 'show modal message'
+      wrapper.vm.showLoadingModal(message)
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').text()).toBe(message)
+    })
+
+    it('hides the modal when clearLoadingModal is called', async () => {
+      wrapper.vm.showLoadingModal('show modal message')
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(true)
+      wrapper.vm.clearLoadingModal()
+      await nextTick()
+      expect(wrapper.find('[data-type=loading-full-screen-modal]').exists()).toBe(false)
+    })
+  })
+
+  describe('uploadFile', () => {
+    it('calls the correct store method when a file is uploaded', async () => {
+      const file = new File(['file contents'], 'test.csv', { type: 'text/csv' })
+      const event = { target: { files: [file] } }
+      store.multiPoolCreateStore.parsePoolingCsvFile = vi.fn().mockResolvedValue({
+        success: true,
+        errors: [],
+      })
+      await wrapper.vm.uploadFile(event)
+      expect(store.multiPoolCreateStore.parsePoolingCsvFile).toHaveBeenCalledWith(file)
+      expect(mockShowAlert).toHaveBeenCalledWith('CSV file successfully processed', 'success')
+    })
+
+    it('shows an alert if there is an error parsing the file', async () => {
+      const file = new File(['file contents'], 'test.csv', { type: 'text/csv' })
+      const event = { target: { files: [file] } }
+      store.multiPoolCreateStore.parsePoolingCsvFile = vi.fn().mockResolvedValue({
+        success: false,
+        errors: ['Error parsing file'],
+      })
+      await wrapper.vm.uploadFile(event)
+      expect(store.multiPoolCreateStore.parsePoolingCsvFile).toHaveBeenCalledWith(file)
+      expect(mockShowAlert).toHaveBeenCalledWith('Error parsing file', 'danger')
+    })
+
+    it('shows an alert if there is no file', async () => {
+      const event = { target: { files: [] } }
+      await wrapper.vm.uploadFile(event)
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'No file selected. Please select a CSV file to upload.',
+        'warning',
+      )
+    })
+  })
+
+  describe('id', () => {
+    it('sets the id from the route params', async () => {
+      expect(wrapper.vm.id).toBe('new')
+      await router.push({ name: 'FlexiblePool', params: { id: 1 } })
+      expect(wrapper.vm.id).toBe('1')
+    })
+  })
+
+  describe('labwareType computed property', () => {
+    it('returns MultiPool96 configuration when pool_method is Plate', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.MultiPool96)
+    })
+
+    it('returns TubeRack24 configuration when pool_method is TubeRack', () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      expect(wrapper.vm.labwareType).toEqual(LabwareTypes.TubeRack24)
+    })
+  })
+
+  describe('isSetupDisabled computed property', () => {
+    it('returns false when multiPoolPositions is empty', () => {
+      store.multiPoolCreateStore.multiPoolPositions = {}
+      expect(wrapper.vm.isSetupDisabled).toBe(false)
+    })
+
+    it('returns true when multiPoolPositions has items', () => {
+      store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
+      expect(wrapper.vm.isSetupDisabled).toBe(true)
+    })
+  })
+
+  describe('Setup section disabled state', () => {
+    it('disables the setup section when multiPoolPositions has items', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Enable; there are no pool positions.
+      store.multiPoolCreateStore.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
+    })
+
+    it('enables the setup section when multiPoolPositions becomes empty', async () => {
+      const pipelineSelect = wrapper.find('[data-testid="pipeline-select"]')
+      const poolingMethodSelect = wrapper.find('[data-testid="pooling-layout-select"]')
+      const csvFileInput = wrapper.find('[data-testid="csv-file-input"]')
+
+      // Disable; there is at least 1 pool position.
+      store.multiPoolCreateStore.multiPoolPositions = { 1: {} }
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(true)
+      expect(poolingMethodSelect.element.disabled).toBe(true)
+      expect(csvFileInput.element.disabled).toBe(true)
+
+      // Enable; reset the store so that there are no pool positions.
+      await wrapper.vm.reset() // store.multiPoolCreateStore.multiPool.multiPoolPositions = {}
+      await wrapper.vm.$nextTick()
+      expect(pipelineSelect.element.disabled).toBe(false)
+      expect(poolingMethodSelect.element.disabled).toBe(false)
+      expect(csvFileInput.element.disabled).toBe(false)
+    })
+  })
+
+  describe('Pooling Layout rendering', () => {
+    it('renders an 8x12 grid for Plate layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'Plate'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(8) // 8 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(12) // 12 columns
+    })
+
+    it('renders a 4x6 grid for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      expect(rows.length).toBe(4) // 4 rows
+      expect(rows[0].findAll('[data-attribute="labware-column"]').length).toBe(6) // 6 columns
+    })
+
+    it('numbers pools by rows for Tube Rack layout', async () => {
+      store.multiPoolCreateStore.multiPool.pool_method = 'TubeRack'
+      await wrapper.vm.$nextTick()
+      const expectedNumbers = [
+        ['1', '2', '3', '4', '5', '6'],
+        ['7', '8', '9', '10', '11', '12'],
+        ['13', '14', '15', '16', '17', '18'],
+        ['19', '20', '21', '22', '23', '24'],
+      ]
+      const rows = wrapper.findAll('[data-attribute="labware-row"]')
+      rows.forEach((row, rowIndex) => {
+        const columns = row.findAll('[data-attribute="labware-column"]')
+        columns.forEach((column, columnIndex) => {
+          expect(column.find('[data-attribute="well-position"]').text()).toBe(
+            expectedNumbers[rowIndex][columnIndex],
+          )
+        })
+      })
+    })
+  })
+
+  describe('#reset', () => {
+    beforeEach(() => {
+      store.multiPoolCreateStore.clearData = vi.fn()
+    })
+
+    it('resets the store data when called', async () => {
+      wrapper.vm.reset()
+      expect(store.multiPoolCreateStore.clearData).toHaveBeenCalled()
     })
   })
 })

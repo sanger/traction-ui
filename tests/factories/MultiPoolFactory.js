@@ -124,6 +124,7 @@ const data = {
         pool_id: 11,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-21',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '1' } },
@@ -138,6 +139,7 @@ const data = {
         pool_id: 12,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-22',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '1' } },
@@ -152,6 +154,7 @@ const data = {
         pool_id: 13,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-23',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '2' } },
@@ -166,6 +169,7 @@ const data = {
         pool_id: 14,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-24',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '2' } },
@@ -180,6 +184,7 @@ const data = {
         pool_id: 15,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-25',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '3' } },
@@ -194,6 +199,7 @@ const data = {
         pool_id: 16,
         pool_type: 'Pacbio::Pool',
         created_at: '2026/01/09 15:02',
+        pool_barcode: 'TRAC-2-26',
       },
       relationships: {
         multi_pool: { data: { type: 'multi_pools', id: '3' } },

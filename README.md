@@ -2,6 +2,10 @@
 
 A Vue front-end app to interact with the [Traction API](https://github.com/sanger/traction-service).
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ## Requirements for Development
 
 The following tools are required for development:

@@ -1,22 +1,25 @@
 import { successfulResponse, failedResponse } from '@support/testHelper.js'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
+import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { payload } from '@/stores/utilities/pacbioPool.js'
+import { payload, assignLibraryRequestsToTubes } from '@/stores/utilities/pacbioPool.js'
 import { createUsedAliquot } from '@/stores/utilities/usedAliquot.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import PacbioPoolFactory from '@tests/factories/PacbioPoolFactory.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory.js'
 import PacbioPlateFactory from '@tests/factories/PacbioPlateFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
+import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 
 const pacbioTagSetFactory = PacbioTagSetFactory()
 const pacbioPoolFactory = PacbioPoolFactory({ count: 1 })
 const pacbioAutoTagFactory = PacbioAutoTagFactory()
 const pacbioPlateFactory = PacbioPlateFactory({ count: 1 })
 const pacbioTubeFactory = PacbioTubeFactory({ findBy: 'libraries', transformTubes: true })
+const pacbioRequestFactory = PacbioRequestFactory()
 
 describe('usePacbioPoolCreateStore', () => {
   describe('getters', () => {
@@ -1752,6 +1755,562 @@ describe('usePacbioPoolCreateStore', () => {
         expect(store.pool.errors).toEqual({
           volume: 'must be greater than used volume',
         })
+      })
+    })
+
+    describe('buildPoolFromMultiPoolCsvRecords', () => {
+      beforeEach(() => {
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+        store.selected.tagSet = { id: '3' }
+      })
+
+      it('returns success and builds the used_aliquots if it builds successfully', async () => {
+        store.resources = {
+          requests: {
+            1: {
+              id: '1',
+              type: 'requests',
+              source_identifier: 'DN1:A1',
+              well: 5,
+            },
+            // This has a plate source but it is the library request so it should be treated as a library source
+            2: {
+              id: '2',
+              type: 'requests',
+              source_identifier: 'DN1:A3',
+              well: 3,
+            },
+          },
+          libraries: {
+            2: {
+              id: '2',
+              type: 'libraries',
+              request: '2',
+              barcode: 'TRAC-2-1',
+              available_volume: 15,
+            },
+          },
+        }
+        store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
+        store.findLabwareForSourceIdentifiers = vi
+          .fn()
+          .mockReturnValue({ success: true, errors: [] })
+
+        const records = [
+          {
+            source_identifier: 'DN1:A1',
+            tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            tag: 'bc1007T',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+          },
+          {
+            source_identifier: 'TRAC-2-1',
+            tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            tag: 'bc1008T',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+          },
+        ]
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords(records)
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+        // Check the pool metadata was automatically built
+        expect(store.pool).toEqual({
+          volume: '30.0',
+          concentration: '13.00',
+          insert_size: '15230',
+          template_prep_kit_box_barcode: 6.3,
+          errors: {},
+        })
+        expect(store.used_aliquots).toEqual({
+          _1: expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Request',
+            request: '1',
+            tag_id: '129',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            available_volume: null,
+            errors: {},
+          }),
+          _2: expect.objectContaining({
+            source_id: '2',
+            source_type: 'Pacbio::Library',
+            request: '2',
+            tag_id: '130',
+            template_prep_kit_box_barcode: 6.3,
+            insert_size: 15230,
+            concentration: 13,
+            volume: 15,
+            available_volume: 15,
+            errors: {},
+          }),
+        })
+      })
+
+      it('returns errors if the tags are invalid', async () => {
+        store.validateMultiPoolCsvTags = vi
+          .fn()
+          .mockReturnValue({ success: false, errors: ['error'] })
+
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['error'])
+      })
+
+      it('returns errors if the labware fetch fails', async () => {
+        store.validateMultiPoolCsvTags = vi.fn().mockReturnValue({ success: true, errors: [] })
+        store.findLabwareForSourceIdentifiers = vi
+          .fn()
+          .mockReturnValue({ success: false, errors: ['error'] })
+
+        const { success, errors } = await store.buildPoolFromMultiPoolCsvRecords([])
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['error'])
+      })
+    })
+
+    describe('validateMultiPoolCsvTags', () => {
+      beforeEach(() => {
+        pacbioRootStore.fetchPacbioTagSets = vi
+          .fn()
+          .mockResolvedValue({ success: true, errors: [] })
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+      })
+
+      it('returns success if all tags are valid', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[130].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      // This may seem counterintuitive but we want to allow this to succeed as users can manually fix this after upload.
+      it('returns success if no tags or tag sets are provided', async () => {
+        const records = [
+          {
+            tag_set: undefined,
+            tag: undefined,
+          },
+          {
+            tag_set: undefined,
+            tag: undefined,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('returns errors if there are multiple tag sets', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+          {
+            tag_set: 'Another_tag_set',
+            tag: pacbioRootStore.tags[130].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `Multiple tag sets found. Please ensure all records in the pool have the same tag set.`,
+        ])
+      })
+
+      it('returns errors if tags exist but a tag_set does not', async () => {
+        const records = [
+          {
+            tag_set: undefined,
+            tag: pacbioRootStore.tags[129].group_id,
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `Tags found but no tag set found. Please ensure all records in the pool have a tag set.`,
+        ])
+      })
+
+      it('returns errors if some tags are invalid', async () => {
+        const records = [
+          {
+            tag_set: pacbioRootStore.tagSets[3].name,
+            tag: 'invalid_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([
+          `The following tags were not found in tag set ${pacbioRootStore.tagSets[3].name}: invalid_tag`,
+        ])
+      })
+
+      it('returns an error if the tag set fetch fails', async () => {
+        pacbioRootStore.fetchPacbioTagSets = vi.fn().mockResolvedValue({
+          success: false,
+          errors: ['Some error'],
+        })
+
+        const records = [
+          {
+            tag_set: 'any_tag_set',
+            tag: 'any_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual(['Failed to fetch tag sets'])
+      })
+
+      it('returns errors if tag set is invalid', async () => {
+        const records = [
+          {
+            tag_set: 'invalid_tag_set',
+            tag: 'invalid_tag',
+          },
+        ]
+
+        const { success, errors } = await store.validateMultiPoolCsvTags(records)
+        expect(success).toEqual(false)
+        expect(errors).toEqual([`Tag set invalid_tag_set not found`])
+      })
+    })
+
+    describe('findLabwareForSourceIdentifiers', () => {
+      const requestGet = vi.fn()
+      const libraryGet = vi.fn()
+
+      beforeEach(() => {
+        rootStore.api = {
+          traction: { pacbio: { requests: { get: requestGet }, libraries: { get: libraryGet } } },
+        }
+        store.selectPlate = vi.fn()
+        store.selectTube = vi.fn()
+      })
+
+      it('populates the correct store data when sources are plates', async () => {
+        requestGet.mockResolvedValue(pacbioRequestFactory.responses.fetch)
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers([
+          'DN814327C:A1',
+          'DN814327C:A2',
+          'DN814567Q:A1',
+          'DN814567Q:B1',
+          'GEN-1725896371-4:B3',
+        ])
+
+        const { plates, wells } = groupIncludedByResource(pacbioRequestFactory.content.included)
+        expect(store.resources.plates).toEqual(
+          dataToObjectById({ data: plates, includeRelationships: true }),
+        )
+        expect(store.resources.wells).toEqual(
+          dataToObjectById({ data: wells, includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(pacbioRequestFactory.storeData.requests)
+        expect(store.selectPlate).toHaveBeenCalledWith({ id: '61', selected: true })
+        expect(store.selectPlate).toHaveBeenCalledWith({ id: '62', selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('populates the correct store data when sources are tubes', async () => {
+        // Request from factory
+        const request = pacbioRequestFactory.content.data[0]
+        const tube = pacbioRequestFactory.content.included[6]
+        // Set the request includes to the desired tube
+        request.relationships = { tube: { data: [{ type: 'tubes', id: tube.id }] } }
+
+        requestGet.mockResolvedValue(
+          successfulResponse({
+            data: [request],
+            included: [tube],
+          }),
+        )
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['NT12345'])
+
+        expect(store.resources.tubes).toEqual(
+          dataToObjectById({ data: [tube], includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(
+          dataToObjectById({ data: [request], includeRelationships: true }),
+        )
+        expect(store.selectTube).toHaveBeenCalledWith({ id: tube.id, selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('populates the correct store data when sources are libraries', async () => {
+        // Request from factory
+        const request = pacbioRequestFactory.content.data[0]
+        const tube = pacbioRequestFactory.content.included[6]
+        // Set the request includes to the desired tube
+        request.relationships = { tube: { data: [{ type: 'tubes', id: tube.id }] } }
+        const library = {
+          id: '723',
+          type: 'libraries',
+          links: {
+            self: 'http://localhost:3100/v1/pacbio/libraries/723',
+          },
+          attributes: {
+            state: 'pending',
+            volume: 1,
+            concentration: 1,
+            template_prep_kit_box_barcode: 'LK12345',
+            insert_size: 100,
+            created_at: '2021/06/15 10:25',
+            deactivated_at: null,
+            source_identifier: 'DN1:A3',
+            run_suitability: {
+              ready_for_run: true,
+              errors: [],
+            },
+            barcode: '3980000001795',
+          },
+          relationships: {
+            tube: {
+              data: {
+                type: 'tubes',
+                id: tube.id,
+              },
+            },
+            request: {
+              data: {
+                type: 'requests',
+                id: request.id,
+              },
+            },
+          },
+        }
+
+        requestGet.mockResolvedValue(
+          successfulResponse({
+            data: [],
+          }),
+        )
+        libraryGet.mockResolvedValue(
+          successfulResponse({ data: [library], included: [request, tube] }),
+        )
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['3980000001795'])
+
+        expect(store.resources.libraries).toEqual(
+          dataToObjectById({ data: [library], includeRelationships: true }),
+        )
+        expect(store.resources.requests).toEqual(
+          dataToObjectById({ data: [request], includeRelationships: true }),
+        )
+        expect(store.resources.tubes).toEqual(
+          assignLibraryRequestsToTubes({
+            libraries: store.resources.libraries,
+            requests: store.resources.requests,
+            tubes: [tube],
+          }),
+        )
+        expect(store.selectTube).toHaveBeenCalledWith({ id: tube.id, selected: true })
+        expect(success).toEqual(true)
+        expect(errors).toEqual([])
+      })
+
+      it('returns an empty list when no labware is found for the provided source identifiers', async () => {
+        requestGet.mockResolvedValue(successfulResponse({ data: [] }))
+        libraryGet.mockResolvedValue(successfulResponse({ data: [] }))
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['unknown-sources'])
+        expect(errors).toEqual([])
+        expect(success).toEqual(true)
+      })
+
+      it('returns an error and an empty list when the service responds with an error to the requests get', async () => {
+        requestGet.mockResolvedValue(failedResponse())
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['DN814327C:A1'])
+        expect(errors).toEqual(['Failed to fetch labware for source identifiers'])
+        expect(success).toEqual(false)
+      })
+
+      it('returns an error and an empty list when the service responds with an error to the libraries get', async () => {
+        requestGet.mockResolvedValue(pacbioRequestFactory.responses.fetch)
+        libraryGet.mockResolvedValue(failedResponse())
+
+        const { success, errors } = await store.findLabwareForSourceIdentifiers(['DN814327C:A1'])
+        expect(errors).toEqual(['Failed to fetch labware for source identifiers'])
+        expect(success).toEqual(false)
+      })
+    })
+
+    describe('createUsedAliquotFromMultiPoolCsvRecord', () => {
+      beforeEach(() => {
+        pacbioRootStore.tagSets = {
+          3: {
+            id: '3',
+            type: 'tag_sets',
+            name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+            uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+            pipeline: 'pacbio',
+            tags: ['129', '130'],
+          },
+        }
+        pacbioRootStore.tags = {
+          129: { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          130: { id: '130', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1008T' },
+        }
+        store.selected.tagSet = { id: '3' }
+      })
+
+      it('creates a used aliquot with the correct attributes when the aliquot comes from a request', () => {
+        store.resources.requests = {
+          1: {
+            id: '1',
+            type: 'requests',
+            source_identifier: 'DN1:A1',
+            well: 5,
+          },
+        }
+        const record = {
+          source_identifier: 'DN1:A1',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(
+          expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Request',
+            request: '1',
+            tag_id: '129',
+            template_prep_kit_box_barcode: record.template_prep_kit_box_barcode,
+            volume: record.volume,
+            concentration: record.concentration,
+            insert_size: record.insert_size,
+            available_volume: null,
+          }),
+        )
+        expect(aliquotErrors).toEqual([])
+      })
+
+      it('creates a used aliquot with the correct attributes when the aliquot comes from a library', () => {
+        store.resources.libraries = {
+          1: {
+            id: '1',
+            type: 'libraries',
+            barcode: 'TRAC-2-123',
+            request: '2',
+            available_volume: 2,
+          },
+        }
+        store.resources.requests = {
+          2: {
+            id: '2',
+            type: 'requests',
+          },
+        }
+
+        const record = {
+          source_identifier: 'TRAC-2-123',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(
+          expect.objectContaining({
+            source_id: '1',
+            source_type: 'Pacbio::Library',
+            request: '2',
+            tag_id: '129',
+            template_prep_kit_box_barcode: record.template_prep_kit_box_barcode,
+            volume: record.volume,
+            concentration: record.concentration,
+            insert_size: record.insert_size,
+            available_volume: 2,
+          }),
+        )
+        expect(aliquotErrors).toEqual([])
+      })
+
+      it('adds an error when the source identifier is not found in either requests or libraries', () => {
+        const record = {
+          source_identifier: 'UNKNOWN',
+          tag_set: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          tag: 'bc1007T',
+          template_prep_kit_box_barcode: 'ABC1',
+          volume: 1,
+          concentration: 1,
+          insert_size: 100,
+        }
+
+        const aliquotErrors = []
+        const usedAliquot = store.createUsedAliquotFromMultiPoolCsvRecord(record, aliquotErrors)
+
+        expect(usedAliquot).toEqual(null)
+        expect(aliquotErrors).toEqual(['Unable to find labware with source identifier UNKNOWN'])
       })
     })
 

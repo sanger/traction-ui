@@ -58,10 +58,10 @@ describe('Flexible pooling new', () => {
     cy.get('[data-testid="pipeline-select"]').select('Pacbio')
     cy.get('[data-testid="pooling-layout-select"]').select('Plate')
     cy.get('[data-testid="csv-file-input"]').should('exist')
-    cy.get('[data-testid="flexible-pooling-template"]').contains('Download CSV template')
+    cy.get('[data-testid="flexible-pooling-template"]').contains('CSV template')
 
     cy.contains('Pooling')
-    cy.get('[data-attribute="flexible-pool-well"]').should('have.length', 96)
+    cy.get('[data-attribute^="flexible-pool-well"]').should('have.length', 96)
 
     cy.contains('Actions')
     cy.get('[data-testid="reset-btn"]').contains('Reset')
@@ -70,7 +70,7 @@ describe('Flexible pooling new', () => {
 
   describe('Successfully', () => {
     it('creates a flexible pool and navigates to its page', () => {
-      cy.get('a[href*="sub-pool/1"][data-attribute="flexible-pool-well-link"]').first().click()
+      cy.get('[data-attribute="flexible-pool-well-1"]').click()
 
       cy.get('#labware-finder-input').type('GEN-1680611780-1{enter}')
       // Add a library tube
