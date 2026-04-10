@@ -8,6 +8,17 @@ This is necessary to allow useStore to pick up the any other pinia instance othe
 More documentation available on https://pinia.vuejs.org/cookbook/testing.html*/
 import { setActivePinia, createPinia } from 'pinia'
 
+const oktaNavigationGuardMock = vi.hoisted(() => vi.fn(() => true))
+
+// Mock the Okta Vue plugin to prevent actual navigation guard logic from running during tests
+vi.mock('@okta/okta-vue', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    navigationGuard: oktaNavigationGuardMock,
+  }
+})
+
 beforeEach(() => {
   setActivePinia(createPinia())
 })
