@@ -16,7 +16,7 @@
     <div v-if="display">
       <!-- overlay -->
       <div
-        class="fixed cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
+        class="fixed cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0 z-1"
       />
       <!-- modal -->
       <div class="fixed z-20 inset-0 overflow-y-auto" @click.self="close">
