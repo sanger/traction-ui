@@ -3,7 +3,7 @@ import { OktaAuth } from '@okta/okta-auth-js'
 const oktaDomain = import.meta.env.VITE_OKTA_DOMAIN
 const clientId = import.meta.env.VITE_OKTA_CLIENT_ID
 
-const redirectUri = '/login-callback'
+const redirectUri = '/login-callback.html'
 
 const authClient = new OktaAuth({
   issuer: `https://${oktaDomain}`,
