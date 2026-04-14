@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 // Help us keep track of what we import, and the size effect it has on the bundle
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -26,6 +27,12 @@ export default defineConfig({
     setupFiles: './tests/support/setup.js',
   },
   build: {
+    rolldownOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        loginCallback: resolve(import.meta.dirname, 'login-callback.html'),
+      },
+    },
     outDir: 'dist/public',
   },
 })
