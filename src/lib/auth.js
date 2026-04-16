@@ -9,7 +9,7 @@ const authClient = new OktaAuth({
   issuer: `https://${oktaDomain}`,
   clientId: clientId,
   redirectUri: redirectUri,
-  scopes: ['openid', 'profile', 'email'],
+  // scopes: ['openid', 'profile', 'email'], // Not currently required in the Traction-UAT app
 })
 
 // Subscribe to authState change event.
