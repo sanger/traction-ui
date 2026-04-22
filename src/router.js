@@ -7,7 +7,6 @@ import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import UserDetails from '@/views/UserDetails.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
@@ -54,12 +53,6 @@ const router = createRouter({
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
       component: TractionDashboard,
-    },
-    {
-      path: '/user-details',
-      name: 'UserDetails',
-      meta: { page: 'User Details', requiresAuth: true },
-      component: UserDetails,
     },
     {
       path: '/reception',

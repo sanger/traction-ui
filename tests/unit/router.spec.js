@@ -10,7 +10,6 @@ vi.mock('@okta/okta-vue', () => ({
 
 const routeComponentLoaders = {
   Dashboard: () => import('@/views/TractionDashboard.vue'),
-  UserDetails: () => import('@/views/UserDetails.vue'),
   Reception: () => import('@/views/GeneralReception.vue'),
   LabWhereReception: () => import('@/views/LabwhereReception.vue'),
   LabelPrinting: () => import('@/views/LabelPrinting.vue'),
@@ -37,7 +36,6 @@ const routeComponentLoaders = {
 
 const authExpectations = {
   Dashboard: false,
-  UserDetails: true,
   Reception: false,
   LabWhereReception: false,
   LabelPrinting: false,
@@ -117,22 +115,6 @@ describe('router', () => {
     await router.push('/dashboard')
 
     expect(router.currentRoute.value.name).toBe('Dashboard')
-  })
-
-  it('redirects an unauthenticated user away from a protected route', async () => {
-    isAuthenticated = false
-
-    await router.push('/user-details')
-
-    expect(router.currentRoute.value.path).toBe('/login-callback')
-  })
-
-  it('allows an authenticated user onto a protected route', async () => {
-    isAuthenticated = true
-
-    await router.push('/user-details')
-
-    expect(router.currentRoute.value.name).toBe('UserDetails')
   })
 
   it('redirects / to Dashboard', async () => {
