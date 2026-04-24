@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { checkFeatureFlag } from '@/api/featureFlag.js'
+vi.unmock('@/api/featureFlag.js')
 import useRootStore from '@/stores'
 
 describe('checkFeatureFlag', () => {

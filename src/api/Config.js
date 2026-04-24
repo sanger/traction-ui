@@ -1,8 +1,17 @@
+import { useAuth } from "@okta/okta-vue"
+
+const getOktaAuthHeader = () => {
+  const auth = useAuth()
+  const accessToken = auth.getAccessToken()
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
+}
+
 const config = [
   {
     name: 'traction',
     apiNamespace: 'v1',
     rootURL: import.meta.env['VITE_TRACTION_BASE_URL'],
+    headers: getOktaAuthHeader,
     resources: [
       {
         name: 'samples',

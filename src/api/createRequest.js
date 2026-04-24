@@ -21,6 +21,20 @@ const defaultHeaders = {
 }
 
 /*
+ * @param {Object} defaults - default headers
+ * @param {Object|Function} headers - object headers or function returning headers
+ * @returns {Function} resolver that merges defaults and custom headers
+ */
+const createHeaderResolver = ({ defaults, headers = {} }) => {
+  try {
+    const resolvedHeaders = typeof headers === 'function' ? headers() : headers
+    return { ...defaults, ...(resolvedHeaders || {}) }
+  } catch {
+    return { ...defaults }
+  }
+}
+
+/*
  * @param {Any} value
  * @returns boolean
  */
@@ -131,7 +145,11 @@ const execute = (requestType = RequestType()) => {
  */
 const createBasicRequest = ({ rootURL, path, headers = {} }) => {
   const baseURL = rootURL
-  const api = { baseURL, headers: { ...defaultHeaders.json, ...headers } }
+  const resolvedHeaders = createHeaderResolver({ defaults: defaultHeaders.json, headers })
+  const api = {
+    baseURL,
+    headers: resolvedHeaders,
+  }
 
   const get = () => {
     const requestType = RequestType({
@@ -154,7 +172,11 @@ const createBasicRequest = ({ rootURL, path, headers = {} }) => {
  */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
-  const api = { baseURL, headers: { ...defaultHeaders.jsonApi, ...headers } }
+  const resolvedHeaders = createHeaderResolver({ defaults: defaultHeaders.jsonApi, headers })
+  const api = {
+    baseURL,
+    headers: resolvedHeaders,
+  }
 
   /*
    * @param {Object} queryParametersType - query parameters

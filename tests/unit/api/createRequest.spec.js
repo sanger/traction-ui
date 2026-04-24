@@ -313,6 +313,44 @@ describe('createRequest', () => {
         }
       })
     })
+
+    describe('dynamic headers', () => {
+      it('resolves headers from a function', async () => {
+        fetch.mockReturnValue({ json: () => mockResponse })
+
+        const request = createRequest({
+          ...attributes,
+          headers: () => ({ Authorization: 'Bearer test-token' }),
+        })
+        await request.get()
+
+        expect(fetch).toHaveBeenCalledWith('http://traction/v1/requests', {
+          method: 'GET',
+          headers: {
+            ...defaultHeaders.jsonApi,
+            Authorization: 'Bearer test-token',
+          },
+        })
+      })
+
+      it('resolves headers from an object', async () => {
+        fetch.mockReturnValue({ json: () => mockResponse })
+
+        const request = createRequest({
+          ...attributes,
+          headers: { test: 'test-header' },
+        })
+        await request.get()
+
+        expect(fetch).toHaveBeenCalledWith('http://traction/v1/requests', {
+          method: 'GET',
+          headers: {
+            ...defaultHeaders.jsonApi,
+            test: 'test-header',
+          },
+        })
+      })
+    })
   })
   describe('QueryParametersType', () => {
     it('should return a valid object', () => {
