@@ -7,7 +7,10 @@
       @focusout="hideMenu"
     >
       <div class="relative">
-        <div class="flex flex-row items-center text-gray-400 gap-x-2">
+        <div
+          class="flex flex-row items-center text-gray-400 gap-x-2"
+          data-attribute="account-identifier"
+        >
           <p v-if="authState && authState.isAuthenticated" class="text-sm">{{ userInfo.name }}</p>
           <TractionAccountIcon class="h-8 w-8" />
         </div>
@@ -27,6 +30,7 @@
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left rounded-md"
               role="menuitem"
               data-discover="true"
+              data-action="logout"
               @click="logout"
             >
               Logout
@@ -36,6 +40,7 @@
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left rounded-md"
               role="menuitem"
               data-discover="true"
+              data-action="login"
               @click="login"
             >
               Login
@@ -58,7 +63,6 @@ const login = async () => {
 }
 
 const logout = async () => {
-  console.log('called')
   await auth.signOut()
 }
 
@@ -73,6 +77,8 @@ const userInfo = ref({ name: 'Unknown' })
 const showMenu = ref(false)
 
 onMounted(async () => {
-  userInfo.value = await auth.getUser()
+  if (await auth.isAuthenticated()) {
+    userInfo.value = await auth.getUser()
+  }
 })
 </script>

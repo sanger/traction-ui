@@ -43,10 +43,10 @@ describe('checkFeatureFlag', () => {
     expect(result).toBe(false)
   })
 
-  it('should return false when the request failes', async () => {
+  it('should return false when the request fails', async () => {
     mockGet.mockResolvedValue({
       ok: false,
-      json: async () => ({ }),
+      json: async () => ({}),
     })
 
     const result = await checkFeatureFlag('testFlag')

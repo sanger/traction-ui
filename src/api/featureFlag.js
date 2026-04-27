@@ -1,4 +1,3 @@
-
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 
@@ -12,7 +11,7 @@ const checkFeatureFlag = async (flagName) => {
   const request = rootStore.api.traction.feature_flags
   const promise = request.get()
   const { body = {} } = await handleResponse(promise)
-    
+
   return body.features?.[flagName]?.enabled ? true : false
 }
 

@@ -1,4 +1,4 @@
-import { useAuth } from "@okta/okta-vue"
+import { useAuth } from '@okta/okta-vue'
 
 const getOktaAuthHeader = () => {
   const auth = useAuth()
