@@ -1,4 +1,3 @@
-// TODO: routes are not tested so cause errors on start
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LoginCallback } from '@okta/okta-vue'
 import { navigationGuard } from '@okta/okta-vue'
@@ -236,7 +235,7 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: { name: '404' },
+      redirect: () => ({ path: '/404' }),
     },
   ],
 })
