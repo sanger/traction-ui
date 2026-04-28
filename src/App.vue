@@ -32,10 +32,14 @@ import InfoFooter from '@/components/InfoFooter.vue'
 import TractionMessage from '@/components/TractionMessage.vue'
 import TractionHeader from '@/components/TractionHeader.vue'
 import useRootStore from '@/stores'
-import { computed } from 'vue'
+import useTokenExpiration from '@/composables/useTokenExpiration.js'
+import { computed, onMounted, onUnmounted } from 'vue'
+
+// Call the useTokenExpiration composable to set up token expiration handling
+const { mountListeners, unMountListeners } = useTokenExpiration()
+
 
 const rootStore = useRootStore()
-
 // Access the messages from the root store
 const messages = computed(() => rootStore.messages)
 const hasMessages = computed(() => !!Object.keys(messages.value).length)
@@ -46,4 +50,20 @@ function dismiss(messageIndex) {
 function clearAlerts() {
   rootStore.clearMessages()
 }
+
+onMounted(() => {
+  mountListeners() // Start monitoring token expiration when the app mounts
+  // Check for session expired alert that was stored before redirect
+  if (sessionStorage.getItem('sessionExpiredAlert')) {
+    sessionStorage.removeItem('sessionExpiredAlert')
+    rootStore.addMessage({
+      type: 'warning',
+      message: 'Your session has expired. Please log in again via the account menu.',
+    })
+  }
+})
+
+onUnmounted(() => {
+  unMountListeners() // Clean up token expiration monitoring when the app unmounts
+})
 </script>

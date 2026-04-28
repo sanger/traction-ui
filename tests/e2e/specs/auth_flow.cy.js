@@ -41,6 +41,10 @@ describe('Auth', () => {
       cy.get('[data-action="logout"]').click()
       cy.wait('@oktaLogout')
       cy.location('hash').should('eq', '#/dashboard')
+      cy.getAllLocalStorage().then((localStorage) => {
+        // Ensure okta local storage is cleared after logout
+        expect(localStorage['okta-token-storage']).to.be.undefined
+      })
     })
   })
 
