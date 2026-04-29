@@ -15,14 +15,14 @@
           style="opacity: 1; transform: none"
         >
           <div
-            class="rounded-md bg-white shadow-xs"
+            class="rounded-md bg-white shadow-xs focus:outline-none"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
             <button
               v-if="authState && authState.isAuthenticated"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left rounded-md"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 active:bg-sp-400 active:text-white w-full text-left rounded-md cursor-pointer"
               role="menuitem"
               data-discover="true"
               data-action="logout"
@@ -32,7 +32,7 @@
             </button>
             <button
               v-else
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left rounded-md"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 active:bg-sp-400 active:text-white w-full text-left rounded-md cursor-pointer"
               role="menuitem"
               data-discover="true"
               data-action="login"
