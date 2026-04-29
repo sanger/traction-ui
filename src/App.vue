@@ -38,7 +38,6 @@ import { computed, onMounted, onUnmounted } from 'vue'
 // Call the useTokenExpiration composable to set up token expiration handling
 const { mountListeners, unMountListeners } = useTokenExpiration()
 
-
 const rootStore = useRootStore()
 // Access the messages from the root store
 const messages = computed(() => rootStore.messages)

@@ -31,13 +31,12 @@ authClient.tokenManager.on('expired', async function (key) {
   // Store alert to display after redirect completes
   sessionStorage.setItem('sessionExpiredAlert', 'true')
   await authClient.signOut()
-});
+})
 
 authClient.tokenManager.on('renewed', function (key) {
   if (key !== 'accessToken') return
   sessionStorage.removeItem(SESSION_WARNING_KEY)
-});
-
+})
 
 // Handle callback
 if (authClient.isLoginRedirect()) {

@@ -27,7 +27,7 @@ function mountComposable() {
       onMounted(() => {
         mountListeners()
       })
-      
+
       onUnmounted(() => {
         unMountListeners()
       })
@@ -90,7 +90,7 @@ describe('useTokenExpiration', () => {
 
     it('shows alert when token is expiring soon and no alert shown this session', async () => {
       const composable = useTokenExpiration()
-      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 4 * 60 }) // 4 min until expiry
+      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 1 * 60 }) // 1 min until expiry
 
       await composable.checkAndRefreshToken()
       expect(mockShowAlert).toHaveBeenCalledWith(
@@ -102,11 +102,11 @@ describe('useTokenExpiration', () => {
 
     it('does not show alert again if already shown this session', async () => {
       const composable = useTokenExpiration()
-      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 4 * 60 }) // 4 min until expiry
+      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 1 * 60 }) // 1 min until expiry
       sessionStorage.setItem('tokenExpirationWarningShown', 'true')
 
       await composable.checkAndRefreshToken()
-      expect(mockShowAlert).not.toHaveBeenCalled() 
+      expect(mockShowAlert).not.toHaveBeenCalled()
     })
   })
 
@@ -119,13 +119,17 @@ describe('useTokenExpiration', () => {
 
     it('returns true when token expires within warning threshold', async () => {
       const composable = useTokenExpiration()
-      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + (composable.WARNING_THRESHOLD_MINUTES-1) * 60 }) // 7 min until expiry
+      authClient.tokenManager.get.mockResolvedValue({
+        expiresAt: Date.now() / 1000 + (composable.WARNING_THRESHOLD_MINUTES - 1) * 60,
+      }) // 4 min until expiry
       expect(await composable.isTokenExpiringSoon()).toBe(true)
     })
 
     it('returns false when token expires outside warning threshold', async () => {
       const composable = useTokenExpiration()
-      authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + (composable.WARNING_THRESHOLD_MINUTES + 1) * 60 }) // 10 min until expiry
+      authClient.tokenManager.get.mockResolvedValue({
+        expiresAt: Date.now() / 1000 + (composable.WARNING_THRESHOLD_MINUTES + 1) * 60,
+      }) // 6 min until expiry
       expect(await composable.isTokenExpiringSoon()).toBe(false)
     })
 
