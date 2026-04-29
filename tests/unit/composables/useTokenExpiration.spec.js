@@ -94,7 +94,7 @@ describe('useTokenExpiration', () => {
 
       await composable.checkAndRefreshToken()
       expect(mockShowAlert).toHaveBeenCalledWith(
-        expect.stringContaining('Your session is expiring soon'),
+        'Your session is expiring soon (1m). Please save your work and log in again via the account menu.',
         'warning',
       )
       expect(sessionStorage.getItem('tokenExpirationWarningShown')).toBe('true')

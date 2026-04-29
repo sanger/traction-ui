@@ -7,7 +7,7 @@ const DEBOUNCE_MS = 1000
 const MIN_CHECK_INTERVAL_MS = 30_000
 const SESSION_WARNING_KEY = 'tokenExpirationWarningShown'
 
-// 8 minutes because it is below the threshold where Okta will attempt to auto renew the token, which is currently set to 10 minutes before expiry
+// Needs to be less than 10 mins (Okta token renewal threshold) to ensure the warning shows before the token expires
 const WARNING_THRESHOLD_MINUTES = 5
 import authClient from '@/lib/auth.js'
 
@@ -53,9 +53,10 @@ export default function useTokenExpiration() {
 
     if (!sessionStorage.getItem(SESSION_WARNING_KEY)) {
       const secondsUntilExpiry = await getSecondsUntilExpiry()
+      const minutesUnitlExpiry = Math.floor(secondsUntilExpiry / 60)
       sessionStorage.setItem(SESSION_WARNING_KEY, 'true')
       showAlert(
-        `Your session is expiring soon (${secondsUntilExpiry}s). Please save your work and log in again via the account menu.`,
+        `Your session is expiring soon (${minutesUnitlExpiry}m). Please save your work and log in again via the account menu.`,
         'warning',
       )
     }
