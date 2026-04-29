@@ -1,14 +1,9 @@
 <template>
   <div class="flex flex-row items-center">
-    <div
-      class="flex flex-row items-center cursor-pointer"
-      tabindex="0"
-      @click="showMenu = !showMenu"
-      @focusout="hideMenu"
-    >
+    <div :class="menuClasses" tabindex="0" @click="showMenu = !showMenu" @focusout="hideMenu">
       <div class="relative">
         <div
-          class="flex flex-row items-center text-gray-400 gap-x-2"
+          class="flex flex-row items-center text-gray-400 gap-x-2 p-2"
           data-attribute="account-identifier"
         >
           <p v-if="authState && authState.isAuthenticated" class="text-sm">{{ userInfo.name }}</p>
@@ -53,7 +48,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useAuth } from '@okta/okta-vue'
 
 const auth = useAuth()
@@ -72,6 +67,13 @@ const hideMenu = (event) => {
     showMenu.value = false
   }
 }
+
+const menuClasses = computed(() => {
+  let classes =
+    'flex flex-row items-center cursor-pointer rounded-md hover:backdrop-brightness-80 transition-all duration-200'
+  classes += showMenu.value ? ' backdrop-brightness-80' : ''
+  return classes
+})
 
 const userInfo = ref({ name: 'Unknown' })
 const showMenu = ref(false)
