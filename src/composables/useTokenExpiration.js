@@ -43,7 +43,7 @@ export default function useTokenExpiration() {
     return seconds > 0 && seconds <= WARNING_THRESHOLD_MINUTES * 60
   }
 
-  async function checkAndRefreshToken() {
+  async function checkTokenExpiry() {
     const now = Date.now()
     if (now - lastCheckTime < MIN_CHECK_INTERVAL_MS) return
     lastCheckTime = now
@@ -64,7 +64,7 @@ export default function useTokenExpiration() {
 
   function handleActivity() {
     clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(checkAndRefreshToken, DEBOUNCE_MS)
+    debounceTimer = setTimeout(checkTokenExpiry, DEBOUNCE_MS)
   }
 
   function mountListeners() {
@@ -79,7 +79,7 @@ export default function useTokenExpiration() {
   return {
     mountListeners,
     unMountListeners,
-    checkAndRefreshToken,
+    checkTokenExpiry,
     isTokenExpiringSoon,
     getSecondsUntilExpiry,
     WARNING_THRESHOLD_MINUTES,

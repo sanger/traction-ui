@@ -41,6 +41,7 @@ authClient.tokenManager.on('renewed', function (key) {
 // Handle callback
 if (authClient.isLoginRedirect()) {
   const { tokens } = await authClient.token.parseFromUrl()
+  sessionStorage.removeItem(SESSION_WARNING_KEY)
   authClient.tokenManager.setTokens(tokens)
   redirectToReferrer()
 }

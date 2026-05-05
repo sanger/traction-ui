@@ -64,7 +64,7 @@ describe('useTokenExpiration', () => {
     })
   })
 
-  describe('#checkAndRefreshToken', () => {
+  describe('#checkTokenExpiry', () => {
     beforeEach(() => {
       vi.useFakeTimers()
       vi.clearAllMocks()
@@ -80,11 +80,11 @@ describe('useTokenExpiration', () => {
       // Expiry far in the future keeps path simple: one token lookup per allowed check.
       authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 3600 })
 
-      await composable.checkAndRefreshToken()
-      await composable.checkAndRefreshToken()
+      await composable.checkTokenExpiry()
+      await composable.checkTokenExpiry()
       expect(authClient.tokenManager.get).toHaveBeenCalledTimes(1)
       vi.advanceTimersByTime(30_000)
-      await composable.checkAndRefreshToken()
+      await composable.checkTokenExpiry()
       expect(authClient.tokenManager.get).toHaveBeenCalledTimes(2)
     })
 
@@ -92,7 +92,7 @@ describe('useTokenExpiration', () => {
       const composable = useTokenExpiration()
       authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 1 * 60 }) // 1 min until expiry
 
-      await composable.checkAndRefreshToken()
+      await composable.checkTokenExpiry()
       expect(mockShowAlert).toHaveBeenCalledWith(
         'Your session is expiring soon (1m). Please save your work and log in again via the account menu.',
         'warning',
@@ -105,7 +105,7 @@ describe('useTokenExpiration', () => {
       authClient.tokenManager.get.mockResolvedValue({ expiresAt: Date.now() / 1000 + 1 * 60 }) // 1 min until expiry
       sessionStorage.setItem('tokenExpirationWarningShown', 'true')
 
-      await composable.checkAndRefreshToken()
+      await composable.checkTokenExpiry()
       expect(mockShowAlert).not.toHaveBeenCalled()
     })
   })
