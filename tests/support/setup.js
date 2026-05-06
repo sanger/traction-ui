@@ -10,11 +10,20 @@ import { setActivePinia, createPinia } from 'pinia'
 
 const oktaNavigationGuardMock = vi.hoisted(() => vi.fn(() => true))
 
+vi.mock(import('@/api/featureFlag.js'), () => {
+  return {
+    checkFeatureFlag: vi.fn(() => Promise.resolve(true)), // Mock implementation that always returns true
+  }
+})
+
 // Mock the Okta Vue plugin to prevent actual navigation guard logic from running during tests
 vi.mock('@okta/okta-vue', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
+    useAuth: () => ({
+      getAccessToken: () => 'mock-access-token',
+    }),
     navigationGuard: oktaNavigationGuardMock,
   }
 })

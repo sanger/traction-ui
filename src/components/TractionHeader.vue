@@ -1,6 +1,6 @@
 <template>
   <div :class="headerClasses">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-row justify-between">
       <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
         <div class="flex flex-row gap-x-2 items-center">
           <router-link to="/" class="flex-none gap-x-2">
@@ -11,13 +11,14 @@
           <TractionLink name="Reception" link="/reception" view-type="2" />
           <TractionLink name="LabWhere Reception" link="/labwhere-reception" view-type="2" />
           <TractionLink name="Sample Report" link="/sample-report" view-type="2" />
-          <TractionLink name="User Details" link="/user-details" view-type="2" />
           <FlaggedFeature name="flexible_pooling">
             <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
           </FlaggedFeature>
-          <TractionSessionButton />
         </div>
       </div>
+      <FlaggedFeature name="Y26-111-user-auth">
+        <TractionSessionButton />
+      </FlaggedFeature>
     </div>
   </div>
 </template>

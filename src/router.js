@@ -1,13 +1,12 @@
-// TODO: routes are not tested so cause errors on start
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LoginCallback } from '@okta/okta-vue'
 import { navigationGuard } from '@okta/okta-vue'
+import { checkFeatureFlag } from '@/api/featureFlag.js'
 import TractionDashboard from '@/views/TractionDashboard.vue'
 import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
 import QcResultsUpload from '@/views/QcResultsUpload.vue'
 import LabwhereReception from '@/views/LabwhereReception.vue'
-import UserDetails from '@/views/UserDetails.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
@@ -56,45 +55,39 @@ const router = createRouter({
       component: TractionDashboard,
     },
     {
-      path: '/user-details',
-      name: 'UserDetails',
-      meta: { page: 'User Details', requiresAuth: true },
-      component: UserDetails,
-    },
-    {
       path: '/reception',
       name: 'Reception',
-      meta: { pipeline: 'Reception' },
+      meta: { pipeline: 'Reception', requiresAuth: true },
       component: GeneralReception,
     },
     {
       path: '/labwhere-reception',
       name: 'LabWhereReception',
-      meta: { page: 'LabWhere Reception - Scan In/Out' },
+      meta: { page: 'LabWhere Reception - Scan In/Out', requiresAuth: true },
       component: LabwhereReception,
     },
     {
       path: '/label-printing',
       name: 'LabelPrinting',
-      meta: { page: 'Label Printing' },
+      meta: { page: 'Label Printing', requiresAuth: true },
       component: LabelPrinting,
     },
     {
       path: '/qc-results-upload',
       name: 'QcResultsUpload',
-      meta: { page: 'QC Results Upload' },
+      meta: { page: 'QC Results Upload', requiresAuth: true },
       component: QcResultsUpload,
     },
     {
       path: '/sample-report',
       name: 'SampleReport',
-      meta: { page: 'Sample Report' },
+      meta: { page: 'Sample Report', requiresAuth: true },
       component: SampleReport,
     },
     {
       path: '/flexible-pooling',
       name: 'FlexiblePoolingIndex',
-      meta: { page: 'Flexible Pooling', paginated: true },
+      meta: { page: 'Flexible Pooling', paginated: true, requiresAuth: true },
       beforeEnter(to) {
         checkPaginationParams(to)
       },
@@ -104,20 +97,20 @@ const router = createRouter({
       path: '/flexible-pool/:id',
       name: 'FlexiblePool',
       component: FlexiblePoolCreate,
-      meta: { page: 'FlexiblePool' },
+      meta: { page: 'FlexiblePool', requiresAuth: true },
       props: true,
     },
     {
       path: '/flexible-pool/:id/sub-pool/:position',
       name: 'FlexibleIndividualPoolCreate',
       component: FlexibleIndividualPoolCreate,
-      meta: { page: 'FlexibleIndividualPoolCreate' },
+      meta: { page: 'FlexibleIndividualPoolCreate', requiresAuth: true },
       props: true,
     },
     {
       path: '/pacbio',
       component: PacbioView,
-      meta: { pipeline: 'PacBio' },
+      meta: { pipeline: 'PacBio', requiresAuth: true },
       children: [
         { path: '', redirect: 'samples' },
         {
@@ -190,7 +183,7 @@ const router = createRouter({
     {
       path: '/ont',
       component: ONT,
-      meta: { pipeline: 'ONT' },
+      meta: { pipeline: 'ONT', requiresAuth: true },
       children: [
         {
           path: 'samples',
@@ -242,13 +235,21 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: { name: '404' },
+      redirect: () => ({ path: '/404' }),
     },
   ],
 })
 
+const flaggedNavigationGuard = async (guard) => {
+  const flagged = await checkFeatureFlag('Y26-111-user-auth')
+  if (flagged) {
+    return navigationGuard(guard)
+  }
+  return true
+}
+
 // Due to navigation guards mixin issue in vue-router-next, navigation guard logic need to be added manually
 // See https://github.com/vuejs/router/issues/454
-router.beforeEach(navigationGuard)
+router.beforeEach(flaggedNavigationGuard)
 
 export default router
