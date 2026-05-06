@@ -8,9 +8,12 @@ beforeEach(() => {
 
   const oktaDomain = Cypress.env('VITE_OKTA_DOMAIN')
   const clientId = Cypress.env('VITE_OKTA_CLIENT_ID')
-  // To avoid token expiration, we create a new timestamp every time
-  const oneDayFromNow = Date.now() + 1000 * 60 * 60 * 24
+  // Okta token timestamps are Unix time in seconds, not milliseconds.
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+  const oneDayFromNow = nowInSeconds + 60 * 60 * 24
 
+  localStorage.clear()
+  console.log('Setting mock Okta tokens in localStorage')
   localStorage.setItem(
     'okta-token-storage',
     JSON.stringify({
@@ -23,14 +26,14 @@ beforeEach(() => {
           ver: 1,
           iss: `https://${oktaDomain}`,
           aud: clientId,
-          iat: 1777276853,
-          exp: 1777280453,
+          iat: nowInSeconds,
+          exp: oneDayFromNow,
           jti: '',
           amr: ['pwd'],
           idp: 'DSSO',
           nonce: '',
           preferred_username: 'example@example.com',
-          auth_time: 1777274029,
+          auth_time: nowInSeconds,
           at_hash: '',
         },
         expiresAt: oneDayFromNow,
@@ -61,7 +64,7 @@ beforeEach(() => {
       given_name: 'Test',
       family_name: 'User',
       zoneinfo: 'America/Los_Angeles',
-      updated_at: 1774611037,
+      updated_at: nowInSeconds,
       email_verified: true,
     },
   }).as('oktaUserInfo')
