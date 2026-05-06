@@ -53,13 +53,13 @@ describe('Auth', () => {
     })
 
     it('credentials do not appear', () => {
-      cy.get('[data-attribute="account-icon"]').should('not.exist')
+      cy.get('[data-attribute="account-icon"]').should('be.visible')
       cy.get('[data-attribute="account-identifier"]').should('not.exist')
     })
 
     it('can log in', () => {
       // Note we aren't going through the login process as this is handled by Okta hosted login page
-      cy.get('[data-attribute="account-identifier"]').click()
+      cy.get('[data-attribute="account-icon"]').click()
       cy.get('[data-action="logout"]').should('not.exist')
       cy.get('[data-action="login"]').should('be.visible')
     })

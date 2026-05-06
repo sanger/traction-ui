@@ -2,11 +2,14 @@
   <div class="flex flex-row items-center">
     <div :class="menuClasses" tabindex="0" @click="showMenu = !showMenu" @focusout="hideMenu">
       <div class="relative">
-        <div
-          class="flex flex-row items-center text-gray-400 gap-x-2 p-2"
-          data-attribute="account-identifier"
-        >
-          <p v-if="authState && authState.isAuthenticated" class="text-sm">{{ userInfo.name }}</p>
+        <div class="flex flex-row items-center text-gray-400 gap-x-2 p-2">
+          <p
+            v-if="authState && authState.isAuthenticated"
+            data-attribute="account-identifier"
+            class="text-sm"
+          >
+            {{ userInfo.name }}
+          </p>
           <TractionAccountIcon class="h-8 w-8" />
         </div>
         <div

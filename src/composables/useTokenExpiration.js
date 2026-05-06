@@ -1,15 +1,14 @@
 // This is a back up if the token auto renew logic doesn't work as expected.
 // This composable will show a warning alert when the token is close to expiring and on user activity.
 import useAlert from '@/composables/useAlert.js'
+import authClient from '@/lib/auth.js'
 
 const ACTIVITY_EVENTS = ['click', 'keydown', 'mousemove', 'touchstart']
 const DEBOUNCE_MS = 1000
 const MIN_CHECK_INTERVAL_MS = 30_000
 const SESSION_WARNING_KEY = 'tokenExpirationWarningShown'
-
 // Needs to be less than 10 mins (Okta token renewal threshold) to ensure the warning shows before the token expires
 const WARNING_THRESHOLD_MINUTES = 5
-import authClient from '@/lib/auth.js'
 
 /**
  * Composable that monitors user activity and checks whether the Okta access token
@@ -53,10 +52,10 @@ export default function useTokenExpiration() {
 
     if (!sessionStorage.getItem(SESSION_WARNING_KEY)) {
       const secondsUntilExpiry = await getSecondsUntilExpiry()
-      const minutesUnitlExpiry = Math.floor(secondsUntilExpiry / 60)
+      const minutesUntilExpiry = Math.floor(secondsUntilExpiry / 60)
       sessionStorage.setItem(SESSION_WARNING_KEY, 'true')
       showAlert(
-        `Your session is expiring soon (${minutesUnitlExpiry}m). Please save your work and log in again via the account menu.`,
+        `Your session is expiring soon (${minutesUntilExpiry}m). Please save your work and log in again via the account menu.`,
         'warning',
       )
     }
