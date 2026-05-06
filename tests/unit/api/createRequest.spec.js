@@ -45,14 +45,14 @@ describe('createRequest', () => {
 
     it('will have some headers', () => {
       const request = createRequest({ ...attributes })
-      expect(request.api.headers).toEqual({ ...defaultHeaders.jsonApi, ...attributes.headers })
+      expect(request.api.headers).toEqual({ ...attributes.headers })
     })
 
-    it('will have some default headers if none were passed', () => {
+    it('will have some default headers', () => {
       // eslint-disable-next-line no-unused-vars
       const { headers, ...rest } = attributes
       const request = createRequest({ ...rest })
-      expect(request.api.headers).toEqual(defaultHeaders.jsonApi)
+      expect(request.api.headerDefaults).toEqual(defaultHeaders.jsonApi)
     })
 
     it('will have a base url', () => {
@@ -400,14 +400,14 @@ describe('createBasicRequest', () => {
   describe('basic attributes', () => {
     it('will have some headers', () => {
       const request = createBasicRequest({ ...attributes })
-      expect(request.api.headers).toEqual({ ...defaultHeaders.json, ...attributes.headers })
+      expect(request.api.headers).toEqual({ ...attributes.headers })
     })
 
-    it('will have some default headers if none were passed', () => {
+    it('will have some default headers', () => {
       // eslint-disable-next-line no-unused-vars
       const { headers, ...rest } = attributes
       const request = createBasicRequest({ ...rest })
-      expect(request.api.headers).toEqual(defaultHeaders.json)
+      expect(request.api.headerDefaults).toEqual(defaultHeaders.json)
     })
 
     it('will have a base url', () => {

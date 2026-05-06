@@ -27,15 +27,13 @@ describe('Auth', () => {
           'content-type': 'application/json',
         },
         body: {},
-      }) /
-        cy
-          .intercept('GET', `https://${oktaDomain}/oauth2/v1/logout*`, {
-            statusCode: 302,
-            headers: {
-              location: 'http://localhost:5173/#/',
-            },
-          })
-          .as('oktaLogout')
+      })
+      cy.intercept('GET', `https://${oktaDomain}/oauth2/v1/logout*`, {
+        statusCode: 302,
+        headers: {
+          location: 'http://localhost:5173/#/',
+        },
+      }).as('oktaLogout')
       cy.get('[data-attribute="account-identifier"]').click()
       cy.get('[data-action="login"]').should('not.exist')
       cy.get('[data-action="logout"]').click()

@@ -114,9 +114,14 @@ const execute = (requestType = RequestType()) => {
   // full url is base url + url
   // e.g. http://localhost:3100/v1/samples
   const fullURL = `${api.baseURL}/${url}`
+  // resolve headers on every request to allow dynamic headers (e.g. access tokens) to be updated
+  const resolvedHeaders = createHeaderResolver({
+    defaults: api.headerDefaults,
+    headers: api.headers,
+  })
   return fetch(fullURL, {
     method,
-    headers: api.headers,
+    headers: resolvedHeaders,
     ...(data && { body: JSON.stringify(data) }),
   })
 }
@@ -145,10 +150,10 @@ const execute = (requestType = RequestType()) => {
  */
 const createBasicRequest = ({ rootURL, path, headers = {} }) => {
   const baseURL = rootURL
-  const resolvedHeaders = createHeaderResolver({ defaults: defaultHeaders.json, headers })
   const api = {
     baseURL,
-    headers: resolvedHeaders,
+    headerDefaults: defaultHeaders.json,
+    headers: headers,
   }
 
   const get = () => {
@@ -172,10 +177,10 @@ const createBasicRequest = ({ rootURL, path, headers = {} }) => {
  */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
-  const resolvedHeaders = createHeaderResolver({ defaults: defaultHeaders.jsonApi, headers })
   const api = {
     baseURL,
-    headers: resolvedHeaders,
+    headerDefaults: defaultHeaders.jsonApi,
+    headers: headers,
   }
 
   /*
