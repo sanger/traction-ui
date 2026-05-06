@@ -911,6 +911,7 @@ const PacbioRunWellSmrtLinkOptions = {
           },
           '12.0',
           '24.0',
+          '30.0',
         ],
         dataAttribute: 'movie-acquisition-time',
       },
