@@ -245,6 +245,7 @@ const flaggedNavigationGuard = async (guard) => {
   if (flagged) {
     return navigationGuard(guard)
   }
+  return true
 }
 
 // Due to navigation guards mixin issue in vue-router-next, navigation guard logic need to be added manually
