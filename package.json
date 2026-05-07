@@ -38,7 +38,7 @@
     "pinia-plugin-persistedstate": "^4.7.1",
     "postcss": "^8.5.10",
     "tailwindcss": "4.2.4",
-    "vite": "^8.0.8",
+    "vite": "^8.0.10",
     "vue": "^3.5.33",
     "vue-router": "^4.0.0",
     "vue3-selecto": "^1.12.3"
