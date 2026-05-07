@@ -101,36 +101,41 @@ describe('ApiBuilder', () => {
     expect(request1.rootURL).toEqual(import.meta.env.VITE_API1_BASE_URL)
     expect(request1.apiNamespace).toEqual('api/v1')
     expect(request1.resource).toEqual('resource1')
-    expect(request1.api.headers).toEqual({
+    expect(request1.api.headerDefaults).toEqual({
       'Content-Type': 'application/vnd.api+json',
       Accept: 'application/vnd.api+json',
     })
+    expect(request1.api.headers).toEqual({})
 
     const request2 = api.api2.resource1
     expect(request2.rootURL).toEqual(import.meta.env.VITE_API2_BASE_URL)
     expect(request2.apiNamespace).toEqual('v2')
     expect(request2.resource).toEqual('resource1')
-    expect(request2.api.headers).toEqual({
+    expect(request2.api.headerDefaults).toEqual({
       'Content-Type': 'application/vnd.api+json',
       Accept: 'application/vnd.api+json',
     })
+    expect(request2.api.headers).toEqual({})
 
     const request3 = api.api2.resource2
     expect(request3.rootURL).toEqual(import.meta.env.VITE_API2_BASE_URL)
     expect(request3.apiNamespace).toEqual('v2')
     expect(request3.resource).toEqual('resource2')
-    expect(request3.api.headers).toEqual({
+    expect(request3.api.headerDefaults).toEqual({
       'Content-Type': 'application/vnd.api+json',
       Accept: 'application/vnd.api+json',
     })
+    expect(request3.api.headers).toEqual({})
 
     const request4 = api.api3.samples
     expect(request4.rootURL).toEqual(import.meta.env.VITE_API3_BASE_URL)
     expect(request4.apiNamespace).toEqual('v3')
     expect(request4.resource).toEqual('samples')
-    expect(request4.api.headers).toEqual({
+    expect(request4.api.headerDefaults).toEqual({
       'Content-Type': 'application/vnd.api+json',
       Accept: 'application/vnd.api+json',
+    })
+    expect(request4.api.headers).toEqual({
       'custom-header': 'test',
     })
   })

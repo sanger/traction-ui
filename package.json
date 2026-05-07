@@ -26,6 +26,8 @@
     "jsdoc": "./node_modules/.bin/jsdoc -a all -r --configure jsdoc.json --destination docs"
   },
   "dependencies": {
+    "@okta/okta-auth-js": "^8.0.0",
+    "@okta/okta-vue": "^5.8.0",
     "@sanger/ui-styling": "^4.3.0",
     "@tailwindcss/postcss": "^4.2.4",
     "@vitejs/plugin-vue": "^6.0.6",
@@ -38,7 +40,7 @@
     "tailwindcss": "4.2.4",
     "vite": "^8.0.10",
     "vue": "^3.5.33",
-    "vue-router": "^5.0.6",
+    "vue-router": "^4.0.0",
     "vue3-selecto": "^1.12.3"
   },
   "devDependencies": {
