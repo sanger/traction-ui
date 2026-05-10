@@ -981,6 +981,26 @@ const PacbioRunWellSmrtLinkOptions = {
         dataAttribute: 'full-resolution-base-qual',
       },
     },
+    {
+      name: 'application_type',
+      component: 'traction-select',
+      value: 'application_type',
+      label: 'Application',
+      required: false,
+      default: true,
+      props: {
+        options: [
+          'Human WGS',
+          'Microbial assembly',
+          'Other WGS',
+          'Kinnex single-cell RNA',
+          'Kinnex full-length RNA',
+          '<3kb amplicons',
+          'Other',
+        ],
+        dataAttribute: 'application-type',
+      },
+    },
   ],
 }
 
@@ -1012,6 +1032,7 @@ const defaultSmrtLinkAttributes = (run = {}) => {
     // Compute adaptive loading default based on run setting
     use_adaptive_loading: run.adaptive_loading ? 'True' : 'False',
     full_resolution_base_qual: 'False',
+    application_type: 'Other',
   }
 }
 
