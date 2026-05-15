@@ -88,7 +88,39 @@
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col items-center">
-                <traction-label class="h-full">Auto calculate</traction-label>
+                <traction-tooltip
+                  tooltip-direction="right-0 bottom-0"
+                  tooltip-bg-colour="bg-sp-200"
+                >
+                  <traction-label class="h-full underline">Auto calculate</traction-label>
+                  <template #tooltip>
+                    <div class="w-full p-2">
+                      <h1 class="px-2 font-semibold text-lg text-sp-600">Auto calculate</h1>
+                      <p>
+                        Determines pool metadata based on selected samples. All samples must contain
+                        Volume, Concentration and Insert Size.
+                      </p>
+                      <ul class="w-full list-disc list-inside p-2 space-y-2">
+                        <li>
+                          <strong>Template Prep Kit Box Barcode:</strong> (optional) first selected
+                          sample's template prep kit box barcode.
+                        </li>
+                        <li>
+                          <strong>Volume:</strong> sum of selected sample volumes (rounded to 1
+                          decimal place).
+                        </li>
+                        <li>
+                          <strong>Concentration:</strong> weighted average = sum(concentration x
+                          volume) / pool volume (rounded to 2 decimal places).
+                        </li>
+                        <li>
+                          <strong>Insert Size:</strong> mean average of selected sample insert sizes
+                          (rounded to nearest whole number).
+                        </li>
+                      </ul>
+                    </div>
+                  </template>
+                </traction-tooltip>
                 <div
                   data-attribute="auto-calculate"
                   class="bg-sp-400 p-1 rounded cursor-pointer items-center justify-center hover:bg-sp-600 transition-all"
