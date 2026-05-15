@@ -101,7 +101,7 @@ describe('pacbioPoolEdit#new', () => {
       expect(mockShowAlert).toHaveBeenCalledWith(
         'Auto calculation failed. Please check all relevant metadata is present',
         'warning',
-        'pool-create-message',
+        'pool-auto-calculate-message',
       )
     })
 
@@ -114,7 +114,7 @@ describe('pacbioPoolEdit#new', () => {
       expect(mockShowAlert).toHaveBeenCalledWith(
         'Auto calculation successful. Pool metadata has been updated.',
         'success',
-        'pool-create-message',
+        'pool-auto-calculate-message',
       )
     })
   })
