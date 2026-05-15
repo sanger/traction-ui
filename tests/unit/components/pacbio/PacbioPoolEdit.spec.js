@@ -5,6 +5,13 @@ import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
 
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert.js', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
+
 const pacbioAutoTagFactory = PacbioAutoTagFactory()
 
 const tagSet = {
@@ -42,6 +49,7 @@ describe('pacbioPoolEdit#new', () => {
 
   let wrapper, store
   beforeEach(() => {
+    mockShowAlert.mockClear()
     ;({ wrapper, store } = mountPacbioPoolEdit({ state: { pool } }))
   })
 
@@ -73,6 +81,41 @@ describe('pacbioPoolEdit#new', () => {
       await input.setValue('100')
       expect(store.pool.insert_size).toEqual('100')
       expect(store.validatePoolAttribute).toBeCalled()
+    })
+  })
+
+  describe('auto calculate button', () => {
+    it('calls the handleCalculatePoolMetadata method when clicked', async () => {
+      const spy = vi.spyOn(store, 'handleCalculatePoolMetadata')
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+      expect(spy).toHaveBeenCalled()
+    })
+
+    it('shows warning alert when auto calculation fails', async () => {
+      vi.spyOn(store, 'handleCalculatePoolMetadata').mockReturnValue(false)
+
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Auto calculation failed. Please check all relevant metadata is present',
+        'warning',
+        'pool-create-message',
+      )
+    })
+
+    it('shows success alert when auto calculation succeeds', async () => {
+      vi.spyOn(store, 'handleCalculatePoolMetadata').mockReturnValue(true)
+
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Auto calculation successful. Pool metadata has been updated.',
+        'success',
+        'pool-create-message',
+      )
     })
   })
 

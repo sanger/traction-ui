@@ -48,7 +48,7 @@
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
-                <div class="flex flex-row pb-6">
+                <div class="flex flex-row h-full">
                   <traction-label class="h-full">Volume</traction-label>
                   <traction-tooltip
                     v-if="pool.used_volume != null && persisted"
@@ -86,6 +86,16 @@
                 >
                   <traction-input v-model="insert_size" data-attribute="insert-size" />
                 </traction-field-error>
+              </fieldset>
+              <fieldset class="flex flex-col items-center">
+                <traction-label class="h-full">Auto calculate</traction-label>
+                <div
+                  data-attribute="auto-calculate"
+                  class="bg-sp-400 p-1 rounded cursor-pointer items-center justify-center hover:bg-sp-600 transition-all"
+                  @click="handleAutoCalculate()"
+                >
+                  <TractionCalculatorIcon class="h-8 w-8" />
+                </div>
               </fieldset>
             </div>
           </traction-sub-section>
@@ -166,6 +176,7 @@ const {
   updateMultiPoolPosition,
   validatePoolAttribute,
   updateUsedAliquotFromCsvRecord,
+  handleCalculatePoolMetadata,
 } = usePacbioPoolCreateStore()
 
 const { showAlert } = useAlert()
@@ -280,5 +291,23 @@ const onFieldUpdate = () => {
 
 const notifyAliquotSelection = (aliquot) => {
   emit('aliquot-selected', aliquot)
+}
+
+// Handler for auto calculate button. Shows an alert based on whether or not the calculation was successful.
+const handleAutoCalculate = () => {
+  const success = handleCalculatePoolMetadata()
+  if (!success) {
+    showAlert(
+      'Auto calculation failed. Please check all relevant metadata is present',
+      'warning',
+      'pool-auto-calculate-message',
+    )
+  } else {
+    showAlert(
+      'Auto calculation successful. Pool metadata has been updated.',
+      'success',
+      'pool-auto-calculate-message',
+    )
+  }
 }
 </script>

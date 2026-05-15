@@ -957,6 +957,15 @@ describe('pool', () => {
 
   // We don't need to test the permutations of missing data as that is covered by canCalculatePoolMetadata.
   describe('#calculatePoolMetadata', () => {
+    it('returns false if pool metadata cannot be calculated', () => {
+      const used_aliquots = {}
+      const pool = {
+        id: '1',
+        type: 'pools',
+      }
+      expect(calculatePoolMetadata({ pool, used_aliquots })).toBe(false)
+    })
+
     it('calculates the pool metadata correctly', () => {
       const used_aliquots = {
         1: createUsedAliquot({
@@ -989,8 +998,9 @@ describe('pool', () => {
         template_prep_kit_box_barcode: 'barcode1',
       }
 
-      calculatePoolMetadata({ pool, used_aliquots })
+      const success = calculatePoolMetadata({ pool, used_aliquots })
       expect(pool).toMatchObject(expected)
+      expect(success).toBe(true)
     })
   })
 })
