@@ -72,6 +72,10 @@ describe('Pacbio Pool Edit', () => {
         body: printerFactory.content,
       })
     })
+
+    cy.withFlags({
+      pacbio_pool_auto_calculate: { enabled: true },
+    })
   })
 
   it('updates pool information on clicking requests table rows', () => {
