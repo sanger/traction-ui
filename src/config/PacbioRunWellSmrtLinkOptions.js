@@ -986,7 +986,7 @@ const PacbioRunWellSmrtLinkOptions = {
       component: 'traction-select',
       value: 'application_type',
       label: 'Application',
-      required: false,
+      required: true,
       default: true,
       props: {
         options: [
