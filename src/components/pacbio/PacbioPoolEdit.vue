@@ -48,7 +48,7 @@
                 </traction-field-error>
               </fieldset>
               <fieldset class="flex flex-col">
-                <div class="flex flex-row pb-6">
+                <div class="flex flex-row h-full">
                   <traction-label class="h-full">Volume</traction-label>
                   <traction-tooltip
                     v-if="pool.used_volume != null && persisted"
@@ -87,6 +87,50 @@
                   <traction-input v-model="insert_size" data-attribute="insert-size" />
                 </traction-field-error>
               </fieldset>
+              <flagged-feature name="pacbio_pool_auto_calculate">
+                <fieldset class="flex flex-col items-center">
+                  <traction-tooltip
+                    tooltip-direction="right-0 bottom-0"
+                    tooltip-bg-colour="bg-sp-200"
+                  >
+                    <traction-label class="h-full underline">Auto calculate</traction-label>
+                    <template #tooltip>
+                      <div class="w-full p-2">
+                        <h1 class="px-2 font-semibold text-lg text-sp-600">Auto calculate</h1>
+                        <p>
+                          Determines pool metadata based on selected samples. All samples must
+                          contain Volume, Concentration and Insert Size.
+                        </p>
+                        <ul class="w-full list-disc list-inside p-2 space-y-2">
+                          <li>
+                            <strong>Template Prep Kit Box Barcode:</strong> (optional) first
+                            selected sample's template prep kit box barcode.
+                          </li>
+                          <li>
+                            <strong>Volume:</strong> sum of selected sample volumes (rounded to 1
+                            decimal place).
+                          </li>
+                          <li>
+                            <strong>Concentration:</strong> weighted average = sum(concentration x
+                            volume) / pool volume (rounded to 2 decimal places).
+                          </li>
+                          <li>
+                            <strong>Insert Size:</strong> mean average of selected sample insert
+                            sizes (rounded to nearest whole number).
+                          </li>
+                        </ul>
+                      </div>
+                    </template>
+                  </traction-tooltip>
+                  <div
+                    data-attribute="auto-calculate"
+                    class="bg-sp-400 p-1 rounded cursor-pointer items-center justify-center hover:bg-sp-600 transition-all"
+                    @click="handleAutoCalculate()"
+                  >
+                    <TractionCalculatorIcon class="h-8 w-8" />
+                  </div>
+                </fieldset>
+              </flagged-feature>
             </div>
           </traction-sub-section>
         </div>
@@ -166,6 +210,7 @@ const {
   updateMultiPoolPosition,
   validatePoolAttribute,
   updateUsedAliquotFromCsvRecord,
+  handleCalculatePoolMetadata,
 } = usePacbioPoolCreateStore()
 
 const { showAlert } = useAlert()
@@ -280,5 +325,23 @@ const onFieldUpdate = () => {
 
 const notifyAliquotSelection = (aliquot) => {
   emit('aliquot-selected', aliquot)
+}
+
+// Handler for auto calculate button. Shows an alert based on whether or not the calculation was successful.
+const handleAutoCalculate = () => {
+  const success = handleCalculatePoolMetadata()
+  if (!success) {
+    showAlert(
+      'Auto calculation failed. Please check all relevant metadata is present',
+      'warning',
+      'pool-auto-calculate-message',
+    )
+  } else {
+    showAlert(
+      'Auto calculation successful. Pool metadata has been updated.',
+      'success',
+      'pool-auto-calculate-message',
+    )
+  }
 }
 </script>

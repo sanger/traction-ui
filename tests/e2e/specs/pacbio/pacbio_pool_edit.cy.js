@@ -72,6 +72,10 @@ describe('Pacbio Pool Edit', () => {
         body: printerFactory.content,
       })
     })
+
+    cy.withFlags({
+      pacbio_pool_auto_calculate: { enabled: true },
+    })
   })
 
   it('updates pool information on clicking requests table rows', () => {
@@ -110,11 +114,31 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {
       cy.get('[data-attribute=barcode]').should('have.length.greaterThan', 0)
-      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+
+      // Set clearly incorrect values first, then verify auto-calculate restores expected metadata.
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').clear()
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('WRONG-BOX')
+      cy.get('[data-attribute=volume]').clear()
       cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').clear()
       cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=insert-size]').clear()
       cy.get('[data-attribute=insert-size]').type('100')
+
+      cy.get('[data-attribute=auto-calculate]').click()
+
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').should(
+        'have.value',
+        '036037102141700123124',
+      )
+      cy.get('[data-attribute=volume]').should('have.value', '15.0')
+      cy.get('[data-attribute=concentration]').should('have.value', '12.55')
+      cy.get('[data-attribute=insert-size]').should('have.value', '9647')
     })
+    cy.contains(
+      '[data-type=pool-auto-calculate-message]',
+      'Auto calculation successful. Pool metadata has been updated.',
+    )
     cy.intercept('PATCH', '/v1/pacbio/pools/6011', {
       statusCode: 200,
       body: {},
