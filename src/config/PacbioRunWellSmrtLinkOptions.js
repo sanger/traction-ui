@@ -996,6 +996,7 @@ const PacbioRunWellSmrtLinkOptions = {
           'Kinnex single-cell RNA',
           'Kinnex full-length RNA',
           '<3kb amplicons',
+          '>=3kb amplicons',
           'Other',
         ],
         dataAttribute: 'application-type',
