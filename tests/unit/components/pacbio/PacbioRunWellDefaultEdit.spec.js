@@ -227,14 +227,14 @@ describe('PacbioRunWellDefaultEdit', () => {
       it('sets default application_type to "Human WGS" when first option selected', async () => {
         const options = wrapper.find('[data-attribute=default-application-type]').findAll('option')
         // select the first option (Human WGS)
-        await options[0].setSelected()
+        await options.find((option) => option.element.value == 'Human WGS').setSelected()
         expect(store.defaultWellAttributes.application_type).toEqual('Human WGS')
       })
 
       it('sets default application_type to "Other" when last option selected', async () => {
         const options = wrapper.find('[data-attribute=default-application-type]').findAll('option')
         // select the last option (Other)
-        await options[options.length - 1].setSelected()
+        await options.find((option) => option.element.value == 'Other').setSelected()
         expect(store.defaultWellAttributes.application_type).toEqual('Other')
       })
 
