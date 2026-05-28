@@ -23,11 +23,13 @@ import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
 import TractionModal from '@/components/shared/TractionModal'
+import TractionAccountIcon from '@/components/shared/icons/TractionAccountIcon.vue'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 import TractionTooltip from '@/components/shared/TractionTooltip'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionCalculatorIcon from './icons/TractionCalculatorIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 const components = {
@@ -52,6 +54,7 @@ const components = {
   TractionPagination,
   TractionPaginationIcon,
   TractionForm,
+  TractionAccountIcon,
   TractionArrowIcon,
   TractionSortIcon,
   TractionTable,
@@ -61,6 +64,7 @@ const components = {
   TractionCloseIcon,
   TractionTooltip,
   TractionInfoIcon,
+  TractionCalculatorIcon,
   TractionBadge,
 }
 

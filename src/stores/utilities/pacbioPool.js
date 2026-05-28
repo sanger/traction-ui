@@ -239,12 +239,14 @@ const hasErrors = ({ pool, used_aliquots }) => {
  * data is available.
  * @param {Object} pool - pool object
  * @param {Object} used_aliquots - used_aliquots object
+ *
+ * @returns {Boolean} - True or false depending on if the calculation was successful.
  */
 const calculatePoolMetadata = ({ pool, used_aliquots }) => {
   // Check if all used aliquots have volume, insert_size, and concentration before calculating pool metadata
   // Any missing value will result in the pool metadata being incomplete, so we only calculate if all values are present
   if (!canCalculatePoolMetadata(used_aliquots)) {
-    return
+    return false
   }
 
   const usedAliquotsArray = Object.values(used_aliquots)
@@ -277,6 +279,8 @@ const calculatePoolMetadata = ({ pool, used_aliquots }) => {
 
   // This is incalculable but it is a safe assumption to take the first used_aliquot value
   pool.template_prep_kit_box_barcode = usedAliquotsArray[0].template_prep_kit_box_barcode
+
+  return true
 }
 
 /**

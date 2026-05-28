@@ -14,7 +14,10 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands.js'
+
+// Import mockAuth to mock a logged in user in Okta.
+import './mockAuth.js'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
