@@ -4,6 +4,15 @@ import * as pacbio from '@/lib/csv/pacbio.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
+import FlipperFactory from '@tests/factories/FlipperFactory.js'
+const flipperFactory = FlipperFactory({ pacbio_pool_auto_calculate: { enabled: true } })
+
+const mockShowAlert = vi.fn()
+vi.mock('@/composables/useAlert.js', () => ({
+  default: () => ({
+    showAlert: mockShowAlert,
+  }),
+}))
 
 const pacbioAutoTagFactory = PacbioAutoTagFactory()
 
@@ -18,12 +27,20 @@ const tags = {
   2: { id: '2', group_id: 'tag2' },
   3: { id: '3', group_id: 'tag3' },
 }
-
+const plugins = [
+  ({ store }) => {
+    if (store.$id === 'root') {
+      // Mock feature_flags endpoint to enable pacbio_pool_auto_calculate
+      store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
+    }
+  },
+]
 const mountPacbioPoolEdit = ({ state = {}, props } = {}) =>
   mountWithStore(PacbioPoolEdit, {
     initialState: {
       pacbioPoolCreate: state,
     },
+    plugins,
     props,
     stubs: {
       PacbioPoolLibraryList: true,
@@ -42,6 +59,7 @@ describe('pacbioPoolEdit#new', () => {
 
   let wrapper, store
   beforeEach(() => {
+    mockShowAlert.mockClear()
     ;({ wrapper, store } = mountPacbioPoolEdit({ state: { pool } }))
   })
 
@@ -73,6 +91,41 @@ describe('pacbioPoolEdit#new', () => {
       await input.setValue('100')
       expect(store.pool.insert_size).toEqual('100')
       expect(store.validatePoolAttribute).toBeCalled()
+    })
+  })
+
+  describe('auto calculate button', () => {
+    it('calls the handleCalculatePoolMetadata method when clicked', async () => {
+      const spy = vi.spyOn(store, 'handleCalculatePoolMetadata')
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+      expect(spy).toHaveBeenCalled()
+    })
+
+    it('shows warning alert when auto calculation fails', async () => {
+      vi.spyOn(store, 'handleCalculatePoolMetadata').mockReturnValue(false)
+
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Auto calculation failed. Please check all relevant metadata is present',
+        'warning',
+        'pool-auto-calculate-message',
+      )
+    })
+
+    it('shows success alert when auto calculation succeeds', async () => {
+      vi.spyOn(store, 'handleCalculatePoolMetadata').mockReturnValue(true)
+
+      const button = wrapper.find('[data-attribute=auto-calculate]')
+      await button.trigger('click')
+
+      expect(mockShowAlert).toHaveBeenCalledWith(
+        'Auto calculation successful. Pool metadata has been updated.',
+        'success',
+        'pool-auto-calculate-message',
+      )
     })
   })
 

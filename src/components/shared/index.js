@@ -29,6 +29,7 @@ import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 import TractionTooltip from '@/components/shared/TractionTooltip'
 import TractionInfoIcon from '@/components/shared/icons/TractionInfoIcon.vue'
+import TractionCalculatorIcon from './icons/TractionCalculatorIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 const components = {
@@ -63,6 +64,7 @@ const components = {
   TractionCloseIcon,
   TractionTooltip,
   TractionInfoIcon,
+  TractionCalculatorIcon,
   TractionBadge,
 }
 

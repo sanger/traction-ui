@@ -1359,5 +1359,14 @@ export const usePacbioPoolCreateStore = defineStore('pacbioPoolCreate', {
             : null,
       })
     },
+
+    /**
+     * This is a helper method to avoid calls directly to utility functions in the components.
+     *
+     * @returns {Boolean} - Whether or not calculatePoolMetadata succeeded
+     */
+    handleCalculatePoolMetadata() {
+      return calculatePoolMetadata({ pool: this.pool, used_aliquots: this.used_aliquots })
+    },
   },
 })
