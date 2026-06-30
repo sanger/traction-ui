@@ -24,6 +24,12 @@ const smrtLinkVersions = {
     default: false,
     active: true,
   },
+  3: {
+    id: 3,
+    name: 'v25_1_revio',
+    default: false,
+    active: true,
+  },
 }
 
 const mountPacbioRunWellEdit = ({ state = {} } = {}) =>
@@ -200,6 +206,42 @@ describe('PacbioRunWellDefaultEdit', () => {
         const input = wrapper.find('[data-attribute=default-polymerase-kit]')
         await input.setValue('1')
         expect(store.defaultWellAttributes.polymerase_kit).toEqual('1')
+      })
+    })
+  })
+
+  describe('if the SMRT Link version is v25_1_revio', () => {
+    beforeEach(() => {
+      ;({ wrapper, store } = mountPacbioRunWellEdit({
+        state: {
+          smrtLinkVersion: smrtLinkVersions[3],
+        },
+      }))
+    })
+
+    it('will have a selected smrt link version of v25_1_revio', () => {
+      expect(store.smrtLinkVersion.id).toEqual(smrtLinkVersions[3].id)
+    })
+
+    describe('input', () => {
+      it('sets default application_type to "Human WGS" when first option selected', async () => {
+        const options = wrapper.find('[data-attribute=default-application-type]').findAll('option')
+        // select the first option (Human WGS)
+        await options.find((option) => option.element.value == 'Human WGS').setSelected()
+        expect(store.defaultWellAttributes.application_type).toEqual('Human WGS')
+      })
+
+      it('sets default application_type to "Other" when last option selected', async () => {
+        const options = wrapper.find('[data-attribute=default-application-type]').findAll('option')
+        // select the last option (Other)
+        await options.find((option) => option.element.value == 'Other').setSelected()
+        expect(store.defaultWellAttributes.application_type).toEqual('Other')
+      })
+
+      it('renders application type label as Application', () => {
+        const label = wrapper.find('label[for="application_type"]')
+        expect(label.exists()).toBeTruthy()
+        expect(label.text()).toEqual('Application')
       })
     })
   })

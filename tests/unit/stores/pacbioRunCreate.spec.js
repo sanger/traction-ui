@@ -11,7 +11,10 @@ import {
 } from '@/stores/utilities/run'
 import { expect, it, vi } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { defaultSmrtLinkAttributes } from '@/config/PacbioRunWellSmrtLinkOptions.js'
+import {
+  defaultSmrtLinkAttributes,
+  PacbioRunWellSmrtLinkOptions,
+} from '@/config/PacbioRunWellSmrtLinkOptions.js'
 import PacbioSmrtLinkVersionFactory from '@tests/factories/PacbioSmrtLinkVersionFactory.js'
 import PacbioRunFactory from '@tests/factories/PacbioRunFactory.js'
 import PacbioTubeFactory from '@tests/factories/PacbioTubeFactory.js'
@@ -360,6 +363,24 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.requests).toEqual(pacbioTubeFactory.storeData.requests)
         expect(store.tags).toEqual(pacbioTubeFactory.storeData.tags)
         expect(store.aliquots).toEqual(pacbioTubeFactory.storeData.aliquots)
+      })
+    })
+
+    describe('well defaults for v25_1_revio', () => {
+      it('PacbioRunWellSmrtLinkOptions includes application_type for v25_1_revio', () => {
+        const fields = PacbioRunWellSmrtLinkOptions['v25_1_revio'] || []
+        const appField = fields.find((f) => f.value === 'application_type')
+        expect(appField).toBeDefined()
+        expect(appField.default).toBeTruthy()
+        expect(Array.isArray(appField.props.options)).toBeTruthy()
+      })
+
+      it('setDefaultWellAttributes sets application_type default to Other', () => {
+        const store = usePacbioRunCreateStore()
+        // ensure run exists (used by defaultSmrtLinkAttributes for some defaults)
+        store.run = { id: 'new' }
+        store.setDefaultWellAttributes()
+        expect(store.defaultWellAttributes.application_type).toEqual('Other')
       })
     })
 

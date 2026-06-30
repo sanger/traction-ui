@@ -7,12 +7,14 @@ import { fileURLToPath, URL } from 'url'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     vue(),
-    vueDevTools(),
+    // Cypress e2e local runs start Vite with --mode testing.
+    // Keep Vue DevTools off in that mode to avoid test interference.
+    mode !== 'testing' && vueDevTools(),
     visualizer(), // The docs recommend this one goes last
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -35,4 +37,4 @@ export default defineConfig({
     },
     outDir: 'dist/public',
   },
-})
+}))
