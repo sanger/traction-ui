@@ -45,6 +45,12 @@ const smrtLinkVersions = {
     default: false,
     active: true,
   },
+  6: {
+    id: 6,
+    name: 'v25_1_revio',
+    default: false,
+    active: true,
+  },
 }
 
 const plates = {
@@ -467,6 +473,26 @@ describe('run.js', () => {
         const payload = createWellsPayload(inputWells)
 
         expect(payload).toEqual(expected)
+      })
+
+      it('will include default application_type for v25_1_revio smrtlink', () => {
+        const A1 = newWell({ position: 'A1' })
+        const inputWells = { A1: A1 }
+
+        const smrtLinkVersion = smrtLinkVersions['6']
+
+        const payload = createWellsPayload(inputWells, smrtLinkVersion)
+        expect(payload[0].application_type).toEqual('Other')
+      })
+
+      it('will include selected application_type for v25_1_revio smrtlink', () => {
+        const A1 = newWell({ position: 'A1', application_type: 'Human WGS' })
+        const inputWells = { A1: A1 }
+
+        const smrtLinkVersion = smrtLinkVersions['6']
+
+        const payload = createWellsPayload(inputWells, smrtLinkVersion)
+        expect(payload[0].application_type).toEqual('Human WGS')
       })
 
       it('will add the annotations_attributes', () => {
