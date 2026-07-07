@@ -237,6 +237,40 @@ describe('useMultiPoolCreateStore', () => {
         expect(errors).toEqual(['Error building pool number 1: Error building pool'])
         expect(store.multiPoolPositions).toEqual({})
       })
+
+      it('validates all pools and returns combined errors across multiple pools', async () => {
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords = vi.fn()
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords.mockResolvedValueOnce({
+          success: false,
+          errors: ['Pool 1 failed'],
+        })
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords.mockResolvedValueOnce({
+          success: true,
+          errors: [],
+        })
+        pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords.mockResolvedValueOnce({
+          success: false,
+          errors: ['Pool 3 issue A', 'Pool 3 issue B'],
+        })
+
+        fileTextContent = `${requiredHeaders.join(',')}\n`
+        fileTextContent += '1,Sample1,Set1,Tag1,Barcode1,10,20,500\n'
+        fileTextContent += '2,Sample2,Set1,Tag2,Barcode2,10,20,500\n'
+        // Add a valid pool to ensure valid pools are processed but not included in the error results
+        // and not stored in multiPoolPositions since the first two pools failed to build
+        fileTextContent += '3,Sample3,Set1,Tag3,Barcode3,10,20,500\n'
+
+        const { success, errors } = await store.parsePoolingCsvFile(file)
+
+        expect(success).toBeFalsy()
+        expect(errors).toEqual([
+          'Error building pool number 1: Pool 1 failed',
+          'Error building pool number 3: Pool 3 issue A',
+          'Error building pool number 3: Pool 3 issue B',
+        ])
+        expect(pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords).toHaveBeenCalledTimes(3)
+        expect(store.multiPoolPositions).toEqual({})
+      })
     })
 
     describe('isValidPersisted', () => {
