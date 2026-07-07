@@ -240,7 +240,9 @@ const uploadFile = async (evt) => {
     if (success) {
       showAlert('CSV file successfully processed', 'success')
     } else {
-      showAlert(errors.join(', '), 'danger')
+      errors.forEach((error) => {
+        showAlert(error, 'danger')
+      })
     }
   } else {
     showAlert('No file selected. Please select a CSV file to upload.', 'warning')
