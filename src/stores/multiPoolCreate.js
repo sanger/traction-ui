@@ -139,6 +139,8 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         pacbioPoolCreateStore.$reset()
         // Array to collect errors from building each pool. If any pool fails to build, we will return these errors and not store any valid pools.
         const poolBuildErrors = []
+        // Object to hold the new multi pool positions. We will only set this to the store state if all pools are built successfully.
+        const newMultiPoolPositions = {}
 
         // Transform the pool groups into the multi pool positions format
         for (const [poolNumber, poolRecords] of Object.entries(poolGroups)) {
@@ -157,7 +159,7 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
           }
 
           // If the pool was successfully built, add it to the multi pool positions
-          this.multiPoolPositions[poolNumber] = JSON.parse(
+          newMultiPoolPositions[poolNumber] = JSON.parse(
             JSON.stringify(pacbioPoolCreateStore.$state),
           )
 
@@ -166,13 +168,13 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         }
 
         if (poolBuildErrors.length) {
-          // Ensure we do not keep partial data from valid pools when any pool in the file fails validation
-          this.multiPoolPositions = {}
           return {
             success: false,
             errors: poolBuildErrors,
           }
         }
+        // If all pools were built successfully, set the multi pool positions
+        this.multiPoolPositions = newMultiPoolPositions
 
         return { success, errors }
       } catch (error) {
