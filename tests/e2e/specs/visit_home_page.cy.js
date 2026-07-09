@@ -1,12 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Visit Home Page', () => {
-  beforeEach(() => {
-    cy.withFlags({
-      flexible_pooling: { enabled: true },
-    })
-  })
-
   it('Visits the app root url', () => {
     cy.visit('/')
     // Nav bar links

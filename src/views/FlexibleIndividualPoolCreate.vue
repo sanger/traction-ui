@@ -1,23 +1,21 @@
 <template>
-  <flagged-feature name="flexible_pooling">
-    <div
-      class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
+  <div
+    class="flex flex-row items-center gap-2 p-2 mt-4 mb-4 whitespace-nowrap border border-gray-200 bg-gray-100 gap-y-4 shadow-sm"
+  >
+    <router-link
+      data-testid="backToMultiPool"
+      :to="{ name: 'FlexiblePool', params: { id: getRouteId() } }"
+      class="text-gray-700"
     >
-      <router-link
-        data-testid="backToMultiPool"
-        :to="{ name: 'FlexiblePool', params: { id: getRouteId() } }"
-        class="text-gray-700"
+      <TractionArrowIcon class="inline-block h-4 w-4" />
+      <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
+        >Back to multi pool</span
       >
-        <TractionArrowIcon class="inline-block h-4 w-4" />
-        <span class="align-middle whitespace-nowrap underline underline-offset-2 font-bold"
-          >Back to multi pool</span
-        >
-      </router-link>
-    </div>
-    <div class="border border-gray-200 p-4 shadow-md">
-      <PacbioPoolCreate :flexible-pool-position="getFlexiblePoolPosition()" />
-    </div>
-  </flagged-feature>
+    </router-link>
+  </div>
+  <div class="border border-gray-200 p-4 shadow-md">
+    <PacbioPoolCreate :flexible-pool-position="getFlexiblePoolPosition()" />
+  </div>
 </template>
 
 <script setup>

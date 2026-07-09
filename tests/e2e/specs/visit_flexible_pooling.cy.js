@@ -3,10 +3,6 @@ import MultiPoolFactory from '../../factories/MultiPoolFactory.js'
 
 describe('Visit Flexible Pooling Page', () => {
   beforeEach(() => {
-    cy.withFlags({
-      flexible_pooling: { enabled: true },
-    })
-
     cy.wrap(MultiPoolFactory.all()).as('multiPoolFactory')
 
     cy.get('@multiPoolFactory').then((multiPoolFactory) => {

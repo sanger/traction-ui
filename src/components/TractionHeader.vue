@@ -11,9 +11,7 @@
           <TractionLink name="Reception" link="/reception" view-type="2" />
           <TractionLink name="LabWhere Reception" link="/labwhere-reception" view-type="2" />
           <TractionLink name="Sample Report" link="/sample-report" view-type="2" />
-          <FlaggedFeature name="flexible_pooling">
-            <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
-          </FlaggedFeature>
+          <TractionLink name="Flexible Pooling" link="/flexible-pooling" view-type="2" />
         </div>
       </div>
       <FlaggedFeature name="Y26-111-user-auth">
