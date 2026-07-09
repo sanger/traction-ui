@@ -4,8 +4,6 @@ import * as pacbio from '@/lib/csv/pacbio.js'
 import { usePacbioRootStore } from '@/stores/pacbioRoot.js'
 import PacbioAutoTagFactory from '@tests/factories/PacbioAutoTagFactory'
 import { usePacbioPoolCreateStore } from '@/stores/pacbioPoolCreate.js'
-import FlipperFactory from '@tests/factories/FlipperFactory.js'
-const flipperFactory = FlipperFactory({ pacbio_pool_auto_calculate: { enabled: true } })
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert.js', () => ({
@@ -27,20 +25,12 @@ const tags = {
   2: { id: '2', group_id: 'tag2' },
   3: { id: '3', group_id: 'tag3' },
 }
-const plugins = [
-  ({ store }) => {
-    if (store.$id === 'root') {
-      // Mock feature_flags endpoint to enable pacbio_pool_auto_calculate
-      store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
-    }
-  },
-]
+
 const mountPacbioPoolEdit = ({ state = {}, props } = {}) =>
   mountWithStore(PacbioPoolEdit, {
     initialState: {
       pacbioPoolCreate: state,
     },
-    plugins,
     props,
     stubs: {
       PacbioPoolLibraryList: true,
