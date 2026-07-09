@@ -137,29 +137,44 @@ export const useMultiPoolCreateStore = defineStore('multiPoolCreate', {
         const pacbioPoolCreateStore = usePacbioPoolCreateStore()
         // Ensure we reset the pacbio pool create store state before building the pools in case there is any residual data from previous builds that could interfere with the new build process
         pacbioPoolCreateStore.$reset()
+        // Array to collect errors from building each pool. If any pool fails to build, we will return these errors and not store any valid pools.
+        const poolBuildErrors = []
+        // Object to hold the new multi pool positions. We will only set this to the store state if all pools are built successfully.
+        const newMultiPoolPositions = {}
+
         // Transform the pool groups into the multi pool positions format
-        for (const [poolNumber, records] of Object.entries(poolGroups)) {
-          const { success: buildPoolSuccess, errors: buildPoolErrors } =
-            await pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords(records, poolNumber)
+        for (const [poolNumber, poolRecords] of Object.entries(poolGroups)) {
+          const { success: buildPoolSuccess, errors: buildPoolErrors = [] } =
+            await pacbioPoolCreateStore.buildPoolFromMultiPoolCsvRecords(poolRecords, poolNumber)
+
           if (!buildPoolSuccess) {
-            // If there was an error building the pool, reset the multi pool positions to an empty object to avoid any partial data in the store and return the errors
-            this.multiPoolPositions = {}
+            const formattedErrors = buildPoolErrors.map(
+              (error) => `Error building pool number ${poolNumber}: ${error}`,
+            )
+            poolBuildErrors.push(...formattedErrors)
+
             // Reset the pacbio pool create store state to ensure it is cleared of any data from the failed build attempt
             pacbioPoolCreateStore.$reset()
-            // Return the error message
-            return {
-              success: false,
-              errors: [`Error building pool number ${poolNumber}: ${buildPoolErrors}`],
-            }
+            continue
           }
 
           // If the pool was successfully built, add it to the multi pool positions
-          this.multiPoolPositions[poolNumber] = JSON.parse(
+          newMultiPoolPositions[poolNumber] = JSON.parse(
             JSON.stringify(pacbioPoolCreateStore.$state),
           )
+
           // Ensure we reset the pacbio pool create store state before building the next pool to avoid any data leakage between pools
           pacbioPoolCreateStore.$reset()
         }
+
+        if (poolBuildErrors.length) {
+          return {
+            success: false,
+            errors: poolBuildErrors,
+          }
+        }
+        // If all pools were built successfully, set the multi pool positions
+        this.multiPoolPositions = newMultiPoolPositions
 
         return { success, errors }
       } catch (error) {
