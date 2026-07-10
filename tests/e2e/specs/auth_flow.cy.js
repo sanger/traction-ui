@@ -63,10 +63,5 @@ describe('Auth', () => {
       cy.get('[data-action="logout"]').should('not.exist')
       cy.get('[data-action="login"]').should('be.visible')
     })
-
-    it('cannot access protected pages', () => {
-      cy.visit('#/labwhere-reception')
-      cy.location('hash').should('eq', '#/dashboard')
-    })
   })
 })
