@@ -2,10 +2,6 @@
 
 // This allows us to simulate a logged in user in Okta by setting the appropriate tokens in localStorage and intercepting requests to the Okta userinfo endpoint.
 beforeEach(() => {
-  cy.withFlags({
-    'Y26-111-user-auth': { enabled: true },
-  })
-
   const oktaDomain = Cypress.env('VITE_OKTA_DOMAIN')
   const clientId = Cypress.env('VITE_OKTA_CLIENT_ID')
   // Okta token timestamps are Unix time in seconds, not milliseconds.

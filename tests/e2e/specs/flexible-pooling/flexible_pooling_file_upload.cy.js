@@ -2,9 +2,6 @@ import PacbioTagSetFactory from '../../../factories/PacbioTagSetFactory.js'
 
 describe('Flexible pooling file upload', () => {
   beforeEach(() => {
-    cy.withFlags({
-      flexible_pooling: { enabled: true },
-    })
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
   })
 

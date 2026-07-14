@@ -23,6 +23,10 @@ vi.mock('@okta/okta-vue', async (importOriginal) => {
     ...actual,
     useAuth: () => ({
       getAccessToken: () => 'mock-access-token',
+      isAuthenticated: async () => false,
+      getUser: async () => ({ name: 'Test User' }),
+      signInWithRedirect: vi.fn(),
+      signOut: vi.fn(),
     }),
     navigationGuard: oktaNavigationGuardMock,
   }

@@ -1,76 +1,68 @@
 <template>
-  <flagged-feature name="flexible_pooling">
-    <template #default>
-      <DataFetcher :fetcher="provider">
-        <FilterCard :fetcher="provider" :filter-options="filterOptions" />
-        <div class="flex flex-col">
-          <div>
-            <router-link
-              data-action="new-flexiblepool"
-              class="float-left"
-              :to="{ name: 'FlexiblePool', params: { id: 'new' } }"
-            >
-              <traction-button id="newFlexiblePool" size="sm" theme="create"
-                >Create new Flexible Pool</traction-button
-              >
-            </router-link>
-            <traction-pagination class="float-right" aria-controls="multipools-table" />
-          </div>
-          <traction-table
-            id="multipools-table"
-            v-model:sort-by="sortBy"
-            primary_key="id"
-            :items="multiPoolsStore.multiPoolItems"
-            :fields="fields"
-            selectable
-            select-mode="single"
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
+    <div class="flex flex-col">
+      <div>
+        <router-link
+          data-action="new-flexiblepool"
+          class="float-left"
+          :to="{ name: 'FlexiblePool', params: { id: 'new' } }"
+        >
+          <traction-button id="newFlexiblePool" size="sm" theme="create"
+            >Create new Flexible Pool</traction-button
           >
-            <template #cell(actions)="row">
-              <router-link
-                data-action="edit-flexiblepool"
-                :to="{ name: 'FlexiblePool', params: { id: row.item.id } }"
-              >
-                <traction-button :id="'editFlexiblePool-' + row.item.id" size="sm" theme="edit"
-                  >View</traction-button
-                >
-              </router-link>
-            </template>
+        </router-link>
+        <traction-pagination class="float-right" aria-controls="multipools-table" />
+      </div>
+      <traction-table
+        id="multipools-table"
+        v-model:sort-by="sortBy"
+        primary_key="id"
+        :items="multiPoolsStore.multiPoolItems"
+        :fields="fields"
+        selectable
+        select-mode="single"
+      >
+        <template #cell(actions)="row">
+          <router-link
+            data-action="edit-flexiblepool"
+            :to="{ name: 'FlexiblePool', params: { id: row.item.id } }"
+          >
+            <traction-button :id="'editFlexiblePool-' + row.item.id" size="sm" theme="edit"
+              >View</traction-button
+            >
+          </router-link>
+        </template>
 
-            <template #cell(show_details)="row">
-              <traction-button
-                :id="'details-btn-' + row.item.id"
-                size="sm"
-                class="mr-2"
-                theme="default"
-                data-action="show-subpools"
-                @click="handleToggleDetails(row)"
-              >
-                {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-              </traction-button>
-            </template>
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            data-action="show-subpools"
+            @click="handleToggleDetails(row)"
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+          </traction-button>
+        </template>
 
-            <template #row-details="row">
-              <div v-if="poolsWithDetails.includes(row.item.id)">
-                <traction-table
-                  :items="row.item.subPools"
-                  :fields="field_in_details"
-                  :data-list="'subpools-' + row.item.id"
-                >
-                </traction-table>
-              </div>
-            </template>
-          </traction-table>
-        </div>
-      </DataFetcher>
-    </template>
-    <template #disabled>
-      <div>This content is not available.</div>
-    </template>
-  </flagged-feature>
+        <template #row-details="row">
+          <div v-if="poolsWithDetails.includes(row.item.id)">
+            <traction-table
+              :items="row.item.subPools"
+              :fields="field_in_details"
+              :data-list="'subpools-' + row.item.id"
+            >
+            </traction-table>
+          </div>
+        </template>
+      </traction-table>
+    </div>
+  </DataFetcher>
 </template>
 
 <script setup>
-import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import { ref, reactive } from 'vue'
 import { useMultiPoolStore } from '@/stores/multiPools.js'
 import DataFetcher from '@/components/DataFetcher.vue'
