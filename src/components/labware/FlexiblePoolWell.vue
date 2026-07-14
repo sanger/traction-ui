@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link :to="poolLink" class="block">
+    <router-link :to="poolLink" class="block text-center">
       <div
         :class="wellClassNames"
         :data-attribute="`flexible-pool-well-${position}`"
