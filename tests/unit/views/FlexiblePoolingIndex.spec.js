@@ -4,10 +4,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
 import { useMultiPoolStore } from '@/stores/multiPools.js'
 import useRootStore from '@/stores'
-import FlipperFactory from '@tests/factories/FlipperFactory.js'
 
 const multiPoolFactory = MultiPoolFactory.all()
-const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
 
 describe('FlexiblePoolingIndex', () => {
   let wrapper
@@ -20,7 +18,6 @@ describe('FlexiblePoolingIndex', () => {
             .fn()
             .mockResolvedValue(multiPoolFactory.responses.fetch)
           // Mock feature_flags endpoint to enable flexible_pooling
-          store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
         }
       },
     ]

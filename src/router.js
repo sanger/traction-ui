@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LoginCallback } from '@okta/okta-vue'
 import { navigationGuard } from '@okta/okta-vue'
-import { checkFeatureFlag } from '@/api/featureFlag.js'
 import TractionDashboard from '@/views/TractionDashboard.vue'
 import GeneralReception from '@/views/GeneralReception.vue'
 import LabelPrinting from '@/views/LabelPrinting.vue'
@@ -240,16 +239,8 @@ const router = createRouter({
   ],
 })
 
-const flaggedNavigationGuard = async (guard) => {
-  const flagged = await checkFeatureFlag('Y26-111-user-auth')
-  if (flagged) {
-    return navigationGuard(guard)
-  }
-  return true
-}
-
 // Due to navigation guards mixin issue in vue-router-next, navigation guard logic need to be added manually
 // See https://github.com/vuejs/router/issues/454
-router.beforeEach(flaggedNavigationGuard)
+router.beforeEach(navigationGuard)
 
 export default router

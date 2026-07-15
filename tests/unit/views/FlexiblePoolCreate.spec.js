@@ -3,11 +3,9 @@ import { mountWithStore, flushPromises, router, nextTick } from '@support/testHe
 import { useMultiPoolCreateStore } from '@/stores/multiPoolCreate.js'
 import useRootStore from '@/stores'
 import MultiPoolFactory from '@tests/factories/MultiPoolFactory.js'
-import FlipperFactory from '@tests/factories/FlipperFactory.js'
 import { LabwareTypes } from '@/lib/LabwareTypes.js'
 
 const singleMultiPoolFactory = MultiPoolFactory.single()
-const flipperFactory = FlipperFactory({ flexible_pooling: { enabled: true } })
 
 const mockShowAlert = vi.fn()
 vi.mock('@/composables/useAlert', () => ({
@@ -27,8 +25,6 @@ describe('FlexiblePoolCreate', () => {
           store.api.traction.multi_pools.find = vi
             .fn()
             .mockResolvedValue(singleMultiPoolFactory.responses.fetch)
-          // Mock feature_flags endpoint to enable flexible_pooling
-          store.api.traction.feature_flags.get = vi.fn(() => flipperFactory.responses.fetch)
         }
       },
     ]

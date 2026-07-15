@@ -4,6 +4,8 @@
 import * as Reception from '@/services/traction/Reception.js'
 import { expect, it } from 'vitest'
 
+vi.mock('@/services/labwhere/client.js')
+
 export const sharedTestsForImportAndScanIn = (
   wrapper,
   scanBarcodesInLabwhereLocation,
@@ -11,7 +13,6 @@ export const sharedTestsForImportAndScanIn = (
   sourceLibrary,
 ) => {
   describe('Unsuccessful Import ', () => {
-    vi.mock('@/services/labwhere/client.js')
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
     describe('Fails to find labware', () => {

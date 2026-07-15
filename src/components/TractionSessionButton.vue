@@ -51,10 +51,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, inject } from 'vue'
 import { useAuth } from '@okta/okta-vue'
 
 const auth = useAuth()
+// okta-vue provides authState under the 'okta.authState' key for Composition API.
+const authState = inject('okta.authState', ref(null))
 
 const login = async () => {
   await auth.signInWithRedirect()

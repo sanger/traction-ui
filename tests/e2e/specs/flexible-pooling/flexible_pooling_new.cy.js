@@ -5,9 +5,6 @@ import PacbioTubeFactory from '../../../factories/PacbioTubeFactory.js'
 describe('Flexible pooling new', () => {
   beforeEach(() => {
     cy.wrap(PacbioTagSetFactory()).as('pacbioTagSetFactory')
-    cy.withFlags({
-      flexible_pooling: { enabled: true },
-    })
     cy.get('@pacbioTagSetFactory').then((pacbioTagSetFactory) => {
       cy.intercept('GET', '/v1/pacbio/tag_sets?include=tags', {
         statusCode: 200,
