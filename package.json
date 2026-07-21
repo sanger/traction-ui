@@ -30,7 +30,7 @@
     "@okta/okta-vue": "^5.8.0",
     "@sanger/ui-styling": "^4.3.0",
     "@tailwindcss/postcss": "^4.3.2",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "^6.0.8",
     "csv-parse": "^7.0.1",
     "global": "^4.4.0",
     "lodash-es": "^4.18.1",
