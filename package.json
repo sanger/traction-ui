@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@pinia/testing": "^1.0.3",
+    "@pinia/testing": "^2.0.1",
     "@vue/test-utils": "^2.4.11",
     "clean-jsdoc-theme": "^5.0.3",
     "cypress": "^15.18.0",
