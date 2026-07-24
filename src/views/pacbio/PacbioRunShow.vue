@@ -18,9 +18,15 @@
           :id="store.runType.id"
           :theme="store.runType.theme"
           :data-action="store.runType.id"
+          :disabled="isSaving"
           @click="save"
-          >{{ store.runType.label }}</traction-button
         >
+          <span v-if="isSaving" class="inline-flex items-center gap-2">
+            <traction-spinner class="h-4 w-4"></traction-spinner>
+            <span>Saving...</span>
+          </span>
+          <span v-else>{{ store.runType.label }}</span>
+        </traction-button>
       </div>
     </div>
 
@@ -54,7 +60,7 @@ import { RunTypeEnum } from '@/stores/utilities/run.js'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate.js'
 import useAlert from '@/composables/useAlert.js'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 /** Create a store instance of the pacbioRunCreateStore*/
 const store = usePacbioRunCreateStore()
@@ -66,6 +72,9 @@ const { showAlert } = useAlert()
 /*`router` is an instance of the Vue Router.
 It's used to navigate between different routes in the application.*/
 const router = useRouter()
+
+/** Track whether the run is currently being saved */
+const isSaving = ref(false)
 
 /*
  * Define props for the component
@@ -108,15 +117,19 @@ const redirectToRuns = () => {
  * Saves the run and shows a success or error alert message based on the result.
  * If the run is saved successfully, it redirects to the PacbioRunIndex page.
  */
-const save = () => {
-  store.saveRun().then(({ success, errors }) => {
+const save = async () => {
+  isSaving.value = true
+  try {
+    const { success, errors } = await store.saveRun()
     success
       ? showAlert(`Run successfully ${store.runType.action}d`, 'success', 'run-create-message')
       : showAlert('Failed to create run in Traction: ' + errors, 'danger', 'run-create-message')
     if (success) {
       redirectToRuns()
     }
-  })
+  } finally {
+    isSaving.value = false
+  }
 }
 
 /**
