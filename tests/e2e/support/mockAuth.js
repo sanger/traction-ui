@@ -9,7 +9,6 @@ beforeEach(() => {
   const oneDayFromNow = nowInSeconds + 60 * 60 * 24
 
   localStorage.clear()
-  console.log('Setting mock Okta tokens in localStorage')
   localStorage.setItem(
     'okta-token-storage',
     JSON.stringify({
