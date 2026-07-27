@@ -82,7 +82,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('[data-attribute="aliquot-volume"').clear()
     cy.get('[data-attribute="aliquot-volume"').type('10')
     cy.get('#update').click()
-    cy.get('button').contains('Update').click()
+    cy.get('#update-run').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')
   })
 
@@ -115,7 +115,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('[data-attribute="aliquot-volume"').clear()
     cy.get('[data-attribute="aliquot-volume"').type('8')
     cy.get('#update').click()
-    cy.get('button').contains('Update').click()
+    cy.get('#update-run').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')
   })
 
@@ -148,7 +148,7 @@ describe('Pacbio Run Edit view', () => {
         cy.get('#editRun-1581').click()
       })
     cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
-    cy.get('button').contains('Update').click()
+    cy.get('#update-run').click()
     cy.contains(
       '[data-type=run-create-message]',
       "Failed to create run in Traction: sequencing_kit_box_barcode can't be blank",

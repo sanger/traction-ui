@@ -137,7 +137,7 @@ describe('Pacbio Run Create view', () => {
 
     cy.get('#update').click()
 
-    cy.get('button').contains('Create').click()
+    cy.get('#create-run').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
@@ -240,7 +240,7 @@ describe('Pacbio Run Create view', () => {
 
     cy.get('#update').click()
 
-    cy.get('button').contains('Create').click()
+    cy.get('#create-run').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
@@ -279,7 +279,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
 
-    cy.get('button').contains('Create').click()
+    cy.get('#create-run').click()
     cy.contains(
       '[data-type=run-create-message]',
       'Failed to create run in Traction: error1 some error',
