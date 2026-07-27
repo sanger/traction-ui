@@ -29,7 +29,7 @@
     "@okta/okta-auth-js": "^8.0.1",
     "@okta/okta-vue": "^5.8.0",
     "@sanger/ui-styling": "^4.3.0",
-    "@tailwindcss/postcss": "^4.3.2",
+    "@tailwindcss/postcss": "^4.3.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/devtools-api": "^8.1.5",
     "csv-parse": "^7.0.1",
