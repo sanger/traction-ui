@@ -34,7 +34,7 @@ describe('pacbioRequests', () => {
       })
       it('returns success false if request fails', async () => {
         const rootStore = useRootStore()
-        rootStore.api.traction.pacbio.requests.get = vi.fn().mockResolvedValue({ success: false })
+        rootStore.api.traction.pacbio.requests.get = vi.fn().mockResolvedValue(failedResponse())
         const { success } = await store.setRequests()
         expect(success).toEqual(false)
       })

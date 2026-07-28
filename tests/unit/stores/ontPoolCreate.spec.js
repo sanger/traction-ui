@@ -324,7 +324,7 @@ describe('useOntPoolCreateStore', () => {
       it('handles failure', async () => {
         const get = vi.fn()
         rootStore.api = { traction: { ont: { pools: { get } } } }
-        get.mockResolvedValue(failedResponse)
+        get.mockResolvedValue(failedResponse())
         const { success } = await store.fetchOntPools()
         expect(success).toEqual(false)
       })
@@ -455,7 +455,7 @@ describe('useOntPoolCreateStore', () => {
       it('handles failure', async () => {
         const get = vi.fn()
         rootStore.api = { traction: { ont: { tag_sets: { get } } } }
-        get.mockResolvedValue(failedResponse)
+        get.mockResolvedValue(failedResponse())
         const { success } = await store.fetchOntTagSets()
         expect(success).toEqual(false)
       })
