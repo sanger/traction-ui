@@ -33,6 +33,15 @@ const mountComponent = () => {
 describe('ONTRunIndex.vue', () => {
   let wrapper, runs
 
+  beforeAll(async () => {
+    // Preload lazy-loaded route components used in this spec to avoid
+    // module imports being scheduled after test teardown.
+    await Promise.all([
+      import('@/views/ONT.vue'),
+      import('@/views/ont/ONTRunShow.vue')
+    ])
+  })
+
   beforeEach(async () => {
     wrapper = mountComponent()
     runs = wrapper.vm

@@ -25,6 +25,15 @@ const getRunAndButtonForState = (wrapper, state, action) => {
 describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, runCreateStore, runsStore
 
+  beforeAll(async () => {
+    // Preload lazy-loaded route components used in this spec to avoid
+    // module imports being scheduled after test teardown.
+    await Promise.all([
+      import('@/views/PacbioView.vue'),
+      import('@/views/pacbio/PacbioRunShow.vue'),
+    ])
+  })
+
   beforeEach(async () => {
     const plugins = [
       ({ store }) => {

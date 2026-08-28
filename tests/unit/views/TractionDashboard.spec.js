@@ -8,6 +8,27 @@ describe('TractionDashboard.vue', () => {
   const active_pipelines = PipelinesConfig.filter((pipeline) => pipeline.active)
   const active_pipeline_names = active_pipelines.map((pipeline) => pipeline.name)
 
+
+  beforeAll(async () => {
+    // Preload lazy-loaded route components used in this spec to avoid
+    // module imports being scheduled after test teardown.
+    await Promise.all([
+      import('@/views/PacbioView.vue'),
+      import('@/views/pacbio/PacbioRunIndex.vue'),
+      import('@/views/pacbio/PacbioSampleIndex.vue'),
+      import('@/views/pacbio/PacbioPlateIndex.vue'),
+      import('@/views/pacbio/PacbioLibraryIndex.vue'),
+      import('@/views/pacbio/PacbioPoolIndex.vue'),
+      import('@/views/pacbio/PacbioPoolCreate.vue'),
+
+      import('@/views/ONT.vue'),
+      import('@/views/ont/ONTRunIndex.vue'),
+      import('@/views/ont/ONTSampleIndex.vue'),
+      import('@/views/ont/ONTPoolIndex.vue'),
+      import('@/views/ont/ONTPoolCreate.vue'),
+    ])
+  })
+
   beforeEach(() => {
     wrapper = mount(TractionDashboard)
     dashboard = wrapper.vm

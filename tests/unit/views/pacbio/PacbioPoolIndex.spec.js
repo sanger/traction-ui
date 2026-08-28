@@ -29,6 +29,15 @@ vi.mock('@/composables/useTubePrint.js', () => ({
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
 
+  beforeAll(async () => {
+    // Preload lazy-loaded route components used in this spec to avoid
+    // module imports being scheduled after test teardown.
+    await Promise.all([
+      import('@/views/PacbioView.vue'),
+      import('@/views/pacbio/PacbioPoolCreate.vue')
+    ])
+  })
+
   beforeEach(async () => {
     const plugins = [
       ({ store }) => {
