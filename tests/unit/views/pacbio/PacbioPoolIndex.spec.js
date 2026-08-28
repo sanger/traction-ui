@@ -34,7 +34,7 @@ describe('PacbioPoolIndex.vue', () => {
     // module imports being scheduled after test teardown.
     await Promise.all([
       import('@/views/PacbioView.vue'),
-      import('@/views/pacbio/PacbioPoolCreate.vue')
+      import('@/views/pacbio/PacbioPoolCreate.vue'),
     ])
   })
 

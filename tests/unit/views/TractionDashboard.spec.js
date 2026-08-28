@@ -8,7 +8,6 @@ describe('TractionDashboard.vue', () => {
   const active_pipelines = PipelinesConfig.filter((pipeline) => pipeline.active)
   const active_pipeline_names = active_pipelines.map((pipeline) => pipeline.name)
 
-
   beforeAll(async () => {
     // Preload lazy-loaded route components used in this spec to avoid
     // module imports being scheduled after test teardown.
