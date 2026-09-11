@@ -15,23 +15,34 @@ it('will redirect to page not found if invalid path', () => {
 describe('PageNotFound.vue', () => {
   let wrapper
 
-  beforeEach(() => {
+  beforeAll(async () => {
+    // Preload lazy-loaded route components used in this spec to avoid
+    // module imports being scheduled after test teardown.
+    await Promise.all([
+      import('@/views/PacbioView.vue'),
+      import('@/views/pacbio/PacbioRunIndex.vue'),
+      import('@/views/ONT.vue'),
+      import('@/views/ont/ONTRunIndex.vue'),
+    ])
+  })
+
+  beforeEach(async () => {
     wrapper = mount(PageNotFound, { router })
   })
 
   describe('Links on page ', () => {
     it('will redirect to dashboard', async () => {
-      wrapper.find('#dashboard-link').trigger('click')
+      await wrapper.find('#dashboard-link').trigger('click')
       await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/dashboard')
     })
     it('will redirect to pacbio runs', async () => {
-      wrapper.find('#pacbio-link').trigger('click')
+      await wrapper.find('#pacbio-link').trigger('click')
       await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
     })
     it('will redirect to ont runs', async () => {
-      wrapper.find('#ont-link').trigger('click')
+      await wrapper.find('#ont-link').trigger('click')
       await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/ont/runs')
     })

@@ -2,30 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { LoginCallback } from '@okta/okta-vue'
 import { navigationGuard } from '@okta/okta-vue'
 import TractionDashboard from '@/views/TractionDashboard.vue'
-import GeneralReception from '@/views/GeneralReception.vue'
-import LabelPrinting from '@/views/LabelPrinting.vue'
-import QcResultsUpload from '@/views/QcResultsUpload.vue'
-import LabwhereReception from '@/views/LabwhereReception.vue'
-import SampleReport from '@/views/SampleReport.vue'
-import PageNotFound from '@/views/PageNotFound.vue'
-import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
-import PacbioView from '@/views/PacbioView.vue'
-import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
-import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
-import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex.vue'
-import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
-import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
-import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
-import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
-import ONT from '@/views/ONT.vue'
-import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
-import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
-import ONTRunShow from '@/views/ont/ONTRunShow.vue'
-import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import FlexiblePoolingIndex from '@/views/FlexiblePoolingIndex.vue'
-import FlexibleIndividualPoolCreate from '@/views/FlexibleIndividualPoolCreate.vue'
 
 // This function gets or sets the query param defaults on the route being navigated 'to'
 // This ensures DataFetcher has the correct query params when fetching initial data on page load
@@ -57,31 +33,31 @@ const router = createRouter({
       path: '/reception',
       name: 'Reception',
       meta: { pipeline: 'Reception', requiresAuth: true },
-      component: GeneralReception,
+      component: () => import('@/views/GeneralReception.vue'),
     },
     {
       path: '/labwhere-reception',
       name: 'LabWhereReception',
       meta: { page: 'LabWhere Reception - Scan In/Out', requiresAuth: true },
-      component: LabwhereReception,
+      component: () => import('@/views/LabwhereReception.vue'),
     },
     {
       path: '/label-printing',
       name: 'LabelPrinting',
       meta: { page: 'Label Printing', requiresAuth: true },
-      component: LabelPrinting,
+      component: () => import('@/views/LabelPrinting.vue'),
     },
     {
       path: '/qc-results-upload',
       name: 'QcResultsUpload',
       meta: { page: 'QC Results Upload', requiresAuth: true },
-      component: QcResultsUpload,
+      component: () => import('@/views/QcResultsUpload.vue'),
     },
     {
       path: '/sample-report',
       name: 'SampleReport',
       meta: { page: 'Sample Report', requiresAuth: true },
-      component: SampleReport,
+      component: () => import('@/views/SampleReport.vue'),
     },
     {
       path: '/flexible-pooling',
@@ -90,32 +66,32 @@ const router = createRouter({
       beforeEnter(to) {
         checkPaginationParams(to)
       },
-      component: FlexiblePoolingIndex,
+      component: () => import('@/views/FlexiblePoolingIndex.vue'),
     },
     {
       path: '/flexible-pool/:id',
       name: 'FlexiblePool',
-      component: FlexiblePoolCreate,
+      component: () => import('@/views/FlexiblePoolCreate.vue'),
       meta: { page: 'FlexiblePool', requiresAuth: true },
       props: true,
     },
     {
       path: '/flexible-pool/:id/sub-pool/:position',
       name: 'FlexibleIndividualPoolCreate',
-      component: FlexibleIndividualPoolCreate,
+      component: () => import('@/views/FlexibleIndividualPoolCreate.vue'),
       meta: { page: 'FlexibleIndividualPoolCreate', requiresAuth: true },
       props: true,
     },
     {
       path: '/pacbio',
-      component: PacbioView,
+      component: () => import('@/views/PacbioView.vue'),
       meta: { pipeline: 'PacBio', requiresAuth: true },
       children: [
         { path: '', redirect: 'samples' },
         {
           path: 'samples',
           name: 'PacbioSampleIndex',
-          component: PacbioSampleIndex,
+          component: () => import('@/views/pacbio/PacbioSampleIndex.vue'),
           meta: { page: 'Samples', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -124,7 +100,7 @@ const router = createRouter({
         {
           path: 'plates',
           name: 'PacbioPlateIndex',
-          component: PacbioPlateIndex,
+          component: () => import('@/views/pacbio/PacbioPlateIndex.vue'),
           meta: { page: 'Plates', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -133,7 +109,7 @@ const router = createRouter({
         {
           path: 'libraries',
           name: 'PacbioLibraryIndex',
-          component: PacbioLibraryIndex,
+          component: () => import('@/views/pacbio/PacbioLibraryIndex.vue'),
           meta: { page: 'Libraries', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -142,7 +118,7 @@ const router = createRouter({
         {
           path: 'pools',
           name: 'PacbioPoolIndex',
-          component: PacbioPoolIndex,
+          component: () => import('@/views/pacbio/PacbioPoolIndex.vue'),
           meta: { page: 'Pools', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -151,7 +127,7 @@ const router = createRouter({
         {
           path: 'runs',
           name: 'PacbioRunIndex',
-          component: PacbioRunIndex,
+          component: () => import('@/views/pacbio/PacbioRunIndex.vue'),
           meta: { page: 'Runs', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -160,34 +136,34 @@ const router = createRouter({
         {
           path: 'run/:id',
           name: 'PacbioRunShow',
-          component: PacbioRunShow,
+          component: () => import('@/views/pacbio/PacbioRunShow.vue'),
           meta: { page: 'Run' },
           props: true,
         },
         {
           path: 'pool/:id',
           name: 'PacbioPoolCreate',
-          component: PacbioPoolCreate,
+          component: () => import('@/views/pacbio/PacbioPoolCreate.vue'),
           meta: { page: 'Pool' },
         },
         {
           path: 'library-batch',
           name: 'PacbioLibraryBatchCreate',
           description: 'Create a new library batch',
-          component: PacbioLibraryBatchCreate,
+          component: () => import('@/views/pacbio/PacbioLibraryBatchCreate.vue'),
           meta: { page: 'Library Batch' },
         },
       ],
     },
     {
       path: '/ont',
-      component: ONT,
+      component: () => import('@/views/ONT.vue'),
       meta: { pipeline: 'ONT', requiresAuth: true },
       children: [
         {
           path: 'samples',
           name: 'ONTSampleIndex',
-          component: ONTSampleIndex,
+          component: () => import('@/views/ont/ONTSampleIndex.vue'),
           meta: { page: 'Samples', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -196,14 +172,14 @@ const router = createRouter({
         {
           path: 'pool/:id',
           name: 'ONTPoolCreate',
-          component: ONTPoolCreate,
+          component: () => import('@/views/ont/ONTPoolCreate.vue'),
           props: true,
           meta: { page: 'Pool' },
         },
         {
           path: 'pools',
           name: 'ONTPoolIndex',
-          component: ONTPoolIndex,
+          component: () => import('@/views/ont/ONTPoolIndex.vue'),
           meta: { page: 'Pools', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -212,7 +188,7 @@ const router = createRouter({
         {
           path: 'runs',
           name: 'ONTRunIndex',
-          component: ONTRunIndex,
+          component: () => import('@/views/ont/ONTRunIndex.vue'),
           meta: { page: 'Runs', paginated: true },
           beforeEnter(to) {
             checkPaginationParams(to)
@@ -221,7 +197,7 @@ const router = createRouter({
         {
           path: 'run/:id',
           name: 'ONTRunShow',
-          component: ONTRunShow,
+          component: () => import('@/views/ont/ONTRunShow.vue'),
           props: true,
           meta: { page: 'Run' },
         },
@@ -230,7 +206,7 @@ const router = createRouter({
     {
       path: '/404',
       name: '404',
-      component: PageNotFound,
+      component: () => import('@/views/PageNotFound.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
