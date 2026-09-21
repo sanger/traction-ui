@@ -1,6 +1,7 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SequencescapePlates.js'
 import useRootStore from '@/stores'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
+import { failedResponse } from '@support/testHelper.js'
 
 describe('SequencescapePlates', () => {
   describe('#fetchLabwareForReception', () => {
@@ -99,17 +100,7 @@ describe('SequencescapePlates', () => {
     })
 
     it('unsuccessfully', async () => {
-      const failedResponse = {
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      }
-      request.mockResolvedValue(failedResponse)
+      request.mockResolvedValue(failedResponse())
 
       await expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',

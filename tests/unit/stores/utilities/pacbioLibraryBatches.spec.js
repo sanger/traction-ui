@@ -6,6 +6,7 @@ import {
 import PacbioRequestFactory from '@tests/factories/PacbioRequestFactory.js'
 import PacbioTagSetFactory from '@tests/factories/PacbioTagSetFactory.js'
 import useRootStore from '@/stores'
+import { failedResponse } from '@support/testHelper.js'
 
 const pacbioRequestFactory = PacbioRequestFactory()
 const pacbioTagSetFactory = PacbioTagSetFactory()
@@ -134,7 +135,7 @@ describe('pacbioLibraryBatches', () => {
     })
 
     it('returns null tags if tag set fetch fails', async () => {
-      rootStore.api.traction.pacbio.tag_sets.get.mockResolvedValue({ success: false })
+      rootStore.api.traction.pacbio.tag_sets.get.mockResolvedValue(failedResponse())
 
       const { requests, tags } = await fetchTagsAndRequests(sources, tagSet.name)
 
@@ -150,7 +151,7 @@ describe('pacbioLibraryBatches', () => {
     })
 
     it('returns empty requests if request fetch fails', async () => {
-      rootStore.api.traction.pacbio.requests.get.mockResolvedValue({ success: false })
+      rootStore.api.traction.pacbio.requests.get.mockResolvedValue(failedResponse())
 
       const { requests } = await fetchTagsAndRequests(sources, tagSet.name)
 

@@ -86,7 +86,7 @@ describe('useOntRunsStore', () => {
       })
       it('handles failure', async () => {
         const get = vi.fn()
-        get.mockRejectedValue(failedResponse)
+        get.mockRejectedValue(failedResponse())
         rootStore.api = { traction: { ont: { instruments: { get } } } }
 
         const { success } = await store.fetchInstruments()
