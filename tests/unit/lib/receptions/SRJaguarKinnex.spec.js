@@ -1,6 +1,7 @@
 import { fetchLabwareForReception } from '@/lib/receptions/SRJaguarKinnex.js'
 import SRJaguarKinnex from '@tests/factories/SRJaguarKinnexFactory.js'
 import useRootStore from '@/stores'
+import { failedResponse } from '@support/testHelper.js'
 
 describe('SRJaguarKinnex', () => {
   describe('#fetchLabwareForReception', () => {
@@ -85,17 +86,7 @@ describe('SRJaguarKinnex', () => {
     })
 
     it('unsuccessfully', async () => {
-      const failedResponse = {
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      }
-      request.mockResolvedValue(failedResponse)
+      request.mockResolvedValue(failedResponse())
 
       await expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',

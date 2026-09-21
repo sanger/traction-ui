@@ -7,6 +7,7 @@ import {
   getIncludedData,
 } from '@/lib/receptions/sequencescapeUtils.js'
 import SequencescapeLabwareFactory from '@tests/factories/SequencescapeLabwareFactory.js'
+import { failedResponse } from '@support/testHelper.js'
 import useRootStore from '@/stores'
 
 const retAttributes = {
@@ -121,17 +122,7 @@ describe('sequencescapeUtils', () => {
       })
     })
     it('runs unsuccessfully', async () => {
-      const failedResponse = {
-        data: {},
-        status: 500,
-        json: () =>
-          Promise.resolve({
-            errors: [{ title: 'error1', detail: 'There was an error.', status: '500' }],
-          }),
-        ok: false,
-        statusText: 'Internal Server Error',
-      }
-      request.mockResolvedValue(failedResponse)
+      request.mockResolvedValue(failedResponse())
       await expect(() => fetchLabwareFromSequencescape({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )

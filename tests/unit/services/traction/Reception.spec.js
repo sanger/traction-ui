@@ -1,5 +1,6 @@
 import { createReceptionResource, createMessages } from '@/services/traction/Reception'
 import { expect } from 'vitest'
+import { failedResponse } from '@support/testHelper.js'
 
 // Setup some of the parameters we'll be testing with
 const source = 'traction-ui.sequencescape'
@@ -19,16 +20,6 @@ const requestAttributes = [
     container: { type: 'tubes', barcode: 'NT1' },
   },
 ]
-
-const failedResponse = {
-  status: 422,
-  statusText: 'Record not found',
-  json: () => Promise.resolve({ errors: [{ title: 'error1', detail: 'There was an error.' }] }),
-  data: {
-    errors: [{ title: 'error1', detail: 'There was an error.' }],
-  },
-  ok: false,
-}
 
 const createdReceptionResponse = {
   status: 201,
@@ -87,7 +78,7 @@ describe('Traction', () => {
     })
 
     it('when the reception could not be created', async () => {
-      createReceptionRequest.mockResolvedValue(failedResponse)
+      createReceptionRequest.mockResolvedValue(failedResponse())
 
       const attributes = { source, request_attributes: requestAttributes }
       const foundBarcodes = new Set(['NT1'])
