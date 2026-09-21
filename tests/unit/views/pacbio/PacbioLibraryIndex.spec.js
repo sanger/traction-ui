@@ -1,5 +1,5 @@
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
-import { flushPromises, successfulResponse, mountWithStore } from '@support/testHelper.js'
+import { flushPromises, successfulResponse, mountWithStore, failedResponse } from '@support/testHelper.js'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import PacbioLibraryFactory from '@tests/factories/PacbioLibraryFactory.js'
