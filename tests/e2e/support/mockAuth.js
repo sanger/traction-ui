@@ -2,8 +2,13 @@
 
 // This allows us to simulate a logged in user in Okta by setting the appropriate tokens in localStorage and intercepting requests to the Okta userinfo endpoint.
 beforeEach(() => {
-  const oktaDomain = Cypress.env('VITE_OKTA_DOMAIN')
-  const clientId = Cypress.env('VITE_OKTA_CLIENT_ID')
+  let oktaDomain, clientId
+  cy.env(['VITE_OKTA_DOMAIN', 'VITE_OKTA_CLIENT_ID']).then(
+    ({ VITE_OKTA_DOMAIN: oktaDomainVar, VITE_OKTA_CLIENT_ID: oktaClientId }) => {
+      oktaDomain = oktaDomainVar
+      clientId = oktaClientId
+    },
+  )
   // Okta token timestamps are Unix time in seconds, not milliseconds.
   const nowInSeconds = Math.floor(Date.now() / 1000)
   const oneDayFromNow = nowInSeconds + 60 * 60 * 24
