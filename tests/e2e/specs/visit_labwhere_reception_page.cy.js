@@ -1,7 +1,13 @@
 import PacbioLibraryFactory from '../../factories/PacbioLibraryFactory.js'
 
 describe('Labware Reception page', () => {
-  const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
+  let labwhereUrl
+
+  before(() => {
+    cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereBaseUrl }) => {
+      labwhereUrl = labwhereBaseUrl
+    })
+  })
 
   beforeEach(() => {
     cy.visit('#/labwhere-reception')

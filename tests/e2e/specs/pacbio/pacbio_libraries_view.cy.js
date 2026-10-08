@@ -28,21 +28,22 @@ describe('Pacbio Libraries view', () => {
     })
 
     // Stub labwhere request
-    cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
-      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
-        statusCode: 200,
-        body: [
-          {
-            barcode: pacbioLibraryFactory.content.data[0].attributes.barcode,
-            created_at: 'Tuesday September 16 2025 10:29',
-            updated_at: 'Tuesday September 16 2025 10:29',
-            location: {
-              id: 432,
-              name: 'box-test',
+    cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+      cy.get('@pacbioLibraryFactory').then((pacbioLibraryFactory) => {
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: pacbioLibraryFactory.content.data[0].attributes.barcode,
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
             },
-          },
-        ],
+          ],
+        })
       })
     })
   })

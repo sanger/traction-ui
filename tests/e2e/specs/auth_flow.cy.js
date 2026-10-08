@@ -20,20 +20,21 @@ describe('Auth', () => {
     })
 
     it('can log out', () => {
-      const oktaDomain = Cypress.env('VITE_OKTA_DOMAIN')
-      cy.intercept('POST', `https://${oktaDomain}/oauth2/v1/revoke`, {
-        statusCode: 200,
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: {},
+      cy.env(['VITE_OKTA_DOMAIN']).then(({ VITE_OKTA_DOMAIN: oktaDomain }) => {
+        cy.intercept('POST', `https://${oktaDomain}/oauth2/v1/revoke`, {
+          statusCode: 200,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: {},
+        })
+        cy.intercept('GET', `https://${oktaDomain}/oauth2/v1/logout*`, {
+          statusCode: 302,
+          headers: {
+            location: 'http://localhost:5173/#/',
+          },
+        }).as('oktaLogout')
       })
-      cy.intercept('GET', `https://${oktaDomain}/oauth2/v1/logout*`, {
-        statusCode: 302,
-        headers: {
-          location: 'http://localhost:5173/#/',
-        },
-      }).as('oktaLogout')
       cy.get('[data-attribute="account-identifier"]').click()
       cy.get('[data-action="login"]').should('not.exist')
       cy.get('[data-action="logout"]').click()
