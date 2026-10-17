@@ -43,20 +43,20 @@ describe('Import samples from Mocked plates', () => {
     })
 
     it('successfully import to traction and scanning in to labWhere', () => {
-      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-      cy.intercept('GET', `${labwhereUrl}/api/locations/mocked-location-123`, {
-        statusCode: 200,
-        body: {
-          barcode: 'mocked-location-123',
-          name: 'Mocked Location',
-        },
-      })
-
-      cy.intercept('POST', `${labwhereUrl}/api/scans`, {
-        statusCode: 201,
-        body: {
-          message: 'MockPlate1 successfully stored in Mocked Location',
-        },
+      cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+        cy.intercept('GET', `${labwhereUrl}/api/locations/mocked-location-123`, {
+          statusCode: 200,
+          body: {
+            barcode: 'mocked-location-123',
+            name: 'Mocked Location',
+          },
+        })
+        cy.intercept('POST', `${labwhereUrl}/api/scans`, {
+          statusCode: 201,
+          body: {
+            message: 'MockPlate1 successfully stored in Mocked Location',
+          },
+        })
       })
 
       // Scan into custom location
@@ -76,10 +76,11 @@ describe('Import samples from Mocked plates', () => {
     })
 
     it('successfully imports to traction but does not scan in to labWhere when a bad custom location is provided', () => {
-      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-      cy.intercept('GET', `${labwhereUrl}/api/locations/bad-location`, {
-        statusCode: 200,
-        body: null,
+      cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+        cy.intercept('GET', `${labwhereUrl}/api/locations/bad-location`, {
+          statusCode: 200,
+          body: null,
+        })
       })
 
       // Scan into custom location that doesnt exist
@@ -99,19 +100,19 @@ describe('Import samples from Mocked plates', () => {
     })
 
     it('successfully import to traction but fails to scan in to labWhere when labwhere errors', () => {
-      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-      cy.intercept('POST', `${labwhereUrl}/api/scans`, {
-        statusCode: 422,
-        errors: ['Failed to access LabWhere'],
+      cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+        cy.intercept('POST', `${labwhereUrl}/api/scans`, {
+          statusCode: 422,
+          errors: ['Failed to access LabWhere'],
+        })
+        cy.intercept('GET', `${labwhereUrl}/api/locations/mocked-location-123`, {
+          statusCode: 200,
+          body: {
+            barcode: 'mocked-location-123',
+            name: 'Mocked Location',
+          },
+        })
       })
-      cy.intercept('GET', `${labwhereUrl}/api/locations/mocked-location-123`, {
-        statusCode: 200,
-        body: {
-          barcode: 'mocked-location-123',
-          name: 'Mocked Location',
-        },
-      })
-
       // Scan into custom location that doesnt exist
       cy.get('#workflowSelect').select('Custom Location')
       cy.get('[data-attribute="custom-location-barcode-input"]').type('mocked-location-123')
