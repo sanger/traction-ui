@@ -16,25 +16,26 @@ describe('Pacbio Pools view', () => {
     })
 
     // Stub labwhere request
-    cy.get('@pacbioPoolFactory')
-      .then((pacbioPoolFactory) => {
-        const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
-          statusCode: 200,
-          body: [
-            {
-              barcode: pacbioPoolFactory.content.data[0].attributes.barcode,
-              created_at: 'Tuesday September 16 2025 10:29',
-              updated_at: 'Tuesday September 16 2025 10:29',
-              location: {
-                id: 432,
-                name: 'box-test',
+    cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+      cy.get('@pacbioPoolFactory')
+        .then((pacbioPoolFactory) => {
+          cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+            statusCode: 200,
+            body: [
+              {
+                barcode: pacbioPoolFactory.content.data[0].attributes.barcode,
+                created_at: 'Tuesday September 16 2025 10:29',
+                updated_at: 'Tuesday September 16 2025 10:29',
+                location: {
+                  id: 432,
+                  name: 'box-test',
+                },
               },
-            },
-          ],
+            ],
+          })
         })
-      })
-      .as('labwhereRequest')
+        .as('labwhereRequest')
+    })
 
     cy.wrap(PrinterFactory()).as('printerFactory')
 
