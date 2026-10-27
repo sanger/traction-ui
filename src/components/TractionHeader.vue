@@ -30,6 +30,22 @@
               class="pointer-events-none absolute inset-x-0 top-0 -bottom-4 rounded-t-md bg-black/10"
             />
             <span class="relative">{{ pipeline.title }}</span>
+            <svg
+              data-attribute="dropdown-indicator"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              class="relative ml-1 h-3 w-3 shrink-0 transition-transform"
+              :class="{ 'rotate-180': openPipeline?.name === pipeline.name }"
+            >
+              <path
+                d="m6 9 6 6 6-6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
           <button
             type="button"
@@ -54,6 +70,22 @@
               class="pointer-events-none absolute inset-x-0 top-0 -bottom-4 rounded-t-md bg-black/10"
             />
             <span class="relative">Tools</span>
+            <svg
+              data-attribute="dropdown-indicator"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              class="relative ml-1 h-3 w-3 shrink-0 transition-transform"
+              :class="{ 'rotate-180': toolsOpen }"
+            >
+              <path
+                d="m6 9 6 6 6-6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
         </div>
       </div>
