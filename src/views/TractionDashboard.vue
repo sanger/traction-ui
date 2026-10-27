@@ -11,7 +11,10 @@
           >Long read LIMS for library prep and sequencing setup</span
         >
       </div>
-      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
+      <div
+        class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4"
+        data-attribute="pipelines-section"
+      >
         <button class="flex flex-row" @click="pipelineDropdown = !pipelineDropdown">
           <div class="flex flex-col text-left w-full">
             <div class="flex flex-row items-center gap-x-2">
@@ -44,7 +47,10 @@
         </div>
       </div>
 
-      <div class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4">
+      <div
+        class="flex flex-col text-left border border-gray-200 rounded-md p-4 gap-y-4"
+        data-attribute="tools-section"
+      >
         <button class="flex flex-row" @click="toolDropdown = !toolDropdown">
           <div class="flex flex-col text-left w-full">
             <div class="flex flex-row items-center gap-x-2">
@@ -69,7 +75,10 @@
         </div>
       </div>
 
-      <div class="flex flex-col border border-gray-200 rounded-md p-4 gap-y-4">
+      <div
+        class="flex flex-col border border-gray-200 rounded-md p-4 gap-y-4"
+        data-attribute="documentation-section"
+      >
         <button class="flex flex-row" @click="docDropdown = !docDropdown">
           <div class="flex flex-col text-left w-full">
             <div class="flex flex-row items-center gap-x-2">

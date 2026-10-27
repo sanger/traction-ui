@@ -10,7 +10,7 @@ describe('TractionHeader.vue', () => {
   })
 
   it('has headerClasses', () => {
-    expect(wrapper.vm.headerClasses).toEqual(['relative', 'bg-linear-to-r from-sdb to-sdb-400'])
+    expect(wrapper.vm.headerClasses).toEqual(['relative', 'bg-sdb-400'])
   })
 
   it('groups non-pipeline navigation under Tools', async () => {
