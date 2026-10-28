@@ -136,13 +136,7 @@ const config = [
     name: 'sequencescape',
     apiNamespace: 'api/v2',
     rootURL: import.meta.env['VITE_SEQUENCESCAPE_BASE_URL'],
-    headers: {
-      'X-Sequencescape-Client-Id': import.meta.env['VITE_SEQUENCESCAPE_API_KEY'],
-    },
     resources: [
-      {
-        name: 'plates',
-      },
       {
         name: 'labware',
       },
