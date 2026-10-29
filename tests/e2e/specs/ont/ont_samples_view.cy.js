@@ -10,21 +10,22 @@ describe('Ont samples view', () => {
       })
     })
     // Stub labwhere request
-    cy.get('@ontRequestFactory').then((ontRequestFactory) => {
-      const labwhereUrl = Cypress.env('VITE_LABWHERE_BASE_URL')
-      cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
-        statusCode: 200,
-        body: [
-          {
-            barcode: ontRequestFactory.content.data[0].attributes.source_identifier.split(':')[0],
-            created_at: 'Tuesday September 16 2025 10:29',
-            updated_at: 'Tuesday September 16 2025 10:29',
-            location: {
-              id: 432,
-              name: 'box-test',
+    cy.env(['VITE_LABWHERE_BASE_URL']).then(({ VITE_LABWHERE_BASE_URL: labwhereUrl }) => {
+      cy.get('@ontRequestFactory').then((ontRequestFactory) => {
+        cy.intercept(`${labwhereUrl}/api/labwares/searches`, {
+          statusCode: 200,
+          body: [
+            {
+              barcode: ontRequestFactory.content.data[0].attributes.source_identifier.split(':')[0],
+              created_at: 'Tuesday September 16 2025 10:29',
+              updated_at: 'Tuesday September 16 2025 10:29',
+              location: {
+                id: 432,
+                name: 'box-test',
+              },
             },
-          },
-        ],
+          ],
+        })
       })
     })
   })
