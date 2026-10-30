@@ -1,56 +1,54 @@
 <template>
   <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
   <data-fetcher :key="route.fullPath" :fetcher="fetchPoolsData">
-    <div class="flex flex-col pt-4">
-      <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
-        <div class="flex flex-col">
-          <traction-section
-            title="Scan labware"
-            number="1a"
-            description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
-          >
-            <div class="flex flex-row items-center">
-              <BarcodeIcon class="w-8 h-8" />
-              <div class="flex flex-row w-full space-x-2">
-                <traction-input
-                  id="labware-finder-input"
-                  ref="searchRef"
-                  v-model="searchText"
-                  type="search"
-                  placeholder="Type to search"
-                  label="Search value"
-                  class="w-full"
-                  @enter-key-press="search"
-                />
-                <traction-button
-                  id="labware-finder-button"
-                  :disabled="searchText == ''"
-                  @click="search(searchText)"
-                >
-                  Search
-                </traction-button>
-              </div>
+    <div class="w-full grid grid-cols-2 gap-x-2">
+      <div class="flex flex-col">
+        <traction-section
+          title="Scan labware"
+          number="1a"
+          description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
+        >
+          <div class="flex flex-row items-center">
+            <BarcodeIcon class="w-8 h-8" />
+            <div class="flex flex-row w-full space-x-2">
+              <traction-input
+                id="labware-finder-input"
+                ref="searchRef"
+                v-model="searchText"
+                type="search"
+                placeholder="Type to search"
+                label="Search value"
+                class="w-full"
+                @enter-key-press="search"
+              />
+              <traction-button
+                id="labware-finder-button"
+                :disabled="searchText == ''"
+                @click="search(searchText)"
+              >
+                Search
+              </traction-button>
             </div>
-          </traction-section>
-        </div>
+          </div>
+        </traction-section>
+      </div>
 
-        <div>
-          <PacbioTagSetList ref="tagSetList" />
-          <PacbioTagSetItem />
-        </div>
-        <div>
-          <PacbioLabwareSelectedList
-            :labware="scannedLabware"
-            :highlight="aliquotSelectionHighlightLabware"
-            @closed="onClosed"
-          />
-        </div>
-        <div>
-          <PacbioPoolEdit
-            :flexible-pool-position="props.flexiblePoolPosition"
-            @aliquot-selected="handleAliquotSelection"
-          />
-        </div>
+      <div>
+        <PacbioTagSetList ref="tagSetList" />
+        <PacbioTagSetItem />
+      </div>
+      <div>
+        <PacbioLabwareSelectedList
+          :labware="scannedLabware"
+          :highlight="aliquotSelectionHighlightLabware"
+          @closed="onClosed"
+        />
+      </div>
+      <div>
+        <PacbioPoolEdit
+          :flexible-pool-position="props.flexiblePoolPosition"
+          @aliquot-selected="handleAliquotSelection"
+        />
       </div>
     </div>
   </data-fetcher>

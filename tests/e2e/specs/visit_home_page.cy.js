@@ -4,6 +4,12 @@ describe('Visit Home Page', () => {
   it('Visits the app root url', () => {
     cy.visit('/')
     // Nav bar links
+    cy.get('[data-attribute="tools-menu"]').should('exist')
+    cy.get('[data-attribute="pacbio-menu"]').should('exist')
+    cy.get('[data-attribute="ont-menu"]').should('exist')
+
+    // Click on the tools menu to reveal the dropdown items
+    cy.get('[data-attribute="tools-menu"]').click()
     cy.contains('Label Printing')
     cy.contains('QC Results Upload')
     cy.contains('Reception')
@@ -11,10 +17,10 @@ describe('Visit Home Page', () => {
     cy.contains('Sample Report')
     cy.contains('Flexible Pooling')
 
-    // Home page contents
+    // Dashboard contents
     cy.contains('Traction')
-    cy.contains('Pipelines')
-    cy.contains('Tools')
-    cy.contains('Documentation')
+    cy.get('[data-attribute="pipelines-section"]').should('exist')
+    cy.get('[data-attribute="tools-section"]').should('exist')
+    cy.get('[data-attribute="documentation-section"]').should('exist')
   })
 })

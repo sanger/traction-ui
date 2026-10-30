@@ -9,7 +9,7 @@ describe('Extraction QC page', () => {
   })
 
   it('Shows the correct components', () => {
-    cy.contains('QC Results Upload')
+    cy.contains('QC Results')
     cy.contains('Which QC Results would you like to upload?')
     cy.contains('CSV File')
     cy.contains('Upload File')

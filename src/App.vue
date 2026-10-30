@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <TractionHeader></TractionHeader>
-    <div class="flex flex-col mb-auto px-4 pt-4 pb-10">
+    <div class="flex flex-col mb-auto px-4 py-2 pb-10">
       <router-view class="text-center" />
     </div>
     <div
