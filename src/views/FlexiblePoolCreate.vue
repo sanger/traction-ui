@@ -258,7 +258,7 @@ function showLoadingModal(message) {
  */
 const reset = () => {
   // Clear the CSV file input
-  if (csvInput) {
+  if (csvInput.value) {
     csvInput.value.value = null
   }
 
