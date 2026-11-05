@@ -2,10 +2,7 @@
   <div
     class="w-full max-w-[80rem] mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 space-y-4"
   >
-    <traction-heading level="2" show-border>
-      Reception
-      <span class="text-gray-400 px-2">{{ id }}</span>
-    </traction-heading>
+    <traction-heading level="2" show-border> Reception </traction-heading>
     <div class="flex flex-row space-x-4">
       <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
       <div class="w-1/3">
