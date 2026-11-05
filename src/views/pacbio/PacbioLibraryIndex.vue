@@ -1,6 +1,10 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <FilterCard :fetcher="provider" :filter-options="state.filterOptions" />
+    <FilterCard
+      :fetcher="provider"
+      :filter-options="state.filterOptions"
+      default-filter-option="barcode"
+    />
     <div class="flex flex-col">
       <div>
         <printerModal

@@ -1,6 +1,6 @@
 <template>
   <DataFetcher :fetcher="fetchRuns">
-    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
+    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" default-filter-option="name" />
     <div class="flex flex-col">
       <div>
         <traction-button
