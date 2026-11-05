@@ -1,5 +1,10 @@
 <template>
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
+    <traction-heading level="2" show-border> QC Results Upload </traction-heading>
+    <p class="flex justify-left text-sm">
+      This page lets you upload QC results via a CSV file. The results appear in both Traction and
+      the MLWH.
+    </p>
     <traction-form @submit="onSubmit">
       <traction-heading level="3" show-border
         >Which QC Results would you like to upload?</traction-heading
