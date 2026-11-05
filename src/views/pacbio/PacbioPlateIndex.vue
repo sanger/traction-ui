@@ -1,6 +1,10 @@
 <template>
   <DataFetcher :fetcher="fetchPlates">
-    <FilterCard :fetcher="fetchPlates" :filter-options="filterOptions" />
+    <FilterCard
+      :fetcher="fetchPlates"
+      :filter-options="filterOptions"
+      default-filter-option="barcode"
+    />
     <div class="flex flex-col">
       <div>
         <traction-pagination class="float-right" aria-controls="plate-index"> </traction-pagination>
