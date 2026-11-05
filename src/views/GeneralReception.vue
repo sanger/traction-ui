@@ -1,226 +1,236 @@
 <template>
-  <div class="flex flex-row space-x-12 px-12">
-    <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
-    <div class="w-1/2">
-      <div>
-        <traction-heading level="4" :show-border="true"> Source </traction-heading>
-        <traction-field-group
-          label="Source"
-          attribute="sourceSelect"
-          for="sourceSelect"
-          description="The location to import the labware from"
-          layout="spacious"
-        >
-          <traction-select
-            id="sourceSelect"
-            v-model="source"
-            class="inline-block w-full"
-            :options="receptionOptionsList"
-            data-type="source-list"
-          />
-        </traction-field-group>
-      </div>
-      <div>
-        <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
-        <traction-field-group
-          label="Pipeline"
-          attribute="pipelineSelect"
-          for="pipelineSelect"
-          description="The Traction pipeline to import the requests into"
-          layout="spacious"
-        >
-          <traction-select
-            id="pipelineSelect"
-            v-model="pipeline"
-            :options="pipelineOptions"
-            class="inline-block w-full"
-            data-type="pipeline-list"
-            :disabled="!source"
-          />
-        </traction-field-group>
-        <traction-field-group
-          label="Workflow"
-          attribute="workflowSelect"
-          for="workflowSelect"
-          description="Select a workflow if you would like to scan in the imported labware"
-          layout="spacious"
-        >
-          <traction-select
-            id="workflowSelect"
-            v-model="workflow"
-            class="inline-block w-full"
-            :options="workflowOptions"
-            data-type="workflow-list"
-            :disabled="!source"
-          />
-        </traction-field-group>
-        <div v-if="workflow">
-          <div v-if="isCustomLocationWorkflow" class="mb-3">
-            <traction-label class="inline-block w-full text-left">Location barcode</traction-label>
-            <traction-muted-text class="text-left"
-              >Scan the location barcode where the imported labware will be scanned into (e.g.
-              lw-test-123)</traction-muted-text
-            >
-            <traction-field-error
-              data-attribute="custom-location-barcode-error"
-              :error="customWorkflowLocation.error"
-            >
-              <traction-input
-                data-attribute="custom-location-barcode-input"
-                class="mt-1"
-                :debounce="500"
-                :model-value="customWorkflowLocation.value"
-                @update:model-value="setCustomWorkflowLocation($event)"
-              />
-            </traction-field-error>
-          </div>
-          <div>
-            <traction-label class="inline-block w-full text-left"
-              >User barcode or swipecard</traction-label
-            >
-            <traction-muted-text class="text-left"
-              >Only required when a workflow is selected</traction-muted-text
-            >
-            <traction-field-error
-              data-attribute="user-code-error"
-              :error="
-                !user_code && workflow
-                  ? 'User code is required to scan in the imported labware'
-                  : ''
-              "
-            >
-              <traction-input
-                id="userCode"
-                v-model="user_code"
-                data-attribute="user-code-input"
-                class="mt-1"
-                type="password"
-              />
-            </traction-field-error>
-          </div>
-        </div>
-      </div>
-      <div>
-        <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
-        <traction-muted-text class="text-left"
-          >Default values to apply to the imported requests</traction-muted-text
-        >
+  <div
+    class="w-full max-w-[80rem] mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 space-y-4"
+  >
+    <traction-heading level="2" show-border>
+      Reception
+      <span class="text-gray-400 px-2">{{ id }}</span>
+    </traction-heading>
+    <div class="flex flex-row space-x-4">
+      <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
+      <div class="w-1/3">
         <div>
-          <DataFetcher :fetcher="fetchLibraryTypes">
-            <LibraryTypeSelect
-              v-model="requestOptions.library_type"
-              :label-cols="0"
-              :allow-none="false"
-              :import-text="`Import from ${source} (where available)`"
-              :pipeline="pipeline.toLowerCase()"
-            />
-          </DataFetcher>
-
+          <traction-heading level="4" :show-border="true"> Source </traction-heading>
           <traction-field-group
-            label="Cost Code"
-            attribute="cost_code"
-            for="cost_code"
-            description="Default Pacbio cost code: S4699"
+            label="Source"
+            attribute="sourceSelect"
+            for="sourceSelect"
+            description="The location to import the labware from"
             layout="spacious"
           >
-            <traction-input
-              id="cost_code"
-              v-model="requestOptions.cost_code"
-              data-attribute="cost-code-input"
-            ></traction-input>
+            <traction-select
+              id="sourceSelect"
+              v-model="source"
+              class="inline-block w-full"
+              :options="receptionOptionsList"
+              data-type="source-list"
+            />
           </traction-field-group>
-          <div v-if="pipeline === 'PacBio'">
-            <traction-field-group
-              label="Number of SMRT cells"
-              attribute="number_of_smrt_cells"
-              for="number_of_smrt_cells"
-              layout="spacious"
-            >
-              <traction-input
-                id="number_of_smrt_cells"
-                v-model="requestOptions.number_of_smrt_cells"
-                data-attribute="smrt-cells-input"
-                type="number"
-                step="1"
-                min="0"
-              ></traction-input>
-            </traction-field-group>
-            <traction-field-group
-              label="Number of Gigabases required"
-              attribute="estimate_of_gb_required"
-              for="estimate_of_gb_required"
-              layout="spacious"
-            >
-              <traction-input
-                id="estimate_of_gb_required"
-                v-model="requestOptions.estimate_of_gb_required"
-                data-attribute="estimate_of_gb_required"
-                type="number"
-                step="1"
-                min="0"
-              ></traction-input>
-            </traction-field-group>
+        </div>
+        <div>
+          <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
+          <traction-field-group
+            label="Pipeline"
+            attribute="pipelineSelect"
+            for="pipelineSelect"
+            description="The Traction pipeline to import the requests into"
+            layout="spacious"
+          >
+            <traction-select
+              id="pipelineSelect"
+              v-model="pipeline"
+              :options="pipelineOptions"
+              class="inline-block w-full"
+              data-type="pipeline-list"
+              :disabled="!source"
+            />
+          </traction-field-group>
+          <traction-field-group
+            label="Workflow"
+            attribute="workflowSelect"
+            for="workflowSelect"
+            description="Select a workflow if you would like to scan in the imported labware"
+            layout="spacious"
+          >
+            <traction-select
+              id="workflowSelect"
+              v-model="workflow"
+              class="inline-block w-full"
+              :options="workflowOptions"
+              data-type="workflow-list"
+              :disabled="!source"
+            />
+          </traction-field-group>
+          <div v-if="workflow">
+            <div v-if="isCustomLocationWorkflow" class="mb-3">
+              <traction-label class="inline-block w-full text-left"
+                >Location barcode</traction-label
+              >
+              <traction-muted-text class="text-left"
+                >Scan the location barcode where the imported labware will be scanned into (e.g.
+                lw-test-123)</traction-muted-text
+              >
+              <traction-field-error
+                data-attribute="custom-location-barcode-error"
+                :error="customWorkflowLocation.error"
+              >
+                <traction-input
+                  data-attribute="custom-location-barcode-input"
+                  class="mt-1"
+                  :debounce="500"
+                  :model-value="customWorkflowLocation.value"
+                  @update:model-value="setCustomWorkflowLocation($event)"
+                />
+              </traction-field-error>
+            </div>
+            <div>
+              <traction-label class="inline-block w-full text-left"
+                >User barcode or swipecard</traction-label
+              >
+              <traction-muted-text class="text-left"
+                >Only required when a workflow is selected</traction-muted-text
+              >
+              <traction-field-error
+                data-attribute="user-code-error"
+                :error="
+                  !user_code && workflow
+                    ? 'User code is required to scan in the imported labware'
+                    : ''
+                "
+              >
+                <traction-input
+                  id="userCode"
+                  v-model="user_code"
+                  data-attribute="user-code-input"
+                  class="mt-1"
+                  type="password"
+                />
+              </traction-field-error>
+            </div>
           </div>
-          <div v-if="pipeline === 'ONT'">
+        </div>
+        <div>
+          <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
+          <traction-muted-text class="text-left"
+            >Default values to apply to the imported requests</traction-muted-text
+          >
+          <div>
+            <DataFetcher :fetcher="fetchLibraryTypes">
+              <LibraryTypeSelect
+                v-model="requestOptions.library_type"
+                :label-cols="0"
+                :allow-none="false"
+                :import-text="`Import from ${source} (where available)`"
+                :pipeline="pipeline.toLowerCase()"
+              />
+            </DataFetcher>
+
             <traction-field-group
-              label="Data Type"
-              attribute="data_type"
-              for="data_type"
+              label="Cost Code"
+              attribute="cost_code"
+              for="cost_code"
+              description="Default Pacbio cost code: S4699"
               layout="spacious"
             >
               <traction-input
-                v-model="requestOptions.data_type"
-                data-attribute="data-type-input"
-                type="string"
-                readonly
+                id="cost_code"
+                v-model="requestOptions.cost_code"
+                data-attribute="cost-code-input"
               ></traction-input>
             </traction-field-group>
-            <traction-field-group
-              label="Number of Flowcells"
-              attribute="number_of_flowcells"
-              for="number_of_flowcells"
-              layout="spacious"
-            >
-              <traction-input
-                id="number_of_flowcells"
-                v-model="requestOptions.number_of_flowcells"
-                data-attribute="number-of-flowcells-input"
-                type="number"
-                step="1"
-                min="0"
-              ></traction-input>
-            </traction-field-group>
+            <div v-if="pipeline === 'PacBio'">
+              <traction-field-group
+                label="Number of SMRT cells"
+                attribute="number_of_smrt_cells"
+                for="number_of_smrt_cells"
+                layout="spacious"
+              >
+                <traction-input
+                  id="number_of_smrt_cells"
+                  v-model="requestOptions.number_of_smrt_cells"
+                  data-attribute="smrt-cells-input"
+                  type="number"
+                  step="1"
+                  min="0"
+                ></traction-input>
+              </traction-field-group>
+              <traction-field-group
+                label="Number of Gigabases required"
+                attribute="estimate_of_gb_required"
+                for="estimate_of_gb_required"
+                layout="spacious"
+              >
+                <traction-input
+                  id="estimate_of_gb_required"
+                  v-model="requestOptions.estimate_of_gb_required"
+                  data-attribute="estimate_of_gb_required"
+                  type="number"
+                  step="1"
+                  min="0"
+                ></traction-input>
+              </traction-field-group>
+            </div>
+            <div v-if="pipeline === 'ONT'">
+              <traction-field-group
+                label="Data Type"
+                attribute="data_type"
+                for="data_type"
+                layout="spacious"
+              >
+                <traction-input
+                  v-model="requestOptions.data_type"
+                  data-attribute="data-type-input"
+                  type="string"
+                  readonly
+                ></traction-input>
+              </traction-field-group>
+              <traction-field-group
+                label="Number of Flowcells"
+                attribute="number_of_flowcells"
+                for="number_of_flowcells"
+                layout="spacious"
+              >
+                <traction-input
+                  id="number_of_flowcells"
+                  v-model="requestOptions.number_of_flowcells"
+                  data-attribute="number-of-flowcells-input"
+                  type="number"
+                  step="1"
+                  min="0"
+                ></traction-input>
+              </traction-field-group>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="w-1/2 space-y-4">
-      <template v-if="!source">
-        <div class="flex flex-row items-center justify-center h-full rounded p-8 bg-white">
-          <TractionInfoIcon class="text-gray-500" :size="32" />
-          <span class="px-2 text-xl text-gray-500 font-bold"
-            >Please select a source to continue.</span
-          >
-        </div>
-      </template>
-      <template v-else>
-        <component
-          :is="reception.barcodeComponent"
-          :pipeline="pipeline"
-          :reception="reception"
-          :request-options="requestOptions"
-          :workflow-location-text="
-            workflowLocation
-              ? `The imported labware will be scanned into ${workflowLocation}`
-              : 'No location selected to scan into'
-          "
-          :user-code="user_code"
-          :location-barcode="location_barcode"
-          @import-started="importStarted"
-          @import-finished="clearModal"
-          @reset="reset"
-        />
-      </template>
+      <div class="w-2/3 space-y-4 space-x-4 border-2 border-gray-400 rounded-lg px-4">
+        <template v-if="!source">
+          <div class="flex flex-row items-center justify-center h-full">
+            <TractionInfoIcon class="text-gray-500" :size="32" />
+            <span class="px-2 text-xl text-gray-500 font-bold"
+              >Please select a source to continue.</span
+            >
+          </div>
+        </template>
+        <template v-else>
+          <component
+            :is="reception.barcodeComponent"
+            :pipeline="pipeline"
+            :reception="reception"
+            :request-options="requestOptions"
+            :workflow-location-text="
+              workflowLocation
+                ? `The imported labware will be scanned into ${workflowLocation}`
+                : 'No location selected to scan into'
+            "
+            :user-code="user_code"
+            :location-barcode="location_barcode"
+            @import-started="importStarted"
+            @import-finished="clearModal"
+            @reset="reset"
+          />
+        </template>
+      </div>
     </div>
   </div>
 </template>

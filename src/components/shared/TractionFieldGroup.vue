@@ -54,11 +54,11 @@
       @input="input"
     ></component>
     <div
-      class="shrink-0 w-full md:w-1/2"
+      class="shrink-0"
       :class="{
-        'mt-2': spacious,
-        'mt-2 md:mt-0': responsive,
-        'mt-0': compact,
+        'mt-2 w-full': spacious,
+        'mt-2 md:mt-0 w-full md:w-1/2': responsive,
+        'mt-0 w-full md:w-1/2': compact,
       }"
     >
       <slot></slot>

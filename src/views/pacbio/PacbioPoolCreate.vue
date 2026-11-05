@@ -1,11 +1,11 @@
 <template>
   <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
   <data-fetcher :key="route.fullPath" :fetcher="fetchPoolsData">
-    <div class="w-full grid grid-cols-2 gap-x-2">
-      <div class="flex flex-col">
+    <div class="w-full grid grid-cols-5 gap-2">
+      <div class="flex flex-col col-span-2">
         <traction-section
           title="Scan labware"
-          number="1a"
+          number="1"
           description="To get started, please scan or type a plate or tube barcode, then press Enter or click the Search button"
         >
           <div class="flex flex-row items-center">
@@ -31,20 +31,15 @@
             </div>
           </div>
         </traction-section>
-      </div>
-
-      <div>
-        <PacbioTagSetList ref="tagSetList" />
-        <PacbioTagSetItem />
-      </div>
-      <div>
         <PacbioLabwareSelectedList
           :labware="scannedLabware"
           :highlight="aliquotSelectionHighlightLabware"
           @closed="onClosed"
         />
       </div>
-      <div>
+      <div class="flex flex-col col-span-3">
+        <PacbioTagSetList ref="tagSetList" />
+        <PacbioTagSetItem />
         <PacbioPoolEdit
           :flexible-pool-position="props.flexiblePoolPosition"
           @aliquot-selected="handleAliquotSelection"

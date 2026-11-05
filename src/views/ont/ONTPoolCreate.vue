@@ -1,45 +1,38 @@
 <template>
   <!-- The data fetcher key is used to re-render the page if a user goes from an existing pool to a new one -->
   <DataFetcher id="pool" :key="$route.fullPath" :fetcher="provider">
-    <div class="flex flex-col">
-      <div class="flex flex-col w-1/2 px-4">
+    <div class="w-full grid grid-cols-5 gap-2">
+      <div class="flex flex-col col-span-2">
         <traction-menu :border="true">
           <traction-menu-item
             v-for="(tabTitle, index) in tabTitles"
             :key="index"
             :active="index == sourceIndex"
             color="blue"
+            class="py-1"
             @click="setSource(index)"
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
-      </div>
-      <div class="w-full grid grid-cols-2 space-x-2 mt-4">
         <div v-if="sourceIndex == 0" class="flex flex-col">
           <traction-section title="Plates" number="1a" class="mb-2">
             <div class="text-left">Find plates</div>
             <LabwareFinder :fetcher="store.findOntPlate" filter="barcode" class="mb-6" />
           </traction-section>
+          <OntPlateSelectedList class="mb-2" />
         </div>
         <div v-else>
           <traction-section title="Tubes" number="2a" class="mb-2">
             <div class="text-left">Find Tubes</div>
             <LabwareFinder :fetcher="store.findOntTube" filter="barcode" class="mb-6" />
           </traction-section>
-        </div>
-        <div>
-          <OntTagSetList ref="tagSetList" />
-          <OntTagSetItem />
-        </div>
-        <div v-if="sourceIndex == 0" class="flex flex-col">
-          <OntPlateSelectedList class="mb-2" />
-        </div>
-        <div v-else>
           <OntTubeSelectedList class="mb-2" />
         </div>
-        <div>
-          <OntPoolEdit />
-        </div>
+      </div>
+      <div class="flex flex-col col-span-3">
+        <OntTagSetList ref="tagSetList" />
+        <OntTagSetItem />
+        <OntPoolEdit />
       </div>
     </div>
   </DataFetcher>

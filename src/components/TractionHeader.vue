@@ -127,7 +127,7 @@
             <component
               :is="tool.icon"
               :data-icon="tool.iconName"
-              v-bind="tool.fill ? { fill: tool.fill } : {}"
+              fill="#fff"
               class="mt-0.5 h-6 w-6 shrink-0"
               aria-hidden="true"
             />
@@ -183,7 +183,6 @@ const tools = [
     description: 'Print labels for labware',
     icon: BarcodeIcon,
     iconName: 'barcode',
-    fill: '#fff',
   },
   {
     name: 'QC Results Upload',
