@@ -15,6 +15,7 @@
             type="search"
             placeholder="Type to Search"
             class="w-1/2"
+            @enter-key-press="getFirstPageData()"
           />
           <traction-select
             id="filterValue"
@@ -74,14 +75,21 @@ export default {
       type: Array,
       required: true,
     },
+    defaultFilterOption: {
+      type: String,
+      default: '',
+    },
     displaySeparator: {
       type: Boolean,
       default: true,
     },
   },
-  setup() {
+  setup(props) {
     const { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter } =
       useQueryParams()
+    if (!filter_value.value && props.defaultFilterOption) {
+      filter_value.value = props.defaultFilterOption
+    }
     return { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter }
   },
   computed: {

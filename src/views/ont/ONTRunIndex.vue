@@ -1,6 +1,10 @@
 <template>
   <DataFetcher :fetcher="fetchRuns">
-    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
+    <FilterCard
+      :fetcher="fetchRuns"
+      :filter-options="filterOptions"
+      default-filter-option="experiment_name"
+    />
     <div class="flex flex-col">
       <div>
         <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
