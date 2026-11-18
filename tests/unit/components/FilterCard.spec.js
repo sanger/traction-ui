@@ -38,6 +38,20 @@ describe('FilterCard.vue', () => {
     expect(wrapper.findAll('button')[1].text()).toBe('Search')
   })
 
+  it('uses the default filter option when no filter value is in the query', async () => {
+    const mockFetch = vi.fn()
+    const defaultWrapper = mount(FilterCard, {
+      props: {
+        fetcher: mockFetch,
+        filterOptions: [{ value: 'barcode', text: 'Barcode' }],
+        defaultFilterOption: 'barcode',
+      },
+    })
+
+    await flushPromises()
+    expect(defaultWrapper.vm.filter_value).toBe('barcode')
+  })
+
   it('filter input updates query params correctly', async () => {
     const filterInput = wrapper.find('#filterInput')
     filterInput.element.value = 10
