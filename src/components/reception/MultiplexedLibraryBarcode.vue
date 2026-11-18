@@ -33,7 +33,7 @@
         ></traction-select>
       </traction-field-group>
     </div>
-    <div id="print" class="p-2 bg-gray-100 rounded p-3">
+    <div id="print" class="bg-gray-100 rounded">
       <traction-heading level="4" :show-border="true">Print labels</traction-heading>
       <div class="flex flex-row space-x-4 w-full">
         <div class="flex flex-col w-1/2 text-left space-y-2">
@@ -73,7 +73,7 @@
         >
       </div>
     </div>
-    <div class="bg-gray-100 rounded p-3">
+    <div class="bg-gray-100 rounded">
       <traction-heading level="4" :show-border="true"> Summary </traction-heading>
       <div class="flex flex-col w-full">
         <traction-muted-text class="text-left">Imports data into Traction</traction-muted-text>

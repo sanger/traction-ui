@@ -9,7 +9,6 @@ import LabwhereReception from '@/views/LabwhereReception.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import FlexiblePoolCreate from '@/views/FlexiblePoolCreate.vue'
-import PacbioView from '@/views/PacbioView.vue'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex.vue'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex.vue'
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex.vue'
@@ -18,7 +17,7 @@ import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex.vue'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow.vue'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate.vue'
 import PacbioLibraryBatchCreate from '@/views/pacbio/PacbioLibraryBatchCreate.vue'
-import ONT from '@/views/ONT.vue'
+import PipelineView from '@/views/PipelineView.vue'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import ONTRunIndex from '@/views/ont/ONTRunIndex.vue'
@@ -108,7 +107,7 @@ const router = createRouter({
     },
     {
       path: '/pacbio',
-      component: PacbioView,
+      component: PipelineView,
       meta: { pipeline: 'PacBio', requiresAuth: true },
       children: [
         { path: '', redirect: 'samples' },
@@ -181,7 +180,7 @@ const router = createRouter({
     },
     {
       path: '/ont',
-      component: ONT,
+      component: PipelineView,
       meta: { pipeline: 'ONT', requiresAuth: true },
       children: [
         {

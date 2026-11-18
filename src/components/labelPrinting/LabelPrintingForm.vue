@@ -7,6 +7,10 @@
       @reset="onReset"
     >
       <div class="w-full md:w-3/5 p-4 gap-4 bg-gray-100 rounded-md">
+        <traction-heading level="2" show-border> Label Printing </traction-heading>
+        <p class="flex justify-left text-sm">
+          This page lets you print any barcode (free text) to any configured printer.
+        </p>
         <div class="space-y-10">
           <fieldset>
             <BarcodeIcon class="float-left mr-2 mt-3" />

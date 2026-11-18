@@ -1,5 +1,9 @@
 <template>
   <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
+    <traction-heading level="2" show-border> LabWhere Reception </traction-heading>
+    <p class="flex justify-left text-sm">
+      This page lets you scan in or out labware into a location in LabWhere
+    </p>
     <traction-form @submit="scanBarcodesToLabwhere" @reset="reset">
       <fieldset>
         <traction-heading level="4" show-border>User barcode or swipecard</traction-heading>
