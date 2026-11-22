@@ -47,7 +47,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@pinia/testing": "^2.0.2",
-    "@vue/test-utils": "^2.5.1",
+    "@vue/test-utils": "^2.6.0",
     "clean-jsdoc-theme": "^5.2.1",
     "cypress": "^16.3.0",
     "cypress-file-upload": "^5.0.8",
