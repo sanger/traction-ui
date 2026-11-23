@@ -3,8 +3,14 @@ import TractionTooltip from '@/components/shared/TractionTooltip.vue'
 import { expect } from 'vitest'
 
 describe('TractionTooltip.vue', () => {
+  let wrapper
+
+  afterEach(() => {
+    wrapper.unmount()
+  })
+
   it('renders correctly', () => {
-    const wrapper = mount(TractionTooltip, {
+    wrapper = mount(TractionTooltip, {
       props: {
         tooltipText: 'Test Tooltip',
       },
@@ -13,7 +19,8 @@ describe('TractionTooltip.vue', () => {
   })
 
   it('displays tooltip text when hover is true', async () => {
-    const wrapper = mount(TractionTooltip, {
+    wrapper = mount(TractionTooltip, {
+      attachTo: document.body,
       props: {
         tooltipText: 'Test Tooltip',
       },
@@ -24,17 +31,22 @@ describe('TractionTooltip.vue', () => {
   })
 
   it('hides tooltip text when hover is false', async () => {
-    const wrapper = mount(TractionTooltip, {
+    wrapper = mount(TractionTooltip, {
+      attachTo: document.body,
       props: {
         tooltipText: 'Test Tooltip',
       },
     })
+    expect(wrapper.get('#tooltip').isVisible()).toBe(false)
     await wrapper.trigger('mouseover')
+    expect(wrapper.get('#tooltip').isVisible()).toBe(true)
     await wrapper.trigger('mouseleave')
     expect(wrapper.get('#tooltip').isVisible()).toBe(false)
   })
+
   it('displays slot content when tooltipText is not provided', async () => {
-    const wrapper = mount(TractionTooltip, {
+    wrapper = mount(TractionTooltip, {
+      attachTo: document.body,
       slots: {
         tooltip: '<div>Slot Tooltip Content</div>',
       },
@@ -48,7 +60,7 @@ describe('TractionTooltip.vue', () => {
   })
 
   it('applies the provided tooltip classes', async () => {
-    const wrapper = mount(TractionTooltip, {
+    wrapper = mount(TractionTooltip, {
       props: {
         tooltipText: 'Test Tooltip',
         tooltipBgColour: 'bg-red-500',
@@ -64,7 +76,7 @@ describe('TractionTooltip.vue', () => {
   })
 
   it('displays default slot content when neither tooltipText nor slot content is provided', async () => {
-    const wrapper = mount(TractionTooltip)
+    wrapper = mount(TractionTooltip, { attachTo: document.body })
     await wrapper.trigger('mouseover')
     expect(wrapper.get('#tooltip').isVisible()).toBe(true)
     expect(wrapper.get('#tooltip').text()).toBe('No tooltip content available.')
