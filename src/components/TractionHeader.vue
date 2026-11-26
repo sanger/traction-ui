@@ -29,7 +29,7 @@
               aria-hidden="true"
               class="pointer-events-none absolute inset-x-0 top-0 -bottom-4 rounded-t-md bg-black/10"
             />
-            <span class="relative">{{ pipeline.title }}</span>
+            <span class="relative text-base">{{ pipeline.title }}</span>
             <svg
               data-attribute="dropdown-indicator"
               aria-hidden="true"
@@ -69,7 +69,7 @@
               aria-hidden="true"
               class="pointer-events-none absolute inset-x-0 top-0 -bottom-4 rounded-t-md bg-black/10"
             />
-            <span class="relative">Tools</span>
+            <span class="relative text-base">Tools</span>
             <svg
               data-attribute="dropdown-indicator"
               aria-hidden="true"
@@ -151,7 +151,7 @@ import PipelinesConfig from '@/config/PipelinesConfig'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import ConicalFlaskIcon from '@/icons/ConicalFlaskIcon.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
-import GeneticsIcon from '@/icons/GeneticsIcon.vue'
+import LabwareSearchIcon from '@/icons/LabwareSearchIcon.vue'
 import TubeIcon from '@/icons/TubeIcon.vue'
 import UploadIcon from '@/icons/UploadIcon.vue'
 import TractionSessionButton from './TractionSessionButton.vue'
@@ -168,14 +168,14 @@ const tools = [
     name: 'Reception',
     link: '/reception',
     description: 'Receive samples and libraries into Traction',
-    icon: GeneticsIcon,
+    icon: ConicalFlaskIcon,
     iconName: 'genetics',
   },
   {
     name: 'LabWhere Reception',
     link: '/labwhere-reception',
     description: 'Update labware locations in LabWhere',
-    icon: ConicalFlaskIcon,
+    icon: LabwareSearchIcon,
     iconName: 'conical-flask',
   },
   {
