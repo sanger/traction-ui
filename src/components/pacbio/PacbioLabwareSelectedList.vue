@@ -9,7 +9,7 @@
       hitRate="20"
       @select="onSelect"
     />
-    <traction-section number="1b" title="Select samples" :description="sectionTitle">
+    <traction-section number="2" title="Select samples" :description="sectionTitle">
       <template v-if="selectedLabware.length > 0">
         <div class="flex space-x-2 py-4 border-gray-100 mb-2">
           <label class="text-base">Table view</label>
