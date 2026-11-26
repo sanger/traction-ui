@@ -161,6 +161,10 @@ const toolRoutes = [
     name: 'Sample Report',
     link: 'sample-report',
   },
+  {
+    name: 'Flexible Pooling',
+    link: 'flexible-pooling',
+  }
 ]
 const pipelines = computed(() => PipelinesConfig.filter(({ active }) => active))
 </script>
