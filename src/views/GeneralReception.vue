@@ -1,13 +1,13 @@
 <template>
   <div
-    class="w-full max-w-[80rem] mx-auto bg-gray-100 border border-gray-200 rounded-md p-4 space-y-4"
+    class="w-full max-w-[80rem] mx-auto bg-white border border-gray-200 rounded-md p-4 space-y-4"
   >
     <traction-heading level="2" show-border> Reception </traction-heading>
-    <div class="flex flex-row space-x-4">
+    <div class="flex flex-row rounded-md border border-gray-200 bg-white">
       <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
-      <div class="w-1/3">
+      <div class="w-1/3 rounded-l-md border-r border-gray-200 bg-gray-100 p-4">
         <div>
-          <traction-heading level="4" :show-border="true"> Source </traction-heading>
+          <traction-heading level="4" :show-border="true"> Import Options </traction-heading>
           <traction-field-group
             label="Source"
             attribute="sourceSelect"
@@ -23,9 +23,6 @@
               data-type="source-list"
             />
           </traction-field-group>
-        </div>
-        <div>
-          <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
           <traction-field-group
             label="Pipeline"
             attribute="pipelineSelect"
@@ -200,7 +197,7 @@
           </div>
         </div>
       </div>
-      <div class="w-2/3 space-y-4 space-x-4 border-2 border-gray-400 rounded-lg px-4">
+      <div class="w-2/3 min-w-0 space-y-4 p-4">
         <template v-if="!source">
           <div class="flex flex-row items-center justify-center h-full">
             <TractionInfoIcon class="text-gray-500" :size="32" />
