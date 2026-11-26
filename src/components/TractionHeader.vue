@@ -1,5 +1,5 @@
 <template>
-  <div :class="headerClasses">
+  <div ref="header" :class="headerClasses">
     <div class="max-w-7xl mx-auto px-4 flex flex-row justify-between">
       <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
         <div class="flex flex-row gap-x-4 items-center">
@@ -143,7 +143,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { humanise } from '@/lib/stringHumanisation'
 import { bgColorClass } from '@/lib/BgColorClass'
@@ -158,6 +158,7 @@ import TractionSessionButton from './TractionSessionButton.vue'
 
 const route = useRoute()
 const pipelines = PipelinesConfig.filter((p) => p.active)
+const header = ref(null)
 const toggled = ref(null)
 const toolsOpen = ref(false)
 const optionsRow = ref(null)
@@ -230,6 +231,16 @@ const toggle = (pipeline) => {
     toggled.value = toggled.value?.name === pipeline.name ? null : pipeline
   }
 }
+
+const handleOutsideClick = (event) => {
+  if (!header.value?.contains(event.target)) {
+    toggled.value = null
+    toolsOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleOutsideClick))
+onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
 
 // Slide the underline under the link for the current page
 const updateUnderline = async () => {

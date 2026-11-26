@@ -1,12 +1,17 @@
 import TractionHeader from '@/components/TractionHeader'
-import { mount } from '@support/testHelper'
+import { flushPromises, mount, router } from '@support/testHelper'
 import.meta.env.VITE_ENVIRONMENT = 'production'
 
 describe('TractionHeader.vue', () => {
   let wrapper
 
-  beforeEach(() => {
-    wrapper = mount(TractionHeader)
+  beforeEach(async () => {
+    await router.push('/')
+    wrapper = mount(TractionHeader, { attachTo: document.body })
+  })
+
+  afterEach(() => {
+    wrapper.unmount()
   })
 
   it('has headerClasses', () => {
@@ -43,5 +48,49 @@ describe('TractionHeader.vue', () => {
     await wrapper.find('[data-attribute="ont-menu"]').trigger('click')
     expect(wrapper.find('[data-attribute="tools-dropdown"]').exists()).toBe(false)
     expect(wrapper.find('[data-attribute="pipeline-dropdown"]').exists()).toBe(true)
+  })
+
+  it('restores the current pipeline and page when clicking outside a preview', async () => {
+    await router.push('/pacbio/plates')
+    await flushPromises()
+
+    await wrapper.find('[data-attribute="ont-menu"]').trigger('click')
+    expect(wrapper.find('[data-route="/ont/pools"]').exists()).toBe(true)
+
+    document.body.click()
+    await flushPromises()
+
+    expect(router.currentRoute.value.path).toBe('/pacbio/plates')
+    expect(wrapper.find('[data-attribute="pacbio-menu"]').classes()).toContain('text-white')
+    expect(wrapper.find('[data-route="/pacbio/plates"]').classes()).toContain('text-white')
+    expect(wrapper.find('[data-attribute="pipeline-underline"]').exists()).toBe(true)
+    expect(wrapper.find('[data-route="/ont/pools"]').exists()).toBe(false)
+  })
+
+  it('restores the current pipeline when clicking outside Tools', async () => {
+    await router.push('/pacbio/plates')
+    await flushPromises()
+    await wrapper.find('[data-attribute="tools-menu"]').trigger('click')
+
+    document.body.click()
+    await flushPromises()
+
+    expect(wrapper.find('[data-attribute="tools-dropdown"]').exists()).toBe(false)
+    expect(wrapper.find('[data-route="/pacbio/plates"]').classes()).toContain('text-white')
+  })
+
+  it('keeps a preview open for clicks inside the navbar and allows navigation', async () => {
+    await router.push('/pacbio/plates')
+    await flushPromises()
+    await wrapper.find('[data-attribute="ont-menu"]').trigger('click')
+
+    await wrapper.find('[data-attribute="pipeline-dropdown"]').trigger('click')
+    expect(wrapper.find('[data-route="/ont/pools"]').exists()).toBe(true)
+
+    await wrapper.find('[data-route="/ont/pools"]').trigger('click')
+    await flushPromises()
+
+    expect(router.currentRoute.value.path).toBe('/ont/pools')
+    expect(wrapper.find('[data-route="/ont/pools"]').classes()).toContain('text-white')
   })
 })
