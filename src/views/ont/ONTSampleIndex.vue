@@ -1,6 +1,10 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
+    <FilterCard
+      :fetcher="provider"
+      :filter-options="filterOptions"
+      default-filter-option="sample_name"
+    />
     <div class="flex flex-col">
       <div>
         <traction-pagination
