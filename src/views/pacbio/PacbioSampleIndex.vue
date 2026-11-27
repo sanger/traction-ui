@@ -59,8 +59,7 @@
             <template v-for="(field, index) in state.field_in_details">
               <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
                 field.label
-              }}</span
-              >: {{ row.item[field.item] }}
+              }}</span>: {{ row.item[field.item] }}
               <br v-if="field" :key="field.label" />
             </template>
           </div>
